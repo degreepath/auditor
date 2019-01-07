@@ -3,11 +3,12 @@ extern crate serde_derive;
 
 extern crate serde_yaml;
 
-use std::str::FromStr;
-use std::fmt;
+use serde::de::{self, Deserialize, Deserializer, MapAccess, Visitor};
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::collections::HashMap;
-use serde::ser::{Serialize, Serializer, SerializeStruct};
-use serde::de::{self, Deserialize, Deserializer, Visitor, MapAccess};
+use std::fmt;
+use std::marker::PhantomData;
+use std::str::FromStr;
 
 fn serde_false() -> bool {
     false
@@ -26,7 +27,10 @@ mod tests {
 
     #[test]
     fn count_of_parse_any() {
-        let data = CountOfRule { count: CountOfEnum::Any, of: vec![] };
+        let data = CountOfRule {
+            count: CountOfEnum::Any,
+            of: vec![],
+        };
         let expected_str = "---\ncount: any\nof: []";
 
         let actual = serde_yaml::to_string(&data).unwrap();
@@ -38,7 +42,10 @@ mod tests {
 
     #[test]
     fn count_of_parse_all() {
-        let data = CountOfRule { count: CountOfEnum::All, of: vec![] };
+        let data = CountOfRule {
+            count: CountOfEnum::All,
+            of: vec![],
+        };
         let expected_str = "---\ncount: all\nof: []";
 
         let actual = serde_yaml::to_string(&data).unwrap();
@@ -50,7 +57,10 @@ mod tests {
 
     #[test]
     fn count_of_parse_number() {
-        let data = CountOfRule { count: CountOfEnum::Number(6), of: vec![] };
+        let data = CountOfRule {
+            count: CountOfEnum::Number(6),
+            of: vec![],
+        };
         let expected_str = "---\ncount: 6\nof: []";
 
         let actual = serde_yaml::to_string(&data).unwrap();
@@ -108,147 +118,334 @@ mod tests {
             result: Rule::CountOf(CountOfRule {
                 count: CountOfEnum::All,
                 of: vec![
-                    Rule::Requirement(RequirementRule { requirement: "Core".to_owned(), optional: false }),
-                    Rule::Requirement(RequirementRule { requirement: "Electives".to_owned(), optional: false }),
+                    Rule::Requirement(RequirementRule {
+                        requirement: "Core".to_owned(),
+                        optional: false,
+                    }),
+                    Rule::Requirement(RequirementRule {
+                        requirement: "Electives".to_owned(),
+                        optional: false,
+                    }),
                 ],
             }),
             requirements: [
-                ("Core".to_owned(), Section::Requirement(Requirement {
-                    name: "Core".to_owned(),
-                    message: None,
-                    department_audited: false,
-                    contract: false,
-                    save: vec![],
-                    result: Rule::CountOf(CountOfRule {
-                        count: CountOfEnum::All,
-                        of: vec![
-                            Rule::Course(CourseRule { department: "BIO".to_owned(), number: 123, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "BIO".to_owned(), number: 243, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "ESTH".to_owned(), number: 110, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "ESTH".to_owned(), number: 255, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "ESTH".to_owned(), number: 374, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "ESTH".to_owned(), number: 375, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "ESTH".to_owned(), number: 390, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "PSYCH".to_owned(), number: 125, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                        ],
+                (
+                    "Core".to_owned(),
+                    Section::Requirement(Requirement {
+                        name: "Core".to_owned(),
+                        message: None,
+                        department_audited: false,
+                        contract: false,
+                        save: vec![],
+                        result: Rule::CountOf(CountOfRule {
+                            count: CountOfEnum::All,
+                            of: vec![
+                                Rule::Course(CourseRule {
+                                    course: "BIO 123".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "BIO 243".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 110".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 255".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 374".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 375".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 390".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 125".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                            ],
+                        }),
                     }),
-                })),
-                ("Electives".to_owned(), Section::Requirement(Requirement {
-                    name: "Electives".to_owned(),
-                    message: None,
-                    department_audited: false,
-                    contract: false,
-                    save: vec![],
-                    result: Rule::CountOf(CountOfRule {
-                        count: CountOfEnum::Number(2),
-                        of: vec![
-                            Rule::Course(CourseRule { department: "ESTH".to_owned(), number: 290, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "ESTH".to_owned(), number: 376, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "PSYCH".to_owned(), number: 230, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "NEURO".to_owned(), number: 239, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "PSYCH".to_owned(), number: 241, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::Course(CourseRule { department: "PSYCH".to_owned(), number: 247, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                            Rule::CountOf(CountOfRule {
-                                count: CountOfEnum::Number(1),
-                                of: vec![
-                                    Rule::Course(CourseRule { department: "STAT".to_owned(), number: 110, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                                    Rule::Course(CourseRule { department: "STAT".to_owned(), number: 212, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                                    Rule::Course(CourseRule { department: "STAT".to_owned(), number: 214, term: None, section: None, year: None, semester: None, lab: None, international: None }),
-                                ],
-                            })
-                        ],
+                ),
+                (
+                    "Electives".to_owned(),
+                    Section::Requirement(Requirement {
+                        name: "Electives".to_owned(),
+                        message: None,
+                        department_audited: false,
+                        contract: false,
+                        save: vec![],
+                        result: Rule::CountOf(CountOfRule {
+                            count: CountOfEnum::Number(2),
+                            of: vec![
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 290".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 376".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 230".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "NEURO 239".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 241".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 247".to_owned(),
+                                    term: None,
+                                    section: None,
+                                    year: None,
+                                    semester: None,
+                                    lab: None,
+                                    international: None,
+                                }),
+                                Rule::CountOf(CountOfRule {
+                                    count: CountOfEnum::Number(1),
+                                    of: vec![
+                                        Rule::Course(CourseRule {
+                                            course: "STAT 110".to_owned(),
+                                            term: None,
+                                            section: None,
+                                            year: None,
+                                            semester: None,
+                                            lab: None,
+                                            international: None,
+                                        }),
+                                        Rule::Course(CourseRule {
+                                            course: "STAT 212".to_owned(),
+                                            term: None,
+                                            section: None,
+                                            year: None,
+                                            semester: None,
+                                            lab: None,
+                                            international: None,
+                                        }),
+                                        Rule::Course(CourseRule {
+                                            course: "STAT 214".to_owned(),
+                                            term: None,
+                                            section: None,
+                                            year: None,
+                                            semester: None,
+                                            lab: None,
+                                            international: None,
+                                        }),
+                                    ],
+                                }),
+                            ],
+                        }),
                     }),
-                })),
-            ].iter().cloned().collect(),
+                ),
+            ]
+            .iter()
+            .cloned()
+            .collect(),
         };
 
-        println!("{:?}", ds);
+        // println!("{:?}", ds);
 
         let s = serde_yaml::to_string(&ds).unwrap();
-        println!("{}", s);
+        // println!("{}", s);
     }
 
     #[test]
     fn course_rule_serialize_simple() {
-        let data = CourseRule { department: "STAT".to_owned(), number: 214, term: None, section: None, year: None, semester: None, lab: None, international: None };
+        let data = CourseRule {
+            course: "STAT 214".to_owned(),
+            term: None,
+            section: None,
+            year: None,
+            semester: None,
+            lab: None,
+            international: None,
+        };
         let expected_str = "---\nSTAT 214";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected_str);
-
-        let deserialized: CourseRule = serde_yaml::from_str(&actual).unwrap();
-        assert_eq!(deserialized, data);
     }
 
-//    #[test]
-//    fn course_rule_serialize_expanded() {
-//        let data = CourseRule { department: "STAT".to_owned(), number: 214, term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
-//        let expected_str = "---\ncourse: STAT 214\nterm: 2014-4\nsection: ~\nyear: ~\nsemester: ~\nlab: ~\ninternational: ~";
-//
-//        let actual = serde_yaml::to_string(&data).unwrap();
-//        assert_eq!(actual, expected_str);
-//
-//        let deserialized: CourseRule = serde_yaml::from_str(&actual).unwrap();
-//        assert_eq!(deserialized, data);
-//    }
+    // #[test]
+    // fn course_rule_serialize_expanded() {
+    //     let data = CourseRule { course: String::from("STAT 214"), term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
+    //     let expected_str = "---\ncourse: STAT 214\nterm: 2014-4\nsection: ~\nyear: ~\nsemester: ~\nlab: ~\ninternational: ~";
+
+    //     let actual = serde_yaml::to_string(&data).unwrap();
+    //     assert_eq!(actual, expected_str);
+
+    //     let deserialized: CourseRule = serde_yaml::from_str(&actual).unwrap();
+    //     println!("{:?}", deserialized);
+    //     assert_eq!(deserialized, data);
+    // }
 
     #[test]
-    fn course_rule_deserialize_simple() {
+    fn course_rule_deserialize_simple_ish() {
         let data = "---\ncourse: STAT 214";
-        let expected_struct = CourseRule { department: "STAT".to_owned(), number: 214, term: None, section: None, year: None, semester: None, lab: None, international: None };
+        let expected_struct = CourseRule {
+            course: "STAT 214".to_owned(),
+            term: None,
+            section: None,
+            year: None,
+            semester: None,
+            lab: None,
+            international: None,
+        };
 
         let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(deserialized, expected_struct);
     }
 
-//    #[test]
-//    fn course_rule_deserialize_expanded() {
-//        let data = r#"
-//            ---
-//            course: STAT 214
-//            term: 2014-4
-//            section: ~
-//            year: ~
-//            semester: ~
-//            lab: ~
-//            international: ~
-//        "#;
-//        let expected_struct = CourseRule { department: "STAT".to_owned(), number: 214, term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
-//
-//        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
-//        assert_eq!(deserialized, expected_struct);
-//    }
+    #[test]
+    fn course_rule_deserialize_simple() {
+        let data = "---\n- STAT 214";
+        let expected_struct = vec![Rule::Course(CourseRule {
+            course: "STAT 214".to_owned(),
+            term: None,
+            section: None,
+            year: None,
+            semester: None,
+            lab: None,
+            international: None,
+        })];
 
-//    #[test]
-//    fn course_rule_deserialize_expanded_explicit() {
-//        let data = "---\ndepartment: STAT\nnumber: 214\nterm: 2014-4\nsection: ~\nyear: ~\nsemester: ~\nlab: ~\ninternational: ~";
-//        let expected_struct = CourseRule { department: "STAT".to_owned(), number: 214, term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
-//
-//        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
-//        assert_eq!(deserialized, expected_struct);
-//    }
+        let deserialized: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(deserialized, expected_struct);
+    }
 
-//    #[test]
-//    fn course_rule_deserialize_expanded_explicit_department_and_course_failure() {
-//        let data = r#"
-//            ---
-//            course: STAT 214
-//            department: STAT
-//            number: 214
-//            term: 2014-4
-//            section: ~
-//            year: ~
-//            semester: ~
-//            lab: ~
-//            international: ~
-//        "#;
-//        let expected_struct = CourseRule { department: "STAT".to_owned(), number: 214, term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
-//
-//        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
-//        assert_eq!(deserialized, expected_struct);
-//    }
+    // #[test]
+    // fn course_rule_deserialize_expanded() {
+    //     let data = r#"
+    //             ---
+    //             - course: STAT 214
+    //               term: 2014-4
+    //               section: ~
+    //               year: ~
+    //               semester: ~
+    //               lab: ~
+    //               international: ~
+    //         "#;
+    //     let expected_struct = vec![Rule::Course(CourseRule {
+    //         course: "STAT 214".to_owned(),
+    //         term: Some("2014-4".to_owned()),
+    //         section: None,
+    //         year: None,
+    //         semester: None,
+    //         lab: None,
+    //         international: None,
+    //     })];
+
+    //     let deserialized: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
+    //     assert_eq!(deserialized, expected_struct);
+    // }
+
+    //    #[test]
+    //    fn course_rule_deserialize_expanded_explicit() {
+    //        let data = "---\ncourse: STAT 214\nterm: 2014-4\nsection: ~\nyear: ~\nsemester: ~\nlab: ~\ninternational: ~";
+    //        let expected_struct = CourseRule { course: "STAT 214".to_owned(), term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
+    //
+    //        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
+    //        assert_eq!(deserialized, expected_struct);
+    //    }
+
+    //    #[test]
+    //    fn course_rule_deserialize_expanded_explicit_department_and_course_failure() {
+    //        let data = r#"
+    //            ---
+    //            course: STAT 214
+    //            term: 2014-4
+    //            section: ~
+    //            year: ~
+    //            semester: ~
+    //            lab: ~
+    //            international: ~
+    //        "#;
+    //        let expected_struct = CourseRule { course: "STAT 214".to_owned(), term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
+    //
+    //        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
+    //        assert_eq!(deserialized, expected_struct);
+    //    }
 }
-
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 struct AreaOfStudy {
@@ -265,7 +462,7 @@ struct AreaOfStudy {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(untagged)]
 enum Rule {
-    Course(CourseRule),
+    Course(#[serde(deserialize_with = "string_or_struct")] CourseRule),
     Requirement(RequirementRule),
     CountOf(CountOfRule),
     Both(BothRule),
@@ -273,10 +470,9 @@ enum Rule {
     Given(GivenRule),
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 struct CourseRule {
-    department: String,
-    number: u16,
+    course: String,
     term: Option<String>,
     section: Option<String>,
     year: Option<u16>,
@@ -285,18 +481,160 @@ struct CourseRule {
     international: Option<bool>,
 }
 
+// impl<'de> Deserialize<'de> for CourseRule {
+//     fn deserialize<D>(deserializer: D) -> Result<CourseRule, D::Error>
+//     where
+//         D: Deserializer<'de>,
+//     {
+//         #[derive(Deserialize)]
+//         #[serde(field_identifier, rename_all = "lowercase")]
+//         enum Field {
+//             Course,
+//             Term,
+//             Section,
+//             Year,
+//             Semester,
+//             Lab,
+//             International,
+//         }
+
+//         struct StructVisitor;
+
+//         impl<'de> Visitor<'de> for StructVisitor {
+//             type Value = CourseRule;
+
+//             fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+//                 formatter.write_str("a string `DEPT NUM` or a struct {course: DEPT NUM}")
+//             }
+
+//             // fn visit_str<E>(self, value: &str) -> Result<D, E>
+//             // where
+//             //     E: de::Error,
+//             // {
+//             //     Ok(FromStr::from_str(value).unwrap())
+//             // }
+
+//             fn visit_map<V>(self, mut map: V) -> Result<CourseRule, V::Error>
+//             where
+//                 V: MapAccess<'de>,
+//             {
+//                 let mut course = None;
+//                 let mut term = None;
+//                 let mut section = None;
+//                 let mut year = None;
+//                 let mut semester = None;
+//                 let mut lab = None;
+//                 let mut international = None;
+
+//                 while let Some(key) = map.next_key()? {
+//                     match key {
+//                         Field::Course => {
+//                             if course.is_some() {
+//                                 return Err(de::Error::duplicate_field("course"));
+//                             }
+//                             course = Some(map.next_value()?);
+//                         }
+//                         Field::Term => {
+//                             if term.is_some() {
+//                                 return Err(de::Error::duplicate_field("term"));
+//                             }
+//                             term = Some(map.next_value()?);
+//                         }
+//                         Field::Year => {
+//                             if year.is_some() {
+//                                 return Err(de::Error::duplicate_field("year"));
+//                             }
+//                             year = Some(map.next_value()?);
+//                         }
+//                         Field::Semester => {
+//                             if semester.is_some() {
+//                                 return Err(de::Error::duplicate_field("semester"));
+//                             }
+//                             semester = Some(map.next_value()?);
+//                         }
+//                         Field::Section => {
+//                             if section.is_some() {
+//                                 return Err(de::Error::duplicate_field("section"));
+//                             }
+//                             section = Some(map.next_value()?);
+//                         }
+//                         Field::Lab => {
+//                             if lab.is_some() {
+//                                 return Err(de::Error::duplicate_field("lab"));
+//                             }
+//                             lab = Some(map.next_value()?);
+//                         }
+//                         Field::International => {
+//                             if international.is_some() {
+//                                 return Err(de::Error::duplicate_field("international"));
+//                             }
+//                             international = Some(map.next_value()?);
+//                         }
+//                     }
+//                 }
+
+//                 let course = course.ok_or_else(|| de::Error::missing_field("course"))?;
+//                 let term = term.ok_or_else(|| de::Error::missing_field("term"))?;
+//                 let section = section.ok_or_else(|| de::Error::missing_field("section"))?;
+//                 let year = year.ok_or_else(|| de::Error::missing_field("year"))?;
+//                 let semester = semester.ok_or_else(|| de::Error::missing_field("semester"))?;
+//                 let lab = lab.ok_or_else(|| de::Error::missing_field("lab"))?;
+//                 let international =
+//                     international.ok_or_else(|| de::Error::missing_field("international"))?;
+//                 Ok(CourseRule {
+//                     course,
+//                     term,
+//                     section,
+//                     year,
+//                     semester,
+//                     lab,
+//                     international,
+//                 })
+//             }
+//         }
+
+//         deserializer.deserialize_any(StructVisitor)
+//     }
+// }
+
+use void::Void;
+impl FromStr for CourseRule {
+    // This implementation of `from_str` can never fail, so use the impossible
+    // `Void` type as the error type.
+    type Err = Void;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        println!("called fromstr for courserule");
+        Ok(CourseRule {
+            course: String::from(s),
+            term: None,
+            section: None,
+            year: None,
+            semester: None,
+            lab: None,
+            international: None,
+        })
+    }
+}
+
 impl Serialize for CourseRule {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         match &self {
-            CourseRule { term: None, section: None, year: None, semester: None, lab: None, international: None, department, number } => {
-                serializer.serialize_str(format!("{} {}", department, number).as_str())
-            }
+            CourseRule {
+                term: None,
+                section: None,
+                year: None,
+                semester: None,
+                lab: None,
+                international: None,
+                course,
+            } => serializer.serialize_str(format!("{}", course).as_str()),
             _ => {
-                let mut state = serializer.serialize_struct("CourseRule", 8)?;
-                state.serialize_field("course", &format!("{} {}", &self.department, &self.number))?;
+                let mut state = serializer.serialize_struct("CourseRule", 7)?;
+                state.serialize_field("course", &format!("{}", &self.course))?;
                 state.serialize_field("term", &self.term)?;
                 state.serialize_field("section", &self.section)?;
                 state.serialize_field("year", &self.year)?;
@@ -306,160 +644,6 @@ impl Serialize for CourseRule {
                 state.end()
             }
         }
-    }
-}
-
-impl<'de> Deserialize<'de> for CourseRule {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de>
-    {
-        struct CountVisitor;
-
-        #[derive(Deserialize)]
-        #[serde(field_identifier, rename_all = "lowercase")]
-        enum Field { Course, Department, Number, Term, Section, Year, Semester, Lab, International };
-
-        impl<'de> Visitor<'de> for CountVisitor {
-            type Value = CourseRule;
-
-            fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.write_str("`course` as a string or structure")
-            }
-
-            fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
-                where E: de::Error
-            {
-                let split_str: Vec<&str> = value.split(" ").collect();
-
-                match &split_str[..] {
-                    [department, num] => {
-                        if let Ok(number) = num.parse::<u16>() {
-                            Ok(CourseRule {
-                                department: String::from(*department),
-                                number,
-                                term: None,
-                                section: None,
-                                year: None,
-                                semester: None,
-                                lab: None,
-                                international: None,
-                            })
-                        } else {
-                            Err(E::custom(format!("expected a number as the second half of a course, but got `{}`", num)))
-                        }
-                    }
-                    _ => Err(E::custom(format!("expected string matching `DEPT NUM`, but got `{:?}`", split_str)))
-                }
-            }
-
-            fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
-                where V: MapAccess<'de>,
-            {
-                let mut seen_course = false;
-                let mut department = None;
-                let mut number = None;
-                let mut term = None;
-                let mut section = None;
-                let mut year = None;
-                let mut semester = None;
-                let mut lab = None;
-                let mut international = None;
-
-                while let Some(key) = map.next_key()? {
-                    match key {
-                        Field::Course => {
-                            if seen_course {
-                                return Err(de::Error::duplicate_field("course"));
-                            }
-
-                            let course: Option<String> = map.next_value()?;
-                            seen_course = true;
-
-                            if let Some(course) = course {
-                                let split_str: Vec<&str> = course.split(" ").collect();
-
-                                match &split_str[..] {
-                                    [department_val, num] => {
-                                        if let Ok(number_val) = num.parse::<u16>() {
-                                            department = Some(String::from(*department_val));
-                                            number = Some(number_val);
-                                        } else {
-                                            return Err(de::Error::custom(format!("expected a number as the second half of a course, but got `{}`", num)));
-                                        }
-                                    }
-                                    _ => {
-                                        return Err(de::Error::custom(format!("expected string matching `DEPT NUM`, but got `{:?}`", split_str)));
-                                    }
-                                };
-                            } else {
-                                return Err(de::Error::custom("no value given for the `course` key"));
-                            }
-                        }
-                        Field::Department => {
-                            if seen_course {
-                                return Err(de::Error::custom("both `course` and `department` cannot be specified"));
-                            }
-                            if department.is_some() {
-                                return Err(de::Error::duplicate_field("department"));
-                            }
-                            department = Some(map.next_value()?);
-                        }
-                        Field::Number => {
-                            if seen_course {
-                                return Err(de::Error::custom("both `course` and `number` cannot be specified"));
-                            }
-                            if number.is_some() {
-                                return Err(de::Error::duplicate_field("number"));
-                            }
-                            number = Some(map.next_value()?);
-                        }
-                        Field::Term => {
-                            if term.is_some() {
-                                return Err(de::Error::duplicate_field("term"));
-                            }
-                            term = Some(map.next_value()?);
-                        }
-                        Field::Section => {
-                            if section.is_some() {
-                                return Err(de::Error::duplicate_field("section"));
-                            }
-                            section = Some(map.next_value()?);
-                        }
-                        Field::Year => {
-                            if year.is_some() {
-                                return Err(de::Error::duplicate_field("year"));
-                            }
-                            year = Some(map.next_value()?);
-                        }
-                        Field::Semester => {
-                            if semester.is_some() {
-                                return Err(de::Error::duplicate_field("semester"));
-                            }
-                            semester = Some(map.next_value()?);
-                        }
-                        Field::Lab => {
-                            if lab.is_some() {
-                                return Err(de::Error::duplicate_field("lab"));
-                            }
-                            lab = Some(map.next_value()?);
-                        }
-                        Field::International => {
-                            if international.is_some() {
-                                return Err(de::Error::duplicate_field("international"));
-                            }
-                            international = Some(map.next_value()?);
-                        }
-                    }
-                }
-
-                let department = department.ok_or_else(|| de::Error::missing_field("department"))?;
-                let number = number.ok_or_else(|| de::Error::missing_field("number"))?;
-
-                Ok(CourseRule { department, number, term, section, year, semester, lab, international })
-            }
-        }
-
-        deserializer.deserialize_any(CountVisitor)
     }
 }
 
@@ -479,8 +663,8 @@ enum CountOfEnum {
 
 impl Serialize for CountOfEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         match &self {
             CountOfEnum::All => serializer.serialize_str("all"),
@@ -492,7 +676,8 @@ impl Serialize for CountOfEnum {
 
 impl<'de> Deserialize<'de> for CountOfEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de>
+    where
+        D: Deserializer<'de>,
     {
         struct CountVisitor;
 
@@ -504,24 +689,33 @@ impl<'de> Deserialize<'de> for CountOfEnum {
             }
 
             fn visit_i64<E>(self, num: i64) -> Result<Self::Value, E>
-                where E: de::Error
+            where
+                E: de::Error,
             {
-                Err(E::custom(format!("negative numbers are not allowed; was `{}`", num)))
+                Err(E::custom(format!(
+                    "negative numbers are not allowed; was `{}`",
+                    num
+                )))
             }
 
             fn visit_u64<E>(self, num: u64) -> Result<Self::Value, E>
-                where E: de::Error
+            where
+                E: de::Error,
             {
                 Ok(CountOfEnum::Number(num))
             }
 
             fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
-                where E: de::Error
+            where
+                E: de::Error,
             {
                 match value {
                     "all" => Ok(CountOfEnum::All),
                     "any" => Ok(CountOfEnum::Any),
-                    _ => Err(E::custom(format!("string must be `any` or `all`; was `{}`", value))),
+                    _ => Err(E::custom(format!(
+                        "string must be `any` or `all`; was `{}`",
+                        value
+                    ))),
                 }
             }
         }
@@ -626,7 +820,6 @@ enum GivenWhereOp {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 struct GivenLimiter {}
 
-
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 struct GivenAreasOfStudyRule {
     given: String,
@@ -718,4 +911,49 @@ enum Section {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 struct Subsection {
     message: Option<String>,
+}
+
+fn string_or_struct<'de, T, D>(deserializer: D) -> Result<T, D::Error>
+where
+    T: Deserialize<'de> + FromStr<Err = Void>,
+    D: Deserializer<'de>,
+{
+    // This is a Visitor that forwards string types to T's `FromStr` impl and
+    // forwards map types to T's `Deserialize` impl. The `PhantomData` is to
+    // keep the compiler from complaining about T being an unused generic type
+    // parameter. We need T in order to know the Value type for the Visitor
+    // impl.
+    struct StringOrStruct<T>(PhantomData<fn() -> T>);
+
+    impl<'de, T> Visitor<'de> for StringOrStruct<T>
+    where
+        T: Deserialize<'de> + FromStr<Err = Void>,
+    {
+        type Value = T;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("string or map")
+        }
+
+        fn visit_str<E>(self, value: &str) -> Result<T, E>
+        where
+            E: de::Error,
+        {
+            println!("called visitstr for courserule");
+            Ok(FromStr::from_str(value).unwrap())
+        }
+
+        fn visit_map<M>(self, visitor: M) -> Result<T, M::Error>
+        where
+            M: MapAccess<'de>,
+        {
+            // `MapAccessDeserializer` is a wrapper that turns a `MapAccess`
+            // into a `Deserializer`, allowing it to be used as the input to T's
+            // `Deserialize` implementation. T then deserializes itself using
+            // the entries from the map visitor.
+            Deserialize::deserialize(de::value::MapAccessDeserializer::new(visitor))
+        }
+    }
+
+    deserializer.deserialize_any(StringOrStruct(PhantomData))
 }
