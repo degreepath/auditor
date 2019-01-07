@@ -2,6 +2,7 @@
 extern crate serde_derive;
 
 extern crate serde_yaml;
+use std::str::FromStr;
 
 fn serde_false() -> bool {
     false
@@ -48,11 +49,6 @@ mod tests {
         let s = "---\nany";
         let deserialized_count: CountOfEnum = serde_yaml::from_str(&s).unwrap();
         assert_eq!(deserialized_count, count);
-
-//        let count_2 = CountOfEnum::Number(6);
-//
-//        let s = serde_yaml::to_string(&count_2).unwrap();
-//        assert_eq!(s, "---\n6");
     }
 }
 
@@ -106,7 +102,7 @@ enum CountOfEnum {
     All,
     #[serde(rename = "any")]
     Any,
-    Number(u8),
+    Number { value: u8 },
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -143,10 +139,15 @@ struct GivenAllCoursesRule {
     filter: Vec<GivenWhereClause>,
     limit: Vec<GivenLimiter>,
     #[serde(rename = "do")]
-    do_action: RuleAction,
-    do_lhs: String,
-    do_operator: RuleOperator,
-    do_rhs: String,
+    action: DoAction,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct DoAction {
+    command: RuleAction,
+    lhs: String,
+    operator: RuleOperator,
+    rhs: String,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -158,10 +159,7 @@ struct GivenTheseCoursesRule {
     limit: Vec<GivenLimiter>,
     what: GivenWhatToGiveEnum,
     #[serde(rename = "do")]
-    do_action: RuleAction,
-    do_lhs: String,
-    do_operator: RuleOperator,
-    do_rhs: String,
+    action: DoAction,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -173,10 +171,7 @@ struct GivenTheseRequirementsRule {
     limit: Vec<GivenLimiter>,
     what: GivenWhatToGiveEnum,
     #[serde(rename = "do")]
-    do_action: RuleAction,
-    do_lhs: String,
-    do_operator: RuleOperator,
-    do_rhs: String,
+    action: DoAction,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -187,14 +182,21 @@ struct GivenNamedVariableRule {
     limit: Vec<GivenLimiter>,
     what: GivenWhatToGiveEnum,
     #[serde(rename = "do")]
-    do_action: RuleAction,
-    do_lhs: String,
-    do_operator: RuleOperator,
-    do_rhs: String,
+    action: DoAction,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct GivenWhereClause {}
+struct GivenWhereClause {
+    key: String,
+    value: String,
+    operation: GivenWhereOp,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+enum GivenWhereOp {
+    Eq,
+    NotEq,
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct GivenLimiter {}
@@ -208,10 +210,7 @@ struct GivenAreasOfStudyRule {
     limit: Vec<GivenLimiter>,
     what: GivenWhatToGiveAreasEnum,
     #[serde(rename = "do")]
-    do_action: RuleAction,
-    do_lhs: String,
-    do_operator: RuleOperator,
-    do_rhs: String,
+    action: DoAction,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -223,6 +222,21 @@ enum GivenWhatToGiveEnum {
     Grades,
 }
 
+impl FromStr for GivenWhatToGiveEnum {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<GivenWhatToGiveEnum, ()> {
+        match s {
+            "courses" => Ok(GivenWhatToGiveEnum::Courses),
+            "distinct courses" => Ok(GivenWhatToGiveEnum::DistinctCourses),
+            "credits" => Ok(GivenWhatToGiveEnum::Credits),
+            "terms" => Ok(GivenWhatToGiveEnum::Terms),
+            "Grades" => Ok(GivenWhatToGiveEnum::Grades),
+            _ => Err(()),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 enum GivenWhatToGiveAreasEnum {
     #[serde(rename = "areas of study")]
@@ -231,9 +245,16 @@ enum GivenWhatToGiveAreasEnum {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 enum RuleOperator {
+    #[serde(rename = "<")]
     LessThan,
+    #[serde(rename = "<=")]
+    LessThanOrEqualTo,
+    #[serde(rename = "=")]
     EqualTo,
+    #[serde(rename = ">")]
     GreaterThan,
+    #[serde(rename = ">=")]
+    GreaterThanOrEqualTo,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -243,14 +264,23 @@ enum RuleAction {
     Average,
     Minimum,
     Difference,
-    NamedVariable,
+    NamedVariable(String),
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Requirement {
-    message: String,
+    message: Option<String>,
     #[serde(default = "serde_false")]
     department_audited: bool,
+    result: Rule,
+    #[serde(default = "serde_false")]
+    contract: bool,
+    save: Vec<SaveBlock>,
+}
+
+// should be a superset of GivenRule...
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct SaveBlock {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -262,5 +292,5 @@ enum Section {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Subsection {
-
+    message: Option<String>,
 }
