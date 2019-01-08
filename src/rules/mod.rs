@@ -18,6 +18,7 @@ pub enum Rule {
     Given(given::GivenRule),
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 

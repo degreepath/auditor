@@ -7,6 +7,7 @@ pub struct RequirementRule {
     pub optional: bool,
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 

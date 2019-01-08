@@ -13,7 +13,8 @@ pub struct AreaOfStudy {
     pub requirements: HashMap<String, Requirement>,
 }
 
-mod test {
+#[cfg(test)]
+mod tests {
     extern crate serde_yaml;
 
     use crate::rules::count_of::{CountOfEnum, CountOfRule};
@@ -283,7 +284,7 @@ mod test {
 
         // println!("{:?}", ds);
 
-        let s = serde_yaml::to_string(&ds).unwrap();
+        let _s = serde_yaml::to_string(&ds).unwrap();
         // println!("{}", s);
     }
 }

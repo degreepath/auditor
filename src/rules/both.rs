@@ -5,6 +5,7 @@ pub struct BothRule {
     pub both: (Box<Rule>, Box<Rule>),
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::rules::{requirement, Rule};

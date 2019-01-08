@@ -65,6 +65,7 @@ impl Serialize for CourseRule {
     }
 }
 
+#[cfg(test)]
 mod tests {
     use super::CourseRule;
     use crate::rules::Rule;

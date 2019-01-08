@@ -17,6 +17,7 @@ pub struct Requirement {
     pub requirements: Vec<Requirement>,
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::rules::requirement;

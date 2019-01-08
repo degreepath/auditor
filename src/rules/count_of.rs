@@ -79,7 +79,8 @@ impl<'de> Deserialize<'de> for CountOfEnum {
     }
 }
 
-mod test {
+#[cfg(test)]
+mod tests {
     use super::*;
 
     #[test]

@@ -4,3 +4,6 @@
 // should be a superset of GivenRule...
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct SaveBlock {}
+
+#[cfg(test)]
+mod tests {}
