@@ -1,7 +1,5 @@
-use crate::rules::requirement::RequirementRule;
 use std::str::FromStr;
-
-use super::course::CourseRule;
+use super::{course, requirement};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(untagged)]
@@ -36,7 +34,7 @@ pub struct DoAction {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct GivenTheseCoursesRule {
     pub given: String,
-    pub courses: Vec<CourseRule>,
+    pub courses: Vec<course::CourseRule>,
     #[serde(rename = "where")]
     pub filter: Vec<GivenWhereClause>,
     pub limit: Vec<GivenLimiter>,
@@ -48,7 +46,7 @@ pub struct GivenTheseCoursesRule {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct GivenTheseRequirementsRule {
     pub given: String,
-    pub requirements: Vec<RequirementRule>,
+    pub requirements: Vec<requirement::RequirementRule>,
     #[serde(rename = "where")]
     pub filter: Vec<GivenWhereClause>,
     pub limit: Vec<GivenLimiter>,
