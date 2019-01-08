@@ -45,7 +45,11 @@ impl Serialize for CourseRule {
                 lab: None,
                 international: None,
                 course,
-            } => serializer.serialize_str(course),
+            } => {
+                let mut state = serializer.serialize_struct("CourseRule", 1)?;
+                state.serialize_field("course", course)?;
+                state.end()
+            }
             _ => {
                 let mut state = serializer.serialize_struct("CourseRule", 7)?;
                 state.serialize_field("course", &self.course)?;
@@ -77,7 +81,7 @@ mod tests {
             international: None,
         };
         let expected_str = "---
-STAT 214";
+course: STAT 214";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected_str);

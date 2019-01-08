@@ -78,7 +78,7 @@ mod tests {
             })),
         ];
         let expected = r#"---
-- ASIAN 101
+- course: ASIAN 101
 - course: ASIAN 101
   term: 2014-1
   section: ~
@@ -90,9 +90,9 @@ mod tests {
   optional: true
 - count: 1
   of:
-    - ASIAN 101
+    - course: ASIAN 101
 - both:
-    - ASIAN 101
+    - course: ASIAN 101
     - course: ASIAN 101
       term: 2014-1
       section: ~
@@ -101,7 +101,7 @@ mod tests {
       lab: ~
       international: ~
 - either:
-    - ASIAN 101
+    - course: ASIAN 101
     - course: ASIAN 101
       term: 2014-1
       section: ~
