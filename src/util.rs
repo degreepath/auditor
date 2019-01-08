@@ -34,7 +34,6 @@ where
         where
             E: de::Error,
         {
-            println!("called visitstr for courserule");
             Ok(FromStr::from_str(value).unwrap())
         }
 

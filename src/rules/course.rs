@@ -19,7 +19,6 @@ impl FromStr for CourseRule {
     type Err = Void;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        println!("called fromstr for courserule");
         Ok(CourseRule {
             course: String::from(s),
             term: None,
