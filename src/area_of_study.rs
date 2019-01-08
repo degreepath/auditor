@@ -15,28 +15,25 @@ pub struct AreaOfStudy {
 
 #[cfg(test)]
 mod tests {
-    extern crate serde_yaml;
-
     use crate::rules::count_of::{CountOfEnum, CountOfRule};
     use crate::rules::course::CourseRule;
     use crate::rules::requirement::RequirementRule;
+    use crate::rules::Rule;
 
     use super::*;
-    use crate::rules::*;
 
     #[test]
-    fn esth_deserialize() {
-        let _area = r#"
+    fn deserialize() {
+        let data = r#"
             name: Exercise Science
             type: major
-            catalog: 2014-15
+            catalog: 2015-16
 
             result:
               count: all
               of:
                 - requirement: Core
                 - requirement: Electives
-
 
             requirements:
               Core:
@@ -64,32 +61,28 @@ mod tests {
                     - PSYCH 247
                     - {count: 1, of: [STAT 110, STAT 212, STAT 214]}
         "#;
-    }
 
-    #[test]
-    fn esth_serialize() {
-        let ds = AreaOfStudy {
-            area_name: "Exercise Science".to_owned(),
-            area_type: "major".to_owned(),
-            catalog: "2015-16".to_owned(),
+        let expected_struct = AreaOfStudy {
+            area_name: "Exercise Science".to_string(),
+            area_type: "major".to_string(),
+            catalog: "2015-16".to_string(),
             result: Rule::CountOf(CountOfRule {
                 count: CountOfEnum::All,
                 of: vec![
                     Rule::Requirement(RequirementRule {
-                        requirement: "Core".to_owned(),
+                        requirement: "Core".to_string(),
                         optional: false,
                     }),
                     Rule::Requirement(RequirementRule {
-                        requirement: "Electives".to_owned(),
+                        requirement: "Electives".to_string(),
                         optional: false,
                     }),
                 ],
             }),
             requirements: [
                 (
-                    "Core".to_owned(),
+                    "Core".to_string(),
                     Requirement {
-                        name: "Core".to_owned(),
                         message: None,
                         department_audited: false,
                         contract: false,
@@ -99,35 +92,35 @@ mod tests {
                             count: CountOfEnum::All,
                             of: vec![
                                 Rule::Course(CourseRule {
-                                    course: "BIO 123".to_owned(),
+                                    course: "BIO 143".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "BIO 243".to_owned(),
+                                    course: "BIO 243".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "ESTH 110".to_owned(),
+                                    course: "ESTH 110".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "ESTH 255".to_owned(),
+                                    course: "ESTH 255".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "ESTH 374".to_owned(),
+                                    course: "ESTH 374".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "ESTH 375".to_owned(),
+                                    course: "ESTH 375".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "ESTH 390".to_owned(),
+                                    course: "ESTH 390".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "PSYCH 125".to_owned(),
+                                    course: "PSYCH 125".to_string(),
                                     ..Default::default()
                                 }),
                             ],
@@ -135,9 +128,8 @@ mod tests {
                     },
                 ),
                 (
-                    "Electives".to_owned(),
+                    "Electives".to_string(),
                     Requirement {
-                        name: "Electives".to_owned(),
                         message: None,
                         department_audited: false,
                         contract: false,
@@ -147,42 +139,42 @@ mod tests {
                             count: CountOfEnum::Number(2),
                             of: vec![
                                 Rule::Course(CourseRule {
-                                    course: "ESTH 290".to_owned(),
+                                    course: "ESTH 290".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "ESTH 376".to_owned(),
+                                    course: "ESTH 376".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "PSYCH 230".to_owned(),
+                                    course: "PSYCH 230".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "NEURO 239".to_owned(),
+                                    course: "NEURO 239".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "PSYCH 241".to_owned(),
+                                    course: "PSYCH 241".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
-                                    course: "PSYCH 247".to_owned(),
+                                    course: "PSYCH 247".to_string(),
                                     ..Default::default()
                                 }),
                                 Rule::CountOf(CountOfRule {
                                     count: CountOfEnum::Number(1),
                                     of: vec![
                                         Rule::Course(CourseRule {
-                                            course: "STAT 110".to_owned(),
+                                            course: "STAT 110".to_string(),
                                             ..Default::default()
                                         }),
                                         Rule::Course(CourseRule {
-                                            course: "STAT 212".to_owned(),
+                                            course: "STAT 212".to_string(),
                                             ..Default::default()
                                         }),
                                         Rule::Course(CourseRule {
-                                            course: "STAT 214".to_owned(),
+                                            course: "STAT 214".to_string(),
                                             ..Default::default()
                                         }),
                                     ],
@@ -197,9 +189,191 @@ mod tests {
             .collect(),
         };
 
-        // println!("{:?}", ds);
+        let actual: AreaOfStudy = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected_struct);
+    }
 
-        let _s = serde_yaml::to_string(&ds).unwrap();
-        // println!("{}", s);
+    #[test]
+    fn serialize() {
+        let data = AreaOfStudy {
+            area_name: "Exercise Science".to_string(),
+            area_type: "major".to_string(),
+            catalog: "2015-16".to_string(),
+            result: Rule::CountOf(CountOfRule {
+                count: CountOfEnum::All,
+                of: vec![
+                    Rule::Requirement(RequirementRule {
+                        requirement: "Core".to_string(),
+                        optional: false,
+                    }),
+                    Rule::Requirement(RequirementRule {
+                        requirement: "Electives".to_string(),
+                        optional: false,
+                    }),
+                ],
+            }),
+            requirements: [
+                (
+                    "Core".to_string(),
+                    Requirement {
+                        message: None,
+                        department_audited: false,
+                        contract: false,
+                        save: vec![],
+                        requirements: vec![],
+                        result: Rule::CountOf(CountOfRule {
+                            count: CountOfEnum::All,
+                            of: vec![
+                                Rule::Course(CourseRule {
+                                    course: "BIO 143".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "BIO 243".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 110".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 255".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 374".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 375".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 390".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 125".to_string(),
+                                    ..Default::default()
+                                }),
+                            ],
+                        }),
+                    },
+                ),
+                (
+                    "Electives".to_string(),
+                    Requirement {
+                        message: None,
+                        department_audited: false,
+                        contract: false,
+                        save: vec![],
+                        requirements: vec![],
+                        result: Rule::CountOf(CountOfRule {
+                            count: CountOfEnum::Number(2),
+                            of: vec![
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 290".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "ESTH 376".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 230".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "NEURO 239".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 241".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::Course(CourseRule {
+                                    course: "PSYCH 247".to_string(),
+                                    ..Default::default()
+                                }),
+                                Rule::CountOf(CountOfRule {
+                                    count: CountOfEnum::Number(1),
+                                    of: vec![
+                                        Rule::Course(CourseRule {
+                                            course: "STAT 110".to_string(),
+                                            ..Default::default()
+                                        }),
+                                        Rule::Course(CourseRule {
+                                            course: "STAT 212".to_string(),
+                                            ..Default::default()
+                                        }),
+                                        Rule::Course(CourseRule {
+                                            course: "STAT 214".to_string(),
+                                            ..Default::default()
+                                        }),
+                                    ],
+                                }),
+                            ],
+                        }),
+                    },
+                ),
+            ]
+            .iter()
+            .cloned()
+            .collect(),
+        };
+
+        let expected_str = r#"---
+name: Exercise Science
+type: major
+catalog: 2015-16
+result:
+  count: all
+  of:
+    - requirement: Core
+      optional: false
+    - requirement: Electives
+      optional: false
+requirements:
+  Core:
+    message: ~
+    department_audited: false
+    result:
+      count: all
+      of:
+        - course: BIO 143
+        - course: BIO 243
+        - course: ESTH 110
+        - course: ESTH 255
+        - course: ESTH 374
+        - course: ESTH 375
+        - course: ESTH 390
+        - course: PSYCH 125
+    contract: false
+    save: []
+    requirements: []
+  Electives:
+    message: ~
+    department_audited: false
+    result:
+      count: 2
+      of:
+        - course: ESTH 290
+        - course: ESTH 376
+        - course: PSYCH 230
+        - course: NEURO 239
+        - course: PSYCH 241
+        - course: PSYCH 247
+        - count: 1
+          of:
+            - course: STAT 110
+            - course: STAT 212
+            - course: STAT 214
+    contract: false
+    save: []
+    requirements: []"#;
+
+        let actual = serde_yaml::to_string(&data).unwrap();
+
+        assert_eq!(actual, expected_str);
     }
 }
