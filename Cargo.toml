@@ -9,7 +9,7 @@ serde = "1.0"
 serde_derive = "1.0"
 serde_yaml = "0.8"
 void = "1.0"
-#
+
 #[[bin]]
 #name = "number_or_struct"
 #path = "src/number_or_struct.rs"
