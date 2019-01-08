@@ -1,5 +1,6 @@
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::str::FromStr;
+use void::Void;
 
 #[derive(Default, Debug, PartialEq, Clone, Deserialize)]
 pub struct CourseRule {
@@ -12,7 +13,6 @@ pub struct CourseRule {
     pub international: Option<bool>,
 }
 
-use void::Void;
 impl FromStr for CourseRule {
     // This implementation of `from_str` can never fail, so use the impossible
     // `Void` type as the error type.
