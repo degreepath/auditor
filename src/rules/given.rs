@@ -17,8 +17,9 @@ pub enum GivenRule {
 pub struct GivenAllCoursesRule {
     pub given: String,
     pub what: GivenWhatToGiveEnum,
-    #[serde(rename = "where")]
+    #[serde(default, rename = "where")]
     pub filter: Vec<GivenWhereClause>,
+    #[serde(default)]
     pub limit: Vec<GivenLimiter>,
     #[serde(rename = "do")]
     pub action: DoAction,
