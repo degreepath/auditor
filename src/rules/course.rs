@@ -165,10 +165,10 @@ impl Serialize for CourseRule {
                 lab: None,
                 international: None,
                 course,
-            } => serializer.serialize_str(format!("{}", course).as_str()),
+            } => serializer.serialize_str(course),
             _ => {
                 let mut state = serializer.serialize_struct("CourseRule", 7)?;
-                state.serialize_field("course", &format!("{}", &self.course))?;
+                state.serialize_field("course", &self.course)?;
                 state.serialize_field("term", &self.term)?;
                 state.serialize_field("section", &self.section)?;
                 state.serialize_field("year", &self.year)?;
