@@ -4,7 +4,6 @@ use crate::util;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Requirement {
-    pub name: String,
     pub message: Option<String>,
     #[serde(default = "util::serde_false")]
     pub department_audited: bool,
@@ -25,7 +24,6 @@ mod tests {
     #[test]
     fn serialize() {
         let data = Requirement {
-            name: String::from("Name"),
             message: None,
             department_audited: false,
             result: Rule::Requirement(requirement::RequirementRule {
@@ -36,8 +34,8 @@ mod tests {
             save: vec![],
             requirements: vec![],
         };
+
         let expected = "---
-name: Name
 message: ~
 department_audited: false
 result:
@@ -54,7 +52,6 @@ requirements: []";
     #[test]
     fn deserialize() {
         let data = "---
-name: Name
 message: ~
 epartment_audited: false
 result:
@@ -63,8 +60,8 @@ result:
 contract: false
 save: []
 requirements: []";
+
         let expected = Requirement {
-            name: String::from("Name"),
             message: None,
             department_audited: false,
             result: Rule::Requirement(requirement::RequirementRule {
@@ -83,11 +80,10 @@ requirements: []";
     #[test]
     fn deserialize_with_defaults() {
         let data = "---
-name: Name
 message: ~
 result: {requirement: name, optional: false}";
+
         let expected = Requirement {
-            name: String::from("Name"),
             message: None,
             department_audited: false,
             result: Rule::Requirement(requirement::RequirementRule {
