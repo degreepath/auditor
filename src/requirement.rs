@@ -35,7 +35,16 @@ mod tests {
             save: vec![],
             requirements: vec![],
         };
-        let expected = "---\nname: Name\nmessage: ~\ndepartment_audited: false\nresult:\n  requirement: name\n  optional: false\ncontract: false\nsave: []\nrequirements: []";
+        let expected = "---
+name: Name
+message: ~
+department_audited: false
+result:
+  requirement: name
+  optional: false
+contract: false
+save: []
+requirements: []";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected);
@@ -43,7 +52,16 @@ mod tests {
 
     #[test]
     fn deserialize() {
-        let data = "---\nname: Name\nmessage: ~\ndepartment_audited: false\nresult:\n  requirement: name\n  optional: false\ncontract: false\nsave: []\nrequirements: []";
+        let data = "---
+name: Name
+message: ~
+epartment_audited: false
+result:
+  requirement: name
+  optional: false
+contract: false
+save: []
+requirements: []";
         let expected = Requirement {
             name: String::from("Name"),
             message: None,
@@ -63,7 +81,10 @@ mod tests {
 
     #[test]
     fn deserialize_with_defaults() {
-        let data = "---\nname: Name\nmessage: ~\nresult: {requirement: name, optional: false}\n";
+        let data = "---
+name: Name
+message: ~
+result: {requirement: name, optional: false}";
         let expected = Requirement {
             name: String::from("Name"),
             message: None,
