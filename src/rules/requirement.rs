@@ -17,7 +17,9 @@ mod tests {
             requirement: String::from("Name"),
             optional: false,
         };
-        let expected = "---\nrequirement: Name\noptional: false";
+        let expected = "---
+requirement: Name
+optional: false";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected);
@@ -25,7 +27,9 @@ mod tests {
 
     #[test]
     fn deserialize() {
-        let data = "---\nrequirement: Name\noptional: false";
+        let data = "---
+requirement: Name
+optional: false";
         let expected = RequirementRule {
             requirement: String::from("Name"),
             optional: false,
@@ -37,7 +41,8 @@ mod tests {
 
     #[test]
     fn deserialize_with_defaults() {
-        let data = "---\nrequirement: Name";
+        let data = "---
+requirement: Name";
         let expected = RequirementRule {
             requirement: String::from("Name"),
             optional: false,

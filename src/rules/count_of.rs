@@ -84,47 +84,92 @@ mod tests {
     use super::*;
 
     #[test]
-    fn count_of_parse_any() {
+    fn serialize_count_of_any() {
         let data = CountOfRule {
             count: CountOfEnum::Any,
             of: vec![],
         };
-        let expected_str = "---\ncount: any\nof: []";
+
+        let expected_str = "---
+count: any
+of: []";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected_str);
-
-        let deserialized: CountOfRule = serde_yaml::from_str(&actual).unwrap();
-        assert_eq!(deserialized, data);
     }
 
     #[test]
-    fn count_of_parse_all() {
+    fn deserialize_count_of_any() {
+        let data = "---
+count: any
+of: []";
+
+        let expected_struct = CountOfRule {
+            count: CountOfEnum::Any,
+            of: vec![],
+        };
+
+        let actual: CountOfRule = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected_struct);
+    }
+
+    #[test]
+    fn serialize_count_of_all() {
         let data = CountOfRule {
             count: CountOfEnum::All,
             of: vec![],
         };
-        let expected_str = "---\ncount: all\nof: []";
+
+        let expected_str = "---
+count: all
+of: []";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected_str);
-
-        let deserialized: CountOfRule = serde_yaml::from_str(&actual).unwrap();
-        assert_eq!(deserialized, data);
     }
 
     #[test]
-    fn count_of_parse_number() {
+    fn deserialize_count_of_all() {
+        let data = "---
+count: all
+of: []";
+
+        let expected_struct = CountOfRule {
+            count: CountOfEnum::All,
+            of: vec![],
+        };
+
+        let actual: CountOfRule = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected_struct);
+    }
+
+    #[test]
+    fn serialize_count_of_number() {
         let data = CountOfRule {
             count: CountOfEnum::Number(6),
             of: vec![],
         };
-        let expected_str = "---\ncount: 6\nof: []";
+
+        let expected_str = "---
+count: 6
+of: []";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected_str);
+    }
 
-        let deserialized: CountOfRule = serde_yaml::from_str(&actual).unwrap();
-        assert_eq!(deserialized, data);
+    #[test]
+    fn deserialize_count_of_number() {
+        let data = "---
+count: 6
+of: []";
+
+        let expected_struct = CountOfRule {
+            count: CountOfEnum::Number(6),
+            of: vec![],
+        };
+
+        let actual: CountOfRule = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected_struct);
     }
 }
