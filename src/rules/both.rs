@@ -44,7 +44,7 @@ both:
     optional: false
   - requirement: Name 2
     optional: false";
-        
+
         let expected_struct = BothRule {
             both: (
                 Box::new(Rule::Requirement(requirement::RequirementRule {
@@ -57,7 +57,6 @@ both:
                 })),
             ),
         };
-
 
         let actual: BothRule = serde_yaml::from_str(&input).unwrap();
         assert_eq!(actual, expected_struct);

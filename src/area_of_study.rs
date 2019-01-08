@@ -100,75 +100,35 @@ mod tests {
                             of: vec![
                                 Rule::Course(CourseRule {
                                     course: "BIO 123".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "BIO 243".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "ESTH 110".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "ESTH 255".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "ESTH 374".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "ESTH 375".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "ESTH 390".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "PSYCH 125".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                             ],
                         }),
@@ -188,87 +148,42 @@ mod tests {
                             of: vec![
                                 Rule::Course(CourseRule {
                                     course: "ESTH 290".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "ESTH 376".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "PSYCH 230".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "NEURO 239".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "PSYCH 241".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::Course(CourseRule {
                                     course: "PSYCH 247".to_owned(),
-                                    term: None,
-                                    section: None,
-                                    year: None,
-                                    semester: None,
-                                    lab: None,
-                                    international: None,
+                                    ..Default::default()
                                 }),
                                 Rule::CountOf(CountOfRule {
                                     count: CountOfEnum::Number(1),
                                     of: vec![
                                         Rule::Course(CourseRule {
                                             course: "STAT 110".to_owned(),
-                                            term: None,
-                                            section: None,
-                                            year: None,
-                                            semester: None,
-                                            lab: None,
-                                            international: None,
+                                            ..Default::default()
                                         }),
                                         Rule::Course(CourseRule {
                                             course: "STAT 212".to_owned(),
-                                            term: None,
-                                            section: None,
-                                            year: None,
-                                            semester: None,
-                                            lab: None,
-                                            international: None,
+                                            ..Default::default()
                                         }),
                                         Rule::Course(CourseRule {
                                             course: "STAT 214".to_owned(),
-                                            term: None,
-                                            section: None,
-                                            year: None,
-                                            semester: None,
-                                            lab: None,
-                                            international: None,
+                                            ..Default::default()
                                         }),
                                     ],
                                 }),

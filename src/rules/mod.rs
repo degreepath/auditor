@@ -26,21 +26,12 @@ mod tests {
     fn serialize() {
         let course_a = course::CourseRule {
             course: "ASIAN 101".to_string(),
-            section: None,
-            term: None,
-            semester: None,
-            year: None,
-            international: None,
-            lab: None,
+            ..Default::default()
         };
         let course_b = course::CourseRule {
             course: "ASIAN 101".to_string(),
-            section: None,
             term: Some("2014-1".to_string()),
-            semester: None,
-            year: None,
-            international: None,
-            lab: None,
+            ..Default::default()
         };
         let data = vec![
             Rule::Course(course_a.clone()),
@@ -169,21 +160,12 @@ mod tests {
     rhs: b"#;
         let course_a = course::CourseRule {
             course: "ASIAN 101".to_string(),
-            section: None,
-            term: None,
-            semester: None,
-            year: None,
-            international: None,
-            lab: None,
+            ..Default::default()
         };
         let course_b = course::CourseRule {
             course: "ASIAN 101".to_string(),
-            section: None,
             term: Some("2014-1".to_string()),
-            semester: None,
-            year: None,
-            international: None,
-            lab: None,
+            ..Default::default()
         };
         let expected = vec![
             Rule::Course(course_a.clone()),

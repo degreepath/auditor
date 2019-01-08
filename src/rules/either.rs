@@ -44,7 +44,7 @@ either:
     optional: false
   - requirement: Name 2
     optional: false";
-        
+
         let expected_struct = EitherRule {
             either: (
                 Box::new(Rule::Requirement(requirement::RequirementRule {
@@ -57,7 +57,6 @@ either:
                 })),
             ),
         };
-
 
         let actual: EitherRule = serde_yaml::from_str(&input).unwrap();
         assert_eq!(actual, expected_struct);

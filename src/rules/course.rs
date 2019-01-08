@@ -1,7 +1,7 @@
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[derive(Default, Debug, PartialEq, Clone, Deserialize)]
 pub struct CourseRule {
     pub course: String,
     pub term: Option<String>,
@@ -21,12 +21,7 @@ impl FromStr for CourseRule {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(CourseRule {
             course: String::from(s),
-            term: None,
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            ..Default::default()
         })
     }
 }
@@ -73,13 +68,8 @@ mod tests {
     #[test]
     fn course_rule_serialize() {
         let data = CourseRule {
-            course: "STAT 214".to_owned(),
-            term: None,
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            course: String::from("STAT 214"),
+            ..Default::default()
         };
         let expected_str = "---
 course: STAT 214";
@@ -92,12 +82,8 @@ course: STAT 214";
     fn course_rule_serialize_expanded() {
         let data = CourseRule {
             course: String::from("STAT 214"),
-            term: Some("2014-4".to_owned()),
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            term: Some(String::from("2014-4")),
+            ..Default::default()
         };
         let expected_str = "---
 course: STAT 214
@@ -121,12 +107,7 @@ international: ~";
 course: STAT 214";
         let expected_struct = CourseRule {
             course: "STAT 214".to_owned(),
-            term: None,
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            ..Default::default()
         };
 
         let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
@@ -139,12 +120,7 @@ course: STAT 214";
 - STAT 214";
         let expected_struct = vec![Rule::Course(CourseRule {
             course: "STAT 214".to_owned(),
-            term: None,
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            ..Default::default()
         })];
 
         let deserialized: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
@@ -166,11 +142,7 @@ course: STAT 214";
         let expected_struct = vec![Rule::Course(CourseRule {
             course: "STAT 214".to_owned(),
             term: Some("2014-4".to_owned()),
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            ..Default::default()
         })];
 
         let deserialized: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
@@ -190,11 +162,7 @@ international: ~";
         let expected_struct = CourseRule {
             course: "STAT 214".to_owned(),
             term: Some("2014-4".to_owned()),
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            ..Default::default()
         };
 
         let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
@@ -216,11 +184,7 @@ international: ~
         let expected_struct = CourseRule {
             course: "STAT 214".to_owned(),
             term: Some("2014-4".to_owned()),
-            section: None,
-            year: None,
-            semester: None,
-            lab: None,
-            international: None,
+            ..Default::default()
         };
 
         let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
