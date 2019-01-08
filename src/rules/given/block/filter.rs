@@ -2,11 +2,11 @@
 pub struct Clause {
     pub key: String,
     pub value: String,
-    pub operation: Op,
+    pub operation: Operator,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub enum Op {
-    Eq,
-    NotEq,
+pub enum Operator {
+    EqualTo,
+    NotEqualTo,
 }
