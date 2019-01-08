@@ -4,7 +4,7 @@
 extern crate serde_derive;
 extern crate serde_yaml;
 
-mod area_of_study;
+pub mod area_of_study;
 mod requirement;
 mod rules;
 mod save;
