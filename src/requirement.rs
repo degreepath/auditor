@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::rules::Rule;
 use crate::save::SaveBlock;
 use crate::util;
@@ -13,7 +14,7 @@ pub struct Requirement {
     #[serde(default)]
     pub save: Vec<SaveBlock>,
     #[serde(default)]
-    pub requirements: Vec<Requirement>,
+    pub requirements: HashMap<String, Requirement>,
 }
 
 #[cfg(test)]
@@ -32,7 +33,7 @@ mod tests {
             }),
             contract: false,
             save: vec![],
-            requirements: vec![],
+            requirements: HashMap::new(),
         };
 
         let expected = "---
@@ -43,7 +44,7 @@ result:
   optional: false
 contract: false
 save: []
-requirements: []";
+requirements: {}";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected);
@@ -59,7 +60,7 @@ result:
   optional: false
 contract: false
 save: []
-requirements: []";
+requirements: {}";
 
         let expected = Requirement {
             message: None,
@@ -70,7 +71,7 @@ requirements: []";
             }),
             contract: false,
             save: vec![],
-            requirements: vec![],
+            requirements: HashMap::new(),
         };
 
         let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -92,7 +93,7 @@ result: {requirement: name, optional: false}";
             }),
             contract: false,
             save: vec![],
-            requirements: vec![],
+            requirements: HashMap::new(),
         };
 
         let actual: Requirement = serde_yaml::from_str(&data).unwrap();
