@@ -56,19 +56,15 @@ mod tests {
                     Box::new(Rule::Course(course_b.clone())),
                 ),
             }),
-            Rule::Given(given::GivenRule::AllCourses(given::GivenAllCoursesRule {
+            Rule::Given(given::GivenRule::AllCourses(given::all_courses::Rule {
                 given: "courses".to_string(),
-                what: given::GivenWhatToGiveEnum::Courses,
+                what: given::common::WhatToGive::Courses,
                 filter: vec![],
                 limit: vec![],
-                action: given::DoAction {
-                    command: given::RuleAction::Count,
-                    lhs: "a".to_string(),
-                    operator: given::RuleOperator::LessThan,
-                    rhs: "b".to_string(),
-                },
+                action: "count < 2".parse().unwrap(),
             })),
         ];
+
         let expected = r#"---
 - course: ASIAN 101
 - course: ASIAN 101
@@ -106,10 +102,11 @@ mod tests {
   where: []
   limit: []
   do:
-    command: Count
-    lhs: a
-    operator: "<"
-    rhs: b"#;
+    lhs:
+      Command: Count
+    op: LessThan
+    rhs:
+      Integer: 2"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected);
@@ -154,10 +151,12 @@ mod tests {
   where: []
   limit: []
   do:
-    command: Count
-    lhs: a
-    operator: "<"
-    rhs: b"#;
+    lhs:
+      Command: Count
+    op: LessThan
+    rhs:
+      Integer: 2"#;
+
         let course_a = course::CourseRule {
             course: "ASIAN 101".to_string(),
             ..Default::default()
@@ -190,17 +189,12 @@ mod tests {
                     Box::new(Rule::Course(course_b.clone())),
                 ),
             }),
-            Rule::Given(given::GivenRule::AllCourses(given::GivenAllCoursesRule {
+            Rule::Given(given::GivenRule::AllCourses(given::all_courses::Rule {
                 given: "courses".to_string(),
-                what: given::GivenWhatToGiveEnum::Courses,
+                what: given::common::WhatToGive::Courses,
                 filter: vec![],
                 limit: vec![],
-                action: given::DoAction {
-                    command: given::RuleAction::Count,
-                    lhs: "a".to_string(),
-                    operator: given::RuleOperator::LessThan,
-                    rhs: "b".to_string(),
-                },
+                action: "count < 2".parse().unwrap(),
             })),
         ];
 
