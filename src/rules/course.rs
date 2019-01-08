@@ -182,11 +182,11 @@ impl Serialize for CourseRule {
 }
 
 mod test {
-    use crate::rules::Rule;
     use super::CourseRule;
+    use crate::rules::Rule;
 
     #[test]
-    fn course_rule_serialize_simple() {
+    fn course_rule_serialize() {
         let data = CourseRule {
             course: "STAT 214".to_owned(),
             term: None,
@@ -202,23 +202,28 @@ mod test {
         assert_eq!(actual, expected_str);
     }
 
-    /*
     #[test]
     fn course_rule_serialize_expanded() {
-        let data = CourseRule { course: String::from("STAT 214"), term: Some("2014-4".to_owned()), section: None, year: None, semester: None, lab: None, international: None };
+        let data = CourseRule {
+            course: String::from("STAT 214"),
+            term: Some("2014-4".to_owned()),
+            section: None,
+            year: None,
+            semester: None,
+            lab: None,
+            international: None,
+        };
         let expected_str = "---\ncourse: STAT 214\nterm: 2014-4\nsection: ~\nyear: ~\nsemester: ~\nlab: ~\ninternational: ~";
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected_str);
 
         let deserialized: CourseRule = serde_yaml::from_str(&actual).unwrap();
-        println!("{:?}", deserialized);
         assert_eq!(deserialized, data);
     }
-    */
 
     #[test]
-    fn course_rule_deserialize_simple_ish() {
+    fn course_rule_deserialize_expanded() {
         let data = "---\ncourse: STAT 214";
         let expected_struct = CourseRule {
             course: "STAT 214".to_owned(),

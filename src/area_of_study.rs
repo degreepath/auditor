@@ -16,7 +16,7 @@ pub struct AreaOfStudy {
 mod test {
     extern crate serde_yaml;
 
-    use crate::rules::count_of::{CountOfRule, CountOfEnum};
+    use crate::rules::count_of::{CountOfEnum, CountOfRule};
     use crate::rules::course::CourseRule;
     use crate::rules::requirement::RequirementRule;
 
