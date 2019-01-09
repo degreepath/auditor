@@ -260,12 +260,7 @@ given: areas of study
 limit: []
 where: {}
 what: areas of study
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let expected = Rule {
             given: Given::AreasOfStudy,
