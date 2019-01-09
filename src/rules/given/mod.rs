@@ -1,8 +1,8 @@
+use crate::rules::{course, requirement};
+
 pub mod action;
 pub mod filter;
 pub mod limit;
-
-use crate::rules::{course, requirement};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Rule {
@@ -34,7 +34,7 @@ pub enum Given {
     NamedVariable { save: action::NamedVariable },
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
 pub enum What {
     #[serde(rename = "courses")]
     Courses,
@@ -52,20 +52,20 @@ pub enum What {
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	use std::collections::HashMap;
+    use super::*;
+    use std::collections::HashMap;
 
-	#[test]
-	fn serialize_all_courses() {
-		let data = Rule {
-			given: Given::AllCourses,
-			limit: vec![],
-			filter: HashMap::new(),
-			what: What::Courses,
-			action: "count > 2".parse().unwrap(),
-		};
+    #[test]
+    fn serialize_all_courses() {
+        let data = Rule {
+            given: Given::AllCourses,
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
 
-		let expected = r#"---
+        let expected = r#"---
 given: courses
 limit: []
 where: {}
@@ -77,35 +77,267 @@ do:
   rhs:
     Integer: 2"#;
 
-		let actual = serde_yaml::to_string(&data).unwrap();
+        let actual = serde_yaml::to_string(&data).unwrap();
 
-		assert_eq!(actual, expected);
-	}
+        assert_eq!(actual, expected);
+    }
 
-	#[test]
-	fn deserialize_all_courses() {}
+    #[test]
+    fn deserialize_all_courses() {
+        let data = r#"---
+given: courses
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
-	#[test]
-	fn serialize_these_courses() {}
+        let expected = Rule {
+            given: Given::AllCourses,
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
 
-	#[test]
-	fn deserialize_these_courses() {}
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
-	#[test]
-	fn serialize_these_requirements() {}
+        assert_eq!(actual, expected);
+    }
 
-	#[test]
-	fn deserialize_these_requirements() {}
+    #[test]
+    fn serialize_these_courses() {
+        let data = Rule {
+            given: Given::TheseCourses { courses: vec![] },
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
 
-	#[test]
-	fn serialize_areas() {}
+        let expected = r#"---
+given: these courses
+courses: []
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
-	#[test]
-	fn deserialize_areas() {}
+        let actual = serde_yaml::to_string(&data).unwrap();
 
-	#[test]
-	fn serialize_save() {}
+        assert_eq!(actual, expected);
+    }
 
-	#[test]
-	fn deserialize_save() {}
+    #[test]
+    fn deserialize_these_courses() {
+        let data = r#"---
+given: these courses
+courses: []
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+        let expected = Rule {
+            given: Given::TheseCourses { courses: vec![] },
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn serialize_these_requirements() {
+        let data = Rule {
+            given: Given::TheseRequirements {
+                requirements: vec![],
+            },
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
+
+        let expected = r#"---
+given: these requirements
+requirements: []
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+        let actual = serde_yaml::to_string(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_these_requirements() {
+        let data = r#"---
+given: these requirements
+requirements: []
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+        let expected = Rule {
+            given: Given::TheseRequirements {
+                requirements: vec![],
+            },
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn serialize_areas() {
+        let data = Rule {
+            given: Given::AreasOfStudy,
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::AreasOfStudy,
+            action: "count > 2".parse().unwrap(),
+        };
+
+        let expected = r#"---
+given: areas of study
+limit: []
+where: {}
+what: areas of study
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+        let actual = serde_yaml::to_string(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_areas() {
+        let data = r#"---
+given: areas of study
+limit: []
+where: {}
+what: areas of study
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+        let expected = Rule {
+            given: Given::AreasOfStudy,
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::AreasOfStudy,
+            action: "count > 2".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn serialize_save() {
+        let data = Rule {
+            given: Given::NamedVariable {
+                save: action::NamedVariable::new("my_var"),
+            },
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
+
+        let expected = r#"---
+given: save
+save:
+  name: my_var
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+        let actual = serde_yaml::to_string(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_save() {
+        let data = r#"---
+given: save
+save:
+  name: my_var
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+        let expected = Rule {
+            given: Given::NamedVariable {
+                save: action::NamedVariable::new("my_var"),
+            },
+            limit: vec![],
+            filter: HashMap::new(),
+            what: What::Courses,
+            action: "count > 2".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
 }

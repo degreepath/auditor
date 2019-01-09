@@ -149,7 +149,7 @@ impl FromStr for Command {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct NamedVariable {
-    name: String,
+    pub name: String,
 }
 
 impl NamedVariable {

@@ -20,8 +20,8 @@ pub enum Rule {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use super::*;
+    use std::collections::HashMap;
 
     #[test]
     fn deserialize_simple_course_in_array() {
