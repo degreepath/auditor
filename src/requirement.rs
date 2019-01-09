@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use crate::rules::Rule;
 use crate::save::SaveBlock;
 use crate::util;
+use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Requirement {
