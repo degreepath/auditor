@@ -8,7 +8,7 @@ pub struct Requirement {
     pub message: Option<String>,
     #[serde(default = "util::serde_false")]
     pub department_audited: bool,
-    pub result: Rule,
+    pub result: Option<Rule>,
     #[serde(default = "util::serde_false")]
     pub contract: bool,
     #[serde(default)]
@@ -27,10 +27,10 @@ mod tests {
         let data = Requirement {
             message: None,
             department_audited: false,
-            result: Rule::Requirement(requirement::RequirementRule {
+            result: Some(Rule::Requirement(requirement::RequirementRule {
                 requirement: String::from("name"),
                 optional: false,
-            }),
+            })),
             contract: false,
             save: vec![],
             requirements: HashMap::new(),
@@ -65,10 +65,10 @@ requirements: {}";
         let expected = Requirement {
             message: None,
             department_audited: false,
-            result: Rule::Requirement(requirement::RequirementRule {
+            result: Some(Rule::Requirement(requirement::RequirementRule {
                 requirement: String::from("name"),
                 optional: false,
-            }),
+            })),
             contract: false,
             save: vec![],
             requirements: HashMap::new(),
@@ -87,10 +87,28 @@ result: {requirement: name, optional: false}";
         let expected = Requirement {
             message: None,
             department_audited: false,
-            result: Rule::Requirement(requirement::RequirementRule {
+            result: Some(Rule::Requirement(requirement::RequirementRule {
                 requirement: String::from("name"),
                 optional: false,
-            }),
+            })),
+            contract: false,
+            save: vec![],
+            requirements: HashMap::new(),
+        };
+
+        let actual: Requirement = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_message_only() {
+        let data = "---
+message: a message";
+
+        let expected = Requirement {
+            message: Some("a message".to_string()),
+            department_audited: false,
+            result: None,
             contract: false,
             save: vec![],
             requirements: HashMap::new(),

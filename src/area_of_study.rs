@@ -88,7 +88,7 @@ mod tests {
                         contract: false,
                         save: vec![],
                         requirements: HashMap::new(),
-                        result: Rule::CountOf(CountOfRule {
+                        result: Some(Rule::CountOf(CountOfRule {
                             count: CountOfEnum::All,
                             of: vec![
                                 Rule::Course(CourseRule {
@@ -124,7 +124,7 @@ mod tests {
                                     ..Default::default()
                                 }),
                             ],
-                        }),
+                        })),
                     },
                 ),
                 (
@@ -135,7 +135,7 @@ mod tests {
                         contract: false,
                         save: vec![],
                         requirements: HashMap::new(),
-                        result: Rule::CountOf(CountOfRule {
+                        result: Some(Rule::CountOf(CountOfRule {
                             count: CountOfEnum::Number(2),
                             of: vec![
                                 Rule::Course(CourseRule {
@@ -180,7 +180,7 @@ mod tests {
                                     ],
                                 }),
                             ],
-                        }),
+                        })),
                     },
                 ),
             ]
