@@ -15,7 +15,7 @@ pub enum Rule {
     CountOf(count_of::CountOfRule),
     Both(both::BothRule),
     Either(either::EitherRule),
-    Given(given::GivenRule),
+    Given(given::Rule),
 }
 
 #[cfg(test)]
@@ -56,13 +56,13 @@ mod tests {
                     Box::new(Rule::Course(course_b.clone())),
                 ),
             }),
-            Rule::Given(given::GivenRule::AllCourses(given::all_courses::Rule {
-                given: "courses".to_string(),
-                what: given::common::WhatToGive::Courses,
+            Rule::Given(given::Rule {
+                given: given::Given::AllCourses,
+                what: given::What::Courses,
                 filter: vec![],
                 limit: vec![],
                 action: "count < 2".parse().unwrap(),
-            })),
+            }),
         ];
 
         let expected = r#"---
@@ -98,7 +98,7 @@ mod tests {
       lab: ~
       international: ~
 - given: courses
-  what: Courses
+  what: courses
   where: []
   limit: []
   do:
@@ -147,7 +147,7 @@ mod tests {
       lab: ~
       international: ~
 - given: courses
-  what: Courses
+  what: courses
   where: []
   limit: []
   do:
@@ -189,13 +189,13 @@ mod tests {
                     Box::new(Rule::Course(course_b.clone())),
                 ),
             }),
-            Rule::Given(given::GivenRule::AllCourses(given::all_courses::Rule {
-                given: "courses".to_string(),
-                what: given::common::WhatToGive::Courses,
+            Rule::Given(given::Rule {
+                given: given::Given::AllCourses,
+                what: given::What::Courses,
                 filter: vec![],
                 limit: vec![],
                 action: "count < 2".parse().unwrap(),
-            })),
+            }),
         ];
 
         let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
