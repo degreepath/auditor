@@ -62,15 +62,15 @@ impl Serialize for CourseRule {
 
 #[cfg(test)]
 mod tests {
-    use super::CourseRule;
-    use crate::rules::Rule;
+    use super::*;
 
     #[test]
-    fn course_rule_serialize() {
+    fn serialize() {
         let data = CourseRule {
             course: String::from("STAT 214"),
             ..Default::default()
         };
+
         let expected_str = "---
 course: STAT 214";
 
@@ -79,12 +79,13 @@ course: STAT 214";
     }
 
     #[test]
-    fn course_rule_serialize_expanded() {
+    fn serialize_expanded() {
         let data = CourseRule {
             course: String::from("STAT 214"),
             term: Some(String::from("2014-4")),
             ..Default::default()
         };
+
         let expected_str = "---
 course: STAT 214
 term: 2014-4
@@ -102,9 +103,10 @@ international: ~";
     }
 
     #[test]
-    fn course_rule_deserialize_labelled() {
+    fn deserialize_labelled() {
         let data = "---
 course: STAT 214";
+
         let expected_struct = CourseRule {
             course: "STAT 214".to_owned(),
             ..Default::default()
@@ -115,42 +117,7 @@ course: STAT 214";
     }
 
     #[test]
-    fn course_rule_deserialize_simple() {
-        let data = "---
-- STAT 214";
-        let expected_struct = vec![Rule::Course(CourseRule {
-            course: "STAT 214".to_owned(),
-            ..Default::default()
-        })];
-
-        let deserialized: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
-        assert_eq!(deserialized, expected_struct);
-    }
-
-    #[test]
-    fn course_rule_deserialize_expanded() {
-        let data = "
----
-- course: STAT 214
-  term: 2014-4
-  section: ~
-  year: ~
-  semester: ~
-  lab: ~
-  international: ~
-";
-        let expected_struct = vec![Rule::Course(CourseRule {
-            course: "STAT 214".to_owned(),
-            term: Some("2014-4".to_owned()),
-            ..Default::default()
-        })];
-
-        let deserialized: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
-        assert_eq!(deserialized, expected_struct);
-    }
-
-    #[test]
-    fn course_rule_deserialize_expanded_explicit() {
+    fn deserialize_expanded() {
         let data = "---
 course: STAT 214
 term: 2014-4
@@ -159,28 +126,7 @@ year: ~
 semester: ~
 lab: ~
 international: ~";
-        let expected_struct = CourseRule {
-            course: "STAT 214".to_owned(),
-            term: Some("2014-4".to_owned()),
-            ..Default::default()
-        };
 
-        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
-        assert_eq!(deserialized, expected_struct);
-    }
-
-    #[test]
-    fn course_rule_deserialize_expanded_explicit_department_and_course_failure() {
-        let data = r#"
----
-course: STAT 214
-term: 2014-4
-section: ~
-year: ~
-semester: ~
-lab: ~
-international: ~
-       "#;
         let expected_struct = CourseRule {
             course: "STAT 214".to_owned(),
             term: Some("2014-4".to_owned()),

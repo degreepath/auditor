@@ -20,7 +20,22 @@ pub enum Rule {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
     use super::*;
+
+    #[test]
+    fn deserialize_simple_course_in_array() {
+        let data = "---
+- STAT 214";
+
+        let expected_struct = vec![Rule::Course(course::CourseRule {
+            course: "STAT 214".to_owned(),
+            ..Default::default()
+        })];
+
+        let deserialized: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(deserialized, expected_struct);
+    }
 
     #[test]
     fn serialize() {
@@ -59,7 +74,7 @@ mod tests {
             Rule::Given(given::Rule {
                 given: given::Given::AllCourses,
                 what: given::What::Courses,
-                filter: vec![],
+                filter: HashMap::new(),
                 limit: vec![],
                 action: "count < 2".parse().unwrap(),
             }),
@@ -98,9 +113,9 @@ mod tests {
       lab: ~
       international: ~
 - given: courses
-  what: courses
-  where: []
   limit: []
+  where: {}
+  what: courses
   do:
     lhs:
       Command: Count
@@ -148,7 +163,7 @@ mod tests {
       international: ~
 - given: courses
   what: courses
-  where: []
+  where: {}
   limit: []
   do:
     lhs:
@@ -192,7 +207,7 @@ mod tests {
             Rule::Given(given::Rule {
                 given: given::Given::AllCourses,
                 what: given::What::Courses,
-                filter: vec![],
+                filter: HashMap::new(),
                 limit: vec![],
                 action: "count < 2".parse().unwrap(),
             }),
