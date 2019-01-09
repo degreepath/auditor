@@ -1,12 +1,24 @@
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct Clause {
-    pub key: String,
-    pub value: String,
-    pub operation: Operator,
-}
+use std::collections::HashMap;
+use serde_yaml::Value as YamlValue;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub enum Operator {
-    EqualTo,
-    NotEqualTo,
+pub type Value = YamlValue;
+pub type Clause = HashMap<String, Value>;
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn serialize() {
+		let mut data = Clause::new();
+		data.insert("level".to_string(), 100.into());
+
+		let expected = r#"---
+level: 100"#;
+
+		let actual = serde_yaml::to_string(&data).unwrap();
+
+		assert_eq!(actual, expected);
+
+	}
 }

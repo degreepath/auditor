@@ -8,10 +8,10 @@ use crate::rules::{course, requirement};
 pub struct Rule {
     #[serde(flatten)]
     pub given: Given,
-    #[serde(default, rename = "where")]
-    pub filter: Vec<filter::Clause>,
     #[serde(default)]
     pub limit: Vec<limit::Limiter>,
+    #[serde(default, rename = "where")]
+    pub filter: filter::Clause,
     pub what: What,
     #[serde(rename = "do")]
     pub action: action::Action,
@@ -48,4 +48,64 @@ pub enum What {
     Grades,
     #[serde(rename = "areas of study")]
     AreasOfStudy,
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use std::collections::HashMap;
+
+	#[test]
+	fn serialize_all_courses() {
+		let data = Rule {
+			given: Given::AllCourses,
+			limit: vec![],
+			filter: HashMap::new(),
+			what: What::Courses,
+			action: "count > 2".parse().unwrap(),
+		};
+
+		let expected = r#"---
+given: courses
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
+
+		let actual = serde_yaml::to_string(&data).unwrap();
+
+		assert_eq!(actual, expected);
+	}
+
+	#[test]
+	fn deserialize_all_courses() {}
+
+	#[test]
+	fn serialize_these_courses() {}
+
+	#[test]
+	fn deserialize_these_courses() {}
+
+	#[test]
+	fn serialize_these_requirements() {}
+
+	#[test]
+	fn deserialize_these_requirements() {}
+
+	#[test]
+	fn serialize_areas() {}
+
+	#[test]
+	fn deserialize_areas() {}
+
+	#[test]
+	fn serialize_save() {}
+
+	#[test]
+	fn deserialize_save() {}
 }
