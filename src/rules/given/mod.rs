@@ -1,5 +1,5 @@
-use crate::util::string_or_struct;
 use crate::rules::{course, requirement};
+use crate::util;
 
 pub mod action;
 pub mod filter;
@@ -14,7 +14,7 @@ pub struct Rule {
     #[serde(default, rename = "where")]
     pub filter: filter::Clause,
     pub what: What,
-    #[serde(rename = "do", deserialize_with="string_or_struct")]
+    #[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
     pub action: action::Action,
 }
 
