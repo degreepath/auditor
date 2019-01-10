@@ -44,6 +44,8 @@ pub enum What {
     DistinctCourses,
     #[serde(rename = "credits")]
     Credits,
+    #[serde(rename = "departments")]
+    Departments,
     #[serde(rename = "terms")]
     Terms,
     #[serde(rename = "grades")]
