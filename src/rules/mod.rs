@@ -74,8 +74,8 @@ mod tests {
             Rule::Given(given::Rule {
                 given: given::Given::AllCourses,
                 what: given::What::Courses,
-                filter: HashMap::new(),
-                limit: vec![],
+                filter: Some(HashMap::new()),
+                limit: Some(vec![]),
                 action: "count < 2".parse().unwrap(),
             }),
         ];
@@ -207,8 +207,8 @@ mod tests {
             Rule::Given(given::Rule {
                 given: given::Given::AllCourses,
                 what: given::What::Courses,
-                filter: HashMap::new(),
-                limit: vec![],
+                filter: Some(HashMap::new()),
+                limit: Some(vec![]),
                 action: "count < 2".parse().unwrap(),
             }),
         ];

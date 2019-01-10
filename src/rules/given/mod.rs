@@ -10,9 +10,9 @@ pub struct Rule {
     #[serde(flatten)]
     pub given: Given,
     #[serde(default)]
-    pub limit: Vec<limit::Limiter>,
+    pub limit: Option<Vec<limit::Limiter>>,
     #[serde(default, rename = "where")]
-    pub filter: filter::Clause,
+    pub filter: Option<filter::Clause>,
     pub what: What,
     #[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
     pub action: action::Action,
@@ -31,8 +31,9 @@ pub enum Given {
     },
     #[serde(rename = "areas of study")]
     AreasOfStudy,
+    // #[serde(rename = "save", deserialize_with = "util::string_or_struct")]
     #[serde(rename = "save")]
-    NamedVariable { save: action::NamedVariable },
+    NamedVariable { save: String },
 }
 
 #[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
@@ -60,8 +61,8 @@ mod tests {
     fn serialize_all_courses() {
         let data = Rule {
             given: Given::AllCourses,
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -99,8 +100,8 @@ do:
 
         let expected = Rule {
             given: Given::AllCourses,
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -114,8 +115,8 @@ do:
     fn serialize_these_courses() {
         let data = Rule {
             given: Given::TheseCourses { courses: vec![] },
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -155,8 +156,8 @@ do:
 
         let expected = Rule {
             given: Given::TheseCourses { courses: vec![] },
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -172,8 +173,8 @@ do:
             given: Given::TheseRequirements {
                 requirements: vec![],
             },
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -215,8 +216,8 @@ do:
             given: Given::TheseRequirements {
                 requirements: vec![],
             },
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -230,8 +231,8 @@ do:
     fn serialize_areas() {
         let data = Rule {
             given: Given::AreasOfStudy,
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::AreasOfStudy,
             action: "count > 2".parse().unwrap(),
         };
@@ -264,8 +265,8 @@ do: count > 2"#;
 
         let expected = Rule {
             given: Given::AreasOfStudy,
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::AreasOfStudy,
             action: "count > 2".parse().unwrap(),
         };
@@ -279,18 +280,17 @@ do: count > 2"#;
     fn serialize_save() {
         let data = Rule {
             given: Given::NamedVariable {
-                save: action::NamedVariable::new("my_var"),
+                save: String::from("$my_var"),
             },
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
 
         let expected = r#"---
 given: save
-save:
-  name: my_var
+save: $my_var
 limit: []
 where: {}
 what: courses
@@ -310,8 +310,7 @@ do:
     fn deserialize_save() {
         let data = r#"---
 given: save
-save:
-  name: my_var
+save: $my_var
 limit: []
 where: {}
 what: courses
@@ -324,12 +323,35 @@ do:
 
         let expected = Rule {
             given: Given::NamedVariable {
-                save: action::NamedVariable::new("my_var"),
+                save: String::from("$my_var"),
             },
-            limit: vec![],
-            filter: HashMap::new(),
+            limit: Some(vec![]),
+            filter: Some(HashMap::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_save_ba_interim() {
+        let data = r#"---
+given: save
+save: $interim_courses
+what: courses
+do: count >= 3"#;
+
+        let expected = Rule {
+            given: Given::NamedVariable {
+                save: String::from("$interim_courses"),
+            },
+            limit: None,
+            filter: None,
+            what: What::Courses,
+            action: "count >= 3".parse().unwrap(),
         };
 
         let actual: Rule = serde_yaml::from_str(&data).unwrap();

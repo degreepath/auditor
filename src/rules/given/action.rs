@@ -102,7 +102,7 @@ impl FromStr for Operator {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Value {
     Command(Command),
-    Variable(NamedVariable),
+    Variable(String),
     String(String),
     Integer(u64),
     Float(f64),
@@ -112,8 +112,8 @@ impl FromStr for Value {
     type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let Ok(var) = s.parse::<NamedVariable>() {
-            return Ok(Value::Variable(var));
+        if s.starts_with("$") {
+            return Ok(Value::Variable(s.to_string()));
         }
 
         if let Ok(num) = s.parse::<u64>() {
@@ -156,32 +156,6 @@ impl FromStr for Command {
             "maximum" => Ok(Command::Maximum),
             "difference" => Ok(Command::Difference),
             _ => Err(ParseError::UnknownCommand),
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct NamedVariable {
-    pub name: String,
-}
-
-impl NamedVariable {
-    pub fn new(name: &str) -> NamedVariable {
-        NamedVariable {
-            name: name.to_string(),
-        }
-    }
-}
-
-impl FromStr for NamedVariable {
-    type Err = ParseError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let s = s.trim();
-
-        match s.starts_with("$") {
-            true => Ok(NamedVariable::new(&s.replacen("$", "", 1))),
-            false => Err(ParseError::InvalidVariableName),
         }
     }
 }
@@ -312,9 +286,9 @@ mod tests {
         let actual: Action = "$first_btst < $last_ein".parse().unwrap();
 
         let expected_struct = Action {
-            lhs: Value::Variable(NamedVariable::new("first_btst")),
+            lhs: Value::Variable(String::from("$first_btst")),
             op: Some(Operator::LessThan),
-            rhs: Some(Value::Variable(NamedVariable::new("last_ein"))),
+            rhs: Some(Value::Variable(String::from("$last_ein"))),
         };
 
         assert_eq!(actual, expected_struct);
