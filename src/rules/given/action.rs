@@ -59,7 +59,7 @@ impl FromStr for Action {
                     rhs: Some(rhs),
                 })
             }
-            _ => return Err(ParseError::InvalidAction),
+            _ => Err(ParseError::InvalidAction),
         }
     }
 }
@@ -88,7 +88,7 @@ impl FromStr for Operator {
     type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.as_ref() {
+        match s {
             "<" => Ok(Operator::LessThan),
             "<=" => Ok(Operator::LessThanEqualTo),
             "=" => Ok(Operator::EqualTo),
@@ -112,7 +112,7 @@ impl FromStr for Value {
     type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s.starts_with("$") {
+        if s.starts_with('$') {
             return Ok(Value::Variable(s.to_string()));
         }
 
