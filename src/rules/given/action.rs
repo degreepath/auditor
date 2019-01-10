@@ -1,3 +1,5 @@
+use crate::util;
+use serde::de::{Deserialize, Deserializer};
 use std::error::Error;
 use std::fmt;
 use std::str::FromStr;
@@ -60,6 +62,17 @@ impl FromStr for Action {
             _ => return Err(ParseError::InvalidAction),
         }
     }
+}
+
+pub fn option_action<'de, D>(deserializer: D) -> Result<Option<Action>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] Action);
+
+    let v = Option::deserialize(deserializer)?;
+    Ok(v.map(|Wrapper(a)| a))
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
