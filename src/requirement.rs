@@ -22,8 +22,8 @@ pub struct Requirement {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::rules::{given, requirement};
     use crate::rules;
+    use crate::rules::{given, requirement};
 
     #[test]
     fn serialize() {
@@ -136,7 +136,10 @@ result:
     - {given: save, save: $interim_courses, what: courses, do: count >= 3}";
 
         let mut expected_filter = given::filter::Clause::new();
-        expected_filter.insert("semester".to_string(), serde_yaml::Value::String("Interim".to_string()));
+        expected_filter.insert(
+            "semester".to_string(),
+            serde_yaml::Value::String("Interim".to_string()),
+        );
 
         let expected = Requirement {
             message: None,
@@ -144,34 +147,37 @@ result:
             result: Some(Rule::Both(rules::both::BothRule {
                 both: (
                     Box::new(Rule::Given(given::Rule {
-                        given: given::Given::NamedVariable { save: "$interim_courses".to_string() },
+                        given: given::Given::NamedVariable {
+                            save: "$interim_courses".to_string(),
+                        },
                         limit: None,
                         filter: None,
                         what: given::What::Credits,
-                        action:  "sum >= 3".parse().unwrap()
+                        action: "sum >= 3".parse().unwrap(),
                     })),
                     Box::new(Rule::Given(given::Rule {
-                        given: given::Given::NamedVariable { save: "$interim_courses".to_string() },
+                        given: given::Given::NamedVariable {
+                            save: "$interim_courses".to_string(),
+                        },
                         limit: None,
                         filter: None,
                         what: given::What::Courses,
-                        action: "count >= 3".parse().unwrap()
-                    }))
-                )
+                        action: "count >= 3".parse().unwrap(),
+                    })),
+                ),
             })),
             contract: false,
-            save: [
-                SaveBlock {
-                    name: "$interim_courses".to_string(),
-                    label: "Interim Courses".to_string(),
-                    given: given::Given::AllCourses,
-                    limit: [].to_vec(),
-                    filter: expected_filter,
-                    what: given::What::Courses,
-                    action: None
-                }
-            ].to_vec(),
-            requirements: HashMap::new()
+            save: [SaveBlock {
+                name: "$interim_courses".to_string(),
+                label: "Interim Courses".to_string(),
+                given: given::Given::AllCourses,
+                limit: [].to_vec(),
+                filter: expected_filter,
+                what: given::What::Courses,
+                action: None,
+            }]
+            .to_vec(),
+            requirements: HashMap::new(),
         };
 
         let actual: Requirement = serde_yaml::from_str(&data).unwrap();
