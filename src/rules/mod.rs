@@ -1,3 +1,4 @@
+pub mod action;
 pub mod both;
 pub mod count_of;
 pub mod course;
@@ -16,6 +17,7 @@ pub enum Rule {
     Both(both::BothRule),
     Either(either::EitherRule),
     Given(given::Rule),
+    Do(action::Rule),
 }
 
 #[cfg(test)]
@@ -29,7 +31,7 @@ mod tests {
 - STAT 214";
 
         let expected_struct = vec![Rule::Course(course::CourseRule {
-            course: "STAT 214".to_owned(),
+            course: "STAT 214".to_string(),
             ..Default::default()
         })];
 
@@ -78,6 +80,9 @@ mod tests {
                 limit: Some(vec![]),
                 action: "count < 2".parse().unwrap(),
             }),
+            Rule::Do(action::Rule {
+                action: "$a < $b".parse().unwrap(),
+            }),
         ];
 
         let expected = r#"---
@@ -121,7 +126,13 @@ mod tests {
       Command: Count
     op: LessThan
     rhs:
-      Integer: 2"#;
+      Integer: 2
+- do:
+    lhs:
+      Variable: $a
+    op: LessThan
+    rhs:
+      Variable: $b"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected);
@@ -170,7 +181,13 @@ mod tests {
       Command: Count
     op: LessThan
     rhs:
-      Integer: 2"#;
+      Integer: 2
+- do:
+    lhs:
+      Variable: $a
+    op: LessThan
+    rhs:
+      Variable: $b"#;
 
         let course_a = course::CourseRule {
             course: "ASIAN 101".to_string(),
@@ -210,6 +227,84 @@ mod tests {
                 filter: Some(HashMap::new()),
                 limit: Some(vec![]),
                 action: "count < 2".parse().unwrap(),
+            }),
+            Rule::Do(action::Rule {
+                action: "$a < $b".parse().unwrap(),
+            }),
+        ];
+
+        let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_shorthands() {
+        let data = r#"---
+- ASIAN 101
+- course: ASIAN 101
+- {course: ASIAN 102, term: 2014-1}
+- requirement: Name 1
+- {requirement: Name 2, optional: true}
+- count: 1
+  of:
+    - ASIAN 101
+- both:
+    - ASIAN 101
+    - {course: ASIAN 102, term: 2014-1}
+- either:
+    - ASIAN 101
+    - {course: ASIAN 102, term: 2014-1}
+- given: courses
+  what: courses
+  do: count < 2
+- do: $a < $b"#;
+
+        let course_a = course::CourseRule {
+            course: "ASIAN 101".to_string(),
+            ..Default::default()
+        };
+        let course_b = course::CourseRule {
+            course: "ASIAN 102".to_string(),
+            term: Some("2014-1".to_string()),
+            ..Default::default()
+        };
+        let expected = vec![
+            Rule::Course(course_a.clone()),
+            Rule::Course(course_a.clone()),
+            Rule::Course(course_b.clone()),
+            Rule::Requirement(requirement::RequirementRule {
+                requirement: "Name 1".to_string(),
+                optional: false,
+            }),
+            Rule::Requirement(requirement::RequirementRule {
+                requirement: "Name 2".to_string(),
+                optional: true,
+            }),
+            Rule::CountOf(count_of::CountOfRule {
+                count: count_of::CountOfEnum::Number(1),
+                of: vec![Rule::Course(course_a.clone())],
+            }),
+            Rule::Both(both::BothRule {
+                both: (
+                    Box::new(Rule::Course(course_a.clone())),
+                    Box::new(Rule::Course(course_b.clone())),
+                ),
+            }),
+            Rule::Either(either::EitherRule {
+                either: (
+                    Box::new(Rule::Course(course_a.clone())),
+                    Box::new(Rule::Course(course_b.clone())),
+                ),
+            }),
+            Rule::Given(given::Rule {
+                given: given::Given::AllCourses,
+                what: given::What::Courses,
+                filter: None,
+                limit: None,
+                action: "count < 2".parse().unwrap(),
+            }),
+            Rule::Do(action::Rule {
+                action: "$a < $b".parse().unwrap(),
             }),
         ];
 
