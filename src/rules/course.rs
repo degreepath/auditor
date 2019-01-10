@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn serialize() {
         let data = CourseRule {
-            course: String::from("STAT 214"),
+            course: "STAT 214".to_string(),
             ..Default::default()
         };
 
@@ -81,8 +81,8 @@ course: STAT 214";
     #[test]
     fn serialize_expanded() {
         let data = CourseRule {
-            course: String::from("STAT 214"),
-            term: Some(String::from("2014-4")),
+            course: "STAT 214".to_string(),
+            term: Some("2014-4".to_string()),
             ..Default::default()
         };
 
@@ -108,7 +108,7 @@ international: ~";
 course: STAT 214";
 
         let expected_struct = CourseRule {
-            course: "STAT 214".to_owned(),
+            course: "STAT 214".to_string(),
             ..Default::default()
         };
 
@@ -128,8 +128,8 @@ lab: ~
 international: ~";
 
         let expected_struct = CourseRule {
-            course: "STAT 214".to_owned(),
-            term: Some("2014-4".to_owned()),
+            course: "STAT 214".to_string(),
+            term: Some("2014-4".to_string()),
             ..Default::default()
         };
 
