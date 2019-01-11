@@ -8,6 +8,8 @@ pub struct AreaOfStudy {
     pub area_name: String,
     #[serde(rename = "type")]
     pub area_type: String,
+    #[serde(rename = "degree")]
+    pub for_degree: String,
     pub catalog: String,
     pub result: Rule,
     pub requirements: HashMap<String, Requirement>,
@@ -27,6 +29,7 @@ mod tests {
         let data = r#"
             name: Exercise Science
             type: major
+            degree: "Bachelor of Arts"
             catalog: 2015-16
 
             result:
@@ -65,6 +68,7 @@ mod tests {
         let expected_struct = AreaOfStudy {
             area_name: "Exercise Science".to_string(),
             area_type: "major".to_string(),
+            for_degree: "Bachelor of Arts".to_string(),
             catalog: "2015-16".to_string(),
             result: Rule::CountOf(CountOfRule {
                 count: CountOfEnum::All,

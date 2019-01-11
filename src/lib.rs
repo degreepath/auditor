@@ -5,9 +5,9 @@ extern crate serde_derive;
 extern crate serde_yaml;
 
 pub mod area_of_study;
-mod requirement;
-mod rules;
-mod save;
+pub mod requirement;
+pub mod rules;
+pub mod save;
 mod util;
 
 #[cfg(test)]
