@@ -1,7 +1,8 @@
 [package]
-name = "hanson-printer"
+name = "degreepath-printer"
 version = "0.1.0"
 authors = ["Hawken Rives <hawkrives@fastmail.fm>"]
 edition = "2018"
 
 [dependencies]
+degreepath-parser = { path = "../parser" }

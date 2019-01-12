@@ -1,8 +1,8 @@
 [package]
-name = "hanson-auditor-cli"
+name = "degreepath-auditor-cli"
 version = "0.1.0"
 authors = ["Hawken Rives <hawkrives@fastmail.fm>"]
 edition = "2018"
 
 [dependencies]
-hanson-auditor = { path = "../auditor" }
+degreepath-auditor = { path = "../auditor" }

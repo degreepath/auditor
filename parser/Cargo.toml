@@ -1,5 +1,5 @@
 [package]
-name = "hanson-parser"
+name = "degreepath-parser"
 version = "0.1.0"
 authors = ["Hawken Rives <hawkrives@fastmail.fm>"]
 edition = "2018"

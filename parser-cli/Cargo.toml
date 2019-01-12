@@ -1,11 +1,11 @@
 [package]
-name = "hanson-parser-cli"
+name = "degreepath-parser-cli"
 version = "0.1.0"
 authors = ["Hawken Rives <hawkrives@fastmail.fm>"]
 edition = "2018"
 
 [dependencies]
-hanson-parser = { path = "../parser" }
+degreepath-parser = { path = "../parser" }
 serde = "1.0"
 serde_derive = "1.0"
 serde_yaml = "0.8"

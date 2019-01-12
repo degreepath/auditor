@@ -1,10 +1,10 @@
 use std::env;
 use std::fs;
 
-extern crate hanson_parser;
+extern crate degreepath_parser;
 extern crate serde_yaml;
 
-use hanson_parser::area_of_study::AreaOfStudy;
+use degreepath_parser::area_of_study::AreaOfStudy;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
