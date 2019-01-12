@@ -1,5 +1,7 @@
 extern crate degreepath_parser;
 use degreepath_parser::area_of_study::{AreaOfStudy, AreaType};
+use degreepath_parser::rules;
+use degreepath_parser::rules::Rule;
 
 extern crate textwrap;
 
@@ -65,7 +67,7 @@ pub fn print(area: AreaOfStudy) -> String {
         }
     };
 
-    output += &blockquote(textwrap::fill(&leader, 78));
+    output += &blockquote(&textwrap::fill(&leader, 78));
     output += "\n";
 
     let area_type = match area.area_type.clone() {
@@ -81,24 +83,40 @@ pub fn print(area: AreaOfStudy) -> String {
 
     // For this degree, you must complete both the "Degree Requirements" and "General Education" sections.
 
-    let requirement_names: Vec<String> = area
-        .requirements
-        .keys()
-        .map(|n| format!("“{}”", n))
-        .collect();
+    let what_to_do: String;
 
-    let what_to_do: String = match requirement_names.len() {
-        0 => "… nothing.".to_string(),
-        1 => format!("the {} requirement.", requirement_names.join("")),
-        2 => format!("both the {} requirements.", requirement_names.join(" and ")),
-        _ => {
-            let names_as_list: Vec<String> = requirement_names
+    match area.result {
+        Rule::CountOf(rules::count_of::CountOfRule { count, of }) => {
+            let requirement_names: Vec<String> = of
                 .iter()
-                .map(|n| format!("- {}", n))
+                .map(|rule| print_rule_as_title(&rule.clone()))
                 .collect();
-            format!("all of these requirements:\n\n{}", names_as_list.join("\n"))
+
+            // let requirement_names: Vec<String> =
+            //     area.result.keys().map(|n| format!("“{}”", n)).collect();
+
+            what_to_do = match requirement_names.len() {
+                0 => "… nothing.".to_string(),
+                1 => format!("the {} requirement.", requirement_names.join("")),
+                2 => format!("both the {} requirements.", requirement_names.join(" and ")),
+                _ => {
+                    // For this section, you must complete all of the "Courses",
+                    // "Residency", "Interim", "Grade Point Average", "Course Level",
+                    // "Graded Courses", and "Major" requirements.
+                    if let Some((last, others)) = requirement_names.clone().split_last() {
+                        format!(
+                            "all of the {}, and {} requirements.",
+                            others.join(", "),
+                            last
+                        )
+                    } else {
+                        panic!("no requirements?");
+                    }
+                }
+            };
         }
-    };
+        _ => panic!("not implented yet!"),
+    }
 
     output += &textwrap::fill(
         &format!(
@@ -112,8 +130,22 @@ pub fn print(area: AreaOfStudy) -> String {
     output
 }
 
-fn blockquote(text: String) -> String {
+fn blockquote(text: &str) -> String {
     textwrap::indent(&text, "> ")
+}
+
+fn list_item(text: &str) -> String {
+    format!("- {}", text)
+}
+
+fn print_rule_as_title(rule: &Rule) -> String {
+    match rule {
+        Rule::Requirement(rules::requirement::RequirementRule {
+            requirement,
+            optional,
+        }) => format!("“{}”", requirement),
+        _ => panic!("not implented yet!"),
+    }
 }
 
 #[cfg(test)]
