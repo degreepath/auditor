@@ -171,9 +171,9 @@ result:
                 name: "$interim_courses".to_string(),
                 label: "Interim Courses".to_string(),
                 given: given::Given::AllCourses,
-                limit: [].to_vec(),
-                filter: expected_filter,
-                what: given::What::Courses,
+                limit: None,
+                filter: Some(expected_filter),
+                what: Some(given::What::Courses),
                 action: None,
             }]
             .to_vec(),

@@ -63,14 +63,13 @@ pub enum What {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::collections::HashMap;
 
     #[test]
     fn serialize_all_courses() {
         let data = Rule {
             given: Given::AllCourses,
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -99,7 +98,7 @@ do: count > 2"#;
         let expected = Rule {
             given: Given::AllCourses,
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -125,7 +124,7 @@ do: count > 2"#;
                 ],
             },
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -171,7 +170,7 @@ do: count > 2"#;
                 ],
             },
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -197,7 +196,7 @@ do: count > 2"#;
                 ],
             },
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -245,7 +244,7 @@ do: count > 2"#;
                 ],
             },
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -260,7 +259,7 @@ do: count > 2"#;
         let data = Rule {
             given: Given::AreasOfStudy,
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::AreasOfStudy,
             action: "count > 2".parse().unwrap(),
         };
@@ -289,7 +288,7 @@ do: count > 2"#;
         let expected = Rule {
             given: Given::AreasOfStudy,
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::AreasOfStudy,
             action: "count > 2".parse().unwrap(),
         };
@@ -306,7 +305,7 @@ do: count > 2"#;
                 save: String::from("$my_var"),
             },
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
@@ -339,7 +338,7 @@ do: count > 2"#;
                 save: String::from("$my_var"),
             },
             limit: Some(vec![]),
-            filter: Some(HashMap::new()),
+            filter: Some(filter::Clause::new()),
             what: What::Courses,
             action: "count > 2".parse().unwrap(),
         };
