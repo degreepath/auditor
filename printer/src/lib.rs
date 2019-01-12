@@ -85,7 +85,7 @@ pub fn print(area: AreaOfStudy) -> String {
     let what_to_do: String;
 
     match area.result {
-        Rule::CountOf(rules::count_of::CountOfRule { of, .. }) => {
+        Rule::CountOf(rules::count_of::Rule { of, .. }) => {
             let requirement_names: Vec<String> = of
                 .iter()
                 .map(|rule| print_rule_as_title(&rule.clone()))
@@ -139,7 +139,7 @@ fn _list_item(text: &str) -> String {
 
 fn print_rule_as_title(rule: &Rule) -> String {
     match rule {
-        Rule::Requirement(rules::requirement::RequirementRule { requirement, .. }) => {
+        Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
             format!("“{}”", requirement)
         }
         _ => panic!("not implented yet!"),

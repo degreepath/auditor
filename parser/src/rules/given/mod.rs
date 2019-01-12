@@ -27,7 +27,7 @@ pub enum Given {
     TheseCourses { courses: Vec<CourseRule> },
     #[serde(rename = "these requirements")]
     TheseRequirements {
-        requirements: Vec<requirement::RequirementRule>,
+        requirements: Vec<requirement::Rule>,
     },
     #[serde(rename = "areas of study")]
     AreasOfStudy,
@@ -39,7 +39,7 @@ pub enum Given {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(untagged)]
 pub enum CourseRule {
-    Value(#[serde(deserialize_with = "util::string_or_struct")] course::CourseRule),
+    Value(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
 }
 
 #[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
@@ -113,11 +113,11 @@ do: count > 2"#;
         let data = Rule {
             given: Given::TheseCourses {
                 courses: vec![
-                    CourseRule::Value(course::CourseRule {
+                    CourseRule::Value(course::Rule {
                         course: "ASIAN 110".to_string(),
                         ..Default::default()
                     }),
-                    CourseRule::Value(course::CourseRule {
+                    CourseRule::Value(course::Rule {
                         course: "ASIAN 110".to_string(),
                         ..Default::default()
                     }),
@@ -159,11 +159,11 @@ do: count > 2"#;
         let expected = Rule {
             given: Given::TheseCourses {
                 courses: vec![
-                    CourseRule::Value(course::CourseRule {
+                    CourseRule::Value(course::Rule {
                         course: "ASIAN 110".to_string(),
                         ..Default::default()
                     }),
-                    CourseRule::Value(course::CourseRule {
+                    CourseRule::Value(course::Rule {
                         course: "ASIAN 110".to_string(),
                         ..Default::default()
                     }),
@@ -185,11 +185,11 @@ do: count > 2"#;
         let data = Rule {
             given: Given::TheseRequirements {
                 requirements: vec![
-                    requirement::RequirementRule {
+                    requirement::Rule {
                         requirement: "A Name 1".to_string(),
                         optional: false,
                     },
-                    requirement::RequirementRule {
+                    requirement::Rule {
                         requirement: "A Name 2".to_string(),
                         optional: true,
                     },
@@ -233,11 +233,11 @@ do: count > 2"#;
         let expected = Rule {
             given: Given::TheseRequirements {
                 requirements: vec![
-                    requirement::RequirementRule {
+                    requirement::Rule {
                         requirement: "A Name 1".to_string(),
                         optional: false,
                     },
-                    requirement::RequirementRule {
+                    requirement::Rule {
                         requirement: "A Name 2".to_string(),
                         optional: true,
                     },

@@ -1,24 +1,24 @@
-use crate::rules::Rule;
+use crate::rules::Rule as AnyRule;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct EitherRule {
-    pub either: (Box<Rule>, Box<Rule>),
+pub struct Rule {
+    pub either: (Box<AnyRule>, Box<AnyRule>),
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::rules::{requirement, Rule};
+    use crate::rules::requirement;
 
     #[test]
     fn serialize() {
-        let input = EitherRule {
+        let input = Rule {
             either: (
-                Box::new(Rule::Requirement(requirement::RequirementRule {
+                Box::new(AnyRule::Requirement(requirement::Rule {
                     requirement: String::from("Name"),
                     optional: false,
                 })),
-                Box::new(Rule::Requirement(requirement::RequirementRule {
+                Box::new(AnyRule::Requirement(requirement::Rule {
                     requirement: String::from("Name 2"),
                     optional: false,
                 })),
@@ -45,20 +45,20 @@ either:
   - requirement: Name 2
     optional: false";
 
-        let expected_struct = EitherRule {
+        let expected_struct = Rule {
             either: (
-                Box::new(Rule::Requirement(requirement::RequirementRule {
+                Box::new(AnyRule::Requirement(requirement::Rule {
                     requirement: String::from("Name"),
                     optional: false,
                 })),
-                Box::new(Rule::Requirement(requirement::RequirementRule {
+                Box::new(AnyRule::Requirement(requirement::Rule {
                     requirement: String::from("Name 2"),
                     optional: false,
                 })),
             ),
         };
 
-        let actual: EitherRule = serde_yaml::from_str(&input).unwrap();
+        let actual: Rule = serde_yaml::from_str(&input).unwrap();
         assert_eq!(actual, expected_struct);
     }
 }

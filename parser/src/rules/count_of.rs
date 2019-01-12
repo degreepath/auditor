@@ -1,35 +1,35 @@
-use crate::rules::Rule;
+use crate::rules::Rule as AnyRule;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use serde::ser::{Serialize, Serializer};
 use std::fmt;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct CountOfRule {
-    pub count: CountOfEnum,
-    pub of: Vec<Rule>,
+pub struct Rule {
+    pub count: Counter,
+    pub of: Vec<AnyRule>,
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub enum CountOfEnum {
+pub enum Counter {
     All,
     Any,
     Number(u64),
 }
 
-impl Serialize for CountOfEnum {
+impl Serialize for Counter {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
         match &self {
-            CountOfEnum::All => serializer.serialize_str("all"),
-            CountOfEnum::Any => serializer.serialize_str("any"),
-            CountOfEnum::Number(n) => serializer.serialize_u64(*n),
+            Counter::All => serializer.serialize_str("all"),
+            Counter::Any => serializer.serialize_str("any"),
+            Counter::Number(n) => serializer.serialize_u64(*n),
         }
     }
 }
 
-impl<'de> Deserialize<'de> for CountOfEnum {
+impl<'de> Deserialize<'de> for Counter {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -37,7 +37,7 @@ impl<'de> Deserialize<'de> for CountOfEnum {
         struct CountVisitor;
 
         impl<'de> Visitor<'de> for CountVisitor {
-            type Value = CountOfEnum;
+            type Value = Counter;
 
             fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.write_str("`count` as a number, any, or all")
@@ -57,7 +57,7 @@ impl<'de> Deserialize<'de> for CountOfEnum {
             where
                 E: de::Error,
             {
-                Ok(CountOfEnum::Number(num))
+                Ok(Counter::Number(num))
             }
 
             fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
@@ -65,8 +65,8 @@ impl<'de> Deserialize<'de> for CountOfEnum {
                 E: de::Error,
             {
                 match value {
-                    "all" => Ok(CountOfEnum::All),
-                    "any" => Ok(CountOfEnum::Any),
+                    "all" => Ok(Counter::All),
+                    "any" => Ok(Counter::Any),
                     _ => Err(E::custom(format!(
                         "string must be `any` or `all`; was `{}`",
                         value
@@ -85,8 +85,8 @@ mod tests {
 
     #[test]
     fn serialize_count_of_any() {
-        let data = CountOfRule {
-            count: CountOfEnum::Any,
+        let data = Rule {
+            count: Counter::Any,
             of: vec![],
         };
 
@@ -104,19 +104,19 @@ of: []";
 count: any
 of: []";
 
-        let expected_struct = CountOfRule {
-            count: CountOfEnum::Any,
+        let expected_struct = Rule {
+            count: Counter::Any,
             of: vec![],
         };
 
-        let actual: CountOfRule = serde_yaml::from_str(&data).unwrap();
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected_struct);
     }
 
     #[test]
     fn serialize_count_of_all() {
-        let data = CountOfRule {
-            count: CountOfEnum::All,
+        let data = Rule {
+            count: Counter::All,
             of: vec![],
         };
 
@@ -134,19 +134,19 @@ of: []";
 count: all
 of: []";
 
-        let expected_struct = CountOfRule {
-            count: CountOfEnum::All,
+        let expected_struct = Rule {
+            count: Counter::All,
             of: vec![],
         };
 
-        let actual: CountOfRule = serde_yaml::from_str(&data).unwrap();
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected_struct);
     }
 
     #[test]
     fn serialize_count_of_number() {
-        let data = CountOfRule {
-            count: CountOfEnum::Number(6),
+        let data = Rule {
+            count: Counter::Number(6),
             of: vec![],
         };
 
@@ -164,12 +164,12 @@ of: []";
 count: 6
 of: []";
 
-        let expected_struct = CountOfRule {
-            count: CountOfEnum::Number(6),
+        let expected_struct = Rule {
+            count: Counter::Number(6),
             of: vec![],
         };
 
-        let actual: CountOfRule = serde_yaml::from_str(&data).unwrap();
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected_struct);
     }
 }

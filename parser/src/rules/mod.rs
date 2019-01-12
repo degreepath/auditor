@@ -11,11 +11,11 @@ use crate::util;
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(untagged)]
 pub enum Rule {
-    Course(#[serde(deserialize_with = "util::string_or_struct")] course::CourseRule),
-    Requirement(requirement::RequirementRule),
-    CountOf(count_of::CountOfRule),
-    Both(both::BothRule),
-    Either(either::EitherRule),
+    Course(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
+    Requirement(requirement::Rule),
+    CountOf(count_of::Rule),
+    Both(both::Rule),
+    Either(either::Rule),
     Given(given::Rule),
     Do(action::Rule),
 }
@@ -30,7 +30,7 @@ mod tests {
         let data = "---
 - STAT 214";
 
-        let expected_struct = vec![Rule::Course(course::CourseRule {
+        let expected_struct = vec![Rule::Course(course::Rule {
             course: "STAT 214".to_string(),
             ..Default::default()
         })];
@@ -41,11 +41,11 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let course_a = course::CourseRule {
+        let course_a = course::Rule {
             course: "ASIAN 101".to_string(),
             ..Default::default()
         };
-        let course_b = course::CourseRule {
+        let course_b = course::Rule {
             course: "ASIAN 101".to_string(),
             term: Some("2014-1".to_string()),
             ..Default::default()
@@ -53,21 +53,21 @@ mod tests {
         let data = vec![
             Rule::Course(course_a.clone()),
             Rule::Course(course_b.clone()),
-            Rule::Requirement(requirement::RequirementRule {
+            Rule::Requirement(requirement::Rule {
                 requirement: "Name".to_string(),
                 optional: true,
             }),
-            Rule::CountOf(count_of::CountOfRule {
-                count: count_of::CountOfEnum::Number(1),
+            Rule::CountOf(count_of::Rule {
+                count: count_of::Counter::Number(1),
                 of: vec![Rule::Course(course_a.clone())],
             }),
-            Rule::Both(both::BothRule {
+            Rule::Both(both::Rule {
                 both: (
                     Box::new(Rule::Course(course_a.clone())),
                     Box::new(Rule::Course(course_b.clone())),
                 ),
             }),
-            Rule::Either(either::EitherRule {
+            Rule::Either(either::Rule {
                 either: (
                     Box::new(Rule::Course(course_a.clone())),
                     Box::new(Rule::Course(course_b.clone())),
@@ -169,11 +169,11 @@ mod tests {
   do: count < 2
 - do: $a < $b"#;
 
-        let course_a = course::CourseRule {
+        let course_a = course::Rule {
             course: "ASIAN 101".to_string(),
             ..Default::default()
         };
-        let course_b = course::CourseRule {
+        let course_b = course::Rule {
             course: "ASIAN 101".to_string(),
             term: Some("2014-1".to_string()),
             ..Default::default()
@@ -181,21 +181,21 @@ mod tests {
         let expected = vec![
             Rule::Course(course_a.clone()),
             Rule::Course(course_b.clone()),
-            Rule::Requirement(requirement::RequirementRule {
+            Rule::Requirement(requirement::Rule {
                 requirement: "Name".to_string(),
                 optional: true,
             }),
-            Rule::CountOf(count_of::CountOfRule {
-                count: count_of::CountOfEnum::Number(1),
+            Rule::CountOf(count_of::Rule {
+                count: count_of::Counter::Number(1),
                 of: vec![Rule::Course(course_a.clone())],
             }),
-            Rule::Both(both::BothRule {
+            Rule::Both(both::Rule {
                 both: (
                     Box::new(Rule::Course(course_a.clone())),
                     Box::new(Rule::Course(course_b.clone())),
                 ),
             }),
-            Rule::Either(either::EitherRule {
+            Rule::Either(either::Rule {
                 either: (
                     Box::new(Rule::Course(course_a.clone())),
                     Box::new(Rule::Course(course_b.clone())),
@@ -239,11 +239,11 @@ mod tests {
   do: count < 2
 - do: $a < $b"#;
 
-        let course_a = course::CourseRule {
+        let course_a = course::Rule {
             course: "ASIAN 101".to_string(),
             ..Default::default()
         };
-        let course_b = course::CourseRule {
+        let course_b = course::Rule {
             course: "ASIAN 102".to_string(),
             term: Some("2014-1".to_string()),
             ..Default::default()
@@ -252,25 +252,25 @@ mod tests {
             Rule::Course(course_a.clone()),
             Rule::Course(course_a.clone()),
             Rule::Course(course_b.clone()),
-            Rule::Requirement(requirement::RequirementRule {
+            Rule::Requirement(requirement::Rule {
                 requirement: "Name 1".to_string(),
                 optional: false,
             }),
-            Rule::Requirement(requirement::RequirementRule {
+            Rule::Requirement(requirement::Rule {
                 requirement: "Name 2".to_string(),
                 optional: true,
             }),
-            Rule::CountOf(count_of::CountOfRule {
-                count: count_of::CountOfEnum::Number(1),
+            Rule::CountOf(count_of::Rule {
+                count: count_of::Counter::Number(1),
                 of: vec![Rule::Course(course_a.clone())],
             }),
-            Rule::Both(both::BothRule {
+            Rule::Both(both::Rule {
                 both: (
                     Box::new(Rule::Course(course_a.clone())),
                     Box::new(Rule::Course(course_b.clone())),
                 ),
             }),
-            Rule::Either(either::EitherRule {
+            Rule::Either(either::Rule {
                 either: (
                     Box::new(Rule::Course(course_a.clone())),
                     Box::new(Rule::Course(course_b.clone())),

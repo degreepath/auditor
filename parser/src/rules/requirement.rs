@@ -1,7 +1,7 @@
 use crate::util;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct RequirementRule {
+pub struct Rule {
     pub requirement: String,
     #[serde(default = "util::serde_false")]
     pub optional: bool,
@@ -13,7 +13,7 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let data = RequirementRule {
+        let data = Rule {
             requirement: String::from("Name"),
             optional: false,
         };
@@ -30,12 +30,12 @@ optional: false";
         let data = "---
 requirement: Name
 optional: false";
-        let expected = RequirementRule {
+        let expected = Rule {
             requirement: String::from("Name"),
             optional: false,
         };
 
-        let actual: RequirementRule = serde_yaml::from_str(&data).unwrap();
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected);
     }
 
@@ -43,12 +43,12 @@ optional: false";
     fn deserialize_with_defaults() {
         let data = "---
 requirement: Name";
-        let expected = RequirementRule {
+        let expected = Rule {
             requirement: String::from("Name"),
             optional: false,
         };
 
-        let actual: RequirementRule = serde_yaml::from_str(&data).unwrap();
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected);
     }
 }

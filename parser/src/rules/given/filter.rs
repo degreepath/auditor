@@ -1,8 +1,15 @@
 use serde_yaml::Value as YamlValue;
 use std::collections::HashMap;
 
-pub type Value = YamlValue;
 pub type Clause = HashMap<String, Value>;
+pub type Value = YamlValue;
+
+pub enum V {
+    String(String),
+    Integer(u64),
+    Float(f64),
+    Vec(Vec<V>),
+}
 
 #[cfg(test)]
 mod tests {

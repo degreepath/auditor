@@ -30,10 +30,7 @@ pub enum AreaType {
 
 #[cfg(test)]
 mod tests {
-    use crate::rules::count_of::{CountOfEnum, CountOfRule};
-    use crate::rules::course::CourseRule;
-    use crate::rules::requirement::RequirementRule;
-    use crate::rules::Rule;
+    use crate::rules::{count_of, course, requirement};
 
     use super::*;
 
@@ -84,14 +81,14 @@ mod tests {
                 degree: "Bachelor of Arts".to_string(),
             },
             catalog: "2015-16".to_string(),
-            result: Rule::CountOf(CountOfRule {
-                count: CountOfEnum::All,
+            result: Rule::CountOf(count_of::Rule {
+                count: count_of::Counter::All,
                 of: vec![
-                    Rule::Requirement(RequirementRule {
+                    Rule::Requirement(requirement::Rule {
                         requirement: "Core".to_string(),
                         optional: false,
                     }),
-                    Rule::Requirement(RequirementRule {
+                    Rule::Requirement(requirement::Rule {
                         requirement: "Electives".to_string(),
                         optional: false,
                     }),
@@ -106,38 +103,38 @@ mod tests {
                         contract: false,
                         save: vec![],
                         requirements: HashMap::new(),
-                        result: Some(Rule::CountOf(CountOfRule {
-                            count: CountOfEnum::All,
+                        result: Some(Rule::CountOf(count_of::Rule {
+                            count: count_of::Counter::All,
                             of: vec![
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "BIO 143".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "BIO 243".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "ESTH 110".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "ESTH 255".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "ESTH 374".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "ESTH 375".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "ESTH 390".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "PSYCH 125".to_string(),
                                     ..Default::default()
                                 }),
@@ -153,45 +150,45 @@ mod tests {
                         contract: false,
                         save: vec![],
                         requirements: HashMap::new(),
-                        result: Some(Rule::CountOf(CountOfRule {
-                            count: CountOfEnum::Number(2),
+                        result: Some(Rule::CountOf(count_of::Rule {
+                            count: count_of::Counter::Number(2),
                             of: vec![
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "ESTH 290".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "ESTH 376".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "PSYCH 230".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "NEURO 239".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "PSYCH 241".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::Course(CourseRule {
+                                Rule::Course(course::Rule {
                                     course: "PSYCH 247".to_string(),
                                     ..Default::default()
                                 }),
-                                Rule::CountOf(CountOfRule {
-                                    count: CountOfEnum::Number(1),
+                                Rule::CountOf(count_of::Rule {
+                                    count: count_of::Counter::Number(1),
                                     of: vec![
-                                        Rule::Course(CourseRule {
+                                        Rule::Course(course::Rule {
                                             course: "STAT 110".to_string(),
                                             ..Default::default()
                                         }),
-                                        Rule::Course(CourseRule {
+                                        Rule::Course(course::Rule {
                                             course: "STAT 212".to_string(),
                                             ..Default::default()
                                         }),
-                                        Rule::Course(CourseRule {
+                                        Rule::Course(course::Rule {
                                             course: "STAT 214".to_string(),
                                             ..Default::default()
                                         }),

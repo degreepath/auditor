@@ -30,7 +30,7 @@ mod tests {
         let data = Requirement {
             message: None,
             department_audited: false,
-            result: Some(Rule::Requirement(requirement::RequirementRule {
+            result: Some(Rule::Requirement(requirement::Rule {
                 requirement: String::from("name"),
                 optional: false,
             })),
@@ -68,7 +68,7 @@ requirements: {}";
         let expected = Requirement {
             message: None,
             department_audited: false,
-            result: Some(Rule::Requirement(requirement::RequirementRule {
+            result: Some(Rule::Requirement(requirement::Rule {
                 requirement: String::from("name"),
                 optional: false,
             })),
@@ -90,7 +90,7 @@ result: {requirement: name, optional: false}";
         let expected = Requirement {
             message: None,
             department_audited: false,
-            result: Some(Rule::Requirement(requirement::RequirementRule {
+            result: Some(Rule::Requirement(requirement::Rule {
                 requirement: String::from("name"),
                 optional: false,
             })),
@@ -144,7 +144,7 @@ result:
         let expected = Requirement {
             message: None,
             department_audited: false,
-            result: Some(Rule::Both(rules::both::BothRule {
+            result: Some(Rule::Both(rules::both::Rule {
                 both: (
                     Box::new(Rule::Given(given::Rule {
                         given: given::Given::NamedVariable {
@@ -167,7 +167,7 @@ result:
                 ),
             })),
             contract: false,
-            save: [SaveBlock {
+            save: vec![SaveBlock {
                 name: "$interim_courses".to_string(),
                 label: "Interim Courses".to_string(),
                 given: given::Given::AllCourses,
@@ -175,8 +175,7 @@ result:
                 filter: Some(expected_filter),
                 what: Some(given::What::Courses),
                 action: None,
-            }]
-            .to_vec(),
+            }],
             requirements: HashMap::new(),
         };
 

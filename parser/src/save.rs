@@ -65,7 +65,7 @@ label: "Senior Dance Seminars""#;
             name: "$dance_seminars".to_string(),
             label: "Senior Dance Seminars".to_string(),
             given: Given::TheseCourses {
-                courses: vec![given::CourseRule::Value(course::CourseRule {
+                courses: vec![given::CourseRule::Value(course::Rule {
                     course: "DANCE 399".to_string(),
                     ..Default::default()
                 })],

@@ -3,7 +3,7 @@ use std::str::FromStr;
 use void::Void;
 
 #[derive(Default, Debug, PartialEq, Clone, Deserialize)]
-pub struct CourseRule {
+pub struct Rule {
     pub course: String,
     pub term: Option<String>,
     pub section: Option<String>,
@@ -13,26 +13,26 @@ pub struct CourseRule {
     pub international: Option<bool>,
 }
 
-impl FromStr for CourseRule {
+impl FromStr for Rule {
     // This implementation of `from_str` can never fail, so use the impossible
     // `Void` type as the error type.
     type Err = Void;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(CourseRule {
+        Ok(Rule {
             course: String::from(s),
             ..Default::default()
         })
     }
 }
 
-impl Serialize for CourseRule {
+impl Serialize for Rule {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
         match &self {
-            CourseRule {
+            Rule {
                 term: None,
                 section: None,
                 year: None,
@@ -41,12 +41,12 @@ impl Serialize for CourseRule {
                 international: None,
                 course,
             } => {
-                let mut state = serializer.serialize_struct("CourseRule", 1)?;
+                let mut state = serializer.serialize_struct("Rule", 1)?;
                 state.serialize_field("course", course)?;
                 state.end()
             }
             _ => {
-                let mut state = serializer.serialize_struct("CourseRule", 7)?;
+                let mut state = serializer.serialize_struct("Rule", 7)?;
                 state.serialize_field("course", &self.course)?;
                 state.serialize_field("term", &self.term)?;
                 state.serialize_field("section", &self.section)?;
@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let data = CourseRule {
+        let data = Rule {
             course: "STAT 214".to_string(),
             ..Default::default()
         };
@@ -80,7 +80,7 @@ course: STAT 214";
 
     #[test]
     fn serialize_expanded() {
-        let data = CourseRule {
+        let data = Rule {
             course: "STAT 214".to_string(),
             term: Some("2014-4".to_string()),
             ..Default::default()
@@ -98,7 +98,7 @@ international: ~";
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected_str);
 
-        let deserialized: CourseRule = serde_yaml::from_str(&actual).unwrap();
+        let deserialized: Rule = serde_yaml::from_str(&actual).unwrap();
         assert_eq!(deserialized, data);
     }
 
@@ -107,12 +107,12 @@ international: ~";
         let data = "---
 course: STAT 214";
 
-        let expected_struct = CourseRule {
+        let expected_struct = Rule {
             course: "STAT 214".to_string(),
             ..Default::default()
         };
 
-        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
+        let deserialized: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(deserialized, expected_struct);
     }
 
@@ -127,13 +127,13 @@ semester: ~
 lab: ~
 international: ~";
 
-        let expected_struct = CourseRule {
+        let expected_struct = Rule {
             course: "STAT 214".to_string(),
             term: Some("2014-4".to_string()),
             ..Default::default()
         };
 
-        let deserialized: CourseRule = serde_yaml::from_str(&data).unwrap();
+        let deserialized: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(deserialized, expected_struct);
     }
 }
