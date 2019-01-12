@@ -24,7 +24,7 @@ pub enum Given {
     #[serde(rename = "courses")]
     AllCourses,
     #[serde(rename = "these courses")]
-    TheseCourses { courses: Vec<course::CourseRule> },
+    TheseCourses { courses: Vec<CourseRule> },
     #[serde(rename = "these requirements")]
     TheseRequirements {
         requirements: Vec<requirement::RequirementRule>,
@@ -34,6 +34,12 @@ pub enum Given {
     // #[serde(rename = "save", deserialize_with = "util::string_or_struct")]
     #[serde(rename = "save")]
     NamedVariable { save: String },
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(untagged)]
+pub enum CourseRule {
+    Value(#[serde(deserialize_with = "util::string_or_struct")] course::CourseRule),
 }
 
 #[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
@@ -106,7 +112,18 @@ do: count > 2"#;
     #[test]
     fn serialize_these_courses() {
         let data = Rule {
-            given: Given::TheseCourses { courses: vec![] },
+            given: Given::TheseCourses {
+                courses: vec![
+                    CourseRule::Value(course::CourseRule {
+                        course: "ASIAN 110".to_string(),
+                        ..Default::default()
+                    }),
+                    CourseRule::Value(course::CourseRule {
+                        course: "ASIAN 110".to_string(),
+                        ..Default::default()
+                    }),
+                ],
+            },
             limit: Some(vec![]),
             filter: Some(HashMap::new()),
             what: What::Courses,
@@ -115,7 +132,9 @@ do: count > 2"#;
 
         let expected = r#"---
 given: these courses
-courses: []
+courses:
+  - course: ASIAN 110
+  - course: ASIAN 110
 limit: []
 where: {}
 what: courses
@@ -130,14 +149,27 @@ do: count > 2"#;
     fn deserialize_these_courses() {
         let data = r#"---
 given: these courses
-courses: []
+courses:
+  - ASIAN 110
+  - course: ASIAN 110
 limit: []
 where: {}
 what: courses
 do: count > 2"#;
 
         let expected = Rule {
-            given: Given::TheseCourses { courses: vec![] },
+            given: Given::TheseCourses {
+                courses: vec![
+                    CourseRule::Value(course::CourseRule {
+                        course: "ASIAN 110".to_string(),
+                        ..Default::default()
+                    }),
+                    CourseRule::Value(course::CourseRule {
+                        course: "ASIAN 110".to_string(),
+                        ..Default::default()
+                    }),
+                ],
+            },
             limit: Some(vec![]),
             filter: Some(HashMap::new()),
             what: What::Courses,
@@ -153,7 +185,16 @@ do: count > 2"#;
     fn serialize_these_requirements() {
         let data = Rule {
             given: Given::TheseRequirements {
-                requirements: vec![],
+                requirements: vec![
+                    requirement::RequirementRule {
+                        requirement: "A Name 1".to_string(),
+                        optional: false,
+                    },
+                    requirement::RequirementRule {
+                        requirement: "A Name 2".to_string(),
+                        optional: true,
+                    },
+                ],
             },
             limit: Some(vec![]),
             filter: Some(HashMap::new()),
@@ -163,7 +204,11 @@ do: count > 2"#;
 
         let expected = r#"---
 given: these requirements
-requirements: []
+requirements:
+  - requirement: A Name 1
+    optional: false
+  - requirement: A Name 2
+    optional: true
 limit: []
 where: {}
 what: courses
@@ -178,7 +223,9 @@ do: count > 2"#;
     fn deserialize_these_requirements() {
         let data = r#"---
 given: these requirements
-requirements: []
+requirements:
+  - requirement: A Name 1
+  - {requirement: A Name 2, optional: true}
 limit: []
 where: {}
 what: courses
@@ -186,7 +233,16 @@ do: count > 2"#;
 
         let expected = Rule {
             given: Given::TheseRequirements {
-                requirements: vec![],
+                requirements: vec![
+                    requirement::RequirementRule {
+                        requirement: "A Name 1".to_string(),
+                        optional: false,
+                    },
+                    requirement::RequirementRule {
+                        requirement: "A Name 2".to_string(),
+                        optional: true,
+                    },
+                ],
             },
             limit: Some(vec![]),
             filter: Some(HashMap::new()),
