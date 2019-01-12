@@ -1,5 +1,6 @@
 use crate::util;
 use serde::de::{Deserialize, Deserializer};
+use serde::ser::{Serialize, Serializer};
 use std::error::Error;
 use std::fmt;
 use std::str::FromStr;
@@ -25,11 +26,38 @@ impl Error for ParseError {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct Action {
     pub lhs: Value,
     pub op: Option<Operator>,
     pub rhs: Option<Value>,
+}
+
+impl Serialize for Action {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&format!("{}", &self))
+    }
+}
+
+impl fmt::Display for Action {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self {
+            Action {
+                lhs,
+                rhs: None,
+                op: None,
+            } => write!(f, "{}", lhs),
+            Action {
+                lhs,
+                rhs: Some(rhs),
+                op: Some(op),
+            } => write!(f, "{} {} {}", lhs, op, rhs),
+            _ => return Err(fmt::Error),
+        }
+    }
 }
 
 impl FromStr for Action {
@@ -99,6 +127,18 @@ impl FromStr for Operator {
     }
 }
 
+impl fmt::Display for Operator {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self {
+            Operator::LessThan => write!(f, "<"),
+            Operator::LessThanEqualTo => write!(f, "<="),
+            Operator::EqualTo => write!(f, "="),
+            Operator::GreaterThan => write!(f, ">"),
+            Operator::GreaterThanEqualTo => write!(f, ">="),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Value {
     Command(Command),
@@ -132,6 +172,18 @@ impl FromStr for Value {
     }
 }
 
+impl fmt::Display for Value {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self {
+            Value::Command(cmd) => write!(f, "{}", cmd),
+            Value::Variable(name) => write!(f, "{}", name),
+            Value::String(v) => write!(f, "{}", v),
+            Value::Integer(v) => write!(f, "{}", v),
+            Value::Float(v) => write!(f, "{}", v),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Command {
     Count,
@@ -156,6 +208,19 @@ impl FromStr for Command {
             "maximum" => Ok(Command::Maximum),
             "difference" => Ok(Command::Difference),
             _ => Err(ParseError::UnknownCommand),
+        }
+    }
+}
+
+impl fmt::Display for Command {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self {
+            Command::Count => write!(f, "count"),
+            Command::Sum => write!(f, "sum"),
+            Command::Average => write!(f, "average"),
+            Command::Minimum => write!(f, "minimum"),
+            Command::Maximum => write!(f, "maximum"),
+            Command::Difference => write!(f, "difference"),
         }
     }
 }

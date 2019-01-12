@@ -74,12 +74,7 @@ given: courses
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -93,12 +88,7 @@ given: courses
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let expected = Rule {
             given: Given::AllCourses,
@@ -129,12 +119,7 @@ courses: []
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -149,12 +134,7 @@ courses: []
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let expected = Rule {
             given: Given::TheseCourses { courses: vec![] },
@@ -187,12 +167,7 @@ requirements: []
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -207,12 +182,7 @@ requirements: []
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let expected = Rule {
             given: Given::TheseRequirements {
@@ -244,12 +214,7 @@ given: areas of study
 limit: []
 where: {}
 what: areas of study
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -296,12 +261,7 @@ save: $my_var
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -316,12 +276,7 @@ save: $my_var
 limit: []
 where: {}
 what: courses
-do:
-  lhs:
-    Command: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
+do: count > 2"#;
 
         let expected = Rule {
             given: Given::NamedVariable {

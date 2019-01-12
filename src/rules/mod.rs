@@ -121,18 +121,8 @@ mod tests {
   limit: []
   where: {}
   what: courses
-  do:
-    lhs:
-      Command: Count
-    op: LessThan
-    rhs:
-      Integer: 2
-- do:
-    lhs:
-      Variable: $a
-    op: LessThan
-    rhs:
-      Variable: $b"#;
+  do: count < 2
+- do: $a < $b"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
         assert_eq!(actual, expected);
@@ -176,18 +166,8 @@ mod tests {
   what: courses
   where: {}
   limit: []
-  do:
-    lhs:
-      Command: Count
-    op: LessThan
-    rhs:
-      Integer: 2
-- do:
-    lhs:
-      Variable: $a
-    op: LessThan
-    rhs:
-      Variable: $b"#;
+  do: count < 2
+- do: $a < $b"#;
 
         let course_a = course::CourseRule {
             course: "ASIAN 101".to_string(),
