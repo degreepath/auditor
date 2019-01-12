@@ -18,13 +18,15 @@ fn main() {
 
     // println!("With text:\n{}", contents);
 
-    // let actual: AreaOfStudy = serde_yaml::from_str(&contents).unwrap();
+    let area: AreaOfStudy = serde_yaml::from_str(&contents).unwrap();
 
-    let value: serde_yaml::Value = serde_yaml::from_str(&contents).unwrap();
-    match parse(&value) {
-        Ok(area) => println!("{}", serde_yaml::to_string(&area).unwrap()),
-        Err(error) => println!("{:?}", error),
-    }
+    println!("{}", serde_yaml::to_string(&area).unwrap());
+
+    // let value: serde_yaml::Value = serde_yaml::from_str(&contents).unwrap();
+    // match parse(&value) {
+    //     Ok(area) => println!("{}", serde_yaml::to_string(&area).unwrap()),
+    //     Err(error) => println!("{:?}", error),
+    // }
 }
 
 fn parse(contents: &serde_yaml::Value) -> Result<AreaOfStudy, ParseError> {
@@ -74,18 +76,54 @@ fn parse(contents: &serde_yaml::Value) -> Result<AreaOfStudy, ParseError> {
         None => return Err(ParseError::MissingKey("`result`".to_string())),
     };
 
+    let requirements = match contents.get("requirements") {
+        Some(value) => match value.as_mapping() {
+            Some(v) => v
+                .iter()
+                .map(|(k, v)| {
+                    (
+                        k.as_str().unwrap().to_string(),
+                        parse_requirement(v).unwrap(),
+                    )
+                })
+                .collect::<HashMap<String, requirement::Requirement>>(),
+            None => return Err(ParseError::InvalidValueType("`requirements`".to_string())),
+        },
+        None => return Err(ParseError::MissingKey("`requirements`".to_string())),
+    };
+
     return Ok(AreaOfStudy {
         area_name,
         area_type,
         for_degree,
         catalog,
-        requirements: HashMap::new(),
+        requirements,
         result,
     });
 }
 
-// fn parse_requirement(contents: &str) -> Requirement {
-// }
+fn parse_requirement(contents: &serde_yaml::Value) -> Result<requirement::Requirement, ParseError> {
+    if !contents.is_mapping() {
+        return Err(ParseError::InvalidValueType("`requirement`".to_string()));
+    }
+
+    let result = match contents.get(&yaml_key("result")) {
+        Some(v) => match parse_result(v) {
+            Ok(v) => Some(v),
+            Err(err) => return Err(err),
+        },
+        None => return Err(ParseError::MissingKey("`result`".to_string())),
+    };
+
+    return Ok(requirement::Requirement {
+        result,
+        contract: false,
+        department_audited: false,
+        message: None,
+        requirements: HashMap::new(),
+        save: vec![],
+    });
+}
 
 fn parse_result(contents: &serde_yaml::Value) -> Result<rules::Rule, ParseError> {
     // cannot turn string into course as the only thing in a result; use `course: DEPT 111` instead.
@@ -99,23 +137,150 @@ fn parse_result(contents: &serde_yaml::Value) -> Result<rules::Rule, ParseError>
     }
 }
 
+fn yaml_key<'a>(name: &'a str) -> serde_yaml::Value {
+    serde_yaml::Value::String(name.to_string())
+}
+
 fn parse_rule(contents: &serde_yaml::Value) -> Result<rules::Rule, ParseError> {
     // result: DEPT 111
-    if let Some(course_str) = contents.as_str() {
-        return match course_str.parse::<rules::course::CourseRule>() {
+    if let Some(course) = contents.as_str() {
+        return match course.parse::<rules::course::CourseRule>() {
             Ok(course) => Ok(rules::Rule::Course(course)),
             Err(_) => Err(ParseError::InvalidValueType("`course`".to_string())),
         };
     }
 
+    let mapping: serde_yaml::Mapping;
+    match contents.as_mapping() {
+        Some(m) => mapping = m.clone(),
+        None => return Err(ParseError::InvalidValueType("`result`".to_string())),
+    }
+
+    let keys: Vec<&str> = mapping
+        .iter()
+        .filter_map(|(key, _value)| key.as_str())
+        .collect();
+
     // result: {course: DEPT 111}
-    if let Some(rule) = contents.get("course") {
-        if let Some(course_str) = rule.as_str() {
-            return match course_str.parse::<rules::course::CourseRule>() {
+    if let Some(rule) = mapping.get(&yaml_key("course")) {
+        let course: String;
+        match rule.as_str() {
+            Some(val) => course = val.to_string(),
+            None => return Err(ParseError::InvalidValueType("`course`".to_string())),
+        };
+
+        // if it's just the {course: DEPT 111} style
+        if keys.len() == 1 {
+            return match course.parse::<rules::course::CourseRule>() {
                 Ok(course) => Ok(rules::Rule::Course(course)),
                 Err(_) => Err(ParseError::InvalidValueType("`course`".to_string())),
             };
         }
+
+        // otherwise, we need to pull out the other keys that might be offered
+        let international = mapping
+            .get(&yaml_key("international"))
+            .and_then(|v| v.as_bool());
+
+        let lab = mapping.get(&yaml_key("lab")).and_then(|v| v.as_bool());
+
+        let section = mapping
+            .get(&yaml_key("section"))
+            .and_then(|v| v.as_str())
+            .map(|v| v.to_string());
+
+        let semester = mapping
+            .get(&yaml_key("semester"))
+            .and_then(|v| v.as_str())
+            .map(|v| v.to_string());
+
+        let year = mapping.get(&yaml_key("year")).and_then(|v| v.as_u64());
+
+        let term = mapping
+            .get(&yaml_key("year"))
+            .and_then(|v| v.as_str())
+            .map(|v| v.to_string());
+
+        return Ok(rules::Rule::Course(rules::course::CourseRule {
+            course,
+            international,
+            lab,
+            section,
+            semester,
+            year,
+            term,
+        }));
+    }
+
+    // result: {both: [course: DEPT 111, course: DEPT 122]}
+    if let Some(rule) = mapping.get(&yaml_key("both")) {
+        let halves: Result<Vec<rules::Rule>, ParseError> = match rule.as_sequence() {
+            Some(seq) => seq.iter().map(|v| parse_rule(v)).collect(),
+            None => return Err(ParseError::InvalidValueType("`both`".to_string())),
+        };
+
+        let a: rules::Rule;
+        let b: rules::Rule;
+        match halves {
+            Ok(values) => match values.len() == 2 {
+                true => {
+                    a = values[0].clone();
+                    b = values[1].clone();
+                }
+                false => return Err(ParseError::InvalidValueType("`both`".to_string())),
+            },
+            Err(_err) => return Err(ParseError::InvalidValueType("`both`".to_string())),
+        };
+
+        return Ok(rules::Rule::Both(rules::both::BothRule {
+            both: (Box::new(a), Box::new(b)),
+        }));
+    }
+
+    // result: {either: [course: DEPT 111, course: DEPT 122]}
+    if let Some(rule) = mapping.get(&yaml_key("either")) {
+        let halves: Result<Vec<rules::Rule>, ParseError> = match rule.as_sequence() {
+            Some(seq) => seq.iter().map(|v| parse_rule(v)).collect(),
+            None => return Err(ParseError::InvalidValueType("`either`".to_string())),
+        };
+
+        let a: rules::Rule;
+        let b: rules::Rule;
+        match halves {
+            Ok(values) => match values.len() == 2 {
+                true => {
+                    a = values[0].clone();
+                    b = values[1].clone();
+                }
+                false => return Err(ParseError::InvalidValueType("`either`".to_string())),
+            },
+            Err(_err) => return Err(ParseError::InvalidValueType("`either`".to_string())),
+        };
+
+        return Ok(rules::Rule::Either(rules::either::EitherRule {
+            either: (Box::new(a), Box::new(b)),
+        }));
+    }
+
+    // result: {requirement: FOO, optional: false}
+    if let Some(rule) = mapping.get(&yaml_key("requirement")) {
+        let requirement: String;
+        match rule.as_str() {
+            Some(val) => requirement = val.to_string(),
+            None => return Err(ParseError::InvalidValueType("`requirement`".to_string())),
+        };
+
+        let optional = mapping
+            .get(&yaml_key("optional"))
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+
+        return Ok(rules::Rule::Requirement(
+            rules::requirement::RequirementRule {
+                requirement,
+                optional,
+            },
+        ));
     }
 
     return Ok(rules::Rule::Requirement(
@@ -132,3 +297,9 @@ pub enum ParseError {
     InvalidValueType(String),
     InvalidValue(String),
 }
+
+// impl From<std::option::NoneError> for ParseError {
+//     fn from(item: std::option::NoneError) -> ParseError {
+//         ParseError::MissingKey("missing".to_string())
+//     }
+// }
