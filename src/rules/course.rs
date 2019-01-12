@@ -7,7 +7,7 @@ pub struct CourseRule {
     pub course: String,
     pub term: Option<String>,
     pub section: Option<String>,
-    pub year: Option<u16>,
+    pub year: Option<u64>,
     pub semester: Option<String>,
     pub lab: Option<bool>,
     pub international: Option<bool>,
