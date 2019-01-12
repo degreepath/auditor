@@ -2,6 +2,7 @@
 
 extern crate degreepath_parser;
 use degreepath_parser::area_of_study::{AreaOfStudy, AreaType};
+use degreepath_parser::requirement::Requirement;
 use degreepath_parser::rules;
 use degreepath_parser::rules::Rule;
 
@@ -29,7 +30,7 @@ obtain 17 credits.
 */
 
 pub fn print(area: AreaOfStudy) -> String {
-    let mut output = "".to_string();
+    let mut output: Vec<String> = vec![];
 
     let leader = match area.area_type.clone() {
         AreaType::Degree => {
@@ -69,8 +70,7 @@ pub fn print(area: AreaOfStudy) -> String {
         }
     };
 
-    output += &blockquote(&textwrap::fill(&leader, 78));
-    output += "\n";
+    output.push(blockquote(&textwrap::fill(&leader, 78)));
 
     let area_type = match area.area_type.clone() {
         AreaType::Degree => "degree",
@@ -80,21 +80,104 @@ pub fn print(area: AreaOfStudy) -> String {
         AreaType::Emphasis { .. } => "area of emphasis",
     };
 
+    let what_to_do = summarize_result(&area.result);
+
+    output.push(textwrap::fill(
+        &format!(
+            "For this {area_type}, you must complete {what_to_do}",
+            area_type = area_type,
+            what_to_do = what_to_do
+        ),
+        80,
+    ));
+
+    output.push("".to_string());
+
+    let mut requirements: Vec<String> = area
+        .requirements
+        .iter()
+        .flat_map(|(name, r)| print_requirement(name, &r.clone(), 1))
+        .collect();
+
+    output.append(&mut requirements);
+
+    output.join("\n")
+}
+
+fn blockquote(text: &str) -> String {
+    textwrap::indent(&text, "> ")
+}
+
+fn _list_item(text: &str) -> String {
+    format!("- {}", text)
+}
+
+fn print_rule_as_title(rule: &Rule) -> String {
+    match rule {
+        Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
+            format!("“{}”", requirement)
+        }
+        Rule::Course(rules::course::Rule { course, .. }) => course.to_string(),
+        Rule::Either(rules::either::Rule { either: pair })
+        | Rule::Both(rules::both::Rule { both: pair }) => {
+            let a = summarize_result(&pair.0.clone());
+            let b = summarize_result(&pair.1.clone());
+            format!("{}, {}", a, b)
+        }
+        Rule::Given(rules::given::Rule { .. }) => "given blah".to_string(),
+        Rule::Do(rules::action::Rule { .. }) => "do blah".to_string(),
+        Rule::CountOf(rules::count_of::Rule { of, count }) => format!(
+            "{} {}",
+            count,
+            of.iter()
+                .map(|r| print_rule_as_title(&r.clone()))
+                .collect::<Vec<String>>()
+                .join("•")
+        ),
+    }
+}
+
+fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String> {
+    let mut output: Vec<String> = vec![];
+
+    output.push(format!("{} {}", "#".repeat(level), name));
+
+    if let Some(result) = &req.result {
+        let what_to_do = summarize_result(&result);
+
+        output.push(textwrap::fill(
+            &format!(
+                "For this requirement, you must complete {what_to_do}",
+                what_to_do = what_to_do
+            ),
+            80,
+        ));
+
+        output.push("".to_string());
+    }
+
+    let mut requirements: Vec<String> = req
+        .requirements
+        .iter()
+        .flat_map(|(name, r)| print_requirement(name, &r.clone(), level + 1))
+        .collect();
+
+    output.append(&mut requirements);
+
+    output
+}
+
+fn summarize_result(rule: &Rule) -> String {
     // For this degree, you must complete both the "Degree Requirements" and "General Education" sections.
 
-    let what_to_do: String;
-
-    match area.result {
+    match rule {
         Rule::CountOf(rules::count_of::Rule { of, .. }) => {
             let requirement_names: Vec<String> = of
                 .iter()
                 .map(|rule| print_rule_as_title(&rule.clone()))
                 .collect();
 
-            // let requirement_names: Vec<String> =
-            //     area.result.keys().map(|n| format!("“{}”", n)).collect();
-
-            what_to_do = match requirement_names.len() {
+            match requirement_names.len() {
                 0 => "… nothing.".to_string(),
                 1 => format!("the {} requirement.", requirement_names.join("")),
                 2 => format!("both the {} requirements.", requirement_names.join(" and ")),
@@ -112,37 +195,20 @@ pub fn print(area: AreaOfStudy) -> String {
                         panic!("no requirements?");
                     }
                 }
-            };
+            }
         }
-        _ => panic!("not implented yet!"),
-    }
-
-    output += &textwrap::fill(
-        &format!(
-            "For this {area_type}, you must complete {what_to_do}",
-            area_type = area_type,
-            what_to_do = what_to_do
-        ),
-        80,
-    );
-
-    output
-}
-
-fn blockquote(text: &str) -> String {
-    textwrap::indent(&text, "> ")
-}
-
-fn _list_item(text: &str) -> String {
-    format!("- {}", text)
-}
-
-fn print_rule_as_title(rule: &Rule) -> String {
-    match rule {
+        Rule::Course(rules::course::Rule { course, .. }) => course.to_string(),
+        Rule::Either(rules::either::Rule { either: pair })
+        | Rule::Both(rules::both::Rule { both: pair }) => {
+            let a = summarize_result(&pair.0.clone());
+            let b = summarize_result(&pair.1.clone());
+            format!("{}, {}", a, b)
+        }
+        Rule::Given(rules::given::Rule { .. }) => "given blah".to_string(),
+        Rule::Do(rules::action::Rule { .. }) => "do blah".to_string(),
         Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
-            format!("“{}”", requirement)
+            format!("requirement {} blah", requirement)
         }
-        _ => panic!("not implented yet!"),
     }
 }
 
