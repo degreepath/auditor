@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 degreepath-parser = { path = "../parser" }
+textwrap = "0.11"
