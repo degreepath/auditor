@@ -6,13 +6,26 @@ use std::collections::HashMap;
 pub struct AreaOfStudy {
     #[serde(rename = "name")]
     pub area_name: String,
-    #[serde(rename = "type")]
-    pub area_type: String,
-    #[serde(rename = "degree")]
-    pub for_degree: String,
+    #[serde(flatten)]
+    pub area_type: AreaType,
     pub catalog: String,
     pub result: Rule,
     pub requirements: HashMap<String, Requirement>,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(tag = "type")]
+pub enum AreaType {
+    #[serde(rename = "degree")]
+    Degree,
+    #[serde(rename = "major")]
+    Major { degree: String },
+    #[serde(rename = "minor")]
+    Minor { degree: String },
+    #[serde(rename = "concentration")]
+    Concentration { degree: String },
+    #[serde(rename = "emphasis")]
+    Emphasis { degree: String, major: String },
 }
 
 #[cfg(test)]
@@ -67,8 +80,9 @@ mod tests {
 
         let expected_struct = AreaOfStudy {
             area_name: "Exercise Science".to_string(),
-            area_type: "major".to_string(),
-            for_degree: "Bachelor of Arts".to_string(),
+            area_type: AreaType::Major {
+                degree: "Bachelor of Arts".to_string(),
+            },
             catalog: "2015-16".to_string(),
             result: Rule::CountOf(CountOfRule {
                 count: CountOfEnum::All,
