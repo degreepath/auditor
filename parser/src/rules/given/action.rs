@@ -55,7 +55,7 @@ impl fmt::Display for Action {
                 rhs: Some(rhs),
                 op: Some(op),
             } => write!(f, "{} {} {}", lhs, op, rhs),
-            _ => return Err(fmt::Error),
+            _ => Err(fmt::Error),
         }
     }
 }

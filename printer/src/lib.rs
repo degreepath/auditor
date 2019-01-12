@@ -1,3 +1,5 @@
+#![warn(clippy::all)]
+
 extern crate degreepath_parser;
 use degreepath_parser::area_of_study::{AreaOfStudy, AreaType};
 use degreepath_parser::rules;
@@ -72,13 +74,10 @@ pub fn print(area: AreaOfStudy) -> String {
 
     let area_type = match area.area_type.clone() {
         AreaType::Degree => "degree",
-        AreaType::Major { degree: _ } => "major",
-        AreaType::Minor { degree: _ } => "minor",
-        AreaType::Concentration { degree: _ } => "concentration",
-        AreaType::Emphasis {
-            degree: _,
-            major: _,
-        } => "area of emphasis",
+        AreaType::Major { .. } => "major",
+        AreaType::Minor { .. } => "minor",
+        AreaType::Concentration { .. } => "concentration",
+        AreaType::Emphasis { .. } => "area of emphasis",
     };
 
     // For this degree, you must complete both the "Degree Requirements" and "General Education" sections.
@@ -86,7 +85,7 @@ pub fn print(area: AreaOfStudy) -> String {
     let what_to_do: String;
 
     match area.result {
-        Rule::CountOf(rules::count_of::CountOfRule { count, of }) => {
+        Rule::CountOf(rules::count_of::CountOfRule { of, .. }) => {
             let requirement_names: Vec<String> = of
                 .iter()
                 .map(|rule| print_rule_as_title(&rule.clone()))
@@ -134,16 +133,15 @@ fn blockquote(text: &str) -> String {
     textwrap::indent(&text, "> ")
 }
 
-fn list_item(text: &str) -> String {
+fn _list_item(text: &str) -> String {
     format!("- {}", text)
 }
 
 fn print_rule_as_title(rule: &Rule) -> String {
     match rule {
-        Rule::Requirement(rules::requirement::RequirementRule {
-            requirement,
-            optional,
-        }) => format!("“{}”", requirement),
+        Rule::Requirement(rules::requirement::RequirementRule { requirement, .. }) => {
+            format!("“{}”", requirement)
+        }
         _ => panic!("not implented yet!"),
     }
 }
