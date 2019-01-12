@@ -16,6 +16,17 @@ pub enum Counter {
     Number(u64),
 }
 
+impl fmt::Display for Counter {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        let what: String = match &self {
+            Counter::All => "all".to_string(),
+            Counter::Any => "any".to_string(),
+            Counter::Number(n) => format!("{}", n),
+        };
+        fmt.write_str(&what)
+    }
+}
+
 impl Serialize for Counter {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
