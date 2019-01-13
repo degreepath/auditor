@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt;
 
 pub type Clause = HashMap<String, Value>;
 
@@ -42,6 +43,19 @@ impl PartialEq<bool> for Value {
             Value::Bool(b) => b == rhs,
             _ => false,
         }
+    }
+}
+
+impl fmt::Display for Value {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        let desc = match &self {
+            Value::String(s) => format!("“{}”", s),
+            Value::Integer(n) => format!("{}", n),
+            Value::Float(n) => format!("{:.2}", n),
+            Value::Bool(b) => format!("{}", b),
+            Value::Vec(_) => panic!("display for Vec is not implemented yet!"),
+        };
+        fmt.write_str(&desc)
     }
 }
 
