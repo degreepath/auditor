@@ -8,6 +8,7 @@ pub enum Value {
     String(String),
     Integer(u64),
     Float(f64),
+    Bool(bool),
     Vec(Vec<Value>),
 }
 
@@ -26,6 +27,21 @@ impl From<&str> for Value {
 impl From<u64> for Value {
     fn from(i: u64) -> Value {
         Value::Integer(i)
+    }
+}
+
+impl From<bool> for Value {
+    fn from(b: bool) -> Value {
+        Value::Bool(b)
+    }
+}
+
+impl PartialEq<bool> for Value {
+    fn eq(&self, rhs: &bool) -> bool {
+        match &self {
+            Value::Bool(b) => b == rhs,
+            _ => false,
+        }
     }
 }
 
