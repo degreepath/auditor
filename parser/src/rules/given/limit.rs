@@ -4,7 +4,7 @@ use super::filter;
 pub struct Limiter {
     #[serde(rename = "where")]
     filter: filter::Clause,
-    at_most: i32,
+    at_most: u64,
 }
 
 #[cfg(test)]
