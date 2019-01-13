@@ -121,12 +121,24 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String>
 
     output.push(format!("{} {}", "#".repeat(level), name));
 
+    if let Some(message) = &req.message {
+        let message = format!("Note: {}", message);
+        output.push(blockquote(&textwrap::fill(&message, 78)));
+        output.push("".to_string());
+    }
+
     if let Some(result) = &req.result {
         let what_to_do = summarize_result(&result);
 
+        let kind = match req.requirements.len() {
+            0 => "requirement",
+            _ => "section",
+        };
+
         output.push(textwrap::fill(
             &format!(
-                "For this requirement, you must {what_to_do}",
+                "For this {kind}, you must {what_to_do}",
+                kind = kind,
                 what_to_do = what_to_do
             ),
             80,
@@ -241,9 +253,10 @@ fn summarize_result(rule: &Rule) -> String {
                                 if let Some(val) = f.get("institution") {
                                     format!(" at {}", val)
                                 } else if let Some(val) = f.get("level") {
-                                    format!(" at or above the {} level", val)
+                                    // TODO: fix this "at or above"; it's actually determined through the value here, not the action's operator
+                                    format!(" TODO at the {} level", val)
                                 } else if let Some(val) = f.get("graded") {
-                                    if *val == true {
+                                    if val.is_true() {
                                         ", graded,".into()
                                     } else {
                                         ", non-graded,".into()
@@ -257,6 +270,114 @@ fn summarize_result(rule: &Rule) -> String {
                         format!(
                             "complete enough courses{} to obtain {} credits.",
                             filter_desc, rhs
+                        )
+                    }
+                    _ => {
+                        println!("{:?}", given);
+                        println!("{:?}", action);
+                        "given blah".to_string()
+                    }
+                },
+                rules::given::What::DistinctCourses => match action {
+                    rules::given::action::Action {
+                        lhs:
+                            rules::given::action::Value::Command(rules::given::action::Command::Count),
+                        op,
+                        rhs: Some(rhs),
+                    } => {
+                        let filter_desc = match filter {
+                            Some(f) => {
+                                // TODO: handle multiple filter conditions
+                                if let Some(val) = f.get("institution") {
+                                    format!(" at {}", val)
+                                } else if let Some(val) = f.get("gereqs") {
+                                    format!(" with the {} general education attribute", val)
+                                } else if let Some(val) = f.get("level") {
+                                    format!(" at or above the {} level", val)
+                                } else if let Some(val) = f.get("graded") {
+                                    if val.is_true() {
+                                        ", graded,".into()
+                                    } else {
+                                        ", non-graded,".into()
+                                    }
+                                } else {
+                                    "".into()
+                                }
+                            }
+                            None => "".into(),
+                        };
+
+                        let counter = match op {
+                            Some(rules::given::action::Operator::GreaterThanEqualTo) => "at least",
+                            _ => panic!("other actions for {given: courses, what: courses} are not implemented yet")
+                        };
+
+                        let course_word = match rhs {
+                            rules::given::action::Value::Integer(n) if *n == 1 => "course",
+                            rules::given::action::Value::Float(n) if *n == 1.0 => "course",
+                            _ => "courses",
+                        };
+
+                        format!(
+                            "complete {counter} {num} distinct {word}{desc}.",
+                            counter = counter,
+                            num = rhs,
+                            word = course_word,
+                            desc = filter_desc
+                        )
+                    }
+                    _ => {
+                        println!("{:?}", given);
+                        println!("{:?}", action);
+                        "given blah".to_string()
+                    }
+                },
+                rules::given::What::Courses => match action {
+                    rules::given::action::Action {
+                        lhs:
+                            rules::given::action::Value::Command(rules::given::action::Command::Count),
+                        op,
+                        rhs: Some(rhs),
+                    } => {
+                        let filter_desc = match filter {
+                            Some(f) => {
+                                // TODO: handle multiple filter conditions
+                                if let Some(val) = f.get("institution") {
+                                    format!(" at {}", val)
+                                } else if let Some(val) = f.get("gereqs") {
+                                    format!(" with the {} general education attribute", val)
+                                } else if let Some(val) = f.get("level") {
+                                    format!(" at or above the {} level", val)
+                                } else if let Some(val) = f.get("graded") {
+                                    if val.is_true() {
+                                        ", graded,".into()
+                                    } else {
+                                        ", non-graded,".into()
+                                    }
+                                } else {
+                                    "".into()
+                                }
+                            }
+                            None => "".into(),
+                        };
+
+                        let counter = match op {
+                            Some(rules::given::action::Operator::GreaterThanEqualTo) => "at least",
+                            _ => panic!("other actions for {given: courses, what: courses} are not implemented yet")
+                        };
+
+                        let course_word = match rhs {
+                            rules::given::action::Value::Integer(n) if *n == 1 => "course",
+                            rules::given::action::Value::Float(n) if *n == 1.0 => "course",
+                            _ => "courses",
+                        };
+
+                        format!(
+                            "complete {counter} {num} {word}{desc}.",
+                            counter = counter,
+                            num = rhs,
+                            word = course_word,
+                            desc = filter_desc
                         )
                     }
                     _ => {
@@ -281,6 +402,9 @@ fn summarize_result(rule: &Rule) -> String {
                         }
                         rules::given::action::Operator::EqualTo => {
                             format!("maintain exactly a {} GPA across all of your courses.", rhs)
+                        }
+                        rules::given::action::Operator::NotEqualTo => {
+                            panic!("not equal to makes no sense here")
                         }
                         rules::given::action::Operator::LessThan => format!(
                             "maintain less than a {} GPA across all of your courses.",

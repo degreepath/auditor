@@ -11,7 +11,7 @@ pub struct Rule {
     pub given: Given,
     #[serde(default)]
     pub limit: Option<Vec<limit::Limiter>>,
-    #[serde(default, rename = "where")]
+    #[serde(rename = "where", default, deserialize_with="filter::deserialize_with")]
     pub filter: Option<filter::Clause>,
     pub what: What,
     #[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
