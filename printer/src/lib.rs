@@ -8,27 +8,6 @@ use degreepath_parser::rules::Rule;
 
 extern crate textwrap;
 
-/*
-> This is the set of requirements for the 2015-16 "Bachelor of Arts" degree from
-> St. Olaf College.
-
-For this degree, you must complete both the "Degree Requirements" and "General
-Education" sections.
-
-# Degree Requirements
-
-For this section, you must complete all of the "Courses", "Residency", "Interim",
-"Grade Point Average", "Course Level", "Graded Courses", and "Major"
-requirements.
-
-## Courses
-For this requirement, you must complete enough courses to obtain 35 credits.
-
-## Residency
-For this requirement, you must complete enough courses at St. Olaf College to
-obtain 17 credits.
-*/
-
 pub fn print(area: AreaOfStudy) -> String {
     let mut output: Vec<String> = vec![];
 
@@ -182,15 +161,9 @@ fn summarize_result(rule: &Rule) -> String {
                 1 => format!("the {} requirement.", requirement_names.join("")),
                 2 => format!("both the {} requirements.", requirement_names.join(" and ")),
                 _ => {
-                    // For this section, you must complete all of the "Courses",
-                    // "Residency", "Interim", "Grade Point Average", "Course Level",
-                    // "Graded Courses", and "Major" requirements.
                     if let Some((last, others)) = requirement_names.clone().split_last() {
-                        format!(
-                            "all of the {}, and {} requirements.",
-                            others.join(", "),
-                            last
-                        )
+                        let others = others.join(", ");
+                        format!("all of the {}, and {} requirements.", others, last)
                     } else {
                         panic!("no requirements?");
                     }
@@ -213,9 +186,4 @@ fn summarize_result(rule: &Rule) -> String {
 }
 
 #[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+mod tests {}
