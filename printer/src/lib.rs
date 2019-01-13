@@ -126,7 +126,7 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String>
 
         output.push(textwrap::fill(
             &format!(
-                "For this requirement, you must complete {what_to_do}",
+                "For this requirement, you must {what_to_do}",
                 what_to_do = what_to_do
             ),
             80,
@@ -147,27 +147,38 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String>
 }
 
 fn summarize_result(rule: &Rule) -> String {
-    // For this degree, you must complete both the "Degree Requirements" and "General Education" sections.
-
     match rule {
         Rule::CountOf(rules::count_of::Rule { of, .. }) => {
-            let requirement_names: Vec<String> = of
-                .iter()
-                .map(|rule| print_rule_as_title(&rule.clone()))
-                .collect();
+            let all_are_requirements = of.iter().all(|rule| match rule {
+                Rule::Requirement { .. } => true,
+                _ => false,
+            });
 
-            match requirement_names.len() {
-                0 => "… nothing.".to_string(),
-                1 => format!("the {} requirement.", requirement_names.join("")),
-                2 => format!("both the {} requirements.", requirement_names.join(" and ")),
-                _ => {
-                    if let Some((last, others)) = requirement_names.clone().split_last() {
-                        let others = others.join(", ");
-                        format!("all of the {}, and {} requirements.", others, last)
-                    } else {
-                        panic!("no requirements?");
+            if all_are_requirements {
+                let requirement_names: Vec<String> = of
+                    .iter()
+                    .map(|rule| print_rule_as_title(&rule.clone()))
+                    .collect();
+
+                match requirement_names.len() {
+                    0 => "… do nothing.".to_string(),
+                    1 => format!("complete the {} requirement.", requirement_names.join("")),
+                    2 => format!(
+                        "complete both the {} requirements.",
+                        requirement_names.join(" and ")
+                    ),
+                    _ => {
+                        if let Some((last, others)) = requirement_names.clone().split_last() {
+                            let others = others.join(", ");
+                            format!("complete all of the {}, and {} requirements.", others, last)
+                        } else {
+                            panic!("… er, there are no requirements?");
+                        }
                     }
                 }
+            } else {
+                println!("{:?}", rule);
+                panic!("count-of rule had non-requirements in it")
             }
         }
         Rule::Course(rules::course::Rule { course, .. }) => course.to_string(),
@@ -177,7 +188,126 @@ fn summarize_result(rule: &Rule) -> String {
             let b = summarize_result(&pair.1.clone());
             format!("{}, {}", a, b)
         }
-        Rule::Given(rules::given::Rule { .. }) => "given blah".to_string(),
+        Rule::Given(rules::given::Rule {
+            given,
+            action,
+            what,
+            filter,
+            ..
+        }) => match given {
+            rules::given::Given::AreasOfStudy => match what {
+                rules::given::What::AreasOfStudy => match action {
+                    rules::given::action::Action {
+                        lhs:
+                            rules::given::action::Value::Command(rules::given::action::Command::Count),
+                        op: Some(rules::given::action::Operator::GreaterThanEqualTo),
+                        rhs: Some(rhs),
+                    } => {
+                        let filter_desc = match filter {
+                            Some(f) => {
+                                // TODO: handle multiple filter conditions
+                                if let Some(val) = f.get("type") {
+                                    format!("{}", val)
+                                } else {
+                                    "".into()
+                                }
+                            }
+                            None => "".into(),
+                        };
+
+                        let count = match rhs {
+                            rules::given::action::Value::Integer(1) => "one",
+                            _ => panic!("unknown number"),
+                        };
+
+                        // For this requirement, you must also complete one "major".
+                        format!("also complete {} {}.", count, filter_desc)
+                    }
+                    _ => panic!("unimplemented"),
+                },
+                _ => panic!("given: areas, what: !areas???"),
+            },
+            rules::given::Given::AllCourses => match what {
+                rules::given::What::Credits => match action {
+                    rules::given::action::Action {
+                        lhs:
+                            rules::given::action::Value::Command(rules::given::action::Command::Sum),
+                        op: Some(rules::given::action::Operator::GreaterThanEqualTo),
+                        rhs: Some(rhs),
+                    } => {
+                        let filter_desc = match filter {
+                            Some(f) => {
+                                // TODO: handle multiple filter conditions
+                                if let Some(val) = f.get("institution") {
+                                    format!(" at {}", val)
+                                } else if let Some(val) = f.get("level") {
+                                    format!(" at or above the {} level", val)
+                                } else if let Some(val) = f.get("graded") {
+                                    if *val == true {
+                                        ", graded,".into()
+                                    } else {
+                                        ", non-graded,".into()
+                                    }
+                                } else {
+                                    "".into()
+                                }
+                            }
+                            None => "".into(),
+                        };
+                        format!(
+                            "complete enough courses{} to obtain {} credits.",
+                            filter_desc, rhs
+                        )
+                    }
+                    _ => {
+                        println!("{:?}", given);
+                        println!("{:?}", action);
+                        "given blah".to_string()
+                    }
+                },
+                rules::given::What::Grades => match action {
+                    rules::given::action::Action {
+                        lhs:
+                            rules::given::action::Value::Command(rules::given::action::Command::Average),
+                        op: Some(op),
+                        rhs: Some(rhs),
+                    } => match op {
+                        rules::given::action::Operator::GreaterThanEqualTo => format!(
+                            "maintain a {} or greater GPA across all of your courses.",
+                            rhs
+                        ),
+                        rules::given::action::Operator::GreaterThan => {
+                            format!("maintain a GPA above {} across all of your courses.", rhs)
+                        }
+                        rules::given::action::Operator::EqualTo => {
+                            format!("maintain exactly a {} GPA across all of your courses.", rhs)
+                        }
+                        rules::given::action::Operator::LessThan => format!(
+                            "maintain less than a {} GPA across all of your courses.",
+                            rhs
+                        ),
+                        rules::given::action::Operator::LessThanEqualTo => {
+                            format!("maintain at most a {} GPA across all of your courses.", rhs)
+                        }
+                    },
+                    _ => {
+                        println!("{:?}", given);
+                        println!("{:?}", action);
+                        "given blah".to_string()
+                    }
+                },
+                _ => {
+                    println!("{:?}", given);
+                    println!("{:?}", action);
+                    "given blah".to_string()
+                }
+            },
+            _ => {
+                println!("{:?}", given);
+                println!("{:?}", action);
+                "given blah".to_string()
+            }
+        },
         Rule::Do(rules::action::Rule { .. }) => "do blah".to_string(),
         Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
             format!("requirement {} blah", requirement)
@@ -186,4 +316,13 @@ fn summarize_result(rule: &Rule) -> String {
 }
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+    // use super::*;
+
+    // #[test]
+    // fn print_top_level() {
+    //     let input = AreaOfStudy {
+    //
+    //     }
+    // }
+}
