@@ -1,14 +1,32 @@
-use serde_yaml::Value as YamlValue;
 use std::collections::HashMap;
 
 pub type Clause = HashMap<String, Value>;
-pub type Value = YamlValue;
 
-pub enum V {
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(untagged)]
+pub enum Value {
     String(String),
     Integer(u64),
     Float(f64),
-    Vec(Vec<V>),
+    Vec(Vec<Value>),
+}
+
+impl From<String> for Value {
+    fn from(s: String) -> Value {
+        Value::String(s)
+    }
+}
+
+impl From<&str> for Value {
+    fn from(s: &str) -> Value {
+        Value::String(s.to_string())
+    }
+}
+
+impl From<u64> for Value {
+    fn from(i: u64) -> Value {
+        Value::Integer(i)
+    }
 }
 
 #[cfg(test)]

@@ -136,10 +136,7 @@ result:
     - {given: save, save: $interim_courses, what: courses, do: count >= 3}";
 
         let mut expected_filter = given::filter::Clause::new();
-        expected_filter.insert(
-            "semester".to_string(),
-            serde_yaml::Value::String("Interim".to_string()),
-        );
+        expected_filter.insert("semester".to_string(), "Interim".into());
 
         let expected = Requirement {
             message: None,
