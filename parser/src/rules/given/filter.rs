@@ -1,6 +1,6 @@
-use serde::ser::{Serializer, Serialize};
-use serde::de::{Deserializer, Deserialize};
 use crate::util;
+use serde::de::{Deserialize, Deserializer};
+use serde::ser::{Serialize, Serializer};
 
 use super::action;
 use crate::rules::given::action::ParseError;
@@ -18,8 +18,16 @@ where
     #[derive(Deserialize)]
     struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
-    let v = HashMap::deserialize(deserializer)?;
-    Ok(Some(v))
+    // TODO: improve this to not transmute the hashmap right after creation
+    let v: Result<HashMap<String, Wrapper>, D::Error> = HashMap::deserialize(deserializer);
+
+    match v {
+        Ok(v) => {
+            let transmuted: Clause = v.iter().map(|(k, v)| (k.clone(), v.0.clone())).collect();
+            Ok(Some(transmuted))
+        },
+        Err(err) => Err(err),
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
@@ -44,19 +52,23 @@ impl FromStr for WrappedValue {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let or_bits: Vec<_> = s.split(" | ").collect();
         match or_bits.as_slice() {
-            [a, b] => return Ok(WrappedValue::Or([
-                a.parse::<TaggedValue>()?,
-                b.parse::<TaggedValue>()?,
-            ])),
+            [a, b] => {
+                return Ok(WrappedValue::Or([
+                    a.parse::<TaggedValue>()?,
+                    b.parse::<TaggedValue>()?,
+                ]))
+            }
             _ => (),
         };
 
         let and_bits: Vec<_> = s.split(" & ").collect();
         match and_bits.as_slice() {
-            [a, b] => return Ok(WrappedValue::And([
-                a.parse::<TaggedValue>()?,
-                b.parse::<TaggedValue>()?,
-            ])),
+            [a, b] => {
+                return Ok(WrappedValue::And([
+                    a.parse::<TaggedValue>()?,
+                    b.parse::<TaggedValue>()?,
+                ]))
+            }
             _ => (),
         };
 
@@ -118,9 +130,7 @@ impl FromStr for TaggedValue {
                 let op = op.parse::<action::Operator>()?;
                 let value = value.parse::<Value>()?;
 
-                Ok(TaggedValue {
-                    op, value
-                })
+                Ok(TaggedValue { op, value })
             }
             _ => Err(ParseError::InvalidAction),
         }
@@ -269,8 +279,8 @@ impl Serialize for Value {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use super::super::action::Operator;
+    use super::*;
 
     #[test]
     fn serialize_simple() {
@@ -309,66 +319,216 @@ level: "< 100 | = 200""#;
     }
 
     #[test]
-    fn deserialize_simple() {
-        let data = r#"gereqs: 'FYW'"#;
+    fn deserialize_value_str() {
+        let data = "FYW";
+        let expected = Value::String("FYW".into());
+        let actual: Value = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
 
-        let expected: Clause = hashmap! {
-            "gereqs".into() => WrappedValue::Single(TaggedValue {op: Operator::EqualTo, value: Value::String("FYW".into())}),
-        };
-
-        let actual: Clause = serde_yaml::from_str(&data).unwrap();
+    #[test]
+    fn deserialize_value_int() {
+        let data = "1";
+        let expected = Value::Integer(1);
+        let actual: Value = data.parse().unwrap();
         assert_eq!(actual, expected);
 
-        let data = r#"gereqs: 'MCD | MCG'"#;
+        let data = "100";
+        let expected = Value::Integer(100);
+        let actual: Value = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
 
-        let expected: Clause = hashmap! {
-            "gereqs".into() => WrappedValue::Or([
-                TaggedValue {op: Operator::EqualTo, value: Value::String("MCD".into())},
-                TaggedValue {op: Operator::EqualTo, value: Value::String("MCG".into())},
-            ])
-        };
-
-        let actual: Clause = serde_yaml::from_str(&data).unwrap();
+    #[test]
+    fn deserialize_value_float() {
+        let data = "1.0";
+        let expected = Value::Float(1.0);
+        let actual: Value = data.parse().unwrap();
         assert_eq!(actual, expected);
 
-        let data = r#"level: '>= 200'"#;
+        let data = "1.5";
+        let expected = Value::Float(1.5);
+        let actual: Value = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
 
-        let expected: Clause = hashmap! {
-            "level".into() => WrappedValue::Single(TaggedValue {op: Operator::GreaterThanEqualTo, value: Value::Integer(200)}),
-        };
-
-        let actual: Clause = serde_yaml::from_str(&data).unwrap();
+    #[test]
+    fn deserialize_value_bool() {
+        let data = "true";
+        let expected = Value::Bool(true);
+        let actual: Value = data.parse().unwrap();
         assert_eq!(actual, expected);
 
-        let data = r#"graded: 'true'"#;
+        let data = "false";
+        let expected = Value::Bool(false);
+        let actual: Value = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
 
-        let expected: Clause = hashmap! {
-            "level".into() => WrappedValue::Single(TaggedValue {op: Operator::EqualTo, value: Value::Bool(true)}),
+    #[test]
+    fn deserialize_tagged_value_untagged() {
+        let data = "FYW";
+        let expected = TaggedValue {
+            op: Operator::EqualTo,
+            value: Value::String("FYW".into()),
         };
+        let actual: TaggedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
 
-        let actual: Clause = serde_yaml::from_str(&data).unwrap();
+    #[test]
+    fn deserialize_tagged_value_eq() {
+        let data = "= FYW";
+        let expected = TaggedValue {
+            op: Operator::EqualTo,
+            value: Value::String("FYW".into()),
+        };
+        let actual: TaggedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_tagged_value_neq() {
+        let data = "! FYW";
+        let expected = TaggedValue {
+            op: Operator::NotEqualTo,
+            value: Value::String("FYW".into()),
+        };
+        let actual: TaggedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_tagged_value_gt() {
+        let data = "> FYW";
+        let expected = TaggedValue {
+            op: Operator::GreaterThan,
+            value: Value::String("FYW".into()),
+        };
+        let actual: TaggedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_tagged_value_gte() {
+        let data = ">= FYW";
+        let expected = TaggedValue {
+            op: Operator::GreaterThanEqualTo,
+            value: Value::String("FYW".into()),
+        };
+        let actual: TaggedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_tagged_value_lt() {
+        let data = "< FYW";
+        let expected = TaggedValue {
+            op: Operator::LessThan,
+            value: Value::String("FYW".into()),
+        };
+        let actual: TaggedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_tagged_value_lte() {
+        let data = "<= FYW";
+        let expected = TaggedValue {
+            op: Operator::LessThanEqualTo,
+            value: Value::String("FYW".into()),
+        };
+        let actual: TaggedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_wrapped_value() {
+        let data = "FYW";
+        let expected = WrappedValue::Single(TaggedValue {
+            op: Operator::EqualTo,
+            value: Value::String("FYW".into()),
+        });
+        let actual: WrappedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_wrapped_value_ne() {
+        let data = "! FYW";
+        let expected = WrappedValue::Single(TaggedValue {
+            op: Operator::NotEqualTo,
+            value: Value::String("FYW".into()),
+        });
+        let actual: WrappedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_wrapped_value_or_ne() {
+        let data = "! FYW | = FYW";
+        let expected = WrappedValue::Or([
+            TaggedValue {
+                op: Operator::NotEqualTo,
+                value: Value::String("FYW".into()),
+            },
+            TaggedValue {
+                op: Operator::EqualTo,
+                value: Value::String("FYW".into()),
+            },
+        ]);
+        let actual: WrappedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_wrapped_value_or_untagged() {
+        let data = "FYW | FYW";
+        let expected = WrappedValue::Or([
+            TaggedValue {
+                op: Operator::EqualTo,
+                value: Value::String("FYW".into()),
+            },
+            TaggedValue {
+                op: Operator::EqualTo,
+                value: Value::String("FYW".into()),
+            },
+        ]);
+        let actual: WrappedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_wrapped_value_and_untagged() {
+        let data = "FYW & FYW";
+        let expected = WrappedValue::And([
+            TaggedValue {
+                op: Operator::EqualTo,
+                value: Value::String("FYW".into()),
+            },
+            TaggedValue {
+                op: Operator::EqualTo,
+                value: Value::String("FYW".into()),
+            },
+        ]);
+        let actual: WrappedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_wrapped_value_and_ne() {
+        let data = "! FYW & = FYW";
+        let expected = WrappedValue::And([
+            TaggedValue {
+                op: Operator::NotEqualTo,
+                value: Value::String("FYW".into()),
+            },
+            TaggedValue {
+                op: Operator::EqualTo,
+                value: Value::String("FYW".into()),
+            },
+        ]);
+        let actual: WrappedValue = data.parse().unwrap();
         assert_eq!(actual, expected);
     }
 }
-
-/*
-
-> where: { gereqs: 'FYW' }
-< where: { gereqs: { op: Equal, value: { String: 'FYW' } } }
-
----
-
-> where: { gereqs: 'MCD | MCG' }
-< where: { gereqs: { op: ~, value: { Or: [{ op: Equal, value: { String: 'MCD' } }, { op: Equal, value: { String: 'MCG' } }] } } }
-
----
-
-> where: { level: '>= 200' }
-< where: { level: { op: GreaterThanOrEqual, value: { Integer: 200 } } }
-
----
-
-> where: { graded: true }
-< where: { level: { op: Equal, value: { Bool: true } } }
-
-*/

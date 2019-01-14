@@ -8,7 +8,11 @@ pub struct SaveBlock {
     pub given: Given,
     #[serde(default)]
     pub limit: Option<Vec<limit::Limiter>>,
-    #[serde(rename = "where", default, deserialize_with="filter::deserialize_with")]
+    #[serde(
+        rename = "where",
+        default,
+        deserialize_with = "filter::deserialize_with"
+    )]
     pub filter: Option<filter::Clause>,
     #[serde(default)]
     pub what: Option<What>,
