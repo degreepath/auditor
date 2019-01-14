@@ -8,7 +8,11 @@ pub struct SaveBlock {
     pub given: Given,
     #[serde(default)]
     pub limit: Option<Vec<limit::Limiter>>,
-    #[serde(rename = "where", default)]
+    #[serde(
+        rename = "where",
+        default,
+        deserialize_with = "filter::deserialize_with"
+    )]
     pub filter: Option<filter::Clause>,
     #[serde(default)]
     pub what: Option<What>,
@@ -30,8 +34,9 @@ what: courses
 name: $interim_courses
 label: Interim Courses"#;
 
-        let mut filter = filter::Clause::new();
-        filter.insert("semester".to_string(), "Interim".into());
+        let filter: filter::Clause = hashmap! {
+            "semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
+        };
 
         let expected = SaveBlock {
             name: "$interim_courses".to_string(),
@@ -57,9 +62,10 @@ where: {year: graduation-year, semester: Fall}
 name: $dance_seminars
 label: "Senior Dance Seminars""#;
 
-        let mut filter = filter::Clause::new();
-        filter.insert("year".to_string(), "graduation-year".into());
-        filter.insert("semester".to_string(), "Fall".into());
+        let filter: filter::Clause = hashmap! {
+            "year".into() => "graduation-year".parse::<filter::WrappedValue>().unwrap(),
+            "semester".into() => "Fall".parse::<filter::WrappedValue>().unwrap(),
+        };
 
         let expected = SaveBlock {
             name: "$dance_seminars".to_string(),

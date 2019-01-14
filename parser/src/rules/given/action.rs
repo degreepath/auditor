@@ -110,6 +110,7 @@ pub enum Operator {
     EqualTo,
     GreaterThan,
     GreaterThanEqualTo,
+    NotEqualTo,
 }
 
 impl FromStr for Operator {
@@ -122,6 +123,7 @@ impl FromStr for Operator {
             "=" => Ok(Operator::EqualTo),
             ">" => Ok(Operator::GreaterThan),
             ">=" => Ok(Operator::GreaterThanEqualTo),
+            "!" => Ok(Operator::NotEqualTo),
             _ => Err(ParseError::UnknownOperator),
         }
     }
@@ -135,6 +137,7 @@ impl fmt::Display for Operator {
             Operator::EqualTo => write!(f, "="),
             Operator::GreaterThan => write!(f, ">"),
             Operator::GreaterThanEqualTo => write!(f, ">="),
+            Operator::NotEqualTo => write!(f, "!"),
         }
     }
 }

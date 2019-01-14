@@ -11,7 +11,11 @@ pub struct Rule {
     pub given: Given,
     #[serde(default)]
     pub limit: Option<Vec<limit::Limiter>>,
-    #[serde(default, rename = "where")]
+    #[serde(
+        rename = "where",
+        default,
+        deserialize_with = "filter::deserialize_with"
+    )]
     pub filter: Option<filter::Clause>,
     pub what: What,
     #[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
@@ -368,6 +372,101 @@ do: count >= 3"#;
 
         let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_filter_gereqs_single() {
+        let data = r#"{where: {gereqs: 'FYW'}, given: courses, what: courses, do: count > 1}"#;
+
+        let expected: filter::Clause = hashmap! {
+            "gereqs".into() => filter::WrappedValue::Single(filter::TaggedValue {
+                op: action::Operator::EqualTo,
+                value: filter::Value::String("FYW".into()),
+            }),
+        };
+        let expected = Rule {
+            given: Given::AllCourses,
+            limit: None,
+            filter: Some(expected),
+            what: What::Courses,
+            action: "count > 1".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_filter_gereqs_or() {
+        let data =
+            r#"{where: {gereqs: 'MCD | MCG'}, given: courses, what: courses, do: count > 1}"#;
+
+        let expected: filter::Clause = hashmap! {
+            "gereqs".into() => filter::WrappedValue::Or([
+                filter::TaggedValue {
+                    op: action::Operator::EqualTo,
+                    value: filter::Value::String("MCD".into()),
+                },
+                filter::TaggedValue {
+                    op: action::Operator::EqualTo,
+                    value: filter::Value::String("MCG".into()),
+                },
+            ]),
+        };
+        let expected = Rule {
+            given: Given::AllCourses,
+            limit: None,
+            filter: Some(expected),
+            what: What::Courses,
+            action: "count > 1".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_filter_level_gte() {
+        let data = r#"{where: {level: '>= 200'}, given: courses, what: courses, do: count > 1}"#;
+
+        let expected: filter::Clause = hashmap! {
+            "level".into() => filter::WrappedValue::Single(filter::TaggedValue {
+                op: action::Operator::GreaterThanEqualTo,
+                value: filter::Value::Integer(200),
+            }),
+        };
+        let expected = Rule {
+            given: Given::AllCourses,
+            limit: None,
+            filter: Some(expected),
+            what: What::Courses,
+            action: "count > 1".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_filter_graded_bool() {
+        let data = r#"{where: {graded: 'true'}, given: courses, what: courses, do: count > 1}"#;
+
+        let expected: filter::Clause = hashmap! {
+            "graded".into() => filter::WrappedValue::Single(filter::TaggedValue {
+                op: action::Operator::EqualTo,
+                value: filter::Value::Bool(true),
+            }),
+        };
+        let expected = Rule {
+            given: Given::AllCourses,
+            limit: None,
+            filter: Some(expected),
+            what: What::Courses,
+            action: "count > 1".parse().unwrap(),
+        };
+
+        let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected);
     }
 }

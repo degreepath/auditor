@@ -13,8 +13,9 @@ mod tests {
 
     #[test]
     fn serialize_level100() {
-        let mut clause = filter::Clause::new();
-        clause.insert("level".to_string(), 100.into());
+        let clause: filter::Clause = hashmap! {
+            "level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
+        };
 
         let data = Limiter {
             filter: clause,
@@ -23,7 +24,7 @@ mod tests {
 
         let expected = r#"---
 where:
-  level: 100
+  level: "= 100"
 at_most: 2"#;
 
         let actual = serde_yaml::to_string(&data).unwrap();
@@ -33,8 +34,9 @@ at_most: 2"#;
 
     #[test]
     fn serialize_not_math() {
-        let mut clause = filter::Clause::new();
-        clause.insert("department".to_string(), "! MATH".into());
+        let clause: filter::Clause = hashmap! {
+            "department".into() => "! MATH".parse::<filter::WrappedValue>().unwrap(),
+        };
 
         let data = Limiter {
             filter: clause,

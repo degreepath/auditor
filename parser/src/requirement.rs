@@ -135,8 +135,9 @@ result:
     - {given: save, save: $interim_courses, what: credits, do: sum >= 3}
     - {given: save, save: $interim_courses, what: courses, do: count >= 3}";
 
-        let mut expected_filter = given::filter::Clause::new();
-        expected_filter.insert("semester".to_string(), "Interim".into());
+        let expected_filter: given::filter::Clause = hashmap! {
+            "semester".into() => "Interim".parse::<given::filter::WrappedValue>().unwrap(),
+        };
 
         let expected = Requirement {
             message: None,
