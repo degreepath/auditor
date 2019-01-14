@@ -4,6 +4,7 @@ extern crate degreepath_parser;
 use degreepath_parser::area_of_study::{AreaOfStudy, AreaType};
 use degreepath_parser::requirement::Requirement;
 use degreepath_parser::rules;
+use degreepath_parser::rules::given::{action, filter};
 use degreepath_parser::rules::Rule;
 use std::fmt;
 use std::fmt::Write;
@@ -111,9 +112,7 @@ fn print_rule_as_title(rule: &Rule) -> Result<String, fmt::Error> {
             "{} {}",
             count,
             of.iter()
-                .filter_map(|r| Some(
-                    print_rule_as_title(&r.clone()).unwrap_or("error!!!".to_string())
-                ))
+                .map(|r| print_rule_as_title(&r.clone()).unwrap_or("error!!!".to_string()))
                 .collect::<Vec<String>>()
                 .join(" • ")
         )),
@@ -175,42 +174,17 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
             if all_are_requirements {
                 let requirement_names: Vec<String> = of
                     .iter()
-                    .filter_map(|r| {
-                        Some(print_rule_as_title(&r.clone()).unwrap_or("error!!!".to_string()))
-                    })
+                    .map(|r| print_rule_as_title(&r.clone()).unwrap_or("error!!!".to_string()))
                     .collect();
 
+                let names = oxford(requirement_names.as_slice());
+
                 match requirement_names.len() {
-                    0 => {
-                        write!(&mut w, "… do nothing.")?;
-                    }
-                    1 => {
-                        write!(
-                            &mut w,
-                            "complete the {} requirement.",
-                            requirement_names.join("")
-                        )?;
-                    }
-                    2 => {
-                        write!(
-                            &mut w,
-                            "complete both the {} requirements.",
-                            requirement_names.join(" and ")
-                        )?;
-                    }
-                    _ => {
-                        if let Some((last, others)) = requirement_names.clone().split_last() {
-                            let others = others.join(", ");
-                            write!(
-                                &mut w,
-                                "complete all of the {}, and {} requirements.",
-                                others, last
-                            )?;
-                        } else {
-                            panic!("… er, there are no requirements?");
-                        }
-                    }
-                }
+                    0 => write!(&mut w, "… do nothing.")?,
+                    1 => write!(&mut w, "complete the {} requirement.", names)?,
+                    2 => write!(&mut w, "complete both the {} requirements.", names)?,
+                    _ => write!(&mut w, "complete all of the {} requirements.", names)?,
+                };
             } else {
                 println!("{:?}", rule);
                 panic!("count-of rule had non-requirements in it")
@@ -234,30 +208,18 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
         }) => match given {
             rules::given::Given::AreasOfStudy => match what {
                 rules::given::What::AreasOfStudy => match action {
-                    rules::given::action::Action {
-                        lhs:
-                            rules::given::action::Value::Command(rules::given::action::Command::Count),
-                        op: Some(rules::given::action::Operator::GreaterThanEqualTo),
+                    action::Action {
+                        lhs: action::Value::Command(action::Command::Count),
+                        op: Some(action::Operator::GreaterThanEqualTo),
                         rhs: Some(rhs),
                     } => {
                         let filter_desc = match filter {
-                            Some(f) => {
-                                // TODO: handle multiple filter conditions
-                                match f.get("type") {
-                                    Some(rules::given::filter::WrappedValue::Single(
-                                        rules::given::filter::TaggedValue {
-                                            op: rules::given::action::Operator::EqualTo,
-                                            value,
-                                        },
-                                    )) => format!("{}", value),
-                                    _ => "blargh filter".into(),
-                                }
-                            }
+                            Some(f) => describe_areas_filter(f),
                             None => "".into(),
                         };
 
                         let count = match rhs {
-                            rules::given::action::Value::Integer(1) => "one",
+                            action::Value::Integer(1) => "one",
                             _ => panic!("unknown number"),
                         };
 
@@ -270,32 +232,16 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
             },
             rules::given::Given::AllCourses => match what {
                 rules::given::What::Credits => match action {
-                    rules::given::action::Action {
-                        lhs:
-                            rules::given::action::Value::Command(rules::given::action::Command::Sum),
-                        op: Some(rules::given::action::Operator::GreaterThanEqualTo),
+                    action::Action {
+                        lhs: action::Value::Command(action::Command::Sum),
+                        op: Some(action::Operator::GreaterThanEqualTo),
                         rhs: Some(rhs),
                     } => {
                         let filter_desc = match filter {
-                            Some(f) => {
-                                // TODO: handle multiple filter conditions
-                                if let Some(val) = f.get("institution") {
-                                    format!(" at {}", val)
-                                } else if let Some(val) = f.get("level") {
-                                    // TODO: fix this "at or above"; it's actually determined through the value here, not the action's operator
-                                    format!(" TODO at the {} level", val)
-                                } else if let Some(val) = f.get("graded") {
-                                    if val.is_true() {
-                                        ", graded,".into()
-                                    } else {
-                                        ", non-graded,".into()
-                                    }
-                                } else {
-                                    "".into()
-                                }
-                            }
+                            Some(f) => describe_courses_filter(f),
                             None => "".into(),
                         };
+
                         write!(
                             &mut w,
                             "complete enough courses{} to obtain {} credits.",
@@ -309,42 +255,24 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                     }
                 },
                 rules::given::What::DistinctCourses => match action {
-                    rules::given::action::Action {
-                        lhs:
-                            rules::given::action::Value::Command(rules::given::action::Command::Count),
+                    action::Action {
+                        lhs: action::Value::Command(action::Command::Count),
                         op,
                         rhs: Some(rhs),
                     } => {
                         let filter_desc = match filter {
-                            Some(f) => {
-                                // TODO: handle multiple filter conditions
-                                if let Some(val) = f.get("institution") {
-                                    format!(" at {}", val)
-                                } else if let Some(val) = f.get("gereqs") {
-                                    format!(" with the {} general education attribute", val)
-                                } else if let Some(val) = f.get("level") {
-                                    format!(" at or above the {} level", val)
-                                } else if let Some(val) = f.get("graded") {
-                                    if val.is_true() {
-                                        ", graded,".into()
-                                    } else {
-                                        ", non-graded,".into()
-                                    }
-                                } else {
-                                    "".into()
-                                }
-                            }
+                            Some(f) => describe_courses_filter(f),
                             None => "".into(),
                         };
 
                         let counter = match op {
-                            Some(rules::given::action::Operator::GreaterThanEqualTo) => "at least",
+                            Some(action::Operator::GreaterThanEqualTo) => "at least",
                             _ => panic!("other actions for {given: courses, what: courses} are not implemented yet")
                         };
 
                         let course_word = match rhs {
-                            rules::given::action::Value::Integer(n) if *n == 1 => "course",
-                            rules::given::action::Value::Float(n) if *n == 1.0 => "course",
+                            action::Value::Integer(n) if *n == 1 => "course",
+                            action::Value::Float(n) if *n == 1.0 => "course",
                             _ => "courses",
                         };
 
@@ -364,42 +292,24 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                     }
                 },
                 rules::given::What::Courses => match action {
-                    rules::given::action::Action {
-                        lhs:
-                            rules::given::action::Value::Command(rules::given::action::Command::Count),
+                    action::Action {
+                        lhs: action::Value::Command(action::Command::Count),
                         op,
                         rhs: Some(rhs),
                     } => {
                         let filter_desc = match filter {
-                            Some(f) => {
-                                // TODO: handle multiple filter conditions
-                                if let Some(val) = f.get("institution") {
-                                    format!(" at {}", val)
-                                } else if let Some(val) = f.get("gereqs") {
-                                    format!(" with the {} general education attribute", val)
-                                } else if let Some(val) = f.get("level") {
-                                    format!(" at or above the {} level", val)
-                                } else if let Some(val) = f.get("graded") {
-                                    if val.is_true() {
-                                        format!(", graded,")
-                                    } else {
-                                        format!(", non-graded,")
-                                    }
-                                } else {
-                                    "".into()
-                                }
-                            }
+                            Some(f) => describe_courses_filter(f),
                             None => "".into(),
                         };
 
                         let counter = match op {
-                            Some(rules::given::action::Operator::GreaterThanEqualTo) => "at least",
+                            Some(action::Operator::GreaterThanEqualTo) => "at least",
                             _ => panic!("other actions for {given: courses, what: courses} are not implemented yet")
                         };
 
                         let course_word = match rhs {
-                            rules::given::action::Value::Integer(n) if *n == 1 => "course",
-                            rules::given::action::Value::Float(n) if *n == 1.0 => "course",
+                            action::Value::Integer(n) if *n == 1 => "course",
+                            action::Value::Float(n) if *n == 1.0 => "course",
                             _ => "courses",
                         };
 
@@ -419,44 +329,43 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                     }
                 },
                 rules::given::What::Grades => match action {
-                    rules::given::action::Action {
-                        lhs:
-                            rules::given::action::Value::Command(rules::given::action::Command::Average),
+                    action::Action {
+                        lhs: action::Value::Command(action::Command::Average),
                         op: Some(op),
                         rhs: Some(rhs),
                     } => match op {
-                        rules::given::action::Operator::GreaterThanEqualTo => {
+                        action::Operator::GreaterThanEqualTo => {
                             write!(
                                 &mut w,
                                 "maintain a {} or greater GPA across all of your courses.",
                                 rhs
                             )?;
                         }
-                        rules::given::action::Operator::GreaterThan => {
+                        action::Operator::GreaterThan => {
                             write!(
                                 &mut w,
                                 "maintain a GPA above {} across all of your courses.",
                                 rhs
                             )?;
                         }
-                        rules::given::action::Operator::EqualTo => {
+                        action::Operator::EqualTo => {
                             write!(
                                 &mut w,
                                 "maintain exactly a {} GPA across all of your courses.",
                                 rhs
                             )?;
                         }
-                        rules::given::action::Operator::NotEqualTo => {
+                        action::Operator::NotEqualTo => {
                             panic!("not equal to makes no sense here");
                         }
-                        rules::given::action::Operator::LessThan => {
+                        action::Operator::LessThan => {
                             write!(
                                 &mut w,
                                 "maintain less than a {} GPA across all of your courses.",
                                 rhs
                             )?;
                         }
-                        rules::given::action::Operator::LessThanEqualTo => {
+                        action::Operator::LessThanEqualTo => {
                             write!(
                                 &mut w,
                                 "maintain at most a {} GPA across all of your courses.",
@@ -491,6 +400,82 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
     };
 
     Ok(w)
+}
+
+fn oxford(v: &[String]) -> String {
+    match v.len() {
+        0 => "".to_string(),
+        1 => v[0].to_string(),
+        2 => v.join(" and "),
+        _ => match v.split_last() {
+            Some((last, others)) => {
+                let others = others.join(", ");
+                format!("{}, and {}", others, last)
+            }
+            _ => panic!("v's len() was > 2, but there weren't two items in it"),
+        },
+    }
+}
+
+fn describe_courses_filter(filter: &filter::Clause) -> String {
+    let clauses: Vec<String> = filter
+        .iter()
+        .map(|(k, v)| match k.as_ref() {
+            "institution" => match v {
+                filter::WrappedValue::Single(filter::TaggedValue {
+                    op: action::Operator::EqualTo,
+                    value,
+                }) => format!(" at {}", value),
+                _ => panic!("not implemented c"),
+            },
+            "level" => match v {
+                filter::WrappedValue::Single(filter::TaggedValue {
+                    op: action::Operator::EqualTo,
+                    value,
+                }) => format!(" at the {} level", value),
+                filter::WrappedValue::Single(filter::TaggedValue {
+                    op: action::Operator::GreaterThanEqualTo,
+                    value,
+                }) => format!(" at or above the {} level", value),
+                _ => panic!("not implemented c"),
+            },
+            "gereqs" => match v {
+                filter::WrappedValue::Single(filter::TaggedValue {
+                    op: action::Operator::EqualTo,
+                    value,
+                }) => format!(" with the {} general education attribute", value),
+                _ => panic!("not implemented c"),
+            },
+            "graded" => {
+                if v.is_true() {
+                    ", graded,".into()
+                } else {
+                    ", non-graded,".into()
+                }
+            }
+            _ => "blargh filter".into(),
+        })
+        .collect();
+
+    oxford(clauses.as_slice())
+}
+
+fn describe_areas_filter(filter: &filter::Clause) -> String {
+    let clauses: Vec<String> = filter
+        .iter()
+        .map(|(k, v)| match k.as_ref() {
+            "type" => match v {
+                filter::WrappedValue::Single(filter::TaggedValue {
+                    op: action::Operator::EqualTo,
+                    value,
+                }) => format!("{}", value),
+                _ => "blargh filter".into(),
+            },
+            _ => "blargh filter".into(),
+        })
+        .collect();
+
+    oxford(clauses.as_slice())
 }
 
 #[cfg(test)]
