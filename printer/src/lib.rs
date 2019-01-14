@@ -6,13 +6,15 @@ use degreepath_parser::requirement::Requirement;
 use degreepath_parser::rules;
 use degreepath_parser::rules::given::{action, filter};
 use degreepath_parser::rules::Rule;
+// use degreepath_parser::save;
+use degreepath_parser::save::SaveBlock;
 use std::fmt;
 use std::fmt::Write;
 
 extern crate textwrap;
 
-pub fn print(area: AreaOfStudy) -> String {
-    let mut output: Vec<String> = vec![];
+pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
+    let mut w = String::new();
 
     let leader = match area.area_type.clone() {
         AreaType::Degree => {
@@ -52,7 +54,7 @@ pub fn print(area: AreaOfStudy) -> String {
         }
     };
 
-    output.push(blockquote(&textwrap::fill(&leader, 78)));
+    writeln!(&mut w, "{}", blockquote(&textwrap::fill(&leader, 78)))?;
 
     let area_type = match area.area_type.clone() {
         AreaType::Degree => "degree",
@@ -63,35 +65,31 @@ pub fn print(area: AreaOfStudy) -> String {
     };
 
     if let Ok(what_to_do) = summarize_result(&area.result) {
-        output.push(textwrap::fill(
+        writeln!(&mut w, "{}", textwrap::fill(
             &format!(
                 "For this {area_type}, you must complete {what_to_do}",
                 area_type = area_type,
                 what_to_do = what_to_do
             ),
             80,
-        ));
-
-        output.push("".to_string());
+        ))?;
     }
 
-    let mut requirements: Vec<String> = area
+    let requirements: Vec<String> = area
         .requirements
         .iter()
         .flat_map(|(name, r)| print_requirement(name, &r.clone(), 1))
         .collect();
 
-    output.append(&mut requirements);
+    for s in requirements {
+        write!(&mut w, "\n{}", s)?;
+    }
 
-    output.join("\n")
+    Ok(w)
 }
 
 fn blockquote(text: &str) -> String {
     textwrap::indent(&text, "> ")
-}
-
-fn _list_item(text: &str) -> String {
-    format!("- {}", text)
 }
 
 fn print_rule_as_title(rule: &Rule) -> Result<String, fmt::Error> {
@@ -119,15 +117,20 @@ fn print_rule_as_title(rule: &Rule) -> Result<String, fmt::Error> {
     }
 }
 
-fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String> {
-    let mut output: Vec<String> = vec![];
+fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<String, fmt::Error> {
+    let mut w = String::new();
 
-    output.push(format!("{} {}", "#".repeat(level), name));
+    writeln!(&mut w, "{} {}", "#".repeat(level), name)?;
 
     if let Some(message) = &req.message {
         let message = format!("Note: {}", message);
-        output.push(blockquote(&textwrap::fill(&message, 78)));
-        output.push("".to_string());
+        writeln!(&mut w, "{}", blockquote(&textwrap::fill(&message, 78)))?;
+    }
+
+    if req.save.len() > 0 {
+        for block in req.save.clone() {
+            write!(&mut w, "{}", describe_save(&block)?)?;
+        }
     }
 
     if let Some(result) = &req.result {
@@ -137,28 +140,47 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String>
                 _ => "section",
             };
 
-            output.push(textwrap::fill(
+            writeln!(&mut w, "{}\n", textwrap::fill(
                 &format!(
                     "For this {kind}, you must {what_to_do}",
                     kind = kind,
                     what_to_do = what_to_do
                 ),
                 80,
-            ));
-
-            output.push("".to_string());
+            ))?;
         }
     }
 
-    let mut requirements: Vec<String> = req
+    let requirements: Vec<String> = req
         .requirements
         .iter()
         .flat_map(|(name, r)| print_requirement(name, &r.clone(), level + 1))
         .collect();
 
-    output.append(&mut requirements);
+    for s in requirements {
+        write!(&mut w, "{}", s)?;
+    }
 
-    output
+    if !w.ends_with("\n") {
+        writeln!(&mut w, "")?;
+    }
+
+    Ok(w)
+}
+
+fn describe_save(save: &SaveBlock) -> Result<String, fmt::Error> {
+    let mut w = String::new();
+
+    match save.given {
+        rules::given::Given::AllCourses => {
+            writeln!(&mut w, "Given this subset of courses from your transcript:\n")?;
+
+            writeln!(&mut w, "- (lists courses that match {:?}\n", save.filter)?;
+        }
+        _ => writeln!(&mut w, "some other save type")?,
+    }
+
+    Ok(w)
 }
 
 fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
@@ -190,12 +212,8 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                     rules::count_of::Counter::Any | rules::count_of::Counter::Number(1) => {
                         "one".to_string()
                     }
-                    rules::count_of::Counter::All => {
-                        "all".to_string()
-                    }
-                    rules::count_of::Counter::Number(n) => {
-                        format!("{}", n)
-                    }
+                    rules::count_of::Counter::All => "all".to_string(),
+                    rules::count_of::Counter::Number(n) => format!("{}", n),
                 };
 
                 write!(&mut w, "complete {} of the following choices:\n", n)?;
@@ -264,9 +282,11 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                         )?;
                     }
                     _ => {
-                        println!("{:?}", given);
-                        println!("{:?}", action);
-                        write!(&mut w, "given blah")?;
+                        write!(
+                            &mut w,
+                            "given blah (given: {:?}, action: {:?}",
+                            given, action
+                        )?;
                     }
                 },
                 rules::given::What::DistinctCourses => match action {
@@ -301,9 +321,11 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                         )?;
                     }
                     _ => {
-                        println!("{:?}", given);
-                        println!("{:?}", action);
-                        write!(&mut w, "given blah")?;
+                        write!(
+                            &mut w,
+                            "given blah (given: {:?}, action: {:?}",
+                            given, action
+                        )?;
                     }
                 },
                 rules::given::What::Courses => match action {
@@ -338,9 +360,11 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                         )?;
                     }
                     _ => {
-                        println!("{:?}", given);
-                        println!("{:?}", action);
-                        write!(&mut w, "given blah")?;
+                        write!(
+                            &mut w,
+                            "given blah (given: {:?}, action: {:?}",
+                            given, action
+                        )?;
                     }
                 },
                 rules::given::What::Grades => match action {
@@ -389,25 +413,31 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                         }
                     },
                     _ => {
-                        println!("{:?}", given);
-                        println!("{:?}", action);
-                        write!(&mut w, "given blah")?;
+                        write!(
+                            &mut w,
+                            "given blah (given: {:?}, action: {:?}",
+                            given, action
+                        )?;
                     }
                 },
                 _ => {
-                    println!("{:?}", given);
-                    println!("{:?}", action);
-                    write!(&mut w, "given blah")?;
+                    write!(
+                        &mut w,
+                        "given blah (given: {:?}, action: {:?}",
+                        given, action
+                    )?;
                 }
             },
             _ => {
-                println!("{:?}", given);
-                println!("{:?}", action);
-                write!(&mut w, "given blah")?;
+                write!(
+                    &mut w,
+                    "given blah (given: {:?}, action: {:?}",
+                    given, action
+                )?;
             }
         },
         Rule::Do(rules::action::Rule { .. }) => {
-            write!(&mut w, "do blah")?;
+            write!(&mut w, "do blah {:?}", rule)?;
         }
         Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
             write!(&mut w, "requirement {} blah", requirement)?;
