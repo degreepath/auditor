@@ -17,7 +17,7 @@ fn main() {
     let area: AreaOfStudy = serde_yaml::from_str(&contents).unwrap();
 
     match degreepath_printer::print(area) {
-    	Ok(s) => println!("{}", s),
-    	Err(e) => eprintln!("{:?}", e),
+        Ok(s) => println!("{}", s),
+        Err(e) => eprintln!("{:?}", e),
     }
 }
