@@ -115,24 +115,39 @@ impl FromStr for TaggedValue {
     type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let splitted: Vec<_> = s.split_whitespace().collect();
+        match s.get(0..1) {
+            Some("!") | Some("<") | Some(">") | Some("=") => {
+                let splitted: Vec<_> = s.split_whitespace().collect();
 
-        match splitted.as_slice() {
-            [value] => {
-                let value = value.parse::<Value>()?;
+                match splitted.as_slice() {
+                    [value] => {
+                        let value = value.parse::<Value>()?;
+
+                        Ok(TaggedValue {
+                            op: action::Operator::EqualTo,
+                            value,
+                        })
+                    }
+                    [op, value] => {
+                        let op = op.parse::<action::Operator>()?;
+                        let value = value.parse::<Value>()?;
+
+                        Ok(TaggedValue { op, value })
+                    }
+                    _ => {
+                        // println!("{:?}", splitted);
+                        Err(ParseError::InvalidAction)
+                    },
+                }
+            }
+            _ => {
+                let value = s.parse::<Value>()?;
 
                 Ok(TaggedValue {
                     op: action::Operator::EqualTo,
                     value,
                 })
             }
-            [op, value] => {
-                let op = op.parse::<action::Operator>()?;
-                let value = value.parse::<Value>()?;
-
-                Ok(TaggedValue { op, value })
-            }
-            _ => Err(ParseError::InvalidAction),
         }
     }
 }
@@ -528,6 +543,17 @@ level: "< 100 | = 200""#;
                 value: Value::String("FYW".into()),
             },
         ]);
+        let actual: WrappedValue = data.parse().unwrap();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn deserialize_wrapped_value_multiword_single_value() {
+        let data = "St. Olaf College";
+        let expected = WrappedValue::Single(TaggedValue {
+            op: Operator::EqualTo,
+            value: Value::String("St. Olaf College".into()),
+        });
         let actual: WrappedValue = data.parse().unwrap();
         assert_eq!(actual, expected);
     }
