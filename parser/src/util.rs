@@ -1,8 +1,30 @@
 use serde::de::{self, Deserialize, Deserializer, MapAccess, Visitor};
+use std::error::Error;
 use std::fmt;
 use std::marker::PhantomData;
 use std::str::FromStr;
 use void::Void;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ParseError {
+    InvalidAction,
+    UnknownOperator,
+    InvalidValue,
+    UnknownCommand,
+    InvalidVariableName,
+}
+
+impl fmt::Display for ParseError {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.write_str(self.description())
+    }
+}
+
+impl Error for ParseError {
+    fn description(&self) -> &str {
+        "invalid do: command syntax"
+    }
+}
 
 pub fn serde_false() -> bool {
     false
@@ -54,7 +76,7 @@ where
 
 pub fn string_or_struct_parseerror<'de, T, D>(deserializer: D) -> Result<T, D::Error>
 where
-    T: Deserialize<'de> + FromStr<Err = crate::rules::given::action::ParseError>,
+    T: Deserialize<'de> + FromStr<Err = ParseError>,
     D: Deserializer<'de>,
 {
     // This is a Visitor that forwards string types to T's `FromStr` impl and
@@ -66,7 +88,7 @@ where
 
     impl<'de, T> Visitor<'de> for StringOrStruct<T>
     where
-        T: Deserialize<'de> + FromStr<Err = crate::rules::given::action::ParseError>,
+        T: Deserialize<'de> + FromStr<Err = ParseError>,
     {
         type Value = T;
 

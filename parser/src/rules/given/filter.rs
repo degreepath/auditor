@@ -3,7 +3,6 @@ use serde::de::{Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
 
 use super::action;
-use crate::rules::given::action::ParseError;
 
 use std::collections::HashMap;
 use std::fmt;
@@ -47,7 +46,7 @@ impl WrappedValue {
 }
 
 impl FromStr for WrappedValue {
-    type Err = ParseError;
+    type Err = util::ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let or_bits: Vec<_> = s.split(" | ").collect();
@@ -112,7 +111,7 @@ impl TaggedValue {
 }
 
 impl FromStr for TaggedValue {
-    type Err = ParseError;
+    type Err = util::ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.get(0..1) {
@@ -136,7 +135,7 @@ impl FromStr for TaggedValue {
                     }
                     _ => {
                         // println!("{:?}", splitted);
-                        Err(ParseError::InvalidAction)
+                        Err(util::ParseError::InvalidAction)
                     }
                 }
             }
@@ -183,14 +182,14 @@ impl fmt::Display for Constant {
 }
 
 impl FromStr for Constant {
-    type Err = ParseError;
+    type Err = util::ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let s = s.trim();
 
         match s {
             "graduation-year" => Ok(Constant::GraduationYear),
-            _ => Err(ParseError::UnknownCommand),
+            _ => Err(util::ParseError::UnknownCommand),
         }
     }
 }
@@ -238,7 +237,7 @@ impl From<bool> for Value {
 }
 
 impl FromStr for Value {
-    type Err = ParseError;
+    type Err = util::ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if let Ok(constant) = s.parse::<Constant>() {
