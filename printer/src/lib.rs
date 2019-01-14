@@ -408,10 +408,7 @@ fn oxford(v: &[String]) -> String {
         1 => v[0].to_string(),
         2 => v.join(" and "),
         _ => match v.split_last() {
-            Some((last, others)) => {
-                let others = others.join(", ");
-                format!("{}, and {}", others, last)
-            }
+            Some((last, others)) => format!("{}, and {}", others.join(", "), last),
             _ => panic!("v's len() was > 2, but there weren't two items in it"),
         },
     }
@@ -420,40 +417,31 @@ fn oxford(v: &[String]) -> String {
 fn describe_courses_filter(filter: &filter::Clause) -> String {
     let clauses: Vec<String> = filter
         .iter()
-        .map(|(k, v)| match k.as_ref() {
-            "institution" => match v {
-                filter::WrappedValue::Single(filter::TaggedValue {
-                    op: action::Operator::EqualTo,
-                    value,
-                }) => format!(" at {}", value),
-                _ => panic!("not implemented c"),
-            },
-            "level" => match v {
-                filter::WrappedValue::Single(filter::TaggedValue {
-                    op: action::Operator::EqualTo,
-                    value,
-                }) => format!(" at the {} level", value),
-                filter::WrappedValue::Single(filter::TaggedValue {
-                    op: action::Operator::GreaterThanEqualTo,
-                    value,
-                }) => format!(" at or above the {} level", value),
-                _ => panic!("not implemented c"),
-            },
-            "gereqs" => match v {
-                filter::WrappedValue::Single(filter::TaggedValue {
-                    op: action::Operator::EqualTo,
-                    value,
-                }) => format!(" with the {} general education attribute", value),
-                _ => panic!("not implemented c"),
-            },
-            "graded" => {
-                if v.is_true() {
-                    ", graded,".into()
-                } else {
-                    ", non-graded,".into()
+        .map(|(k, v)| match v {
+            filter::WrappedValue::Single(filter::TaggedValue {
+                op: action::Operator::EqualTo,
+                value,
+            }) => match k.as_ref() {
+                "institution" => format!(" at {}", value),
+                "level" => format!(" at the {} level", value),
+                "gereqs" => format!(" with the {} general education attribute", value),
+                "graded" => {
+                    if v.is_true() {
+                        ", graded,".into()
+                    } else {
+                        ", non-graded,".into()
+                    }
                 }
-            }
-            _ => "blargh filter".into(),
+                _ => format!(" blargh filter key={}", k),
+            },
+            filter::WrappedValue::Single(filter::TaggedValue {
+                op: action::Operator::GreaterThanEqualTo,
+                value,
+            }) => match k.as_ref() {
+                "level" => format!(" at or above the {} level", value),
+                _ => format!(" blargh filter key={}", k),
+            },
+            _ => format!(" blargh other filter value type"),
         })
         .collect();
 
@@ -463,15 +451,15 @@ fn describe_courses_filter(filter: &filter::Clause) -> String {
 fn describe_areas_filter(filter: &filter::Clause) -> String {
     let clauses: Vec<String> = filter
         .iter()
-        .map(|(k, v)| match k.as_ref() {
-            "type" => match v {
-                filter::WrappedValue::Single(filter::TaggedValue {
-                    op: action::Operator::EqualTo,
-                    value,
-                }) => format!("{}", value),
-                _ => "blargh filter".into(),
+        .map(|(k, v)| match v {
+            filter::WrappedValue::Single(filter::TaggedValue {
+                op: action::Operator::EqualTo,
+                value,
+            }) => match k.as_ref() {
+                "type" => format!("{}", value),
+                _ => format!(" blargh filter key={}", k),
             },
-            _ => "blargh filter".into(),
+            _ => format!(" blargh other filter value type"),
         })
         .collect();
 
