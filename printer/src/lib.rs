@@ -165,13 +165,13 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
     let mut w = String::new();
 
     match rule {
-        Rule::CountOf(rules::count_of::Rule { of, .. }) => {
+        Rule::CountOf(rules::count_of::Rule { of, count }) => {
             let all_are_requirements = of.iter().all(|rule| match rule {
                 Rule::Requirement { .. } => true,
                 _ => false,
             });
 
-            if all_are_requirements {
+            if all_are_requirements && *count == rules::count_of::Counter::All {
                 let requirement_names: Vec<String> = of
                     .iter()
                     .map(|r| print_rule_as_title(&r.clone()).unwrap_or("error!!!".to_string()))
@@ -186,8 +186,23 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                     _ => write!(&mut w, "complete all of the {} requirements.", names)?,
                 };
             } else {
-                println!("{:?}", rule);
-                panic!("count-of rule had non-requirements in it")
+                let n = match count {
+                    rules::count_of::Counter::Any | rules::count_of::Counter::Number(1) => {
+                        "one".to_string()
+                    }
+                    rules::count_of::Counter::All => {
+                        "all".to_string()
+                    }
+                    rules::count_of::Counter::Number(n) => {
+                        format!("{}", n)
+                    }
+                };
+
+                write!(&mut w, "complete {} of the following choices:\n", n)?;
+
+                for req in of {
+                    write!(&mut w, "\n- {}", summarize_result(&req.clone())?)?;
+                }
             }
         }
         Rule::Course(rules::course::Rule { course, .. }) => {
