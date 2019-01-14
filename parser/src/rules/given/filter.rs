@@ -25,7 +25,7 @@ where
         Ok(v) => {
             let transmuted: Clause = v.iter().map(|(k, v)| (k.clone(), v.0.clone())).collect();
             Ok(Some(transmuted))
-        },
+        }
         Err(err) => Err(err),
     }
 }
@@ -137,7 +137,7 @@ impl FromStr for TaggedValue {
                     _ => {
                         // println!("{:?}", splitted);
                         Err(ParseError::InvalidAction)
-                    },
+                    }
                 }
             }
             _ => {

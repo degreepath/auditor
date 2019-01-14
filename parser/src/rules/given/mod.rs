@@ -399,7 +399,8 @@ do: count >= 3"#;
 
     #[test]
     fn deserialize_filter_gereqs_or() {
-        let data = r#"{where: {gereqs: 'MCD | MCG'}, given: courses, what: courses, do: count > 1}"#;
+        let data =
+            r#"{where: {gereqs: 'MCD | MCG'}, given: courses, what: courses, do: count > 1}"#;
 
         let expected: filter::Clause = hashmap! {
             "gereqs".into() => filter::WrappedValue::Or([

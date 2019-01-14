@@ -5,6 +5,8 @@ use degreepath_parser::area_of_study::{AreaOfStudy, AreaType};
 use degreepath_parser::requirement::Requirement;
 use degreepath_parser::rules;
 use degreepath_parser::rules::Rule;
+use std::fmt;
+use std::fmt::Write;
 
 extern crate textwrap;
 
@@ -59,18 +61,18 @@ pub fn print(area: AreaOfStudy) -> String {
         AreaType::Emphasis { .. } => "area of emphasis",
     };
 
-    let what_to_do = summarize_result(&area.result);
+    if let Ok(what_to_do) = summarize_result(&area.result) {
+        output.push(textwrap::fill(
+            &format!(
+                "For this {area_type}, you must complete {what_to_do}",
+                area_type = area_type,
+                what_to_do = what_to_do
+            ),
+            80,
+        ));
 
-    output.push(textwrap::fill(
-        &format!(
-            "For this {area_type}, you must complete {what_to_do}",
-            area_type = area_type,
-            what_to_do = what_to_do
-        ),
-        80,
-    ));
-
-    output.push("".to_string());
+        output.push("".to_string());
+    }
 
     let mut requirements: Vec<String> = area
         .requirements
@@ -91,28 +93,30 @@ fn _list_item(text: &str) -> String {
     format!("- {}", text)
 }
 
-fn print_rule_as_title(rule: &Rule) -> String {
+fn print_rule_as_title(rule: &Rule) -> Result<String, fmt::Error> {
     match rule {
         Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
-            format!("“{}”", requirement)
+            Ok(format!("“{}”", requirement))
         }
-        Rule::Course(rules::course::Rule { course, .. }) => course.to_string(),
+        Rule::Course(rules::course::Rule { course, .. }) => Ok(course.to_string()),
         Rule::Either(rules::either::Rule { either: pair })
         | Rule::Both(rules::both::Rule { both: pair }) => {
-            let a = summarize_result(&pair.0.clone());
-            let b = summarize_result(&pair.1.clone());
-            format!("{}, {}", a, b)
+            let a = summarize_result(&pair.0.clone())?;
+            let b = summarize_result(&pair.1.clone())?;
+            Ok(format!("{}, {}", a, b))
         }
-        Rule::Given(rules::given::Rule { .. }) => "given blah".to_string(),
-        Rule::Do(rules::action::Rule { .. }) => "do blah".to_string(),
-        Rule::CountOf(rules::count_of::Rule { of, count }) => format!(
+        Rule::Given(rules::given::Rule { .. }) => Ok("given blah".to_string()),
+        Rule::Do(rules::action::Rule { .. }) => Ok("do blah".to_string()),
+        Rule::CountOf(rules::count_of::Rule { of, count }) => Ok(format!(
             "{} {}",
             count,
             of.iter()
-                .map(|r| print_rule_as_title(&r.clone()))
+                .filter_map(|r| Some(
+                    print_rule_as_title(&r.clone()).unwrap_or("error!!!".to_string())
+                ))
                 .collect::<Vec<String>>()
-                .join("•")
-        ),
+                .join(" • ")
+        )),
     }
 }
 
@@ -128,23 +132,23 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String>
     }
 
     if let Some(result) = &req.result {
-        let what_to_do = summarize_result(&result);
+        if let Ok(what_to_do) = summarize_result(&result) {
+            let kind = match req.requirements.len() {
+                0 => "requirement",
+                _ => "section",
+            };
 
-        let kind = match req.requirements.len() {
-            0 => "requirement",
-            _ => "section",
-        };
+            output.push(textwrap::fill(
+                &format!(
+                    "For this {kind}, you must {what_to_do}",
+                    kind = kind,
+                    what_to_do = what_to_do
+                ),
+                80,
+            ));
 
-        output.push(textwrap::fill(
-            &format!(
-                "For this {kind}, you must {what_to_do}",
-                kind = kind,
-                what_to_do = what_to_do
-            ),
-            80,
-        ));
-
-        output.push("".to_string());
+            output.push("".to_string());
+        }
     }
 
     let mut requirements: Vec<String> = req
@@ -158,7 +162,9 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Vec<String>
     output
 }
 
-fn summarize_result(rule: &Rule) -> String {
+fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
+    let mut w = String::new();
+
     match rule {
         Rule::CountOf(rules::count_of::Rule { of, .. }) => {
             let all_are_requirements = of.iter().all(|rule| match rule {
@@ -169,20 +175,37 @@ fn summarize_result(rule: &Rule) -> String {
             if all_are_requirements {
                 let requirement_names: Vec<String> = of
                     .iter()
-                    .map(|rule| print_rule_as_title(&rule.clone()))
+                    .filter_map(|r| {
+                        Some(print_rule_as_title(&r.clone()).unwrap_or("error!!!".to_string()))
+                    })
                     .collect();
 
                 match requirement_names.len() {
-                    0 => "… do nothing.".to_string(),
-                    1 => format!("complete the {} requirement.", requirement_names.join("")),
-                    2 => format!(
-                        "complete both the {} requirements.",
-                        requirement_names.join(" and ")
-                    ),
+                    0 => {
+                        write!(&mut w, "… do nothing.")?;
+                    }
+                    1 => {
+                        write!(
+                            &mut w,
+                            "complete the {} requirement.",
+                            requirement_names.join("")
+                        )?;
+                    }
+                    2 => {
+                        write!(
+                            &mut w,
+                            "complete both the {} requirements.",
+                            requirement_names.join(" and ")
+                        )?;
+                    }
                     _ => {
                         if let Some((last, others)) = requirement_names.clone().split_last() {
                             let others = others.join(", ");
-                            format!("complete all of the {}, and {} requirements.", others, last)
+                            write!(
+                                &mut w,
+                                "complete all of the {}, and {} requirements.",
+                                others, last
+                            )?;
                         } else {
                             panic!("… er, there are no requirements?");
                         }
@@ -193,12 +216,14 @@ fn summarize_result(rule: &Rule) -> String {
                 panic!("count-of rule had non-requirements in it")
             }
         }
-        Rule::Course(rules::course::Rule { course, .. }) => course.to_string(),
+        Rule::Course(rules::course::Rule { course, .. }) => {
+            write!(&mut w, "{}", course.to_string())?;
+        }
         Rule::Either(rules::either::Rule { either: pair })
         | Rule::Both(rules::both::Rule { both: pair }) => {
-            let a = summarize_result(&pair.0.clone());
-            let b = summarize_result(&pair.1.clone());
-            format!("{}, {}", a, b)
+            let a = summarize_result(&pair.0.clone())?;
+            let b = summarize_result(&pair.1.clone())?;
+            write!(&mut w, "{}, {}", a, b)?;
         }
         Rule::Given(rules::given::Rule {
             given,
@@ -218,10 +243,14 @@ fn summarize_result(rule: &Rule) -> String {
                         let filter_desc = match filter {
                             Some(f) => {
                                 // TODO: handle multiple filter conditions
-                                if let Some(val) = f.get("type") {
-                                    format!("{}", val)
-                                } else {
-                                    "".into()
+                                match f.get("type") {
+                                    Some(rules::given::filter::WrappedValue::Single(
+                                        rules::given::filter::TaggedValue {
+                                            op: rules::given::action::Operator::EqualTo,
+                                            value,
+                                        },
+                                    )) => format!("{}", value),
+                                    _ => "blargh filter".into(),
                                 }
                             }
                             None => "".into(),
@@ -233,7 +262,7 @@ fn summarize_result(rule: &Rule) -> String {
                         };
 
                         // For this requirement, you must also complete one "major".
-                        format!("also complete {} {}.", count, filter_desc)
+                        write!(&mut w, "also complete {} {}.", count, filter_desc)?;
                     }
                     _ => panic!("unimplemented"),
                 },
@@ -267,15 +296,16 @@ fn summarize_result(rule: &Rule) -> String {
                             }
                             None => "".into(),
                         };
-                        format!(
+                        write!(
+                            &mut w,
                             "complete enough courses{} to obtain {} credits.",
                             filter_desc, rhs
-                        )
+                        )?;
                     }
                     _ => {
                         println!("{:?}", given);
                         println!("{:?}", action);
-                        "given blah".to_string()
+                        write!(&mut w, "given blah")?;
                     }
                 },
                 rules::given::What::DistinctCourses => match action {
@@ -318,18 +348,19 @@ fn summarize_result(rule: &Rule) -> String {
                             _ => "courses",
                         };
 
-                        format!(
+                        write!(
+                            &mut w,
                             "complete {counter} {num} distinct {word}{desc}.",
                             counter = counter,
                             num = rhs,
                             word = course_word,
                             desc = filter_desc
-                        )
+                        )?;
                     }
                     _ => {
                         println!("{:?}", given);
                         println!("{:?}", action);
-                        "given blah".to_string()
+                        write!(&mut w, "given blah")?;
                     }
                 },
                 rules::given::What::Courses => match action {
@@ -350,9 +381,9 @@ fn summarize_result(rule: &Rule) -> String {
                                     format!(" at or above the {} level", val)
                                 } else if let Some(val) = f.get("graded") {
                                     if val.is_true() {
-                                        ", graded,".into()
+                                        format!(", graded,")
                                     } else {
-                                        ", non-graded,".into()
+                                        format!(", non-graded,")
                                     }
                                 } else {
                                     "".into()
@@ -372,18 +403,19 @@ fn summarize_result(rule: &Rule) -> String {
                             _ => "courses",
                         };
 
-                        format!(
+                        write!(
+                            &mut w,
                             "complete {counter} {num} {word}{desc}.",
                             counter = counter,
                             num = rhs,
                             word = course_word,
                             desc = filter_desc
-                        )
+                        )?;
                     }
                     _ => {
                         println!("{:?}", given);
                         println!("{:?}", action);
-                        "given blah".to_string()
+                        write!(&mut w, "given blah")?;
                     }
                 },
                 rules::given::What::Grades => match action {
@@ -393,50 +425,72 @@ fn summarize_result(rule: &Rule) -> String {
                         op: Some(op),
                         rhs: Some(rhs),
                     } => match op {
-                        rules::given::action::Operator::GreaterThanEqualTo => format!(
-                            "maintain a {} or greater GPA across all of your courses.",
-                            rhs
-                        ),
+                        rules::given::action::Operator::GreaterThanEqualTo => {
+                            write!(
+                                &mut w,
+                                "maintain a {} or greater GPA across all of your courses.",
+                                rhs
+                            )?;
+                        }
                         rules::given::action::Operator::GreaterThan => {
-                            format!("maintain a GPA above {} across all of your courses.", rhs)
+                            write!(
+                                &mut w,
+                                "maintain a GPA above {} across all of your courses.",
+                                rhs
+                            )?;
                         }
                         rules::given::action::Operator::EqualTo => {
-                            format!("maintain exactly a {} GPA across all of your courses.", rhs)
+                            write!(
+                                &mut w,
+                                "maintain exactly a {} GPA across all of your courses.",
+                                rhs
+                            )?;
                         }
                         rules::given::action::Operator::NotEqualTo => {
-                            panic!("not equal to makes no sense here")
+                            panic!("not equal to makes no sense here");
                         }
-                        rules::given::action::Operator::LessThan => format!(
-                            "maintain less than a {} GPA across all of your courses.",
-                            rhs
-                        ),
+                        rules::given::action::Operator::LessThan => {
+                            write!(
+                                &mut w,
+                                "maintain less than a {} GPA across all of your courses.",
+                                rhs
+                            )?;
+                        }
                         rules::given::action::Operator::LessThanEqualTo => {
-                            format!("maintain at most a {} GPA across all of your courses.", rhs)
+                            write!(
+                                &mut w,
+                                "maintain at most a {} GPA across all of your courses.",
+                                rhs
+                            )?;
                         }
                     },
                     _ => {
                         println!("{:?}", given);
                         println!("{:?}", action);
-                        "given blah".to_string()
+                        write!(&mut w, "given blah")?;
                     }
                 },
                 _ => {
                     println!("{:?}", given);
                     println!("{:?}", action);
-                    "given blah".to_string()
+                    write!(&mut w, "given blah")?;
                 }
             },
             _ => {
                 println!("{:?}", given);
                 println!("{:?}", action);
-                "given blah".to_string()
+                write!(&mut w, "given blah")?;
             }
         },
-        Rule::Do(rules::action::Rule { .. }) => "do blah".to_string(),
-        Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
-            format!("requirement {} blah", requirement)
+        Rule::Do(rules::action::Rule { .. }) => {
+            write!(&mut w, "do blah")?;
         }
-    }
+        Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
+            write!(&mut w, "requirement {} blah", requirement)?;
+        }
+    };
+
+    Ok(w)
 }
 
 #[cfg(test)]
