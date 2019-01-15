@@ -23,13 +23,13 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				#[cfg_attr(rustfmt, rustfmt_skip)]
 				write!(&mut output, "take both {} and {}", a.print()?, b.print()?)?;
 			}
-			(Course(a), Requirement(b)) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
-				write!(&mut output, "take {} and complete the {} requirement", a.print()?, b.print()?)?;
-			}
 			(Requirement(a), Course(b)) => {
 				#[cfg_attr(rustfmt, rustfmt_skip)]
 				write!(&mut output, "complete the {} requirement and take {}", a.print()?, b.print()?)?;
+			}
+			(Course(a), Requirement(b)) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "take {} and complete the {} requirement", a.print()?, b.print()?)?;
 			}
 			(Course(a), b) => {
 				#[cfg_attr(rustfmt, rustfmt_skip)]
