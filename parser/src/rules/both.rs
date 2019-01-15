@@ -14,36 +14,44 @@ impl crate::rules::traits::PrettyPrint for Rule {
 
 		let pair = self.both.clone();
 
-		#[cfg_attr(rustfmt, rustfmt_skip)]
-        match (*pair.0, *pair.1) {
-            (Requirement(a), Requirement(b)) => {
-                write!(&mut output, "complete both the {} and {} requirements", a.print()?, b.print()?)?;
-            },
-            (Course(a), Course(b)) => {
-                write!(&mut output, "take both {} and {}", a.print()?, b.print()?)?;
-            },
-            (Requirement(a), Course(b)) => {
-                write!(&mut output, "take {} and complete the {} requirement", a.print()?, b.print()?)?;
-            },
-            (Course(a), Requirement(b)) => {
-                write!(&mut output, "complete the {} requirement and take {}", a.print()?, b.print()?)?;
-            },
-            (Course(a), b) => {
-                write!(&mut output, "both take {} and [do] {}", a.print()?, b.print()?)?;
-            },
-            (Requirement(a), b) => {
-                write!(&mut output, "both complete the {} requirement and [do] {}", a.print()?, b.print()?)?;
-            },
-            (a, Course(b)) => {
-                write!(&mut output, "both [do] {} and take {}", a.print()?, b.print()?)?;
-            },
-            (a, Requirement(b)) => {
-                write!(&mut output, "both [do] {} and complete the {} requirement", a.print()?, b.print()?)?;
-            },
-            (a, b) => {
-                write!(&mut output, "both {} and {}", a.print()?, b.print()?)?;
-            },
-        };
+		match (*pair.0, *pair.1) {
+			(Requirement(a), Requirement(b)) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "complete both the {} and {} requirements", a.print()?, b.print()?)?;
+			}
+			(Course(a), Course(b)) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "take both {} and {}", a.print()?, b.print()?)?;
+			}
+			(Course(a), Requirement(b)) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "take {} and complete the {} requirement", a.print()?, b.print()?)?;
+			}
+			(Requirement(a), Course(b)) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "complete the {} requirement and take {}", a.print()?, b.print()?)?;
+			}
+			(Course(a), b) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "both take {} and {}", a.print()?, b.print()?)?;
+			}
+			(Requirement(a), b) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "both complete the {} requirement and {}", a.print()?, b.print()?)?;
+			}
+			(a, Course(b)) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "both {} and take {}", a.print()?, b.print()?)?;
+			}
+			(a, Requirement(b)) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "both {} and complete the {} requirement", a.print()?, b.print()?)?;
+			}
+			(a, b) => {
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+				write!(&mut output, "both {} and {}", a.print()?, b.print()?)?;
+			}
+		};
 
 		Ok(output)
 	}
@@ -104,5 +112,49 @@ both:
 
 		let actual: Rule = serde_yaml::from_str(&input).unwrap();
 		assert_eq!(actual, expected_struct);
+	}
+
+	#[test]
+	fn pretty_print() {
+		use crate::rules::traits::PrettyPrint;
+
+		let input: Rule = serde_yaml::from_str(&"{both: [{requirement: A}, {requirement: B}]}").unwrap();
+		let expected = "complete both the “A” and “B” requirements";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule = serde_yaml::from_str(&"{both: [CS 111, CS 121]}").unwrap();
+		let expected = "take both CS 111 and CS 121";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule = serde_yaml::from_str(&"{both: [CS 121, {requirement: A}]}").unwrap();
+		let expected = "take CS 121 and complete the “A” requirement";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule = serde_yaml::from_str(&"{both: [{requirement: A}, CS 121]}").unwrap();
+		let expected = "complete the “A” requirement and take CS 121";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule = serde_yaml::from_str(&"{both: [CS 121, {both: [CS 251, CS 130]}]}").unwrap();
+		let expected = "both take CS 121 and take both CS 251 and CS 130";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule = serde_yaml::from_str(&"{both: [{requirement: A}, {both: [CS 251, CS 130]}]}").unwrap();
+		let expected = "both complete the “A” requirement and take both CS 251 and CS 130";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule =
+			serde_yaml::from_str(&"{both: [{given: courses, what: courses, do: count >= 3}, CS 121]}").unwrap();
+		let expected = "both take at least three courses and take CS 121";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule =
+			serde_yaml::from_str(&"{both: [{given: courses, what: courses, do: count >= 3}, {requirement: A}]}")
+				.unwrap();
+		let expected = "both take at least three courses and complete the “A” requirement";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule = serde_yaml::from_str(&"{both: [{given: courses, what: courses, do: count >= 3}, {given: these courses, courses: [THEAT 233], repeats: all, what: courses, do: count >= 4}]}").unwrap();
+		let expected = "both take at least three courses and take THEAT 233 at least four times";
+		assert_eq!(expected, input.print().unwrap());
 	}
 }
