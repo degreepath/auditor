@@ -28,7 +28,7 @@ pub enum Given {
     #[serde(rename = "courses")]
     AllCourses,
     #[serde(rename = "these courses")]
-    TheseCourses { courses: Vec<CourseRule> },
+    TheseCourses { courses: Vec<CourseRule>, repeats: RepeatMode },
     #[serde(rename = "these requirements")]
     TheseRequirements {
         requirements: Vec<requirement::Rule>,
@@ -44,6 +44,16 @@ pub enum Given {
 #[serde(untagged)]
 pub enum CourseRule {
     Value(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub enum RepeatMode {
+    #[serde(rename="first")]
+    First,
+    #[serde(rename="last")]
+    Last,
+    #[serde(rename="all")]
+    All,
 }
 
 #[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
@@ -126,6 +136,7 @@ do: count > 2"#;
                         ..Default::default()
                     }),
                 ],
+                repeats: RepeatMode::First,
             },
             limit: Some(vec![]),
             filter: Some(filter::Clause::new()),
@@ -138,6 +149,7 @@ given: these courses
 courses:
   - course: ASIAN 110
   - course: ASIAN 110
+repeats: first
 limit: []
 where: {}
 what: courses
@@ -155,6 +167,7 @@ given: these courses
 courses:
   - ASIAN 110
   - course: ASIAN 110
+repeats: first
 limit: []
 where: {}
 what: courses
@@ -172,6 +185,7 @@ do: count > 2"#;
                         ..Default::default()
                     }),
                 ],
+                repeats: RepeatMode::First,
             },
             limit: Some(vec![]),
             filter: Some(filter::Clause::new()),

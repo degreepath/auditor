@@ -58,6 +58,7 @@ label: Interim Courses"#;
         let data = r#"---
 given: these courses
 courses: [DANCE 399]
+repeats: last
 where: {year: graduation-year, semester: Fall}
 name: $dance_seminars
 label: "Senior Dance Seminars""#;
@@ -75,6 +76,7 @@ label: "Senior Dance Seminars""#;
                     course: "DANCE 399".to_string(),
                     ..Default::default()
                 })],
+                repeats: given::RepeatMode::Last,
             },
             limit: None,
             filter: Some(filter),
