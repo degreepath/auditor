@@ -19,3 +19,31 @@ impl crate::rules::traits::PrettyPrint for Rule {
         Ok(output)
     }
 }
+
+#[cfg(test)]
+mod test {
+		use super::*;
+
+		#[test]
+    #[ignore]
+    fn pretty_print_block() {
+        use crate::rules::traits::PrettyPrint;
+
+        let input: Rule = serde_yaml::from_str(
+            &"---
+given: these courses
+courses: [DANCE 399]
+where: {year: graduation-year, semester: Fall}
+name: $dance_seminars
+label: Senior Dance Seminars
+",
+        )
+        .unwrap();
+        let expected = "Given the intersection between the following potential courses and your transcript, but limiting your transcript to only the courses taken in the Fall of your Senior year, as “Senior Dance Seminars”:
+
+| Potential | “Senior Dance Seminars” |
+| --------- | ----------------------- |
+| DANCE 399 | DANCE 399 2015-1        |";
+        assert_eq!(expected, input.print().unwrap());
+    }
+}

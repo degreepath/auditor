@@ -669,7 +669,7 @@ level: "< 100 | = 200""#;
     }
 
     #[test]
-    fn pretty_print() {
+    fn pretty_print_single_values() {
         use crate::rules::traits::PrettyPrint;
 
         let input: Clause = deserialize_test(&"{gereqs: FOL-C}").unwrap();
@@ -684,20 +684,8 @@ level: "< 100 | = 200""#;
         let expected = "during Fall semesters";
         assert_eq!(expected, input.print().unwrap());
 
-        let input: Clause = deserialize_test(&"{semester: Fall | Interim}").unwrap();
-        let expected = "during a Fall or Interim semester";
-        assert_eq!(expected, input.print().unwrap());
-
         let input: Clause = deserialize_test(&"{year: '2012'}").unwrap();
         let expected = "during the 2012-13 academic year";
-        assert_eq!(expected, input.print().unwrap());
-
-        // let input: Clause = deserialize_test(&"{year: '2012 | 2013'}").unwrap();
-        // let expected = "during the 2012-13 or 2013-14 academic year";
-        // assert_eq!(expected, input.print().unwrap());
-
-        let input: Clause = deserialize_test(&"{institution: 'Carleton College | St. Olaf College'}").unwrap();
-        let expected = "at either Carleton College or St. Olaf College";
         assert_eq!(expected, input.print().unwrap());
 
         let input: Clause = deserialize_test(&"{institution: 'St. Olaf College'}").unwrap();
@@ -707,6 +695,29 @@ level: "< 100 | = 200""#;
         let input: Clause = deserialize_test(&"{department: MATH}").unwrap();
         let expected = "within the MATH department";
         assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn pretty_print_multiple_values() {
+        use crate::rules::traits::PrettyPrint;
+
+        let input: Clause = deserialize_test(&"{semester: Fall | Interim}").unwrap();
+        let expected = "during a Fall or Interim semester";
+        assert_eq!(expected, input.print().unwrap());
+
+        // TODO: fix this
+        // let input: Clause = deserialize_test(&"{year: '2012 | 2013'}").unwrap();
+        // let expected = "during the 2012-13 or 2013-14 academic year";
+        // assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{institution: 'Carleton College | St. Olaf College'}").unwrap();
+        let expected = "at either Carleton College or St. Olaf College";
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn pretty_print_negated_value() {
+        use crate::rules::traits::PrettyPrint;
 
         let input: Clause = deserialize_test(&"{department: '! MATH'}").unwrap();
         let expected = "outside of the MATH department";

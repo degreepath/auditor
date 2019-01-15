@@ -593,6 +593,11 @@ do: count >= 3"#;
             serde_yaml::from_str(&"{given: courses, what: courses, do: count >= 1}").unwrap();
         let expected = "at least one course";
         assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn pretty_print_inline_filters() {
+        use crate::rules::traits::PrettyPrint;
 
         let input: Rule =
             serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: courses, do: count >= 1}").unwrap();
@@ -603,6 +608,11 @@ do: count >= 3"#;
             serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct courses, do: count >= 2}").unwrap();
         let expected = "at least two distinct courses with the “SPM” general education attribute";
         assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn pretty_print_inline_repeats() {
+        use crate::rules::traits::PrettyPrint;
 
         let input: Rule =
             serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}").unwrap();
@@ -633,8 +643,11 @@ do: count >= 3"#;
             serde_yaml::from_str(&"{given: these courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 1}").unwrap();
         let expected = "THEAT 233 and THEAT 253";
         assert_eq!(expected, input.print().unwrap());
+    }
 
-        // /
+    #[test]
+    fn pretty_print_inline_credits() {
+        use crate::rules::traits::PrettyPrint;
 
         let input: Rule =
             serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: credits, do: sum >= 1}").unwrap();
@@ -665,8 +678,11 @@ do: count >= 3"#;
             serde_yaml::from_str(&"{given: courses, where: {institution: St. Olaf College}, what: credits, do: sum >= 17}").unwrap();
         let expected = "enough courses at St. Olaf College to obtain at least 17 credits";
         assert_eq!(expected, input.print().unwrap());
+    }
 
-        // /
+    #[test]
+    fn pretty_print_inline_departments() {
+        use crate::rules::traits::PrettyPrint;
 
         let input: Rule =
             serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: departments, do: count >= 2}").unwrap();
@@ -678,7 +694,15 @@ do: count >= 3"#;
         let expected = "enough courses during Interim semesters to span at least one department";
         assert_eq!(expected, input.print().unwrap());
 
-        // /
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: { department: '! MATH' }, what: departments, do: count >= 2}").unwrap();
+        let expected = "enough courses outside of the MATH department to span at least two departments";
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn pretty_print_inline_grades() {
+        use crate::rules::traits::PrettyPrint;
 
         let input: Rule =
             serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: grades, do: average >= 2.0}").unwrap();
@@ -689,8 +713,11 @@ do: count >= 3"#;
             serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: grades, do: average >= 3.0}").unwrap();
         let expected = "maintain an average GPA at or above 3.00 from courses during Interim semesters";
         assert_eq!(expected, input.print().unwrap());
+    }
 
-        // /
+    #[test]
+    fn pretty_print_inline_terms() {
+        use crate::rules::traits::PrettyPrint;
 
         let input: Rule =
             serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: terms, do: count >= 2}").unwrap();
@@ -700,36 +727,6 @@ do: count >= 3"#;
         let input: Rule =
             serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: terms, do: count >= 3}").unwrap();
         let expected = "enough courses during Interim semesters to span at least three terms";
-        assert_eq!(expected, input.print().unwrap());
-
-        // /
-
-        let input: Rule =
-            serde_yaml::from_str(&"{given: courses, where: { department: '! MATH' }, what: departments, do: count >= 2}").unwrap();
-        let expected = "enough courses outside of the MATH department to span at least two departments";
-        assert_eq!(expected, input.print().unwrap());
-    }
-
-    #[test]
-    #[ignore]
-    fn pretty_print_block() {
-        use crate::rules::traits::PrettyPrint;
-
-        let input: Rule = serde_yaml::from_str(
-            &"---
-given: these courses
-courses: [DANCE 399]
-where: {year: graduation-year, semester: Fall}
-name: $dance_seminars
-label: Senior Dance Seminars
-",
-        )
-        .unwrap();
-        let expected = "Given the intersection between the following potential courses and your transcript, but limiting your transcript to only the courses taken in the Fall of your Senior year, as “Senior Dance Seminars”:
-
-| Potential | “Senior Dance Seminars” |
-| --------- | ----------------------- |
-| DANCE 399 | DANCE 399 2015-1        |";
         assert_eq!(expected, input.print().unwrap());
     }
 }
