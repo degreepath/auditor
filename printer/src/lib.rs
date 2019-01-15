@@ -17,9 +17,7 @@ extern crate textwrap;
 pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
     let mut w = String::new();
 
-    use degreepath_parser::area_of_study::AreaType::{
-        Concentration, Degree, Emphasis, Major, Minor,
-    };
+    use degreepath_parser::area_of_study::AreaType::{Concentration, Degree, Emphasis, Major, Minor};
 
     let leader = match area.area_type.clone() {
         Degree => {
@@ -27,35 +25,44 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
             let area_name = area.area_name.clone();
             let institution = "St. Olaf College";
             let area_type = "degree".to_string();
-            format!("This is the set of requirements for the {catalog} “{area_name}” {area_type} from {institution}.", catalog=catalog, area_name=area_name, area_type=area_type, institution=institution)
-        }
+
+            #[cfg_attr(rustfmt, rustfmt_skip)]
+            format!("This is the set of requirements for the {catalog} “{area_name}” {area_type} from {institution}.", catalog = catalog, area_name = area_name, area_type = area_type, institution = institution )}
         Major { degree } => {
             let catalog = area.catalog.clone();
             let area_name = area.area_name.clone();
             let institution = "St. Olaf College";
             let area_type = "major".to_string();
-            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog=catalog, for_degree=degree, area_name=area_name, area_type=area_type, institution=institution)
+
+            #[cfg_attr(rustfmt, rustfmt_skip)]
+            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
         }
         Minor { degree } => {
             let catalog = area.catalog.clone();
             let area_name = area.area_name.clone();
             let institution = "St. Olaf College";
             let area_type = "minor".to_string();
-            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog=catalog, for_degree=degree, area_name=area_name, area_type=area_type, institution=institution)
+
+            #[cfg_attr(rustfmt, rustfmt_skip)]
+            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
         }
         Concentration { degree } => {
             let catalog = area.catalog.clone();
             let area_name = area.area_name.clone();
             let institution = "St. Olaf College";
             let area_type = "concentration".to_string();
-            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog=catalog, for_degree=degree, area_name=area_name, area_type=area_type, institution=institution)
+
+            #[cfg_attr(rustfmt, rustfmt_skip)]
+            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
         }
         Emphasis { degree, major } => {
             let catalog = area.catalog.clone();
             let area_name = area.area_name.clone();
             let institution = "St. Olaf College";
             let area_type = "area of emphasis".to_string();
-            format!("This is the set of requirements for the {catalog} {for_degree} {for_major} major's “{area_name}” {area_type} from {institution}.", catalog=catalog, for_degree=degree, for_major=major, area_name=area_name, area_type=area_type, institution=institution)
+
+            #[cfg_attr(rustfmt, rustfmt_skip)]
+            format!("This is the set of requirements for the {catalog} {for_degree} {for_major} major's “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, for_major = major, area_name = area_name, area_type = area_type, institution = institution)
         }
     };
 
@@ -103,12 +110,9 @@ fn blockquote(text: &str) -> String {
 
 fn print_rule_as_title(rule: &Rule) -> Result<String, fmt::Error> {
     match rule {
-        Rule::Requirement(rules::requirement::Rule { requirement, .. }) => {
-            Ok(format!("“{}”", requirement))
-        }
+        Rule::Requirement(rules::requirement::Rule { requirement, .. }) => Ok(format!("“{}”", requirement)),
         Rule::Course(rules::course::Rule { course, .. }) => Ok(course.to_string()),
-        Rule::Either(rules::either::Rule { either: pair })
-        | Rule::Both(rules::both::Rule { both: pair }) => {
+        Rule::Either(rules::either::Rule { either: pair }) | Rule::Both(rules::both::Rule { both: pair }) => {
             let a = summarize_result(&pair.0.clone())?;
             let b = summarize_result(&pair.1.clone())?;
             Ok(format!("{}, {}", a, b))
@@ -240,9 +244,7 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
                 };
             } else {
                 let n = match count {
-                    rules::count_of::Counter::Any | rules::count_of::Counter::Number(1) => {
-                        "one".to_string()
-                    }
+                    rules::count_of::Counter::Any | rules::count_of::Counter::Number(1) => "one".to_string(),
                     rules::count_of::Counter::All => "all".to_string(),
                     rules::count_of::Counter::Number(n) => format!("{}", n),
                 };
@@ -257,8 +259,7 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
         Rule::Course(rules::course::Rule { course, .. }) => {
             write!(&mut w, "{}", course.to_string())?;
         }
-        Rule::Either(rules::either::Rule { either: pair })
-        | Rule::Both(rules::both::Rule { both: pair }) => {
+        Rule::Either(rules::either::Rule { either: pair }) | Rule::Both(rules::both::Rule { both: pair }) => {
             let pair = pair.clone();
 
             let a = summarize_result(&pair.0)?;
@@ -276,206 +277,168 @@ fn summarize_result(rule: &Rule) -> Result<String, fmt::Error> {
             what,
             filter,
             ..
-        }) => match given {
-            given::Given::AreasOfStudy => match what {
-                given::What::AreasOfStudy => match action {
-                    action::Action {
-                        lhs: action::Value::Command(action::Command::Count),
-                        op: Some(action::Operator::GreaterThanEqualTo),
-                        rhs: Some(rhs),
-                    } => {
-                        let filter_desc = match filter {
-                            Some(f) => describe_areas_filter(f),
-                            None => "".into(),
-                        };
+        }) => {
+            match given {
+                given::Given::AreasOfStudy => match what {
+                    given::What::AreasOfStudy => match action {
+                        action::Action {
+                            lhs: action::Value::Command(action::Command::Count),
+                            op: Some(action::Operator::GreaterThanEqualTo),
+                            rhs: Some(rhs),
+                        } => {
+                            let filter_desc = match filter {
+                                Some(f) => describe_areas_filter(f),
+                                None => "".into(),
+                            };
 
-                        let count = match rhs {
-                            action::Value::Integer(1) => "one",
-                            action::Value::Integer(2) => "two",
-                            action::Value::Integer(3) => "three",
-                            _ => panic!("unknown number"),
-                        };
+                            let count = match rhs {
+                                action::Value::Integer(1) => "one",
+                                action::Value::Integer(2) => "two",
+                                action::Value::Integer(3) => "three",
+                                _ => panic!("unknown number"),
+                            };
 
-                        // For this requirement, you must also complete one "major".
-                        write!(&mut w, "also complete {} {}", count, filter_desc)?;
-                    }
-                    _ => panic!("unimplemented"),
+                            // For this requirement, you must also complete one "major".
+                            write!(&mut w, "also complete {} {}", count, filter_desc)?;
+                        }
+                        _ => panic!("unimplemented"),
+                    },
+                    _ => panic!("given: areas, what: !areas???"),
                 },
-                _ => panic!("given: areas, what: !areas???"),
-            },
-            given::Given::AllCourses => match what {
-                given::What::Credits => match action {
-                    action::Action {
-                        lhs: action::Value::Command(action::Command::Sum),
-                        op: Some(action::Operator::GreaterThanEqualTo),
-                        rhs: Some(rhs),
-                    } => {
-                        let filter_desc = match filter {
-                            Some(f) => describe_courses_filter(f),
-                            None => "".into(),
-                        };
+                given::Given::AllCourses => match what {
+                    given::What::Credits => match action {
+                        action::Action {
+                            lhs: action::Value::Command(action::Command::Sum),
+                            op: Some(action::Operator::GreaterThanEqualTo),
+                            rhs: Some(rhs),
+                        } => {
+                            let filter_desc = match filter {
+                                Some(f) => describe_courses_filter(f),
+                                None => "".into(),
+                            };
 
-                        write!(
-                            &mut w,
-                            "complete enough courses{} to obtain {} credits",
-                            filter_desc, rhs
-                        )?;
-                    }
-                    _ => {
-                        write!(
-                            &mut w,
-                            "given blah (given: {:?}, action: {:?}",
-                            given, action
-                        )?;
-                    }
-                },
-                given::What::DistinctCourses => match action {
-                    action::Action {
-                        lhs: action::Value::Command(action::Command::Count),
-                        op,
-                        rhs: Some(rhs),
-                    } => {
-                        let filter_desc = match filter {
-                            Some(f) => describe_courses_filter(f),
-                            None => "".into(),
-                        };
-
-                        let counter = match op {
-                            Some(action::Operator::GreaterThanEqualTo) => "at least",
-                            _ => panic!("other actions for {given: courses, what: courses} are not implemented yet")
-                        };
-
-                        let course_word = match rhs {
-                            action::Value::Integer(n) if *n == 1 => "course",
-                            action::Value::Float(n) if *n == 1.0 => "course",
-                            _ => "courses",
-                        };
-
-                        write!(
-                            &mut w,
-                            "complete {counter} {num} distinct {word}{desc}",
-                            counter = counter,
-                            num = rhs,
-                            word = course_word,
-                            desc = filter_desc
-                        )?;
-                    }
-                    _ => {
-                        write!(
-                            &mut w,
-                            "given blah (given: {:?}, action: {:?}",
-                            given, action
-                        )?;
-                    }
-                },
-                given::What::Courses => match action {
-                    action::Action {
-                        lhs: action::Value::Command(action::Command::Count),
-                        op,
-                        rhs: Some(rhs),
-                    } => {
-                        let filter_desc = match filter {
-                            Some(f) => describe_courses_filter(f),
-                            None => "".into(),
-                        };
-
-                        let counter = match op {
-                            Some(action::Operator::GreaterThanEqualTo) => "at least",
-                            _ => panic!("other actions for {given: courses, what: courses} are not implemented yet")
-                        };
-
-                        let course_word = match rhs {
-                            action::Value::Integer(n) if *n == 1 => "course",
-                            action::Value::Float(n) if *n == 1.0 => "course",
-                            _ => "courses",
-                        };
-
-                        write!(
-                            &mut w,
-                            "complete {counter} {num} {word}{desc}",
-                            counter = counter,
-                            num = rhs,
-                            word = course_word,
-                            desc = filter_desc
-                        )?;
-                    }
-                    _ => {
-                        write!(
-                            &mut w,
-                            "given blah (given: {:?}, action: {:?}",
-                            given, action
-                        )?;
-                    }
-                },
-                given::What::Grades => match action {
-                    action::Action {
-                        lhs: action::Value::Command(action::Command::Average),
-                        op: Some(op),
-                        rhs: Some(rhs),
-                    } => match op {
-                        action::Operator::GreaterThanEqualTo => {
                             write!(
                                 &mut w,
-                                "maintain a {} or greater GPA across all of your courses",
-                                rhs
+                                "complete enough courses{} to obtain {} credits",
+                                filter_desc, rhs
                             )?;
                         }
-                        action::Operator::GreaterThan => {
+                        _ => {
+                            write!(&mut w, "given blah (given: {:?}, action: {:?}", given, action)?;
+                        }
+                    },
+                    given::What::DistinctCourses => match action {
+                        action::Action {
+                            lhs: action::Value::Command(action::Command::Count),
+                            op,
+                            rhs: Some(rhs),
+                        } => {
+                            let filter_desc = match filter {
+                                Some(f) => describe_courses_filter(f),
+                                None => "".into(),
+                            };
+
+                            let counter = match op {
+                                Some(action::Operator::GreaterThanEqualTo) => "at least",
+                                _ => {
+                                    panic!("other actions for {given: courses, what: courses} are not implemented yet")
+                                }
+                            };
+
+                            let course_word = match rhs {
+                                action::Value::Integer(n) if *n == 1 => "course",
+                                action::Value::Float(n) if *n == 1.0 => "course",
+                                _ => "courses",
+                            };
+
                             write!(
                                 &mut w,
-                                "maintain a GPA above {} across all of your courses",
-                                rhs
+                                "complete {counter} {num} distinct {word}{desc}",
+                                counter = counter,
+                                num = rhs,
+                                word = course_word,
+                                desc = filter_desc
                             )?;
                         }
-                        action::Operator::EqualTo => {
+                        _ => {
+                            write!(&mut w, "given blah (given: {:?}, action: {:?}", given, action)?;
+                        }
+                    },
+                    given::What::Courses => match action {
+                        action::Action {
+                            lhs: action::Value::Command(action::Command::Count),
+                            op,
+                            rhs: Some(rhs),
+                        } => {
+                            let filter_desc = match filter {
+                                Some(f) => describe_courses_filter(f),
+                                None => "".into(),
+                            };
+
+                            let counter = match op {
+                                Some(action::Operator::GreaterThanEqualTo) => "at least",
+                                _ => {
+                                    panic!("other actions for {given: courses, what: courses} are not implemented yet")
+                                }
+                            };
+
+                            let course_word = match rhs {
+                                action::Value::Integer(n) if *n == 1 => "course",
+                                action::Value::Float(n) if *n == 1.0 => "course",
+                                _ => "courses",
+                            };
+
                             write!(
                                 &mut w,
-                                "maintain exactly a {} GPA across all of your courses",
-                                rhs
+                                "complete {counter} {num} {word}{desc}",
+                                counter = counter,
+                                num = rhs,
+                                word = course_word,
+                                desc = filter_desc
                             )?;
                         }
-                        action::Operator::NotEqualTo => {
-                            panic!("not equal to makes no sense here");
+                        _ => {
+                            write!(&mut w, "given blah (given: {:?}, action: {:?}", given, action)?;
                         }
-                        action::Operator::LessThan => {
-                            write!(
-                                &mut w,
-                                "maintain less than a {} GPA across all of your courses",
-                                rhs
-                            )?;
-                        }
-                        action::Operator::LessThanEqualTo => {
-                            write!(
-                                &mut w,
-                                "maintain at most a {} GPA across all of your courses",
-                                rhs
-                            )?;
+                    },
+                    given::What::Grades => match action {
+                        action::Action {
+                            lhs: action::Value::Command(action::Command::Average),
+                            op: Some(op),
+                            rhs: Some(rhs),
+                        } => match op {
+                            action::Operator::GreaterThanEqualTo => {
+                                write!(&mut w, "maintain a {} or greater GPA across all of your courses", rhs)?;
+                            }
+                            action::Operator::GreaterThan => {
+                                write!(&mut w, "maintain a GPA above {} across all of your courses", rhs)?;
+                            }
+                            action::Operator::EqualTo => {
+                                write!(&mut w, "maintain exactly a {} GPA across all of your courses", rhs)?;
+                            }
+                            action::Operator::NotEqualTo => {
+                                panic!("not equal to makes no sense here");
+                            }
+                            action::Operator::LessThan => {
+                                write!(&mut w, "maintain less than a {} GPA across all of your courses", rhs)?;
+                            }
+                            action::Operator::LessThanEqualTo => {
+                                write!(&mut w, "maintain at most a {} GPA across all of your courses", rhs)?;
+                            }
+                        },
+                        _ => {
+                            write!(&mut w, "given blah (given: {:?}, action: {:?}", given, action)?;
                         }
                     },
                     _ => {
-                        write!(
-                            &mut w,
-                            "given blah (given: {:?}, action: {:?}",
-                            given, action
-                        )?;
+                        write!(&mut w, "given blah (given: {:?}, action: {:?}", given, action)?;
                     }
                 },
                 _ => {
-                    write!(
-                        &mut w,
-                        "given blah (given: {:?}, action: {:?}",
-                        given, action
-                    )?;
+                    write!(&mut w, "given blah (given: {:?}, action: {:?}", given, action)?;
                 }
-            },
-            _ => {
-                write!(
-                    &mut w,
-                    "given blah (given: {:?}, action: {:?}",
-                    given, action
-                )?;
             }
-        },
+        }
         Rule::Do(rules::action::Rule { .. }) => {
             write!(&mut w, "do blah {:?}", rule)?;
         }
@@ -580,10 +543,7 @@ fn collect_active_requirements_from_area(area: &AreaOfStudy) -> Vec<(String, Req
                 r.requirement.clone(),
                 area.requirements
                     .get(&r.requirement)
-                    .expect(&format!(
-                        "{} was not found in the requirements list",
-                        r.requirement
-                    ))
+                    .expect(&format!("{} was not found in the requirements list", r.requirement))
                     .clone(),
             )
         })
@@ -602,10 +562,7 @@ fn collect_active_requirements(req: &Requirement) -> Vec<(String, Requirement)> 
                 r.requirement.clone(),
                 req.requirements
                     .get(&r.requirement)
-                    .expect(&format!(
-                        "{} was not found in the requirements list",
-                        r.requirement
-                    ))
+                    .expect(&format!("{} was not found in the requirements list", r.requirement))
                     .clone(),
             )
         })

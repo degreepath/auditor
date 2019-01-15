@@ -18,8 +18,9 @@ impl crate::rules::traits::PrettyPrint for Clause {
 
         if let Some(gereq) = self.get("gereqs") {
             match gereq {
-                WrappedValue::Single(v) =>
-                    clauses.push(format!("with the “{}” general education attribute", v.print()?)),
+                WrappedValue::Single(v) => {
+                    clauses.push(format!("with the “{}” general education attribute", v.print()?))
+                }
                 WrappedValue::Or(_) | WrappedValue::And(_) => {
                     // TODO: figure out how to quote these
                     clauses.push(format!("with the {} general education attribute", gereq.print()?));
@@ -29,17 +30,19 @@ impl crate::rules::traits::PrettyPrint for Clause {
 
         if let Some(semester) = self.get("semester") {
             match semester {
-                WrappedValue::Single(v) =>
-                    clauses.push(format!("during {} semesters", v.print()?)),
-                WrappedValue::Or(_) | WrappedValue::And(_) =>
-                    clauses.push(format!("during a {} semester", semester.print()?)),
+                WrappedValue::Single(v) => clauses.push(format!("during {} semesters", v.print()?)),
+                WrappedValue::Or(_) | WrappedValue::And(_) => {
+                    clauses.push(format!("during a {} semester", semester.print()?))
+                }
             };
         }
 
         if let Some(year) = self.get("year") {
             match year {
-                WrappedValue::Single(TaggedValue {op: Operator::EqualTo, value: Value::Integer(n)}) =>
-                    clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual"))),
+                WrappedValue::Single(TaggedValue {
+                    op: Operator::EqualTo,
+                    value: Value::Integer(n),
+                }) => clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual"))),
                 WrappedValue::Or(_) | WrappedValue::And(_) => {
                     // TODO: implement a .map() function on WrappedValue?
                     // to allow something like `year.map(util::expand_year).print()?`
@@ -51,8 +54,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 
         if let Some(institution) = self.get("institution") {
             match institution {
-                WrappedValue::Single(v) =>
-                    clauses.push(format!("at {}", v.print()?)),
+                WrappedValue::Single(v) => clauses.push(format!("at {}", v.print()?)),
                 WrappedValue::Or(_) => {
                     clauses.push(format!("at either {}", institution.print()?));
                 }
@@ -62,11 +64,17 @@ impl crate::rules::traits::PrettyPrint for Clause {
 
         if let Some(department) = self.get("department") {
             match department {
-                WrappedValue::Single(TaggedValue {op: Operator::EqualTo, value: v}) =>
-                    clauses.push(format!("within the {} department", v.print()?)),
-                WrappedValue::Single(TaggedValue {op: Operator::NotEqualTo, value: v}) =>
-                    clauses.push(format!("outside of the {} department", v.print()?)),
-                WrappedValue::Single(TaggedValue {op: _, value: _}) => unimplemented!("only implemented for = and !="),
+                WrappedValue::Single(TaggedValue {
+                    op: Operator::EqualTo,
+                    value: v,
+                }) => clauses.push(format!("within the {} department", v.print()?)),
+                WrappedValue::Single(TaggedValue {
+                    op: Operator::NotEqualTo,
+                    value: v,
+                }) => clauses.push(format!("outside of the {} department", v.print()?)),
+                WrappedValue::Single(TaggedValue { op: _, value: _ }) => {
+                    unimplemented!("only implemented for = and !=")
+                }
                 WrappedValue::Or(_) => {
                     clauses.push(format!("within either of the {} departments", department.print()?));
                 }
@@ -132,12 +140,7 @@ impl FromStr for WrappedValue {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let or_bits: Vec<_> = s.split(" | ").collect();
         match or_bits.as_slice() {
-            [a, b] => {
-                return Ok(WrappedValue::Or([
-                    a.parse::<TaggedValue>()?,
-                    b.parse::<TaggedValue>()?,
-                ]))
-            }
+            [a, b] => return Ok(WrappedValue::Or([a.parse::<TaggedValue>()?, b.parse::<TaggedValue>()?])),
             _ => (),
         };
 
@@ -395,8 +398,8 @@ impl Serialize for Value {
 
 #[cfg(test)]
 mod tests {
-    use crate::rules::given::action::Operator;
     use super::*;
+    use crate::rules::given::action::Operator;
 
     #[test]
     fn serialize_simple() {

@@ -22,9 +22,9 @@ impl crate::rules::traits::PrettyPrint for Rule {
 
 #[cfg(test)]
 mod test {
-		use super::*;
+    use super::*;
 
-		#[test]
+    #[test]
     #[ignore]
     fn pretty_print_block() {
         use crate::rules::traits::PrettyPrint;

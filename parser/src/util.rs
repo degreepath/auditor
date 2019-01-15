@@ -202,7 +202,13 @@ mod tests {
     #[test]
     fn oxford_len_gt3() {
         use super::Oxford;
-        assert_eq!("A, B, and C", vec!["A".to_string(), "B".to_string(), "C".to_string()].oxford("and"));
-        assert_eq!("A, B, or C", vec!["A".to_string(), "B".to_string(), "C".to_string()].oxford("or"));
+        assert_eq!(
+            "A, B, and C",
+            vec!["A".to_string(), "B".to_string(), "C".to_string()].oxford("and")
+        );
+        assert_eq!(
+            "A, B, or C",
+            vec!["A".to_string(), "B".to_string(), "C".to_string()].oxford("or")
+        );
     }
 }

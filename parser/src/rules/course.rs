@@ -29,9 +29,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
             (Some(term), None, None) => Some(format!("{}", util::pretty_term(&term))),
             (None, Some(year), None) => Some(format!("{}", util::expand_year(year, "dual"))),
             (None, None, Some(semester)) => Some(format!("{}", semester)),
-            (None, Some(year), Some(semester)) => {
-                Some(format!("{} {}", semester, util::expand_year(year, "short")))
-            }
+            (None, Some(year), Some(semester)) => Some(format!("{} {}", semester, util::expand_year(year, "short"))),
             (Some(_), Some(_), _) | (Some(_), _, Some(_)) => unimplemented!(),
             (None, None, None) => None,
         };
