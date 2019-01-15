@@ -76,7 +76,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 			} else if self.only_courses() {
 				return Ok(format!("take {}", req));
 			} else {
-				return Ok(format!("[todo] {}", req));
+				return Ok(format!("{}", req));
 			}
 		}
 
