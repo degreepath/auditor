@@ -541,6 +541,14 @@ of: []";
 		let expected = "take CS 111";
 		assert_eq!(expected, input.print().unwrap());
 
+        let input: Rule = serde_yaml::from_str(&"{count: any, of: [{requirement: Core}]}").unwrap();
+        let expected = "complete the “Core” requirement";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule = serde_yaml::from_str(&"{count: any, of: [{both: [CS 111, CS 121]}]}").unwrap();
+        let expected = "take both CS 111 and CS 121";
+        assert_eq!(expected, input.print().unwrap());
+
 		let input: Rule = serde_yaml::from_str(&"{count: all, of: [CS 111, CS 121]}").unwrap();
 		let expected = "take both CS 111 and CS 121";
 		assert_eq!(expected, input.print().unwrap());
@@ -575,26 +583,119 @@ of: []";
 			serde_yaml::from_str(&"{count: 2, of: [{requirement: A}, {requirement: B}, {requirement: C}]}").unwrap();
 		let expected = "complete two requirements from among “A”, “B”, or “C”";
 		assert_eq!(expected, input.print().unwrap());
+    }
 
-		let input: Rule =
-			serde_yaml::from_str(&"{count: all, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
-		let expected = "take CS 111, and complete both the “A” and “B” requirements";
-		assert_eq!(expected, input.print().unwrap());
+    #[test]
+    fn all_two_course_one_requirement() {
+        use crate::rules::traits::PrettyPrint;
+        let expected = "take CS 111 and CS 121, and complete the “B” requirement";
 
-		let input: Rule =
-			serde_yaml::from_str(&"{count: any, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
-		let expected = "take CS 111, or complete either the “A” or “B” requirements";
-		assert_eq!(expected, input.print().unwrap());
+        let input: Rule =
+            serde_yaml::from_str(&"{count: all, of: [CS 111, CS 121, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
 
-		let input: Rule =
-			serde_yaml::from_str(&"{count: 2, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
-		let expected = "complete or take two requirements or courses from among CS 111, “A”, or “B”";
-		assert_eq!(expected, input.print().unwrap());
+        let input: Rule =
+            serde_yaml::from_str(&"{count: all, of: [CS 111, {requirement: B}, CS 121]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
 
-		let input: Rule =
-			serde_yaml::from_str(&"{count: 2, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
-		let expected = "complete or take two requirements or courses from among CS 111, “A”, or “B”";
-		assert_eq!(expected, input.print().unwrap());
+        let input: Rule =
+            serde_yaml::from_str(&"{count: all, of: [{requirement: B}, CS 111, CS 121]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn any_two_course_one_requirement() {
+        use crate::rules::traits::PrettyPrint;
+        let expected = "take CS 111 or CS 121, or complete the “B” requirement";
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: any, of: [CS 111, CS 121, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: any, of: [CS 111, {requirement: B}, CS 121]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: any, of: [{requirement: B}, CS 111, CS 121]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn all_two_requirement_one_course() {
+        use crate::rules::traits::PrettyPrint;
+        let expected = "take CS 111, and complete both the “A” and “B” requirements";
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: all, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: all, of: [{requirement: A}, CS 111, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: all, of: [{requirement: A}, {requirement: B}, CS 111]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn any_two_requirement_one_course() {
+        use crate::rules::traits::PrettyPrint;
+        let expected = "take CS 111, or complete either the “A” or “B” requirements";
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: any, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: any, of: [{requirement: A}, CS 111, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: any, of: [{requirement: A}, {requirement: B}, CS 111]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn two_of_one_requirement_two_course() {
+        use crate::rules::traits::PrettyPrint;
+        let expected = "complete or take two requirements or courses from among CS 111, “A”, or “B”";
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: 2, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: 2, of: [{requirement: A}, CS 111, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: 2, of: [{requirement: A}, {requirement: B}, CS 111]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn two_of_two_requirement_one_course() {
+        use crate::rules::traits::PrettyPrint;
+        let expected = "complete or take two requirements or courses from among CS 111, “A”, or “B”";
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: 2, of: [CS 111, {requirement: A}, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: 2, of: [{requirement: A}, CS 111, {requirement: B}]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{count: 2, of: [{requirement: A}, {requirement: B}, CS 111]}").unwrap();
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    fn both_either_requirement() {
+        use crate::rules::traits::PrettyPrint;
 
 		let input: Rule =
             serde_yaml::from_str(&"{count: all, of: [{both: [CS 111, CS 251]}, {either: [{requirement: A}, {requirement: B}]}, {requirement: C}]}").unwrap();
