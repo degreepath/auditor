@@ -206,14 +206,13 @@ international: ~";
 		let expected = "DEPT 111 (Fall 2015)";
 		assert_eq!(expected, input.print().unwrap());
 
-		// TODO: implement term parsing to
+		// TODO: implement term parsing to get to this point `let expected = "DEPT 111 (Fall 2015)";`
 		let input = Rule {
 			course: "DEPT 111".into(),
 			term: Some("2015-1".to_string()),
 			..Default::default()
 		};
 		let expected = "DEPT 111 (2015-1)";
-		// TODO: get to this point `let expected = "DEPT 111 (Fall 2015)";`
 		assert_eq!(expected, input.print().unwrap());
 
 		let input = Rule {
