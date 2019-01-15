@@ -73,7 +73,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					#[cfg_attr(rustfmt, rustfmt_skip)]
                     write!(&mut output, "enough courses{} to span {} {}", filter, self.action.print()?, word)?;
 				}
-				_ => unimplemented!(),
+				What::AreasOfStudy => unimplemented!(),
 			},
 			Given::TheseCourses { courses, repeats: mode } => {
 				let courses = courses
@@ -112,8 +112,62 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					_ => unimplemented!(),
 				}
 			}
-			Given::TheseRequirements { requirements: _ } => {}
-			Given::AreasOfStudy => {}
+			Given::TheseRequirements { requirements } => {
+				match &self.what {
+					What::Courses => {
+						#[cfg_attr(rustfmt, rustfmt_skip)]
+                        write!(&mut output, "enough courses{} {}", filter, self.action.print()?)?;
+					}
+					What::DistinctCourses => {
+						#[cfg_attr(rustfmt, rustfmt_skip)]
+                        write!(&mut output, "enough courses{} {}", self.action.print()?, filter)?;
+					}
+					What::Credits => {
+						let plur = self.action.should_pluralize();
+						let word = if plur { "credits" } else { "credit" };
+
+						#[cfg_attr(rustfmt, rustfmt_skip)]
+                        write!(&mut output, "enough courses{} to obtain {} {}", filter, self.action.print()?, word)?;
+					}
+					What::Departments => {
+						let plur = self.action.should_pluralize();
+						let word = if plur { "departments" } else { "department" };
+
+						#[cfg_attr(rustfmt, rustfmt_skip)]
+                        write!(&mut output, "enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+					}
+					What::Grades => {
+						let plur = self.action.should_pluralize();
+						let word = if plur { "courses" } else { "course" };
+
+						#[cfg_attr(rustfmt, rustfmt_skip)]
+                        write!(&mut output, "maintain an average GPA {} from {}{}", self.action.print()?, word, filter)?;
+					}
+					What::Terms => {
+						let plur = self.action.should_pluralize();
+						let word = if plur { "terms" } else { "term" };
+
+						#[cfg_attr(rustfmt, rustfmt_skip)]
+                        write!(&mut output, "enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+					}
+					What::AreasOfStudy => unimplemented!(),
+				}
+
+				let requirements: Vec<String> = requirements
+					.into_iter()
+					.filter_map(|r| match r.print() {
+						Ok(p) => Some(p),
+						Err(_) => None,
+					})
+					.collect();
+
+				#[cfg_attr(rustfmt, rustfmt_skip)]
+                write!(&mut output, " from among courses matched by the {} requirements", requirements.oxford("and"))?;
+			}
+			Given::AreasOfStudy => match self.what {
+				What::AreasOfStudy => {}
+				_ => panic!("given: areas, what: !areas…"),
+			},
 			Given::NamedVariable { save: _ } => {}
 		}
 
@@ -770,6 +824,42 @@ do: count >= 3"#;
 			serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: terms, do: count >= 3}")
 				.unwrap();
 		let expected = "enough courses during Interim semesters to span at least three terms";
+		assert_eq!(expected, input.print().unwrap());
+	}
+
+	#[test]
+	fn pretty_print_inline_given_requirements_what_courses() {
+		use crate::rules::traits::PrettyPrint;
+
+		let input: Rule =
+            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}").unwrap();
+		let expected = "enough courses to obtain at least one credit from among courses matched by the “Core” and “Modern” requirements";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule =
+            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}").unwrap();
+		let expected = "enough courses with the “FOL-C” general education attribute to obtain at least one credit from among courses matched by the “Core” and “Modern” requirements";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule =
+            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Interim }, what: credits, do: sum >= 3}")
+                .unwrap();
+		let expected = "enough courses during Interim semesters to obtain at least three credits from among courses matched by the “Core” and “Modern” requirements";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule =
+            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Fall }, what: credits, do: sum >= 10}").unwrap();
+		let expected = "enough courses during Fall semesters to obtain at least ten credits from among courses matched by the “Core” and “Modern” requirements";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule =
+            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: '2012' }, what: credits, do: sum >= 1}").unwrap();
+		let expected = "enough courses during the 2012-13 academic year to obtain at least one credit from among courses matched by the “Core” and “Modern” requirements";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule =
+            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}").unwrap();
+		let expected = "enough courses at St. Olaf College to obtain at least 17 credits from among courses matched by the “Core” and “Modern” requirements";
 		assert_eq!(expected, input.print().unwrap());
 	}
 }
