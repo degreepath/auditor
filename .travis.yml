@@ -3,7 +3,6 @@ language: rust
 rust:
   - stable
   - beta
-  - nightly
 
 cache: cargo
 
@@ -11,3 +10,12 @@ matrix:
   allow_failures:
     - rust: nightly
   fast_finish: true
+  include:
+    - name: nightly
+      rust: nightly
+      before_cache: |
+        RUSTFLAGS="--cfg procmacro2_semver_exempt" cargo install cargo-tarpaulin -f
+
+      after_success: |
+        cargo tarpaulin --out Xml
+        curl -s https://codecov.io/bash | bash
