@@ -7,6 +7,21 @@ pub struct Rule {
     pub optional: bool,
 }
 
+impl crate::rules::traits::PrettyPrint for Rule {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        use std::fmt::Write;
+        let mut output = String::new();
+
+        write!(&mut output, "“{}”", self.requirement)?;
+
+        if self.optional == true {
+            write!(&mut output, " (optional)")?;
+        }
+
+        Ok(output)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -50,5 +65,24 @@ requirement: Name";
 
         let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn pretty_print() {
+        use crate::rules::traits::PrettyPrint;
+
+        let input = Rule {
+            requirement: "Core".into(),
+            optional: false,
+        };
+        let expected = "“Core”";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input = Rule {
+            requirement: "Core".into(),
+            optional: true,
+        };
+        let expected = "“Core” (optional)";
+        assert_eq!(expected, input.print().unwrap());
     }
 }

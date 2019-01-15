@@ -2,7 +2,6 @@ use crate::util;
 use crate::util::ParseError;
 use serde::de::{Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
-use std::error::Error;
 use std::fmt;
 use std::str::FromStr;
 
@@ -11,6 +10,44 @@ pub struct Action {
     pub lhs: Value,
     pub op: Option<Operator>,
     pub rhs: Option<Value>,
+}
+
+impl Action {
+    pub fn should_pluralize(&self) -> bool {
+        match &self.rhs {
+            Some(Value::Integer(n)) if *n == 1 => false,
+            Some(Value::Integer(_)) => true,
+            Some(Value::Float(f)) if *f == 1.0 => false,
+            Some(Value::Float(_)) => true,
+            _ => false,
+        }
+    }
+}
+
+impl crate::rules::traits::PrettyPrint for Action {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        use std::fmt::Write;
+
+        let mut output = String::new();
+
+        match (&self.lhs, &self.op, &self.rhs) {
+            (Value::Command(Command::Count), Some(op), Some(val)) => {
+                write!(&mut output, "{} {}", op.print()?, val.print()?)?
+            }
+            (Value::Command(Command::Sum), Some(op), Some(val)) => {
+                write!(&mut output, "{} {}", op.print()?, val.print()?)?
+            }
+            (Value::Command(Command::Average), Some(Operator::GreaterThan), Some(val)) => {
+                write!(&mut output, "above {}", val.print()?)?
+            }
+            (Value::Command(Command::Average), Some(Operator::GreaterThanEqualTo), Some(val)) => {
+                write!(&mut output, "at or above {}", val.print()?)?
+            }
+            _ => unimplemented!(),
+        };
+
+        Ok(output)
+    }
 }
 
 impl Serialize for Action {
@@ -93,6 +130,20 @@ pub enum Operator {
     NotEqualTo,
 }
 
+impl crate::rules::traits::PrettyPrint for Operator {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        Ok(match &self {
+            Operator::LessThan => "fewer than",
+            Operator::LessThanEqualTo => "at most",
+            Operator::EqualTo => "exactly",
+            Operator::GreaterThan => "more than",
+            Operator::GreaterThanEqualTo => "at least",
+            Operator::NotEqualTo => "not",
+        }
+        .to_string())
+    }
+}
+
 impl FromStr for Operator {
     type Err = ParseError;
 
@@ -163,6 +214,31 @@ impl fmt::Display for Value {
             Value::String(v) => write!(f, "{}", v),
             Value::Integer(v) => write!(f, "{}", v),
             Value::Float(v) => write!(f, "{:.2}", v),
+        }
+    }
+}
+
+impl crate::rules::traits::PrettyPrint for Value {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        match &self {
+            Value::Command(_) => unimplemented!(),
+            Value::Variable(name) => Ok(name.to_string()),
+            Value::String(v) => Ok(format!("“{}”", v)),
+            Value::Integer(n) => Ok(match n {
+                0 => "zero".to_string(),
+                1 => "one".to_string(),
+                2 => "two".to_string(),
+                3 => "three".to_string(),
+                4 => "four".to_string(),
+                5 => "five".to_string(),
+                6 => "six".to_string(),
+                7 => "seven".to_string(),
+                8 => "eight".to_string(),
+                9 => "nine".to_string(),
+                10 => "ten".to_string(),
+                _ => format!("{}", n),
+            }),
+            Value::Float(v) => Ok(format!("{:.2}", v)),
         }
     }
 }

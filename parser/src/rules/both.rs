@@ -5,6 +5,50 @@ pub struct Rule {
     pub both: (Box<AnyRule>, Box<AnyRule>),
 }
 
+impl crate::rules::traits::PrettyPrint for Rule {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        use crate::rules::Rule::{Course, Requirement};
+        use std::fmt::Write;
+
+        let mut output = String::new();
+
+        let pair = self.both.clone();
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        match (*pair.0, *pair.1) {
+            (Requirement(a), Requirement(b)) => {
+                write!(&mut output, "complete both the {} and {} requirements", a.print()?, b.print()?)?;
+            },
+            (Course(a), Course(b)) => {
+                write!(&mut output, "take both {} and {}", a.print()?, b.print()?)?;
+            },
+            (Requirement(a), Course(b)) => {
+                write!(&mut output, "take {} and complete the {} requirement", a.print()?, b.print()?)?;
+            },
+            (Course(a), Requirement(b)) => {
+                write!(&mut output, "complete the {} requirement and take {}", a.print()?, b.print()?)?;
+            },
+            (Course(a), b) => {
+                write!(&mut output, "both take {} and [do] {}", a.print()?, b.print()?)?;
+            },
+            (Requirement(a), b) => {
+                write!(&mut output, "both complete the {} requirement and [do] {}", a.print()?, b.print()?)?;
+            },
+            (a, Course(b)) => {
+                write!(&mut output, "both [do] {} and take {}", a.print()?, b.print()?)?;
+            },
+            (a, Requirement(b)) => {
+                write!(&mut output, "both [do] {} and complete the {} requirement", a.print()?, b.print()?)?;
+            },
+            (a, b) => {
+                write!(&mut output, "both {} and {}", a.print()?, b.print()?)?;
+            },
+        };
+
+        Ok(output)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

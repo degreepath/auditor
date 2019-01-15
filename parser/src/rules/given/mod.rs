@@ -1,5 +1,5 @@
 use crate::rules::{course, requirement};
-use crate::util;
+use crate::util::{self, Oxford};
 
 pub mod action;
 pub mod filter;
@@ -22,20 +22,113 @@ pub struct Rule {
     pub action: action::Action,
 }
 
+impl crate::rules::traits::PrettyPrint for Rule {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        use std::fmt::Write;
+
+        let mut output = String::new();
+
+        let filter = match &self.filter {
+            Some(f) => format!(" {}", f.print()?),
+            None => "".to_string(),
+        };
+
+
+        match &self.given {
+            Given::AllCourses => match &self.what {
+                What::Courses => {
+                    let word = if self.action.should_pluralize() {"courses"} else {"course"};
+                    write!(&mut output, "{} {}{}", self.action.print()?, word, filter)?;
+                }
+                What::DistinctCourses => {
+                    let word = if self.action.should_pluralize() {"distinct courses"} else {"course"};
+                    write!(&mut output, "{} {}{}", self.action.print()?, word, filter)?;
+                }
+                What::Credits => {
+                    let word = if self.action.should_pluralize() {"credits"} else {"credit"};
+                    write!(&mut output, "enough courses{} to obtain {} {}", filter, self.action.print()?, word)?;
+                }
+                What::Departments => {
+                    let word = if self.action.should_pluralize() {"departments"} else {"department"};
+                    write!(&mut output, "enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+                }
+                What::Grades => {
+                    let word = if self.action.should_pluralize() {"courses"} else {"course"};
+                    write!(&mut output, "maintain an average GPA {} from {}{}", self.action.print()?, word, filter)?;
+                }
+                What::Terms => {
+                    let word = if self.action.should_pluralize() {"terms"} else {"term"};
+                    write!(&mut output, "enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+                }
+                _ => unimplemented!(),
+            },
+            Given::TheseCourses {
+                courses,
+                repeats: mode,
+            } => match (mode, &self.what) {
+                (RepeatMode::First, What::Courses) => {
+                    // TODO: expose last vs. first in output somehow?
+                    let courses = courses.iter().map(|r| r.print().unwrap()).collect::<Vec<String>>().oxford("and");
+                    write!(&mut output, "{}", courses)?;
+                }
+                (RepeatMode::Last, What::Courses) => {
+                    // TODO: expose last vs. first in output somehow?
+                    let courses = courses.iter().map(|r| r.print().unwrap()).collect::<Vec<String>>().oxford("and");
+                    write!(&mut output, "{}", courses)?;
+                }
+                (RepeatMode::All, What::Courses) => {
+                    // TODO: special-case "once" and "twice"
+                    let courses = courses.iter().map(|r| r.print().unwrap()).collect::<Vec<String>>().oxford("and");
+                    let word = if self.action.should_pluralize() {"times"} else {"time"};
+                    write!(&mut output, "{} {} {}", courses, self.action.print()?, word)?;
+                },
+                (RepeatMode::All, What::Credits) => {
+                    // TODO: special-case "once" and "twice"
+                    let courses = courses.iter().map(|r| r.print().unwrap()).collect::<Vec<String>>().oxford("and");
+                    let word = if self.action.should_pluralize() {"credits"} else {"credit"};
+                    write!(&mut output, "{} enough times to yield {} {}", courses, self.action.print()?, word)?;
+                },
+                _ => unimplemented!(),
+            }
+            Given::TheseRequirements { requirements: _ } => {}
+            Given::AreasOfStudy => {}
+            Given::NamedVariable { save: _ } => {}
+        }
+
+        Ok(output)
+    }
+}
+
+// impl Rule {
+//     fn validate(&self) -> Result<(), util::ValidationError> {
+//         match (&self.given, &self.what) {
+//             (Given::AreasOfStudy, What::AreasOfStudy) => (),
+//             (Given::AreasOfStudy, _) => {
+//                 return Err(util::ValidationError::GivenAreasMustOutputAreas)
+//             }
+//             _ => (),
+//         }
+//
+//         Ok(())
+//     }
+// }
+
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(tag = "given")]
 pub enum Given {
     #[serde(rename = "courses")]
     AllCourses,
     #[serde(rename = "these courses")]
-    TheseCourses { courses: Vec<CourseRule>, repeats: RepeatMode },
+    TheseCourses {
+        courses: Vec<CourseRule>,
+        repeats: RepeatMode,
+    },
     #[serde(rename = "these requirements")]
     TheseRequirements {
         requirements: Vec<requirement::Rule>,
     },
     #[serde(rename = "areas of study")]
     AreasOfStudy,
-    // #[serde(rename = "save", deserialize_with = "util::string_or_struct")]
     #[serde(rename = "save")]
     NamedVariable { save: String },
 }
@@ -46,13 +139,21 @@ pub enum CourseRule {
     Value(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
 }
 
+impl crate::rules::traits::PrettyPrint for CourseRule {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        match &self {
+            CourseRule::Value(v) => v.print()
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum RepeatMode {
-    #[serde(rename="first")]
+    #[serde(rename = "first")]
     First,
-    #[serde(rename="last")]
+    #[serde(rename = "last")]
     Last,
-    #[serde(rename="all")]
+    #[serde(rename = "all")]
     All,
 }
 
@@ -482,5 +583,146 @@ do: count >= 3"#;
 
         let actual: Rule = serde_yaml::from_str(&data).unwrap();
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn pretty_print_inline() {
+        use crate::rules::traits::PrettyPrint;
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, what: courses, do: count >= 1}").unwrap();
+        let expected = "at least one course";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: courses, do: count >= 1}").unwrap();
+        let expected = "at least one course with the “FOL-C” general education attribute";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct courses, do: count >= 2}").unwrap();
+        let expected = "at least two distinct courses with the “SPM” general education attribute";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}").unwrap();
+        let expected = "THEAT 233 at least one time";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 4}").unwrap();
+        let expected = "THEAT 233 at least four times";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 4}").unwrap();
+        let expected = "THEAT 233 and THEAT 253 at least four times";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233], what: credits, do: sum >= 4}").unwrap();
+        let expected = "THEAT 233 enough times to yield at least four credits";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: these courses, repeats: first, courses: [THEAT 233], what: courses, do: count >= 1}").unwrap();
+        let expected = "THEAT 233";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: these courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 1}").unwrap();
+        let expected = "THEAT 233 and THEAT 253";
+        assert_eq!(expected, input.print().unwrap());
+
+        // /
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: credits, do: sum >= 1}").unwrap();
+        let expected = "enough courses with the “FOL-C” general education attribute to obtain at least one credit";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {semester: Interim}, what: credits, do: sum >= 3}").unwrap();
+        let expected = "enough courses during Interim semesters to obtain at least three credits";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {semester: Fall}, what: credits, do: sum >= 10}").unwrap();
+        let expected = "enough courses during Fall semesters to obtain at least ten credits";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {semester: Fall | Interim}, what: credits, do: sum >= 10}").unwrap();
+        let expected = "enough courses during a Fall or Interim semester to obtain at least ten credits";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {year: '2012'}, what: credits, do: sum >= 3}").unwrap();
+        let expected = "enough courses during the 2012-13 academic year to obtain at least three credits";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {institution: St. Olaf College}, what: credits, do: sum >= 17}").unwrap();
+        let expected = "enough courses at St. Olaf College to obtain at least 17 credits";
+        assert_eq!(expected, input.print().unwrap());
+
+        // /
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: departments, do: count >= 2}").unwrap();
+        let expected = "enough courses with the “FOL-C” general education attribute to span at least two departments";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: {semester: Interim}, what: departments, do: count >= 1}").unwrap();
+        let expected = "enough courses during Interim semesters to span at least one department";
+        assert_eq!(expected, input.print().unwrap());
+
+        // /
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: grades, do: average >= 2.0}").unwrap();
+        let expected = "maintain an average GPA at or above 2.00 from courses with the “FOL-C” general education attribute";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: grades, do: average >= 3.0}").unwrap();
+        let expected = "maintain an average GPA at or above 3.00 from courses during Interim semesters";
+        assert_eq!(expected, input.print().unwrap());
+
+        // /
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: terms, do: count >= 2}").unwrap();
+        let expected = "enough courses with the “FOL-C” general education attribute to span at least two terms";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: terms, do: count >= 3}").unwrap();
+        let expected = "enough courses during Interim semesters to span at least three terms";
+        assert_eq!(expected, input.print().unwrap());
+    }
+
+    #[test]
+    #[ignore]
+    fn pretty_print_block() {
+        use crate::rules::traits::PrettyPrint;
+
+        let input: Rule = serde_yaml::from_str(
+            &"---
+given: these courses
+courses: [DANCE 399]
+where: {year: graduation-year, semester: Fall}
+name: $dance_seminars
+label: Senior Dance Seminars
+",
+        )
+        .unwrap();
+        let expected = "Given the intersection between the following potential courses and your transcript, but limiting your transcript to only the courses taken in the Fall of your Senior year, as “Senior Dance Seminars”:
+
+| Potential | “Senior Dance Seminars” |
+| --------- | ----------------------- |
+| DANCE 399 | DANCE 399 2015-1        |";
+        assert_eq!(expected, input.print().unwrap());
     }
 }

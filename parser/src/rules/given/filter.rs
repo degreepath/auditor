@@ -1,8 +1,8 @@
-use crate::util;
+use crate::util::{self, Oxford};
 use serde::de::{Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
 
-use super::action;
+use super::action::Operator;
 
 use std::collections::HashMap;
 use std::fmt;
@@ -10,11 +10,68 @@ use std::str::FromStr;
 
 pub type Clause = HashMap<String, WrappedValue>;
 
+impl crate::rules::traits::PrettyPrint for Clause {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        // TODO: don't rely on fmt::Display to display the Values
+
+        let mut clauses = vec![];
+
+        if let Some(gereq) = self.get("gereqs") {
+            match gereq {
+                WrappedValue::Single(v) =>
+                    clauses.push(format!("with the “{}” general education attribute", v.print()?)),
+                WrappedValue::Or(_) | WrappedValue::And(_) => {
+                    // TODO: figure out how to quote these
+                    clauses.push(format!("with the {} general education attribute", gereq.print()?));
+                }
+            };
+        }
+
+        if let Some(semester) = self.get("semester") {
+            match semester {
+                WrappedValue::Single(v) =>
+                    clauses.push(format!("during {} semesters", v.print()?)),
+                WrappedValue::Or(_) | WrappedValue::And(_) =>
+                    clauses.push(format!("during a {} semester", semester.print()?)),
+            };
+        }
+
+        if let Some(year) = self.get("year") {
+            match year {
+                WrappedValue::Single(TaggedValue {op: Operator::EqualTo, value: Value::Integer(n)}) =>
+                    clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual"))),
+                WrappedValue::Or(_) | WrappedValue::And(_) => {
+                    // TODO: implement a .map() function on WrappedValue?
+                    // to allow something like `year.map(util::expand_year).print()?`
+                    clauses.push(format!("during the {} academic years", year.print()?));
+                }
+                _ => unimplemented!(),
+            }
+        }
+
+        if let Some(institution) = self.get("institution") {
+            match institution {
+                WrappedValue::Single(v) =>
+                    clauses.push(format!("at {}", v.print()?)),
+                WrappedValue::Or(_) => {
+                    clauses.push(format!("at either {}", institution.print()?));
+                }
+                WrappedValue::And(_) => unimplemented!(),
+            }
+        }
+
+        // TODO: handle other filterable keys
+
+        Ok(clauses.oxford("and"))
+    }
+}
+
 pub fn deserialize_with<'de, D>(deserializer: D) -> Result<Option<Clause>, D::Error>
 where
     D: Deserializer<'de>,
 {
     #[derive(Deserialize)]
+    // TODO: support integers and booleans as well as string/struct
     struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
     // TODO: improve this to not transmute the hashmap right after creation
@@ -22,7 +79,7 @@ where
 
     match v {
         Ok(v) => {
-            let transmuted: Clause = v.iter().map(|(k, v)| (k.clone(), v.0.clone())).collect();
+            let transmuted: Clause = v.into_iter().map(|(k, v)| (k, v.0)).collect();
             Ok(Some(transmuted))
         }
         Err(err) => Err(err),
@@ -41,6 +98,16 @@ impl WrappedValue {
         match &self {
             WrappedValue::Single(val) => val.is_true(),
             _ => false,
+        }
+    }
+}
+
+impl crate::rules::traits::PrettyPrint for WrappedValue {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        match &self {
+            WrappedValue::Single(v) => Ok(format!("{}", v.print()?)),
+            WrappedValue::Or([a, b]) => Ok(format!("{} or {}", a.print()?, b.print()?)),
+            WrappedValue::And([a, b]) => Ok(format!("{} and {}", a.print()?, b.print()?)),
         }
     }
 }
@@ -97,14 +164,14 @@ impl Serialize for WrappedValue {
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct TaggedValue {
-    pub op: action::Operator,
+    pub op: Operator,
     pub value: Value,
 }
 
 impl TaggedValue {
     pub fn is_true(&self) -> bool {
         match &self.op {
-            action::Operator::EqualTo => self.value == true,
+            Operator::EqualTo => self.value == true,
             _ => false,
         }
     }
@@ -123,12 +190,12 @@ impl FromStr for TaggedValue {
                         let value = value.parse::<Value>()?;
 
                         Ok(TaggedValue {
-                            op: action::Operator::EqualTo,
+                            op: Operator::EqualTo,
                             value,
                         })
                     }
                     [op, value] => {
-                        let op = op.parse::<action::Operator>()?;
+                        let op = op.parse::<Operator>()?;
                         let value = value.parse::<Value>()?;
 
                         Ok(TaggedValue { op, value })
@@ -143,10 +210,19 @@ impl FromStr for TaggedValue {
                 let value = s.parse::<Value>()?;
 
                 Ok(TaggedValue {
-                    op: action::Operator::EqualTo,
+                    op: Operator::EqualTo,
                     value,
                 })
             }
+        }
+    }
+}
+
+impl crate::rules::traits::PrettyPrint for TaggedValue {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        match &self.op {
+            Operator::EqualTo => Ok(format!("{}", self.value.print()?)),
+            _ => Ok(format!("{} {}", self.op, self.value.print()?)),
         }
     }
 }
@@ -210,6 +286,18 @@ pub enum Value {
     Integer(u64),
     Float(f64),
     String(String),
+}
+
+impl crate::rules::traits::PrettyPrint for Value {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        match &self {
+            Value::String(s) => Ok(format!("{}", s)),
+            Value::Integer(n) => Ok(format!("{}", n)),
+            Value::Float(n) => Ok(format!("{:.2}", n)),
+            Value::Bool(b) => Ok(format!("{}", b)),
+            Value::Constant(s) => Ok(format!("{}", s)),
+        }
+    }
 }
 
 impl From<String> for Value {
@@ -293,7 +381,7 @@ impl Serialize for Value {
 
 #[cfg(test)]
 mod tests {
-    use super::super::action::Operator;
+    use crate::rules::given::action::Operator;
     use super::*;
 
     #[test]
@@ -546,6 +634,15 @@ level: "< 100 | = 200""#;
         assert_eq!(actual, expected);
     }
 
+    fn deserialize_test(s: &str) -> Option<Clause> {
+        #[derive(Deserialize)]
+        struct Wrapper(#[serde(deserialize_with = "deserialize_with")] Option<Clause>);
+
+        let v: Wrapper = serde_yaml::from_str(s).unwrap();
+
+        v.0
+    }
+
     #[test]
     fn deserialize_wrapped_value_multiword_single_value() {
         let data = "St. Olaf College";
@@ -555,5 +652,42 @@ level: "< 100 | = 200""#;
         });
         let actual: WrappedValue = data.parse().unwrap();
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn pretty_print() {
+        use crate::rules::traits::PrettyPrint;
+
+        let input: Clause = deserialize_test(&"{gereqs: FOL-C}").unwrap();
+        let expected = "with the “FOL-C” general education attribute";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{semester: Interim}").unwrap();
+        let expected = "during Interim semesters";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{semester: Fall}").unwrap();
+        let expected = "during Fall semesters";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{semester: Fall | Interim}").unwrap();
+        let expected = "during a Fall or Interim semester";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{year: '2012'}").unwrap();
+        let expected = "during the 2012-13 academic year";
+        assert_eq!(expected, input.print().unwrap());
+
+        // let input: Clause = deserialize_test(&"{year: '2012 | 2013'}").unwrap();
+        // let expected = "during the 2012-13 or 2013-14 academic year";
+        // assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{institution: 'Carleton College | St. Olaf College'}").unwrap();
+        let expected = "at either Carleton College or St. Olaf College";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{institution: 'St. Olaf College'}").unwrap();
+        let expected = "at St. Olaf College";
+        assert_eq!(expected, input.print().unwrap());
     }
 }

@@ -5,6 +5,7 @@ pub mod course;
 pub mod either;
 pub mod given;
 pub mod requirement;
+pub mod traits;
 
 use crate::util;
 
@@ -18,6 +19,20 @@ pub enum Rule {
     Either(either::Rule),
     Given(given::Rule),
     Do(action::Rule),
+}
+
+impl crate::rules::traits::PrettyPrint for Rule {
+    fn print(&self) -> Result<String, std::fmt::Error> {
+        match &self {
+            Rule::Course(v) => v.print(),
+            Rule::Requirement(v) => v.print(),
+            Rule::CountOf(v) => v.print(),
+            Rule::Both(v) => v.print(),
+            Rule::Either(v) => v.print(),
+            Rule::Given(v) => v.print(),
+            Rule::Do(v) => v.print(),
+        }
+    }
 }
 
 #[cfg(test)]

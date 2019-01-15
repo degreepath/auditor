@@ -5,6 +5,28 @@ use std::marker::PhantomData;
 use std::str::FromStr;
 use void::Void;
 
+pub trait Oxford {
+    fn oxford(&self, trailer: &str) -> String;
+}
+
+impl Oxford for Vec<String> {
+    fn oxford(&self, trailer: &str) -> String {
+        if self.len() == 1 {
+            return format!("{}", self[0]);
+        }
+
+        if self.len() == 2 {
+            return format!("{} {} {}", self[0], trailer, self[1]);
+        }
+
+        if let Some((last, rest)) = self.split_last() {
+            return format!("{}, {} {}", rest.join(", "), trailer, last);
+        }
+
+        String::new()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ParseError {
     InvalidAction,
@@ -23,6 +45,44 @@ impl fmt::Display for ParseError {
 impl Error for ParseError {
     fn description(&self) -> &str {
         "invalid do: command syntax"
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ValidationError {
+    GivenAreasMustOutputAreas,
+}
+
+impl fmt::Display for ValidationError {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.write_str(self.description())
+    }
+}
+
+impl Error for ValidationError {
+    fn description(&self) -> &str {
+        match &self {
+            ValidationError::GivenAreasMustOutputAreas => {
+                "in a `given: areas of study` block, `what:` must also be `areas of study`"
+            }
+        }
+    }
+}
+
+pub fn pretty_term(term: &str) -> String {
+    format!("{}", term)
+}
+
+pub fn expand_year(year: u64, mode: &str) -> String {
+    match mode {
+        "short" => format!("{}", year),
+        "dual" => {
+            let next = year + 1;
+            let next = next.to_string();
+            let next = &next[2..4];
+            format!("{}-{}", year, next)
+        }
+        _ => unimplemented!(),
     }
 }
 
