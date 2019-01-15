@@ -174,7 +174,6 @@ pub enum Command {
     Average,
     Minimum,
     Maximum,
-    Difference,
 }
 
 impl FromStr for Command {
@@ -189,7 +188,6 @@ impl FromStr for Command {
             "average" => Ok(Command::Average),
             "minimum" => Ok(Command::Minimum),
             "maximum" => Ok(Command::Maximum),
-            "difference" => Ok(Command::Difference),
             _ => Err(ParseError::UnknownCommand),
         }
     }
@@ -203,7 +201,6 @@ impl fmt::Display for Command {
             Command::Average => write!(f, "average"),
             Command::Minimum => write!(f, "minimum"),
             Command::Maximum => write!(f, "maximum"),
-            Command::Difference => write!(f, "difference"),
         }
     }
 }
@@ -285,19 +282,6 @@ mod tests {
             lhs: Value::Command(Command::Sum),
             op: Some(Operator::GreaterThanEqualTo),
             rhs: Some(Value::Float(1.5)),
-        };
-
-        assert_eq!(actual, expected_struct);
-    }
-
-    #[test]
-    fn difference_lte_1() {
-        let actual: Action = "difference <= 1".parse().unwrap();
-
-        let expected_struct = Action {
-            lhs: Value::Command(Command::Difference),
-            op: Some(Operator::LessThanEqualTo),
-            rhs: Some(Value::Integer(1)),
         };
 
         assert_eq!(actual, expected_struct);
