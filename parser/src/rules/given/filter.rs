@@ -60,6 +60,20 @@ impl crate::rules::traits::PrettyPrint for Clause {
             }
         }
 
+        if let Some(department) = self.get("department") {
+            match department {
+                WrappedValue::Single(TaggedValue {op: Operator::EqualTo, value: v}) =>
+                    clauses.push(format!("within the {} department", v.print()?)),
+                WrappedValue::Single(TaggedValue {op: Operator::NotEqualTo, value: v}) =>
+                    clauses.push(format!("outside of the {} department", v.print()?)),
+                WrappedValue::Single(TaggedValue {op: _, value: _}) => unimplemented!("only implemented for = and !="),
+                WrappedValue::Or(_) => {
+                    clauses.push(format!("within either of the {} departments", department.print()?));
+                }
+                WrappedValue::And(_) => unimplemented!(),
+            }
+        }
+
         // TODO: handle other filterable keys
 
         Ok(clauses.oxford("and"))
@@ -688,6 +702,14 @@ level: "< 100 | = 200""#;
 
         let input: Clause = deserialize_test(&"{institution: 'St. Olaf College'}").unwrap();
         let expected = "at St. Olaf College";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{department: MATH}").unwrap();
+        let expected = "within the MATH department";
+        assert_eq!(expected, input.print().unwrap());
+
+        let input: Clause = deserialize_test(&"{department: '! MATH'}").unwrap();
+        let expected = "outside of the MATH department";
         assert_eq!(expected, input.print().unwrap());
     }
 }

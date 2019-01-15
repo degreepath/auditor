@@ -701,6 +701,13 @@ do: count >= 3"#;
             serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: terms, do: count >= 3}").unwrap();
         let expected = "enough courses during Interim semesters to span at least three terms";
         assert_eq!(expected, input.print().unwrap());
+
+        // /
+
+        let input: Rule =
+            serde_yaml::from_str(&"{given: courses, where: { department: '! MATH' }, what: departments, do: count >= 2}").unwrap();
+        let expected = "enough courses outside of the MATH department to span at least two departments";
+        assert_eq!(expected, input.print().unwrap());
     }
 
     #[test]
