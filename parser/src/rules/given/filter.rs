@@ -12,8 +12,6 @@ pub type Clause = HashMap<String, WrappedValue>;
 
 impl crate::rules::traits::PrettyPrint for Clause {
 	fn print(&self) -> Result<String, std::fmt::Error> {
-		// TODO: don't rely on fmt::Display to display the Values
-
 		let mut clauses = vec![];
 
 		if let Some(gereq) = self.get("gereqs") {
