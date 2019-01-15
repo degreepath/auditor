@@ -179,7 +179,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
                     let (which_up, a, b, c) = match self.of.as_slice() {
                         [AnyRule::Course(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Course, a, b, c),
                         [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Course, a, c, b),
-                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Course(_)] => (WhichUp::Course, b, a, c),
+                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Course(_)] => (WhichUp::Course, b, c, a),
                         [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, a, b, c),
                         [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, b, a, c),
                         [AnyRule::Requirement(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Requirement, c, a, b),
@@ -241,7 +241,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
                     let (which_up, a, b, c) = match self.of.as_slice() {
                         [AnyRule::Course(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Course, a, b, c),
                         [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Course, a, c, b),
-                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Course(_)] => (WhichUp::Course, b, a, c),
+                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Course(_)] => (WhichUp::Course, b, c, a),
                         [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, a, b, c),
                         [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, b, a, c),
                         [AnyRule::Requirement(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Requirement, c, a, b),
