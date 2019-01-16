@@ -77,7 +77,7 @@ Given the intersection between this set of courses and the courses from your tra
 | ----------------------- | ---------- |
 | DANCE 399 | (todo: fill out if match) |
 
-For this requirement, you must ensure that the computed result of the subset “count” is greater than or equal to the computed result of the subset “1”.
+For this requirement, you must in the subset “Senior Dance Seminars”, there must be at least one course.
 
 
 # Area of Speciality

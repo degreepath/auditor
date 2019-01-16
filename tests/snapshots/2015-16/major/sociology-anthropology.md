@@ -41,6 +41,6 @@ For this requirement, you must take STAT 110.
 > Note: Students are permitted to take one of the four elective courses, but not
 > a core course, S/U.
 
-For this requirement, you must ensure that the computed result of the subset “count” is greater than or equal to the computed result of the subset “4”.
+For this requirement, you must take SOAN 121, SOAN 128, SOAN 232, SOAN 234, SOAN 235, SOAN 236, SOAN 237, SOAN 242, SOAN 246, SOAN 248, SOAN 249, SOAN 260, SOAN 261, SOAN 262, SOAN 264, SOAN 265, SOAN 266, SOAN 267, SOAN 268, and AS/SA 239.
 
 
