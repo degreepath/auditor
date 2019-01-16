@@ -217,12 +217,10 @@ fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::requirement::
 		Course(_) => vec![],
 		Both(both::Rule { both: pair }) | Either(either::Rule { either: pair }) => {
 			let pair = pair.clone();
-			match (*pair.0, *pair.1) {
-				(Requirement(r0), Requirement(r1)) => vec![r0, r1],
-				(_, Requirement(r1)) => vec![r1],
-				(Requirement(r0), _) => vec![r0],
-				_ => vec![],
-			}
+			vec![pair.0, pair.1]
+				.iter()
+				.flat_map(|r| get_requirement_references_from_rule(r))
+				.collect::<Vec<_>>()
 		}
 		Given(rule) => match &rule.given {
 			given::Given::TheseRequirements { requirements } => requirements.clone(),
