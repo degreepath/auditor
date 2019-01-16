@@ -65,12 +65,19 @@ impl Rule {
 	}
 }
 
+fn result_to_option<T, E>(r: Result<T, E>) -> Option<T> {
+	match r {
+		Ok(v) => Some(v),
+		Err(_) => None,
+	}
+}
+
 impl crate::rules::traits::PrettyPrint for Rule {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		use std::fmt::Write;
 
 		if self.is_single() {
-			let req = self.of[0].print()?;
+			let req = &self.of[0].print_inner()?;
 			if self.only_requirements() {
 				return Ok(format!("complete the {} requirement", req));
 			} else if self.only_courses() {
@@ -97,56 +104,51 @@ impl crate::rules::traits::PrettyPrint for Rule {
 		let mut output = String::new();
 
 		fn print_and_collect(ref v: &[AnyRule]) -> Vec<String> {
-			v.iter()
-				.map(|r| r.print())
-				.filter_map(|result| match result {
-					Ok(v) => Some(v),
-					Err(_) => None,
-				})
-				.collect()
+			v.iter().map(|r| r.print_inner()).filter_map(result_to_option).collect()
 		}
 
 		fn print_and_collect_special_for_requirement(ref v: &[AnyRule]) -> Vec<String> {
-			v.iter()
-				.map(|r| match (r, r.print()) {
-					(AnyRule::Course(_), Ok(p)) => Ok(format!("take {}", p)),
-					(AnyRule::Requirement(_), Ok(p)) => Ok(format!("complete the {} requirement", p)),
-					(_, Ok(p)) => Ok(p),
-					(_, Err(e)) => Err(e),
-				})
-				.filter_map(|result| match result {
-					Ok(v) => Some(v),
-					Err(_) => None,
-				})
-				.collect()
+			v.iter().map(|r| r.print()).filter_map(result_to_option).collect()
 		}
 
-		fn print_and_join_for_block(ref v: &[AnyRule]) -> String {
+		fn print_and_join_for_block_elided(ref v: &[AnyRule]) -> String {
 			v.iter()
-				.map(|r| match (r, r.print()) {
-					(AnyRule::Requirement(_), Ok(p)) => Ok(format!("complete the {} requirement", p)),
-					(_, Ok(p)) => Ok(p),
-					(_, Err(e)) => Err(e),
-				})
-				.filter_map(|result| match result {
-					Ok(v) => Some(v),
-					Err(_) => None,
-				})
+				.map(|r| r.print_inner())
+				.filter_map(result_to_option)
 				.map(|r| format!("- {}", r))
 				.collect::<Vec<String>>()
 				.join("\n")
 		}
 
-		fn print_and_join_for_block_only_requirements(ref v: &[AnyRule]) -> String {
+		fn print_and_join_for_block_verbose(ref v: &[AnyRule]) -> String {
 			v.iter()
 				.map(|r| r.print())
-				.filter_map(|result| match result {
-					Ok(v) => Some(v),
-					Err(_) => None,
-				})
+				.filter_map(result_to_option)
 				.map(|r| format!("- {}", r))
 				.collect::<Vec<String>>()
 				.join("\n")
+		}
+
+		fn collect_and_sort_three_up(ref v: &[AnyRule]) -> (WhichUp, &AnyRule, &AnyRule, &AnyRule) {
+			let a = &v[0];
+			let b = &v[1];
+			let c = &v[2];
+
+			match v {
+				[AnyRule::Course(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Course, a, b, c),
+				[AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Course, a, c, b),
+				[AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Course(_)] => (WhichUp::Course, b, c, a),
+				[AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Requirement(_)] => {
+					(WhichUp::Requirement, a, b, c)
+				}
+				[AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Requirement(_)] => {
+					(WhichUp::Requirement, b, a, c)
+				}
+				[AnyRule::Requirement(_), AnyRule::Requirement(_), AnyRule::Course(_)] => {
+					(WhichUp::Requirement, c, a, b)
+				}
+				_ => unimplemented!(),
+			}
 		}
 
 		// todo: move this elsewhere
@@ -163,60 +165,51 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				if self.only_requirements() {
 					let rules = print_and_collect(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "complete one requirement from among {}", rules.oxford("or"))?;
+					write!(
+						&mut output,
+						"complete one requirement from among {}",
+						rules.oxford("or")
+					)?;
 				} else if self.only_courses() {
 					let rules = print_and_collect(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take one course from among {}", rules.oxford("or"))?;
+					write!(&mut output, "take one course from among {}", rules.oxford("or"))?;
 				} else if self.only_courses_and_requirements() {
-					let a = &self.of[0];
-					let b = &self.of[1];
-					let c = &self.of[2];
+					let (which_up, a, b, c) = collect_and_sort_three_up(&self.of);
+					let a = a.print_inner()?;
+					let b = b.print_inner()?;
+					let c = c.print_inner()?;
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    let (which_up, a, b, c) = match self.of.as_slice() {
-                        [AnyRule::Course(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Course, a, b, c),
-                        [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Course, a, c, b),
-                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Course(_)] => (WhichUp::Course, b, c, a),
-                        [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, a, b, c),
-                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, b, a, c),
-                        [AnyRule::Requirement(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Requirement, c, a, b),
-                        _ => unimplemented!(),
-                    };
-
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    match which_up {
-                        WhichUp::Course =>
-                            write!(&mut output, "take {} or {}, or complete the {} requirement", a.print()?, b.print()?, c.print()?)?,
-                        WhichUp::Requirement =>
-                            write!(&mut output, "take {}, or complete either the {} or {} requirements", a.print()?, b.print()?, c.print()?)?,
-                    };
+					match which_up {
+						WhichUp::Course => {
+							write!(&mut output, "take {} or {}, or complete the {} requirement", a, b, c)?
+						}
+						WhichUp::Requirement => write!(
+							&mut output,
+							"take {}, or complete either the {} or {} requirements",
+							a, b, c
+						)?,
+					};
 				} else {
 					// force block mode due to clarify of mixed types and "any"
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_verbose(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "do any of the following:\n\n{}", rules)?;
+					write!(&mut output, "do any of the following:\n\n{}", rules)?;
 				}
 			} else {
 				// assert: 4 < len
 				if self.only_requirements() {
-					let rules = print_and_join_for_block_only_requirements(&self.of);
+					let rules = print_and_join_for_block_elided(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "complete any of the following requirements:\n\n{}", rules)?;
+					write!(&mut output, "complete any of the following requirements:\n\n{}", rules)?;
 				} else if self.only_courses() {
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_elided(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take any of the following courses:\n\n{}", rules)?;
+					write!(&mut output, "take any of the following courses:\n\n{}", rules)?;
 				} else {
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_verbose(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "do any of the following:\n\n{}", rules)?;
+					write!(&mut output, "do any of the following:\n\n{}", rules)?;
 				}
 			}
 		} else if self.is_all() {
@@ -225,59 +218,46 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				if self.only_requirements() {
 					let rules = print_and_collect(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "complete {}", rules.oxford("and"))?;
+					write!(&mut output, "complete {}", rules.oxford("and"))?;
 				} else if self.only_courses() {
 					let rules = print_and_collect(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take {}", rules.oxford("and"))?;
+					write!(&mut output, "take {}", rules.oxford("and"))?;
 				} else if self.only_courses_and_requirements() {
-					let a = &self.of[0];
-					let b = &self.of[1];
-					let c = &self.of[2];
+					let (which_up, a, b, c) = collect_and_sort_three_up(&self.of);
+					let a = a.print_inner()?;
+					let b = b.print_inner()?;
+					let c = c.print_inner()?;
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    let (which_up, a, b, c) = match self.of.as_slice() {
-                        [AnyRule::Course(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Course, a, b, c),
-                        [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Course, a, c, b),
-                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Course(_)] => (WhichUp::Course, b, c, a),
-                        [AnyRule::Course(_), AnyRule::Requirement(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, a, b, c),
-                        [AnyRule::Requirement(_), AnyRule::Course(_), AnyRule::Requirement(_)] => (WhichUp::Requirement, b, a, c),
-                        [AnyRule::Requirement(_), AnyRule::Requirement(_), AnyRule::Course(_)] => (WhichUp::Requirement, c, a, b),
-                        _ => unimplemented!(),
-                    };
-
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    match which_up {
-                        WhichUp::Course =>
-                            write!(&mut output, "take {} and {}, and complete the {} requirement", a.print()?, b.print()?, c.print()?)?,
-                        WhichUp::Requirement =>
-                            write!(&mut output, "take {}, and complete both the {} and {} requirements", a.print()?, b.print()?, c.print()?)?,
-                    };
+					match which_up {
+						WhichUp::Course => {
+							write!(&mut output, "take {} and {}, and complete the {} requirement", a, b, c)?
+						}
+						WhichUp::Requirement => write!(
+							&mut output,
+							"take {}, and complete both the {} and {} requirements",
+							a, b, c
+						)?,
+					};
 				} else {
 					let rules = print_and_collect_special_for_requirement(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "{}", rules.oxford("and"))?;
+					write!(&mut output, "{}", rules.oxford("and"))?;
 				}
 			} else {
 				// assert: 4 < len
 				if self.only_requirements() {
-					let rules = print_and_join_for_block_only_requirements(&self.of);
+					let rules = print_and_join_for_block_elided(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "complete all of the following requirements:\n\n{}", rules)?;
+					write!(&mut output, "complete all of the following requirements:\n\n{}", rules)?;
 				} else if self.only_courses() {
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_elided(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take all of the following courses:\n\n{}", rules)?;
+					write!(&mut output, "take all of the following courses:\n\n{}", rules)?;
 				} else {
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_verbose(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "do all of the following:\n\n{}", rules)?;
+					write!(&mut output, "do all of the following:\n\n{}", rules)?;
 				}
 			}
 		} else {
@@ -289,13 +269,16 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				if self.only_requirements() {
 					let rules = print_and_collect(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "complete {} requirements from among {}", n, rules.oxford("or"))?;
+					write!(
+						&mut output,
+						"complete {} requirements from among {}",
+						n,
+						rules.oxford("or")
+					)?;
 				} else if self.only_courses() {
 					let rules = print_and_collect(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take {} courses from among {}", n, rules.oxford("or"))?;
+					write!(&mut output, "take {} courses from among {}", n, rules.oxford("or"))?;
 				} else if self.only_courses_and_requirements() {
 					let (courses, reqs): (Vec<AnyRule>, Vec<AnyRule>) =
 						self.of.clone().into_iter().partition(|r| match r {
@@ -309,32 +292,35 @@ impl crate::rules::traits::PrettyPrint for Rule {
 
 					let rules = rules.oxford("or");
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "complete or take {} requirements or courses from among {}", n, rules)?;
+					write!(
+						&mut output,
+						"complete or take {} requirements or courses from among {}",
+						n, rules
+					)?;
 				} else {
 					// force block mode due to mixed content and numeric
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_verbose(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "do {} from among the following:\n\n{}", n, rules)?;
+					write!(&mut output, "do {} from among the following:\n\n{}", n, rules)?;
 				}
 			} else {
 				// assert: 4 < len
 				if self.only_requirements() {
-					let rules = print_and_join_for_block_only_requirements(&self.of);
+					let rules = print_and_join_for_block_elided(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "complete {} from among the following requirements:\n\n{}", n, rules)?;
+					write!(
+						&mut output,
+						"complete {} from among the following requirements:\n\n{}",
+						n, rules
+					)?;
 				} else if self.only_courses() {
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_elided(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take {} from among the following courses:\n\n{}", n, rules)?;
+					write!(&mut output, "take {} from among the following courses:\n\n{}", n, rules)?;
 				} else {
-					let rules = print_and_join_for_block(&self.of);
+					let rules = print_and_join_for_block_verbose(&self.of);
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "do {} from among the following:\n\n{}", n, rules)?;
+					write!(&mut output, "do {} from among the following:\n\n{}", n, rules)?;
 				}
 			}
 		}

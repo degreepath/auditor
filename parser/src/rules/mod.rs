@@ -24,6 +24,22 @@ pub enum Rule {
 impl crate::rules::traits::PrettyPrint for Rule {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		match &self {
+			Rule::Course(v) => Ok(format!("take {}", v.print()?)),
+			Rule::Requirement(v) => Ok(format!("complete the {} requirement", v.print()?)),
+			Rule::CountOf(v) => v.print(),
+			Rule::Both(v) => v.print(),
+			Rule::Either(v) => v.print(),
+			Rule::Given(v) => v.print(),
+			Rule::Do(v) => v.print(),
+		}
+	}
+}
+
+impl Rule {
+	fn print_inner(&self) -> Result<String, std::fmt::Error> {
+		use crate::rules::traits::PrettyPrint;
+
+		match &self {
 			Rule::Course(v) => v.print(),
 			Rule::Requirement(v) => v.print(),
 			Rule::CountOf(v) => v.print(),
@@ -305,5 +321,47 @@ mod tests {
 
 		let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
 		assert_eq!(actual, expected);
+	}
+
+	#[test]
+	fn pretty_print() {
+		use crate::rules::traits::PrettyPrint;
+
+		let data = r#"---
+- ASIAN 101
+- course: ASIAN 101
+- {course: ASIAN 102, term: 2014-1}
+- requirement: Name 1
+- {requirement: Name 2, optional: true}
+- {count: 1, of: [ASIAN 101]}
+- {both: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
+- {either: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
+- {given: courses, what: courses, do: count < 2}
+#- {do: $a < $b}
+"#;
+
+		let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
+		let actual: Vec<String> = actual
+			.into_iter()
+			.filter_map(|r| match r.print() {
+				Ok(p) => Some(p),
+				Err(_) => None,
+			})
+			.collect();
+
+		let expected = vec![
+			"take ASIAN 101",
+			"take ASIAN 101",
+			"take ASIAN 102 (2014-1)",
+			"complete the “Name 1” requirement",
+			"complete the “Name 2” (optional) requirement",
+			"take ASIAN 101",
+			"take both ASIAN 101 and ASIAN 102 (2014-1)",
+			"take either ASIAN 101 or ASIAN 102 (2014-1)",
+			"take fewer than two courses",
+			// "complete the “Name 1” requirement",
+		];
+
+		assert_eq!(actual, expected, "left: {:#?}\n\nright: {:#?}", actual, expected);
 	}
 }
