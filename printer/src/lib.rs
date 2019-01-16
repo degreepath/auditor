@@ -200,12 +200,12 @@ fn describe_save(save: &SaveBlock) -> Result<String, fmt::Error> {
 				let description = format!(
                         "Given the intersection between the following applicable courses and your transcript, but limiting it to only courses taken {}, as “{}”:",
                         filter_desc,
-                        save.label,
+                        save.name,
                     );
 
 				writeln!(&mut w, "{}\n", textwrap::fill(&description, 80),)?;
 
-				writeln!(&mut w, "| Potential | \"{}\" |\n", save.label)?;
+				writeln!(&mut w, "| Potential | \"{}\" |\n", save.name)?;
 
 				writeln!(&mut w, "- (lists courses that match {:?}\n", save.filter)?;
 			}

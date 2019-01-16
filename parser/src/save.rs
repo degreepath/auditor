@@ -3,7 +3,6 @@ use crate::rules::given::{action, filter, limit, Given, What};
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct SaveBlock {
 	pub name: String,
-	pub label: String,
 	#[serde(flatten)]
 	pub given: Given,
 	#[serde(default)]
@@ -14,6 +13,90 @@ pub struct SaveBlock {
 	pub what: Option<What>,
 	#[serde(rename = "do", default, deserialize_with = "action::option_action")]
 	pub action: Option<action::Action>,
+}
+
+impl crate::rules::traits::PrettyPrint for SaveBlock {
+	fn print(&self) -> Result<String, std::fmt::Error> {
+		use std::fmt::Write;
+
+		let mut output = String::new();
+
+		match &self.given {
+			Given::AllCourses => match &self.filter {
+				Some(f) => {
+					write!(&mut output, "Given the subset of courses from your transcript, limited to only courses taken {}, as “{}”:\n\n", f.print()?, self.name)?;
+
+					writeln!(&mut output, "| “{}” |", self.name)?;
+					writeln!(&mut output, "| {} |", "-".repeat(self.name.chars().count() + 2))?;
+					writeln!(&mut output, "| (todo: list matching courses here) |")?;
+				}
+				None => {
+					write!(
+						&mut output,
+						"Given the courses from your transcript as “{}”:\n\n",
+						self.name
+					)?;
+					writeln!(&mut output, "| “{}” |", self.name)?;
+					writeln!(&mut output, "| {} |", "-".repeat(self.name.chars().count() + 2))?;
+					writeln!(&mut output, "| (todo: list all??? courses here???) |")?;
+				}
+			},
+			Given::TheseCourses {
+				courses,
+				repeats: _mode,
+			} => {
+				write!(&mut output, "Given the intersection between this set of courses and the courses from your transcript, as “{}”:\n\n", self.name)?;
+
+				let courses = courses.iter().map(|r| r.print().unwrap()).collect::<Vec<String>>();
+
+				let transcript = "Transcript";
+				let name_width = self.name.chars().count();
+
+				writeln!(&mut output, "| {} | “{}” |", transcript, self.name)?;
+				writeln!(
+					&mut output,
+					"| {} | {} |",
+					"-".repeat(transcript.len()),
+					"-".repeat(name_width + 2)
+				)?;
+				for c in courses {
+					writeln!(&mut output, "| (todo) | {} |", c)?;
+				}
+			}
+			Given::TheseRequirements { .. } => unimplemented!(),
+			Given::AreasOfStudy => unimplemented!(),
+			Given::NamedVariable { save } => match &self.filter {
+				Some(f) => {
+					write!(
+						&mut output,
+						"Given the subset named “{}”, limited it to only courses taken {}, as “{}”:\n\n",
+						save,
+						f.print()?,
+						self.name
+					)?;
+
+					writeln!(&mut output, "| “{}” |", self.name)?;
+					writeln!(&mut output, "| {} |", "-".repeat(self.name.chars().count() + 2))?;
+					writeln!(&mut output, "| (todo: list matching courses here) |")?;
+				}
+				None => {
+					write!(
+						&mut output,
+						"Given the subset named “{}”, as “{}”:\n\n",
+						save, self.name
+					)?;
+					writeln!(&mut output, "| “{}” |", self.name)?;
+					writeln!(&mut output, "| {} |", "-".repeat(self.name.chars().count() + 2))?;
+					writeln!(&mut output, "| (todo: list all??? courses here???) |")?;
+				}
+			},
+		}
+
+		// TODO: add a special case for do-block-having SaveBlocks, to show the computed value
+		// TODO: decide on something to do for given:these-courses, repeats:all/first/last
+
+		Ok(output)
+	}
 }
 
 #[cfg(test)]
@@ -27,16 +110,14 @@ mod tests {
 given: courses
 where: { semester: Interim }
 what: courses
-name: $interim_courses
-label: Interim Courses"#;
+name: Interim Courses"#;
 
 		let filter: filter::Clause = hashmap! {
 			"semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
 		};
 
 		let expected = SaveBlock {
-			name: "$interim_courses".to_string(),
-			label: "Interim Courses".to_string(),
+			name: "Interim Courses".to_string(),
 			given: Given::AllCourses,
 			limit: None,
 			filter: Some(filter),
@@ -56,8 +137,7 @@ given: these courses
 courses: [DANCE 399]
 repeats: last
 where: {year: graduation-year, semester: Fall}
-name: $dance_seminars
-label: "Senior Dance Seminars""#;
+name: "Senior Dance Seminars""#;
 
 		let filter: filter::Clause = hashmap! {
 			"year".into() => "graduation-year".parse::<filter::WrappedValue>().unwrap(),
@@ -65,8 +145,7 @@ label: "Senior Dance Seminars""#;
 		};
 
 		let expected = SaveBlock {
-			name: "$dance_seminars".to_string(),
-			label: "Senior Dance Seminars".to_string(),
+			name: "Senior Dance Seminars".to_string(),
 			given: Given::TheseCourses {
 				courses: vec![given::CourseRule::Value(course::Rule {
 					course: "DANCE 399".to_string(),
@@ -83,5 +162,59 @@ label: "Senior Dance Seminars""#;
 		let actual: SaveBlock = serde_yaml::from_str(&data).unwrap();
 
 		assert_eq!(actual, expected);
+	}
+
+	#[test]
+	fn pretty_print() {
+		use crate::rules::traits::PrettyPrint;
+
+		let input: SaveBlock =
+			serde_yaml::from_str(&"{name: Interim, given: courses, where: {semester: Interim}}").unwrap();
+		let expected = "Given the subset of courses from your transcript, limited to only courses taken during Interim semesters, as “Interim”:
+
+| “Interim” |
+| --------- |
+| (todo: list matching courses here) |
+";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: SaveBlock = serde_yaml::from_str(&"{name: Interim, given: courses}").unwrap();
+		let expected = "Given the courses from your transcript as “Interim”:
+
+| “Interim” |
+| --------- |
+| (todo: list all??? courses here???) |
+";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: SaveBlock =
+			serde_yaml::from_str(&"{name: Interim, given: these courses, courses: [THEAT 244], repeats: all}").unwrap();
+		let expected =
+			"Given the intersection between this set of courses and the courses from your transcript, as “Interim”:
+
+| Transcript | “Interim” |
+| ---------- | --------- |
+| (todo) | THEAT 244 |
+";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: SaveBlock = serde_yaml::from_str(&"{name: Interim, given: save, save: Before}").unwrap();
+		let expected = "Given the subset named “Before”, as “Interim”:
+
+| “Interim” |
+| --------- |
+| (todo: list all??? courses here???) |
+";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: SaveBlock =
+			serde_yaml::from_str(&"{name: Interim, given: save, save: Before, where: {semester: Interim}}").unwrap();
+		let expected = "Given the subset named “Before”, limited it to only courses taken during Interim semesters, as “Interim”:
+
+| “Interim” |
+| --------- |
+| (todo: list matching courses here) |
+";
+		assert_eq!(expected, input.print().unwrap());
 	}
 }

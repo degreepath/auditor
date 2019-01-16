@@ -128,12 +128,11 @@ save:
   - given: courses
     where: {semester: Interim}
     what: courses
-    name: $interim_courses
-    label: Interim Courses
+    name: Interim Courses
 result:
   both:
-    - {given: save, save: $interim_courses, what: credits, do: sum >= 3}
-    - {given: save, save: $interim_courses, what: courses, do: count >= 3}";
+    - {given: save, save: Interim Courses, what: credits, do: sum >= 3}
+    - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
 		let expected_filter: given::filter::Clause = hashmap! {
 			"semester".into() => "Interim".parse::<given::filter::WrappedValue>().unwrap(),
@@ -146,7 +145,7 @@ result:
 				both: (
 					Box::new(Rule::Given(given::Rule {
 						given: given::Given::NamedVariable {
-							save: "$interim_courses".to_string(),
+							save: "Interim Courses".to_string(),
 						},
 						limit: None,
 						filter: None,
@@ -155,7 +154,7 @@ result:
 					})),
 					Box::new(Rule::Given(given::Rule {
 						given: given::Given::NamedVariable {
-							save: "$interim_courses".to_string(),
+							save: "Interim Courses".to_string(),
 						},
 						limit: None,
 						filter: None,
@@ -166,8 +165,7 @@ result:
 			})),
 			contract: false,
 			save: vec![SaveBlock {
-				name: "$interim_courses".to_string(),
-				label: "Interim Courses".to_string(),
+				name: "Interim Courses".to_string(),
 				given: given::Given::AllCourses,
 				limit: None,
 				filter: Some(expected_filter),
