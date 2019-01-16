@@ -114,6 +114,7 @@ mod tests {
 					}),
 				],
 			}),
+			attributes: None,
 			requirements: [
 				(
 					"Core".to_string(),
