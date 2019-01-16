@@ -239,8 +239,8 @@ where
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum WrappedValue {
 	Single(TaggedValue),
-	Or([TaggedValue; 2]),
-	And([TaggedValue; 2]),
+	Or(Vec<TaggedValue>),
+	And(Vec<TaggedValue>),
 }
 
 impl WrappedValue {
@@ -263,8 +263,15 @@ impl crate::rules::traits::PrettyPrint for WrappedValue {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		match &self {
 			WrappedValue::Single(v) => Ok(format!("{}", v.print()?)),
-			WrappedValue::Or([a, b]) => Ok(format!("{} or {}", a.print()?, b.print()?)),
-			WrappedValue::And([a, b]) => Ok(format!("{} and {}", a.print()?, b.print()?)),
+			WrappedValue::Or(v) | WrappedValue::And(v) => {
+				let v: Vec<String> = v.iter().filter_map(|r| match r.print() {Ok(p) => Some(p), Err(_) => None}).collect();
+
+				return match &self {
+					WrappedValue::Or(_) => Ok(v.oxford("or")),
+					WrappedValue::And(_) => Ok(v.oxford("and")),
+					_ => unimplemented!(),
+				}
+			},
 		}
 	}
 }
@@ -275,17 +282,20 @@ impl FromStr for WrappedValue {
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		let or_bits: Vec<_> = s.split(" | ").collect();
 		match or_bits.as_slice() {
-			[a, b] => return Ok(WrappedValue::Or([a.parse::<TaggedValue>()?, b.parse::<TaggedValue>()?])),
+			[a, b] => {
+				return Ok(WrappedValue::Or(
+					[a.parse::<TaggedValue>()?, b.parse::<TaggedValue>()?].to_vec(),
+				))
+			}
 			_ => (),
 		};
 
 		let and_bits: Vec<_> = s.split(" & ").collect();
 		match and_bits.as_slice() {
 			[a, b] => {
-				return Ok(WrappedValue::And([
-					a.parse::<TaggedValue>()?,
-					b.parse::<TaggedValue>()?,
-				]))
+				return Ok(WrappedValue::And(
+					[a.parse::<TaggedValue>()?, b.parse::<TaggedValue>()?].to_vec(),
+				))
 			}
 			_ => (),
 		};
@@ -297,9 +307,9 @@ impl FromStr for WrappedValue {
 impl fmt::Display for WrappedValue {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
 		let desc = match &self {
+			WrappedValue::Single(val) => format!("{}", val),
 			WrappedValue::And([a, b]) => format!("{} & {}", a, b),
 			WrappedValue::Or([a, b]) => format!("{} | {}", a, b),
-			WrappedValue::Single(val) => format!("{}", val),
 		};
 		fmt.write_str(&desc)
 	}
@@ -703,7 +713,7 @@ level:
 	#[test]
 	fn deserialize_wrapped_value_or_ne() {
 		let data = "! FYW | = FYW";
-		let expected = WrappedValue::Or([
+		let expected = WrappedValue::Or(vec![
 			TaggedValue {
 				op: Operator::NotEqualTo,
 				value: Value::String("FYW".into()),
@@ -720,7 +730,7 @@ level:
 	#[test]
 	fn deserialize_wrapped_value_or_untagged() {
 		let data = "FYW | FYW";
-		let expected = WrappedValue::Or([
+		let expected = WrappedValue::Or(vec![
 			TaggedValue {
 				op: Operator::EqualTo,
 				value: Value::String("FYW".into()),
@@ -737,7 +747,7 @@ level:
 	#[test]
 	fn deserialize_wrapped_value_and_untagged() {
 		let data = "FYW & FYW";
-		let expected = WrappedValue::And([
+		let expected = WrappedValue::And(vec![
 			TaggedValue {
 				op: Operator::EqualTo,
 				value: Value::String("FYW".into()),
@@ -754,7 +764,7 @@ level:
 	#[test]
 	fn deserialize_wrapped_value_and_ne() {
 		let data = "! FYW & = FYW";
-		let expected = WrappedValue::And([
+		let expected = WrappedValue::And(vec![
 			TaggedValue {
 				op: Operator::NotEqualTo,
 				value: Value::String("FYW".into()),

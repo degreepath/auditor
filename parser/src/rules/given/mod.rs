@@ -829,7 +829,7 @@ do: count >= 3"#;
 		let data = r#"{where: {gereqs: 'MCD | MCG'}, given: courses, what: courses, do: count > 1}"#;
 
 		let expected: filter::Clause = btreemap! {
-			"gereqs".into() => filter::WrappedValue::Or([
+			"gereqs".into() => filter::WrappedValue::Or(vec![
 				filter::TaggedValue {
 					op: action::Operator::EqualTo,
 					value: filter::Value::String("MCD".into()),
