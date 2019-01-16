@@ -166,54 +166,25 @@ mod tests {
   limit: []
   where: {}
   what: courses
-  do: count < 2
-- do: $a < $b"#;
+  do:
+    lhs:
+      Command: Count
+    op: LessThan
+    rhs:
+      Integer: 2
+- do:
+    lhs:
+      String: $a
+    op: LessThan
+    rhs:
+      String: $b"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
-		assert_eq!(actual, expected);
+		assert_eq!(actual, expected, "actual: {}\n\nexpected: {}", actual, expected);
 	}
 
 	#[test]
 	fn deserialize() {
-		let data = r#"---
-- course: ASIAN 101
-- course: ASIAN 101
-  term: 2014-1
-  section: ~
-  year: ~
-  semester: ~
-  lab: ~
-  international: ~
-- requirement: Name
-  optional: true
-- count: 1
-  of:
-    - course: ASIAN 101
-- both:
-    - course: ASIAN 101
-    - course: ASIAN 101
-      term: 2014-1
-      section: ~
-      year: ~
-      semester: ~
-      lab: ~
-      international: ~
-- either:
-    - course: ASIAN 101
-    - course: ASIAN 101
-      term: 2014-1
-      section: ~
-      year: ~
-      semester: ~
-      lab: ~
-      international: ~
-- given: courses
-  what: courses
-  where: {}
-  limit: []
-  do: count < 2
-- do: $a < $b"#;
-
 		let course_a = course::Rule {
 			course: "ASIAN 101".to_string(),
 			..Default::default()
@@ -257,6 +228,87 @@ mod tests {
 				action: "$a < $b".parse().unwrap(),
 			}),
 		];
+
+		let data = r#"---
+- course: ASIAN 101
+- course: ASIAN 101
+  term: 2014-1
+  section: ~
+  year: ~
+  semester: ~
+  lab: ~
+  international: ~
+- requirement: Name
+  optional: true
+- count: 1
+  of:
+    - course: ASIAN 101
+- both:
+    - course: ASIAN 101
+    - course: ASIAN 101
+      term: 2014-1
+      section: ~
+      year: ~
+      semester: ~
+      lab: ~
+      international: ~
+- either:
+    - course: ASIAN 101
+    - course: ASIAN 101
+      term: 2014-1
+      section: ~
+      year: ~
+      semester: ~
+      lab: ~
+      international: ~
+- given: courses
+  what: courses
+  where: {}
+  limit: []
+  do: count < 2
+- do: $a < $b"#;
+
+		let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+- course: ASIAN 101
+- course: ASIAN 101
+  term: 2014-1
+  section: ~
+  year: ~
+  semester: ~
+  lab: ~
+  international: ~
+- requirement: Name
+  optional: true
+- count: 1
+  of:
+    - course: ASIAN 101
+- both:
+    - course: ASIAN 101
+    - course: ASIAN 101
+      term: 2014-1
+      section: ~
+      year: ~
+      semester: ~
+      lab: ~
+      international: ~
+- either:
+    - course: ASIAN 101
+    - course: ASIAN 101
+      term: 2014-1
+      section: ~
+      year: ~
+      semester: ~
+      lab: ~
+      international: ~
+- given: courses
+  what: courses
+  where: {}
+  limit: []
+  do: count < 2
+- do: $a < $b"#;
 
 		let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
 		assert_eq!(actual, expected);

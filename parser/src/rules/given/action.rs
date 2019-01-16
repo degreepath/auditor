@@ -1,10 +1,9 @@
 use crate::util::{self, ParseError};
 use serde::de::{Deserialize, Deserializer};
-use serde::ser::{Serialize, Serializer};
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Action {
 	pub lhs: Value,
 	pub op: Option<Operator>,
@@ -51,15 +50,6 @@ impl crate::rules::traits::PrettyPrint for Action {
 		};
 
 		Ok(output)
-	}
-}
-
-impl Serialize for Action {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
 	}
 }
 
