@@ -59,7 +59,7 @@ For this requirement, you must take at least one course within the CLASS departm
 > Latin may be used as an elective if the student satisfies the required
 > language portion of the major with Greek courses.
 
-For this requirement, you must take four from among the following courses:
+For this requirement, you must take four of the following courses:
 
 - ART 161
 - ART 267

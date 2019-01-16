@@ -33,7 +33,7 @@ For this requirement, you must take one course from among CSCI 273, CSCI 284, or
 
 
 # Electives
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - CSCI 333
 - CSCI 276

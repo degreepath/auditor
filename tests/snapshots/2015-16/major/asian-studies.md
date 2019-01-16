@@ -9,7 +9,7 @@ For this major, you must complete all of the following requirements:
 - “Electives”
 
 # Language
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - CHIN 231
 - CHIN 232

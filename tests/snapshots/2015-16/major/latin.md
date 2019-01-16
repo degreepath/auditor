@@ -4,7 +4,7 @@
 For this major, you must complete “Latin”, “Ancient Roman History”, and “Classics”.
 
 # Latin
-For this requirement, you must take seven from among the following courses:
+For this requirement, you must take seven of the following courses:
 
 - LATIN 111
 - LATIN 112

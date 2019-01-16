@@ -108,7 +108,7 @@ For this requirement, you must both take one course from among ECON 121, ECON 11
 For this requirement, you must take one course from among ENVST 232, ES/PS 201, or ES/PS 276.
 
 ### Social Science Electives
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - ES/PS 201
 - ENVST 232

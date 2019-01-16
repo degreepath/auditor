@@ -61,7 +61,7 @@ For this requirement, you must take one of the following courses:
 
 
 # Electives
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - BIO 298
 - BIO 396

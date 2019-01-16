@@ -97,7 +97,7 @@ For this requirement, you must take ART 236.
 > Note: The department strongly recommends that you take ART 252 or 253 as one
 > of your art history courses.
 
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - ART 153
 - ART 161

@@ -22,7 +22,7 @@ For this requirement, you must take one of the following courses:
 
 
 # Level III
-For this requirement, you must take three from among the following courses:
+For this requirement, you must take three of the following courses:
 
 - HIST 301
 - HIST 302

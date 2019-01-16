@@ -325,7 +325,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				} else if self.only_courses() {
 					let rules = print_and_join_for_block_elided(&self.of);
 
-					write!(&mut output, "take {} from among the following courses:\n\n{}", n, rules)?;
+					write!(&mut output, "take {} of the following courses:\n\n{}", n, rules)?;
 				} else {
 					let rules = print_and_join_for_block_verbose(&self.of);
 
@@ -733,7 +733,7 @@ of: []";
 		assert_eq!(expected, input.print().unwrap());
 
 		let input: Rule = serde_yaml::from_str(&"{count: 2, of: [CS 111, CS 121, CS 124, CS 125]}").unwrap();
-		let expected = "take two from among the following courses:
+		let expected = "take two of the following courses:
 
 - CS 111
 - CS 121

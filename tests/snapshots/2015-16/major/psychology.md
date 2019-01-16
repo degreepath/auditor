@@ -17,7 +17,7 @@ For this requirement, you must take both PSYCH 125 and PSYCH 230.
 For this section, you must complete both the “Natural Science” and “Social Science” requirements.
 
 ## Natural Science
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - PSYCH 235
 - PSYCH 236
@@ -25,7 +25,7 @@ For this requirement, you must take two from among the following courses:
 - PSYCH 238
 
 ## Social Science
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - PSYCH 241
 - PSYCH 244
@@ -34,7 +34,7 @@ For this requirement, you must take two from among the following courses:
 
 
 # Level III Capstone
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - PSYCH 336
 - PSYCH 338
@@ -62,7 +62,7 @@ For this requirement, you must take one of the following courses:
 
 
 # Electives
-For this requirement, you must take two from among the following courses:
+For this requirement, you must take two of the following courses:
 
 - PSYCH 220
 - PSYCH 221
