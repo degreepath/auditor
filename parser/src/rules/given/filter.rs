@@ -1,6 +1,5 @@
 use crate::util::{self, Oxford};
 use serde::de::{Deserialize, Deserializer};
-use serde::ser::{Serialize, Serializer};
 
 use super::action::Operator;
 
@@ -210,7 +209,7 @@ where
 	}
 }
 
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum WrappedValue {
 	Single(TaggedValue),
 	Or([TaggedValue; 2]),
@@ -279,16 +278,7 @@ impl fmt::Display for WrappedValue {
 	}
 }
 
-impl Serialize for WrappedValue {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct TaggedValue {
 	pub op: Operator,
 	pub value: Value,
@@ -360,16 +350,7 @@ impl fmt::Display for TaggedValue {
 	}
 }
 
-impl Serialize for TaggedValue {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Constant {
 	#[serde(rename = "graduation-year")]
 	GraduationYear,
@@ -396,16 +377,7 @@ impl FromStr for Constant {
 	}
 }
 
-impl Serialize for Constant {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Value {
 	Constant(Constant),
 	Bool(bool),
@@ -496,15 +468,6 @@ impl fmt::Display for Value {
 	}
 }
 
-impl Serialize for Value {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -517,7 +480,11 @@ mod tests {
 		};
 
 		let expected = r#"---
-level: "= 100""#;
+level:
+  Single:
+    op: EqualTo
+    value:
+      Integer: 100"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected);
@@ -530,7 +497,14 @@ level: "= 100""#;
 		};
 
 		let expected = r#"---
-level: "= 100 | = 200""#;
+level:
+  Or:
+    - op: EqualTo
+      value:
+        Integer: 100
+    - op: EqualTo
+      value:
+        Integer: 200"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected);
@@ -540,7 +514,14 @@ level: "= 100 | = 200""#;
 		};
 
 		let expected = r#"---
-level: "< 100 | = 200""#;
+level:
+  Or:
+    - op: LessThan
+      value:
+        Integer: 100
+    - op: EqualTo
+      value:
+        Integer: 200"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected);

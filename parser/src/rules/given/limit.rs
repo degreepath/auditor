@@ -25,7 +25,11 @@ mod tests {
 
 		let expected = r#"---
 where:
-  level: "= 100"
+  level:
+    Single:
+      op: EqualTo
+      value:
+        Integer: 100
 at_most: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
@@ -46,7 +50,11 @@ at_most: 2"#;
 
 		let expected = r#"---
 where:
-  department: "! MATH"
+  department:
+    Single:
+      op: NotEqualTo
+      value:
+        String: MATH
 at_most: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
