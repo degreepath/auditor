@@ -11,20 +11,39 @@ pub struct AreaOfStudy {
 	pub catalog: String,
 	pub result: Rule,
 	pub requirements: HashMap<String, Requirement>,
+	#[serde(default)]
+	pub attributes: Option<Attributes>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-#[serde(tag = "type")]
+pub struct Attributes {
+	pub definitions: HashMap<String, AttributeDefinition>,
+	pub courses: HashMap<String, AttributeApplication>,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub struct AttributeDefinition {
+	#[serde(rename = "type")]
+	pub kind: AttributeDefinitionType,
+	#[serde(rename="multiple values can be used")]
+	pub multiple_values_can_be_used: bool,
+}
+
+pub type AttributeApplication = HashMap<String, Vec<String>>;
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(rename_all="lowercase")]
+pub enum AttributeDefinitionType {
+	Array,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(tag = "type", rename_all="lowercase")]
 pub enum AreaType {
-	#[serde(rename = "degree")]
 	Degree,
-	#[serde(rename = "major")]
 	Major { degree: String },
-	#[serde(rename = "minor")]
 	Minor { degree: String },
-	#[serde(rename = "concentration")]
 	Concentration { degree: String },
-	#[serde(rename = "emphasis")]
 	Emphasis { degree: String, major: String },
 }
 
