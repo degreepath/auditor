@@ -203,22 +203,22 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					// force block mode due to clarify of mixed types and "any"
 					let rules = print_and_join_for_block_verbose(&self.of);
 
-					write!(&mut output, "do any of the following:\n\n{}", rules)?;
+					write!(&mut output, "do one of the following:\n\n{}", rules)?;
 				}
 			} else {
 				// assert: 4 < len
 				if self.only_requirements() {
 					let rules = print_and_join_for_block_elided(&self.of);
 
-					write!(&mut output, "complete any of the following requirements:\n\n{}", rules)?;
+					write!(&mut output, "complete one of the following requirements:\n\n{}", rules)?;
 				} else if self.only_courses() {
 					let rules = print_and_join_for_block_elided(&self.of);
 
-					write!(&mut output, "take any of the following courses:\n\n{}", rules)?;
+					write!(&mut output, "take one of the following courses:\n\n{}", rules)?;
 				} else {
 					let rules = print_and_join_for_block_verbose(&self.of);
 
-					write!(&mut output, "do any of the following:\n\n{}", rules)?;
+					write!(&mut output, "do one of the following:\n\n{}", rules)?;
 				}
 			}
 		} else if self.is_all() {
@@ -697,7 +697,7 @@ of: []";
 		use crate::rules::traits::PrettyPrint;
 
 		let input: Rule = serde_yaml::from_str(&"{count: any, of: [CS 111, CS 121, CS 124, CS 125]}").unwrap();
-		let expected = "take any of the following courses:
+		let expected = "take one of the following courses:
 
 - CS 111
 - CS 121
@@ -706,7 +706,7 @@ of: []";
 		assert_eq!(expected, input.print().unwrap());
 
 		let input: Rule = serde_yaml::from_str(&"{count: 1, of: [CS 111, CS 121, CS 124, CS 125]}").unwrap();
-		let expected = "take any of the following courses:
+		let expected = "take one of the following courses:
 
 - CS 111
 - CS 121
@@ -745,7 +745,7 @@ of: []";
 			&"{count: any, of: [{requirement: A}, {requirement: B}, {requirement: C}, {requirement: D}]}",
 		)
 		.unwrap();
-		let expected = "complete any of the following requirements:
+		let expected = "complete one of the following requirements:
 
 - “A”
 - “B”
@@ -757,7 +757,7 @@ of: []";
 			&"{count: any, of: [{requirement: A}, {requirement: B}, {requirement: C}, {requirement: D}]}",
 		)
 		.unwrap();
-		let expected = "complete any of the following requirements:
+		let expected = "complete one of the following requirements:
 
 - “A”
 - “B”
@@ -791,7 +791,7 @@ of: []";
 
 		let input: Rule =
             serde_yaml::from_str(&"{count: any, of: [{both: [CS 111, CS 251]}, {either: [{requirement: A}, {requirement: B}]}, {requirement: C}]}").unwrap();
-		let expected = "do any of the following:
+		let expected = "do one of the following:
 
 - take both CS 111 and CS 251
 - complete either the “A” or “B” requirement
