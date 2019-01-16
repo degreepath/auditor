@@ -80,6 +80,30 @@ impl crate::rules::traits::PrettyPrint for Clause {
 			}
 		}
 
+		if let Some(level) = self.get("level") {
+			match level {
+				WrappedValue::Single(v) => clauses.push(format!("at the {} level", v.print()?)),
+				WrappedValue::Or(_) => {
+					clauses.push(format!("at either the {} level", level.print()?));
+				}
+				WrappedValue::And(_) => unimplemented!(),
+			}
+		}
+
+		if let Some(kind) = self.get("type") {
+			match kind {
+				WrappedValue::Single(v) => clauses.push(format!("“{}”", v.print()?)),
+				WrappedValue::Or(_) => {
+					clauses.push(format!("either {}", kind.print()?));
+				}
+				WrappedValue::And(_) => unimplemented!(),
+			}
+		}
+
+		if clauses.len() != self.len() {
+			panic!("not all keys from {:?} were used in {:?}", self, clauses);
+		}
+
 		// TODO: handle other filterable keys
 
 		Ok(clauses.oxford("and"))
