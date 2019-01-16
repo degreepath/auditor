@@ -1,5 +1,4 @@
-use crate::util;
-use crate::util::ParseError;
+use crate::util::{self, ParseError};
 use serde::de::{Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
 use std::fmt;
@@ -81,9 +80,9 @@ impl FromStr for Action {
 	type Err = ParseError;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		let splitted: Vec<_> = s.split_whitespace().collect();
+		let collected = split_action_str(&s);
 
-		match splitted.as_slice() {
+		match collected.as_slice() {
 			[command] => {
 				let lhs = command.parse::<Value>()?;
 
@@ -104,9 +103,45 @@ impl FromStr for Action {
 					rhs: Some(rhs),
 				})
 			}
-			_ => Err(ParseError::InvalidAction),
+			_ => {
+				Err(ParseError::InvalidAction)
+			},
 		}
 	}
+}
+
+fn split_action_str(s: &str) -> Vec<String> {
+	let mut in_str = false;
+	let mut collected: Vec<String> = vec![];
+	let mut current = String::new();
+	for ch in s.chars() {
+		if ch == '"' {
+			in_str = !in_str;
+			continue;
+		}
+
+		if in_str {
+			current += &ch.to_string();
+			continue;
+		}
+
+		if ch.is_whitespace() {
+			if current.len() > 0 {
+				collected.push(current.trim().to_string());
+				current = String::new();
+			}
+
+			continue;
+		} else {
+			current += &ch.to_string();
+		}
+	}
+
+	if current.len() > 0 {
+		collected.push(current.trim().to_string());
+	}
+
+	collected
 }
 
 pub fn option_action<'de, D>(deserializer: D) -> Result<Option<Action>, D::Error>
@@ -176,7 +211,6 @@ impl fmt::Display for Operator {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Value {
 	Command(Command),
-	Variable(String),
 	String(String),
 	Integer(u64),
 	Float(f64),
@@ -186,10 +220,6 @@ impl FromStr for Value {
 	type Err = ParseError;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		if s.starts_with('$') {
-			return Ok(Value::Variable(s.to_string()));
-		}
-
 		if let Ok(num) = s.parse::<u64>() {
 			return Ok(Value::Integer(num));
 		}
@@ -202,7 +232,7 @@ impl FromStr for Value {
 			return Ok(Value::Command(command));
 		}
 
-		Err(ParseError::InvalidValue)
+		Ok(Value::String(s.to_string()))
 	}
 }
 
@@ -210,7 +240,6 @@ impl fmt::Display for Value {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match &self {
 			Value::Command(cmd) => write!(f, "{}", cmd),
-			Value::Variable(name) => write!(f, "{}", name),
 			Value::String(v) => write!(f, "{}", v),
 			Value::Integer(v) => write!(f, "{}", v),
 			Value::Float(v) => write!(f, "{:.2}", v),
@@ -222,7 +251,6 @@ impl crate::rules::traits::PrettyPrint for Value {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		match &self {
 			Value::Command(_) => unimplemented!(),
-			Value::Variable(name) => Ok(name.to_string()),
 			Value::String(v) => Ok(format!("“{}”", v)),
 			Value::Integer(n) => Ok(match n {
 				0 => "zero".to_string(),
@@ -284,6 +312,18 @@ impl fmt::Display for Command {
 #[cfg(test)]
 mod tests {
 	use super::*;
+
+	#[test]
+	fn split_action_str_test() {
+		assert_eq!(split_action_str("count > 6"), vec!["count", ">", "6"]);
+		assert_eq!(split_action_str(r#""a" > 6"#), vec!["a", ">", "6"]);
+		assert_eq!(split_action_str(r#""a space" > 6"#), vec!["a space", ">", "6"]);
+		assert_eq!(split_action_str(r#""a space"     >  6"#), vec!["a space", ">", "6"]);
+		assert_eq!(split_action_str(r#""a space"     >  "b space""#), vec!["a space", ">", "b space"]);
+		assert_eq!(split_action_str(r#""a space"     >  "b  space""#), vec!["a space", ">", "b  space"]);
+
+		assert_eq!(split_action_str(r#"   "a space"     >  "b  space" "#), vec!["a space", ">", "b  space"]);
+	}
 
 	#[test]
 	fn count_gte_6() {
@@ -391,12 +431,12 @@ mod tests {
 
 	#[test]
 	fn var_lt_var() {
-		let actual: Action = "$first_btst < $last_ein".parse().unwrap();
+		let actual: Action = r#""first BTS-T course" < "last EIN course""#.parse().unwrap();
 
 		let expected_struct = Action {
-			lhs: Value::Variable(String::from("$first_btst")),
+			lhs: Value::String(String::from("first BTS-T course")),
 			op: Some(Operator::LessThan),
-			rhs: Some(Value::Variable(String::from("$last_ein"))),
+			rhs: Some(Value::String(String::from("last EIN course"))),
 		};
 
 		assert_eq!(actual, expected_struct);

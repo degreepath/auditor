@@ -337,7 +337,8 @@ mod tests {
 - {both: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
 - {either: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
 - {given: courses, what: courses, do: count < 2}
-#- {do: $a < $b}
+- do: >
+    "X" < "Y"
 "#;
 
 		let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
@@ -359,7 +360,7 @@ mod tests {
 			"take both ASIAN 101 and ASIAN 102 (2014-1)",
 			"take either ASIAN 101 or ASIAN 102 (2014-1)",
 			"take fewer than two courses",
-			// "complete the “Name 1” requirement",
+			"the computed result of the subset “X” is less than the computed result of the subset “Y”",
 		];
 
 		assert_eq!(actual, expected, "left: {:#?}\n\nright: {:#?}", actual, expected);
