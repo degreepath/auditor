@@ -31,39 +31,55 @@ impl crate::rules::traits::PrettyPrint for Rule {
 
 		match (*pair.0, *pair.1) {
 			(Requirement(a), Requirement(b)) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
-				write!(&mut output, "complete either the {} or {} requirement", a.print()?, b.print()?)?;
+				write!(
+					&mut output,
+					"complete either the {} or {} requirement",
+					a.print()?,
+					b.print()?
+				)?;
 			}
 			(Course(a), Course(b)) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
 				write!(&mut output, "take either {} or {}", a.print()?, b.print()?)?;
 			}
 			(Requirement(a), Course(b)) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
-				write!(&mut output, "complete the {} requirement or take {}", a.print()?, b.print()?)?;
+				write!(
+					&mut output,
+					"complete the {} requirement or take {}",
+					a.print()?,
+					b.print()?
+				)?;
 			}
 			(Course(a), Requirement(b)) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
-				write!(&mut output, "take {} or complete the {} requirement", a.print()?, b.print()?)?;
+				write!(
+					&mut output,
+					"take {} or complete the {} requirement",
+					a.print()?,
+					b.print()?
+				)?;
 			}
 			(Course(a), b) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
 				write!(&mut output, "either take {} or {}", a.print()?, b.print()?)?;
 			}
 			(Requirement(a), b) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
-				write!(&mut output, "either complete the {} requirement or {}", a.print()?, b.print()?)?;
+				write!(
+					&mut output,
+					"either complete the {} requirement or {}",
+					a.print()?,
+					b.print()?
+				)?;
 			}
 			(a, Course(b)) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
 				write!(&mut output, "either {} or take {}", a.print()?, b.print()?)?;
 			}
 			(a, Requirement(b)) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
-				write!(&mut output, "either {} or complete the {} requirement", a.print()?, b.print()?)?;
+				write!(
+					&mut output,
+					"either {} or complete the {} requirement",
+					a.print()?,
+					b.print()?
+				)?;
 			}
 			(a, b) => {
-				#[cfg_attr(rustfmt, rustfmt_skip)]
 				write!(&mut output, "either {} or {}", a.print()?, b.print()?)?;
 			}
 		};
