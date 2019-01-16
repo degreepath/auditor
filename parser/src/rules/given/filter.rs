@@ -103,6 +103,13 @@ impl crate::rules::traits::PrettyPrint for Clause {
 					WrappedValue::And(_) => unimplemented!(),
 				}
 			}
+			(Some(kind), None) if *kind == WrappedValue::new("major") => match kind {
+				WrappedValue::Single(_) => clauses.push("major".to_string()),
+				WrappedValue::Or(_) => {
+					clauses.push(format!("either {}", kind.print()?));
+				}
+				WrappedValue::And(_) => unimplemented!(),
+			}
 			(Some(kind), None) => match kind {
 				WrappedValue::Single(v) => clauses.push(format!("“{}”", v.print()?)),
 				WrappedValue::Or(_) => {
