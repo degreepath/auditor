@@ -68,7 +68,7 @@ impl Rule {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use std::collections::HashMap;
+	use std::collections::BTreeMap;
 
 	#[test]
 	fn deserialize_simple_course_in_array() {
@@ -121,7 +121,7 @@ mod tests {
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
 				what: given::What::Courses,
-				filter: Some(HashMap::new()),
+				filter: Some(BTreeMap::new()),
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),
@@ -220,7 +220,7 @@ mod tests {
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
 				what: given::What::Courses,
-				filter: Some(HashMap::new()),
+				filter: Some(BTreeMap::new()),
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),

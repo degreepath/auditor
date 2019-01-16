@@ -1,6 +1,6 @@
 use crate::requirement::Requirement;
 use crate::rules::Rule;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AreaOfStudy {
@@ -10,15 +10,15 @@ pub struct AreaOfStudy {
 	pub area_type: AreaType,
 	pub catalog: String,
 	pub result: Rule,
-	pub requirements: HashMap<String, Requirement>,
+	pub requirements: BTreeMap<String, Requirement>,
 	#[serde(default)]
 	pub attributes: Option<Attributes>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Attributes {
-	pub definitions: HashMap<String, AttributeDefinition>,
-	pub courses: HashMap<String, AttributeApplication>,
+	pub definitions: BTreeMap<String, AttributeDefinition>,
+	pub courses: BTreeMap<String, AttributeApplication>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -29,7 +29,7 @@ pub struct AttributeDefinition {
 	pub multiple_values_can_be_used: bool,
 }
 
-pub type AttributeApplication = HashMap<String, Vec<String>>;
+pub type AttributeApplication = BTreeMap<String, Vec<String>>;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "lowercase")]
@@ -123,7 +123,7 @@ mod tests {
 						department_audited: false,
 						contract: false,
 						save: vec![],
-						requirements: HashMap::new(),
+						requirements: BTreeMap::new(),
 						result: Some(Rule::CountOf(count_of::Rule {
 							count: count_of::Counter::All,
 							of: vec![
@@ -170,7 +170,7 @@ mod tests {
 						department_audited: false,
 						contract: false,
 						save: vec![],
-						requirements: HashMap::new(),
+						requirements: BTreeMap::new(),
 						result: Some(Rule::CountOf(count_of::Rule {
 							count: count_of::Counter::Number(2),
 							of: vec![

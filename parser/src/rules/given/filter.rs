@@ -3,11 +3,11 @@ use serde::de::{Deserialize, Deserializer};
 
 use super::action::Operator;
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fmt;
 use std::str::FromStr;
 
-pub type Clause = HashMap<String, WrappedValue>;
+pub type Clause = BTreeMap<String, WrappedValue>;
 
 impl crate::rules::traits::PrettyPrint for Clause {
 	fn print(&self) -> Result<String, std::fmt::Error> {
@@ -178,7 +178,7 @@ where
 	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
 	// TODO: improve this to not transmute the hashmap right after creation
-	let v: Result<HashMap<String, Wrapper>, D::Error> = HashMap::deserialize(deserializer);
+	let v: Result<BTreeMap<String, Wrapper>, D::Error> = BTreeMap::deserialize(deserializer);
 
 	match v {
 		Ok(v) => {
@@ -198,7 +198,7 @@ where
 	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
 	// TODO: improve this to not transmute the hashmap right after creation
-	let v: Result<HashMap<String, Wrapper>, D::Error> = HashMap::deserialize(deserializer);
+	let v: Result<BTreeMap<String, Wrapper>, D::Error> = BTreeMap::deserialize(deserializer);
 
 	match v {
 		Ok(v) => {
@@ -475,7 +475,7 @@ mod tests {
 
 	#[test]
 	fn serialize_simple() {
-		let data: Clause = hashmap! {
+		let data: Clause = btreemap! {
 			"level".into() => "100".parse::<WrappedValue>().unwrap(),
 		};
 
@@ -492,7 +492,7 @@ level:
 
 	#[test]
 	fn serialize_or() {
-		let data: Clause = hashmap! {
+		let data: Clause = btreemap! {
 			"level".into() => "100 | 200".parse::<WrappedValue>().unwrap(),
 		};
 
@@ -509,7 +509,7 @@ level:
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected);
 
-		let data: Clause = hashmap! {
+		let data: Clause = btreemap! {
 			"level".into() =>  "< 100 | 200".parse::<WrappedValue>().unwrap(),
 		};
 

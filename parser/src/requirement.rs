@@ -1,7 +1,7 @@
 use crate::rules::Rule;
 use crate::save::SaveBlock;
 use crate::util;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
@@ -17,7 +17,7 @@ pub struct Requirement {
 	#[serde(default)]
 	pub save: Vec<SaveBlock>,
 	#[serde(default)]
-	pub requirements: HashMap<String, Requirement>,
+	pub requirements: BTreeMap<String, Requirement>,
 }
 
 #[cfg(test)]
@@ -37,7 +37,7 @@ mod tests {
 			})),
 			contract: false,
 			save: vec![],
-			requirements: HashMap::new(),
+			requirements: BTreeMap::new(),
 		};
 
 		let expected = "---
@@ -75,7 +75,7 @@ requirements: {}";
 			})),
 			contract: false,
 			save: vec![],
-			requirements: HashMap::new(),
+			requirements: BTreeMap::new(),
 		};
 
 		let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -97,7 +97,7 @@ result: {requirement: name, optional: false}";
 			})),
 			contract: false,
 			save: vec![],
-			requirements: HashMap::new(),
+			requirements: BTreeMap::new(),
 		};
 
 		let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -115,7 +115,7 @@ message: a message";
 			result: None,
 			contract: false,
 			save: vec![],
-			requirements: HashMap::new(),
+			requirements: BTreeMap::new(),
 		};
 
 		let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -135,7 +135,7 @@ result:
     - {given: save, save: Interim Courses, what: credits, do: sum >= 3}
     - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
-		let expected_filter: given::filter::Clause = hashmap! {
+		let expected_filter: given::filter::Clause = btreemap! {
 			"semester".into() => "Interim".parse::<given::filter::WrappedValue>().unwrap(),
 		};
 
@@ -173,7 +173,7 @@ result:
 				what: Some(given::What::Courses),
 				action: None,
 			}],
-			requirements: HashMap::new(),
+			requirements: BTreeMap::new(),
 		};
 
 		let actual: Requirement = serde_yaml::from_str(&data).unwrap();

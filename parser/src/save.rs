@@ -162,7 +162,7 @@ where: { semester: Interim }
 what: courses
 name: Interim Courses"#;
 
-		let filter: filter::Clause = hashmap! {
+		let filter: filter::Clause = btreemap! {
 			"semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
 		};
 
@@ -189,7 +189,7 @@ repeats: last
 where: {year: graduation-year, semester: Fall}
 name: "Senior Dance Seminars""#;
 
-		let filter: filter::Clause = hashmap! {
+		let filter: filter::Clause = btreemap! {
 			"year".into() => "graduation-year".parse::<filter::WrappedValue>().unwrap(),
 			"semester".into() => "Fall".parse::<filter::WrappedValue>().unwrap(),
 		};
