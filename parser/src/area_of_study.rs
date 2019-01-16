@@ -25,20 +25,20 @@ pub struct Attributes {
 pub struct AttributeDefinition {
 	#[serde(rename = "type")]
 	pub kind: AttributeDefinitionType,
-	#[serde(rename="multiple values can be used")]
+	#[serde(rename = "multiple values can be used")]
 	pub multiple_values_can_be_used: bool,
 }
 
 pub type AttributeApplication = HashMap<String, Vec<String>>;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-#[serde(rename_all="lowercase")]
+#[serde(rename_all = "lowercase")]
 pub enum AttributeDefinitionType {
 	Array,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-#[serde(tag = "type", rename_all="lowercase")]
+#[serde(tag = "type", rename_all = "lowercase")]
 pub enum AreaType {
 	Degree,
 	Major { degree: String },

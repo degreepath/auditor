@@ -219,7 +219,10 @@ pub enum WrappedValue {
 
 impl WrappedValue {
 	pub fn new(s: &str) -> Self {
-		WrappedValue::Single(TaggedValue{op: Operator::EqualTo, value: Value::String(s.to_string())})
+		WrappedValue::Single(TaggedValue {
+			op: Operator::EqualTo,
+			value: Value::String(s.to_string()),
+		})
 	}
 
 	pub fn is_true(&self) -> bool {

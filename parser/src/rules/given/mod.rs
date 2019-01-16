@@ -21,7 +21,7 @@ pub struct Rule {
 impl crate::rules::traits::RuleTools for Rule {
 	fn has_save_rule(&self) -> bool {
 		match &self.given {
-			Given::NamedVariable{..} => true,
+			Given::NamedVariable { .. } => true,
 			_ => false,
 		}
 	}
@@ -242,7 +242,13 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					let word = if plur { "credits" } else { "credit" };
 
 					write!(&mut output, "in the subset “{}”, ", save)?;
-					write!(&mut output, "there must be enough courses{} to obtain {} {}", filter, self.action.print()?, word )?;
+					write!(
+						&mut output,
+						"there must be enough courses{} to obtain {} {}",
+						filter,
+						self.action.print()?,
+						word
+					)?;
 					// write!(&mut output, " in the subset “{}”", save)?;
 				}
 				What::Departments => {
@@ -250,7 +256,13 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					let word = if plur { "departments" } else { "department" };
 
 					write!(&mut output, "in the subset “{}”, ", save)?;
-					write!(&mut output, "there must be enough courses{} to span {} {}", filter, self.action.print()?, word )?;
+					write!(
+						&mut output,
+						"there must be enough courses{} to span {} {}",
+						filter,
+						self.action.print()?,
+						word
+					)?;
 					// write!(&mut output, " in the subset “{}”", save)?;
 				}
 				What::Grades => {
@@ -258,7 +270,13 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					let word = if plur { "courses" } else { "course" };
 
 					write!(&mut output, "courses from the subset “{}” ", save)?;
-					write!(&mut output, "must maintain an average GPA {} from {}{}", self.action.print()?, word, filter )?;
+					write!(
+						&mut output,
+						"must maintain an average GPA {} from {}{}",
+						self.action.print()?,
+						word,
+						filter
+					)?;
 					// write!(&mut output, "in courses from the subset “{}”", save)?;
 				}
 				What::Terms => {
@@ -266,7 +284,13 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					let word = if plur { "terms" } else { "term" };
 
 					write!(&mut output, "in the subset “{}”, ", save)?;
-					write!(&mut output, "there must be enough courses{} to span {} {}", filter, self.action.print()?, word )?;
+					write!(
+						&mut output,
+						"there must be enough courses{} to span {} {}",
+						filter,
+						self.action.print()?,
+						word
+					)?;
 					// write!(&mut output, " in the subset “{}”", save)?;
 				}
 				What::AreasOfStudy => unimplemented!(),

@@ -390,7 +390,9 @@ do: count >= 1
 "#;
 
 		let expected = Rule::Given(given::Rule {
-			given: given::Given::NamedVariable{save: "Senior Dance Seminars".to_string()},
+			given: given::Given::NamedVariable {
+				save: "Senior Dance Seminars".to_string(),
+			},
 			what: given::What::Courses,
 			filter: None,
 			limit: None,
