@@ -1,0 +1,306 @@
+{
+  "name": "Psychology",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Foundation",
+        "optional": false
+      },
+      {
+        "requirement": "Content Core",
+        "optional": false
+      },
+      {
+        "requirement": "Level III Capstone",
+        "optional": false
+      },
+      {
+        "requirement": "General Education",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Content Core": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Natural Science",
+            "optional": false
+          },
+          {
+            "requirement": "Social Science",
+            "optional": false
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Natural Science": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 2,
+            "of": [
+              {
+                "course": "PSYCH 235"
+              },
+              {
+                "course": "PSYCH 236"
+              },
+              {
+                "course": "PSYCH 237"
+              },
+              {
+                "course": "PSYCH 238"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Social Science": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 2,
+            "of": [
+              {
+                "course": "PSYCH 241"
+              },
+              {
+                "course": "PSYCH 244"
+              },
+              {
+                "course": "PSYCH 247"
+              },
+              {
+                "course": "PSYCH 249"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "PSYCH 220"
+          },
+          {
+            "course": "PSYCH 221"
+          },
+          {
+            "course": "PSYCH 222"
+          },
+          {
+            "course": "PSYCH 223"
+          },
+          {
+            "course": "PSYCH 224"
+          },
+          {
+            "course": "PSYCH 225"
+          },
+          {
+            "course": "PSYCH 227"
+          },
+          {
+            "course": "PSYCH 235"
+          },
+          {
+            "course": "PSYCH 236"
+          },
+          {
+            "course": "PSYCH 237"
+          },
+          {
+            "course": "PSYCH 238"
+          },
+          {
+            "course": "PSYCH 241"
+          },
+          {
+            "course": "PSYCH 244"
+          },
+          {
+            "course": "PSYCH 247"
+          },
+          {
+            "course": "PSYCH 249"
+          },
+          {
+            "course": "PSYCH 250"
+          },
+          {
+            "course": "PSYCH 251"
+          },
+          {
+            "course": "PSYCH 294"
+          },
+          {
+            "course": "PSYCH 298"
+          },
+          {
+            "course": "PSYCH 336"
+          },
+          {
+            "course": "PSYCH 338"
+          },
+          {
+            "course": "PSYCH 339"
+          },
+          {
+            "course": "PSYCH 341"
+          },
+          {
+            "course": "PSYCH 342"
+          },
+          {
+            "course": "PSYCH 344"
+          },
+          {
+            "course": "PSYCH 350"
+          },
+          {
+            "course": "PSYCH 375"
+          },
+          {
+            "course": "PSYCH 378"
+          },
+          {
+            "course": "PSYCH 390"
+          },
+          {
+            "course": "PSYCH 391"
+          },
+          {
+            "course": "PSYCH 395"
+          },
+          {
+            "course": "PSYCH 396"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Foundation": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "both": [
+          {
+            "course": "PSYCH 125"
+          },
+          {
+            "course": "PSYCH 230"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "General Education": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "STAT 110"
+          },
+          {
+            "course": "STAT 212"
+          },
+          {
+            "course": "STAT 214"
+          },
+          {
+            "course": "ECON 263"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III Capstone": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "PSYCH 336"
+          },
+          {
+            "course": "PSYCH 338"
+          },
+          {
+            "course": "PSYCH 339"
+          },
+          {
+            "course": "PSYCH 341"
+          },
+          {
+            "course": "PSYCH 342"
+          },
+          {
+            "course": "PSYCH 344"
+          },
+          {
+            "course": "PSYCH 350"
+          },
+          {
+            "course": "PSYCH 375"
+          },
+          {
+            "course": "PSYCH 378"
+          },
+          {
+            "course": "PSYCH 390"
+          },
+          {
+            "course": "PSYCH 391"
+          },
+          {
+            "course": "PSYCH 395"
+          },
+          {
+            "course": "PSYCH 396"
+          },
+          {
+            "course": "PSYCH 398"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

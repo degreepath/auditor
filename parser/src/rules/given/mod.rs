@@ -216,7 +216,10 @@ impl crate::rules::traits::PrettyPrint for Rule {
 			}
 			Given::AreasOfStudy => match self.what {
 				What::AreasOfStudy => {
-					write!(&mut output, "declare {}{}", self.action.print()?, filter)?;
+					// TODO: find a better way to special-case "exactly one" major
+					let action = self.action.print()?;
+					let action = action.replace("exactly ", "");
+					write!(&mut output, "declare {}{}", action, filter)?;
 				}
 				_ => panic!("given: areas, what: !areas…"),
 			},
@@ -390,7 +393,12 @@ given: courses
 limit: []
 where: {}
 what: courses
-do: count > 2"#;
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -399,13 +407,6 @@ do: count > 2"#;
 
 	#[test]
 	fn deserialize_all_courses() {
-		let data = r#"---
-given: courses
-limit: []
-where: {}
-what: courses
-do: count > 2"#;
-
 		let expected = Rule {
 			given: Given::AllCourses,
 			limit: Some(vec![]),
@@ -413,6 +414,29 @@ do: count > 2"#;
 			what: What::Courses,
 			action: "count > 2".parse().unwrap(),
 		};
+
+		let data = r#"---
+given: courses
+limit: []
+where: {}
+what: courses
+do: count > 2"#;
+
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+given: courses
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
@@ -450,7 +474,12 @@ repeats: first
 limit: []
 where: {}
 what: courses
-do: count > 2"#;
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -459,17 +488,6 @@ do: count > 2"#;
 
 	#[test]
 	fn deserialize_these_courses() {
-		let data = r#"---
-given: these courses
-courses:
-  - ASIAN 110
-  - course: ASIAN 110
-repeats: first
-limit: []
-where: {}
-what: courses
-do: count > 2"#;
-
 		let expected = Rule {
 			given: Given::TheseCourses {
 				courses: vec![
@@ -489,6 +507,37 @@ do: count > 2"#;
 			what: What::Courses,
 			action: "count > 2".parse().unwrap(),
 		};
+
+		let data = r#"---
+given: these courses
+courses:
+  - ASIAN 110
+  - course: ASIAN 110
+repeats: first
+limit: []
+where: {}
+what: courses
+do: count > 2"#;
+
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+given: these courses
+courses:
+  - ASIAN 110
+  - course: ASIAN 110
+repeats: first
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
@@ -526,7 +575,12 @@ requirements:
 limit: []
 where: {}
 what: courses
-do: count > 2"#;
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -535,16 +589,6 @@ do: count > 2"#;
 
 	#[test]
 	fn deserialize_these_requirements() {
-		let data = r#"---
-given: these requirements
-requirements:
-  - requirement: A Name 1
-  - {requirement: A Name 2, optional: true}
-limit: []
-where: {}
-what: courses
-do: count > 2"#;
-
 		let expected = Rule {
 			given: Given::TheseRequirements {
 				requirements: vec![
@@ -563,6 +607,35 @@ do: count > 2"#;
 			what: What::Courses,
 			action: "count > 2".parse().unwrap(),
 		};
+
+		let data = r#"---
+given: these requirements
+requirements:
+  - requirement: A Name 1
+  - {requirement: A Name 2, optional: true}
+limit: []
+where: {}
+what: courses
+do: count > 2"#;
+
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+given: these requirements
+requirements:
+  - requirement: A Name 1
+  - {requirement: A Name 2, optional: true}
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
@@ -584,7 +657,12 @@ given: areas of study
 limit: []
 where: {}
 what: areas of study
-do: count > 2"#;
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -593,13 +671,6 @@ do: count > 2"#;
 
 	#[test]
 	fn deserialize_areas() {
-		let data = r#"---
-given: areas of study
-limit: []
-where: {}
-what: areas of study
-do: count > 2"#;
-
 		let expected = Rule {
 			given: Given::AreasOfStudy,
 			limit: Some(vec![]),
@@ -607,6 +678,29 @@ do: count > 2"#;
 			what: What::AreasOfStudy,
 			action: "count > 2".parse().unwrap(),
 		};
+
+		let data = r#"---
+given: areas of study
+limit: []
+where: {}
+what: areas of study
+do: count > 2"#;
+
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+given: areas of study
+limit: []
+where: {}
+what: areas of study
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
@@ -631,7 +725,12 @@ save: $my_var
 limit: []
 where: {}
 what: courses
-do: count > 2"#;
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 
@@ -640,14 +739,6 @@ do: count > 2"#;
 
 	#[test]
 	fn deserialize_save() {
-		let data = r#"---
-given: save
-save: $my_var
-limit: []
-where: {}
-what: courses
-do: count > 2"#;
-
 		let expected = Rule {
 			given: Given::NamedVariable {
 				save: String::from("$my_var"),
@@ -657,6 +748,31 @@ do: count > 2"#;
 			what: What::Courses,
 			action: "count > 2".parse().unwrap(),
 		};
+
+		let data = r#"---
+given: save
+save: $my_var
+limit: []
+where: {}
+what: courses
+do: count > 2"#;
+
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+given: save
+save: $my_var
+limit: []
+where: {}
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThan
+  rhs:
+    Integer: 2"#;
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
@@ -690,7 +806,7 @@ do: count >= 3"#;
 	fn deserialize_filter_gereqs_single() {
 		let data = r#"{where: {gereqs: 'FYW'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = hashmap! {
+		let expected: filter::Clause = btreemap! {
 			"gereqs".into() => filter::WrappedValue::Single(filter::TaggedValue {
 				op: action::Operator::EqualTo,
 				value: filter::Value::String("FYW".into()),
@@ -712,7 +828,7 @@ do: count >= 3"#;
 	fn deserialize_filter_gereqs_or() {
 		let data = r#"{where: {gereqs: 'MCD | MCG'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = hashmap! {
+		let expected: filter::Clause = btreemap! {
 			"gereqs".into() => filter::WrappedValue::Or([
 				filter::TaggedValue {
 					op: action::Operator::EqualTo,
@@ -740,7 +856,7 @@ do: count >= 3"#;
 	fn deserialize_filter_level_gte() {
 		let data = r#"{where: {level: '>= 200'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = hashmap! {
+		let expected: filter::Clause = btreemap! {
 			"level".into() => filter::WrappedValue::Single(filter::TaggedValue {
 				op: action::Operator::GreaterThanEqualTo,
 				value: filter::Value::Integer(200),
@@ -762,7 +878,7 @@ do: count >= 3"#;
 	fn deserialize_filter_graded_bool() {
 		let data = r#"{where: {graded: 'true'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = hashmap! {
+		let expected: filter::Clause = btreemap! {
 			"graded".into() => filter::WrappedValue::Single(filter::TaggedValue {
 				op: action::Operator::EqualTo,
 				value: filter::Value::Bool(true),

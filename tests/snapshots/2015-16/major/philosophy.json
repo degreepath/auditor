@@ -1,0 +1,221 @@
+{
+  "name": "Philosophy",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Base",
+        "optional": false
+      },
+      {
+        "requirement": "Level III Seminars",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Base": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHIL 235"
+          },
+          {
+            "course": "PHIL 236"
+          },
+          {
+            "course": "PHIL 240"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "these courses",
+        "courses": [
+          {
+            "course": "PHIL 118"
+          },
+          {
+            "course": "PHIL 119"
+          },
+          {
+            "course": "PHIL 120"
+          },
+          {
+            "course": "PHIL 127"
+          },
+          {
+            "course": "PHIL 147"
+          },
+          {
+            "course": "PHIL 231"
+          },
+          {
+            "course": "PHIL 233"
+          },
+          {
+            "course": "PHIL 235"
+          },
+          {
+            "course": "PHIL 236"
+          },
+          {
+            "course": "PHIL 240"
+          },
+          {
+            "course": "PHIL 241"
+          },
+          {
+            "course": "PHIL 243"
+          },
+          {
+            "course": "PHIL 244"
+          },
+          {
+            "course": "PHIL 245"
+          },
+          {
+            "course": "PHIL 246"
+          },
+          {
+            "course": "PHIL 247"
+          },
+          {
+            "course": "PHIL 250"
+          },
+          {
+            "course": "PHIL 251"
+          },
+          {
+            "course": "PHIL 252"
+          },
+          {
+            "course": "PHIL 253"
+          },
+          {
+            "course": "PHIL 254"
+          },
+          {
+            "course": "PHIL 255"
+          },
+          {
+            "course": "PHIL 257"
+          },
+          {
+            "course": "PHIL 259"
+          },
+          {
+            "course": "PHIL 260"
+          },
+          {
+            "course": "PHIL 261"
+          },
+          {
+            "course": "PHIL 278"
+          },
+          {
+            "course": "PHIL 294"
+          },
+          {
+            "course": "PHIL 298"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 396"
+          },
+          {
+            "course": "PHIL 398"
+          },
+          {
+            "course": "PHIL 399"
+          },
+          {
+            "course": "AS/PH 251"
+          },
+          {
+            "course": "PH/RE 278"
+          },
+          {
+            "course": "GCON 218"
+          }
+        ],
+        "repeats": "first",
+        "limit": [
+          {
+            "where": {
+              "department": {
+                "Single": {
+                  "op": "NotEqualTo",
+                  "value": {
+                    "String": "PHIL"
+                  }
+                }
+              }
+            },
+            "at_most": 2
+          }
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 3
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III Seminars": {
+      "message": "Level III seminar courses may not be taken S/U.",
+      "department_audited": false,
+      "result": {
+        "count": 3,
+        "of": [
+          {
+            "course": "PHIL 371"
+          },
+          {
+            "course": "PHIL 372"
+          },
+          {
+            "course": "PHIL 373"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 375"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

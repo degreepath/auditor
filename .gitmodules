@@ -1,0 +1,3 @@
+[submodule "tests/area-data"]
+	path = tests/area-data
+	url = https://github.com/hawkrives/gobbldygook-area-data.git

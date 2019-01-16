@@ -1,14 +1,13 @@
 use crate::util::{self, Oxford};
 use serde::de::{Deserialize, Deserializer};
-use serde::ser::{Serialize, Serializer};
 
 use super::action::Operator;
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fmt;
 use std::str::FromStr;
 
-pub type Clause = HashMap<String, WrappedValue>;
+pub type Clause = BTreeMap<String, WrappedValue>;
 
 impl crate::rules::traits::PrettyPrint for Clause {
 	fn print(&self) -> Result<String, std::fmt::Error> {
@@ -91,6 +90,10 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		if let Some(level) = self.get("level") {
 			used_keys.insert("level".to_string());
 			match level {
+				WrappedValue::Single(TaggedValue {
+					op: Operator::GreaterThanEqualTo,
+					value: v,
+				}) => clauses.push(format!("at or above the {} level", v.print()?)),
 				WrappedValue::Single(v) => clauses.push(format!("at the {} level", v.print()?)),
 				WrappedValue::Or(_) => {
 					clauses.push(format!("at either the {} level", level.print()?));
@@ -179,7 +182,7 @@ where
 	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
 	// TODO: improve this to not transmute the hashmap right after creation
-	let v: Result<HashMap<String, Wrapper>, D::Error> = HashMap::deserialize(deserializer);
+	let v: Result<BTreeMap<String, Wrapper>, D::Error> = BTreeMap::deserialize(deserializer);
 
 	match v {
 		Ok(v) => {
@@ -199,7 +202,7 @@ where
 	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
 	// TODO: improve this to not transmute the hashmap right after creation
-	let v: Result<HashMap<String, Wrapper>, D::Error> = HashMap::deserialize(deserializer);
+	let v: Result<BTreeMap<String, Wrapper>, D::Error> = BTreeMap::deserialize(deserializer);
 
 	match v {
 		Ok(v) => {
@@ -210,7 +213,7 @@ where
 	}
 }
 
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum WrappedValue {
 	Single(TaggedValue),
 	Or([TaggedValue; 2]),
@@ -279,16 +282,7 @@ impl fmt::Display for WrappedValue {
 	}
 }
 
-impl Serialize for WrappedValue {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct TaggedValue {
 	pub op: Operator,
 	pub value: Value,
@@ -360,16 +354,7 @@ impl fmt::Display for TaggedValue {
 	}
 }
 
-impl Serialize for TaggedValue {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Constant {
 	#[serde(rename = "graduation-year")]
 	GraduationYear,
@@ -396,16 +381,7 @@ impl FromStr for Constant {
 	}
 }
 
-impl Serialize for Constant {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
-#[derive(Debug, PartialEq, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Value {
 	Constant(Constant),
 	Bool(bool),
@@ -496,15 +472,6 @@ impl fmt::Display for Value {
 	}
 }
 
-impl Serialize for Value {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(&format!("{}", &self))
-	}
-}
-
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -512,12 +479,16 @@ mod tests {
 
 	#[test]
 	fn serialize_simple() {
-		let data: Clause = hashmap! {
+		let data: Clause = btreemap! {
 			"level".into() => "100".parse::<WrappedValue>().unwrap(),
 		};
 
 		let expected = r#"---
-level: "= 100""#;
+level:
+  Single:
+    op: EqualTo
+    value:
+      Integer: 100"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected);
@@ -525,22 +496,36 @@ level: "= 100""#;
 
 	#[test]
 	fn serialize_or() {
-		let data: Clause = hashmap! {
+		let data: Clause = btreemap! {
 			"level".into() => "100 | 200".parse::<WrappedValue>().unwrap(),
 		};
 
 		let expected = r#"---
-level: "= 100 | = 200""#;
+level:
+  Or:
+    - op: EqualTo
+      value:
+        Integer: 100
+    - op: EqualTo
+      value:
+        Integer: 200"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected);
 
-		let data: Clause = hashmap! {
+		let data: Clause = btreemap! {
 			"level".into() =>  "< 100 | 200".parse::<WrappedValue>().unwrap(),
 		};
 
 		let expected = r#"---
-level: "< 100 | = 200""#;
+level:
+  Or:
+    - op: LessThan
+      value:
+        Integer: 100
+    - op: EqualTo
+      value:
+        Integer: 200"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected);

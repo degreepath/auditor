@@ -1,0 +1,511 @@
+{
+  "name": "Studio Art",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Studio Art",
+        "optional": false
+      },
+      {
+        "requirement": "Art History",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Art History": {
+      "message": "The department strongly recommends that you take ART 252 or 253 as one of your art history courses.",
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "ART 153"
+          },
+          {
+            "course": "ART 161"
+          },
+          {
+            "course": "ART 251"
+          },
+          {
+            "course": "ART 252"
+          },
+          {
+            "course": "ART 253"
+          },
+          {
+            "course": "ART 254"
+          },
+          {
+            "course": "ART 255"
+          },
+          {
+            "course": "ART 256"
+          },
+          {
+            "course": "ART 259"
+          },
+          {
+            "course": "ART 260"
+          },
+          {
+            "course": "ART 261"
+          },
+          {
+            "course": "ART 262"
+          },
+          {
+            "course": "ART 263"
+          },
+          {
+            "course": "ART 265"
+          },
+          {
+            "course": "ART 267"
+          },
+          {
+            "course": "ART 269"
+          },
+          {
+            "course": "ART 271"
+          },
+          {
+            "course": "ART 273"
+          },
+          {
+            "course": "ART 277"
+          },
+          {
+            "course": "ART 280"
+          },
+          {
+            "course": "ART 350"
+          },
+          {
+            "course": "ART 370"
+          },
+          {
+            "course": "ASIAN 270"
+          },
+          {
+            "course": "ASIAN 310"
+          },
+          {
+            "course": "ENVST 270"
+          },
+          {
+            "course": "PHIL 243"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Studio Art": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Foundations",
+            "optional": false
+          },
+          {
+            "requirement": "Juried Show",
+            "optional": false
+          },
+          {
+            "requirement": "Senior Studies in Studio Art",
+            "optional": false
+          },
+          {
+            "requirement": "Electives",
+            "optional": false
+          },
+          {
+            "requirement": "Areas",
+            "optional": false
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Areas": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "requirement": "2D Media",
+                "optional": false
+              },
+              {
+                "requirement": "3D Media",
+                "optional": false
+              },
+              {
+                "requirement": "New Media",
+                "optional": false
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "2D Media": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "requirement": "Drawing",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Painting",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Printmaking",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Graphic Design",
+                    "optional": false
+                  }
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {
+                "Drawing": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 225"
+                      },
+                      {
+                        "course": "ART 232"
+                      },
+                      {
+                        "course": "ART 233"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Graphic Design": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 236"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Painting": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 221"
+                      },
+                      {
+                        "course": "ART 222"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Printmaking": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 226"
+                      },
+                      {
+                        "course": "ART 227"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                }
+              }
+            },
+            "3D Media": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "requirement": "Ceramics",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Sculpture",
+                    "optional": false
+                  }
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {
+                "Ceramics": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 207"
+                      },
+                      {
+                        "course": "ART 234"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Sculpture": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 223"
+                      },
+                      {
+                        "course": "ART 224"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                }
+              }
+            },
+            "New Media": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "requirement": "Photography",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Interactive Image",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Digital Video",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Performance",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Graphic Design",
+                    "optional": false
+                  }
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {
+                "Digital Video": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 229"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Graphic Design": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 236"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Interactive Image": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 228"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Performance": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 240"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Photography": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 205"
+                      },
+                      {
+                        "course": "ART 238"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                }
+              }
+            }
+          }
+        },
+        "Electives": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 1,
+            "of": [
+              {
+                "course": "ART 106"
+              },
+              {
+                "course": "ART 246"
+              },
+              {
+                "course": "ART 294"
+              },
+              {
+                "course": "ART 298"
+              },
+              {
+                "course": "ART 340"
+              },
+              {
+                "course": "ART 394"
+              },
+              {
+                "course": "ART 398"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Foundations": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "ART 102"
+              },
+              {
+                "course": "ART 103"
+              },
+              {
+                "course": "ART 104"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Juried Show": {
+          "message": "To fulfill the requirements of the Studio Art major, you must enter at least two juried art exhibitions on or off campus by the beginning of your senior year.",
+          "department_audited": true,
+          "result": null,
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Senior Studies in Studio Art": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "course": "ART 343"
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    }
+  },
+  "attributes": null
+}

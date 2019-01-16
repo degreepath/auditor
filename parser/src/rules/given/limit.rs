@@ -14,7 +14,7 @@ mod tests {
 
 	#[test]
 	fn serialize_level100() {
-		let clause: filter::Clause = hashmap! {
+		let clause: filter::Clause = btreemap! {
 			"level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
 		};
 
@@ -25,7 +25,11 @@ mod tests {
 
 		let expected = r#"---
 where:
-  level: "= 100"
+  level:
+    Single:
+      op: EqualTo
+      value:
+        Integer: 100
 at_most: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
@@ -35,7 +39,7 @@ at_most: 2"#;
 
 	#[test]
 	fn serialize_not_math() {
-		let clause: filter::Clause = hashmap! {
+		let clause: filter::Clause = btreemap! {
 			"department".into() => "! MATH".parse::<filter::WrappedValue>().unwrap(),
 		};
 
@@ -46,7 +50,11 @@ at_most: 2"#;
 
 		let expected = r#"---
 where:
-  department: "! MATH"
+  department:
+    Single:
+      op: NotEqualTo
+      value:
+        String: MATH
 at_most: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
@@ -56,7 +64,7 @@ at_most: 2"#;
 
 	#[test]
 	fn deserialize_level100() {
-		let clause: filter::Clause = hashmap! {
+		let clause: filter::Clause = btreemap! {
 			"level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
 		};
 

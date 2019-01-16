@@ -68,7 +68,7 @@ impl Rule {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use std::collections::HashMap;
+	use std::collections::BTreeMap;
 
 	#[test]
 	fn deserialize_simple_course_in_array() {
@@ -121,7 +121,7 @@ mod tests {
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
 				what: given::What::Courses,
-				filter: Some(HashMap::new()),
+				filter: Some(BTreeMap::new()),
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),
@@ -166,15 +166,69 @@ mod tests {
   limit: []
   where: {}
   what: courses
-  do: count < 2
-- do: $a < $b"#;
+  do:
+    lhs:
+      Command: Count
+    op: LessThan
+    rhs:
+      Integer: 2
+- do:
+    lhs:
+      String: $a
+    op: LessThan
+    rhs:
+      String: $b"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
-		assert_eq!(actual, expected);
+		assert_eq!(actual, expected, "actual: {}\n\nexpected: {}", actual, expected);
 	}
 
 	#[test]
 	fn deserialize() {
+		let course_a = course::Rule {
+			course: "ASIAN 101".to_string(),
+			..Default::default()
+		};
+		let course_b = course::Rule {
+			course: "ASIAN 101".to_string(),
+			term: Some("2014-1".to_string()),
+			..Default::default()
+		};
+		let expected = vec![
+			Rule::Course(course_a.clone()),
+			Rule::Course(course_b.clone()),
+			Rule::Requirement(requirement::Rule {
+				requirement: "Name".to_string(),
+				optional: true,
+			}),
+			Rule::CountOf(count_of::Rule {
+				count: count_of::Counter::Number(1),
+				of: vec![Rule::Course(course_a.clone())],
+			}),
+			Rule::Both(both::Rule {
+				both: (
+					Box::new(Rule::Course(course_a.clone())),
+					Box::new(Rule::Course(course_b.clone())),
+				),
+			}),
+			Rule::Either(either::Rule {
+				either: (
+					Box::new(Rule::Course(course_a.clone())),
+					Box::new(Rule::Course(course_b.clone())),
+				),
+			}),
+			Rule::Given(given::Rule {
+				given: given::Given::AllCourses,
+				what: given::What::Courses,
+				filter: Some(BTreeMap::new()),
+				limit: Some(vec![]),
+				action: "count < 2".parse().unwrap(),
+			}),
+			Rule::Do(action::Rule {
+				action: "$a < $b".parse().unwrap(),
+			}),
+		];
+
 		let data = r#"---
 - course: ASIAN 101
 - course: ASIAN 101
@@ -214,49 +268,47 @@ mod tests {
   do: count < 2
 - do: $a < $b"#;
 
-		let course_a = course::Rule {
-			course: "ASIAN 101".to_string(),
-			..Default::default()
-		};
-		let course_b = course::Rule {
-			course: "ASIAN 101".to_string(),
-			term: Some("2014-1".to_string()),
-			..Default::default()
-		};
-		let expected = vec![
-			Rule::Course(course_a.clone()),
-			Rule::Course(course_b.clone()),
-			Rule::Requirement(requirement::Rule {
-				requirement: "Name".to_string(),
-				optional: true,
-			}),
-			Rule::CountOf(count_of::Rule {
-				count: count_of::Counter::Number(1),
-				of: vec![Rule::Course(course_a.clone())],
-			}),
-			Rule::Both(both::Rule {
-				both: (
-					Box::new(Rule::Course(course_a.clone())),
-					Box::new(Rule::Course(course_b.clone())),
-				),
-			}),
-			Rule::Either(either::Rule {
-				either: (
-					Box::new(Rule::Course(course_a.clone())),
-					Box::new(Rule::Course(course_b.clone())),
-				),
-			}),
-			Rule::Given(given::Rule {
-				given: given::Given::AllCourses,
-				what: given::What::Courses,
-				filter: Some(HashMap::new()),
-				limit: Some(vec![]),
-				action: "count < 2".parse().unwrap(),
-			}),
-			Rule::Do(action::Rule {
-				action: "$a < $b".parse().unwrap(),
-			}),
-		];
+		let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+- course: ASIAN 101
+- course: ASIAN 101
+  term: 2014-1
+  section: ~
+  year: ~
+  semester: ~
+  lab: ~
+  international: ~
+- requirement: Name
+  optional: true
+- count: 1
+  of:
+    - course: ASIAN 101
+- both:
+    - course: ASIAN 101
+    - course: ASIAN 101
+      term: 2014-1
+      section: ~
+      year: ~
+      semester: ~
+      lab: ~
+      international: ~
+- either:
+    - course: ASIAN 101
+    - course: ASIAN 101
+      term: 2014-1
+      section: ~
+      year: ~
+      semester: ~
+      lab: ~
+      international: ~
+- given: courses
+  what: courses
+  where: {}
+  limit: []
+  do: count < 2
+- do: $a < $b"#;
 
 		let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
 		assert_eq!(actual, expected);
@@ -382,13 +434,6 @@ mod tests {
 
 	#[test]
 	fn dance_seminar() {
-		let data = r#"---
-given: save
-save: "Senior Dance Seminars"
-what: course
-do: count >= 1
-"#;
-
 		let expected = Rule::Given(given::Rule {
 			given: given::Given::NamedVariable {
 				save: "Senior Dance Seminars".to_string(),
@@ -399,9 +444,27 @@ do: count >= 1
 			action: "count >= 1".parse().unwrap(),
 		});
 
-		let actual = serde_yaml::to_string(&expected).unwrap();
+		let data = r#"---
+given: save
+save: "Senior Dance Seminars"
+what: courses
+do: count >= 1
+"#;
 
-		println!("{}", actual);
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+given: save
+save: "Senior Dance Seminars"
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThanEqualTo
+  rhs:
+    Integer: 1
+"#;
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 		assert_eq!(actual, expected);

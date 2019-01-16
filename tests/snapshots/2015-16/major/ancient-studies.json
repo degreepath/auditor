@@ -1,0 +1,319 @@
+{
+  "name": "Ancient Studies",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Language",
+        "optional": false
+      },
+      {
+        "requirement": "Ancient History",
+        "optional": false
+      },
+      {
+        "requirement": "Classics",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      },
+      {
+        "requirement": "Independent Research",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Ancient History": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "CLASS 126"
+          },
+          {
+            "course": "CLASS 240"
+          },
+          {
+            "course": "CLASS 243"
+          },
+          {
+            "course": "CLASS 253"
+          },
+          {
+            "course": "GREEK 111"
+          },
+          {
+            "course": "GREEK 112"
+          },
+          {
+            "course": "GREEK 231"
+          },
+          {
+            "course": "GREEK 253"
+          },
+          {
+            "course": "GREEK 374"
+          },
+          {
+            "course": "GREEK 375"
+          },
+          {
+            "course": "HIST 190"
+          },
+          {
+            "course": "HIST 201"
+          },
+          {
+            "course": "HIST 203"
+          },
+          {
+            "course": "HIST 204"
+          },
+          {
+            "course": "HIST 303"
+          },
+          {
+            "course": "HIST 396"
+          },
+          {
+            "course": "LATIN 111"
+          },
+          {
+            "course": "LATIN 112"
+          },
+          {
+            "course": "LATIN 231"
+          },
+          {
+            "course": "LATIN 235"
+          },
+          {
+            "course": "LATIN 373"
+          },
+          {
+            "course": "LATIN 375"
+          },
+          {
+            "course": "PHIL 235"
+          },
+          {
+            "course": "REL 221"
+          },
+          {
+            "course": "REL 221"
+          },
+          {
+            "course": "REL 222"
+          },
+          {
+            "course": "REL 272"
+          },
+          {
+            "course": "REL 273"
+          },
+          {
+            "course": "REL 320"
+          },
+          {
+            "course": "REL 393"
+          },
+          {
+            "course": "THEAT 270"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Classics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "department": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "CLASS"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": "1 course in Greek may be used as an elective if the student satisfies the required language portion of the major with Latin courses. 1 course in Latin may be used as an elective if the student satisfies the required language portion of the major with Greek courses.",
+      "department_audited": false,
+      "result": {
+        "count": 4,
+        "of": [
+          {
+            "course": "ART 161"
+          },
+          {
+            "course": "ART 267"
+          },
+          {
+            "course": "CLASS 126"
+          },
+          {
+            "course": "CLASS 129"
+          },
+          {
+            "course": "CLASS 240"
+          },
+          {
+            "course": "CLASS 241"
+          },
+          {
+            "course": "CLASS 243"
+          },
+          {
+            "course": "CLASS 244"
+          },
+          {
+            "course": "CLASS 251"
+          },
+          {
+            "course": "CLASS 253"
+          },
+          {
+            "course": "ENGL 255"
+          },
+          {
+            "course": "HIST 190"
+          },
+          {
+            "course": "HIST 201"
+          },
+          {
+            "course": "HIST 203"
+          },
+          {
+            "course": "HIST 204"
+          },
+          {
+            "course": "HIST 205"
+          },
+          {
+            "course": "HIST 303"
+          },
+          {
+            "course": "HIST 396"
+          },
+          {
+            "course": "PHIL 235"
+          },
+          {
+            "course": "REL 221"
+          },
+          {
+            "course": "REL 222"
+          },
+          {
+            "course": "REL 271"
+          },
+          {
+            "course": "REL 272"
+          },
+          {
+            "course": "REL 273"
+          },
+          {
+            "course": "REL 293"
+          },
+          {
+            "course": "REL 320"
+          },
+          {
+            "course": "REL 391",
+            "term": null,
+            "section": null,
+            "year": 2016,
+            "semester": null,
+            "lab": null,
+            "international": null
+          },
+          {
+            "course": "THEAT 270"
+          },
+          {
+            "course": "GCON 113"
+          },
+          {
+            "course": "GCON 115"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Independent Research": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "CLASS 398"
+          },
+          {
+            "course": "HIST 398"
+          },
+          {
+            "course": "LATIN 398"
+          },
+          {
+            "course": "GREEK 398"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "LATIN 252"
+          },
+          {
+            "course": "GREEK 253"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

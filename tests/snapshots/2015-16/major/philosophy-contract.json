@@ -1,0 +1,113 @@
+{
+  "name": "Philosophy (Contract)",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Base",
+        "optional": false
+      },
+      {
+        "requirement": "Level III Seminars",
+        "optional": false
+      },
+      {
+        "requirement": "Contract",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Base": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHIL 235"
+          },
+          {
+            "course": "PHIL 236"
+          },
+          {
+            "course": "PHIL 240"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Contract": {
+      "message": "Three level II or III courses in another department chosen to complement the work in philosophy.",
+      "department_audited": false,
+      "result": null,
+      "contract": true,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "department": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "PHIL"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III Seminars": {
+      "message": "Level III seminar courses may not be taken S/U.",
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "PHIL 371"
+          },
+          {
+            "course": "PHIL 372"
+          },
+          {
+            "course": "PHIL 373"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 375"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

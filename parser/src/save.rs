@@ -63,7 +63,52 @@ impl crate::rules::traits::PrettyPrint for SaveBlock {
 					writeln!(&mut output, "| {} | (todo: fill out if match) |", c)?;
 				}
 			}
-			Given::TheseRequirements { .. } => unimplemented!("save-block given:these-reqs"),
+			Given::TheseRequirements { requirements } => {
+				use crate::util::Oxford;
+
+				let req_names = requirements
+					.iter()
+					.filter_map(|r| {
+						match r.print() {
+							Ok(p) => Some(p),
+							Err(_) => None,
+						}
+					})
+					.collect::<Vec<String>>()
+					.oxford("and");
+
+				write!(&mut output, "Given the courses which fulfilled the {} requirements", req_names)?;
+
+				if let Some(filter) = &self.filter {
+					write!(&mut output, ", limited to only courses taken {}", filter.print()?)?;
+				};
+
+				writeln!(&mut output, ", as “{}”:", self.name)?;
+
+				writeln!(&mut output)?;
+
+				writeln!(&mut output, "| “{}” |", self.name)?;
+				writeln!(&mut output, "| {} |", "-".repeat(self.name.chars().count() + 2))?;
+				// todo: list matched courses from the referenced save here
+				writeln!(&mut output, "| (todo: list matched courses here) |")?;
+
+				writeln!(&mut output)?;
+
+				if let Some(_action) = &self.action {
+					// todo: describe what the save's action is doing
+					writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+				}
+
+				if let Some(_) = &self.limit {
+					// todo: describe what the save's limiters do
+					writeln!(&mut output, "> todo: describe what the save's limiters do")?;
+				}
+
+				if let Some(_) = &self.what {
+					// todo: describe what the save will generate
+					writeln!(&mut output, "> todo: describe what the save will generate")?;
+				}
+			},
 			Given::AreasOfStudy => unimplemented!("save-block given:areas"),
 			Given::NamedVariable { save } => match &self.filter {
 				Some(f) => {
@@ -117,7 +162,7 @@ where: { semester: Interim }
 what: courses
 name: Interim Courses"#;
 
-		let filter: filter::Clause = hashmap! {
+		let filter: filter::Clause = btreemap! {
 			"semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
 		};
 
@@ -144,7 +189,7 @@ repeats: last
 where: {year: graduation-year, semester: Fall}
 name: "Senior Dance Seminars""#;
 
-		let filter: filter::Clause = hashmap! {
+		let filter: filter::Clause = btreemap! {
 			"year".into() => "graduation-year".parse::<filter::WrappedValue>().unwrap(),
 			"semester".into() => "Fall".parse::<filter::WrappedValue>().unwrap(),
 		};
