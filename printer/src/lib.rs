@@ -81,12 +81,17 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 		writeln!(&mut w, "> todo: this area has custom attributes defined.\n")?;
 	}
 
-	if let Ok(what_to_do) = area.result.print() {
+	if let Ok(mut what_to_do) = area.result.print() {
+		// todo: remove this hack for adding periods to the end of inlined requirements
+		if !what_to_do.contains("\n- ") {
+			what_to_do += ".";
+		}
+
 		writeln!(
 			&mut w,
 			"{}",
 			&format!(
-				"For this {area_type}, you must complete {what_to_do}.",
+				"For this {area_type}, you must complete {what_to_do}",
 				area_type = area_type,
 				what_to_do = what_to_do
 			)
