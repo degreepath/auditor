@@ -15,7 +15,10 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		let mut clauses = vec![];
 		let mut expected_count = self.len();
 
+		let mut used_keys = std::collections::HashSet::new();
+
 		if let Some(gereq) = self.get("gereqs") {
+			used_keys.insert("gereqs".to_string());
 			match gereq {
 				WrappedValue::Single(v) => {
 					clauses.push(format!("with the “{}” general education attribute", v.print()?))
@@ -28,6 +31,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		}
 
 		if let Some(semester) = self.get("semester") {
+			used_keys.insert("semester".to_string());
 			match semester {
 				WrappedValue::Single(v) => clauses.push(format!("during {} semesters", v.print()?)),
 				WrappedValue::Or(_) | WrappedValue::And(_) => {
@@ -37,6 +41,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		}
 
 		if let Some(year) = self.get("year") {
+			used_keys.insert("year".to_string());
 			match year {
 				WrappedValue::Single(TaggedValue {
 					op: Operator::EqualTo,
@@ -52,6 +57,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		}
 
 		if let Some(institution) = self.get("institution") {
+			used_keys.insert("institution".to_string());
 			match institution {
 				WrappedValue::Single(v) => clauses.push(format!("at {}", v.print()?)),
 				WrappedValue::Or(_) => {
@@ -62,6 +68,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		}
 
 		if let Some(department) = self.get("department") {
+			used_keys.insert("department".to_string());
 			match department {
 				WrappedValue::Single(TaggedValue {
 					op: Operator::EqualTo,
@@ -82,6 +89,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		}
 
 		if let Some(level) = self.get("level") {
+			used_keys.insert("level".to_string());
 			match level {
 				WrappedValue::Single(v) => clauses.push(format!("at the {} level", v.print()?)),
 				WrappedValue::Or(_) => {
@@ -93,6 +101,8 @@ impl crate::rules::traits::PrettyPrint for Clause {
 
 		match (self.get("type"), self.get("name")) {
 			(Some(kind), Some(major)) if *kind == WrappedValue::new("major") => {
+				used_keys.insert("type".to_string());
+				used_keys.insert("name".to_string());
 				expected_count -= 1;
 
 				match major {
@@ -103,29 +113,58 @@ impl crate::rules::traits::PrettyPrint for Clause {
 					WrappedValue::And(_) => unimplemented!(),
 				}
 			}
-			(Some(kind), None) if *kind == WrappedValue::new("major") => match kind {
-				WrappedValue::Single(_) => clauses.push("major".to_string()),
-				WrappedValue::Or(_) => {
-					clauses.push(format!("either {}", kind.print()?));
+			(Some(kind), None) if *kind == WrappedValue::new("major") => {
+				used_keys.insert("type".to_string());
+				match kind {
+					WrappedValue::Single(_) => clauses.push("major".to_string()),
+					WrappedValue::Or(_) => {
+						clauses.push(format!("either {}", kind.print()?));
+					}
+					WrappedValue::And(_) => unimplemented!(),
 				}
-				WrappedValue::And(_) => unimplemented!(),
 			}
-			(Some(kind), None) => match kind {
-				WrappedValue::Single(v) => clauses.push(format!("“{}”", v.print()?)),
-				WrappedValue::Or(_) => {
-					clauses.push(format!("either {}", kind.print()?));
+			(Some(kind), None) => {
+				used_keys.insert("type".to_string());
+				match kind {
+					WrappedValue::Single(v) => clauses.push(format!("“{}”", v.print()?)),
+					WrappedValue::Or(_) => {
+						clauses.push(format!("either {}", kind.print()?));
+					}
+					WrappedValue::And(_) => unimplemented!(),
 				}
-				WrappedValue::And(_) => unimplemented!(),
 			}
 			(None, None) => (),
 			_ => unimplemented!(),
 		}
 
-		if clauses.len() != expected_count {
-			panic!("not all keys from {:?} were used in {:?}", self, clauses);
+		for key in self.keys() {
+			if used_keys.contains(key) {
+				continue;
+			}
+
+			if let Some(value) = self.get(key) {
+				match value {
+					WrappedValue::Single(v) => {
+						clauses.push(format!("with the “{}” `{}` attribute", v.print()?, key))
+					}
+					WrappedValue::Or(_) => {
+						clauses.push(format!("with either the {} `{}` attribute", value.print()?, key))
+					}
+					WrappedValue::And(_) => {
+						clauses.push(format!("with both the {} `{}` attribute", value.print()?, key));
+					}
+				}
+			}
 		}
 
-		// TODO: handle other filterable keys
+		assert!(
+			clauses.len() == expected_count,
+			"not all keys from {:?} were used in {:?} (expected: {}, used: {})",
+			self,
+			clauses,
+			expected_count,
+			clauses.len()
+		);
 
 		Ok(clauses.oxford("and"))
 	}
