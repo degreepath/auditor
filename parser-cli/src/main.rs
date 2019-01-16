@@ -2,8 +2,8 @@ use std::env;
 use std::fs;
 
 extern crate degreepath_parser;
-extern crate serde_yaml;
 extern crate serde_json;
+extern crate serde_yaml;
 
 use degreepath_parser::area_of_study::AreaOfStudy;
 

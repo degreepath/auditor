@@ -68,16 +68,18 @@ impl crate::rules::traits::PrettyPrint for SaveBlock {
 
 				let req_names = requirements
 					.iter()
-					.filter_map(|r| {
-						match r.print() {
-							Ok(p) => Some(p),
-							Err(_) => None,
-						}
+					.filter_map(|r| match r.print() {
+						Ok(p) => Some(p),
+						Err(_) => None,
 					})
 					.collect::<Vec<String>>()
 					.oxford("and");
 
-				write!(&mut output, "Given the courses which fulfilled the {} requirements", req_names)?;
+				write!(
+					&mut output,
+					"Given the courses which fulfilled the {} requirements",
+					req_names
+				)?;
 
 				if let Some(filter) = &self.filter {
 					write!(&mut output, ", limited to only courses taken {}", filter.print()?)?;
@@ -108,7 +110,7 @@ impl crate::rules::traits::PrettyPrint for SaveBlock {
 					// todo: describe what the save will generate
 					writeln!(&mut output, "> todo: describe what the save will generate")?;
 				}
-			},
+			}
 			Given::AreasOfStudy => unimplemented!("save-block given:areas"),
 			Given::NamedVariable { save } => match &self.filter {
 				Some(f) => {
