@@ -1,9 +1,5 @@
 language: rust
 
-rust:
-  - stable
-  - beta
-
 cache: cargo
 
 matrix:
@@ -13,22 +9,27 @@ matrix:
   include:
     - name: nightly
       rust: nightly
-      before_cache: |
-        RUSTFLAGS="--cfg procmacro2_semver_exempt" cargo install cargo-tarpaulin -f
+      before_cache:
+        - RUSTFLAGS="--cfg procmacro2_semver_exempt" cargo install cargo-tarpaulin -f
 
-      after_success: |
-        cargo tarpaulin --out Xml
-        curl -s https://codecov.io/bash | bash
+      after_success:
+        - cargo tarpaulin --out Xml
+        - curl -s https://codecov.io/bash | bash
+
+    - name: beta
+      rust: beta
+
+    - name: stable
+      rust: stable
+      script:
+        - rustc --version
+        - rustup --version
+        - cargo --version
+        - cargo build --verbose
+        - cargo test --verbose
+        - bash tests/snapshot.sh
+        - git diff --exit-code tests/snapshots/
 
 # before_script:
 #   - git submodule init
 #   - git submodule update
-
-script:
-  - rustc --version
-  - rustup --version
-  - cargo --version
-  - cargo build --verbose
-  - cargo test --verbose
-  - bash tests/snapshot.sh
-  - git diff --exit-code tests/snapshots/
