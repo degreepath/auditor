@@ -26,8 +26,13 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 			let institution = "St. Olaf College";
 			let area_type = "degree".to_string();
 
-			#[cfg_attr(rustfmt, rustfmt_skip)]
-            format!("This is the set of requirements for the {catalog} “{area_name}” {area_type} from {institution}.", catalog = catalog, area_name = area_name, area_type = area_type, institution = institution )
+			format!(
+				"This is the set of requirements for the {catalog} “{area_name}” {area_type} from {institution}.",
+				catalog = catalog,
+				area_name = area_name,
+				area_type = area_type,
+				institution = institution
+			)
 		}
 		Major { degree } => {
 			let catalog = area.catalog.clone();
@@ -35,8 +40,7 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 			let institution = "St. Olaf College";
 			let area_type = "major".to_string();
 
-			#[cfg_attr(rustfmt, rustfmt_skip)]
-            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
+			format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
 		}
 		Minor { degree } => {
 			let catalog = area.catalog.clone();
@@ -44,8 +48,7 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 			let institution = "St. Olaf College";
 			let area_type = "minor".to_string();
 
-			#[cfg_attr(rustfmt, rustfmt_skip)]
-            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
+			format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
 		}
 		Concentration { degree } => {
 			let catalog = area.catalog.clone();
@@ -53,8 +56,7 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 			let institution = "St. Olaf College";
 			let area_type = "concentration".to_string();
 
-			#[cfg_attr(rustfmt, rustfmt_skip)]
-            format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
+			format!("This is the set of requirements for the {catalog} {for_degree} “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, area_name = area_name, area_type = area_type, institution = institution)
 		}
 		Emphasis { degree, major } => {
 			let catalog = area.catalog.clone();
@@ -62,8 +64,7 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 			let institution = "St. Olaf College";
 			let area_type = "area of emphasis".to_string();
 
-			#[cfg_attr(rustfmt, rustfmt_skip)]
-            format!("This is the set of requirements for the {catalog} {for_degree} {for_major} major's “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, for_major = major, area_name = area_name, area_type = area_type, institution = institution)
+			format!("This is the set of requirements for the {catalog} {for_degree} {for_major} major's “{area_name}” {area_type} from {institution}.", catalog = catalog, for_degree = degree, for_major = major, area_name = area_name, area_type = area_type, institution = institution)
 		}
 	};
 
