@@ -3,6 +3,7 @@ use std::fs;
 
 extern crate degreepath_parser;
 extern crate serde_yaml;
+extern crate serde_json;
 
 use degreepath_parser::area_of_study::AreaOfStudy;
 
@@ -15,5 +16,5 @@ fn main() {
 
 	let area: AreaOfStudy = serde_yaml::from_str(&contents).unwrap();
 
-	println!("{}", serde_yaml::to_string(&area).unwrap());
+	println!("{}", serde_json::to_string_pretty(&area).unwrap());
 }

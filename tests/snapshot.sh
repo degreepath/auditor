@@ -22,6 +22,7 @@ for catalog in $(find . -d 1 -type d -name '*-*' | sed 's|^./||'); do
 		for area in $(find . -d 1 -name '*.yaml' | sed 's|^./||' | sed 's|\.yaml||'); do
 			echo "current: $kind, $area"
 			cargo run --quiet --bin degreepath-printer-cli "./$area.yaml" > "$SNAPSHOT_DIR/$area.md"
+			cargo run --quiet --bin degreepath-parser-cli "./$area.yaml" > "$SNAPSHOT_DIR/$area.json"
 		done
 
 		cd ..
