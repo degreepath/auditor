@@ -1,5 +1,5 @@
-use crate::rules::Rule as AnyRule;
 use crate::rules::traits::RuleTools;
+use crate::rules::Rule as AnyRule;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]

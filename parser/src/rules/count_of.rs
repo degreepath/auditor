@@ -1,8 +1,8 @@
+use crate::rules::traits::RuleTools;
 use crate::rules::Rule as AnyRule;
 use crate::util::Oxford;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use serde::ser::{Serialize, Serializer};
-use crate::rules::traits::RuleTools;
 use std::fmt;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
