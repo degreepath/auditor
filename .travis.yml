@@ -19,3 +19,16 @@ matrix:
       after_success: |
         cargo tarpaulin --out Xml
         curl -s https://codecov.io/bash | bash
+
+# before_script:
+#   - git submodule init
+#   - git submodule update
+
+script:
+  - rustc --version
+  - rustup --version
+  - cargo --version
+  - cargo build --verbose
+  - cargo test --verbose
+  - bash tests/snapshot.sh
+  - git diff --exit-code tests/snapshots/
