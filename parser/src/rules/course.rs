@@ -14,6 +14,12 @@ pub struct Rule {
 	pub international: Option<bool>,
 }
 
+impl crate::rules::traits::RuleTools for Rule {
+	fn has_save_rule(&self) -> bool {
+		false
+	}
+}
+
 impl crate::rules::traits::PrettyPrint for Rule {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		use std::fmt::Write;

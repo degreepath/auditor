@@ -2,6 +2,7 @@ use crate::rules::Rule as AnyRule;
 use crate::util::Oxford;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use serde::ser::{Serialize, Serializer};
+use crate::rules::traits::RuleTools;
 use std::fmt;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -61,7 +62,7 @@ impl Rule {
 	}
 
 	fn should_be_inline(&self) -> bool {
-		self.of.len() < 4
+		self.of.len() < 4 && !self.has_save_rule()
 	}
 }
 
@@ -69,6 +70,13 @@ fn result_to_option<T, E>(r: Result<T, E>) -> Option<T> {
 	match r {
 		Ok(v) => Some(v),
 		Err(_) => None,
+	}
+}
+
+impl RuleTools for Rule {
+	fn has_save_rule(&self) -> bool {
+		self.of.iter().any(|r| r.has_save_rule())
+		// AnyRule::Given(crate::rules::given::Rule {given: crate::rules::given::Given::NamedVariable {..}, ..}) => true,
 	}
 }
 

@@ -18,6 +18,15 @@ pub struct Rule {
 	pub action: action::Action,
 }
 
+impl crate::rules::traits::RuleTools for Rule {
+	fn has_save_rule(&self) -> bool {
+		match &self.given {
+			Given::NamedVariable{..} => true,
+			_ => false,
+		}
+	}
+}
+
 impl crate::rules::traits::PrettyPrint for Rule {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		use std::fmt::Write;
@@ -209,7 +218,57 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				What::AreasOfStudy => {}
 				_ => panic!("given: areas, what: !areas…"),
 			},
-			Given::NamedVariable { save: _ } => {}
+			Given::NamedVariable { save } => match &self.what {
+				What::Courses => {
+					let plur = self.action.should_pluralize();
+					let word = if plur { "courses" } else { "course" };
+
+					write!(&mut output, "in the subset “{}”, ", save)?;
+					write!(&mut output, "there must be {} {}{}", self.action.print()?, word, filter)?;
+					// write!(&mut output, " in the subset “{}”", save)?;
+				}
+				What::DistinctCourses => {
+					let plur = self.action.should_pluralize();
+					let word = if plur { "distinct courses" } else { "course" };
+
+					write!(&mut output, "in the subset “{}”, ", save)?;
+					write!(&mut output, "there must be {} {}{}", self.action.print()?, word, filter)?;
+					// write!(&mut output, " in the subset “{}”", save)?;
+				}
+				What::Credits => {
+					let plur = self.action.should_pluralize();
+					let word = if plur { "credits" } else { "credit" };
+
+					write!(&mut output, "in the subset “{}”, ", save)?;
+					write!(&mut output, "there must be enough courses{} to obtain {} {}", filter, self.action.print()?, word )?;
+					// write!(&mut output, " in the subset “{}”", save)?;
+				}
+				What::Departments => {
+					let plur = self.action.should_pluralize();
+					let word = if plur { "departments" } else { "department" };
+
+					write!(&mut output, "in the subset “{}”, ", save)?;
+					write!(&mut output, "there must be enough courses{} to span {} {}", filter, self.action.print()?, word )?;
+					// write!(&mut output, " in the subset “{}”", save)?;
+				}
+				What::Grades => {
+					let plur = self.action.should_pluralize();
+					let word = if plur { "courses" } else { "course" };
+
+					write!(&mut output, "courses from the subset “{}” ", save)?;
+					write!(&mut output, "must maintain an average GPA {} from {}{}", self.action.print()?, word, filter )?;
+					// write!(&mut output, "in courses from the subset “{}”", save)?;
+				}
+				What::Terms => {
+					let plur = self.action.should_pluralize();
+					let word = if plur { "terms" } else { "term" };
+
+					write!(&mut output, "in the subset “{}”, ", save)?;
+					write!(&mut output, "there must be enough courses{} to span {} {}", filter, self.action.print()?, word )?;
+					// write!(&mut output, " in the subset “{}”", save)?;
+				}
+				What::AreasOfStudy => unimplemented!(),
+			},
 		}
 
 		Ok(output)

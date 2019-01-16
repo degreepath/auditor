@@ -1,8 +1,15 @@
 use crate::rules::Rule as AnyRule;
+use crate::rules::traits::RuleTools;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Rule {
 	pub either: (Box<AnyRule>, Box<AnyRule>),
+}
+
+impl crate::rules::traits::RuleTools for Rule {
+	fn has_save_rule(&self) -> bool {
+		self.either.0.has_save_rule() || self.either.1.has_save_rule()
+	}
 }
 
 impl crate::rules::traits::PrettyPrint for Rule {
@@ -13,6 +20,13 @@ impl crate::rules::traits::PrettyPrint for Rule {
 		let mut output = String::new();
 
 		let pair = self.either.clone();
+
+		if self.has_save_rule() {
+			write!(&mut output, "do both of the following:\n\n")?;
+			writeln!(&mut output, "- {}", (*pair.0).print()?)?;
+			writeln!(&mut output, "- {}", (*pair.1).print()?)?;
+			return Ok(output);
+		}
 
 		match (*pair.0, *pair.1) {
 			(Requirement(a), Requirement(b)) => {

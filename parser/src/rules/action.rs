@@ -7,6 +7,12 @@ pub struct Rule {
 	pub action: Action,
 }
 
+impl crate::rules::traits::RuleTools for Rule {
+	fn has_save_rule(&self) -> bool {
+		true
+	}
+}
+
 impl crate::rules::traits::PrettyPrint for Rule {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		use crate::rules::given::action::Operator;
@@ -28,7 +34,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 
 				write!(
 					&mut output,
-					"the computed result of the subset “{}” is {} the computed result of the subset “{}”",
+					"ensure that the computed result of the subset “{}” is {} the computed result of the subset “{}”",
 					lhs, op, rhs
 				)?;
 			}
@@ -69,7 +75,7 @@ do: >
 do: >
   "first BTS-T course" < "last EIN course""#;
 
-		let expected = "the computed result of the subset “first BTS-T course” is less than the computed result of the subset “last EIN course”";
+		let expected = "ensure that the computed result of the subset “first BTS-T course” is less than the computed result of the subset “last EIN course”";
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 		assert_eq!(expected, actual.print().unwrap());
@@ -82,7 +88,7 @@ do: >
 do: >
   "first BTS-T course" >= "last EIN course""#;
 
-		let expected = "the computed result of the subset “first BTS-T course” is greater than or equal to the computed result of the subset “last EIN course”";
+		let expected = "ensure that the computed result of the subset “first BTS-T course” is greater than or equal to the computed result of the subset “last EIN course”";
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 		assert_eq!(expected, actual.print().unwrap());

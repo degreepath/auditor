@@ -16,3 +16,7 @@ pub trait Validate {
 pub trait PrettyPrint {
 	fn print(&self) -> Result<String, std::fmt::Error>;
 }
+
+pub trait RuleTools {
+	fn has_save_rule(&self) -> bool;
+}

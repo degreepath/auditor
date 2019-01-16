@@ -35,6 +35,20 @@ impl crate::rules::traits::PrettyPrint for Rule {
 	}
 }
 
+impl crate::rules::traits::RuleTools for Rule {
+	fn has_save_rule(&self) -> bool {
+		match &self {
+			Rule::Course(v) => v.has_save_rule(),
+			Rule::Requirement(v) => v.has_save_rule(),
+			Rule::CountOf(v) => v.has_save_rule(),
+			Rule::Both(v) => v.has_save_rule(),
+			Rule::Either(v) => v.has_save_rule(),
+			Rule::Given(v) => v.has_save_rule(),
+			Rule::Do(v) => v.has_save_rule(),
+		}
+	}
+}
+
 impl Rule {
 	fn print_inner(&self) -> Result<String, std::fmt::Error> {
 		use crate::rules::traits::PrettyPrint;
@@ -360,7 +374,7 @@ mod tests {
 			"take both ASIAN 101 and ASIAN 102 (2014-1)",
 			"take either ASIAN 101 or ASIAN 102 (2014-1)",
 			"take fewer than two courses",
-			"the computed result of the subset “X” is less than the computed result of the subset “Y”",
+			"ensure that the computed result of the subset “X” is less than the computed result of the subset “Y”",
 		];
 
 		assert_eq!(actual, expected, "left: {:#?}\n\nright: {:#?}", actual, expected);
