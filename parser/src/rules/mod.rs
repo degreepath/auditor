@@ -434,13 +434,6 @@ mod tests {
 
 	#[test]
 	fn dance_seminar() {
-		let data = r#"---
-given: save
-save: "Senior Dance Seminars"
-what: course
-do: count >= 1
-"#;
-
 		let expected = Rule::Given(given::Rule {
 			given: given::Given::NamedVariable {
 				save: "Senior Dance Seminars".to_string(),
@@ -451,9 +444,27 @@ do: count >= 1
 			action: "count >= 1".parse().unwrap(),
 		});
 
-		let actual = serde_yaml::to_string(&expected).unwrap();
+		let data = r#"---
+given: save
+save: "Senior Dance Seminars"
+what: courses
+do: count >= 1
+"#;
 
-		println!("{}", actual);
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+		assert_eq!(actual, expected);
+
+		let data = r#"---
+given: save
+save: "Senior Dance Seminars"
+what: courses
+do:
+  lhs:
+    Command: Count
+  op: GreaterThanEqualTo
+  rhs:
+    Integer: 1
+"#;
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
 		assert_eq!(actual, expected);
