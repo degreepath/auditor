@@ -1,0 +1,360 @@
+{
+  "name": "Dance",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2014-15",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Language-Intensive Courses (Theory)",
+        "optional": false
+      },
+      {
+        "requirement": "Movement-Intensive Courses (Technique)",
+        "optional": false
+      },
+      {
+        "requirement": "Senior Dance Seminar",
+        "optional": false
+      },
+      {
+        "requirement": "Area of Speciality",
+        "optional": false
+      },
+      {
+        "requirement": "Dance Companies",
+        "optional": false
+      },
+      {
+        "requirement": "Productions",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Dance Companies": {
+      "message": "Majors are required to participate in one of the dance companies (Companydance™ or Veselica™ International Dance Ensemble) for a minimum of three semesters.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Senior Dance Seminar": {
+      "message": "Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.",
+      "department_audited": false,
+      "result": {
+        "given": "save",
+        "save": "Senior Dance Seminars",
+        "limit": null,
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [
+        {
+          "name": "Senior Dance Seminars",
+          "given": "these courses",
+          "courses": [
+            {
+              "course": "DANCE 399"
+            }
+          ],
+          "repeats": "last",
+          "limit": null,
+          "where": {
+            "year": {
+              "Single": {
+                "op": "EqualTo",
+                "value": {
+                  "Constant": "graduation-year"
+                }
+              }
+            },
+            "semester": {
+              "Single": {
+                "op": "EqualTo",
+                "value": {
+                  "String": "Fall"
+                }
+              }
+            }
+          },
+          "what": null,
+          "do": null
+        }
+      ],
+      "requirements": {}
+    },
+    "Productions": {
+      "message": "Majors are required to contribute in managing a dance production for a minimum of one semester.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Area of Speciality": {
+      "message": "Each student designs an individualized area of specialty derived from their own interests and investigation. Select at least two credits from within or outside the department.",
+      "department_audited": false,
+      "result": null,
+      "contract": true,
+      "save": [],
+      "requirements": {}
+    },
+    "Language-Intensive Courses (Theory)": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "DANCE 100"
+          },
+          {
+            "course": "DANCE 124"
+          },
+          {
+            "course": "DANCE 150"
+          },
+          {
+            "course": "DANCE 231"
+          },
+          {
+            "course": "DANCE 246"
+          },
+          {
+            "course": "DANCE 270"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Movement-Intensive Courses (Technique)": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "these requirements",
+        "requirements": [
+          {
+            "requirement": "Ballet",
+            "optional": false
+          },
+          {
+            "requirement": "Improvisation",
+            "optional": false
+          },
+          {
+            "requirement": "International and Social",
+            "optional": false
+          },
+          {
+            "requirement": "Modern",
+            "optional": false
+          },
+          {
+            "requirement": "Other Topics",
+            "optional": false
+          }
+        ],
+        "limit": null,
+        "where": null,
+        "what": "credits",
+        "do": {
+          "lhs": {
+            "Command": "Sum"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Float": 1.5
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Other Topics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "DANCE 107"
+              },
+              {
+                "course": "DANCE 112"
+              },
+              {
+                "course": "DANCE 113"
+              },
+              {
+                "course": "DANCE 141"
+              },
+              {
+                "course": "DANCE 160"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Ballet": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "DANCE 121"
+              },
+              {
+                "either": [
+                  {
+                    "course": "DANCE 130"
+                  },
+                  {
+                    "course": "DANCE 131"
+                  }
+                ]
+              },
+              {
+                "either": [
+                  {
+                    "course": "DANCE 220"
+                  },
+                  {
+                    "course": "DANCE 221"
+                  }
+                ]
+              },
+              {
+                "either": [
+                  {
+                    "course": "DANCE 320"
+                  },
+                  {
+                    "course": "DANCE 321"
+                  }
+                ]
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "International and Social": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "DANCE 106"
+              },
+              {
+                "course": "DANCE 108"
+              },
+              {
+                "course": "DANCE 206"
+              },
+              {
+                "course": "DANCE 207"
+              },
+              {
+                "course": "DANCE 209"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Modern": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "DANCE 111"
+              },
+              {
+                "either": [
+                  {
+                    "course": "DANCE 210"
+                  },
+                  {
+                    "course": "DANCE 211"
+                  }
+                ]
+              },
+              {
+                "either": [
+                  {
+                    "course": "DANCE 250"
+                  },
+                  {
+                    "course": "DANCE 251"
+                  }
+                ]
+              },
+              {
+                "either": [
+                  {
+                    "course": "DANCE 310"
+                  },
+                  {
+                    "course": "DANCE 311"
+                  }
+                ]
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Improvisation": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "DANCE 105"
+              },
+              {
+                "course": "DANCE 115"
+              },
+              {
+                "course": "DANCE 215"
+              },
+              {
+                "course": "DANCE 315"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    }
+  },
+  "attributes": null
+}

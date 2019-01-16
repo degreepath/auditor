@@ -1,0 +1,462 @@
+{
+  "name": "Women's and Gender Studies",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Introduction",
+        "optional": false
+      },
+      {
+        "requirement": "Additional Courses",
+        "optional": false
+      },
+      {
+        "requirement": "Advanced Topics",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Additional Courses": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Theory and Methods",
+            "optional": false
+          },
+          {
+            "requirement": "Gender in Historical Context",
+            "optional": false
+          },
+          {
+            "requirement": "Gender in Global/Comparative/Diverse Contexts",
+            "optional": false
+          },
+          {
+            "requirement": "Electives",
+            "optional": true
+          },
+          {
+            "requirement": "Lived Experiences",
+            "optional": false
+          },
+          {
+            "given": "save",
+            "save": "Taken Elective Courses",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 7
+              }
+            }
+          },
+          {
+            "given": "save",
+            "save": "Taken Elective Courses",
+            "limit": null,
+            "where": {
+              "level": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Integer": 300
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          }
+        ]
+      },
+      "contract": false,
+      "save": [
+        {
+          "name": "Taken Elective Courses",
+          "given": "these requirements",
+          "requirements": [
+            {
+              "requirement": "Theory and Methods",
+              "optional": false
+            },
+            {
+              "requirement": "Women and Gender in Historical Context",
+              "optional": false
+            },
+            {
+              "requirement": "Women and Gender in Global/Comparative/Diverse Contexts",
+              "optional": false
+            },
+            {
+              "requirement": "Electives",
+              "optional": false
+            },
+            {
+              "requirement": "Lived Experiences",
+              "optional": false
+            }
+          ],
+          "limit": null,
+          "where": null,
+          "what": "courses",
+          "do": null
+        }
+      ],
+      "requirements": {
+        "Lived Experiences": {
+          "message": "The major says, \"One course must focus on women's lived experiences.\"",
+          "department_audited": false,
+          "result": null,
+          "contract": true,
+          "save": [],
+          "requirements": {}
+        },
+        "Theory and Methods": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "AMST 100"
+              },
+              {
+                "course": "ART 277"
+              },
+              {
+                "course": "ENGL 242"
+              },
+              {
+                "course": "ENGL 264"
+              },
+              {
+                "course": "ENGL 340"
+              },
+              {
+                "course": "FAMST 242"
+              },
+              {
+                "course": "FAMST 253"
+              },
+              {
+                "course": "PHIL 245"
+              },
+              {
+                "course": "PSYCH 390"
+              },
+              {
+                "course": "PSYCH 396",
+                "term": null,
+                "section": null,
+                "year": 2013,
+                "semester": "Spring",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "REL 209"
+              },
+              {
+                "course": "REL 344"
+              },
+              {
+                "course": "SOAN 235"
+              },
+              {
+                "course": "SOAN 246"
+              },
+              {
+                "course": "SOAN 260"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Gender in Historical Context": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "FREN 372",
+                "term": null,
+                "section": null,
+                "year": 2017,
+                "semester": "Fall",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "HIST 121"
+              },
+              {
+                "course": "HIST 191"
+              },
+              {
+                "course": "HIST 224"
+              },
+              {
+                "course": "HIST 231"
+              },
+              {
+                "course": "HIST 237"
+              },
+              {
+                "course": "HIST 239"
+              },
+              {
+                "course": "HIST 320",
+                "term": null,
+                "section": null,
+                "year": 2014,
+                "semester": "Spring",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "PHIL 245"
+              },
+              {
+                "course": "PSYCH 223"
+              },
+              {
+                "course": "PSYCH 241"
+              },
+              {
+                "course": "REL 209"
+              },
+              {
+                "course": "REL 264"
+              },
+              {
+                "course": "SOAN 128"
+              },
+              {
+                "course": "SOAN 235"
+              },
+              {
+                "course": "SOAN 261"
+              },
+              {
+                "course": "SPAN 250"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Gender in Global/Comparative/Diverse Contexts": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "DANCE 246"
+              },
+              {
+                "course": "ENGL 246"
+              },
+              {
+                "course": "ENGL 340",
+                "term": null,
+                "section": null,
+                "year": 2011,
+                "semester": "Interim",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "ENGL 340",
+                "term": null,
+                "section": null,
+                "year": 2011,
+                "semester": "Spring",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "ENGL 340",
+                "term": null,
+                "section": null,
+                "year": 2012,
+                "semester": "Fall",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "ENGL 340",
+                "term": null,
+                "section": null,
+                "year": 2012,
+                "semester": "Interim",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "ENGL 340",
+                "term": null,
+                "section": null,
+                "year": 2013,
+                "semester": "Interim",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "ENGL 340",
+                "term": null,
+                "section": null,
+                "year": 2014,
+                "semester": "Interim",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "ENGL 340",
+                "term": null,
+                "section": null,
+                "year": 2015,
+                "semester": "Interim",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "FAMST 253"
+              },
+              {
+                "course": "HIST 115"
+              },
+              {
+                "course": "HIST 122"
+              },
+              {
+                "course": "HIST 182"
+              },
+              {
+                "course": "HIST 189",
+                "term": null,
+                "section": null,
+                "year": 2011,
+                "semester": "Fall",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "HIST 189",
+                "term": null,
+                "section": null,
+                "year": 2012,
+                "semester": "Fall",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "HIST 272"
+              },
+              {
+                "course": "HIST 320",
+                "term": null,
+                "section": null,
+                "year": 2011,
+                "semester": "Fall",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "HIST 320",
+                "term": null,
+                "section": null,
+                "year": 2013,
+                "semester": "Fall",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "REL 209"
+              },
+              {
+                "course": "REL 264"
+              },
+              {
+                "course": "SOAN 246"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Electives": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "BIO 124"
+              },
+              {
+                "course": "NORW 282"
+              },
+              {
+                "course": "NURS 386"
+              },
+              {
+                "course": "PSYCH 350"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Advanced Topics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "WMGST 399"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Introduction": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "WMGST 121"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

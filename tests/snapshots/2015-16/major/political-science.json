@@ -1,0 +1,446 @@
+{
+  "name": "Political Science",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Research Methods",
+            "optional": false
+          },
+          {
+            "requirement": "American Politics and Public Policy",
+            "optional": false
+          },
+          {
+            "requirement": "Comparative Politics",
+            "optional": false
+          },
+          {
+            "requirement": "International Relations",
+            "optional": false
+          },
+          {
+            "requirement": "Political Theory",
+            "optional": false
+          },
+          {
+            "requirement": "Additional Courses",
+            "optional": true
+          }
+        ]
+      },
+      {
+        "given": "these requirements",
+        "requirements": [
+          {
+            "requirement": "Research Methods",
+            "optional": false
+          },
+          {
+            "requirement": "American Politics and Public Policy",
+            "optional": false
+          },
+          {
+            "requirement": "Comparative Politics",
+            "optional": false
+          },
+          {
+            "requirement": "International Relations",
+            "optional": false
+          },
+          {
+            "requirement": "Political Theory",
+            "optional": false
+          },
+          {
+            "requirement": "Additional Courses",
+            "optional": false
+          }
+        ],
+        "limit": null,
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 9
+          }
+        }
+      },
+      {
+        "given": "these requirements",
+        "requirements": [
+          {
+            "requirement": "Research Methods",
+            "optional": false
+          },
+          {
+            "requirement": "American Politics and Public Policy",
+            "optional": false
+          },
+          {
+            "requirement": "Comparative Politics",
+            "optional": false
+          },
+          {
+            "requirement": "International Relations",
+            "optional": false
+          },
+          {
+            "requirement": "Political Theory",
+            "optional": false
+          },
+          {
+            "requirement": "Additional Courses",
+            "optional": false
+          }
+        ],
+        "limit": null,
+        "where": {
+          "level": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "Integer": 300
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
+      }
+    ]
+  },
+  "requirements": {
+    "International Relations": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "PSCI 115"
+          },
+          {
+            "course": "PSCI 119"
+          },
+          {
+            "course": "PSCI 121"
+          },
+          {
+            "course": "PSCI 245"
+          },
+          {
+            "course": "PSCI 257"
+          },
+          {
+            "course": "PSCI 258"
+          },
+          {
+            "course": "PSCI 285"
+          },
+          {
+            "course": "PSCI 321"
+          },
+          {
+            "course": "ES/PS 201"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Research Methods": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "PSCI 220"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Comparative Politics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "PSCI 112"
+          },
+          {
+            "course": "PSCI 115"
+          },
+          {
+            "course": "PSCI 117"
+          },
+          {
+            "course": "PSCI 252"
+          },
+          {
+            "course": "PSCI 264"
+          },
+          {
+            "course": "PSCI 282"
+          },
+          {
+            "course": "PSCI 283"
+          },
+          {
+            "course": "PSCI 350"
+          },
+          {
+            "course": "PSCI 367"
+          },
+          {
+            "course": "PSCI 370"
+          },
+          {
+            "course": "PSCI 382"
+          },
+          {
+            "course": "PSCI 385"
+          },
+          {
+            "course": "AS/PS 255"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Political Theory": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "PSCI 113"
+          },
+          {
+            "course": "PSCI 119"
+          },
+          {
+            "course": "PSCI 232"
+          },
+          {
+            "course": "PSCI 259"
+          },
+          {
+            "course": "PSCI 260"
+          },
+          {
+            "course": "PSCI 262"
+          },
+          {
+            "course": "PSCI 284"
+          },
+          {
+            "course": "PSCI 384"
+          },
+          {
+            "course": "ES/PS 225"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Additional Courses": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "requirement": "Statistics",
+            "optional": false
+          },
+          {
+            "requirement": "French, German, Spanish",
+            "optional": false
+          },
+          {
+            "requirement": "Chinese, Greek, Latin, Japanese, Norwegian, Russian",
+            "optional": false
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "French, German, Spanish": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "number": {
+                "Single": {
+                  "op": "GreaterThanEqualTo",
+                  "value": {
+                    "Integer": 232
+                  }
+                }
+              },
+              "department": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "FREN | GERM | SPAN"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Chinese, Greek, Latin, Japanese, Norwegian, Russian": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "number": {
+                "Single": {
+                  "op": "GreaterThanEqualTo",
+                  "value": {
+                    "Integer": 231
+                  }
+                }
+              },
+              "department": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "CHIN | GREEK | LATIN | JAPAN | NORW | RUSSN"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Statistics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "department": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "STAT"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "American Politics and Public Policy": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "PSCI 111"
+          },
+          {
+            "course": "PSCI 204"
+          },
+          {
+            "course": "PSCI 211"
+          },
+          {
+            "course": "PSCI 244"
+          },
+          {
+            "course": "PSCI 246"
+          },
+          {
+            "course": "PSCI 255"
+          },
+          {
+            "course": "PSCI 272"
+          },
+          {
+            "course": "PSCI 311"
+          },
+          {
+            "course": "ES/PS 276"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

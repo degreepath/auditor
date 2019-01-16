@@ -1,0 +1,201 @@
+{
+  "name": "Sociology/Anthropology",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "History of Sociological Theory",
+        "optional": false
+      },
+      {
+        "requirement": "Anthropological Theory",
+        "optional": false
+      },
+      {
+        "requirement": "Foundations of Social Science Research",
+        "optional": false
+      },
+      {
+        "requirement": "Ethnographic Research Methods",
+        "optional": false
+      },
+      {
+        "requirement": "Senior Seminar",
+        "optional": false
+      },
+      {
+        "requirement": "Principles of Statistics",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Anthropological Theory": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "SOAN 292"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Ethnographic Research Methods": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "SOAN 373"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "History of Sociological Theory": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "SOAN 291"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Senior Seminar": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "SOAN 399"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Foundations of Social Science Research": {
+      "message": "STAT 110 must be taken before SOAN 371.",
+      "department_audited": false,
+      "result": {
+        "course": "SOAN 371"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Principles of Statistics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "STAT 110"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": "Students are permitted to take one of the four elective courses, but not a core course, S/U.",
+      "department_audited": false,
+      "result": {
+        "given": "these courses",
+        "courses": [
+          {
+            "course": "SOAN 121"
+          },
+          {
+            "course": "SOAN 128"
+          },
+          {
+            "course": "SOAN 232"
+          },
+          {
+            "course": "SOAN 234"
+          },
+          {
+            "course": "SOAN 235"
+          },
+          {
+            "course": "SOAN 236"
+          },
+          {
+            "course": "SOAN 237"
+          },
+          {
+            "course": "SOAN 242"
+          },
+          {
+            "course": "SOAN 246"
+          },
+          {
+            "course": "SOAN 248"
+          },
+          {
+            "course": "SOAN 249"
+          },
+          {
+            "course": "SOAN 260"
+          },
+          {
+            "course": "SOAN 261"
+          },
+          {
+            "course": "SOAN 262"
+          },
+          {
+            "course": "SOAN 264"
+          },
+          {
+            "course": "SOAN 265"
+          },
+          {
+            "course": "SOAN 266"
+          },
+          {
+            "course": "SOAN 267"
+          },
+          {
+            "course": "SOAN 268"
+          },
+          {
+            "course": "AS/SA 239"
+          }
+        ],
+        "repeats": "first",
+        "limit": [
+          {
+            "where": {
+              "su": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Bool": true
+                  }
+                }
+              }
+            },
+            "at_most": 1
+          }
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 4
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

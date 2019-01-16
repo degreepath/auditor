@@ -1,0 +1,134 @@
+{
+  "name": "Nursing",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Prerequisites",
+        "optional": false
+      },
+      {
+        "requirement": "Requirements",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Prerequisites": {
+      "message": "These courses must be completed before beginning level III nursing courses.",
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "BIO 143"
+          },
+          {
+            "course": "BIO 231"
+          },
+          {
+            "course": "BIO 243"
+          },
+          {
+            "course": "ID 110"
+          },
+          {
+            "course": "ID 210"
+          },
+          {
+            "course": "PSYCH 125"
+          },
+          {
+            "course": "PSYCH 241"
+          },
+          {
+            "count": 1,
+            "of": [
+              {
+                "course": "SOAN 121"
+              },
+              {
+                "course": "SOAN 128"
+              },
+              {
+                "course": "SOAN 260"
+              },
+              {
+                "course": "SOAN 264"
+              }
+            ]
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Requirements": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "NURS 211"
+          },
+          {
+            "course": "NURS 311"
+          },
+          {
+            "course": "NURS 312"
+          },
+          {
+            "course": "NURS 313"
+          },
+          {
+            "course": "NURS 314"
+          },
+          {
+            "course": "NURS 386"
+          },
+          {
+            "course": "NURS 388"
+          },
+          {
+            "course": "NURS 390"
+          },
+          {
+            "course": "NURS 392"
+          },
+          {
+            "course": "NURS 397"
+          },
+          {
+            "requirement": "Ethics",
+            "optional": false
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Ethics": {
+          "message": "Students should consult with their advisor to determine what courses meet this requirement from among the general education EIN courses.",
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "AMCON 101"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    }
+  },
+  "attributes": null
+}
