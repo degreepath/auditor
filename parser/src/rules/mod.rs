@@ -379,4 +379,29 @@ mod tests {
 
 		assert_eq!(actual, expected, "left: {:#?}\n\nright: {:#?}", actual, expected);
 	}
+
+	#[test]
+	fn dance_seminar() {
+		let data = r#"---
+given: save
+save: "Senior Dance Seminars"
+what: course
+do: count >= 1
+"#;
+
+		let expected = Rule::Given(given::Rule {
+			given: given::Given::NamedVariable{save: "Senior Dance Seminars".to_string()},
+			what: given::What::Courses,
+			filter: None,
+			limit: None,
+			action: "count >= 1".parse().unwrap(),
+		});
+
+		let actual = serde_yaml::to_string(&expected).unwrap();
+
+		println!("{}", actual);
+
+		let actual: Rule = serde_yaml::from_str(&data).unwrap();
+		assert_eq!(actual, expected);
+	}
 }
