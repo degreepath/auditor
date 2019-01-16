@@ -216,7 +216,10 @@ impl crate::rules::traits::PrettyPrint for Rule {
 			}
 			Given::AreasOfStudy => match self.what {
 				What::AreasOfStudy => {
-					write!(&mut output, "declare {}{}", self.action.print()?, filter)?;
+					// TODO: find a better way to special-case "exactly one" major
+					let action = self.action.print()?;
+					let action = action.replace("exactly ", "");
+					write!(&mut output, "declare {}{}", action, filter)?;
 				}
 				_ => panic!("given: areas, what: !areas…"),
 			},
