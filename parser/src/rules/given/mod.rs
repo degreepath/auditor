@@ -35,43 +35,61 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					let plur = self.action.should_pluralize();
 					let word = if plur { "courses" } else { "course" };
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take {} {}{}", self.action.print()?, word, filter)?;
+					write!(&mut output, "take {} {}{}", self.action.print()?, word, filter)?;
 				}
 				What::DistinctCourses => {
 					let plur = self.action.should_pluralize();
 					let word = if plur { "distinct courses" } else { "course" };
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take {} {}{}", self.action.print()?, word, filter)?;
+					write!(&mut output, "take {} {}{}", self.action.print()?, word, filter)?;
 				}
 				What::Credits => {
 					let plur = self.action.should_pluralize();
 					let word = if plur { "credits" } else { "credit" };
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take enough courses{} to obtain {} {}", filter, self.action.print()?, word)?;
+					write!(
+						&mut output,
+						"take enough courses{} to obtain {} {}",
+						filter,
+						self.action.print()?,
+						word
+					)?;
 				}
 				What::Departments => {
 					let plur = self.action.should_pluralize();
 					let word = if plur { "departments" } else { "department" };
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+					write!(
+						&mut output,
+						"take enough courses{} to span {} {}",
+						filter,
+						self.action.print()?,
+						word
+					)?;
 				}
 				What::Grades => {
 					let plur = self.action.should_pluralize();
 					let word = if plur { "courses" } else { "course" };
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "maintain an average GPA {} from {}{}", self.action.print()?, word, filter)?;
+					write!(
+						&mut output,
+						"maintain an average GPA {} from {}{}",
+						self.action.print()?,
+						word,
+						filter
+					)?;
 				}
 				What::Terms => {
 					let plur = self.action.should_pluralize();
 					let word = if plur { "terms" } else { "term" };
 
-					#[cfg_attr(rustfmt, rustfmt_skip)]
-                    write!(&mut output, "take enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+					write!(
+						&mut output,
+						"take enough courses{} to span {} {}",
+						filter,
+						self.action.print()?,
+						word
+					)?;
 				}
 				What::AreasOfStudy => unimplemented!(),
 			},
@@ -85,29 +103,31 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				match (mode, &self.what) {
 					(RepeatMode::First, What::Courses) => {
 						// TODO: expose last vs. first in output somehow?
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take {}", courses)?;
+						write!(&mut output, "take {}", courses)?;
 					}
 					(RepeatMode::Last, What::Courses) => {
 						// TODO: expose last vs. first in output somehow?
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take {}", courses)?;
+						write!(&mut output, "take {}", courses)?;
 					}
 					(RepeatMode::All, What::Courses) => {
 						// TODO: special-case "once" and "twice"
 						let plur = self.action.should_pluralize();
 						let word = if plur { "times" } else { "time" };
 
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take {} {} {}", courses, self.action.print()?, word)?;
+						write!(&mut output, "take {} {} {}", courses, self.action.print()?, word)?;
 					}
 					(RepeatMode::All, What::Credits) => {
 						// TODO: special-case "once" and "twice"
 						let plur = self.action.should_pluralize();
 						let word = if plur { "credits" } else { "credit" };
 
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take {} enough times to yield {} {}", courses, self.action.print()?, word)?;
+						write!(
+							&mut output,
+							"take {} enough times to yield {} {}",
+							courses,
+							self.action.print()?,
+							word
+						)?;
 					}
 					_ => unimplemented!(),
 				}
@@ -115,40 +135,58 @@ impl crate::rules::traits::PrettyPrint for Rule {
 			Given::TheseRequirements { requirements } => {
 				match &self.what {
 					What::Courses => {
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take enough courses{} {}", filter, self.action.print()?)?;
+						write!(&mut output, "take enough courses{} {}", filter, self.action.print()?)?;
 					}
 					What::DistinctCourses => {
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take enough courses{} {}", self.action.print()?, filter)?;
+						write!(&mut output, "take enough courses{} {}", self.action.print()?, filter)?;
 					}
 					What::Credits => {
 						let plur = self.action.should_pluralize();
 						let word = if plur { "credits" } else { "credit" };
 
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take enough courses{} to obtain {} {}", filter, self.action.print()?, word)?;
+						write!(
+							&mut output,
+							"take enough courses{} to obtain {} {}",
+							filter,
+							self.action.print()?,
+							word
+						)?;
 					}
 					What::Departments => {
 						let plur = self.action.should_pluralize();
 						let word = if plur { "departments" } else { "department" };
 
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+						write!(
+							&mut output,
+							"take enough courses{} to span {} {}",
+							filter,
+							self.action.print()?,
+							word
+						)?;
 					}
 					What::Grades => {
 						let plur = self.action.should_pluralize();
 						let word = if plur { "courses" } else { "course" };
 
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "maintain an average GPA {} from {}{}", self.action.print()?, word, filter)?;
+						write!(
+							&mut output,
+							"maintain an average GPA {} from {}{}",
+							self.action.print()?,
+							word,
+							filter
+						)?;
 					}
 					What::Terms => {
 						let plur = self.action.should_pluralize();
 						let word = if plur { "terms" } else { "term" };
 
-						#[cfg_attr(rustfmt, rustfmt_skip)]
-                        write!(&mut output, "take enough courses{} to span {} {}", filter, self.action.print()?, word)?;
+						write!(
+							&mut output,
+							"take enough courses{} to span {} {}",
+							filter,
+							self.action.print()?,
+							word
+						)?;
 					}
 					What::AreasOfStudy => unimplemented!(),
 				}
@@ -161,8 +199,11 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					})
 					.collect();
 
-				#[cfg_attr(rustfmt, rustfmt_skip)]
-                write!(&mut output, " from among courses matched by the {} requirements", requirements.oxford("and"))?;
+				write!(
+					&mut output,
+					" from among courses matched by the {} requirements",
+					requirements.oxford("and")
+				)?;
 			}
 			Given::AreasOfStudy => match self.what {
 				What::AreasOfStudy => {}

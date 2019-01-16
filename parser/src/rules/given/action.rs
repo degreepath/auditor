@@ -103,9 +103,7 @@ impl FromStr for Action {
 					rhs: Some(rhs),
 				})
 			}
-			_ => {
-				Err(ParseError::InvalidAction)
-			},
+			_ => Err(ParseError::InvalidAction),
 		}
 	}
 }
@@ -319,10 +317,19 @@ mod tests {
 		assert_eq!(split_action_str(r#""a" > 6"#), vec!["a", ">", "6"]);
 		assert_eq!(split_action_str(r#""a space" > 6"#), vec!["a space", ">", "6"]);
 		assert_eq!(split_action_str(r#""a space"     >  6"#), vec!["a space", ">", "6"]);
-		assert_eq!(split_action_str(r#""a space"     >  "b space""#), vec!["a space", ">", "b space"]);
-		assert_eq!(split_action_str(r#""a space"     >  "b  space""#), vec!["a space", ">", "b  space"]);
+		assert_eq!(
+			split_action_str(r#""a space"     >  "b space""#),
+			vec!["a space", ">", "b space"]
+		);
+		assert_eq!(
+			split_action_str(r#""a space"     >  "b  space""#),
+			vec!["a space", ">", "b  space"]
+		);
 
-		assert_eq!(split_action_str(r#"   "a space"     >  "b  space" "#), vec!["a space", ">", "b  space"]);
+		assert_eq!(
+			split_action_str(r#"   "a space"     >  "b  space" "#),
+			vec!["a space", ">", "b  space"]
+		);
 	}
 
 	#[test]

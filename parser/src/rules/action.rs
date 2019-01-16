@@ -9,8 +9,8 @@ pub struct Rule {
 
 impl crate::rules::traits::PrettyPrint for Rule {
 	fn print(&self) -> Result<String, std::fmt::Error> {
-		use std::fmt::Write;
 		use crate::rules::given::action::Operator;
+		use std::fmt::Write;
 
 		let mut output = String::new();
 		let action = &self.action;
@@ -26,11 +26,14 @@ impl crate::rules::traits::PrettyPrint for Rule {
 					Operator::NotEqualTo => "not equal to",
 				};
 
-				write!(&mut output, "the computed result of the subset “{}” is {} the computed result of the subset “{}”", lhs, op, rhs)?;
-			},
+				write!(
+					&mut output,
+					"the computed result of the subset “{}” is {} the computed result of the subset “{}”",
+					lhs, op, rhs
+				)?;
+			}
 			_ => panic!("invalid standalone do-rule"),
 		}
-
 
 		Ok(output)
 	}
@@ -52,7 +55,7 @@ do: >
 				lhs: action::Value::String("first BTS-T course".to_string()),
 				op: Some(action::Operator::LessThan),
 				rhs: Some(action::Value::String("last EIN course".to_string())),
-			}
+			},
 		};
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
