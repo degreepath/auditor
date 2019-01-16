@@ -77,6 +77,10 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 		Emphasis { .. } => "area of emphasis",
 	};
 
+	if let Some(_attributes) = &area.attributes {
+		writeln!(&mut w, "> todo: this area has custom attributes defined.\n")?;
+	}
+
 	if let Ok(what_to_do) = area.result.print() {
 		writeln!(
 			&mut w,
