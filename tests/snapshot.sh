@@ -11,17 +11,17 @@ fi
 
 cargo build
 
-for catalog in $(find . -depth 1 -type d -name '*-*' | sed 's|^./||'); do
+for catalog in $(find . -maxdepth 1 -type d -name '*-*' | sed 's|^./||' | grep -v '^.$'); do
 	echo "catalog: $catalog"
 	cd "$catalog"
 
-	for kind in $(find . -depth 1 -type d | sed 's|^./||'); do
+	for kind in $(find . -maxdepth 1 -type d | sed 's|^./||' | grep -v '^.$'); do
 		cd "$kind"
 
 		SNAPSHOT_DIR="$SCRIPT_DIR/snapshots/$catalog/$kind"
 		mkdir -p "$SNAPSHOT_DIR"
 
-		for area in $(find . -depth 1 -name '*.yaml' | sed 's|^./||' | sed 's|\.yaml||'); do
+		for area in $(find . -maxdepth 1 -name '*.yaml' | sed 's|^./||' | sed 's|\.yaml||' | grep -v '^.$'); do
 			echo "current: $kind, $area"
 			cargo run --quiet --bin degreepath-printer-cli "./$area.yaml" > "$SNAPSHOT_DIR/$area.md"
 			cargo run --quiet --bin degreepath-parser-cli "./$area.yaml" > "$SNAPSHOT_DIR/$area.json"
