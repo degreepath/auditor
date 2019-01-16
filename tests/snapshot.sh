@@ -9,6 +9,8 @@ if [ ! -d "$SCRIPT_DIR/area-data" ]; then
 	exit 1
 fi
 
+cargo build
+
 for catalog in $(find . -depth 1 -type d -name '*-*' | sed 's|^./||'); do
 	echo "catalog: $catalog"
 	cd "$catalog"
