@@ -35,6 +35,7 @@ pub type AttributeApplication = HashMap<String, Vec<String>>;
 #[serde(rename_all = "lowercase")]
 pub enum AttributeDefinitionType {
 	Array,
+	Set,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
