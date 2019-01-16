@@ -91,7 +91,7 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 			&mut w,
 			"{}",
 			&format!(
-				"For this {area_type}, you must complete {what_to_do}",
+				"For this {area_type}, you must {what_to_do}",
 				area_type = area_type,
 				what_to_do = what_to_do
 			)
