@@ -2,7 +2,7 @@ use crate::rules::given::action::Action;
 use crate::util;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-#[serde(deny_unknown_fields)]
+// #[serde(deny_unknown_fields)]
 pub struct Rule {
 	#[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
 	pub action: Action,
