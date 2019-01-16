@@ -135,11 +135,16 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<Stri
 	let active_children = collect_active_requirements(&req);
 
 	if let Some(result) = &req.result {
-		if let Ok(what_to_do) = result.print() {
+		if let Ok(mut what_to_do) = result.print() {
 			let kind = match req.requirements.len() {
 				0 => "requirement",
 				_ => "section",
 			};
+
+			// todo: remove this hack for adding periods to the end of inlined requirements
+			if !what_to_do.contains("\n- ") {
+				what_to_do += ".";
+			}
 
 			writeln!(
 				&mut w,
