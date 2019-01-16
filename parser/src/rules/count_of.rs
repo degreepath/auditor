@@ -346,22 +346,22 @@ pub enum Counter {
 }
 
 impl Counter {
-	fn english(&self) -> &str {
+	fn english(&self) -> String {
 		match &self {
-			Counter::All => "all",
-			Counter::Any => "any",
-			Counter::Number(0) => "zero",
-			Counter::Number(1) => "one",
-			Counter::Number(2) => "two",
-			Counter::Number(3) => "three",
-			Counter::Number(4) => "four",
-			Counter::Number(5) => "five",
-			Counter::Number(6) => "six",
-			Counter::Number(7) => "seven",
-			Counter::Number(8) => "eight",
-			Counter::Number(9) => "nine",
-			Counter::Number(10) => "ten",
-			_ => unimplemented!(),
+			Counter::All => "all".to_string(),
+			Counter::Any => "any".to_string(),
+			Counter::Number(0) => "zero".to_string(),
+			Counter::Number(1) => "one".to_string(),
+			Counter::Number(2) => "two".to_string(),
+			Counter::Number(3) => "three".to_string(),
+			Counter::Number(4) => "four".to_string(),
+			Counter::Number(5) => "five".to_string(),
+			Counter::Number(6) => "six".to_string(),
+			Counter::Number(7) => "seven".to_string(),
+			Counter::Number(8) => "eight".to_string(),
+			Counter::Number(9) => "nine".to_string(),
+			Counter::Number(10) => "ten".to_string(),
+			Counter::Number(n) => format!("{}", n),
 		}
 	}
 }
