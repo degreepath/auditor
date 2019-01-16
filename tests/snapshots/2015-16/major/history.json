@@ -33,7 +33,7 @@
     ]
   },
   "requirements": {
-    "U.S.": {
+    "Europe & Russia": {
       "message": null,
       "department_audited": false,
       "result": {
@@ -44,7 +44,7 @@
             "Single": {
               "op": "EqualTo",
               "value": {
-                "String": "region=us"
+                "String": "region=europe/russia"
               }
             }
           }
@@ -59,61 +59,6 @@
             "Integer": 1
           }
         }
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Non-Western World": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "given": "courses",
-        "limit": null,
-        "where": {
-          "history_attr": {
-            "Single": {
-              "op": "EqualTo",
-              "value": {
-                "String": "region=africa/asia/latin-america"
-              }
-            }
-          }
-        },
-        "what": "courses",
-        "do": {
-          "lhs": {
-            "Command": "Count"
-          },
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
-          }
-        }
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Major Seminar": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "HIST 201"
-          },
-          {
-            "course": "HIST 210"
-          },
-          {
-            "course": "HIST 240"
-          },
-          {
-            "course": "HIST 270"
-          }
-        ]
       },
       "contract": false,
       "save": [],
@@ -164,7 +109,31 @@
       "save": [],
       "requirements": {}
     },
-    "Europe & Russia": {
+    "Major Seminar": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "HIST 201"
+          },
+          {
+            "course": "HIST 210"
+          },
+          {
+            "course": "HIST 240"
+          },
+          {
+            "course": "HIST 270"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Non-Western World": {
       "message": null,
       "department_audited": false,
       "result": {
@@ -175,7 +144,7 @@
             "Single": {
               "op": "EqualTo",
               "value": {
-                "String": "region=europe/russia"
+                "String": "region=africa/asia/latin-america"
               }
             }
           }
@@ -225,6 +194,37 @@
       "contract": false,
       "save": [],
       "requirements": {}
+    },
+    "U.S.": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "history_attr": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "region=us"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     }
   },
   "attributes": {
@@ -235,58 +235,7 @@
       }
     },
     "courses": {
-      "HIST 121": {
-        "history_attr": [
-          "region=europe/russia"
-        ]
-      },
-      "HIST 189": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 202": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 117": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 188": {
-        "history_attr": [
-          "region=europe/russia",
-          "region=us",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 270": {
-        "history_attr": [
-          "region=us",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 169": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 191": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 243": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 190": {
+      "HIST 101": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"
@@ -298,19 +247,31 @@
           "era=pre-modern"
         ]
       },
-      "HIST 203": {
+      "HIST 115": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"
         ]
       },
-      "HIST 168": {
+      "HIST 117": {
         "history_attr": [
-          "region=us"
+          "region=europe/russia",
+          "era=pre-modern"
         ]
       },
-      "HIST 140": {
+      "HIST 121": {
         "history_attr": [
+          "region=europe/russia"
+        ]
+      },
+      "HIST 122": {
+        "history_attr": [
+          "region=europe/russia"
+        ]
+      },
+      "HIST 125": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
           "era=pre-modern"
         ]
       },
@@ -320,209 +281,17 @@
           "era=pre-modern"
         ]
       },
-      "HIST 240": {
+      "HIST 135": {
         "history_attr": [
           "region=africa/asia/latin-america"
         ]
       },
-      "HIST 282": {
+      "HIST 140": {
         "history_attr": [
-          "region=us",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 295": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 198": {
-        "history_attr": [
-          "region=us",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 230": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 297": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 219": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 204": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 182": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 205": {
-        "history_attr": [
-          "era=pre-modern"
-        ]
-      },
-      "HIST 211": {
-        "history_attr": [
-          "region=europe/russia",
           "era=pre-modern"
         ]
       },
       "HIST 151": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 250": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 245": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 238": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 125": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 280": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 244": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 242": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 289": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 277": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 201": {
-        "history_attr": [
-          "region=europe/russia",
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 272": {
-        "history_attr": [
-          "region=us",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 231": {
-        "history_attr": [
-          "region=europe/russia"
-        ]
-      },
-      "HIST 292": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 252": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 241": {
-        "history_attr": [
-          "region=africa/asia/latin-america",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 290": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 262": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 239": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 251": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 296": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 217": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 260": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 275": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 101": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 194": {
         "history_attr": [
           "region=africa/asia/latin-america",
           "era=pre-modern"
@@ -534,15 +303,65 @@
           "era=pre-modern"
         ]
       },
-      "HIST 224": {
+      "HIST 165": {
+        "history_attr": [
+          "region=us",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 168": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 169": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 175": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 181": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 182": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 188": {
+        "history_attr": [
+          "region=europe/russia",
+          "region=us",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 189": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 190": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"
         ]
       },
-      "HIST 135": {
+      "HIST 191": {
         "history_attr": [
-          "region=africa/asia/latin-america"
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 194": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
         ]
       },
       "HIST 195": {
@@ -551,38 +370,10 @@
           "era=pre-modern"
         ]
       },
-      "HIST 288": {
+      "HIST 198": {
         "history_attr": [
           "region=us",
           "era=pre-modern"
-        ]
-      },
-      "HIST 218": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 165": {
-        "history_attr": [
-          "region=us",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 220": {
-        "history_attr": [
-          "region=europe/russia",
-          "era=pre-modern"
-        ]
-      },
-      "HIST 122": {
-        "history_attr": [
-          "region=europe/russia"
-        ]
-      },
-      "HIST 227": {
-        "history_attr": [
-          "region=europe/russia"
         ]
       },
       "HIST 199": {
@@ -590,7 +381,43 @@
           "region=us"
         ]
       },
-      "HIST 226": {
+      "HIST 201": {
+        "history_attr": [
+          "region=europe/russia",
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 202": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 203": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 204": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 205": {
+        "history_attr": [
+          "era=pre-modern"
+        ]
+      },
+      "HIST 210": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 211": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"
@@ -602,25 +429,28 @@
           "era=pre-modern"
         ]
       },
-      "HIST 293": {
-        "history_attr": [
-          "region=us"
-        ]
-      },
-      "HIST 253": {
-        "history_attr": [
-          "region=africa/asia/latin-america"
-        ]
-      },
-      "HIST 210": {
+      "HIST 217": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"
         ]
       },
-      "HIST 181": {
+      "HIST 218": {
         "history_attr": [
-          "region=us"
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 219": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 220": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
         ]
       },
       "HIST 222": {
@@ -629,24 +459,194 @@
           "era=pre-modern"
         ]
       },
-      "HIST 299": {
+      "HIST 224": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"
         ]
       },
-      "HIST 175": {
+      "HIST 226": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 227": {
+        "history_attr": [
+          "region=europe/russia"
+        ]
+      },
+      "HIST 230": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 231": {
+        "history_attr": [
+          "region=europe/russia"
+        ]
+      },
+      "HIST 237": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 238": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 239": {
+        "history_attr": [
+          "region=europe/russia",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 240": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 241": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 242": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 243": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 244": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 245": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 250": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 251": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 252": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 253": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 260": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 262": {
+        "history_attr": [
+          "region=africa/asia/latin-america"
+        ]
+      },
+      "HIST 270": {
+        "history_attr": [
+          "region=us",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 272": {
+        "history_attr": [
+          "region=us",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 275": {
         "history_attr": [
           "region=us"
         ]
       },
-      "HIST 115": {
+      "HIST 277": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 280": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 282": {
+        "history_attr": [
+          "region=us",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 288": {
+        "history_attr": [
+          "region=us",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 289": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 290": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 292": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 293": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 295": {
+        "history_attr": [
+          "region=africa/asia/latin-america",
+          "era=pre-modern"
+        ]
+      },
+      "HIST 296": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"
         ]
       },
-      "HIST 237": {
+      "HIST 297": {
+        "history_attr": [
+          "region=us"
+        ]
+      },
+      "HIST 299": {
         "history_attr": [
           "region=europe/russia",
           "era=pre-modern"

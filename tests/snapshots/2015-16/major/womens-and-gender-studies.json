@@ -124,145 +124,23 @@
         }
       ],
       "requirements": {
-        "Lived Experiences": {
-          "message": "The major says, \"One course must focus on women's lived experiences.\"",
-          "department_audited": false,
-          "result": null,
-          "contract": true,
-          "save": [],
-          "requirements": {}
-        },
-        "Theory and Methods": {
+        "Electives": {
           "message": null,
           "department_audited": false,
           "result": {
             "count": "any",
             "of": [
               {
-                "course": "AMST 100"
+                "course": "BIO 124"
               },
               {
-                "course": "ART 277"
+                "course": "NORW 282"
               },
               {
-                "course": "ENGL 242"
+                "course": "NURS 386"
               },
               {
-                "course": "ENGL 264"
-              },
-              {
-                "course": "ENGL 340"
-              },
-              {
-                "course": "FAMST 242"
-              },
-              {
-                "course": "FAMST 253"
-              },
-              {
-                "course": "PHIL 245"
-              },
-              {
-                "course": "PSYCH 390"
-              },
-              {
-                "course": "PSYCH 396",
-                "term": null,
-                "section": null,
-                "year": 2013,
-                "semester": "Spring",
-                "lab": null,
-                "international": null
-              },
-              {
-                "course": "REL 209"
-              },
-              {
-                "course": "REL 344"
-              },
-              {
-                "course": "SOAN 235"
-              },
-              {
-                "course": "SOAN 246"
-              },
-              {
-                "course": "SOAN 260"
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Gender in Historical Context": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "any",
-            "of": [
-              {
-                "course": "FREN 372",
-                "term": null,
-                "section": null,
-                "year": 2017,
-                "semester": "Fall",
-                "lab": null,
-                "international": null
-              },
-              {
-                "course": "HIST 121"
-              },
-              {
-                "course": "HIST 191"
-              },
-              {
-                "course": "HIST 224"
-              },
-              {
-                "course": "HIST 231"
-              },
-              {
-                "course": "HIST 237"
-              },
-              {
-                "course": "HIST 239"
-              },
-              {
-                "course": "HIST 320",
-                "term": null,
-                "section": null,
-                "year": 2014,
-                "semester": "Spring",
-                "lab": null,
-                "international": null
-              },
-              {
-                "course": "PHIL 245"
-              },
-              {
-                "course": "PSYCH 223"
-              },
-              {
-                "course": "PSYCH 241"
-              },
-              {
-                "course": "REL 209"
-              },
-              {
-                "course": "REL 264"
-              },
-              {
-                "course": "SOAN 128"
-              },
-              {
-                "course": "SOAN 235"
-              },
-              {
-                "course": "SOAN 261"
-              },
-              {
-                "course": "SPAN 250"
+                "course": "PSYCH 350"
               }
             ]
           },
@@ -411,23 +289,145 @@
           "save": [],
           "requirements": {}
         },
-        "Electives": {
+        "Gender in Historical Context": {
           "message": null,
           "department_audited": false,
           "result": {
             "count": "any",
             "of": [
               {
-                "course": "BIO 124"
+                "course": "FREN 372",
+                "term": null,
+                "section": null,
+                "year": 2017,
+                "semester": "Fall",
+                "lab": null,
+                "international": null
               },
               {
-                "course": "NORW 282"
+                "course": "HIST 121"
               },
               {
-                "course": "NURS 386"
+                "course": "HIST 191"
               },
               {
-                "course": "PSYCH 350"
+                "course": "HIST 224"
+              },
+              {
+                "course": "HIST 231"
+              },
+              {
+                "course": "HIST 237"
+              },
+              {
+                "course": "HIST 239"
+              },
+              {
+                "course": "HIST 320",
+                "term": null,
+                "section": null,
+                "year": 2014,
+                "semester": "Spring",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "PHIL 245"
+              },
+              {
+                "course": "PSYCH 223"
+              },
+              {
+                "course": "PSYCH 241"
+              },
+              {
+                "course": "REL 209"
+              },
+              {
+                "course": "REL 264"
+              },
+              {
+                "course": "SOAN 128"
+              },
+              {
+                "course": "SOAN 235"
+              },
+              {
+                "course": "SOAN 261"
+              },
+              {
+                "course": "SPAN 250"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Lived Experiences": {
+          "message": "The major says, \"One course must focus on women's lived experiences.\"",
+          "department_audited": false,
+          "result": null,
+          "contract": true,
+          "save": [],
+          "requirements": {}
+        },
+        "Theory and Methods": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "AMST 100"
+              },
+              {
+                "course": "ART 277"
+              },
+              {
+                "course": "ENGL 242"
+              },
+              {
+                "course": "ENGL 264"
+              },
+              {
+                "course": "ENGL 340"
+              },
+              {
+                "course": "FAMST 242"
+              },
+              {
+                "course": "FAMST 253"
+              },
+              {
+                "course": "PHIL 245"
+              },
+              {
+                "course": "PSYCH 390"
+              },
+              {
+                "course": "PSYCH 396",
+                "term": null,
+                "section": null,
+                "year": 2013,
+                "semester": "Spring",
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "REL 209"
+              },
+              {
+                "course": "REL 344"
+              },
+              {
+                "course": "SOAN 235"
+              },
+              {
+                "course": "SOAN 246"
+              },
+              {
+                "course": "SOAN 260"
               }
             ]
           },

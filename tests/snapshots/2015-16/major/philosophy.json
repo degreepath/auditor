@@ -21,26 +21,20 @@
     ]
   },
   "requirements": {
-    "Level III Seminars": {
-      "message": "Level III seminar courses may not be taken S/U.",
+    "Base": {
+      "message": null,
       "department_audited": false,
       "result": {
-        "count": 3,
+        "count": "all",
         "of": [
           {
-            "course": "PHIL 371"
+            "course": "PHIL 235"
           },
           {
-            "course": "PHIL 372"
+            "course": "PHIL 236"
           },
           {
-            "course": "PHIL 373"
-          },
-          {
-            "course": "PHIL 374"
-          },
-          {
-            "course": "PHIL 375"
+            "course": "PHIL 240"
           }
         ]
       },
@@ -195,20 +189,26 @@
       "save": [],
       "requirements": {}
     },
-    "Base": {
-      "message": null,
+    "Level III Seminars": {
+      "message": "Level III seminar courses may not be taken S/U.",
       "department_audited": false,
       "result": {
-        "count": "all",
+        "count": 3,
         "of": [
           {
-            "course": "PHIL 235"
+            "course": "PHIL 371"
           },
           {
-            "course": "PHIL 236"
+            "course": "PHIL 372"
           },
           {
-            "course": "PHIL 240"
+            "course": "PHIL 373"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 375"
           }
         ]
       },

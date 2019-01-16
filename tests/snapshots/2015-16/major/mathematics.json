@@ -87,6 +87,197 @@
     ]
   },
   "requirements": {
+    "Basics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "MATH 120"
+          },
+          {
+            "either": [
+              {
+                "course": "MATH 126"
+              },
+              {
+                "course": "MATH 128"
+              }
+            ]
+          },
+          {
+            "course": "MATH 220"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Interdisciplinary": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "requirement": "Chemistry",
+            "optional": false
+          },
+          {
+            "requirement": "Economics",
+            "optional": false
+          },
+          {
+            "requirement": "Physics",
+            "optional": false
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Chemistry": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "course": "CHEM 371"
+              },
+              {
+                "given": "areas of study",
+                "limit": null,
+                "where": {
+                  "name": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "Chemistry"
+                      }
+                    }
+                  },
+                  "type": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "major"
+                      }
+                    }
+                  }
+                },
+                "what": "areas of study",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "EqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Economics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "course": "ECON 385"
+              },
+              {
+                "given": "areas of study",
+                "limit": null,
+                "where": {
+                  "name": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "Economics"
+                      }
+                    }
+                  },
+                  "type": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "major"
+                      }
+                    }
+                  }
+                },
+                "what": "areas of study",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "EqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Physics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "course": "PHYS 375"
+              },
+              {
+                "given": "areas of study",
+                "limit": null,
+                "where": {
+                  "name": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "Physics"
+                      }
+                    }
+                  },
+                  "type": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "major"
+                      }
+                    }
+                  }
+                },
+                "what": "areas of study",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "EqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
     "Level III": {
       "message": "Two Level III courses, at least one of which must be a Mathematics course.",
       "department_audited": false,
@@ -196,218 +387,6 @@
       ],
       "requirements": {}
     },
-    "Basics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "MATH 120"
-          },
-          {
-            "either": [
-              {
-                "course": "MATH 126"
-              },
-              {
-                "course": "MATH 128"
-              }
-            ]
-          },
-          {
-            "course": "MATH 220"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Transitions": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "MATH 242"
-          },
-          {
-            "course": "MATH 244"
-          },
-          {
-            "course": "MATH 252"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Interdisciplinary": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "any",
-        "of": [
-          {
-            "requirement": "Chemistry",
-            "optional": false
-          },
-          {
-            "requirement": "Economics",
-            "optional": false
-          },
-          {
-            "requirement": "Physics",
-            "optional": false
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {
-        "Economics": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "both": [
-              {
-                "course": "ECON 385"
-              },
-              {
-                "given": "areas of study",
-                "limit": null,
-                "where": {
-                  "type": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "major"
-                      }
-                    }
-                  },
-                  "name": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "Economics"
-                      }
-                    }
-                  }
-                },
-                "what": "areas of study",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "EqualTo",
-                  "rhs": {
-                    "Integer": 1
-                  }
-                }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Chemistry": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "both": [
-              {
-                "course": "CHEM 371"
-              },
-              {
-                "given": "areas of study",
-                "limit": null,
-                "where": {
-                  "type": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "major"
-                      }
-                    }
-                  },
-                  "name": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "Chemistry"
-                      }
-                    }
-                  }
-                },
-                "what": "areas of study",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "EqualTo",
-                  "rhs": {
-                    "Integer": 1
-                  }
-                }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Physics": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "both": [
-              {
-                "course": "PHYS 375"
-              },
-              {
-                "given": "areas of study",
-                "limit": null,
-                "where": {
-                  "name": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "Physics"
-                      }
-                    }
-                  },
-                  "type": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "major"
-                      }
-                    }
-                  }
-                },
-                "what": "areas of study",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "EqualTo",
-                  "rhs": {
-                    "Integer": 1
-                  }
-                }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        }
-      }
-    },
     "Perspectives": {
       "message": "One course from each of three of the four perspectives.",
       "department_audited": false,
@@ -466,7 +445,7 @@
           "save": [],
           "requirements": {}
         },
-        "Discrete/Combinatorial (D)": {
+        "Continuous/Analytic (C)": {
           "message": null,
           "department_audited": false,
           "result": {
@@ -477,7 +456,7 @@
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "D"
+                    "String": "C"
                   }
                 }
               }
@@ -497,7 +476,7 @@
           "save": [],
           "requirements": {}
         },
-        "Continuous/Analytic (C)": {
+        "Discrete/Combinatorial (D)": {
           "message": null,
           "department_audited": false,
           "result": {
@@ -508,7 +487,7 @@
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "C"
+                    "String": "D"
                   }
                 }
               }
@@ -662,6 +641,27 @@
       "contract": false,
       "save": [],
       "requirements": {}
+    },
+    "Transitions": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "MATH 242"
+          },
+          {
+            "course": "MATH 244"
+          },
+          {
+            "course": "MATH 252"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     }
   },
   "attributes": {
@@ -672,6 +672,54 @@
       }
     },
     "courses": {
+      "MATH 226": {
+        "math_perspectives": [
+          "C"
+        ]
+      },
+      "MATH 230": {
+        "math_perspectives": [
+          "C",
+          "M"
+        ]
+      },
+      "MATH 232": {
+        "math_perspectives": [
+          "D"
+        ]
+      },
+      "MATH 236": {
+        "math_perspectives": [
+          "M"
+        ]
+      },
+      "MATH 239": {
+        "math_perspectives": [
+          "D"
+        ]
+      },
+      "MATH 242": {
+        "math_perspectives": [
+          "M"
+        ]
+      },
+      "MATH 244": {
+        "math_perspectives": [
+          "C"
+        ]
+      },
+      "MATH 252": {
+        "math_perspectives": [
+          "A"
+        ]
+      },
+      "MATH 262": {
+        "math_perspectives": [
+          "C",
+          "D",
+          "M"
+        ]
+      },
       "MATH 266": {
         "math_perspectives": [
           "M"
@@ -682,19 +730,19 @@
           "M"
         ]
       },
+      "MATH 340": {
+        "math_perspectives": [
+          "C"
+        ]
+      },
+      "MATH 344": {
+        "math_perspectives": [
+          "C"
+        ]
+      },
       "MATH 348": {
         "math_perspectives": [
           "A"
-        ]
-      },
-      "MATH 364": {
-        "math_perspectives": [
-          "D"
-        ]
-      },
-      "MATH 236": {
-        "math_perspectives": [
-          "M"
         ]
       },
       "MATH 352": {
@@ -702,21 +750,14 @@
           "A"
         ]
       },
-      "STAT 316": {
+      "MATH 356": {
         "math_perspectives": [
-          "M"
+          "A"
         ]
       },
-      "MATH 239": {
+      "MATH 364": {
         "math_perspectives": [
           "D"
-        ]
-      },
-      "MATH 262": {
-        "math_perspectives": [
-          "C",
-          "D",
-          "M"
         ]
       },
       "MSCS 341": {
@@ -734,55 +775,14 @@
           "M"
         ]
       },
-      "MATH 232": {
-        "math_perspectives": [
-          "D"
-        ]
-      },
-      "MATH 344": {
-        "math_perspectives": [
-          "C"
-        ]
-      },
-      "MATH 244": {
-        "math_perspectives": [
-          "C"
-        ]
-      },
       "STAT 272": {
         "math_perspectives": [
           "M"
         ]
       },
-      "MATH 230": {
-        "math_perspectives": [
-          "C",
-          "M"
-        ]
-      },
-      "MATH 242": {
+      "STAT 316": {
         "math_perspectives": [
           "M"
-        ]
-      },
-      "MATH 356": {
-        "math_perspectives": [
-          "A"
-        ]
-      },
-      "MATH 226": {
-        "math_perspectives": [
-          "C"
-        ]
-      },
-      "MATH 252": {
-        "math_perspectives": [
-          "A"
-        ]
-      },
-      "MATH 340": {
-        "math_perspectives": [
-          "C"
         ]
       }
     }

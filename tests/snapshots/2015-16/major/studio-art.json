@@ -262,117 +262,6 @@
                 }
               }
             },
-            "New Media": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "any",
-                "of": [
-                  {
-                    "requirement": "Photography",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Interactive Image",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Digital Video",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Performance",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Graphic Design",
-                    "optional": false
-                  }
-                ]
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {
-                "Photography": {
-                  "message": null,
-                  "department_audited": false,
-                  "result": {
-                    "count": "any",
-                    "of": [
-                      {
-                        "course": "ART 205"
-                      },
-                      {
-                        "course": "ART 238"
-                      }
-                    ]
-                  },
-                  "contract": false,
-                  "save": [],
-                  "requirements": {}
-                },
-                "Interactive Image": {
-                  "message": null,
-                  "department_audited": false,
-                  "result": {
-                    "count": "any",
-                    "of": [
-                      {
-                        "course": "ART 228"
-                      }
-                    ]
-                  },
-                  "contract": false,
-                  "save": [],
-                  "requirements": {}
-                },
-                "Digital Video": {
-                  "message": null,
-                  "department_audited": false,
-                  "result": {
-                    "count": "any",
-                    "of": [
-                      {
-                        "course": "ART 229"
-                      }
-                    ]
-                  },
-                  "contract": false,
-                  "save": [],
-                  "requirements": {}
-                },
-                "Graphic Design": {
-                  "message": null,
-                  "department_audited": false,
-                  "result": {
-                    "count": "any",
-                    "of": [
-                      {
-                        "course": "ART 236"
-                      }
-                    ]
-                  },
-                  "contract": false,
-                  "save": [],
-                  "requirements": {}
-                },
-                "Performance": {
-                  "message": null,
-                  "department_audited": false,
-                  "result": {
-                    "count": "any",
-                    "of": [
-                      {
-                        "course": "ART 240"
-                      }
-                    ]
-                  },
-                  "contract": false,
-                  "save": [],
-                  "requirements": {}
-                }
-              }
-            },
             "3D Media": {
               "message": null,
               "department_audited": false,
@@ -429,6 +318,117 @@
                   "requirements": {}
                 }
               }
+            },
+            "New Media": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "requirement": "Photography",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Interactive Image",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Digital Video",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Performance",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Graphic Design",
+                    "optional": false
+                  }
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {
+                "Digital Video": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 229"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Graphic Design": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 236"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Interactive Image": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 228"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Performance": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 240"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Photography": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 205"
+                      },
+                      {
+                        "course": "ART 238"
+                      }
+                    ]
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                }
+              }
             }
           }
         },
@@ -465,16 +465,6 @@
           "save": [],
           "requirements": {}
         },
-        "Senior Studies in Studio Art": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "course": "ART 343"
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
         "Foundations": {
           "message": null,
           "department_audited": false,
@@ -500,6 +490,16 @@
           "message": "To fulfill the requirements of the Studio Art major, you must enter at least two juried art exhibitions on or off campus by the beginning of your senior year.",
           "department_audited": true,
           "result": null,
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Senior Studies in Studio Art": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "course": "ART 343"
+          },
           "contract": false,
           "save": [],
           "requirements": {}

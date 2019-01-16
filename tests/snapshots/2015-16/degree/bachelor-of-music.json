@@ -55,28 +55,6 @@
       "contract": false,
       "save": [],
       "requirements": {
-        "Courses": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": null,
-            "what": "credits",
-            "do": {
-              "lhs": {
-                "Command": "Sum"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 35
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
         "Course Level": {
           "message": null,
           "department_audited": false,
@@ -101,6 +79,81 @@
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 18
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Courses": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": null,
+            "what": "credits",
+            "do": {
+              "lhs": {
+                "Command": "Sum"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 35
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Grade Point Average": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": null,
+            "what": "grades",
+            "do": {
+              "lhs": {
+                "Command": "Average"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Float": 2.0
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Graded Courses": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "graded": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Bool": true
+                  }
+                }
+              }
+            },
+            "what": "credits",
+            "do": {
+              "lhs": {
+                "Command": "Sum"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 24
               }
             }
           },
@@ -169,90 +222,6 @@
           ],
           "requirements": {}
         },
-        "Residency": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "institution": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "St. Olaf College"
-                  }
-                }
-              }
-            },
-            "what": "credits",
-            "do": {
-              "lhs": {
-                "Command": "Sum"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 17
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Grade Point Average": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": null,
-            "what": "grades",
-            "do": {
-              "lhs": {
-                "Command": "Average"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Float": 2.0
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Graded Courses": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "graded": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "Bool": true
-                  }
-                }
-              }
-            },
-            "what": "credits",
-            "do": {
-              "lhs": {
-                "Command": "Sum"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 24
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
         "Major": {
           "message": null,
           "department_audited": false,
@@ -277,6 +246,37 @@
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Residency": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "institution": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "St. Olaf College"
+                  }
+                }
+              }
+            },
+            "what": "credits",
+            "do": {
+              "lhs": {
+                "Command": "Sum"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 17
               }
             }
           },
@@ -309,54 +309,6 @@
       "contract": false,
       "save": [],
       "requirements": {
-        "Integrative": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "requirement": "Ethical Issues and Normative Perspectives",
-                "optional": false
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {
-            "Ethical Issues and Normative Perspectives": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "limit": null,
-                "where": {
-                  "gereqs": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "EIN"
-                      }
-                    }
-                  }
-                },
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 1
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            }
-          }
-        },
         "Core": {
           "message": null,
           "department_audited": false,
@@ -384,6 +336,110 @@
           "contract": false,
           "save": [],
           "requirements": {
+            "Biblical and Theological Studies": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "all",
+                "of": [
+                  {
+                    "given": "save",
+                    "save": "Courses with a BTS-B or BTS-T",
+                    "limit": null,
+                    "where": null,
+                    "what": "courses",
+                    "do": {
+                      "lhs": {
+                        "Command": "Count"
+                      },
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 2
+                      }
+                    }
+                  },
+                  {
+                    "given": "save",
+                    "save": "Courses with a BTS-B or BTS-T",
+                    "limit": null,
+                    "where": {
+                      "gereqs": {
+                        "Single": {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-B"
+                          }
+                        }
+                      }
+                    },
+                    "what": "courses",
+                    "do": {
+                      "lhs": {
+                        "Command": "Count"
+                      },
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 1
+                      }
+                    }
+                  },
+                  {
+                    "given": "save",
+                    "save": "Courses with a BTS-B or BTS-T",
+                    "limit": null,
+                    "where": {
+                      "gereqs": {
+                        "Single": {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-T"
+                          }
+                        }
+                      }
+                    },
+                    "what": "courses",
+                    "do": {
+                      "lhs": {
+                        "Command": "Count"
+                      },
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              "contract": false,
+              "save": [
+                {
+                  "name": "Courses with a BTS-B or BTS-T",
+                  "given": "courses",
+                  "limit": null,
+                  "where": {
+                    "gereqs": {
+                      "Or": [
+                        {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-B"
+                          }
+                        },
+                        {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-T"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "what": "courses",
+                  "do": null
+                }
+              ],
+              "requirements": {}
+            },
             "Historical Studies in Western Culture or Literary Studies": {
               "message": null,
               "department_audited": false,
@@ -492,110 +548,6 @@
               "contract": false,
               "save": [],
               "requirements": {}
-            },
-            "Biblical and Theological Studies": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "all",
-                "of": [
-                  {
-                    "given": "save",
-                    "save": "Courses with a BTS-B or BTS-T",
-                    "limit": null,
-                    "where": null,
-                    "what": "courses",
-                    "do": {
-                      "lhs": {
-                        "Command": "Count"
-                      },
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
-                      }
-                    }
-                  },
-                  {
-                    "given": "save",
-                    "save": "Courses with a BTS-B or BTS-T",
-                    "limit": null,
-                    "where": {
-                      "gereqs": {
-                        "Single": {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-B"
-                          }
-                        }
-                      }
-                    },
-                    "what": "courses",
-                    "do": {
-                      "lhs": {
-                        "Command": "Count"
-                      },
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
-                      }
-                    }
-                  },
-                  {
-                    "given": "save",
-                    "save": "Courses with a BTS-B or BTS-T",
-                    "limit": null,
-                    "where": {
-                      "gereqs": {
-                        "Single": {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-T"
-                          }
-                        }
-                      }
-                    },
-                    "what": "courses",
-                    "do": {
-                      "lhs": {
-                        "Command": "Count"
-                      },
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
-                      }
-                    }
-                  }
-                ]
-              },
-              "contract": false,
-              "save": [
-                {
-                  "name": "Courses with a BTS-B or BTS-T",
-                  "given": "courses",
-                  "limit": null,
-                  "where": {
-                    "gereqs": {
-                      "Or": [
-                        {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-B"
-                          }
-                        },
-                        {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-T"
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "what": "courses",
-                  "do": null
-                }
-              ],
-              "requirements": {}
             }
           }
         },
@@ -628,7 +580,7 @@
           "contract": false,
           "save": [],
           "requirements": {
-            "Studies in Physical Movement": {
+            "First-Year Writing": {
               "message": null,
               "department_audited": false,
               "result": {
@@ -639,38 +591,7 @@
                     "Single": {
                       "op": "EqualTo",
                       "value": {
-                        "String": "SPM"
-                      }
-                    }
-                  }
-                },
-                "what": "distinct courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 2
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Oral Communication": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "limit": null,
-                "where": {
-                  "gereqs": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "ORC"
+                        "String": "FYW"
                       }
                     }
                   }
@@ -729,6 +650,37 @@
               "save": [],
               "requirements": {}
             },
+            "Oral Communication": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "gereqs": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "ORC"
+                      }
+                    }
+                  }
+                },
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
             "Reasoning": {
               "message": null,
               "department_audited": false,
@@ -753,6 +705,37 @@
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Studies in Physical Movement": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "gereqs": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "SPM"
+                      }
+                    }
+                  }
+                },
+                "what": "distinct courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
                   }
                 }
               },
@@ -790,8 +773,25 @@
               "contract": false,
               "save": [],
               "requirements": {}
-            },
-            "First-Year Writing": {
+            }
+          }
+        },
+        "Integrative": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "requirement": "Ethical Issues and Normative Perspectives",
+                "optional": false
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Ethical Issues and Normative Perspectives": {
               "message": null,
               "department_audited": false,
               "result": {
@@ -802,7 +802,7 @@
                     "Single": {
                       "op": "EqualTo",
                       "value": {
-                        "String": "FYW"
+                        "String": "EIN"
                       }
                     }
                   }

@@ -25,6 +25,16 @@
     ]
   },
   "requirements": {
+    "Capstone": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "CSCI 390"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Core": {
       "message": null,
       "department_audited": false,
@@ -50,6 +60,27 @@
       "contract": false,
       "save": [],
       "requirements": {
+        "Languages": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "CSCI 276"
+              },
+              {
+                "course": "CSCI 316"
+              },
+              {
+                "course": "CSCI 333"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
         "Systems": {
           "message": null,
           "department_audited": false,
@@ -70,27 +101,6 @@
                 "semester": null,
                 "lab": null,
                 "international": null
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Languages": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "any",
-            "of": [
-              {
-                "course": "CSCI 276"
-              },
-              {
-                "course": "CSCI 316"
-              },
-              {
-                "course": "CSCI 333"
               }
             ]
           },
@@ -131,16 +141,6 @@
             "course": "CSCI 350"
           }
         ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Capstone": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "course": "CSCI 390"
       },
       "contract": false,
       "save": [],

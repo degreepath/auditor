@@ -41,30 +41,6 @@
     ]
   },
   "requirements": {
-    "Organic": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "CHEM 247"
-          },
-          {
-            "course": "CHEM 253"
-          },
-          {
-            "course": "CHEM 248"
-          },
-          {
-            "course": "CHEM 254"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Analytical": {
       "message": null,
       "department_audited": false,
@@ -93,6 +69,55 @@
           },
           {
             "course": "MATH 128"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Elective": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "CHEM 252"
+          },
+          {
+            "course": "CHEM 260"
+          },
+          {
+            "course": "CHEM 298"
+          },
+          {
+            "course": "CHEM 379"
+          },
+          {
+            "both": [
+              {
+                "course": "CHEM 382"
+              },
+              {
+                "course": "CHEM 378"
+              }
+            ]
+          },
+          {
+            "course": "CHEM 384"
+          },
+          {
+            "course": "CHEM 386"
+          },
+          {
+            "course": "CHEM 388"
+          },
+          {
+            "course": "CHEM 391"
+          },
+          {
+            "course": "CHEM 398"
           }
         ]
       },
@@ -185,6 +210,30 @@
         }
       }
     },
+    "Organic": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "CHEM 247"
+          },
+          {
+            "course": "CHEM 253"
+          },
+          {
+            "course": "CHEM 248"
+          },
+          {
+            "course": "CHEM 254"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Physical": {
       "message": null,
       "department_audited": false,
@@ -240,19 +289,19 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "type": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "major"
-                      }
-                    }
-                  },
                   "name": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
                         "String": "Physics"
+                      }
+                    }
+                  },
+                  "type": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "major"
                       }
                     }
                   }
@@ -298,55 +347,6 @@
       "message": "You are required to attend at least 12 departmental seminars during your junior and senior years.",
       "department_audited": true,
       "result": null,
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Elective": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "CHEM 252"
-          },
-          {
-            "course": "CHEM 260"
-          },
-          {
-            "course": "CHEM 298"
-          },
-          {
-            "course": "CHEM 379"
-          },
-          {
-            "both": [
-              {
-                "course": "CHEM 382"
-              },
-              {
-                "course": "CHEM 378"
-              }
-            ]
-          },
-          {
-            "course": "CHEM 384"
-          },
-          {
-            "course": "CHEM 386"
-          },
-          {
-            "course": "CHEM 388"
-          },
-          {
-            "course": "CHEM 391"
-          },
-          {
-            "course": "CHEM 398"
-          }
-        ]
-      },
       "contract": false,
       "save": [],
       "requirements": {}

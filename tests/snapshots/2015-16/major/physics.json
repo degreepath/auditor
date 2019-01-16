@@ -98,6 +98,24 @@
       "save": [],
       "requirements": {}
     },
+    "Modern Physics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHYS 244"
+          },
+          {
+            "course": "PHYS 245"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Upper-Level": {
       "message": null,
       "department_audited": false,
@@ -142,24 +160,6 @@
           },
           {
             "course": "PHYS 390"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Modern Physics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "PHYS 244"
-          },
-          {
-            "course": "PHYS 245"
           }
         ]
       },

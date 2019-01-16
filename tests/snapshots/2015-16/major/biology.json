@@ -29,160 +29,6 @@
     ]
   },
   "requirements": {
-    "Level III": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "BIO 315"
-          },
-          {
-            "course": "BIO 341"
-          },
-          {
-            "course": "BIO 348"
-          },
-          {
-            "course": "BI/ES 350"
-          },
-          {
-            "course": "BIO 363"
-          },
-          {
-            "course": "BIO 364"
-          },
-          {
-            "course": "BIO 371"
-          },
-          {
-            "course": "BIO 372"
-          },
-          {
-            "course": "BIO 382"
-          },
-          {
-            "course": "BIO 383"
-          },
-          {
-            "course": "BIO 385"
-          },
-          {
-            "course": "BIO 386"
-          },
-          {
-            "course": "BIO 391"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Core": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "requirement": "Genetics",
-            "optional": false
-          },
-          {
-            "requirement": "Cell Biology",
-            "optional": false
-          },
-          {
-            "requirement": "Comparative Organismal Biology",
-            "optional": false
-          },
-          {
-            "requirement": "Ecology",
-            "optional": false
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {
-        "Ecology": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "course": "BIO 261"
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Cell Biology": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "any",
-            "of": [
-              {
-                "course": "BIO 227"
-              },
-              {
-                "course": "CH/BI 227"
-              },
-              {
-                "course": "CH/BI 127"
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Genetics": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "course": "BIO 233"
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Comparative Organismal Biology": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "any",
-            "of": [
-              {
-                "course": "BIO 242"
-              },
-              {
-                "course": "BIO 247"
-              },
-              {
-                "course": "BIO 248"
-              },
-              {
-                "course": "BIO 251"
-              },
-              {
-                "course": "BIO 252"
-              },
-              {
-                "course": "BIO 266"
-              },
-              {
-                "course": "BIO 275"
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        }
-      }
-    },
     "Chemistry": {
       "message": null,
       "department_audited": false,
@@ -224,24 +70,6 @@
           "save": [],
           "requirements": {}
         },
-        "Intro B": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "CHEM 125"
-              },
-              {
-                "course": "CHEM 126"
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
         "Intro A": {
           "message": null,
           "department_audited": false,
@@ -262,18 +90,129 @@
           "contract": false,
           "save": [],
           "requirements": {}
+        },
+        "Intro B": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 125"
+              },
+              {
+                "course": "CHEM 126"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
         }
       }
     },
-    "Foundation": {
+    "Core": {
       "message": null,
       "department_audited": false,
       "result": {
-        "course": "BIO 150"
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Genetics",
+            "optional": false
+          },
+          {
+            "requirement": "Cell Biology",
+            "optional": false
+          },
+          {
+            "requirement": "Comparative Organismal Biology",
+            "optional": false
+          },
+          {
+            "requirement": "Ecology",
+            "optional": false
+          }
+        ]
       },
       "contract": false,
       "save": [],
-      "requirements": {}
+      "requirements": {
+        "Cell Biology": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "BIO 227"
+              },
+              {
+                "course": "CH/BI 227"
+              },
+              {
+                "course": "CH/BI 127"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Comparative Organismal Biology": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "BIO 242"
+              },
+              {
+                "course": "BIO 247"
+              },
+              {
+                "course": "BIO 248"
+              },
+              {
+                "course": "BIO 251"
+              },
+              {
+                "course": "BIO 252"
+              },
+              {
+                "course": "BIO 266"
+              },
+              {
+                "course": "BIO 275"
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Ecology": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "course": "BIO 261"
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Genetics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "course": "BIO 233"
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
     },
     "Electives": {
       "message": null,
@@ -404,6 +343,67 @@
           {
             "course": "BIO 292"
           },
+          {
+            "course": "BIO 315"
+          },
+          {
+            "course": "BIO 341"
+          },
+          {
+            "course": "BIO 348"
+          },
+          {
+            "course": "BI/ES 350"
+          },
+          {
+            "course": "BIO 363"
+          },
+          {
+            "course": "BIO 364"
+          },
+          {
+            "course": "BIO 371"
+          },
+          {
+            "course": "BIO 372"
+          },
+          {
+            "course": "BIO 382"
+          },
+          {
+            "course": "BIO 383"
+          },
+          {
+            "course": "BIO 385"
+          },
+          {
+            "course": "BIO 386"
+          },
+          {
+            "course": "BIO 391"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Foundation": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "BIO 150"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
           {
             "course": "BIO 315"
           },

@@ -21,6 +21,36 @@
     ]
   },
   "requirements": {
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "THEAT 338"
+          },
+          {
+            "course": "THEAT 352"
+          },
+          {
+            "course": "THEAT 379"
+          },
+          {
+            "course": "THEAT 380"
+          },
+          {
+            "course": "THEAT 394"
+          },
+          {
+            "course": "THEAT 398"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Practicum": {
       "message": "All students must enroll in four practicum classes, of which at least one must be Theater 233 and at least two must be Theater 253, the fourth practicum class being a choice of either 233 or 253.",
       "department_audited": false,
@@ -121,36 +151,6 @@
           "requirements": {}
         }
       }
-    },
-    "Electives": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "THEAT 338"
-          },
-          {
-            "course": "THEAT 352"
-          },
-          {
-            "course": "THEAT 379"
-          },
-          {
-            "course": "THEAT 380"
-          },
-          {
-            "course": "THEAT 394"
-          },
-          {
-            "course": "THEAT 398"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
     },
     "Theater": {
       "message": null,

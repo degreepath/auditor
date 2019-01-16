@@ -29,16 +29,104 @@
     ]
   },
   "requirements": {
-    "Language": {
+    "Ancient History": {
       "message": null,
       "department_audited": false,
       "result": {
-        "either": [
+        "count": "any",
+        "of": [
           {
-            "course": "LATIN 252"
+            "course": "CLASS 126"
+          },
+          {
+            "course": "CLASS 240"
+          },
+          {
+            "course": "CLASS 243"
+          },
+          {
+            "course": "CLASS 253"
+          },
+          {
+            "course": "GREEK 111"
+          },
+          {
+            "course": "GREEK 112"
+          },
+          {
+            "course": "GREEK 231"
           },
           {
             "course": "GREEK 253"
+          },
+          {
+            "course": "GREEK 374"
+          },
+          {
+            "course": "GREEK 375"
+          },
+          {
+            "course": "HIST 190"
+          },
+          {
+            "course": "HIST 201"
+          },
+          {
+            "course": "HIST 203"
+          },
+          {
+            "course": "HIST 204"
+          },
+          {
+            "course": "HIST 303"
+          },
+          {
+            "course": "HIST 396"
+          },
+          {
+            "course": "LATIN 111"
+          },
+          {
+            "course": "LATIN 112"
+          },
+          {
+            "course": "LATIN 231"
+          },
+          {
+            "course": "LATIN 235"
+          },
+          {
+            "course": "LATIN 373"
+          },
+          {
+            "course": "LATIN 375"
+          },
+          {
+            "course": "PHIL 235"
+          },
+          {
+            "course": "REL 221"
+          },
+          {
+            "course": "REL 221"
+          },
+          {
+            "course": "REL 222"
+          },
+          {
+            "course": "REL 272"
+          },
+          {
+            "course": "REL 273"
+          },
+          {
+            "course": "REL 320"
+          },
+          {
+            "course": "REL 393"
+          },
+          {
+            "course": "THEAT 270"
           }
         ]
       },
@@ -46,25 +134,32 @@
       "save": [],
       "requirements": {}
     },
-    "Independent Research": {
+    "Classics": {
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "CLASS 398"
-          },
-          {
-            "course": "HIST 398"
-          },
-          {
-            "course": "LATIN 398"
-          },
-          {
-            "course": "GREEK 398"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "department": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "CLASS"
+              }
+            }
           }
-        ]
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -178,135 +273,40 @@
       "save": [],
       "requirements": {}
     },
-    "Classics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "given": "courses",
-        "limit": null,
-        "where": {
-          "department": {
-            "Single": {
-              "op": "EqualTo",
-              "value": {
-                "String": "CLASS"
-              }
-            }
-          }
-        },
-        "what": "courses",
-        "do": {
-          "lhs": {
-            "Command": "Count"
-          },
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
-          }
-        }
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Ancient History": {
+    "Independent Research": {
       "message": null,
       "department_audited": false,
       "result": {
         "count": "any",
         "of": [
           {
-            "course": "CLASS 126"
+            "course": "CLASS 398"
           },
           {
-            "course": "CLASS 240"
+            "course": "HIST 398"
           },
           {
-            "course": "CLASS 243"
+            "course": "LATIN 398"
           },
           {
-            "course": "CLASS 253"
-          },
+            "course": "GREEK 398"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
           {
-            "course": "GREEK 111"
-          },
-          {
-            "course": "GREEK 112"
-          },
-          {
-            "course": "GREEK 231"
+            "course": "LATIN 252"
           },
           {
             "course": "GREEK 253"
-          },
-          {
-            "course": "GREEK 374"
-          },
-          {
-            "course": "GREEK 375"
-          },
-          {
-            "course": "HIST 190"
-          },
-          {
-            "course": "HIST 201"
-          },
-          {
-            "course": "HIST 203"
-          },
-          {
-            "course": "HIST 204"
-          },
-          {
-            "course": "HIST 303"
-          },
-          {
-            "course": "HIST 396"
-          },
-          {
-            "course": "LATIN 111"
-          },
-          {
-            "course": "LATIN 112"
-          },
-          {
-            "course": "LATIN 231"
-          },
-          {
-            "course": "LATIN 235"
-          },
-          {
-            "course": "LATIN 373"
-          },
-          {
-            "course": "LATIN 375"
-          },
-          {
-            "course": "PHIL 235"
-          },
-          {
-            "course": "REL 221"
-          },
-          {
-            "course": "REL 221"
-          },
-          {
-            "course": "REL 222"
-          },
-          {
-            "course": "REL 272"
-          },
-          {
-            "course": "REL 273"
-          },
-          {
-            "course": "REL 320"
-          },
-          {
-            "course": "REL 393"
-          },
-          {
-            "course": "THEAT 270"
           }
         ]
       },

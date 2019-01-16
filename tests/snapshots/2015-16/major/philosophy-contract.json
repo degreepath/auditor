@@ -42,33 +42,6 @@
       "save": [],
       "requirements": {}
     },
-    "Level III Seminars": {
-      "message": "Level III seminar courses may not be taken S/U.",
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "PHIL 371"
-          },
-          {
-            "course": "PHIL 372"
-          },
-          {
-            "course": "PHIL 373"
-          },
-          {
-            "course": "PHIL 374"
-          },
-          {
-            "course": "PHIL 375"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Contract": {
       "message": "Three level II or III courses in another department chosen to complement the work in philosophy.",
       "department_audited": false,
@@ -103,6 +76,33 @@
             "Integer": 2
           }
         }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III Seminars": {
+      "message": "Level III seminar courses may not be taken S/U.",
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "PHIL 371"
+          },
+          {
+            "course": "PHIL 372"
+          },
+          {
+            "course": "PHIL 373"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 375"
+          }
+        ]
       },
       "contract": false,
       "save": [],

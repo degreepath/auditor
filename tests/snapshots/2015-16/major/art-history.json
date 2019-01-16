@@ -29,130 +29,6 @@
     ]
   },
   "requirements": {
-    "Studio Art": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "ART 102"
-          },
-          {
-            "course": "ART 103"
-          },
-          {
-            "course": "ART 104"
-          },
-          {
-            "course": "ART 106"
-          },
-          {
-            "course": "ART 205"
-          },
-          {
-            "course": "ART 207"
-          },
-          {
-            "course": "ART 221"
-          },
-          {
-            "course": "ART 222"
-          },
-          {
-            "course": "ART 223"
-          },
-          {
-            "course": "ART 224"
-          },
-          {
-            "course": "ART 225"
-          },
-          {
-            "course": "ART 226"
-          },
-          {
-            "course": "ART 227"
-          },
-          {
-            "course": "ART 228"
-          },
-          {
-            "course": "ART 229"
-          },
-          {
-            "course": "ART 232"
-          },
-          {
-            "course": "ART 233"
-          },
-          {
-            "course": "ART 234"
-          },
-          {
-            "course": "ART 236"
-          },
-          {
-            "course": "ART 238"
-          },
-          {
-            "course": "ART 240"
-          },
-          {
-            "course": "ART 246"
-          },
-          {
-            "course": "ART 294"
-          },
-          {
-            "course": "ART 298"
-          },
-          {
-            "course": "ART 340"
-          },
-          {
-            "course": "ART 343"
-          },
-          {
-            "course": "ART 394"
-          },
-          {
-            "course": "ART 398"
-          }
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Intro": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "course": "ART 153"
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Methods": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "course": "ART 350"
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Lasting Legacy": {
-      "message": "Majors must also successfully complete the non-credit, senior \"lasting legacy\" project or its equivalent.",
-      "department_audited": true,
-      "result": null,
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Distribution": {
       "message": null,
       "department_audited": false,
@@ -383,6 +259,130 @@
           "requirements": {}
         }
       }
+    },
+    "Intro": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ART 153"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Lasting Legacy": {
+      "message": "Majors must also successfully complete the non-credit, senior \"lasting legacy\" project or its equivalent.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Methods": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ART 350"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Studio Art": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "ART 102"
+          },
+          {
+            "course": "ART 103"
+          },
+          {
+            "course": "ART 104"
+          },
+          {
+            "course": "ART 106"
+          },
+          {
+            "course": "ART 205"
+          },
+          {
+            "course": "ART 207"
+          },
+          {
+            "course": "ART 221"
+          },
+          {
+            "course": "ART 222"
+          },
+          {
+            "course": "ART 223"
+          },
+          {
+            "course": "ART 224"
+          },
+          {
+            "course": "ART 225"
+          },
+          {
+            "course": "ART 226"
+          },
+          {
+            "course": "ART 227"
+          },
+          {
+            "course": "ART 228"
+          },
+          {
+            "course": "ART 229"
+          },
+          {
+            "course": "ART 232"
+          },
+          {
+            "course": "ART 233"
+          },
+          {
+            "course": "ART 234"
+          },
+          {
+            "course": "ART 236"
+          },
+          {
+            "course": "ART 238"
+          },
+          {
+            "course": "ART 240"
+          },
+          {
+            "course": "ART 246"
+          },
+          {
+            "course": "ART 294"
+          },
+          {
+            "course": "ART 298"
+          },
+          {
+            "course": "ART 340"
+          },
+          {
+            "course": "ART 343"
+          },
+          {
+            "course": "ART 394"
+          },
+          {
+            "course": "ART 398"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     }
   },
   "attributes": null
