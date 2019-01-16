@@ -90,6 +90,10 @@ impl crate::rules::traits::PrettyPrint for Clause {
 		if let Some(level) = self.get("level") {
 			used_keys.insert("level".to_string());
 			match level {
+				WrappedValue::Single(TaggedValue {
+					op: Operator::GreaterThanEqualTo,
+					value: v,
+				}) => clauses.push(format!("at or above the {} level", v.print()?)),
 				WrappedValue::Single(v) => clauses.push(format!("at the {} level", v.print()?)),
 				WrappedValue::Or(_) => {
 					clauses.push(format!("at either the {} level", level.print()?));
