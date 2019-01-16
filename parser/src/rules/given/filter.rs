@@ -102,6 +102,29 @@ impl crate::rules::traits::PrettyPrint for Clause {
 			}
 		}
 
+		if let Some(graded) = self.get("graded") {
+			used_keys.insert("graded".to_string());
+			match graded {
+				WrappedValue::Single(TaggedValue {
+					op: Operator::NotEqualTo,
+					value: Value::Bool(false),
+				})
+				| WrappedValue::Single(TaggedValue {
+					op: Operator::EqualTo,
+					value: Value::Bool(true),
+				}) => clauses.push(format!("as \"graded\" courses")),
+				WrappedValue::Single(TaggedValue {
+					op: Operator::NotEqualTo,
+					value: Value::Bool(true),
+				})
+				| WrappedValue::Single(TaggedValue {
+					op: Operator::EqualTo,
+					value: Value::Bool(false),
+				}) => clauses.push(format!("as _not_ \"graded\" courses")),
+				_ => unimplemented!("filter:graded, {:?}", graded),
+			}
+		}
+
 		match (self.get("type"), self.get("name")) {
 			(Some(kind), Some(major)) if *kind == WrappedValue::new("major") => {
 				used_keys.insert("type".to_string());
