@@ -116,7 +116,17 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<Stri
 		writeln!(&mut w, "{}", blockquote(&textwrap::fill(&message, 78)))?;
 	}
 
-	if req.save.len() > 0 {
+	if req.department_audited {
+		let message = format!("For this requirement, you must have done what the note says. The Department must certify that you have done so.");
+		writeln!(&mut w, "{}", &textwrap::fill(&message, 80))?;
+	}
+
+	if req.contract {
+		let message = format!("This section is a Contract section. You must talk to the Department to fill out, file, and update the Contract.");
+		writeln!(&mut w, "{}", &textwrap::fill(&message, 80))?;
+	}
+
+	if !req.save.is_empty() {
 		for block in req.save.clone() {
 			writeln!(&mut w, "{}", block.print()?)?;
 		}

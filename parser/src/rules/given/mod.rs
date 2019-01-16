@@ -216,7 +216,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 			}
 			Given::AreasOfStudy => match self.what {
 				What::AreasOfStudy => {
-					write!(&mut output, "also complete {}{}", self.action.print()?, filter)?;
+					write!(&mut output, "declare {}{}", self.action.print()?, filter)?;
 				}
 				_ => panic!("given: areas, what: !areas…"),
 			},

@@ -52,15 +52,15 @@ impl crate::rules::traits::PrettyPrint for SaveBlock {
 				let transcript = "Transcript";
 				let name_width = self.name.chars().count();
 
-				writeln!(&mut output, "| {} | “{}” |", transcript, self.name)?;
+				writeln!(&mut output, "| “{}” | {} |", self.name, transcript)?;
 				writeln!(
 					&mut output,
 					"| {} | {} |",
+					"-".repeat(name_width + 2),
 					"-".repeat(transcript.len()),
-					"-".repeat(name_width + 2)
 				)?;
 				for c in courses {
-					writeln!(&mut output, "| (todo) | {} |", c)?;
+					writeln!(&mut output, "| {} | (todo: fill out if match) |", c)?;
 				}
 			}
 			Given::TheseRequirements { .. } => unimplemented!(),
@@ -94,6 +94,11 @@ impl crate::rules::traits::PrettyPrint for SaveBlock {
 
 		// TODO: add a special case for do-block-having SaveBlocks, to show the computed value
 		// TODO: decide on something to do for given:these-courses, repeats:all/first/last
+		// TODO: add limiter output
+
+		if let Some(_) = &self.limit {
+			writeln!(&mut output, "\ntodo: there's a limiter")?;
+		}
 
 		Ok(output)
 	}
@@ -192,9 +197,9 @@ name: "Senior Dance Seminars""#;
 		let expected =
 			"Given the intersection between this set of courses and the courses from your transcript, as “Interim”:
 
-| Transcript | “Interim” |
-| ---------- | --------- |
-| (todo) | THEAT 244 |
+| “Interim” | Transcript |
+| --------- | ---------- |
+| THEAT 244 | (todo: fill out if match) |
 ";
 		assert_eq!(expected, input.print().unwrap());
 

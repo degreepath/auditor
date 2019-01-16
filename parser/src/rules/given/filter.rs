@@ -13,6 +13,7 @@ pub type Clause = HashMap<String, WrappedValue>;
 impl crate::rules::traits::PrettyPrint for Clause {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		let mut clauses = vec![];
+		let mut expected_count = self.len();
 
 		if let Some(gereq) = self.get("gereqs") {
 			match gereq {
@@ -90,17 +91,30 @@ impl crate::rules::traits::PrettyPrint for Clause {
 			}
 		}
 
-		if let Some(kind) = self.get("type") {
-			match kind {
+		match (self.get("type"), self.get("name")) {
+			(Some(kind), Some(major)) if *kind == WrappedValue::new("major") => {
+				expected_count -= 1;
+
+				match major {
+					WrappedValue::Single(v) => clauses.push(format!("“{}” major", v.print()?)),
+					WrappedValue::Or(_) => {
+						clauses.push(format!("either a {} major", major.print()?));
+					}
+					WrappedValue::And(_) => unimplemented!(),
+				}
+			}
+			(Some(kind), None) => match kind {
 				WrappedValue::Single(v) => clauses.push(format!("“{}”", v.print()?)),
 				WrappedValue::Or(_) => {
 					clauses.push(format!("either {}", kind.print()?));
 				}
 				WrappedValue::And(_) => unimplemented!(),
 			}
+			(None, None) => (),
+			_ => unimplemented!(),
 		}
 
-		if clauses.len() != self.len() {
+		if clauses.len() != expected_count {
 			panic!("not all keys from {:?} were used in {:?}", self, clauses);
 		}
 
@@ -130,6 +144,26 @@ where
 	}
 }
 
+pub fn deserialize_with_no_option<'de, D>(deserializer: D) -> Result<Clause, D::Error>
+where
+	D: Deserializer<'de>,
+{
+	#[derive(Deserialize)]
+	// TODO: support integers and booleans as well as string/struct
+	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
+
+	// TODO: improve this to not transmute the hashmap right after creation
+	let v: Result<HashMap<String, Wrapper>, D::Error> = HashMap::deserialize(deserializer);
+
+	match v {
+		Ok(v) => {
+			let transmuted: Clause = v.into_iter().map(|(k, v)| (k, v.0)).collect();
+			Ok(transmuted)
+		}
+		Err(err) => Err(err),
+	}
+}
+
 #[derive(Debug, PartialEq, Deserialize, Clone)]
 pub enum WrappedValue {
 	Single(TaggedValue),
@@ -138,6 +172,10 @@ pub enum WrappedValue {
 }
 
 impl WrappedValue {
+	pub fn new(s: &str) -> Self {
+		WrappedValue::Single(TaggedValue{op: Operator::EqualTo, value: Value::String(s.to_string())})
+	}
+
 	pub fn is_true(&self) -> bool {
 		match &self {
 			WrappedValue::Single(val) => val.is_true(),

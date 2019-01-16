@@ -1,8 +1,9 @@
 use super::filter;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Limiter {
-	#[serde(rename = "where")]
+	#[serde(rename = "where", deserialize_with = "filter::deserialize_with_no_option")]
 	filter: filter::Clause,
 	at_most: u64,
 }
@@ -49,6 +50,27 @@ where:
 at_most: 2"#;
 
 		let actual = serde_yaml::to_string(&data).unwrap();
+
+		assert_eq!(actual, expected);
+	}
+
+	#[test]
+	fn deserialize_level100() {
+		let clause: filter::Clause = hashmap! {
+			"level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
+		};
+
+		let expected = Limiter {
+			filter: clause,
+			at_most: 2,
+		};
+
+		let data = r#"---
+where:
+  level: "100"
+at_most: 2"#;
+
+		let actual: Limiter = serde_yaml::from_str(&data).unwrap();
 
 		assert_eq!(actual, expected);
 	}

@@ -2,6 +2,7 @@ use crate::rules::Rule as AnyRule;
 use crate::rules::traits::RuleTools;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Rule {
 	pub either: (Box<AnyRule>, Box<AnyRule>),
 }

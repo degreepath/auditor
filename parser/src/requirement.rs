@@ -4,6 +4,7 @@ use crate::util;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Requirement {
 	#[serde(default)]
 	pub message: Option<String>,
@@ -57,7 +58,7 @@ requirements: {}";
 	fn deserialize() {
 		let data = "---
 message: ~
-epartment_audited: false
+department_audited: false
 result:
   requirement: name
   optional: false
