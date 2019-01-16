@@ -82,7 +82,7 @@ pub fn expand_year(year: u64, mode: &str) -> String {
 			let next = &next[2..4];
 			format!("{}-{}", year, next)
 		}
-		_ => unimplemented!(),
+		_ => panic!("unknown expand_year mode {}", mode),
 	}
 }
 

@@ -42,7 +42,7 @@ impl crate::rules::traits::PrettyPrint for Action {
 			(Value::Command(Command::Average), Some(Operator::GreaterThanEqualTo), Some(val)) => {
 				write!(&mut output, "at or above {}", val.print()?)?
 			}
-			_ => unimplemented!(),
+			_ => unimplemented!("in Action's printer, the combo of `{:?}`, `{:?}`, and `{:?}`", &self.lhs, &self.op, &self.rhs),
 		};
 
 		Ok(output)
@@ -248,7 +248,7 @@ impl fmt::Display for Value {
 impl crate::rules::traits::PrettyPrint for Value {
 	fn print(&self) -> Result<String, std::fmt::Error> {
 		match &self {
-			Value::Command(_) => unimplemented!(),
+			Value::Command(_) => unimplemented!("pretty-printing a Value::Command"),
 			Value::String(v) => Ok(format!("“{}”", v)),
 			Value::Integer(n) => Ok(match n {
 				0 => "zero".to_string(),

@@ -63,8 +63,8 @@ impl crate::rules::traits::PrettyPrint for SaveBlock {
 					writeln!(&mut output, "| {} | (todo: fill out if match) |", c)?;
 				}
 			}
-			Given::TheseRequirements { .. } => unimplemented!(),
-			Given::AreasOfStudy => unimplemented!(),
+			Given::TheseRequirements { .. } => unimplemented!("save-block given:these-reqs"),
+			Given::AreasOfStudy => unimplemented!("save-block given:areas"),
 			Given::NamedVariable { save } => match &self.filter {
 				Some(f) => {
 					write!(

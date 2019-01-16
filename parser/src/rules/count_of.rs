@@ -156,7 +156,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				[AnyRule::Requirement(_), AnyRule::Requirement(_), AnyRule::Course(_)] => {
 					(WhichUp::Requirement, c, a, b)
 				}
-				_ => unimplemented!(),
+				_ => panic!("should only be triples of Course/Requirement, but was {:?}", v),
 			}
 		}
 

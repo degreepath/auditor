@@ -100,7 +100,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 						word
 					)?;
 				}
-				What::AreasOfStudy => unimplemented!(),
+				What::AreasOfStudy => panic!("given:all-courses and what:area makes no sense"),
 			},
 			Given::TheseCourses { courses, repeats: mode } => {
 				let courses = courses
@@ -138,7 +138,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 							word
 						)?;
 					}
-					_ => unimplemented!(),
+					_ => unimplemented!("certain modes of given:these-courses"),
 				}
 			}
 			Given::TheseRequirements { requirements } => {
@@ -197,7 +197,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 							word
 						)?;
 					}
-					What::AreasOfStudy => unimplemented!(),
+					What::AreasOfStudy => unimplemented!("given:these-requirements, what:areas makes no sense"),
 				}
 
 				let requirements: Vec<String> = requirements
@@ -249,7 +249,6 @@ impl crate::rules::traits::PrettyPrint for Rule {
 						self.action.print()?,
 						word
 					)?;
-					// write!(&mut output, " in the subset “{}”", save)?;
 				}
 				What::Departments => {
 					let plur = self.action.should_pluralize();
@@ -263,7 +262,6 @@ impl crate::rules::traits::PrettyPrint for Rule {
 						self.action.print()?,
 						word
 					)?;
-					// write!(&mut output, " in the subset “{}”", save)?;
 				}
 				What::Grades => {
 					let plur = self.action.should_pluralize();
@@ -277,7 +275,6 @@ impl crate::rules::traits::PrettyPrint for Rule {
 						word,
 						filter
 					)?;
-					// write!(&mut output, "in courses from the subset “{}”", save)?;
 				}
 				What::Terms => {
 					let plur = self.action.should_pluralize();
@@ -291,9 +288,8 @@ impl crate::rules::traits::PrettyPrint for Rule {
 						self.action.print()?,
 						word
 					)?;
-					// write!(&mut output, " in the subset “{}”", save)?;
 				}
-				What::AreasOfStudy => unimplemented!(),
+				What::AreasOfStudy => unimplemented!("given:variable, what:areas is not yet implemented"),
 			},
 		}
 

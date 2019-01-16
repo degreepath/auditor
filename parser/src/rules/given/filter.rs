@@ -52,7 +52,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 					// to allow something like `year.map(util::expand_year).print()?`
 					clauses.push(format!("during the {} academic years", year.print()?));
 				}
-				_ => unimplemented!(),
+				_ => unimplemented!("filter:year, WrappedValue::Single, not using = [0-9] {:?}", year),
 			}
 		}
 
@@ -63,7 +63,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 				WrappedValue::Or(_) => {
 					clauses.push(format!("at either {}", institution.print()?));
 				}
-				WrappedValue::And(_) => unimplemented!(),
+				WrappedValue::And(_) => unimplemented!("filter:institution, and-value"),
 			}
 		}
 
@@ -79,12 +79,12 @@ impl crate::rules::traits::PrettyPrint for Clause {
 					value: v,
 				}) => clauses.push(format!("outside of the {} department", v.print()?)),
 				WrappedValue::Single(TaggedValue { op: _, value: _ }) => {
-					unimplemented!("only implemented for = and !=")
+					unimplemented!("filter:department, only implemented for = and !=")
 				}
 				WrappedValue::Or(_) => {
 					clauses.push(format!("within either of the {} departments", department.print()?));
 				}
-				WrappedValue::And(_) => unimplemented!(),
+				WrappedValue::And(_) => unimplemented!("filter:institution, and-value"),
 			}
 		}
 
@@ -95,7 +95,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 				WrappedValue::Or(_) => {
 					clauses.push(format!("at either the {} level", level.print()?));
 				}
-				WrappedValue::And(_) => unimplemented!(),
+				WrappedValue::And(_) => unimplemented!("filter:level, and-value"),
 			}
 		}
 
@@ -110,7 +110,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 					WrappedValue::Or(_) => {
 						clauses.push(format!("either a {} major", major.print()?));
 					}
-					WrappedValue::And(_) => unimplemented!(),
+					WrappedValue::And(_) => unimplemented!("filter:type=major+name, and-value"),
 				}
 			}
 			(Some(kind), None) if *kind == WrappedValue::new("major") => {
@@ -120,7 +120,7 @@ impl crate::rules::traits::PrettyPrint for Clause {
 					WrappedValue::Or(_) => {
 						clauses.push(format!("either {}", kind.print()?));
 					}
-					WrappedValue::And(_) => unimplemented!(),
+					WrappedValue::And(_) => unimplemented!("filter:type=major, and-value"),
 				}
 			}
 			(Some(kind), None) => {
@@ -130,11 +130,11 @@ impl crate::rules::traits::PrettyPrint for Clause {
 					WrappedValue::Or(_) => {
 						clauses.push(format!("either {}", kind.print()?));
 					}
-					WrappedValue::And(_) => unimplemented!(),
+					WrappedValue::And(_) => unimplemented!("filter:type, and-value"),
 				}
 			}
 			(None, None) => (),
-			_ => unimplemented!(),
+			_ => unimplemented!("certain combinations of type+major keys in a filter, like {:?}", &self),
 		}
 
 		for key in self.keys() {
