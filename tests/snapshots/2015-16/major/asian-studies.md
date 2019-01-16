@@ -116,7 +116,7 @@ Given the subset named “Asian Studies Courses”, as “Limited Asian Studies 
 
 todo: there's a limiter
 
-Given the subset named “Asian Studies Courses”, limited it to only courses taken at the >= 200 level, as “Upper-Level Asian Studies Courses”:
+Given the subset named “Asian Studies Courses”, limited it to only courses taken at or above the 200 level, as “Upper-Level Asian Studies Courses”:
 
 | “Upper-Level Asian Studies Courses” |
 | ----------------------------------- |
