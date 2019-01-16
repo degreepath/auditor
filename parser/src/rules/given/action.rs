@@ -42,7 +42,12 @@ impl crate::rules::traits::PrettyPrint for Action {
 			(Value::Command(Command::Average), Some(Operator::GreaterThanEqualTo), Some(val)) => {
 				write!(&mut output, "at or above {}", val.print()?)?
 			}
-			_ => unimplemented!("in Action's printer, the combo of `{:?}`, `{:?}`, and `{:?}`", &self.lhs, &self.op, &self.rhs),
+			_ => unimplemented!(
+				"in Action's printer, the combo of `{:?}`, `{:?}`, and `{:?}`",
+				&self.lhs,
+				&self.op,
+				&self.rhs
+			),
 		};
 
 		Ok(output)
