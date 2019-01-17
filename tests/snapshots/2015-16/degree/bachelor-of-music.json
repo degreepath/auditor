@@ -558,22 +558,28 @@
             "count": "all",
             "of": [
               {
-                "course": "First-Year Writing"
+                "requirement": "First-Year Writing",
+                "optional": false
               },
               {
-                "course": "Writing in Context"
+                "requirement": "Writing in Context",
+                "optional": false
               },
               {
-                "course": "Foreign Language"
+                "requirement": "Foreign Language",
+                "optional": false
               },
               {
-                "course": "Oral Communication"
+                "requirement": "Oral Communication",
+                "optional": false
               },
               {
-                "course": "Abstract and Quantitative Reasoning"
+                "requirement": "Reasoning",
+                "optional": false
               },
               {
-                "course": "Studies in Physical Movement"
+                "requirement": "Studies in Physical Movement",
+                "optional": false
               }
             ]
           },
@@ -689,12 +695,26 @@
                 "limit": null,
                 "where": {
                   "gereqs": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "AQR | SED | IST"
+                    "Or": [
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "AQR"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "SED"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "IST"
+                        }
                       }
-                    }
+                    ]
                   }
                 },
                 "what": "courses",
