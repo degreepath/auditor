@@ -416,8 +416,37 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -438,7 +467,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -469,19 +505,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Coll Keyboard Perfor": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -502,7 +567,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -533,19 +605,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Drumset": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -566,7 +667,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -597,19 +705,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Euphonium": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -630,7 +767,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -661,19 +805,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Flute": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -694,7 +867,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -725,19 +905,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "French Horn": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -758,7 +967,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -789,19 +1005,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Hardanger Fiddle": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -822,7 +1067,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -853,19 +1105,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Harp": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -886,7 +1167,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -917,19 +1205,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Harpsichord": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -950,7 +1267,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -981,19 +1305,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Jazz Piano": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1014,7 +1367,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1045,19 +1405,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Jazz Saxophone": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1078,7 +1467,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1109,19 +1505,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Oboe": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1142,7 +1567,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1173,19 +1605,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Organ": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1206,7 +1667,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1237,19 +1705,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Percussion": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1270,7 +1767,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1301,19 +1805,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Piano": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1334,7 +1867,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1365,19 +1905,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Saxophone": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1398,7 +1967,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1429,19 +2005,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "String Bass": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1462,7 +2067,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1493,19 +2105,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Trombone": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1526,7 +2167,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1557,19 +2205,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Trumpet": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1590,7 +2267,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1621,19 +2305,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Tuba": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1654,7 +2367,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1685,19 +2405,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Viola": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1718,7 +2467,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1749,19 +2505,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Violin": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1782,7 +2567,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1813,19 +2605,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Violoncello": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1846,7 +2667,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1877,19 +2705,48 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         },
         "Voice": {
           "message": null,
           "department_audited": false,
           "result": {
-            "both": [
+            "given": "these requirements",
+            "requirements": [
               {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "these courses",
                 "courses": [
                   {
@@ -1910,7 +2767,14 @@
                   }
                 }
               },
-              {
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
                 "given": "courses",
                 "limit": null,
                 "where": {
@@ -1941,12 +2805,12 @@
                     "Integer": 2
                   }
                 }
-              }
-            ]
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         }
       }
     },
