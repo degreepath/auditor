@@ -80,9 +80,10 @@ impl crate::rules::traits::PrettyPrint for Clause {
 				WrappedValue::Single(TaggedValue { op: _, value: _ }) => {
 					unimplemented!("filter:department, only implemented for = and !=")
 				}
-				WrappedValue::Or(_) => {
-					clauses.push(format!("within either of the {} departments", department.print()?));
-				}
+				WrappedValue::Or(_) => match clauses.len() {
+					2 => clauses.push(format!("within either of the {} departments", department.print()?)),
+					_ => clauses.push(format!("within the {} department", department.print()?)),
+				},
 				WrappedValue::And(_) => unimplemented!("filter:institution, and-value"),
 			}
 		}
@@ -264,14 +265,20 @@ impl crate::rules::traits::PrettyPrint for WrappedValue {
 		match &self {
 			WrappedValue::Single(v) => Ok(format!("{}", v.print()?)),
 			WrappedValue::Or(v) | WrappedValue::And(v) => {
-				let v: Vec<String> = v.iter().filter_map(|r| match r.print() {Ok(p) => Some(p), Err(_) => None}).collect();
+				let v: Vec<String> = v
+					.iter()
+					.filter_map(|r| match r.print() {
+						Ok(p) => Some(p),
+						Err(_) => None,
+					})
+					.collect();
 
 				return match &self {
 					WrappedValue::Or(_) => Ok(v.oxford("or")),
 					WrappedValue::And(_) => Ok(v.oxford("and")),
-					_ => unimplemented!(),
-				}
-			},
+					_ => panic!("we already checked for Single"),
+				};
+			}
 		}
 	}
 }
@@ -280,25 +287,26 @@ impl FromStr for WrappedValue {
 	type Err = util::ParseError;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		let or_bits: Vec<_> = s.split(" | ").collect();
-		match or_bits.as_slice() {
-			[a, b] => {
-				return Ok(WrappedValue::Or(
-					[a.parse::<TaggedValue>()?, b.parse::<TaggedValue>()?].to_vec(),
-				))
-			}
-			_ => (),
-		};
+		let parts: Vec<_> = s.split(" | ").collect();
 
-		let and_bits: Vec<_> = s.split(" & ").collect();
-		match and_bits.as_slice() {
-			[a, b] => {
-				return Ok(WrappedValue::And(
-					[a.parse::<TaggedValue>()?, b.parse::<TaggedValue>()?].to_vec(),
-				))
+		if parts.len() > 1 {
+			let mut tagged = Vec::with_capacity(parts.len());
+			for part in parts {
+				tagged.push(part.parse::<TaggedValue>()?);
 			}
-			_ => (),
-		};
+
+			return Ok(WrappedValue::Or(tagged));
+		}
+
+		let parts: Vec<_> = s.split(" & ").collect();
+		if parts.len() > 1 {
+			let mut tagged = Vec::with_capacity(parts.len());
+			for part in parts {
+				tagged.push(part.parse::<TaggedValue>()?);
+			}
+
+			return Ok(WrappedValue::And(tagged));
+		}
 
 		Ok(WrappedValue::Single(s.parse::<TaggedValue>()?))
 	}
@@ -308,8 +316,15 @@ impl fmt::Display for WrappedValue {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
 		let desc = match &self {
 			WrappedValue::Single(val) => format!("{}", val),
-			WrappedValue::And([a, b]) => format!("{} & {}", a, b),
-			WrappedValue::Or([a, b]) => format!("{} | {}", a, b),
+			WrappedValue::And(values) | WrappedValue::Or(values) => {
+				let parts: Vec<_> = values.iter().map(|v| format!("{}", v)).collect();
+
+				match &self {
+					WrappedValue::And(_) => parts.join(" & "),
+					WrappedValue::Or(_) => parts.join(" | "),
+					_ => panic!("we already checked for Single"),
+				}
+			}
 		};
 		fmt.write_str(&desc)
 	}
