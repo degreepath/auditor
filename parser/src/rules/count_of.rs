@@ -689,7 +689,11 @@ of: []";
 
 		let input: Rule =
             serde_yaml::from_str(&"{count: all, of: [{both: [CS 111, CS 251]}, {either: [{requirement: A}, {requirement: B}]}, {requirement: C}]}").unwrap();
-		let expected = "take both CS 111 and CS 251, complete either the “A” or “B” requirement, and complete the “C” requirement";
+		let expected = "do all of the following:
+
+- take both CS 111 and CS 251
+- complete either the “A” or “B” requirement
+- complete the “C” requirement";
 		assert_eq!(expected, input.print().unwrap());
 	}
 
