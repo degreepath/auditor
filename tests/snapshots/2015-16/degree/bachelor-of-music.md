@@ -50,14 +50,42 @@ For this requirement, you must declare at least one major.
 For this section, you must complete “Foundation”, “Core”, and “Integrative”.
 
 ## Foundation
-For this section, you must take all of the following courses:
+For this section, you must complete all of the following requirements:
 
-- First-Year Writing
-- Writing in Context
-- Foreign Language
-- Oral Communication
-- Abstract and Quantitative Reasoning
-- Studies in Physical Movement
+- “First-Year Writing”
+- “Writing in Context”
+- “Foreign Language”
+- “Oral Communication”
+- “Reasoning”
+- “Studies in Physical Movement”
+
+### First-Year Writing
+For this requirement, you must take at least one course with the “FYW” general education attribute.
+
+### Writing in Context
+For this requirement, you must take at least four courses with the “WRI” general education attribute.
+
+### Foreign Language
+For this requirement, you must take one of the following courses:
+
+- CHIN 112
+- FREN 112
+- GERM 112
+- GREEK 112
+- JAPAN 112
+- LATIN 112
+- NORW 112
+- RUSSL 112
+- SPAN 112
+
+### Oral Communication
+For this requirement, you must take at least one course with the “ORC” general education attribute.
+
+### Reasoning
+For this requirement, you must take at least one course with the AQR, SED, or IST general education attribute.
+
+### Studies in Physical Movement
+For this requirement, you must take at least two distinct courses with the “SPM” general education attribute.
 
 ## Core
 For this section, you must complete all of the following requirements:
