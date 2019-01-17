@@ -138,6 +138,19 @@ impl crate::rules::traits::PrettyPrint for Rule {
 							word
 						)?;
 					}
+					(RepeatMode::All, What::Terms) => {
+						// TODO: special-case "once" and "twice"
+						let plur = self.action.should_pluralize();
+						let word = if plur { "terms" } else { "term" };
+
+						write!(
+							&mut output,
+							"take {} enough times to span {} {}",
+							courses,
+							self.action.print()?,
+							word
+						)?;
+					}
 					_ => unimplemented!("certain modes of given:these-courses"),
 				}
 			}

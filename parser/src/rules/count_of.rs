@@ -249,9 +249,10 @@ impl crate::rules::traits::PrettyPrint for Rule {
 						)?,
 					};
 				} else {
-					let rules = print_and_collect_special_for_requirement(&self.of);
+					// force block mode due to clarify of mixed types and "any"
+					let rules = print_and_join_for_block_verbose(&self.of);
 
-					write!(&mut output, "{}", rules.oxford("and"))?;
+					write!(&mut output, "do all of the following:\n\n{}", rules)?;
 				}
 			} else {
 				// assert: 4 < len

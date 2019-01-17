@@ -32,7 +32,11 @@ For this requirement, you must take one of the following courses:
 > one must be Theater 233 and at least two must be Theater 253, the fourth
 > practicum class being a choice of either 233 or 253.
 
-For this section, you must complete the “Acting” requirement, complete the “Tech” requirement, and take THEAT 233 and THEAT 253 at least four times.
+For this section, you must do all of the following:
+
+- complete the “Acting” requirement
+- complete the “Tech” requirement
+- take THEAT 233 and THEAT 253 at least four times
 
 ## Acting
 For this requirement, you must take THEAT 233 at least one time.
