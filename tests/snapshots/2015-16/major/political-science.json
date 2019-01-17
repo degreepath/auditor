@@ -160,12 +160,44 @@
             "limit": null,
             "where": {
               "department": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "CHIN | GREEK | LATIN | JAPAN | NORW | RUSSN"
+                "Or": [
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "CHIN"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "GREEK"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "LATIN"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "JAPAN"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "NORW"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "RUSSN"
+                    }
                   }
-                }
+                ]
               },
               "number": {
                 "Single": {
@@ -199,12 +231,26 @@
             "limit": null,
             "where": {
               "department": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "FREN | GERM | SPAN"
+                "Or": [
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "FREN"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "GERM"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "SPAN"
+                    }
                   }
-                }
+                ]
               },
               "number": {
                 "Single": {

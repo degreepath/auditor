@@ -695,12 +695,26 @@
                 "limit": null,
                 "where": {
                   "gereqs": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "AQR | SED | IST"
+                    "Or": [
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "AQR"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "SED"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "IST"
+                        }
                       }
-                    }
+                    ]
                   }
                 },
                 "what": "courses",
