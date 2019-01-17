@@ -57,43 +57,43 @@ mod tests {
 	#[test]
 	fn deserialize() {
 		let data = r#"
-            name: Exercise Science
-            type: major
-            degree: "Bachelor of Arts"
-            catalog: 2015-16
+name: Exercise Science
+type: major
+degree: "Bachelor of Arts"
+catalog: 2015-16
 
-            result:
-              count: all
-              of:
-                - requirement: Core
-                - requirement: Electives
+result:
+  count: all
+  of:
+    - requirement: Core
+    - requirement: Electives
 
-            requirements:
-              Core:
-                result:
-                  count: all
-                  of:
-                    - BIO 143
-                    - BIO 243
-                    - ESTH 110
-                    - ESTH 255
-                    - ESTH 374
-                    - ESTH 375
-                    - ESTH 390
-                    - PSYCH 125
+requirements:
+  Core:
+    result:
+      count: all
+      of:
+        - BIO 143
+        - BIO 243
+        - ESTH 110
+        - ESTH 255
+        - ESTH 374
+        - ESTH 375
+        - ESTH 390
+        - PSYCH 125
 
-              Electives:
-                result:
-                  count: 2
-                  of:
-                    - ESTH 290
-                    - ESTH 376
-                    - PSYCH 230
-                    - NEURO 239
-                    - PSYCH 241
-                    - PSYCH 247
-                    - {count: 1, of: [STAT 110, STAT 212, STAT 214]}
-        "#;
+  Electives:
+    result:
+      count: 2
+      of:
+        - ESTH 290
+        - ESTH 376
+        - PSYCH 230
+        - NEURO 239
+        - PSYCH 241
+        - PSYCH 247
+        - {count: 1, of: [STAT 110, STAT 212, STAT 214]}
+"#;
 
 		let expected_struct = AreaOfStudy {
 			area_name: "Exercise Science".to_string(),
