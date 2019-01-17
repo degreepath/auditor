@@ -66,26 +66,96 @@ impl crate::rules::traits::PrettyPrint for Clause {
 			}
 		}
 
-		if let Some(department) = self.get("department") {
-			used_keys.insert("department".to_string());
-			match department {
-				WrappedValue::Single(TaggedValue {
-					op: Operator::EqualTo,
-					value: v,
-				}) => clauses.push(format!("within the {} department", v.print()?)),
-				WrappedValue::Single(TaggedValue {
-					op: Operator::NotEqualTo,
-					value: v,
-				}) => clauses.push(format!("outside of the {} department", v.print()?)),
-				WrappedValue::Single(TaggedValue { op: _, value: _ }) => {
-					unimplemented!("filter:department, only implemented for = and !=")
+		match (self.get("department"), self.get("number"), self.get("section")) {
+			(Some(department), None, None) => {
+				used_keys.insert("department".to_string());
+
+				match department {
+					WrappedValue::Single(TaggedValue {
+						op: Operator::EqualTo,
+						value: v,
+					}) => clauses.push(format!("within the {} department", v.print()?)),
+					WrappedValue::Single(TaggedValue {
+						op: Operator::NotEqualTo,
+						value: v,
+					}) => clauses.push(format!("outside of the {} department", v.print()?)),
+					WrappedValue::Single(TaggedValue { op: _, value: _ }) => {
+						unimplemented!("filter:department, only implemented for = and !=")
+					}
+					WrappedValue::Or(v) => match v.len() {
+						2 => clauses.push(format!("within either of the {} departments", department.print()?)),
+						_ => clauses.push(format!("within the {} department", department.print()?)),
+					},
+					WrappedValue::And(_) => unimplemented!("filter:dept, and-value"),
 				}
-				WrappedValue::Or(_) => match clauses.len() {
-					2 => clauses.push(format!("within either of the {} departments", department.print()?)),
-					_ => clauses.push(format!("within the {} department", department.print()?)),
-				},
-				WrappedValue::And(_) => unimplemented!("filter:institution, and-value"),
 			}
+			(Some(department), Some(number), None) => {
+				used_keys.insert("department".to_string());
+				used_keys.insert("number".to_string());
+				expected_count -= 1;
+
+				match (department, number) {
+					(
+						WrappedValue::Single(TaggedValue {
+							op: Operator::EqualTo,
+							value: department,
+						}),
+						WrappedValue::Single(TaggedValue {
+							op: Operator::EqualTo,
+							value: number,
+						}),
+					) => clauses.push(format!("called {} {} [todo]", department.print()?, number.print()?)),
+					(
+						WrappedValue::Single(TaggedValue {
+							op: Operator::EqualTo,
+							value: department,
+						}),
+						WrappedValue::Single(TaggedValue {
+							op: Operator::NotEqualTo,
+							value: number,
+						}),
+					) => clauses.push(format!("other than {} {}", department.print()?, number.print()?)),
+					(
+						WrappedValue::Or(v),
+						WrappedValue::Single(TaggedValue {
+							op: Operator::GreaterThanEqualTo,
+							value: n,
+						}),
+					) => match v.len() {
+						2 => clauses.push(format!(
+							"within either of the {} departments, past {}",
+							department.print()?,
+							n.print()?
+						)),
+						_ => clauses.push(format!(
+							"within the {} department past {}",
+							department.print()?,
+							n.print()?
+						)),
+					},
+					_ => unimplemented!("filter:dept+num, certain modes"),
+				}
+			}
+			(None, Some(number), None) => {
+				used_keys.insert("number".to_string());
+
+				match number {
+					WrappedValue::Single(TaggedValue {
+						op: Operator::EqualTo,
+						value: v,
+					}) => clauses.push(format!("numbered {}", v.print()?)),
+					WrappedValue::Single(TaggedValue {
+						op: Operator::NotEqualTo,
+						value: v,
+					}) => clauses.push(format!("not numbered {}", v.print()?)),
+					_ => unimplemented!("filter:num, certain modes"),
+				}
+			}
+			(Some(_), Some(_), Some(_)) => unimplemented!("filter:department+section"),
+			(Some(_), None, Some(_)) => unimplemented!("filter:department+section"),
+			(None, Some(_), Some(_)) => unimplemented!("filter:number+section"),
+			(None, None, Some(_)) => unimplemented!("filter:section"),
+			(None, None, None) => (),
 		}
 
 		if let Some(level) = self.get("level") {
@@ -193,7 +263,10 @@ impl crate::rules::traits::PrettyPrint for Clause {
 			clauses.len()
 		);
 
-		Ok(clauses.oxford("and"))
+		match clauses.len() {
+			2 => Ok(clauses.join(", ")),
+			_ => Ok(clauses.oxford("and")),
+		}
 	}
 }
 

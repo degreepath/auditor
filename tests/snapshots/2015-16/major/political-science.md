@@ -85,10 +85,10 @@ For this section, you must complete one requirement from among “Statistics”,
 For this requirement, you must take at least one course within the STAT department.
 
 ## French, German, Spanish
-For this requirement, you must take at least one course within the FREN, GERM, or SPAN department and with the “>= 232” `number` attribute.
+For this requirement, you must take at least one course within the FREN, GERM, or SPAN department past 232.
 
 ## Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department and with the “>= 231” `number` attribute.
+For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
 
 # Research Methods
@@ -162,10 +162,10 @@ For this section, you must complete one requirement from among “Statistics”,
 For this requirement, you must take at least one course within the STAT department.
 
 ## French, German, Spanish
-For this requirement, you must take at least one course within the FREN, GERM, or SPAN department and with the “>= 232” `number` attribute.
+For this requirement, you must take at least one course within the FREN, GERM, or SPAN department past 232.
 
 ## Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department and with the “>= 231” `number` attribute.
+For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
 
 # Research Methods
@@ -239,9 +239,9 @@ For this section, you must complete one requirement from among “Statistics”,
 For this requirement, you must take at least one course within the STAT department.
 
 ## French, German, Spanish
-For this requirement, you must take at least one course within the FREN, GERM, or SPAN department and with the “>= 232” `number` attribute.
+For this requirement, you must take at least one course within the FREN, GERM, or SPAN department past 232.
 
 ## Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department and with the “>= 231” `number` attribute.
+For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
 
