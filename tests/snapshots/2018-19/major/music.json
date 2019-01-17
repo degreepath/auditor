@@ -1,0 +1,1971 @@
+{
+  "name": "Music",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Core",
+        "optional": false
+      },
+      {
+        "requirement": "Musicology",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      },
+      {
+        "requirement": "Performance Studies",
+        "optional": false
+      },
+      {
+        "requirement": "Official Ensemble Participation",
+        "optional": false
+      },
+      {
+        "requirement": "Performances",
+        "optional": false
+      },
+      {
+        "requirement": "Recital Attendance",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": {
+    "Core": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "MUSIC 114"
+          },
+          {
+            "course": "MUSIC 141"
+          },
+          {
+            "course": "MUSIC 161"
+          },
+          {
+            "course": "MUSIC 162"
+          },
+          {
+            "either": [
+              {
+                "course": "MUSIC 212"
+              },
+              {
+                "course": "MUSIC 214"
+              }
+            ]
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": [
+          {
+            "where": {
+              "level": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Integer": 200
+                  }
+                }
+              }
+            },
+            "at_most": 3
+          }
+        ],
+        "where": {
+          "department": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "MUSIC"
+              }
+            }
+          },
+          "level": {
+            "Or": [
+              {
+                "op": "EqualTo",
+                "value": {
+                  "Integer": 200
+                }
+              },
+              {
+                "op": "EqualTo",
+                "value": {
+                  "Integer": 300
+                }
+              }
+            ]
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 4
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Musicology": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "MUSIC 340"
+          },
+          {
+            "course": "MUSIC 341"
+          },
+          {
+            "course": "MUSIC 342"
+          },
+          {
+            "course": "MUSIC 343"
+          },
+          {
+            "course": "MUSIC 344"
+          },
+          {
+            "course": "MUSIC 345"
+          },
+          {
+            "course": "MUSIC 346"
+          },
+          {
+            "course": "MUSIC 347"
+          },
+          {
+            "course": "MUSIC 348"
+          },
+          {
+            "course": "MUSIC 349"
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Official Ensemble Participation": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "department": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "MUSEN"
+              }
+            }
+          }
+        },
+        "what": "terms",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 4
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Performance Studies": {
+      "message": "6 semesters; 4 in the same instrument/voice",
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "requirement": "Bassoon",
+            "optional": false
+          },
+          {
+            "requirement": "Clarinet",
+            "optional": false
+          },
+          {
+            "requirement": "Drumset",
+            "optional": false
+          },
+          {
+            "requirement": "Euphonium",
+            "optional": false
+          },
+          {
+            "requirement": "Flute",
+            "optional": false
+          },
+          {
+            "requirement": "French Horn",
+            "optional": false
+          },
+          {
+            "requirement": "Hardanger Fiddle",
+            "optional": false
+          },
+          {
+            "requirement": "Harp",
+            "optional": false
+          },
+          {
+            "requirement": "Harpsichord",
+            "optional": false
+          },
+          {
+            "requirement": "Jazz Piano",
+            "optional": false
+          },
+          {
+            "requirement": "Jazz Saxophone",
+            "optional": false
+          },
+          {
+            "requirement": "Oboe",
+            "optional": false
+          },
+          {
+            "requirement": "Organ",
+            "optional": false
+          },
+          {
+            "requirement": "Percussion",
+            "optional": false
+          },
+          {
+            "requirement": "Piano",
+            "optional": false
+          },
+          {
+            "requirement": "Saxophone",
+            "optional": false
+          },
+          {
+            "requirement": "String Bass",
+            "optional": false
+          },
+          {
+            "requirement": "Trombone",
+            "optional": false
+          },
+          {
+            "requirement": "Trumpet",
+            "optional": false
+          },
+          {
+            "requirement": "Tuba",
+            "optional": false
+          },
+          {
+            "requirement": "Viola",
+            "optional": false
+          },
+          {
+            "requirement": "Violin",
+            "optional": false
+          },
+          {
+            "requirement": "Violoncello",
+            "optional": false
+          },
+          {
+            "requirement": "Voice",
+            "optional": false
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Bassoon": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these requirements",
+            "requirements": [
+              {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 102"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 102
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
+        },
+        "Clarinet": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 104"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 104
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Coll Keyboard Perfor": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 106"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 106
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Drumset": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 109"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 109
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Euphonium": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 112"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 112
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Flute": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 137"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 137
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "French Horn": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 116"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 116
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Hardanger Fiddle": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 118"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 118
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Harp": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 120"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 120
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Harpsichord": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 122"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 122
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Jazz Piano": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 124"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 124
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Jazz Saxophone": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 135"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 135
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Oboe": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 126"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 126
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Organ": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 128"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 128
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Percussion": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 132"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 132
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Piano": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 134"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 134
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Saxophone": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 136"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 136
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "String Bass": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 138"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 138
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Trombone": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 140"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 140
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Trumpet": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 142"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 142
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Tuba": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 144"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 144
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Viola": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 146"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 146
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Violin": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 148"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 148
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Violoncello": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 150"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 150
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Voice": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "both": [
+              {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 152"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 152
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Performances": {
+      "message": "Two solo performances on a St. Olaf Student Recital.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Recital Attendance": {
+      "message": "Ten recitals per semester on campus, with a minimum of 60.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
