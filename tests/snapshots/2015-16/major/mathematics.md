@@ -13,7 +13,11 @@ For this major, you must both complete all of the following requirements:
 - “Level III” and take enough courses at St. Olaf College at least six from among courses matched by the “Basics”, “Transitions”, “Perspectives”, “Interdisciplinary”, “Sequence”, and “Level III” requirements
 
 # Basics
-For this requirement, you must take MATH 120, take either MATH 126 or MATH 128, and take MATH 220.
+For this requirement, you must do all of the following:
+
+- take MATH 120
+- take either MATH 126 or MATH 128
+- take MATH 220
 
 
 # Transitions
@@ -105,7 +109,11 @@ For this requirement, you must do both of the following:
 
 
 # Basics
-For this requirement, you must take MATH 120, take either MATH 126 or MATH 128, and take MATH 220.
+For this requirement, you must do all of the following:
+
+- take MATH 120
+- take either MATH 126 or MATH 128
+- take MATH 220
 
 
 # Transitions

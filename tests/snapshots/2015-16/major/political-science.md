@@ -1,14 +1,18 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Political
 > Science” major from St. Olaf College.
 
-For this major, you must complete all of the following requirements:
+For this major, you must do all of the following:
+
+- complete all of the following requirements:
 
 - “Research Methods”
 - “American Politics and Public Policy”
 - “Comparative Politics”
 - “International Relations”
 - “Political Theory”
-- “Additional Courses” (optional), take enough courses at least nine from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements, and take enough courses at the 300 level at least two from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
+- “Additional Courses” (optional)
+- take enough courses at least nine from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
+- take enough courses at the 300 level at least two from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
 
 # Research Methods
 For this requirement, you must take PSCI 220.
