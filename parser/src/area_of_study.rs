@@ -12,30 +12,47 @@ pub struct AreaOfStudy {
 	pub result: Rule,
 	pub requirements: BTreeMap<String, Requirement>,
 	#[serde(default)]
-	pub attributes: Option<Attributes>,
+	pub attributes: Option<attributes::Attributes>,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct Attributes {
-	pub definitions: BTreeMap<String, AttributeDefinition>,
-	pub courses: BTreeMap<String, AttributeApplication>,
-}
+mod attributes {
+	use std::collections::BTreeMap;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct AttributeDefinition {
-	#[serde(rename = "type")]
-	pub kind: AttributeDefinitionType,
-	#[serde(rename = "multiple values can be used")]
-	pub multiple_values_can_be_used: bool,
-}
+	#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+	pub struct Attributes {
+		pub definitions: BTreeMap<String, Definition>,
+		pub courses: BTreeMap<String, Application>,
+	}
 
-pub type AttributeApplication = BTreeMap<String, Vec<String>>;
+	#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+	pub struct Definition {
+		#[serde(flatten)]
+		pub kind: Mode,
+	}
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "lowercase")]
-pub enum AttributeDefinitionType {
-	Array,
-	Set,
+	pub type Application = BTreeMap<String, Value>;
+
+	#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+	#[serde(tag="type", rename_all = "lowercase")]
+	pub enum Mode {
+		Array {
+			#[serde(rename = "multiple values can be used")]
+			multiple_values_can_be_used: bool,
+		},
+		// TODO: remove the area_of_study::attributes::Mode::Set variant?
+		Set  {
+			#[serde(rename = "multiple values can be used")]
+			multiple_values_can_be_used: bool,
+		},
+		String,
+	}
+
+	#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+	#[serde(untagged)]
+	pub enum Value {
+		Vec(Vec<String>),
+		String(String),
+	}
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
