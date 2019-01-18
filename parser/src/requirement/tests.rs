@@ -119,6 +119,7 @@ result:
 		message: None,
 		department_audited: false,
 		result: Some(Rule::Both(rules::both::Rule {
+			surplus: None,
 			both: (
 				Box::new(Rule::Given(given::Rule {
 					given: given::Given::NamedVariable {

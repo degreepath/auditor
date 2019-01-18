@@ -11,6 +11,7 @@ pub mod area_of_study;
 pub mod requirement;
 pub mod rules;
 pub mod save;
+mod surplus;
 mod util;
 
 #[cfg(test)]

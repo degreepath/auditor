@@ -1,3 +1,4 @@
+use crate::surplus::Surplus;
 use crate::rules::traits::RuleTools;
 use crate::rules::Rule as AnyRule;
 
@@ -5,6 +6,8 @@ use crate::rules::Rule as AnyRule;
 #[serde(deny_unknown_fields)]
 pub struct Rule {
 	pub either: (Box<AnyRule>, Box<AnyRule>),
+	#[serde(default)]
+	pub surplus: Option<Surplus>,
 }
 
 impl crate::rules::traits::RuleTools for Rule {
@@ -106,6 +109,7 @@ mod tests {
 					optional: false,
 				})),
 			),
+			surplus: None,
 		};
 
 		let expected_str = "---
@@ -113,7 +117,8 @@ either:
   - requirement: Name
     optional: false
   - requirement: Name 2
-    optional: false";
+    optional: false
+surplus: ~";
 
 		let actual = serde_yaml::to_string(&input).unwrap();
 		assert_eq!(actual, expected_str);
@@ -126,7 +131,8 @@ either:
   - requirement: Name
     optional: false
   - requirement: Name 2
-    optional: false";
+    optional: false
+surplus: ~";
 
 		let expected_struct = Rule {
 			either: (
@@ -139,6 +145,7 @@ either:
 					optional: false,
 				})),
 			),
+			surplus: None,
 		};
 
 		let actual: Rule = serde_yaml::from_str(&input).unwrap();

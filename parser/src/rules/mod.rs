@@ -105,18 +105,21 @@ mod tests {
 			Rule::CountOf(count_of::Rule {
 				count: count_of::Counter::Number(1),
 				of: vec![Rule::Course(course_a.clone())],
+				surplus: None,
 			}),
 			Rule::Both(both::Rule {
 				both: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Either(either::Rule {
 				either: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
@@ -144,6 +147,7 @@ mod tests {
 - count: 1
   of:
     - course: ASIAN 101
+  surplus: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -153,6 +157,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -162,6 +167,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - given: courses
   limit: []
   where: {}
@@ -204,18 +210,21 @@ mod tests {
 			Rule::CountOf(count_of::Rule {
 				count: count_of::Counter::Number(1),
 				of: vec![Rule::Course(course_a.clone())],
+				surplus: None,
 			}),
 			Rule::Both(both::Rule {
 				both: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Either(either::Rule {
 				either: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
@@ -243,6 +252,7 @@ mod tests {
 - count: 1
   of:
     - course: ASIAN 101
+  surplus: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -252,6 +262,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -261,6 +272,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - given: courses
   what: courses
   where: {}
@@ -285,6 +297,7 @@ mod tests {
 - count: 1
   of:
     - course: ASIAN 101
+  surplus: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -294,6 +307,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -303,6 +317,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - given: courses
   what: courses
   where: {}
@@ -360,18 +375,21 @@ mod tests {
 			Rule::CountOf(count_of::Rule {
 				count: count_of::Counter::Number(1),
 				of: vec![Rule::Course(course_a.clone())],
+				surplus: None,
 			}),
 			Rule::Both(both::Rule {
 				both: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Either(either::Rule {
 				either: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,

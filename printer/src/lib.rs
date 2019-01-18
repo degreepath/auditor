@@ -229,7 +229,7 @@ fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::requirement::
 			.collect::<Vec<_>>(),
 		Requirement(rule) => vec![rule.clone()],
 		Course(_) => vec![],
-		Both(both::Rule { both: pair }) | Either(either::Rule { either: pair }) => {
+		Both(both::Rule { both: pair, .. }) | Either(either::Rule { either: pair, .. }) => {
 			let pair = pair.clone();
 			vec![pair.0, pair.1]
 				.iter()

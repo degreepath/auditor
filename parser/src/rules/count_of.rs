@@ -4,12 +4,15 @@ use crate::util::Oxford;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use serde::ser::{Serialize, Serializer};
 use std::fmt;
+use crate::surplus::Surplus;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Rule {
 	pub count: Counter,
 	pub of: Vec<AnyRule>,
+	#[serde(default)]
+	pub surplus: Option<Surplus>,
 }
 
 impl Rule {
@@ -99,6 +102,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 		if self.is_either() {
 			let either = crate::rules::either::Rule {
 				either: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
+				surplus: None,
 			};
 			return either.print();
 		}
@@ -106,6 +110,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 		if self.is_both() {
 			let both = crate::rules::both::Rule {
 				both: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
+				surplus: None,
 			};
 			return both.print();
 		}
@@ -444,11 +449,13 @@ mod tests {
 		let data = Rule {
 			count: Counter::Any,
 			of: vec![],
+			surplus: None,
 		};
 
 		let expected_str = "---
 count: any
-of: []";
+of: []
+surplus: ~";
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected_str);
@@ -458,11 +465,13 @@ of: []";
 	fn deserialize_count_of_any() {
 		let data = "---
 count: any
-of: []";
+of: []
+surplus: ~";
 
 		let expected_struct = Rule {
 			count: Counter::Any,
 			of: vec![],
+			surplus: None,
 		};
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -474,11 +483,13 @@ of: []";
 		let data = Rule {
 			count: Counter::All,
 			of: vec![],
+			surplus: None,
 		};
 
 		let expected_str = "---
 count: all
-of: []";
+of: []
+surplus: ~";
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected_str);
@@ -488,11 +499,13 @@ of: []";
 	fn deserialize_count_of_all() {
 		let data = "---
 count: all
-of: []";
+of: []
+surplus: ~";
 
 		let expected_struct = Rule {
 			count: Counter::All,
 			of: vec![],
+			surplus: None,
 		};
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -504,11 +517,13 @@ of: []";
 		let data = Rule {
 			count: Counter::Number(6),
 			of: vec![],
+			surplus: None,
 		};
 
 		let expected_str = "---
 count: 6
-of: []";
+of: []
+surplus: ~";
 
 		let actual = serde_yaml::to_string(&data).unwrap();
 		assert_eq!(actual, expected_str);
@@ -518,11 +533,13 @@ of: []";
 	fn deserialize_count_of_number() {
 		let data = "---
 count: 6
-of: []";
+of: []
+surplus: ~";
 
 		let expected_struct = Rule {
 			count: Counter::Number(6),
 			of: vec![],
+			surplus: None,
 		};
 
 		let actual: Rule = serde_yaml::from_str(&data).unwrap();
