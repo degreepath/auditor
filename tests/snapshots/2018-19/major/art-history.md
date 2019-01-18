@@ -60,7 +60,7 @@ For this requirement, you must take one of the following courses:
 
 For this section, you must both:
 
- - complete all of the following requirements:
+- complete all of the following requirements:
 
 - “Asian, African, Indigenous American, or Near Eastern/Islamic Art”
 - “European and American Art”

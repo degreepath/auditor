@@ -63,7 +63,11 @@ For this section, you must complete all of the following requirements:
 For this requirement, you must take one course from among ENVST 255, STAT 212, or STAT 272.
 
 ### Intermediate Chemistry
-For this requirement, you must either take both CHEM 248 and CHEM 254 or take both CHEM 255 and CHEM 256.
+For this requirement, you must either:
+
+- take both CHEM 248 and CHEM 254
+
+- or take both CHEM 255 and CHEM 256
 
 ### Intermediate Ecology
 For this requirement, you must take either BIO 261 or BIO 226.

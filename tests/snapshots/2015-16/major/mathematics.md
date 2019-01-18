@@ -5,7 +5,7 @@
 
 For this major, you must both:
 
- - complete all of the following requirements:
+- complete all of the following requirements:
 
 - “Basics”
 - “Transitions”
