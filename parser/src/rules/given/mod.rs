@@ -1,4 +1,4 @@
-use crate::rules::{course, requirement};
+use crate::rules::{course, req_ref};
 use crate::util::{self, Oxford};
 
 pub mod action;
@@ -338,7 +338,7 @@ pub enum Given {
 		repeats: RepeatMode,
 	},
 	#[serde(rename = "these requirements")]
-	TheseRequirements { requirements: Vec<requirement::Rule> },
+	TheseRequirements { requirements: Vec<req_ref::Rule> },
 	#[serde(rename = "areas of study")]
 	AreasOfStudy,
 	#[serde(rename = "save")]
@@ -562,11 +562,11 @@ do:
 		let data = Rule {
 			given: Given::TheseRequirements {
 				requirements: vec![
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 1".to_string(),
 						optional: false,
 					},
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 2".to_string(),
 						optional: true,
 					},
@@ -605,11 +605,11 @@ do:
 		let expected = Rule {
 			given: Given::TheseRequirements {
 				requirements: vec![
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 1".to_string(),
 						optional: false,
 					},
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 2".to_string(),
 						optional: true,
 					},

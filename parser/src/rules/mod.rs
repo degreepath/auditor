@@ -4,7 +4,7 @@ pub mod count_of;
 pub mod course;
 pub mod either;
 pub mod given;
-pub mod requirement;
+pub mod req_ref;
 pub mod traits;
 
 use crate::util;
@@ -13,7 +13,7 @@ use crate::util;
 #[serde(untagged)]
 pub enum Rule {
 	Course(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
-	Requirement(requirement::Rule),
+	Requirement(req_ref::Rule),
 	CountOf(count_of::Rule),
 	Both(both::Rule),
 	Either(either::Rule),
@@ -98,7 +98,7 @@ mod tests {
 		let data = vec![
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_b.clone()),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name".to_string(),
 				optional: true,
 			}),
@@ -203,7 +203,7 @@ mod tests {
 		let expected = vec![
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_b.clone()),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name".to_string(),
 				optional: true,
 			}),
@@ -364,11 +364,11 @@ mod tests {
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_b.clone()),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name 1".to_string(),
 				optional: false,
 			}),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name 2".to_string(),
 				optional: true,
 			}),

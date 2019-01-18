@@ -67,7 +67,7 @@ pub enum AreaType {
 
 #[cfg(test)]
 mod tests {
-	use crate::rules::{count_of, course, requirement};
+	use crate::rules::{count_of, course, req_ref};
 
 	use super::*;
 
@@ -121,11 +121,11 @@ requirements:
 			result: Rule::CountOf(count_of::Rule {
 				count: count_of::Counter::All,
 				of: vec![
-					Rule::Requirement(requirement::Rule {
+					Rule::Requirement(req_ref::Rule {
 						requirement: "Core".to_string(),
 						optional: false,
 					}),
-					Rule::Requirement(requirement::Rule {
+					Rule::Requirement(req_ref::Rule {
 						requirement: "Electives".to_string(),
 						optional: false,
 					}),

@@ -1,13 +1,13 @@
 use super::*;
 use crate::rules;
-use crate::rules::{given, requirement};
+use crate::rules::{given, req_ref};
 
 #[test]
 fn serialize() {
 	let data = Requirement {
 		message: None,
 		department_audited: false,
-		result: Some(Rule::Requirement(requirement::Rule {
+		result: Some(Rule::Requirement(req_ref::Rule {
 			requirement: String::from("name"),
 			optional: false,
 		})),
@@ -45,7 +45,7 @@ requirements: {}";
 	let expected = Requirement {
 		message: None,
 		department_audited: false,
-		result: Some(Rule::Requirement(requirement::Rule {
+		result: Some(Rule::Requirement(req_ref::Rule {
 			requirement: String::from("name"),
 			optional: false,
 		})),
@@ -67,7 +67,7 @@ result: {requirement: name, optional: false}";
 	let expected = Requirement {
 		message: None,
 		department_audited: false,
-		result: Some(Rule::Requirement(requirement::Rule {
+		result: Some(Rule::Requirement(req_ref::Rule {
 			requirement: String::from("name"),
 			optional: false,
 		})),

@@ -94,17 +94,17 @@ impl crate::rules::traits::PrettyPrint for Rule {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::rules::requirement;
+	use crate::rules::req_ref;
 
 	#[test]
 	fn serialize() {
 		let input = Rule {
 			either: (
-				Box::new(AnyRule::Requirement(requirement::Rule {
+				Box::new(AnyRule::Requirement(req_ref::Rule {
 					requirement: String::from("Name"),
 					optional: false,
 				})),
-				Box::new(AnyRule::Requirement(requirement::Rule {
+				Box::new(AnyRule::Requirement(req_ref::Rule {
 					requirement: String::from("Name 2"),
 					optional: false,
 				})),
@@ -136,11 +136,11 @@ surplus: ~";
 
 		let expected_struct = Rule {
 			either: (
-				Box::new(AnyRule::Requirement(requirement::Rule {
+				Box::new(AnyRule::Requirement(req_ref::Rule {
 					requirement: String::from("Name"),
 					optional: false,
 				})),
-				Box::new(AnyRule::Requirement(requirement::Rule {
+				Box::new(AnyRule::Requirement(req_ref::Rule {
 					requirement: String::from("Name 2"),
 					optional: false,
 				})),

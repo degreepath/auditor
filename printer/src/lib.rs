@@ -218,7 +218,7 @@ fn collect_active_requirements(req: &Requirement) -> Vec<(String, Requirement)> 
 		.collect()
 }
 
-fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::requirement::Rule> {
+fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::req_ref::Rule> {
 	use degreepath_parser::rules::Rule::*;
 
 	match rule {
