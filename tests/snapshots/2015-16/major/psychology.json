@@ -26,7 +26,8 @@
         "requirement": "Electives",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Content Core": {
@@ -43,7 +44,8 @@
             "requirement": "Social Science",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -66,7 +68,8 @@
               {
                 "course": "PSYCH 238"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -90,7 +93,8 @@
               {
                 "course": "PSYCH 249"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -200,7 +204,8 @@
           {
             "course": "PSYCH 396"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -217,7 +222,8 @@
           {
             "course": "PSYCH 230"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -241,7 +247,8 @@
           {
             "course": "ECON 263"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -295,7 +302,8 @@
           {
             "course": "PSYCH 398"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

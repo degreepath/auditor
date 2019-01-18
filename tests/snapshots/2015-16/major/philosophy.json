@@ -18,7 +18,8 @@
         "requirement": "Electives",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Base": {
@@ -36,7 +37,8 @@
           {
             "course": "PHIL 240"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -210,7 +212,8 @@
           {
             "course": "PHIL 375"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

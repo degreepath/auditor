@@ -33,7 +33,8 @@
             "requirement": "Additional Courses",
             "optional": true
           }
-        ]
+        ],
+        "surplus": null
       },
       {
         "given": "these requirements",
@@ -126,7 +127,8 @@
           }
         }
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Additional Courses": {
@@ -147,7 +149,8 @@
             "requirement": "Chinese, Greek, Latin, Japanese, Norwegian, Russian",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -342,7 +345,8 @@
           {
             "course": "ES/PS 276"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -393,7 +397,8 @@
           {
             "course": "AS/PS 255"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -432,7 +437,8 @@
           {
             "course": "ES/PS 201"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -471,7 +477,8 @@
           {
             "course": "ES/PS 225"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

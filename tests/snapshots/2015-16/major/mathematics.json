@@ -32,7 +32,8 @@
             "requirement": "Level III",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       {
         "given": "these requirements",
@@ -84,7 +85,8 @@
           }
         }
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Basics": {
@@ -104,12 +106,14 @@
               {
                 "course": "MATH 128"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "course": "MATH 220"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -133,7 +137,8 @@
             "requirement": "Physics",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -178,7 +183,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -224,7 +230,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -270,7 +277,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -324,7 +332,8 @@
               }
             }
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [
@@ -409,7 +418,8 @@
             "requirement": "Modeling/Computation (M)",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -554,7 +564,8 @@
               {
                 "course": "MATH 330"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -564,7 +575,8 @@
               {
                 "course": "MATH 340"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -574,7 +586,8 @@
               {
                 "course": "MATH 344"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -584,7 +597,8 @@
               {
                 "course": "MATH 348"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -594,7 +608,8 @@
               {
                 "course": "MATH 352"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -604,7 +619,8 @@
               {
                 "course": "MATH 356"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -614,7 +630,8 @@
               {
                 "course": "MATH 364"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -624,7 +641,8 @@
               {
                 "course": "STAT 322"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -634,9 +652,11 @@
               {
                 "course": "MSCS 341"
               }
-            ]
+            ],
+            "surplus": null
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -657,7 +677,8 @@
           {
             "course": "MATH 252"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

@@ -34,7 +34,8 @@
         "requirement": "Electives",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Anthropological Theory": {

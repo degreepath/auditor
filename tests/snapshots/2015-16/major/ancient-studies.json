@@ -26,7 +26,8 @@
         "requirement": "Independent Research",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Ancient History": {
@@ -128,7 +129,8 @@
           {
             "course": "THEAT 270"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -267,7 +269,8 @@
           {
             "course": "GCON 115"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -291,7 +294,8 @@
           {
             "course": "GREEK 398"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -308,7 +312,8 @@
           {
             "course": "GREEK 253"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

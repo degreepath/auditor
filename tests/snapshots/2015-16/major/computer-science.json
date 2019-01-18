@@ -22,7 +22,8 @@
         "requirement": "Capstone",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Capstone": {
@@ -55,7 +56,8 @@
             "requirement": "Systems",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -75,7 +77,8 @@
               {
                 "course": "CSCI 333"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -102,7 +105,8 @@
                 "lab": null,
                 "international": null
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -140,7 +144,8 @@
           {
             "course": "CSCI 350"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -160,7 +165,8 @@
               {
                 "course": "CSCI 125"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "course": "CSCI 241"
@@ -173,7 +179,8 @@
               {
                 "course": "CSCI 252"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "count": "any",
@@ -187,9 +194,11 @@
               {
                 "course": "MATH 244"
               }
-            ]
+            ],
+            "surplus": null
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

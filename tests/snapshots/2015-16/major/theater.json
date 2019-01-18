@@ -18,7 +18,8 @@
         "requirement": "Practicum",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Electives": {
@@ -45,7 +46,8 @@
           {
             "course": "THEAT 398"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -89,7 +91,8 @@
               }
             }
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -178,7 +181,8 @@
               {
                 "course": "THEAT 250"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "course": "THEAT 270"
@@ -189,7 +193,8 @@
           {
             "course": "THEAT 360"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

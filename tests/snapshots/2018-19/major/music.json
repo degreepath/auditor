@@ -34,7 +34,8 @@
         "requirement": "Recital Attendance",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Core": {
@@ -63,9 +64,11 @@
               {
                 "course": "MUSIC 214"
               }
-            ]
+            ],
+            "surplus": null
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -168,7 +171,8 @@
           {
             "course": "MUSIC 349"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -307,7 +311,8 @@
             "requirement": "Voice",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

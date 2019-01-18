@@ -30,7 +30,8 @@
         "requirement": "Productions",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Area of Speciality": {
@@ -73,7 +74,8 @@
           {
             "course": "DANCE 270"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -139,7 +141,8 @@
                   {
                     "course": "DANCE 131"
                   }
-                ]
+                ],
+                "surplus": null
               },
               {
                 "either": [
@@ -149,7 +152,8 @@
                   {
                     "course": "DANCE 221"
                   }
-                ]
+                ],
+                "surplus": null
               },
               {
                 "either": [
@@ -159,9 +163,11 @@
                   {
                     "course": "DANCE 321"
                   }
-                ]
+                ],
+                "surplus": null
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -185,7 +191,8 @@
               {
                 "course": "DANCE 315"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -212,7 +219,8 @@
               {
                 "course": "DANCE 209"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -235,7 +243,8 @@
                   {
                     "course": "DANCE 211"
                   }
-                ]
+                ],
+                "surplus": null
               },
               {
                 "either": [
@@ -245,7 +254,8 @@
                   {
                     "course": "DANCE 251"
                   }
-                ]
+                ],
+                "surplus": null
               },
               {
                 "either": [
@@ -255,9 +265,11 @@
                   {
                     "course": "DANCE 311"
                   }
-                ]
+                ],
+                "surplus": null
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -284,7 +296,8 @@
               {
                 "course": "DANCE 160"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
