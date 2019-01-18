@@ -3,14 +3,18 @@
 
 > todo: this area has custom attributes defined.
 
-For this major, you must both complete all of the following requirements:
+For this major, you must both:
+
+ - complete all of the following requirements:
 
 - “Basics”
 - “Transitions”
 - “Perspectives”
 - “Interdisciplinary” (optional)
 - “Sequence”
-- “Level III” and take enough courses at St. Olaf College at least six from among courses matched by the “Basics”, “Transitions”, “Perspectives”, “Interdisciplinary”, “Sequence”, and “Level III” requirements
+- “Level III”
+
+- and take enough courses at St. Olaf College at least six from among courses matched by the “Basics”, “Transitions”, “Perspectives”, “Interdisciplinary”, “Sequence”, and “Level III” requirements
 
 # Basics
 For this requirement, you must do all of the following:

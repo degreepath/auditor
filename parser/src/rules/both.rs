@@ -83,7 +83,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 				)?;
 			}
 			(a, b) => {
-				write!(&mut output, "both {} and {}", a.print()?, b.print()?)?;
+				write!(&mut output, "both:\n\n- {}\n\n- and {}", a.print()?, b.print()?)?;
 			}
 		};
 
@@ -192,7 +192,11 @@ surplus: ~";
 		assert_eq!(expected, input.print().unwrap());
 
 		let input: Rule = serde_yaml::from_str(&"{both: [{given: courses, what: courses, do: count >= 3}, {given: these courses, courses: [THEAT 233], repeats: all, what: courses, do: count >= 4}]}").unwrap();
-		let expected = "both take at least three courses and take THEAT 233 at least four times";
+		let expected = "both:
+
+- take at least three courses
+
+- and take THEAT 233 at least four times";
 		assert_eq!(expected, input.print().unwrap());
 	}
 }
