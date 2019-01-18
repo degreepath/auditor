@@ -1,4 +1,4 @@
-pub mod action;
+pub mod action_only;
 pub mod both;
 pub mod count_of;
 pub mod course;
@@ -18,7 +18,7 @@ pub enum Rule {
 	Both(both::Rule),
 	Either(either::Rule),
 	Given(given::Rule),
-	Do(action::Rule),
+	Do(action_only::Rule),
 }
 
 impl crate::rules::traits::PrettyPrint for Rule {
@@ -128,7 +128,7 @@ mod tests {
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),
-			Rule::Do(action::Rule {
+			Rule::Do(action_only::Rule {
 				action: "$a < $b".parse().unwrap(),
 			}),
 		];
@@ -233,7 +233,7 @@ mod tests {
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),
-			Rule::Do(action::Rule {
+			Rule::Do(action_only::Rule {
 				action: "$a < $b".parse().unwrap(),
 			}),
 		];
@@ -398,7 +398,7 @@ mod tests {
 				limit: None,
 				action: "count < 2".parse().unwrap(),
 			}),
-			Rule::Do(action::Rule {
+			Rule::Do(action_only::Rule {
 				action: "$a < $b".parse().unwrap(),
 			}),
 		];
