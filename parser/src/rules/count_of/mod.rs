@@ -1,10 +1,10 @@
 use crate::rules::traits::RuleTools;
 use crate::rules::Rule as AnyRule;
+use crate::surplus::Surplus;
 use crate::util::Oxford;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use serde::ser::{Serialize, Serializer};
 use std::fmt;
-use crate::surplus::Surplus;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]

@@ -1,6 +1,6 @@
-use crate::surplus::Surplus;
 use crate::rules::traits::RuleTools;
 use crate::rules::Rule as AnyRule;
+use crate::surplus::Surplus;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]

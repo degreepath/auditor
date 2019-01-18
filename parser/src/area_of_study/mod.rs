@@ -33,14 +33,14 @@ mod attributes {
 	pub type Application = BTreeMap<String, Value>;
 
 	#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-	#[serde(tag="type", rename_all = "lowercase")]
+	#[serde(tag = "type", rename_all = "lowercase")]
 	pub enum Mode {
 		Array {
 			#[serde(rename = "multiple values can be used")]
 			multiple_values_can_be_used: bool,
 		},
 		// TODO: remove the area_of_study::attributes::Mode::Set variant?
-		Set  {
+		Set {
 			#[serde(rename = "multiple values can be used")]
 			multiple_values_can_be_used: bool,
 		},
