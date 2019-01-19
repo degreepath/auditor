@@ -2,6 +2,11 @@
 set -e -o pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cargo build
+printer="$SCRIPT_DIR/../target/debug/degreepath-printer-cli"
+parser="$SCRIPT_DIR/../target/debug/degreepath-parser-cli"
+
 cd "$SCRIPT_DIR/area-data"
 
 if [ ! -d "$SCRIPT_DIR/area-data" ]; then
@@ -9,7 +14,6 @@ if [ ! -d "$SCRIPT_DIR/area-data" ]; then
 	exit 1
 fi
 
-cargo build
 
 for catalog in $(find . -maxdepth 1 -type d -name '*-*' | sed 's|^./||' | grep -v '^.$'); do
 	echo "catalog: $catalog"
@@ -23,9 +27,9 @@ for catalog in $(find . -maxdepth 1 -type d -name '*-*' | sed 's|^./||' | grep -
 
 		for area in $(find . -maxdepth 1 -name '*.yaml' | sed 's|^./||' | sed 's|\.yaml$||' | grep -v '^.$'); do
 			echo "current: $kind, $area"
-			cargo run --quiet --bin degreepath-printer-cli "./$area.yaml" > "$SNAPSHOT_DIR/$area.md.out"
+			$printer "./$area.yaml" > "$SNAPSHOT_DIR/$area.md.out"
 			mv "$SNAPSHOT_DIR/$area.md.out" "$SNAPSHOT_DIR/$area.md"
-			cargo run --quiet --bin degreepath-parser-cli "./$area.yaml" > "$SNAPSHOT_DIR/$area.json.out"
+			$parser "./$area.yaml" > "$SNAPSHOT_DIR/$area.json.out"
 			mv "$SNAPSHOT_DIR/$area.json.out" "$SNAPSHOT_DIR/$area.json"
 		done
 
