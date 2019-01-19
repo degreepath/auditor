@@ -1,3 +1,4 @@
+use crate::traits::Util;
 use crate::util;
 
 #[cfg(test)]
@@ -13,7 +14,7 @@ pub struct Rule {
 	pub optional: bool,
 }
 
-impl crate::rules::traits::RuleTools for Rule {
+impl Util for Rule {
 	fn has_save_rule(&self) -> bool {
 		false
 	}

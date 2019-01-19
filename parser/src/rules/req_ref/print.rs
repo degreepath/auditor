@@ -1,9 +1,8 @@
-use super::Rule;
-use crate::rules::traits::PrettyPrint;
-use std::fmt;
+use super::*;
+use crate::traits::print;
 
-impl PrettyPrint for Rule {
-	fn print(&self) -> Result<String, fmt::Error> {
+impl print::Print for Rule {
+	fn print(&self) -> print::Result {
 		use std::fmt::Write;
 		let mut output = String::new();
 

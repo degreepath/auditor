@@ -1,6 +1,6 @@
-use crate::rules::traits::RuleTools;
 use crate::rules::Rule as AnyRule;
 use crate::surplus::Surplus;
+use crate::traits::Util;
 
 #[cfg(test)]
 mod tests;
@@ -15,7 +15,7 @@ pub struct Rule {
 	pub surplus: Option<Surplus>,
 }
 
-impl RuleTools for Rule {
+impl Util for Rule {
 	fn has_save_rule(&self) -> bool {
 		self.either.0.has_save_rule() || self.either.1.has_save_rule()
 	}

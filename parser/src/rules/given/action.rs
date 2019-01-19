@@ -1,3 +1,4 @@
+use crate::traits::print;
 use crate::util::{self, ParseError};
 use serde::de::{Deserialize, Deserializer};
 use std::fmt;
@@ -22,8 +23,8 @@ impl Action {
 	}
 }
 
-impl crate::rules::traits::PrettyPrint for Action {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Action {
+	fn print(&self) -> print::Result {
 		use std::fmt::Write;
 
 		let mut output = String::new();
@@ -158,8 +159,8 @@ pub enum Operator {
 	NotEqualTo,
 }
 
-impl crate::rules::traits::PrettyPrint for Operator {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Operator {
+	fn print(&self) -> print::Result {
 		Ok(match &self {
 			Operator::LessThan => "fewer than",
 			Operator::LessThanEqualTo => "at most",
@@ -240,8 +241,8 @@ impl fmt::Display for Value {
 	}
 }
 
-impl crate::rules::traits::PrettyPrint for Value {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Value {
+	fn print(&self) -> print::Result {
 		match &self {
 			Value::Command(_) => unimplemented!("pretty-printing a Value::Command"),
 			Value::String(v) => Ok(format!("“{}”", v)),

@@ -6,10 +6,9 @@ use degreepath_parser::requirement::Requirement;
 use degreepath_parser::rules;
 use degreepath_parser::rules::Rule;
 use degreepath_parser::rules::{both, either, given};
+use degreepath_parser::Print;
 use std::fmt;
 use std::fmt::Write;
-
-use degreepath_parser::rules::traits::PrettyPrint;
 
 extern crate textwrap;
 

@@ -5,7 +5,8 @@ pub mod course;
 pub mod either;
 pub mod given;
 pub mod req_ref;
-pub mod traits;
+
+use crate::traits::{print, Util};
 
 use crate::util;
 
@@ -21,8 +22,8 @@ pub enum Rule {
 	Do(action_only::Rule),
 }
 
-impl crate::rules::traits::PrettyPrint for Rule {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Rule {
+	fn print(&self) -> print::Result {
 		match &self {
 			Rule::Course(v) => Ok(format!("take {}", v.print()?)),
 			Rule::Requirement(v) => Ok(format!("complete the {} requirement", v.print()?)),
@@ -35,7 +36,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 	}
 }
 
-impl crate::rules::traits::RuleTools for Rule {
+impl Util for Rule {
 	fn has_save_rule(&self) -> bool {
 		match &self {
 			Rule::Course(v) => v.has_save_rule(),
@@ -50,8 +51,8 @@ impl crate::rules::traits::RuleTools for Rule {
 }
 
 impl Rule {
-	fn print_inner(&self) -> Result<String, std::fmt::Error> {
-		use crate::rules::traits::PrettyPrint;
+	fn print_inner(&self) -> print::Result {
+		use crate::traits::print::Print;
 
 		match &self {
 			Rule::Course(v) => v.print(),
@@ -68,6 +69,7 @@ impl Rule {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate::traits::print::Print;
 	use std::collections::BTreeMap;
 
 	#[test]
@@ -409,8 +411,6 @@ mod tests {
 
 	#[test]
 	fn pretty_print() {
-		use crate::rules::traits::PrettyPrint;
-
 		let data = r#"---
 - ASIAN 101
 - course: ASIAN 101

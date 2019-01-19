@@ -1,4 +1,5 @@
 use super::*;
+use crate::traits::print::Print;
 
 #[test]
 fn serialize() {
@@ -43,8 +44,6 @@ requirement: Name";
 
 #[test]
 fn pretty_print() {
-	use crate::rules::traits::PrettyPrint;
-
 	let input = Rule {
 		requirement: "Core".into(),
 		optional: false,

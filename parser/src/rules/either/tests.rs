@@ -1,5 +1,6 @@
 use super::*;
 use crate::rules::req_ref;
+use crate::traits::print::Print;
 
 #[test]
 fn serialize() {
@@ -59,8 +60,6 @@ surplus: ~";
 
 #[test]
 fn pretty_print() {
-	use crate::rules::traits::PrettyPrint;
-
 	let input: Rule = serde_yaml::from_str(&"{either: [{requirement: A}, {requirement: B}]}").unwrap();
 	let expected = "complete either the “A” or “B” requirement";
 	assert_eq!(expected, input.print().unwrap());
