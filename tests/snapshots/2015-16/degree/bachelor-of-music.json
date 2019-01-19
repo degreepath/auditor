@@ -13,7 +13,8 @@
         "requirement": "General Education",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Degree Requirements": {
@@ -50,7 +51,8 @@
             "requirement": "Major",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -198,7 +200,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [
@@ -304,7 +307,8 @@
             "requirement": "Integrative",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -331,7 +335,8 @@
                 "requirement": "Studies in Human Behavior and Society",
                 "optional": false
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -408,7 +413,8 @@
                       }
                     }
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [
@@ -581,7 +587,8 @@
                 "requirement": "Studies in Physical Movement",
                 "optional": false
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -650,7 +657,8 @@
                   {
                     "course": "SPAN 112"
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -806,7 +814,8 @@
                 "requirement": "Ethical Issues and Normative Perspectives",
                 "optional": false
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],

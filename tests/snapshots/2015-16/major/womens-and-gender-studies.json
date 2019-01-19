@@ -18,7 +18,8 @@
         "requirement": "Advanced Topics",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Additional Courses": {
@@ -88,7 +89,8 @@
               }
             }
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [
@@ -142,7 +144,8 @@
               {
                 "course": "PSYCH 350"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -283,7 +286,8 @@
               {
                 "course": "SOAN 246"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -358,7 +362,8 @@
               {
                 "course": "SPAN 250"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -429,7 +434,8 @@
               {
                 "course": "SOAN 260"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],

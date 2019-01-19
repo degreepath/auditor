@@ -1,0 +1,298 @@
+{
+  "name": "Chemistry",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Introductory Sequence",
+        "optional": false
+      },
+      {
+        "requirement": "Upper-Level Core",
+        "optional": false
+      },
+      {
+        "requirement": "Physics",
+        "optional": false
+      },
+      {
+        "requirement": "Mathematics",
+        "optional": false
+      },
+      {
+        "requirement": "Seminars",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Introductory Sequence": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "requirement": "Option A",
+            "optional": false
+          },
+          {
+            "requirement": "Option B",
+            "optional": false
+          },
+          {
+            "requirement": "Option C",
+            "optional": false
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Option A": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 121"
+              },
+              {
+                "course": "CHEM 123"
+              },
+              {
+                "course": "CHEM 125"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Option B": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 125"
+              },
+              {
+                "course": "CHEM 126"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Option C": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CH/BI 125"
+              },
+              {
+                "course": "CH/BI 126"
+              },
+              {
+                "course": "CH/BI 227"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Mathematics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "MATH 126"
+          },
+          {
+            "course": "MATH 128"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Physics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "PHYS 125"
+          },
+          {
+            "course": "PHYS 232"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Seminars": {
+      "message": "Attendance is required at 12 departmental seminars after declaration of major.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Upper-Level Core": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Organic",
+            "optional": false
+          },
+          {
+            "requirement": "Analytical",
+            "optional": false
+          },
+          {
+            "requirement": "Physical",
+            "optional": false
+          },
+          {
+            "requirement": "Elective",
+            "optional": false
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Analytical": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 255"
+              },
+              {
+                "course": "CHEM 256"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Elective": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "CHEM 252"
+              },
+              {
+                "course": "CHEM 280"
+              },
+              {
+                "course": "CHEM 379"
+              },
+              {
+                "course": "CHEM 382"
+              },
+              {
+                "course": "CHEM 384"
+              },
+              {
+                "course": "CHEM 386"
+              },
+              {
+                "course": "CHEM 388"
+              },
+              {
+                "course": "CHEM 391"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Organic": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 247"
+              },
+              {
+                "course": "CHEM 253"
+              },
+              {
+                "course": "CHEM 248"
+              },
+              {
+                "course": "CHEM 254"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Physical": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 357"
+              },
+              {
+                "course": "CHEM 371"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    }
+  },
+  "attributes": null
+}

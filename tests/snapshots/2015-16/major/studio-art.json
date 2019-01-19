@@ -14,7 +14,8 @@
         "requirement": "Art History",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Art History": {
@@ -101,7 +102,8 @@
           {
             "course": "PHIL 243"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -133,7 +135,8 @@
             "requirement": "Areas",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -156,7 +159,8 @@
                 "requirement": "New Media",
                 "optional": false
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -183,7 +187,8 @@
                     "requirement": "Graphic Design",
                     "optional": false
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -203,7 +208,8 @@
                       {
                         "course": "ART 233"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -218,7 +224,8 @@
                       {
                         "course": "ART 236"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -236,7 +243,8 @@
                       {
                         "course": "ART 222"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -254,7 +262,8 @@
                       {
                         "course": "ART 227"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -276,7 +285,8 @@
                     "requirement": "Sculpture",
                     "optional": false
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -293,7 +303,8 @@
                       {
                         "course": "ART 234"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -311,7 +322,8 @@
                       {
                         "course": "ART 224"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -345,7 +357,8 @@
                     "requirement": "Graphic Design",
                     "optional": false
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -359,7 +372,8 @@
                       {
                         "course": "ART 229"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -374,7 +388,8 @@
                       {
                         "course": "ART 236"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -389,7 +404,8 @@
                       {
                         "course": "ART 228"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -404,7 +420,8 @@
                       {
                         "course": "ART 240"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -422,7 +439,8 @@
                       {
                         "course": "ART 238"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   "contract": false,
                   "save": [],
@@ -459,7 +477,8 @@
               {
                 "course": "ART 398"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -480,7 +499,8 @@
               {
                 "course": "ART 104"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],

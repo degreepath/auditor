@@ -1,0 +1,518 @@
+{
+  "name": "American Studies",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "American Culture",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "American Culture": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "AMST 100"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "given": "save",
+            "save": "Taken Electives",
+            "limit": null,
+            "where": {
+              "gereqs": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "MCD"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 2
+              }
+            }
+          },
+          {
+            "given": "save",
+            "save": "Taken Electives",
+            "limit": null,
+            "where": {
+              "level": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Integer": 300
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 2
+              }
+            }
+          },
+          {
+            "given": "save",
+            "save": "Taken Electives",
+            "limit": null,
+            "where": null,
+            "what": "departments",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 3
+              }
+            }
+          },
+          {
+            "given": "save",
+            "save": "Taken Electives",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [
+        {
+          "name": "Taken Electives",
+          "given": "these requirements",
+          "requirements": [
+            {
+              "requirement": "Topics",
+              "optional": false
+            },
+            {
+              "requirement": "Seminar",
+              "optional": false
+            },
+            {
+              "requirement": "Disciplinary",
+              "optional": false
+            }
+          ],
+          "limit": null,
+          "where": null,
+          "what": "courses",
+          "do": null
+        }
+      ],
+      "requirements": {
+        "Disciplinary": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these courses",
+            "courses": [
+              {
+                "course": "AFAM 231"
+              },
+              {
+                "course": "AMCON 101"
+              },
+              {
+                "course": "AMCON 102"
+              },
+              {
+                "course": "AMCON 110"
+              },
+              {
+                "course": "AMCON 111"
+              },
+              {
+                "course": "AMCON 201"
+              },
+              {
+                "course": "AMCON 202"
+              },
+              {
+                "course": "AMST 100"
+              },
+              {
+                "course": "AMST 207"
+              },
+              {
+                "course": "ART 253"
+              },
+              {
+                "course": "ART 261"
+              },
+              {
+                "course": "DANCE 246"
+              },
+              {
+                "course": "ECON 220"
+              },
+              {
+                "course": "ECON 242"
+              },
+              {
+                "course": "ECON 245"
+              },
+              {
+                "course": "ECON 371"
+              },
+              {
+                "course": "ECON 374"
+              },
+              {
+                "course": "ECON 376"
+              },
+              {
+                "course": "EDUC 170"
+              },
+              {
+                "course": "EDUC 260"
+              },
+              {
+                "course": "EDUC 378"
+              },
+              {
+                "course": "EDUC 379"
+              },
+              {
+                "course": "ENGL 200"
+              },
+              {
+                "course": "ENGL 205"
+              },
+              {
+                "course": "ENGL 209"
+              },
+              {
+                "course": "ENGL 220"
+              },
+              {
+                "course": "ENGL 251"
+              },
+              {
+                "course": "ENGL 260"
+              },
+              {
+                "course": "ENGL 275"
+              },
+              {
+                "course": "ENGL 276"
+              },
+              {
+                "course": "ENGL 340"
+              },
+              {
+                "course": "ENGL 345"
+              },
+              {
+                "course": "ENGL 392"
+              },
+              {
+                "course": "ENGL 280",
+                "term": "2018-1",
+                "section": "B",
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null
+              },
+              {
+                "course": "ENVST 202"
+              },
+              {
+                "course": "ENVST 232"
+              },
+              {
+                "course": "ENVST 270"
+              },
+              {
+                "course": "ES/PS 276"
+              },
+              {
+                "course": "FAMST 232"
+              },
+              {
+                "course": "FAMST 242"
+              },
+              {
+                "course": "FAMST 253"
+              },
+              {
+                "course": "FILM 101"
+              },
+              {
+                "course": "FILM 201"
+              },
+              {
+                "course": "FREN 273"
+              },
+              {
+                "course": "HIST 165"
+              },
+              {
+                "course": "HIST 169"
+              },
+              {
+                "course": "HIST 181"
+              },
+              {
+                "course": "HIST 182"
+              },
+              {
+                "course": "HIST 188"
+              },
+              {
+                "course": "HIST 198"
+              },
+              {
+                "course": "HIST 199"
+              },
+              {
+                "course": "HIST 199"
+              },
+              {
+                "course": "HIST 270"
+              },
+              {
+                "course": "HIST 272"
+              },
+              {
+                "course": "HIST 275"
+              },
+              {
+                "course": "HIST 277"
+              },
+              {
+                "course": "HIST 282"
+              },
+              {
+                "course": "HIST 288"
+              },
+              {
+                "course": "HIST 290"
+              },
+              {
+                "course": "HIST 299"
+              },
+              {
+                "course": "HIST 370"
+              },
+              {
+                "course": "HIST 375"
+              },
+              {
+                "course": "MEDIA 160"
+              },
+              {
+                "course": "MEDIA 260"
+              },
+              {
+                "course": "MUSIC 345"
+              },
+              {
+                "course": "PACON 280"
+              },
+              {
+                "course": "PHIL 253"
+              },
+              {
+                "course": "PSCI 111"
+              },
+              {
+                "course": "PSCI 211"
+              },
+              {
+                "course": "PSCI 244"
+              },
+              {
+                "course": "PSCI 255"
+              },
+              {
+                "course": "PSCI 272"
+              },
+              {
+                "course": "PSCI 311"
+              },
+              {
+                "course": "PSYCH 227"
+              },
+              {
+                "course": "RACE 121"
+              },
+              {
+                "course": "RACE 122"
+              },
+              {
+                "course": "REL 390"
+              },
+              {
+                "course": "SOAN 121"
+              },
+              {
+                "course": "SOAN 234"
+              },
+              {
+                "course": "SOAN 242"
+              },
+              {
+                "course": "SOAN 246"
+              },
+              {
+                "course": "SOAN 248"
+              },
+              {
+                "course": "SOAN 260"
+              },
+              {
+                "course": "SOAN 264"
+              },
+              {
+                "course": "SOAN 265"
+              },
+              {
+                "course": "SWRK 221"
+              },
+              {
+                "course": "SWRK 258"
+              },
+              {
+                "course": "WMGST 121"
+              }
+            ],
+            "repeats": "all",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Seminar": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these courses",
+            "courses": [
+              {
+                "course": "AMST 301"
+              }
+            ],
+            "repeats": "all",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Topics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these courses",
+            "courses": [
+              {
+                "course": "AMST 205"
+              },
+              {
+                "course": "AMST 206"
+              },
+              {
+                "course": "AMST 207"
+              },
+              {
+                "course": "AMST 208"
+              },
+              {
+                "course": "AMST 209"
+              },
+              {
+                "course": "AMST 210"
+              }
+            ],
+            "repeats": "all",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    }
+  },
+  "attributes": null
+}

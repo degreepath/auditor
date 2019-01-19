@@ -14,7 +14,8 @@
         "requirement": "Requirements",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Prerequisites": {
@@ -59,9 +60,11 @@
               {
                 "course": "SOAN 264"
               }
-            ]
+            ],
+            "surplus": null
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -107,7 +110,8 @@
             "requirement": "Ethics",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -121,7 +125,8 @@
               {
                 "course": "AMCON 101"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],

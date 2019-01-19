@@ -26,7 +26,8 @@
         "requirement": "Lasting Legacy",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Distribution": {
@@ -84,7 +85,8 @@
               }
             }
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -378,7 +380,8 @@
           {
             "course": "ART 398"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

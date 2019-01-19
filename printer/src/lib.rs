@@ -6,10 +6,9 @@ use degreepath_parser::requirement::Requirement;
 use degreepath_parser::rules;
 use degreepath_parser::rules::Rule;
 use degreepath_parser::rules::{both, either, given};
+use degreepath_parser::Print;
 use std::fmt;
 use std::fmt::Write;
-
-use degreepath_parser::rules::traits::PrettyPrint;
 
 extern crate textwrap;
 
@@ -218,7 +217,7 @@ fn collect_active_requirements(req: &Requirement) -> Vec<(String, Requirement)> 
 		.collect()
 }
 
-fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::requirement::Rule> {
+fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::req_ref::Rule> {
 	use degreepath_parser::rules::Rule::*;
 
 	match rule {
@@ -229,7 +228,7 @@ fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::requirement::
 			.collect::<Vec<_>>(),
 		Requirement(rule) => vec![rule.clone()],
 		Course(_) => vec![],
-		Both(both::Rule { both: pair }) | Either(either::Rule { either: pair }) => {
+		Both(both::Rule { both: pair, .. }) | Either(either::Rule { either: pair, .. }) => {
 			let pair = pair.clone();
 			vec![pair.0, pair.1]
 				.iter()

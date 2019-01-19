@@ -18,7 +18,8 @@
         "requirement": "Classics",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Ancient Roman History": {
@@ -33,7 +34,8 @@
           {
             "course": "LATIN 372"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -78,7 +80,8 @@
           {
             "course": "CLASS 396"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -126,7 +129,8 @@
           {
             "course": "LATIN 377"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

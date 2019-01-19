@@ -1,0 +1,569 @@
+{
+  "name": "Art History",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Intro",
+        "optional": false
+      },
+      {
+        "requirement": "Methods",
+        "optional": false
+      },
+      {
+        "requirement": "Studio Art",
+        "optional": false
+      },
+      {
+        "requirement": "Distribution",
+        "optional": false
+      },
+      {
+        "requirement": "Lasting Legacy",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Distribution": {
+      "message": "At least two courses must focus on Asian, African, Indigenous American, or Near Eastern/Islamic art; at least two courses must focus on American or European art; one course must cover art created before 1700 CE; one must cover art created after 1700 CE.",
+      "department_audited": false,
+      "result": {
+        "both": [
+          {
+            "count": "all",
+            "of": [
+              {
+                "requirement": "Asian, African, Indigenous American, or Near Eastern/Islamic Art",
+                "optional": false
+              },
+              {
+                "requirement": "European and American Art",
+                "optional": false
+              },
+              {
+                "requirement": "Art created before 1700 CE",
+                "optional": false
+              },
+              {
+                "requirement": "Art created after 1700 CE",
+                "optional": false
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "given": "these requirements",
+            "requirements": [
+              {
+                "requirement": "Asian, African, Indigenous American, or Near Eastern/Islamic Art",
+                "optional": false
+              },
+              {
+                "requirement": "European and American Art",
+                "optional": false
+              },
+              {
+                "requirement": "Art created before 1700 CE",
+                "optional": false
+              },
+              {
+                "requirement": "Art created after 1700 CE",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Art created after 1700 CE": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "art_period": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "post-1700"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Art created before 1700 CE": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "art_period": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "pre-1700"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Asian, African, Indigenous American, or Near Eastern/Islamic Art": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "art_locale": {
+                "Or": [
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "asian"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "african"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "indigenous-american"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "near-eastern"
+                    }
+                  }
+                ]
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 2
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "European and American Art": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "art_locale": {
+                "Or": [
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "european"
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "american"
+                    }
+                  }
+                ]
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 2
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Intro": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ART 153"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Lasting Legacy": {
+      "message": "Majors must successfully complete the non-credit, senior \"lasting legacy\" project or its equivalent.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Methods": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ART 350"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Studio Art": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "ART 102"
+          },
+          {
+            "course": "ART 103"
+          },
+          {
+            "course": "ART 104"
+          },
+          {
+            "course": "ART 106"
+          },
+          {
+            "course": "ART 205"
+          },
+          {
+            "course": "ART 207"
+          },
+          {
+            "course": "ART 221"
+          },
+          {
+            "course": "ART 222"
+          },
+          {
+            "course": "ART 223"
+          },
+          {
+            "course": "ART 224"
+          },
+          {
+            "course": "ART 225"
+          },
+          {
+            "course": "ART 226"
+          },
+          {
+            "course": "ART 227"
+          },
+          {
+            "course": "ART 228"
+          },
+          {
+            "course": "ART 229"
+          },
+          {
+            "course": "ART 232"
+          },
+          {
+            "course": "ART 233"
+          },
+          {
+            "course": "ART 234"
+          },
+          {
+            "course": "ART 236"
+          },
+          {
+            "course": "ART 238"
+          },
+          {
+            "course": "ART 240"
+          },
+          {
+            "course": "ART 246"
+          },
+          {
+            "course": "ART 294"
+          },
+          {
+            "course": "ART 298"
+          },
+          {
+            "course": "ART 340"
+          },
+          {
+            "course": "ART 343"
+          },
+          {
+            "course": "ART 394"
+          },
+          {
+            "course": "ART 398"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": {
+    "definitions": {
+      "art_locale": {
+        "type": "array",
+        "multiple values can be used": true
+      },
+      "art_period": {
+        "type": "string"
+      }
+    },
+    "courses": {
+      "ART 161, 2000-1": {
+        "art_locale": [
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 161, 2001-1": {
+        "art_locale": [
+          "african"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 251": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 252": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 253": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 254": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 255": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 256": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 259": {
+        "art_locale": [
+          "asian",
+          "african",
+          "near-eastern"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 260": {
+        "art_locale": [
+          "asian",
+          "african",
+          "near-eastern"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 261": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 262": {
+        "art_locale": [
+          "asian",
+          "african",
+          "near-eastern"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 263": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 265": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 267": {
+        "art_locale": [
+          "asian",
+          "african",
+          "near-eastern"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 269": {
+        "art_locale": [
+          "asian",
+          "african"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 271": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 273": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ART 277": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 280": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ART 370": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "ASIAN 270": {
+        "art_locale": [
+          "asian",
+          "african"
+        ],
+        "art_period": "post-1700"
+      },
+      "ASIAN 310": {
+        "art_locale": [
+          "asian",
+          "african"
+        ],
+        "art_period": "pre-1700"
+      },
+      "ENVST 270": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      },
+      "PHIL 243": {
+        "art_locale": [
+          "european",
+          "american"
+        ],
+        "art_period": "post-1700"
+      }
+    }
+  }
+}

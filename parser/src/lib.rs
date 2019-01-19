@@ -11,12 +11,8 @@ pub mod area_of_study;
 pub mod requirement;
 pub mod rules;
 pub mod save;
+mod surplus;
+mod traits;
 mod util;
 
-#[cfg(test)]
-mod tests {
-	#[test]
-	fn it_works() {
-		assert_eq!(2 + 2, 4);
-	}
-}
+pub use traits::print::Print;

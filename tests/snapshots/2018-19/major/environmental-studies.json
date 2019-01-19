@@ -14,7 +14,8 @@
         "requirement": "Areas of Emphasis",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Areas of Emphasis": {
@@ -45,7 +46,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -69,7 +71,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "both": [
@@ -93,9 +96,11 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [
@@ -286,7 +291,8 @@
                 "requirement": "Level III Natural Science",
                 "optional": false
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -389,7 +395,8 @@
                       {
                         "course": "CHEM 254"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   {
                     "both": [
@@ -399,9 +406,11 @@
                       {
                         "course": "CHEM 256"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -419,7 +428,8 @@
                   {
                     "course": "BIO 226"
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -464,7 +474,8 @@
                     "lab": null,
                     "international": null
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -485,7 +496,8 @@
                   {
                     "course": "STAT 272"
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -515,7 +527,8 @@
                 "requirement": "Social Science Electives",
                 "optional": false
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -538,12 +551,14 @@
                       {
                         "course": "ECON 120"
                       }
-                    ]
+                    ],
+                    "surplus": null
                   },
                   {
                     "course": "ECON 242"
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -564,7 +579,8 @@
                   {
                     "course": "ES/PS 276"
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -603,7 +619,8 @@
                   {
                     "course": "PSCI 220"
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -684,7 +701,8 @@
                   {
                     "course": "AS/ES 227"
                   }
-                ]
+                ],
+                "surplus": null
               },
               "contract": false,
               "save": [],
@@ -709,7 +727,8 @@
           {
             "course": "ENVST 399"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

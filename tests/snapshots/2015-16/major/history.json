@@ -30,7 +30,8 @@
         "requirement": "Pre-Modern Period",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Europe & Russia": {
@@ -103,7 +104,8 @@
           {
             "course": "ASIAN 399"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -127,7 +129,8 @@
           {
             "course": "HIST 270"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

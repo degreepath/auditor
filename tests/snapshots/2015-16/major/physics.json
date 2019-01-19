@@ -26,7 +26,8 @@
         "requirement": "Upper-Level Elective",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Analytics": {
@@ -44,7 +45,8 @@
           {
             "course": "PHYS 232"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -92,7 +94,8 @@
           {
             "course": "PHYS 396"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -110,7 +113,8 @@
           {
             "course": "PHYS 245"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -134,7 +138,8 @@
           {
             "course": "PHYS 386"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -161,7 +166,8 @@
           {
             "course": "PHYS 390"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

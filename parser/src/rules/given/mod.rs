@@ -1,4 +1,5 @@
-use crate::rules::{course, requirement};
+use crate::rules::{course, req_ref};
+use crate::traits::{print, Util};
 use crate::util::{self, Oxford};
 
 pub mod action;
@@ -18,7 +19,7 @@ pub struct Rule {
 	pub action: action::Action,
 }
 
-impl crate::rules::traits::RuleTools for Rule {
+impl Util for Rule {
 	fn has_save_rule(&self) -> bool {
 		match &self.given {
 			Given::NamedVariable { .. } => true,
@@ -27,8 +28,8 @@ impl crate::rules::traits::RuleTools for Rule {
 	}
 }
 
-impl crate::rules::traits::PrettyPrint for Rule {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Rule {
+	fn print(&self) -> print::Result {
 		use std::fmt::Write;
 
 		let mut output = String::new();
@@ -338,7 +339,7 @@ pub enum Given {
 		repeats: RepeatMode,
 	},
 	#[serde(rename = "these requirements")]
-	TheseRequirements { requirements: Vec<requirement::Rule> },
+	TheseRequirements { requirements: Vec<req_ref::Rule> },
 	#[serde(rename = "areas of study")]
 	AreasOfStudy,
 	#[serde(rename = "save")]
@@ -351,8 +352,8 @@ pub enum CourseRule {
 	Value(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
 }
 
-impl crate::rules::traits::PrettyPrint for CourseRule {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for CourseRule {
+	fn print(&self) -> print::Result {
 		match &self {
 			CourseRule::Value(v) => v.print(),
 		}
@@ -390,6 +391,7 @@ pub enum What {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate::traits::print::Print;
 
 	#[test]
 	fn serialize_all_courses() {
@@ -562,11 +564,11 @@ do:
 		let data = Rule {
 			given: Given::TheseRequirements {
 				requirements: vec![
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 1".to_string(),
 						optional: false,
 					},
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 2".to_string(),
 						optional: true,
 					},
@@ -605,11 +607,11 @@ do:
 		let expected = Rule {
 			given: Given::TheseRequirements {
 				requirements: vec![
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 1".to_string(),
 						optional: false,
 					},
-					requirement::Rule {
+					req_ref::Rule {
 						requirement: "A Name 2".to_string(),
 						optional: true,
 					},
@@ -911,8 +913,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule = serde_yaml::from_str(&"{given: courses, what: courses, do: count >= 1}").unwrap();
 		let expected = "take at least one course";
 		assert_eq!(expected, input.print().unwrap());
@@ -920,8 +920,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline_filters() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule =
 			serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: courses, do: count >= 1}").unwrap();
 		let expected = "take at least one course with the “FOL-C” general education attribute";
@@ -936,8 +934,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline_repeats() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule = serde_yaml::from_str(
 			&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}",
 		)
@@ -983,8 +979,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline_credits() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule =
 			serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: credits, do: sum >= 1}").unwrap();
 		let expected =
@@ -1022,8 +1016,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline_departments() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule =
 			serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: departments, do: count >= 2}")
 				.unwrap();
@@ -1047,8 +1039,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline_grades() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule =
 			serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: grades, do: average >= 2.0}")
 				.unwrap();
@@ -1065,8 +1055,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline_terms() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule =
 			serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: terms, do: count >= 2}").unwrap();
 		let expected =
@@ -1082,8 +1070,6 @@ do: count >= 3"#;
 
 	#[test]
 	fn pretty_print_inline_given_requirements_what_courses() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}").unwrap();
 		let expected = "take enough courses to obtain at least one credit from among courses matched by the “Core” and “Modern” requirements";

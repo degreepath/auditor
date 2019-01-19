@@ -1,11 +1,12 @@
-pub mod action;
+pub mod action_only;
 pub mod both;
 pub mod count_of;
 pub mod course;
 pub mod either;
 pub mod given;
-pub mod requirement;
-pub mod traits;
+pub mod req_ref;
+
+use crate::traits::{print, Util};
 
 use crate::util;
 
@@ -13,16 +14,16 @@ use crate::util;
 #[serde(untagged)]
 pub enum Rule {
 	Course(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
-	Requirement(requirement::Rule),
+	Requirement(req_ref::Rule),
 	CountOf(count_of::Rule),
 	Both(both::Rule),
 	Either(either::Rule),
 	Given(given::Rule),
-	Do(action::Rule),
+	Do(action_only::Rule),
 }
 
-impl crate::rules::traits::PrettyPrint for Rule {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Rule {
+	fn print(&self) -> print::Result {
 		match &self {
 			Rule::Course(v) => Ok(format!("take {}", v.print()?)),
 			Rule::Requirement(v) => Ok(format!("complete the {} requirement", v.print()?)),
@@ -35,7 +36,7 @@ impl crate::rules::traits::PrettyPrint for Rule {
 	}
 }
 
-impl crate::rules::traits::RuleTools for Rule {
+impl Util for Rule {
 	fn has_save_rule(&self) -> bool {
 		match &self {
 			Rule::Course(v) => v.has_save_rule(),
@@ -50,8 +51,8 @@ impl crate::rules::traits::RuleTools for Rule {
 }
 
 impl Rule {
-	fn print_inner(&self) -> Result<String, std::fmt::Error> {
-		use crate::rules::traits::PrettyPrint;
+	fn print_inner(&self) -> print::Result {
+		use crate::traits::print::Print;
 
 		match &self {
 			Rule::Course(v) => v.print(),
@@ -68,6 +69,7 @@ impl Rule {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate::traits::print::Print;
 	use std::collections::BTreeMap;
 
 	#[test]
@@ -98,25 +100,28 @@ mod tests {
 		let data = vec![
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_b.clone()),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name".to_string(),
 				optional: true,
 			}),
 			Rule::CountOf(count_of::Rule {
 				count: count_of::Counter::Number(1),
 				of: vec![Rule::Course(course_a.clone())],
+				surplus: None,
 			}),
 			Rule::Both(both::Rule {
 				both: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Either(either::Rule {
 				either: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
@@ -125,7 +130,7 @@ mod tests {
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),
-			Rule::Do(action::Rule {
+			Rule::Do(action_only::Rule {
 				action: "$a < $b".parse().unwrap(),
 			}),
 		];
@@ -144,6 +149,7 @@ mod tests {
 - count: 1
   of:
     - course: ASIAN 101
+  surplus: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -153,6 +159,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -162,6 +169,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - given: courses
   limit: []
   where: {}
@@ -197,25 +205,28 @@ mod tests {
 		let expected = vec![
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_b.clone()),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name".to_string(),
 				optional: true,
 			}),
 			Rule::CountOf(count_of::Rule {
 				count: count_of::Counter::Number(1),
 				of: vec![Rule::Course(course_a.clone())],
+				surplus: None,
 			}),
 			Rule::Both(both::Rule {
 				both: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Either(either::Rule {
 				either: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
@@ -224,7 +235,7 @@ mod tests {
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),
-			Rule::Do(action::Rule {
+			Rule::Do(action_only::Rule {
 				action: "$a < $b".parse().unwrap(),
 			}),
 		];
@@ -243,6 +254,7 @@ mod tests {
 - count: 1
   of:
     - course: ASIAN 101
+  surplus: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -252,6 +264,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -261,6 +274,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - given: courses
   what: courses
   where: {}
@@ -285,6 +299,7 @@ mod tests {
 - count: 1
   of:
     - course: ASIAN 101
+  surplus: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -294,6 +309,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -303,6 +319,7 @@ mod tests {
       semester: ~
       lab: ~
       international: ~
+  surplus: ~
 - given: courses
   what: courses
   where: {}
@@ -349,29 +366,32 @@ mod tests {
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_a.clone()),
 			Rule::Course(course_b.clone()),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name 1".to_string(),
 				optional: false,
 			}),
-			Rule::Requirement(requirement::Rule {
+			Rule::Requirement(req_ref::Rule {
 				requirement: "Name 2".to_string(),
 				optional: true,
 			}),
 			Rule::CountOf(count_of::Rule {
 				count: count_of::Counter::Number(1),
 				of: vec![Rule::Course(course_a.clone())],
+				surplus: None,
 			}),
 			Rule::Both(both::Rule {
 				both: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Either(either::Rule {
 				either: (
 					Box::new(Rule::Course(course_a.clone())),
 					Box::new(Rule::Course(course_b.clone())),
 				),
+				surplus: None,
 			}),
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
@@ -380,7 +400,7 @@ mod tests {
 				limit: None,
 				action: "count < 2".parse().unwrap(),
 			}),
-			Rule::Do(action::Rule {
+			Rule::Do(action_only::Rule {
 				action: "$a < $b".parse().unwrap(),
 			}),
 		];
@@ -391,8 +411,6 @@ mod tests {
 
 	#[test]
 	fn pretty_print() {
-		use crate::rules::traits::PrettyPrint;
-
 		let data = r#"---
 - ASIAN 101
 - course: ASIAN 101

@@ -21,7 +21,7 @@ for catalog in $(find . -maxdepth 1 -type d -name '*-*' | sed 's|^./||' | grep -
 		SNAPSHOT_DIR="$SCRIPT_DIR/snapshots/$catalog/$kind"
 		mkdir -p "$SNAPSHOT_DIR"
 
-		for area in $(find . -maxdepth 1 -name '*.yaml' | sed 's|^./||' | sed 's|\.yaml||' | grep -v '^.$'); do
+		for area in $(find . -maxdepth 1 -name '*.yaml' | sed 's|^./||' | sed 's|\.yaml$||' | grep -v '^.$'); do
 			echo "current: $kind, $area"
 			cargo run --quiet --bin degreepath-printer-cli "./$area.yaml" > "$SNAPSHOT_DIR/$area.md.out"
 			mv "$SNAPSHOT_DIR/$area.md.out" "$SNAPSHOT_DIR/$area.md"

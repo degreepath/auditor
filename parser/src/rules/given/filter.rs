@@ -1,7 +1,7 @@
+use super::action::Operator;
+use crate::traits::print;
 use crate::util::{self, Oxford};
 use serde::de::{Deserialize, Deserializer};
-
-use super::action::Operator;
 
 use std::collections::BTreeMap;
 use std::fmt;
@@ -9,8 +9,8 @@ use std::str::FromStr;
 
 pub type Clause = BTreeMap<String, WrappedValue>;
 
-impl crate::rules::traits::PrettyPrint for Clause {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Clause {
+	fn print(&self) -> print::Result {
 		let mut clauses = vec![];
 		let mut expected_count = self.len();
 
@@ -333,8 +333,8 @@ impl WrappedValue {
 	}
 }
 
-impl crate::rules::traits::PrettyPrint for WrappedValue {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for WrappedValue {
+	fn print(&self) -> print::Result {
 		match &self {
 			WrappedValue::Single(v) => Ok(format!("{}", v.print()?)),
 			WrappedValue::Or(v) | WrappedValue::And(v) => {
@@ -424,7 +424,13 @@ impl FromStr for TaggedValue {
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		match s.get(0..1) {
 			Some("!") | Some("<") | Some(">") | Some("=") => {
-				let splitted: Vec<_> = s.split_whitespace().collect();
+				let splitted: Vec<&str> = s.split_whitespace().collect();
+
+				let splitted = if let Some((first, rest)) = splitted.split_first() {
+					vec![first.to_string(), rest.join(" ")]
+				} else {
+					vec![]
+				};
 
 				match splitted.as_slice() {
 					[value] => {
@@ -459,8 +465,8 @@ impl FromStr for TaggedValue {
 	}
 }
 
-impl crate::rules::traits::PrettyPrint for TaggedValue {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for TaggedValue {
+	fn print(&self) -> print::Result {
 		match &self.op {
 			Operator::EqualTo => Ok(format!("{}", self.value.print()?)),
 			_ => Ok(format!("{} {}", self.op, self.value.print()?)),
@@ -511,8 +517,8 @@ pub enum Value {
 	String(String),
 }
 
-impl crate::rules::traits::PrettyPrint for Value {
-	fn print(&self) -> Result<String, std::fmt::Error> {
+impl print::Print for Value {
+	fn print(&self) -> print::Result {
 		match &self {
 			Value::String(s) => Ok(format!("{}", s)),
 			Value::Integer(n) => Ok(format!("{}", n)),
@@ -597,6 +603,7 @@ impl fmt::Display for Value {
 mod tests {
 	use super::*;
 	use crate::rules::given::action::Operator;
+	use crate::traits::print::Print;
 
 	#[test]
 	fn serialize_simple() {
@@ -888,8 +895,6 @@ level:
 
 	#[test]
 	fn pretty_print_single_values() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Clause = deserialize_test(&"{gereqs: FOL-C}").unwrap();
 		let expected = "with the “FOL-C” general education attribute";
 		assert_eq!(expected, input.print().unwrap());
@@ -917,8 +922,6 @@ level:
 
 	#[test]
 	fn pretty_print_multiple_values() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Clause = deserialize_test(&"{semester: Fall | Interim}").unwrap();
 		let expected = "during a Fall or Interim semester";
 		assert_eq!(expected, input.print().unwrap());
@@ -935,8 +938,6 @@ level:
 
 	#[test]
 	fn pretty_print_negated_value() {
-		use crate::rules::traits::PrettyPrint;
-
 		let input: Clause = deserialize_test(&"{department: '! MATH'}").unwrap();
 		let expected = "outside of the MATH department";
 		assert_eq!(expected, input.print().unwrap());

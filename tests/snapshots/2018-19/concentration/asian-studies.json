@@ -1,0 +1,199 @@
+{
+  "name": "Asian Studies",
+  "type": "concentration",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "requirement": "Electives",
+    "optional": false
+  },
+  "requirements": {
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "these courses",
+        "courses": [
+          {
+            "course": "ASIAN 121"
+          },
+          {
+            "course": "ASIAN 123"
+          },
+          {
+            "course": "ASIAN 126"
+          },
+          {
+            "course": "ASIAN 130"
+          },
+          {
+            "course": "ASIAN 156"
+          },
+          {
+            "course": "ASIAN 200"
+          },
+          {
+            "course": "ASIAN 210"
+          },
+          {
+            "course": "ASIAN 215"
+          },
+          {
+            "course": "ASIAN 216"
+          },
+          {
+            "course": "ASIAN 220"
+          },
+          {
+            "course": "ASIAN 230"
+          },
+          {
+            "course": "ASIAN 235"
+          },
+          {
+            "course": "ASIAN 236"
+          },
+          {
+            "course": "ASIAN 237"
+          },
+          {
+            "course": "ASIAN 240"
+          },
+          {
+            "course": "ASIAN 268"
+          },
+          {
+            "course": "ASIAN 294"
+          },
+          {
+            "course": "ASIAN 298"
+          },
+          {
+            "course": "ASIAN 300"
+          },
+          {
+            "course": "ASIAN 384"
+          },
+          {
+            "course": "ASIAN 396"
+          },
+          {
+            "course": "ASIAN 397"
+          },
+          {
+            "course": "ASIAN 398"
+          },
+          {
+            "course": "ASIAN 399"
+          },
+          {
+            "course": "AR/AS 259"
+          },
+          {
+            "course": "AR/AS 260"
+          },
+          {
+            "course": "AR/AS 262"
+          },
+          {
+            "course": "AR/AS 270"
+          },
+          {
+            "course": "AR/AS 310"
+          },
+          {
+            "course": "AS/ES 277"
+          },
+          {
+            "course": "AS/HI 250"
+          },
+          {
+            "course": "AS/HI 251"
+          },
+          {
+            "course": "AS/HI 252"
+          },
+          {
+            "course": "AS/HI 253"
+          },
+          {
+            "course": "AS/HI 262"
+          },
+          {
+            "course": "AS/HI 345"
+          },
+          {
+            "course": "AS/PH 251"
+          },
+          {
+            "course": "AS/PS 245"
+          },
+          {
+            "course": "AS/PS 250"
+          },
+          {
+            "course": "AS/RE 253"
+          },
+          {
+            "course": "AS/RE 254"
+          },
+          {
+            "course": "AS/RE 256"
+          },
+          {
+            "course": "AS/RE 257"
+          },
+          {
+            "course": "AS/RE 289"
+          },
+          {
+            "course": "AS/SA 239"
+          },
+          {
+            "course": "ECON 218"
+          },
+          {
+            "course": "ECON 238"
+          },
+          {
+            "course": "HIST 240"
+          },
+          {
+            "course": "PHIL 127"
+          }
+        ],
+        "repeats": "first",
+        "limit": [
+          {
+            "where": {
+              "institution": {
+                "Single": {
+                  "op": "NotEqualTo",
+                  "value": {
+                    "String": "St. Olaf College"
+                  }
+                }
+              }
+            },
+            "at_most": 4
+          }
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 6
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}

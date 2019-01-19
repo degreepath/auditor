@@ -38,7 +38,8 @@
         "requirement": "Seminars",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Analytical": {
@@ -53,7 +54,8 @@
           {
             "course": "CHEM 256"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -70,7 +72,8 @@
           {
             "course": "MATH 128"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -102,7 +105,8 @@
               {
                 "course": "CHEM 378"
               }
-            ]
+            ],
+            "surplus": null
           },
           {
             "course": "CHEM 384"
@@ -119,7 +123,8 @@
           {
             "course": "CHEM 398"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -143,7 +148,8 @@
             "requirement": "CH/BI",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -163,7 +169,8 @@
               {
                 "course": "CH/BI 227"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -184,7 +191,8 @@
               {
                 "course": "CHEM 125"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -202,7 +210,8 @@
               {
                 "course": "CHEM 126"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -228,7 +237,8 @@
           {
             "course": "CHEM 254"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -246,7 +256,8 @@
           {
             "course": "CHEM 371"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -265,7 +276,8 @@
             "requirement": "Majors",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -317,7 +329,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -335,7 +348,8 @@
               {
                 "course": "PHYS 124"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],

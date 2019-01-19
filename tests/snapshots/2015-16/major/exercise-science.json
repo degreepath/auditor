@@ -14,7 +14,8 @@
         "requirement": "Electives",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Core": {
@@ -47,7 +48,8 @@
           {
             "course": "PSYCH 125"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -89,9 +91,11 @@
               {
                 "course": "STAT 214"
               }
-            ]
+            ],
+            "surplus": null
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

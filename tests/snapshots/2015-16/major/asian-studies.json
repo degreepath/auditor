@@ -22,7 +22,8 @@
         "requirement": "Electives",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Electives": {
@@ -72,7 +73,8 @@
               }
             }
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [
@@ -378,7 +380,8 @@
           {
             "course": "JAPAN 398"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -395,7 +398,8 @@
           {
             "course": "ASIAN 399"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

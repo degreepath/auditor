@@ -1,0 +1,442 @@
+{
+  "name": "Asian Studies",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Language",
+        "optional": false
+      },
+      {
+        "requirement": "Seminar",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "these courses",
+        "courses": [
+          {
+            "course": "ASIAN 121"
+          },
+          {
+            "course": "ASIAN 123"
+          },
+          {
+            "course": "ASIAN 126"
+          },
+          {
+            "course": "ASIAN 130"
+          },
+          {
+            "course": "ASIAN 156"
+          },
+          {
+            "course": "ASIAN 200"
+          },
+          {
+            "course": "ASIAN 210"
+          },
+          {
+            "course": "ASIAN 215"
+          },
+          {
+            "course": "ASIAN 216"
+          },
+          {
+            "course": "ASIAN 220"
+          },
+          {
+            "course": "ASIAN 230"
+          },
+          {
+            "course": "ASIAN 235"
+          },
+          {
+            "course": "ASIAN 236"
+          },
+          {
+            "course": "ASIAN 237"
+          },
+          {
+            "course": "ASIAN 240"
+          },
+          {
+            "course": "ASIAN 268"
+          },
+          {
+            "course": "ASIAN 294"
+          },
+          {
+            "course": "ASIAN 298"
+          },
+          {
+            "course": "ASIAN 300"
+          },
+          {
+            "course": "ASIAN 384"
+          },
+          {
+            "course": "ASIAN 396"
+          },
+          {
+            "course": "ASIAN 398"
+          },
+          {
+            "course": "AR/AS 259"
+          },
+          {
+            "course": "AR/AS 260"
+          },
+          {
+            "course": "AR/AS 262"
+          },
+          {
+            "course": "AR/AS 270"
+          },
+          {
+            "course": "AR/AS 310"
+          },
+          {
+            "course": "AS/ES 277"
+          },
+          {
+            "course": "AS/HI 250"
+          },
+          {
+            "course": "AS/HI 251"
+          },
+          {
+            "course": "AS/HI 252"
+          },
+          {
+            "course": "AS/HI 253"
+          },
+          {
+            "course": "AS/HI 262"
+          },
+          {
+            "course": "AS/HI 345"
+          },
+          {
+            "course": "AS/PH 251"
+          },
+          {
+            "course": "AS/PS 245"
+          },
+          {
+            "course": "AS/PS 250"
+          },
+          {
+            "course": "AS/RE 253"
+          },
+          {
+            "course": "AS/RE 254"
+          },
+          {
+            "course": "AS/RE 256"
+          },
+          {
+            "course": "AS/RE 257"
+          },
+          {
+            "course": "AS/RE 289"
+          },
+          {
+            "course": "AS/SA 239"
+          },
+          {
+            "course": "CHIN 301"
+          },
+          {
+            "course": "CHIN 302"
+          },
+          {
+            "course": "CHIN 320"
+          },
+          {
+            "course": "CHIN 351"
+          },
+          {
+            "course": "CHIN 394"
+          },
+          {
+            "course": "CHIN 398"
+          },
+          {
+            "course": "JAPAN 301"
+          },
+          {
+            "course": "JAPAN 302"
+          },
+          {
+            "course": "JAPAN 320"
+          },
+          {
+            "course": "JAPAN 394"
+          },
+          {
+            "course": "JAPAN 398"
+          },
+          {
+            "course": "ECON 218"
+          },
+          {
+            "course": "ECON 238"
+          },
+          {
+            "course": "HIST 240"
+          },
+          {
+            "course": "PHIL 127"
+          }
+        ],
+        "repeats": "first",
+        "limit": [
+          {
+            "where": {
+              "level": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Integer": 100
+                  }
+                }
+              }
+            },
+            "at_most": 2
+          },
+          {
+            "where": {
+              "asian_region": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "china"
+                  }
+                }
+              }
+            },
+            "at_most": 4
+          },
+          {
+            "where": {
+              "asian_region": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "japan"
+                  }
+                }
+              }
+            },
+            "at_most": 4
+          },
+          {
+            "where": {
+              "institution": {
+                "Single": {
+                  "op": "NotEqualTo",
+                  "value": {
+                    "String": "St. Olaf College"
+                  }
+                }
+              },
+              "level": {
+                "Or": [
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "Integer": 200
+                    }
+                  },
+                  {
+                    "op": "EqualTo",
+                    "value": {
+                      "Integer": 300
+                    }
+                  }
+                ]
+              }
+            },
+            "at_most": 4
+          }
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 6
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "CHIN 231"
+          },
+          {
+            "course": "CHIN 232"
+          },
+          {
+            "course": "CHIN 301"
+          },
+          {
+            "course": "CHIN 302"
+          },
+          {
+            "course": "CHIN 320"
+          },
+          {
+            "course": "CHIN 351"
+          },
+          {
+            "course": "JAPAN 231"
+          },
+          {
+            "course": "JAPAN 232"
+          },
+          {
+            "course": "JAPAN 301"
+          },
+          {
+            "course": "JAPAN 302"
+          },
+          {
+            "course": "JAPAN 320"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Seminar": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "ASIAN 397"
+          },
+          {
+            "course": "ASIAN 399"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".courses"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": {
+    "definitions": {
+      "asian_region": {
+        "type": "array",
+        "multiple values can be used": false
+      }
+    },
+    "courses": {
+      "ASIAN 230 <=2014-5": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "ASIAN 240": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "ASIAN 268 2012-3": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "CHIN 231": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "CHIN 232": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "CHIN 301": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "CHIN 302": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "CHIN 320": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "CHIN 351": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "JAPAN 231": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "JAPAN 232": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "JAPAN 301": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "JAPAN 302": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "JAPAN 320": {
+        "asian_region": [
+          "japan"
+        ]
+      }
+    }
+  }
+}

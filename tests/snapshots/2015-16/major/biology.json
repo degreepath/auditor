@@ -26,7 +26,8 @@
         "requirement": "Chemistry",
         "optional": false
       }
-    ]
+    ],
+    "surplus": null
   },
   "requirements": {
     "Chemistry": {
@@ -47,7 +48,8 @@
             "requirement": "CH/BI",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -64,7 +66,8 @@
               {
                 "course": "CH/BI 126"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -85,7 +88,8 @@
               {
                 "course": "CHEM 126"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -103,7 +107,8 @@
               {
                 "course": "CHEM 126"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -133,7 +138,8 @@
             "requirement": "Ecology",
             "optional": false
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -153,7 +159,8 @@
               {
                 "course": "CH/BI 127"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -186,7 +193,8 @@
               {
                 "course": "BIO 275"
               }
-            ]
+            ],
+            "surplus": null
           },
           "contract": false,
           "save": [],
@@ -382,7 +390,8 @@
           {
             "course": "BIO 391"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -443,7 +452,8 @@
           {
             "course": "BIO 391"
           }
-        ]
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
