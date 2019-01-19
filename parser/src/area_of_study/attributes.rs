@@ -1,9 +1,33 @@
 use std::collections::BTreeMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Attributes {
+	#[serde(default)]
+	pub defaults: Defaults,
+	#[serde(default)]
 	pub definitions: BTreeMap<String, Definition>,
+	#[serde(default)]
 	pub courses: BTreeMap<String, Application>,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Default)]
+pub struct Defaults {
+	#[serde(rename="may count for multiple requirements",)]
+	may_count_for_multiple_requirements: BoolOrPath,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(untagged)]
+enum BoolOrPath {
+	Bool(bool),
+	Path(Vec<Vec<String>>),
+}
+
+impl Default for BoolOrPath {
+	fn default() -> Self {
+		BoolOrPath::Bool(false)
+	}
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -33,5 +57,6 @@ pub enum Mode {
 #[serde(untagged)]
 pub enum Value {
 	Vec(Vec<String>),
+	Path(Vec<Vec<String>>),
 	String(String),
 }
