@@ -1,0 +1,135 @@
+{
+  "name": "Latin",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Language",
+        "optional": false
+      },
+      {
+        "requirement": "Classics",
+        "optional": false
+      },
+      {
+        "requirement": "Ancient Roman History",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Ancient Roman History": {
+      "message": "TODO find out what courses are considered \"ancient roman history\"",
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "CLASS 111"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Classics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "CLASS 121"
+          },
+          {
+            "course": "CLASS 123"
+          },
+          {
+            "course": "CLASS 126"
+          },
+          {
+            "course": "CLASS 129"
+          },
+          {
+            "course": "CLASS 241"
+          },
+          {
+            "course": "CLASS 243"
+          },
+          {
+            "course": "CLASS 244"
+          },
+          {
+            "course": "CLASS 251"
+          },
+          {
+            "course": "CLASS 253"
+          },
+          {
+            "course": "CLASS 396"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 7,
+        "of": [
+          {
+            "course": "LATIN 111"
+          },
+          {
+            "course": "LATIN 112"
+          },
+          {
+            "course": "LATIN 231"
+          },
+          {
+            "course": "LATIN 235"
+          },
+          {
+            "course": "LATIN 252"
+          },
+          {
+            "course": "LATIN 370"
+          },
+          {
+            "course": "LATIN 371"
+          },
+          {
+            "course": "LATIN 372"
+          },
+          {
+            "course": "LATIN 373"
+          },
+          {
+            "course": "LATIN 374"
+          },
+          {
+            "course": "LATIN 375"
+          },
+          {
+            "course": "LATIN 377"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
