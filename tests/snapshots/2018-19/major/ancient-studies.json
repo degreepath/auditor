@@ -297,6 +297,7 @@
         ],
         "surplus": [
           "Electives",
+          ".result",
           ".of"
         ]
       },
@@ -318,6 +319,7 @@
         ],
         "surplus": [
           "Electives",
+          ".result",
           ".of"
         ]
       },
