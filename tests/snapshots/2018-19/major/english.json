@@ -1,0 +1,576 @@
+{
+  "name": "English",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Literary Studies",
+        "optional": false
+      },
+      {
+        "requirement": "Cross-Cultural Studies",
+        "optional": false
+      },
+      {
+        "requirement": "Literary History",
+        "optional": false
+      },
+      {
+        "either": [
+          {
+            "requirement": "Cross-Disciplinary Studies",
+            "optional": false
+          },
+          {
+            "requirement": "Genre Studies",
+            "optional": false
+          }
+        ],
+        "surplus": null
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      },
+      {
+        "requirement": "1800s",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "1800s": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "both": [
+          {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "english_period": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "pre-1800"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "english_period": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "post-1800"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Cross-Cultural Studies": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "english_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "cross-cultural"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Cross-Disciplinary Studies": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "english_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "cross-disciplinary"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "english_topic": {
+            "Or": [
+              {
+                "op": "EqualTo",
+                "value": {
+                  "String": "elective"
+                }
+              },
+              {
+                "op": "EqualTo",
+                "value": {
+                  "String": "genre-studies"
+                }
+              },
+              {
+                "op": "EqualTo",
+                "value": {
+                  "String": "cross-cultural"
+                }
+              },
+              {
+                "op": "EqualTo",
+                "value": {
+                  "String": "literary-history"
+                }
+              },
+              {
+                "op": "EqualTo",
+                "value": {
+                  "String": "cross-disciplinary"
+                }
+              }
+            ]
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 6
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Genre Studies": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "english_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "genre-studies"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Literary History": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "english_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "literary-history"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Literary Studies": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ENGL 185"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": {
+    "defaults": {
+      "may count for multiple requirements": false
+    },
+    "definitions": {
+      "english_period": {
+        "type": "string"
+      },
+      "english_topic": {
+        "type": "string"
+      }
+    },
+    "courses": {
+      "ENGL 200 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 200 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 203 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 204 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 205 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 205 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 206 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 207 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 207 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 208 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 209 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 209 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-cultural"
+      },
+      "ENGL 220 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 220 2018-3": {
+        "engl_period": "pre-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 223 2017-1": {
+        "engl_period": "pre-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 223 2018-1": {
+        "engl_period": "pre-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 228 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 229 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 229 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 232 2017-3": {
+        "engl_period": "pre-1800",
+        "engl_topic": "literary-history"
+      },
+      "ENGL 242 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 242 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 251 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "elective"
+      },
+      "ENGL 253 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "elective"
+      },
+      "ENGL 256 2018-3": {
+        "engl_period": "pre-1800",
+        "engl_topic": "elective"
+      },
+      "ENGL 258 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "elective"
+      },
+      "ENGL 258 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "elective"
+      },
+      "ENGL 260 2017-1": {
+        "engl_period": "pre-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 260 2017-2": {
+        "engl_period": "pre-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 260 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 260 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 263 2017-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 266 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 267 2017-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 269 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 271 2017-1": {
+        "engl_period": "pre-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 275 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 275 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 276 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 280 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 280 2017-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 280A 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 280A 2018-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 280B 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 280B 2018-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 282 2017-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 282 2018-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 283 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 283 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 284 2018-1": {
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 285 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 286 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 287 2018-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 289 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 289 2018-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 290 2017-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "cross-disciplinary"
+      },
+      "ENGL 291 2017-3": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 292 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 292 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 293 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 293 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 296 2017-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ENGL 296 2018-1": {
+        "engl_period": "post-1800",
+        "engl_topic": "genre-studies"
+      },
+      "ID 257 2017-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "elective"
+      },
+      "ID 258 2017-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "elective"
+      },
+      "ID 258 2018-2": {
+        "engl_period": "post-1800",
+        "engl_topic": "elective"
+      }
+    }
+  }
+}
