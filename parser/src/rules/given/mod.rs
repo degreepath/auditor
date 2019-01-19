@@ -113,11 +113,11 @@ impl print::Print for Rule {
 				match (mode, &self.what) {
 					(RepeatMode::First, What::Courses) => {
 						// TODO: expose last vs. first in output somehow?
-						write!(&mut output, "take {}", courses)?;
+						write!(&mut output, "take {} courses from among {}", self.action.print()?, courses)?;
 					}
 					(RepeatMode::Last, What::Courses) => {
 						// TODO: expose last vs. first in output somehow?
-						write!(&mut output, "take {}", courses)?;
+						write!(&mut output, "take {} courses from among {}", self.action.print()?, courses)?;
 					}
 					(RepeatMode::All, What::Courses) => {
 						// TODO: special-case "once" and "twice"
