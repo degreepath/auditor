@@ -300,10 +300,10 @@
       "may count for multiple requirements": false
     },
     "definitions": {
-      "english_period": {
+      "engl_period": {
         "type": "string"
       },
-      "english_topic": {
+      "engl_topic": {
         "type": "string"
       }
     },
