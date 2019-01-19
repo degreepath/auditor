@@ -253,6 +253,9 @@
     }
   },
   "attributes": {
+    "defaults": {
+      "may count for multiple requirements": true
+    },
     "definitions": {
       "history_era": {
         "type": "string"

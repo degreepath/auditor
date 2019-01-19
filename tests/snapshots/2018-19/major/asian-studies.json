@@ -360,6 +360,9 @@
     }
   },
   "attributes": {
+    "defaults": {
+      "may count for multiple requirements": false
+    },
     "definitions": {
       "asian_region": {
         "type": "array",

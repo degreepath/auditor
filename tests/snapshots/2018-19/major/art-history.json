@@ -377,6 +377,9 @@
     }
   },
   "attributes": {
+    "defaults": {
+      "may count for multiple requirements": false
+    },
     "definitions": {
       "art_locale": {
         "type": "array",

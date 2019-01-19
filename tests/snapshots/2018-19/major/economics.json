@@ -1,0 +1,229 @@
+{
+  "name": "Economics",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Foundation",
+        "optional": false
+      },
+      {
+        "requirement": "Core",
+        "optional": false
+      },
+      {
+        "requirement": "Economic Analysis",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Core": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "ECON 261"
+          },
+          {
+            "course": "ECON 262"
+          },
+          {
+            "either": [
+              {
+                "course": "ECON 263"
+              },
+              {
+                "both": [
+                  {
+                    "course": "STAT 272"
+                  },
+                  {
+                    "course": "ECON 385"
+                  }
+                ],
+                "surplus": null
+              }
+            ],
+            "surplus": null
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Economic Analysis": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Level II",
+            "optional": false
+          },
+          {
+            "requirement": "Level III",
+            "optional": false
+          },
+          {
+            "given": "these requirements",
+            "requirements": [
+              {
+                "requirement": "Level II",
+                "optional": false
+              },
+              {
+                "requirement": "Level III",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 2
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Level II": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 1,
+            "of": [
+              {
+                "course": "ECON 200"
+              },
+              {
+                "course": "ECON 210"
+              },
+              {
+                "course": "ECON 218"
+              },
+              {
+                "course": "ECON 220"
+              },
+              {
+                "course": "ECON 222"
+              },
+              {
+                "course": "ECON 242"
+              },
+              {
+                "course": "ECON 243"
+              },
+              {
+                "course": "ECON 245"
+              },
+              {
+                "course": "ECON 247"
+              },
+              {
+                "course": "ECON 249"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Level III": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 2,
+            "of": [
+              {
+                "course": "ECON 371"
+              },
+              {
+                "course": "ECON 372"
+              },
+              {
+                "course": "ECON 373"
+              },
+              {
+                "course": "ECON 374"
+              },
+              {
+                "course": "ECON 376"
+              },
+              {
+                "course": "ECON 382"
+              },
+              {
+                "course": "ECON 385"
+              },
+              {
+                "course": "ECON 399"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Foundation": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "MATH 120"
+          },
+          {
+            "course": "MATH 119"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": {
+    "defaults": {
+      "may count for multiple requirements": false
+    },
+    "definitions": {},
+    "courses": {
+      "ECON 385": {
+        "may count for multiple requirements": [
+          [
+            "Core"
+          ],
+          [
+            "Economic Analysis",
+            "Level III"
+          ]
+        ]
+      }
+    }
+  }
+}
