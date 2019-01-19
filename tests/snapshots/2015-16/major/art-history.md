@@ -63,25 +63,25 @@ For this section, you must do all of the following:
 For this requirement, you must take at least two courses from among ART 259, ART 260, ART 262, ART 267, and ASIAN 310.
 
 ## European and American art
-For this requirement, you must take at least two courses from among ART 269 and ASIAN 270.
+For this requirement, you must take both ART 269 and ASIAN 270.
 
 ## art created before 1700 CE
-For this requirement, you must take at least one courses from among ART 253, ART 255, ART 263, ART 271, and ART 273.
+For this requirement, you must take at least one course from among ART 253, ART 255, ART 263, ART 271, and ART 273.
 
 ## art created after 1700 CE
-For this requirement, you must take at least one courses from among ART 251, ART 252, ART 253, ART 261, ART 265, ART 277, ART 280, ART 256, ART 370, ENVST 270, and PHIL 243.
+For this requirement, you must take at least one course from among ART 251, ART 252, ART 253, ART 261, ART 265, ART 277, ART 280, ART 256, ART 370, ENVST 270, and PHIL 243.
 
 ## Asian, African, Indigenous American, or Near Eastern/Islamic art
 For this requirement, you must take at least two courses from among ART 259, ART 260, ART 262, ART 267, and ASIAN 310.
 
 ## European and American art
-For this requirement, you must take at least two courses from among ART 269 and ASIAN 270.
+For this requirement, you must take both ART 269 and ASIAN 270.
 
 ## art created before 1700 CE
-For this requirement, you must take at least one courses from among ART 253, ART 255, ART 263, ART 271, and ART 273.
+For this requirement, you must take at least one course from among ART 253, ART 255, ART 263, ART 271, and ART 273.
 
 ## art created after 1700 CE
-For this requirement, you must take at least one courses from among ART 251, ART 252, ART 253, ART 261, ART 265, ART 277, ART 280, ART 256, ART 370, ENVST 270, and PHIL 243.
+For this requirement, you must take at least one course from among ART 251, ART 252, ART 253, ART 261, ART 265, ART 277, ART 280, ART 256, ART 370, ENVST 270, and PHIL 243.
 
 
 # Lasting Legacy
