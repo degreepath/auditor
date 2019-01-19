@@ -1,0 +1,556 @@
+{
+  "name": "Political Science",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "count": "all",
+        "of": [
+          {
+            "requirement": "Research Methods",
+            "optional": false
+          },
+          {
+            "requirement": "American Politics and Public Policy",
+            "optional": false
+          },
+          {
+            "requirement": "Comparative Politics",
+            "optional": false
+          },
+          {
+            "requirement": "International Relations",
+            "optional": false
+          },
+          {
+            "requirement": "Political Theory",
+            "optional": false
+          },
+          {
+            "requirement": "Additional Courses",
+            "optional": true
+          }
+        ],
+        "surplus": null
+      },
+      {
+        "given": "these requirements",
+        "requirements": [
+          {
+            "requirement": "Research Methods",
+            "optional": false
+          },
+          {
+            "requirement": "American Politics and Public Policy",
+            "optional": false
+          },
+          {
+            "requirement": "Comparative Politics",
+            "optional": false
+          },
+          {
+            "requirement": "International Relations",
+            "optional": false
+          },
+          {
+            "requirement": "Political Theory",
+            "optional": false
+          },
+          {
+            "requirement": "Additional Courses",
+            "optional": false
+          }
+        ],
+        "limit": null,
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 9
+          }
+        }
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Additional Courses": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "requirement": "Statistics",
+            "optional": false
+          },
+          {
+            "requirement": "World Langauge",
+            "optional": false
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Statistics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "department": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "STAT"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "World Langauge": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "either": [
+              {
+                "requirement": "French, German, Spanish",
+                "optional": false
+              },
+              {
+                "requirement": "Chinese, Greek, Latin, Japanese, Norwegian, Russian",
+                "optional": false
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Chinese, Greek, Latin, Japanese, Norwegian, Russian": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Or": [
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "CHIN"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "GREEK"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "LATIN"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "JAPAN"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "NORW"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "RUSSN"
+                        }
+                      }
+                    ]
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "GreaterThanEqualTo",
+                      "value": {
+                        "Integer": 231
+                      }
+                    }
+                  }
+                },
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "French, German, Spanish": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Or": [
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "FREN"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "GERM"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "SPAN"
+                        }
+                      }
+                    ]
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "GreaterThanEqualTo",
+                      "value": {
+                        "Integer": 232
+                      }
+                    }
+                  }
+                },
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
+        }
+      }
+    },
+    "American Politics and Public Policy": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "psci_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "american"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Comparative Politics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "psci_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "comparative"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "International Relations": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "psci_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "international"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "PSCI 311"
+          },
+          {
+            "course": "PSCI 321"
+          },
+          {
+            "course": "PSCI 350"
+          },
+          {
+            "course": "PSCI 367"
+          },
+          {
+            "course": "PSCI 370"
+          },
+          {
+            "course": "PSCI 382"
+          },
+          {
+            "course": "PSCI 384"
+          },
+          {
+            "course": "PSCI 385"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Political Theory": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "psci_topic": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "theory"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Research Methods": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "PSCI 220"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": {
+    "defaults": {
+      "may count for multiple requirements": false
+    },
+    "definitions": {
+      "psci_topic": {
+        "type": "string"
+      }
+    },
+    "courses": {
+      "AS/PS 255": {
+        "psci_topic": "comparative"
+      },
+      "ES/PS 201": {
+        "psci_topic": "international"
+      },
+      "ES/PS 225": {
+        "psci_topic": "theory"
+      },
+      "ES/PS 276": {
+        "psci_topic": "american"
+      },
+      "PSCI 111": {
+        "psci_topic": "american"
+      },
+      "PSCI 112": {
+        "psci_topic": "comparative"
+      },
+      "PSCI 113": {
+        "psci_topic": "theory"
+      },
+      "PSCI 115": {
+        "psci_topic": "international"
+      },
+      "PSCI 117": {
+        "psci_topic": "comparative"
+      },
+      "PSCI 119": {
+        "psci_topic": "theory"
+      },
+      "PSCI 121": {
+        "psci_topic": "international"
+      },
+      "PSCI 204": {
+        "psci_topic": "american"
+      },
+      "PSCI 211": {
+        "psci_topic": "american"
+      },
+      "PSCI 232": {
+        "psci_topic": "theory"
+      },
+      "PSCI 244": {
+        "psci_topic": "american"
+      },
+      "PSCI 245": {
+        "psci_topic": "international"
+      },
+      "PSCI 252": {
+        "psci_topic": "comparative"
+      },
+      "PSCI 255": {
+        "psci_topic": "american"
+      },
+      "PSCI 257": {
+        "psci_topic": "international"
+      },
+      "PSCI 258": {
+        "psci_topic": "international"
+      },
+      "PSCI 259": {
+        "psci_topic": "theory"
+      },
+      "PSCI 260": {
+        "psci_topic": "theory"
+      },
+      "PSCI 262": {
+        "psci_topic": "theory"
+      },
+      "PSCI 264": {
+        "psci_topic": "comparative"
+      },
+      "PSCI 272": {
+        "psci_topic": "american"
+      },
+      "PSCI 282": {
+        "psci_topic": "comparative"
+      },
+      "PSCI 283": {
+        "psci_topic": "comparative"
+      },
+      "PSCI 284": {
+        "psci_topic": "theory"
+      },
+      "PSCI 285": {
+        "psci_topic": "international"
+      },
+      "PSCI 299 2000-1": {
+        "psci_topic": "theory"
+      }
+    }
+  }
+}
