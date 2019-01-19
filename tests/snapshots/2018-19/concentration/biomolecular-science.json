@@ -1,0 +1,187 @@
+{
+  "name": "Biomolecular Science",
+  "type": "concentration",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Core",
+        "optional": false
+      },
+      {
+        "requirement": "Experiential Learning",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Core": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "BIO 150"
+          },
+          {
+            "count": "any",
+            "of": [
+              {
+                "count": "all",
+                "of": [
+                  {
+                    "course": "CHEM 125"
+                  },
+                  {
+                    "course": "CHEM 126"
+                  },
+                  {
+                    "course": "BIO 227"
+                  }
+                ],
+                "surplus": null
+              },
+              {
+                "count": "all",
+                "of": [
+                  {
+                    "course": "CHEM 121"
+                  },
+                  {
+                    "course": "CHEM 123"
+                  },
+                  {
+                    "course": "CHEM 126"
+                  },
+                  {
+                    "course": "BIO 227"
+                  }
+                ],
+                "surplus": null
+              },
+              {
+                "count": "all",
+                "of": [
+                  {
+                    "course": "CH/BI 125"
+                  },
+                  {
+                    "course": "CH/BI 126"
+                  },
+                  {
+                    "course": "CH/BI 227"
+                  }
+                ],
+                "surplus": null
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "course": "BIO 223"
+          },
+          {
+            "course": "BMOLS 201"
+          },
+          {
+            "both": [
+              {
+                "course": "CHEM 247"
+              },
+              {
+                "course": "CHEM 253"
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "both": [
+              {
+                "course": "CHEM 248"
+              },
+              {
+                "course": "CHEM 254"
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "both": [
+              {
+                "course": "CHEM 379"
+              },
+              {
+                "course": "CHEM 373"
+              }
+            ],
+            "surplus": null
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "BIO 315"
+          },
+          {
+            "course": "BIO 341"
+          },
+          {
+            "course": "BIO 364"
+          },
+          {
+            "course": "BIO 372"
+          },
+          {
+            "course": "BIO 382"
+          },
+          {
+            "course": "BIO 383"
+          },
+          {
+            "course": "CHEM 384"
+          },
+          {
+            "course": "CHEM 385"
+          },
+          {
+            "course": "CHEM 391"
+          },
+          {
+            "course": "CSCI 315"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Experiential Learning": {
+      "message": "Participation in an experimentally based research experience or employment that takes biomolecular sciences beyond the traditional classroom is required of each concentrator. This can occur either on- or off-campus. This activity must be pre-approved by the Biomolecular Science Committee and be supported after the fact by a letter from a supervisor.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
