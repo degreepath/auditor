@@ -424,7 +424,13 @@ impl FromStr for TaggedValue {
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		match s.get(0..1) {
 			Some("!") | Some("<") | Some(">") | Some("=") => {
-				let splitted: Vec<_> = s.split_whitespace().collect();
+				let splitted: Vec<&str> = s.split_whitespace().collect();
+
+				let splitted = if let Some((first, rest)) = splitted.split_first() {
+					vec![first.to_string(), rest.join(" ")]
+				} else {
+					vec![]
+				};
 
 				match splitted.as_slice() {
 					[value] => {
