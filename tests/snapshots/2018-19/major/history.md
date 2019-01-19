@@ -1,4 +1,4 @@
-> This is the set of requirements for the 2016-17 Bachelor of Arts “History”
+> This is the set of requirements for the 2018-19 Bachelor of Arts “History”
 > major from St. Olaf College.
 
 > todo: this area has custom attributes defined.

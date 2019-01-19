@@ -2,7 +2,7 @@
   "name": "History",
   "type": "major",
   "degree": "Bachelor of Arts",
-  "catalog": "2016-17",
+  "catalog": "2018-19",
   "result": {
     "count": "all",
     "of": [
@@ -262,7 +262,7 @@
       },
       "history_region": {
         "type": "array",
-        "multiple values can be used": false
+        "multiple values can be used": true
       }
     },
     "courses": {
