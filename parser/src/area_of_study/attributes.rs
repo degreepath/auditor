@@ -13,7 +13,7 @@ pub struct Attributes {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Default)]
 pub struct Defaults {
-	#[serde(rename="may count for multiple requirements",)]
+	#[serde(rename = "may count for multiple requirements")]
 	may_count_for_multiple_requirements: BoolOrPath,
 }
 
