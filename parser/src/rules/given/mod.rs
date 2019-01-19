@@ -104,6 +104,7 @@ impl print::Print for Rule {
 				What::AreasOfStudy => panic!("given:all-courses and what:area makes no sense"),
 			},
 			Given::TheseCourses { courses, repeats: mode } => {
+				let courses_vec = courses;
 				let courses = courses
 					.iter()
 					.map(|r| r.print().unwrap())
@@ -111,13 +112,51 @@ impl print::Print for Rule {
 					.oxford("and");
 
 				match (mode, &self.what) {
-					(RepeatMode::First, What::Courses) => {
-						// TODO: expose last vs. first in output somehow?
-						write!(&mut output, "take {} courses from among {}", self.action.print()?, courses)?;
-					}
-					(RepeatMode::Last, What::Courses) => {
-						// TODO: expose last vs. first in output somehow?
-						write!(&mut output, "take {} courses from among {}", self.action.print()?, courses)?;
+					(RepeatMode::First, What::Courses) | (RepeatMode::Last, What::Courses) => {
+						match courses_vec.len() {
+							1 => {
+								// TODO: expose last vs. first in output somehow?
+								write!(&mut output, "take {}", courses)?;
+							}
+							2 => match (&self.action.lhs, &self.action.op, &self.action.rhs) {
+								(
+									action::Value::Command(action::Command::Count),
+									Some(action::Operator::GreaterThanEqualTo),
+									Some(action::Value::Integer(n)),
+								) => match n {
+									1 => {
+										write!(
+											&mut output,
+											"take either {} or {}",
+											courses_vec[0].print()?,
+											courses_vec[1].print()?
+										)?;
+									}
+									2 => {
+										write!(
+											&mut output,
+											"take both {} and {}",
+											courses_vec[0].print()?,
+											courses_vec[1].print()?
+										)?;
+									}
+									_ => panic!("should not require <1 or >len of the number of courses given"),
+								},
+								_ => unimplemented!("most actions on two-up given:these-courses rules"),
+							},
+							_ => {
+								// TODO: expose last vs. first in output somehow?
+								let plur = self.action.should_pluralize();
+								let word = if plur { "courses" } else { "course" };
+								write!(
+									&mut output,
+									"take {} {} from among {}",
+									self.action.print()?,
+									word,
+									courses
+								)?;
+							}
+						}
 					}
 					(RepeatMode::All, What::Courses) => {
 						// TODO: special-case "once" and "twice"
@@ -973,7 +1012,14 @@ do: count >= 3"#;
 			&"{given: these courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 1}",
 		)
 		.unwrap();
-		let expected = "take THEAT 233 and THEAT 253";
+		let expected = "take either THEAT 233 or THEAT 253";
+		assert_eq!(expected, input.print().unwrap());
+
+		let input: Rule = serde_yaml::from_str(
+			&"{given: these courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 2}",
+		)
+		.unwrap();
+		let expected = "take both THEAT 233 and THEAT 253";
 		assert_eq!(expected, input.print().unwrap());
 	}
 
