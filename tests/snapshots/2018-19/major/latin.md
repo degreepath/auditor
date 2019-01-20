@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Latin” major
 > from St. Olaf College.
 
+# Latin
 For this major, you must complete “Language”, “Classics”, and “Ancient Roman History”.
 
-# Language
+## Language
 For this requirement, you must take seven of the following courses:
 
 - LATIN 111
@@ -20,7 +21,7 @@ For this requirement, you must take seven of the following courses:
 - LATIN 377
 
 
-# Classics
+## Classics
 For this requirement, you must take one of the following courses:
 
 - CLASS 121
@@ -35,7 +36,7 @@ For this requirement, you must take one of the following courses:
 - CLASS 396
 
 
-# Ancient Roman History
+## Ancient Roman History
 > Note: TODO find out what courses are considered "ancient roman history"
 
 For this requirement, you must take CLASS 111.

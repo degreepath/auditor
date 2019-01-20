@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “English”
 > major from St. Olaf College.
 
+# English
 > todo: this area has custom attributes defined.
 
 For this major, you must do all of the following:
@@ -12,31 +13,31 @@ For this major, you must do all of the following:
 - complete the “Electives” requirement
 - complete the “1800s” requirement
 
-# Literary Studies
+## Literary Studies
 For this requirement, you must take ENGL 185.
 
 
-# Cross-Cultural Studies
+## Cross-Cultural Studies
 For this requirement, you must take at least one course with the “cross-cultural” `english_topic` attribute.
 
 
-# Literary History
+## Literary History
 For this requirement, you must take at least one course with the “literary-history” `english_topic` attribute.
 
 
-# Cross-Disciplinary Studies
+## Cross-Disciplinary Studies
 For this requirement, you must take at least one course with the “cross-disciplinary” `english_topic` attribute.
 
 
-# Genre Studies
+## Genre Studies
 For this requirement, you must take at least one course with the “genre-studies” `english_topic` attribute.
 
 
-# Electives
+## Electives
 For this requirement, you must take at least six courses with either the elective, genre-studies, cross-cultural, literary-history, or cross-disciplinary `english_topic` attribute.
 
 
-# 1800s
+## 1800s
 For this requirement, you must both:
 
 - take at least one course with the “pre-1800” `english_period` attribute

@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Theater”
 > major from St. Olaf College.
 
+# Theater
 For this major, you must complete “Theater”, “Electives”, and “Practicum”.
 
-# Theater
+## Theater
 For this requirement, you must do all of the following:
 
 - take THEAT 130
@@ -16,7 +17,7 @@ For this requirement, you must do all of the following:
 - take THEAT 360
 
 
-# Electives
+## Electives
 For this requirement, you must take one of the following courses:
 
 - THEAT 338
@@ -27,7 +28,7 @@ For this requirement, you must take one of the following courses:
 - THEAT 398
 
 
-# Practicum
+## Practicum
 > Note: All students must enroll in four practicum classes, of which at least
 > one must be Theater 233 and at least two must be Theater 253, the fourth
 > practicum class being a choice of either 233 or 253.
@@ -38,10 +39,10 @@ For this section, you must do all of the following:
 - complete the “Tech” requirement
 - take THEAT 233 and THEAT 253 at least four times
 
-## Acting
+### Acting
 For this requirement, you must take THEAT 233 at least one time.
 
-## Tech
+### Tech
 For this requirement, you must take THEAT 253 at least two times.
 
 

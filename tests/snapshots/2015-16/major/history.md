@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2016-17 Bachelor of Arts “History”
 > major from St. Olaf College.
 
+# History
 > todo: this area has custom attributes defined.
 
 For this major, you must complete all of the following requirements:
@@ -12,23 +13,23 @@ For this major, you must complete all of the following requirements:
 - “U.S.”
 - “Pre-Modern Period”
 
-# Europe & Russia
+## Europe & Russia
 For this requirement, you must take at least one course with the “region=europe/russia” `history_attr` attribute.
 
 
-# U.S.
+## U.S.
 For this requirement, you must take at least one course with the “region=us” `history_attr` attribute.
 
 
-# Non-Western World
+## Non-Western World
 For this requirement, you must take at least one course with the “region=africa/asia/latin-america” `history_attr` attribute.
 
 
-# Pre-Modern Period
+## Pre-Modern Period
 For this requirement, you must take at least two courses with the “era=pre-modern” `history_attr` attribute.
 
 
-# Major Seminar
+## Major Seminar
 For this requirement, you must take one of the following courses:
 
 - HIST 201
@@ -37,7 +38,7 @@ For this requirement, you must take one of the following courses:
 - HIST 270
 
 
-# Level III
+## Level III
 For this requirement, you must take three of the following courses:
 
 - HIST 301

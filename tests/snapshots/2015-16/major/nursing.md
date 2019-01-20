@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Nursing”
 > major from St. Olaf College.
 
+# Nursing
 For this major, you must complete both the “Prerequisites” and “Requirements” requirements.
 
-# Prerequisites
+## Prerequisites
 > Note: These courses must be completed before beginning level III nursing
 > courses.
 
@@ -24,7 +25,7 @@ For this requirement, you must do all of the following:
 - SOAN 264
 
 
-# Requirements
+## Requirements
 For this section, you must do all of the following:
 
 - take NURS 211
@@ -39,7 +40,7 @@ For this section, you must do all of the following:
 - take NURS 397
 - complete the “Ethics” requirement
 
-## Ethics
+### Ethics
 > Note: Students should consult with their advisor to determine what courses
 > meet this requirement from among the general education EIN courses.
 

@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Chinese”
 > major from St. Olaf College.
 
+# Chinese
 For this major, you must complete all of the following requirements:
 
 - “Core Language”
@@ -8,7 +9,7 @@ For this major, you must complete all of the following requirements:
 - “Language and Culture”
 - “FLAC” (optional)
 
-# Core Language
+## Core Language
 For this requirement, you must take all of the following courses:
 
 - CHIN 231
@@ -17,11 +18,11 @@ For this requirement, you must take all of the following courses:
 - CHIN 302
 
 
-# Upper-Level Language
+## Upper-Level Language
 For this requirement, you must take CHIN 320, CHIN 351, and CHIN 360.
 
 
-# Language and Culture
+## Language and Culture
 > Note: The Asian Conversation sequence (ASIAN 210, ASIAN 215 or ASIAN 216,
 > ASIAN 220) will count for no more than two courses.
 > One of these courses can be an Independent Study (capstone project) or the
@@ -53,7 +54,7 @@ For this requirement, you must do both of the following:
 
 
 
-# FLAC
+## FLAC
 For this requirement, you must take one of the following courses:
 
 - ASIAN 156

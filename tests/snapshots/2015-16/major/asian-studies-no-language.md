@@ -1,17 +1,18 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Asian
 > Studies (No Language)” major from St. Olaf College.
 
+# Asian Studies (No Language)
 For this major, you must complete “Interdisciplinary”, “Seminar”, and “Electives”.
 
-# Interdisciplinary
+## Interdisciplinary
 For this requirement, you must take ASIAN 275.
 
 
-# Seminar
+## Seminar
 For this requirement, you must take either ASIAN 397 or ASIAN 399.
 
 
-# Electives
+## Electives
 > Note: You may not count more than four courses about any one country.
 > Additionally, at least two of the level II and III courses must be taken on-
 > campus.

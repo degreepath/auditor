@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Art History”
 > major from St. Olaf College.
 
+# Art History
 > todo: this area has custom attributes defined.
 
 For this major, you must complete all of the following requirements:
@@ -11,15 +12,15 @@ For this major, you must complete all of the following requirements:
 - “Distribution”
 - “Lasting Legacy”
 
-# Intro
+## Intro
 For this requirement, you must take ART 153.
 
 
-# Methods
+## Methods
 For this requirement, you must take ART 350.
 
 
-# Studio Art
+## Studio Art
 For this requirement, you must take one of the following courses:
 
 - ART 102
@@ -52,7 +53,7 @@ For this requirement, you must take one of the following courses:
 - ART 398
 
 
-# Distribution
+## Distribution
 > Note: At least two courses must focus on Asian, African, Indigenous American,
 > or Near Eastern/Islamic art; at least two courses must focus on American or
 > European art; one course must cover art created before 1700 CE; one must cover
@@ -69,20 +70,20 @@ For this section, you must both:
 
 - and take enough courses at least six from among courses matched by the “Asian, African, Indigenous American, or Near Eastern/Islamic Art”, “European and American Art”, “Art created before 1700 CE”, and “Art created after 1700 CE” requirements
 
-## Asian, African, Indigenous American, or Near Eastern/Islamic Art
+### Asian, African, Indigenous American, or Near Eastern/Islamic Art
 For this requirement, you must take at least two courses with either the asian, african, indigenous-american, or near-eastern `art_locale` attribute.
 
-## European and American Art
+### European and American Art
 For this requirement, you must take at least two courses with either the european or american `art_locale` attribute.
 
-## Art created before 1700 CE
+### Art created before 1700 CE
 For this requirement, you must take at least one course with the “pre-1700” `art_period` attribute.
 
-## Art created after 1700 CE
+### Art created after 1700 CE
 For this requirement, you must take at least one course with the “post-1700” `art_period` attribute.
 
 
-# Lasting Legacy
+## Lasting Legacy
 > Note: Majors must successfully complete the non-credit, senior "lasting
 > legacy" project or its equivalent.
 

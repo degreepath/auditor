@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Classics”
 > major from St. Olaf College.
 
+# Classics
 For this major, you must complete “Language”, “Classics”, and “Ancient History”.
 
-# Language
+## Language
 Given the intersection between this set of courses and the courses from your transcript, as “Latin Courses”:
 
 | “Latin Courses” | Transcript |
@@ -50,7 +51,7 @@ For this requirement, you must do both of the following:
 
 
 
-# Classics
+## Classics
 For this requirement, you must take one of the following courses:
 
 - CLASS 121
@@ -65,7 +66,7 @@ For this requirement, you must take one of the following courses:
 - CLASS 396
 
 
-# Ancient History
+## Ancient History
 > Note: TODO find out what courses are considered "ancient history"
 
 For this requirement, you must take CLASS 111.

@@ -1,11 +1,12 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Economics”
 > major from St. Olaf College.
 
+# Economics
 > todo: this area has custom attributes defined.
 
 For this major, you must complete “Foundation”, “Core”, and “Economic Analysis”.
 
-# Core
+## Core
 For this requirement, you must do all of the following:
 
 - take ECON 261
@@ -13,18 +14,18 @@ For this requirement, you must do all of the following:
 - either take ECON 263 or take both STAT 272 and ECON 385
 
 
-# Foundation
+## Foundation
 For this requirement, you must take either MATH 120 or MATH 119.
 
 
-# Economic Analysis
+## Economic Analysis
 For this section, you must do all of the following:
 
 - complete the “Level II” requirement
 - complete the “Level III” requirement
 - take enough courses at least two from among courses matched by the “Level II” and “Level III” requirements
 
-## Level II
+### Level II
 For this requirement, you must take one of the following courses:
 
 - ECON 200
@@ -38,7 +39,7 @@ For this requirement, you must take one of the following courses:
 - ECON 247
 - ECON 249
 
-## Level III
+### Level III
 For this requirement, you must take two of the following courses:
 
 - ECON 371

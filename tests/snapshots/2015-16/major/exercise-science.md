@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2014-15 Bachelor of Arts “Exercise
 > Science” major from St. Olaf College.
 
+# Exercise Science
 For this major, you must complete both the “Core” and “Electives” requirements.
 
-# Core
+## Core
 For this requirement, you must take all of the following courses:
 
 - BIO 143
@@ -16,7 +17,7 @@ For this requirement, you must take all of the following courses:
 - PSYCH 125
 
 
-# Electives
+## Electives
 For this requirement, you must do two from among the following:
 
 - take ESTH 290

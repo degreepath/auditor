@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Exercise
 > Science” major from St. Olaf College.
 
+# Exercise Science
 For this major, you must complete “Core”, “Electives”, and “Recomended” (optional).
 
-# Core
+## Core
 For this requirement, you must take all of the following courses:
 
 - BIO 143
@@ -16,7 +17,7 @@ For this requirement, you must take all of the following courses:
 - PSYCH 125
 
 
-# Electives
+## Electives
 For this requirement, you must do two from among the following:
 
 - take BIO 247
@@ -29,7 +30,7 @@ For this requirement, you must do two from among the following:
 - take one course from among STAT 110, STAT 212, or STAT 214
 
 
-# Recomended
+## Recomended
 For this requirement, you must take ESTH 394, EST 398, and CHEM 121.
 
 

@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Chemistry”
 > major from St. Olaf College.
 
+# Chemistry
 For this major, you must complete all of the following requirements:
 
 - “Introductory Sequence”
@@ -12,20 +13,20 @@ For this major, you must complete all of the following requirements:
 - “Calculus”
 - “Seminars”
 
-# Introductory Sequence
+## Introductory Sequence
 For this section, you must complete one requirement from among “First Year 1”, “First Year 2”, or “CH/BI”.
 
-## First Year 1
+### First Year 1
 For this requirement, you must take CHEM 121, CHEM 123, and CHEM 125.
 
-## First Year 2
+### First Year 2
 For this requirement, you must take both CHEM 125 and CHEM 126.
 
-## CH/BI
+### CH/BI
 For this requirement, you must take CH/BI 125, CH/BI 126, and CH/BI 227.
 
 
-# Organic
+## Organic
 For this requirement, you must take all of the following courses:
 
 - CHEM 247
@@ -34,15 +35,15 @@ For this requirement, you must take all of the following courses:
 - CHEM 254
 
 
-# Analytical
+## Analytical
 For this requirement, you must take both CHEM 255 and CHEM 256.
 
 
-# Physical
+## Physical
 For this requirement, you must take both CHEM 357 and CHEM 371.
 
 
-# Elective
+## Elective
 For this requirement, you must do one of the following:
 
 - take CHEM 252
@@ -57,15 +58,15 @@ For this requirement, you must do one of the following:
 - take CHEM 398
 
 
-# Physics
+## Physics
 For this section, you must complete either the “Non-Majors” or “Majors” requirement.
 
-## Non-Majors
+### Non-Majors
 > Note: If you are not a Physics major…
 
 For this requirement, you must take both PHYS 142 and PHYS 124.
 
-## Majors
+### Majors
 > Note: If you _are_ a Physics major…
 
 For this requirement, you must do all of the following:
@@ -76,11 +77,11 @@ For this requirement, you must do all of the following:
 - declare one “Physics” major
 
 
-# Calculus
+## Calculus
 For this requirement, you must take either MATH 126 or MATH 128.
 
 
-# Seminars
+## Seminars
 > Note: You are required to attend at least 12 departmental seminars during your
 > junior and senior years.
 

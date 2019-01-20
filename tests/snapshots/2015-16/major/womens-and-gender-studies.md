@@ -1,17 +1,18 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Women's and
 > Gender Studies” major from St. Olaf College.
 
+# Women's and Gender Studies
 For this major, you must complete “Introduction”, “Additional Courses”, and “Advanced Topics”.
 
-# Introduction
+## Introduction
 For this requirement, you must take WMGST 121.
 
 
-# Advanced Topics
+## Advanced Topics
 For this requirement, you must take WMGST 399.
 
 
-# Additional Courses
+## Additional Courses
 Given the courses which fulfilled the “Theory and Methods”, “Women and Gender in Historical Context”, “Women and Gender in Global/Comparative/Diverse Contexts”, “Electives”, and “Lived Experiences” requirements, as “Taken Elective Courses”:
 
 | “Taken Elective Courses” |
@@ -30,7 +31,7 @@ For this section, you must do all of the following:
 - in the subset “Taken Elective Courses”, there must be at least seven courses
 - in the subset “Taken Elective Courses”, there must be at least one course at the 300 level
 
-## Theory and Methods
+### Theory and Methods
 For this requirement, you must take one of the following courses:
 
 - AMST 100
@@ -49,7 +50,7 @@ For this requirement, you must take one of the following courses:
 - SOAN 246
 - SOAN 260
 
-## Gender in Historical Context
+### Gender in Historical Context
 For this requirement, you must take one of the following courses:
 
 - FREN 372 (Fall 2017)
@@ -70,7 +71,7 @@ For this requirement, you must take one of the following courses:
 - SOAN 261
 - SPAN 250
 
-## Gender in Global/Comparative/Diverse Contexts
+### Gender in Global/Comparative/Diverse Contexts
 For this requirement, you must take one of the following courses:
 
 - DANCE 246
@@ -95,7 +96,7 @@ For this requirement, you must take one of the following courses:
 - REL 264
 - SOAN 246
 
-## Electives
+### Electives
 For this requirement, you must take one of the following courses:
 
 - BIO 124
@@ -103,7 +104,7 @@ For this requirement, you must take one of the following courses:
 - NURS 386
 - PSYCH 350
 
-## Lived Experiences
+### Lived Experiences
 > Note: The major says, "One course must focus on women's lived experiences."
 
 This section is a Contract section. You must talk to the Department to fill out,

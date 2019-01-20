@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Ancient
 > Studies” major from St. Olaf College.
 
+# Ancient Studies
 For this major, you must complete all of the following requirements:
 
 - “Language”
@@ -9,11 +10,11 @@ For this major, you must complete all of the following requirements:
 - “Electives”
 - “Independent Research”
 
-# Language
+## Language
 For this requirement, you must take either LATIN 252 or GREEK 253.
 
 
-# Ancient History
+## Ancient History
 For this requirement, you must take one of the following courses:
 
 - CLASS 126
@@ -49,11 +50,11 @@ For this requirement, you must take one of the following courses:
 - THEAT 270
 
 
-# Classics
+## Classics
 For this requirement, you must take at least one course within the CLASS department.
 
 
-# Electives
+## Electives
 > Note: 1 course in Greek may be used as an elective if the student satisfies
 > the required language portion of the major with Latin courses. 1 course in
 > Latin may be used as an elective if the student satisfies the required
@@ -93,7 +94,7 @@ For this requirement, you must take four of the following courses:
 - GCON 115
 
 
-# Independent Research
+## Independent Research
 For this requirement, you must take one of the following courses:
 
 - CLASS 398

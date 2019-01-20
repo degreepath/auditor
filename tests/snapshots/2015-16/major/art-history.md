@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Art History”
 > major from St. Olaf College.
 
+# Art History
 For this major, you must complete all of the following requirements:
 
 - “Intro”
@@ -9,15 +10,15 @@ For this major, you must complete all of the following requirements:
 - “Distribution”
 - “Lasting Legacy”
 
-# Intro
+## Intro
 For this requirement, you must take ART 153.
 
 
-# Methods
+## Methods
 For this requirement, you must take ART 350.
 
 
-# Studio Art
+## Studio Art
 For this requirement, you must take one of the following courses:
 
 - ART 102
@@ -50,7 +51,7 @@ For this requirement, you must take one of the following courses:
 - ART 398
 
 
-# Distribution
+## Distribution
 For this section, you must do all of the following:
 
 - complete the “Asian, African, Indigenous American, or Near Eastern/Islamic art” requirement
@@ -59,20 +60,20 @@ For this section, you must do all of the following:
 - complete the “art created after 1700 CE” requirement
 - take enough courses at least six from among courses matched by the “Asian, African, Indigenous American, or Near Eastern/Islamic art”, “European and American art”, “art created before 1700 CE”, and “art created after 1700 CE” requirements
 
-## Asian, African, Indigenous American, or Near Eastern/Islamic art
+### Asian, African, Indigenous American, or Near Eastern/Islamic art
 For this requirement, you must take at least two courses from among ART 259, ART 260, ART 262, ART 267, and ASIAN 310.
 
-## European and American art
+### European and American art
 For this requirement, you must take both ART 269 and ASIAN 270.
 
-## art created before 1700 CE
+### art created before 1700 CE
 For this requirement, you must take at least one course from among ART 253, ART 255, ART 263, ART 271, and ART 273.
 
-## art created after 1700 CE
+### art created after 1700 CE
 For this requirement, you must take at least one course from among ART 251, ART 252, ART 253, ART 261, ART 265, ART 277, ART 280, ART 256, ART 370, ENVST 270, and PHIL 243.
 
 
-# Lasting Legacy
+## Lasting Legacy
 > Note: Majors must also successfully complete the non-credit, senior "lasting
 > legacy" project or its equivalent.
 

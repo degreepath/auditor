@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Biology”
 > major from St. Olaf College.
 
+# Biology
 For this major, you must complete all of the following requirements:
 
 - “Foundation”
@@ -9,11 +10,11 @@ For this major, you must complete all of the following requirements:
 - “Electives”
 - “Chemistry”
 
-# Foundation
+## Foundation
 For this requirement, you must take BIO 150.
 
 
-# Core
+## Core
 For this section, you must complete all of the following requirements:
 
 - “Genetics”
@@ -21,13 +22,13 @@ For this section, you must complete all of the following requirements:
 - “Comparative Organismal Biology”
 - “Ecology”
 
-## Genetics
+### Genetics
 For this requirement, you must take BIO 233.
 
-## Cell Biology
+### Cell Biology
 For this requirement, you must take one course from among BIO 227, CH/BI 227, or CH/BI 127.
 
-## Comparative Organismal Biology
+### Comparative Organismal Biology
 For this requirement, you must take one of the following courses:
 
 - BIO 242
@@ -38,11 +39,11 @@ For this requirement, you must take one of the following courses:
 - BIO 266
 - BIO 275
 
-## Ecology
+### Ecology
 For this requirement, you must take BIO 261.
 
 
-# Level III
+## Level III
 For this requirement, you must take one of the following courses:
 
 - BIO 315
@@ -60,7 +61,7 @@ For this requirement, you must take one of the following courses:
 - BIO 391
 
 
-# Electives
+## Electives
 For this requirement, you must take two of the following courses:
 
 - BIO 298
@@ -119,16 +120,16 @@ For this requirement, you must take two of the following courses:
 - BIO 391
 
 
-# Chemistry
+## Chemistry
 For this section, you must complete one requirement from among “Intro A”, “Intro B”, or “CH/BI”.
 
-## Intro A
+### Intro A
 For this requirement, you must take CHEM 121, CHEM 123, and CHEM 126.
 
-## Intro B
+### Intro B
 For this requirement, you must take both CHEM 125 and CHEM 126.
 
-## CH/BI
+### CH/BI
 For this requirement, you must take both CH/BI 125 and CH/BI 126.
 
 

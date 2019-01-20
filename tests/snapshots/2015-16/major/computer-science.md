@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Computer
 > Science” major from St. Olaf College.
 
+# Computer Science
 For this major, you must complete all of the following requirements:
 
 - “Foundation”
@@ -8,7 +9,7 @@ For this major, you must complete all of the following requirements:
 - “Electives”
 - “Capstone”
 
-# Foundation
+## Foundation
 For this requirement, you must do three from among the following:
 
 - take either CSCI 121 or CSCI 125
@@ -17,7 +18,7 @@ For this requirement, you must do three from among the following:
 - take one course from among MATH 232, MATH 252, or MATH 244
 
 
-# Core
+## Core
 For this section, you must do all of the following:
 
 - take CS 253
@@ -25,14 +26,14 @@ For this section, you must do all of the following:
 - complete the “Languages” requirement
 - complete the “Systems” requirement
 
-## Languages
+### Languages
 For this requirement, you must take one course from among CSCI 276, CSCI 316, or CSCI 333.
 
-## Systems
+### Systems
 For this requirement, you must take one course from among CSCI 273, CSCI 284, or CSCI 300 (2014-1).
 
 
-# Electives
+## Electives
 For this requirement, you must take two of the following courses:
 
 - CSCI 333
@@ -45,7 +46,7 @@ For this requirement, you must take two of the following courses:
 - CSCI 350
 
 
-# Capstone
+## Capstone
 For this requirement, you must take CSCI 390.
 
 

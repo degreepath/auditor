@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Psychology”
 > major from St. Olaf College.
 
+# Psychology
 For this major, you must complete all of the following requirements:
 
 - “Foundation”
@@ -9,14 +10,14 @@ For this major, you must complete all of the following requirements:
 - “General Education”
 - “Electives”
 
-# Foundation
+## Foundation
 For this requirement, you must take both PSYCH 125 and PSYCH 230.
 
 
-# Content Core
+## Content Core
 For this section, you must complete both the “Natural Science” and “Social Science” requirements.
 
-## Natural Science
+### Natural Science
 For this requirement, you must take two of the following courses:
 
 - PSYCH 235
@@ -24,7 +25,7 @@ For this requirement, you must take two of the following courses:
 - PSYCH 237
 - PSYCH 238
 
-## Social Science
+### Social Science
 For this requirement, you must take two of the following courses:
 
 - PSYCH 241
@@ -33,7 +34,7 @@ For this requirement, you must take two of the following courses:
 - PSYCH 249
 
 
-# Level III Capstone
+## Level III Capstone
 For this requirement, you must take two of the following courses:
 
 - PSYCH 336
@@ -52,7 +53,7 @@ For this requirement, you must take two of the following courses:
 - PSYCH 398
 
 
-# General Education
+## General Education
 For this requirement, you must take one of the following courses:
 
 - STAT 110
@@ -61,7 +62,7 @@ For this requirement, you must take one of the following courses:
 - ECON 263
 
 
-# Electives
+## Electives
 For this requirement, you must take two of the following courses:
 
 - PSYCH 220

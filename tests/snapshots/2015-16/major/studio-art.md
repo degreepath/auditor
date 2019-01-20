@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Studio Art”
 > major from St. Olaf College.
 
+# Studio Art
 For this major, you must complete both the “Studio Art” and “Art History” requirements.
 
-# Studio Art
+## Studio Art
 For this section, you must complete all of the following requirements:
 
 - “Foundations”
@@ -12,13 +13,13 @@ For this section, you must complete all of the following requirements:
 - “Electives”
 - “Areas”
 
-## Foundations
+### Foundations
 For this requirement, you must take ART 102, ART 103, and ART 104.
 
-## Areas
+### Areas
 For this section, you must complete “2D Media”, “3D Media”, and “New Media”.
 
-### 2D Media
+#### 2D Media
 For this section, you must complete one of the following requirements:
 
 - “Drawing”
@@ -26,28 +27,28 @@ For this section, you must complete one of the following requirements:
 - “Printmaking”
 - “Graphic Design”
 
-#### Drawing
+##### Drawing
 For this requirement, you must take one course from among ART 225, ART 232, or ART 233.
 
-#### Painting
+##### Painting
 For this requirement, you must take either ART 221 or ART 222.
 
-#### Printmaking
+##### Printmaking
 For this requirement, you must take either ART 226 or ART 227.
 
-#### Graphic Design
+##### Graphic Design
 For this requirement, you must take ART 236.
 
-### 3D Media
+#### 3D Media
 For this section, you must complete either the “Ceramics” or “Sculpture” requirement.
 
-#### Ceramics
+##### Ceramics
 For this requirement, you must take either ART 207 or ART 234.
 
-#### Sculpture
+##### Sculpture
 For this requirement, you must take either ART 223 or ART 224.
 
-### New Media
+#### New Media
 For this section, you must complete one of the following requirements:
 
 - “Photography”
@@ -56,32 +57,32 @@ For this section, you must complete one of the following requirements:
 - “Performance”
 - “Graphic Design”
 
-#### Photography
+##### Photography
 For this requirement, you must take either ART 205 or ART 238.
 
-#### Interactive Image
+##### Interactive Image
 For this requirement, you must take ART 228.
 
-#### Digital Video
+##### Digital Video
 For this requirement, you must take ART 229.
 
-#### Performance
+##### Performance
 For this requirement, you must take ART 240.
 
-#### Graphic Design
+##### Graphic Design
 For this requirement, you must take ART 236.
 
-## Juried Show
+### Juried Show
 > Note: To fulfill the requirements of the Studio Art major, you must enter at
 > least two juried art exhibitions on or off campus by the beginning of your
 > senior year.
 
 For this requirement, you must have done what the note says. The Department must
 certify that you have done so.
-## Senior Studies in Studio Art
+### Senior Studies in Studio Art
 For this requirement, you must take ART 343.
 
-## Electives
+### Electives
 For this requirement, you must take one of the following courses:
 
 - ART 106
@@ -93,7 +94,7 @@ For this requirement, you must take one of the following courses:
 - ART 398
 
 
-# Art History
+## Art History
 > Note: The department strongly recommends that you take ART 252 or 253 as one
 > of your art history courses.
 

@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “History”
 > major from St. Olaf College.
 
+# History
 > todo: this area has custom attributes defined.
 
 For this major, you must complete all of the following requirements:
@@ -12,23 +13,23 @@ For this major, you must complete all of the following requirements:
 - “U.S.”
 - “Pre-Modern Period”
 
-# Europe & Russia
+## Europe & Russia
 For this requirement, you must take at least one course with either the europe or russia `history_region` attribute.
 
 
-# U.S.
+## U.S.
 For this requirement, you must take at least one course with the “us” `history_region` attribute.
 
 
-# Non-Western World
+## Non-Western World
 For this requirement, you must take at least one course with either the africa, asia, or latin-america `history_region` attribute.
 
 
-# Pre-Modern Period
+## Pre-Modern Period
 For this requirement, you must take at least two courses with the “pre-modern” `history_era` attribute.
 
 
-# Major Seminar
+## Major Seminar
 For this requirement, you must take one of the following courses:
 
 - HIST 201
@@ -37,7 +38,7 @@ For this requirement, you must take one of the following courses:
 - HIST 270
 
 
-# Level III
+## Level III
 For this requirement, you must take three of the following courses:
 
 - HIST 301

@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Political
 > Science” major from St. Olaf College.
 
+# Political Science
 For this major, you must do all of the following:
 
 - complete all of the following requirements:
@@ -14,11 +15,11 @@ For this major, you must do all of the following:
 - take enough courses at least nine from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
 - take enough courses at the 300 level at least two from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
 
-# Research Methods
+## Research Methods
 For this requirement, you must take PSCI 220.
 
 
-# American Politics and Public Policy
+## American Politics and Public Policy
 For this requirement, you must take one of the following courses:
 
 - PSCI 111
@@ -32,7 +33,7 @@ For this requirement, you must take one of the following courses:
 - ES/PS 276
 
 
-# Comparative Politics
+## Comparative Politics
 For this requirement, you must take one of the following courses:
 
 - PSCI 112
@@ -50,7 +51,7 @@ For this requirement, you must take one of the following courses:
 - AS/PS 255
 
 
-# International Relations
+## International Relations
 For this requirement, you must take one of the following courses:
 
 - PSCI 115
@@ -64,7 +65,7 @@ For this requirement, you must take one of the following courses:
 - ES/PS 201
 
 
-# Political Theory
+## Political Theory
 For this requirement, you must take one of the following courses:
 
 - PSCI 113
@@ -78,16 +79,16 @@ For this requirement, you must take one of the following courses:
 - ES/PS 225
 
 
-# Additional Courses
+## Additional Courses
 For this section, you must complete one requirement from among “Statistics”, “French, German, Spanish”, or “Chinese, Greek, Latin, Japanese, Norwegian, Russian”.
 
-## Statistics
+### Statistics
 For this requirement, you must take at least one course within the STAT department.
 
-## French, German, Spanish
+### French, German, Spanish
 For this requirement, you must take at least one course within the FREN, GERM, or SPAN department past 232.
 
-## Chinese, Greek, Latin, Japanese, Norwegian, Russian
+### Chinese, Greek, Latin, Japanese, Norwegian, Russian
 For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
 

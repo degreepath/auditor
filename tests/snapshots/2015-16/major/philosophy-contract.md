@@ -1,13 +1,14 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Philosophy
 > (Contract)” major from St. Olaf College.
 
+# Philosophy (Contract)
 For this major, you must complete “Base”, “Level III Seminars”, and “Contract”.
 
-# Base
+## Base
 For this requirement, you must take PHIL 235, PHIL 236, and PHIL 240.
 
 
-# Level III Seminars
+## Level III Seminars
 > Note: Level III seminar courses may not be taken S/U.
 
 For this requirement, you must take two of the following courses:
@@ -19,11 +20,11 @@ For this requirement, you must take two of the following courses:
 - PHIL 375
 
 
-# Electives
+## Electives
 For this requirement, you must take at least two courses within the PHIL department.
 
 
-# Contract
+## Contract
 > Note: Three level II or III courses in another department chosen to complement
 > the work in philosophy.
 

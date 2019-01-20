@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Chemistry”
 > major from St. Olaf College.
 
+# Chemistry
 For this major, you must complete all of the following requirements:
 
 - “Introductory Sequence”
@@ -9,20 +10,20 @@ For this major, you must complete all of the following requirements:
 - “Mathematics”
 - “Seminars”
 
-# Introductory Sequence
+## Introductory Sequence
 For this section, you must complete one requirement from among “Option A”, “Option B”, or “Option C”.
 
-## Option A
+### Option A
 For this requirement, you must take CHEM 121, CHEM 123, and CHEM 125.
 
-## Option B
+### Option B
 For this requirement, you must take both CHEM 125 and CHEM 126.
 
-## Option C
+### Option C
 For this requirement, you must take CH/BI 125, CH/BI 126, and CH/BI 227.
 
 
-# Upper-Level Core
+## Upper-Level Core
 For this section, you must complete all of the following requirements:
 
 - “Organic”
@@ -30,7 +31,7 @@ For this section, you must complete all of the following requirements:
 - “Physical”
 - “Elective”
 
-## Organic
+### Organic
 For this requirement, you must take all of the following courses:
 
 - CHEM 247
@@ -38,13 +39,13 @@ For this requirement, you must take all of the following courses:
 - CHEM 248
 - CHEM 254
 
-## Analytical
+### Analytical
 For this requirement, you must take both CHEM 255 and CHEM 256.
 
-## Physical
+### Physical
 For this requirement, you must take both CHEM 357 and CHEM 371.
 
-## Elective
+### Elective
 For this requirement, you must take one of the following courses:
 
 - CHEM 252
@@ -57,15 +58,15 @@ For this requirement, you must take one of the following courses:
 - CHEM 391
 
 
-# Physics
+## Physics
 For this requirement, you must take either PHYS 125 or PHYS 232.
 
 
-# Mathematics
+## Mathematics
 For this requirement, you must take either MATH 126 or MATH 128.
 
 
-# Seminars
+## Seminars
 > Note: Attendance is required at 12 departmental seminars after declaration of
 > major.
 

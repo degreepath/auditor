@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Greek” major
 > from St. Olaf College.
 
+# Greek
 For this major, you must complete “Language”, “Classics”, and “Ancient Greek History”.
 
-# Language
+## Language
 For this requirement, you must take seven of the following courses:
 
 - GREEK 111
@@ -17,7 +18,7 @@ For this requirement, you must take seven of the following courses:
 - GREEK 375
 
 
-# Classics
+## Classics
 For this requirement, you must take one of the following courses:
 
 - CLASS 121
@@ -32,7 +33,7 @@ For this requirement, you must take one of the following courses:
 - CLASS 396
 
 
-# Ancient Greek History
+## Ancient Greek History
 > Note: TODO find out what courses are considered "ancient greek history"
 
 For this requirement, you must take CLASS 111.

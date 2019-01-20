@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Biology”
 > major from St. Olaf College.
 
+# Biology
 For this major, you must complete all of the following requirements:
 
 - “Foundation”
@@ -9,11 +10,11 @@ For this major, you must complete all of the following requirements:
 - “Electives”
 - “Chemistry”
 
-# Foundation
+## Foundation
 For this requirement, you must take BIO 150.
 
 
-# Core
+## Core
 For this section, you must complete all of the following requirements:
 
 - “Genetics”
@@ -21,13 +22,13 @@ For this section, you must complete all of the following requirements:
 - “Comparative Organismal Biology”
 - “Ecology”
 
-## Genetics
+### Genetics
 For this requirement, you must take BIO 233.
 
-## Cell Biology
+### Cell Biology
 For this requirement, you must take either BIO 227 or CH/BI 227.
 
-## Comparative Organismal Biology
+### Comparative Organismal Biology
 For this requirement, you must take one of the following courses:
 
 - BIO 242
@@ -39,11 +40,11 @@ For this requirement, you must take one of the following courses:
 - BIO 275
 - BIO 226
 
-## Ecology
+### Ecology
 For this requirement, you must take either BIO 261 or BIO 226.
 
 
-# Level III
+## Level III
 For this requirement, you must take one of the following courses:
 
 - BIO 315
@@ -60,7 +61,7 @@ For this requirement, you must take one of the following courses:
 - BIO 391
 
 
-# Electives
+## Electives
 For this requirement, you must take two of the following courses:
 
 - BIO 298
@@ -100,7 +101,7 @@ For this requirement, you must take two of the following courses:
 - BIO 292
 
 
-# Chemistry
+## Chemistry
 For this requirement, you must do one of the following:
 
 - take CHEM 121, CHEM 123, and CHEM 126

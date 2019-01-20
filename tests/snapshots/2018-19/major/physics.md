@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Physics”
 > major from St. Olaf College.
 
+# Physics
 For this major, you must complete all of the following requirements:
 
 - “Analytics”
@@ -9,15 +10,15 @@ For this major, you must complete all of the following requirements:
 - “Upper-Level Elective”
 - “Elective”
 
-# Analytics
+## Analytics
 For this requirement, you must take PHYS 130, PHYS 131, and PHYS 232.
 
 
-# Modern Physics
+## Modern Physics
 For this requirement, you must take both PHYS 244 and PHYS 245.
 
 
-# Upper-Level
+## Upper-Level
 For this requirement, you must take all of the following courses:
 
 - PHYS 374
@@ -26,7 +27,7 @@ For this requirement, you must take all of the following courses:
 - PHYS 386
 
 
-# Upper-Level Elective
+## Upper-Level Elective
 For this requirement, you must take one of the following courses:
 
 - PHYS 360
@@ -36,7 +37,7 @@ For this requirement, you must take one of the following courses:
 - PHYS 390
 
 
-# Elective
+## Elective
 For this requirement, you must take one of the following courses:
 
 - PHYS 112

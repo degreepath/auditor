@@ -1,9 +1,10 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Latin” major
 > from St. Olaf College.
 
+# Latin
 For this major, you must complete “Latin”, “Ancient Roman History”, and “Classics”.
 
-# Latin
+## Latin
 For this requirement, you must take seven of the following courses:
 
 - LATIN 111
@@ -20,11 +21,11 @@ For this requirement, you must take seven of the following courses:
 - LATIN 377
 
 
-# Ancient Roman History
+## Ancient Roman History
 For this requirement, you must take either HIST 204 or LATIN 372.
 
 
-# Classics
+## Classics
 For this requirement, you must take one of the following courses:
 
 - CLASS 121

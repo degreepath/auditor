@@ -1,6 +1,7 @@
 > This is the set of requirements for the 2015-16 Bachelor of Arts “Mathematics”
 > major from St. Olaf College.
 
+# Mathematics
 > todo: this area has custom attributes defined.
 
 For this major, you must both:
@@ -16,7 +17,7 @@ For this major, you must both:
 
 - and take enough courses at St. Olaf College at least six from among courses matched by the “Basics”, “Transitions”, “Perspectives”, “Interdisciplinary”, “Sequence”, and “Level III” requirements
 
-# Basics
+## Basics
 For this requirement, you must do all of the following:
 
 - take MATH 120
@@ -24,11 +25,11 @@ For this requirement, you must do all of the following:
 - take MATH 220
 
 
-# Transitions
+## Transitions
 For this requirement, you must take two courses from among MATH 242, MATH 244, or MATH 252.
 
 
-# Perspectives
+## Perspectives
 > Note: One course from each of three of the four perspectives.
 
 For this section, you must complete three from among the following requirements:
@@ -38,37 +39,37 @@ For this section, you must complete three from among the following requirements:
 - “Discrete/Combinatorial (D)”
 - “Modeling/Computation (M)”
 
-## Axiomatic/Algebraic (A)
+### Axiomatic/Algebraic (A)
 For this requirement, you must take at least one course with the “A” `math_perspectives` attribute.
 
-## Continuous/Analytic (C)
+### Continuous/Analytic (C)
 For this requirement, you must take at least one course with the “C” `math_perspectives` attribute.
 
-## Discrete/Combinatorial (D)
+### Discrete/Combinatorial (D)
 For this requirement, you must take at least one course with the “D” `math_perspectives` attribute.
 
-## Modeling/Computation (M)
+### Modeling/Computation (M)
 For this requirement, you must take at least one course with the “M” `math_perspectives` attribute.
 
 
-# Interdisciplinary
+## Interdisciplinary
 For this section, you must complete one requirement from among “Chemistry”, “Economics”, or “Physics”.
 
-## Chemistry
+### Chemistry
 For this requirement, you must both take CHEM 371 and declare one “Chemistry” major.
 
-## Economics
+### Economics
 For this requirement, you must both take ECON 385 and declare one “Economics” major.
 
-## Physics
+### Physics
 For this requirement, you must both take PHYS 375 and declare one “Physics” major.
 
 
-# Level III
+## Level III
 For this requirement, you must take at least two courses from among MATH 330, MATH 340, MATH 344, MATH 348, MATH 352, MATH 356, MATH 364, MATH 382, MATH 384, MATH 396, MSCS 341, MSCS 390, STAT 322, CSCI 315, and CSCI 333.
 
 
-# Sequence
+## Sequence
 > Note: A 200-300-level sequence of two courses, at least one of which must be a
 > Mathematics course.
 
