@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use indexmap::IndexMap;
 
 #[cfg(test)]
 mod tests;
@@ -11,4 +11,4 @@ pub(crate) use deserialize::{deserialize_with, deserialize_with_no_option};
 
 pub use value::{Constant, TaggedValue, Value, WrappedValue};
 
-pub type Clause = BTreeMap<String, WrappedValue>;
+pub type Clause = IndexMap<String, WrappedValue>;

@@ -4,7 +4,7 @@ use crate::traits::print::Print;
 
 #[test]
 fn serialize_simple() {
-	let data: Clause = btreemap! {
+	let data: Clause = indexmap! {
 		"level".into() => "100".parse::<WrappedValue>().unwrap(),
 	};
 
@@ -21,7 +21,7 @@ level:
 
 #[test]
 fn serialize_or() {
-	let data: Clause = btreemap! {
+	let data: Clause = indexmap! {
 		"level".into() => "100 | 200".parse::<WrappedValue>().unwrap(),
 	};
 
@@ -38,7 +38,7 @@ level:
 	let actual = serde_yaml::to_string(&data).unwrap();
 	assert_eq!(actual, expected);
 
-	let data: Clause = btreemap! {
+	let data: Clause = indexmap! {
 		"level".into() =>  "< 100 | 200".parse::<WrappedValue>().unwrap(),
 	};
 

@@ -70,7 +70,6 @@ impl Rule {
 mod tests {
 	use super::*;
 	use crate::traits::print::Print;
-	use std::collections::BTreeMap;
 
 	#[test]
 	fn deserialize_simple_course_in_array() {
@@ -126,7 +125,7 @@ mod tests {
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
 				what: given::What::Courses,
-				filter: Some(BTreeMap::new()),
+				filter: Some(indexmap! {}),
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),
@@ -231,7 +230,7 @@ mod tests {
 			Rule::Given(given::Rule {
 				given: given::Given::AllCourses,
 				what: given::What::Courses,
-				filter: Some(BTreeMap::new()),
+				filter: Some(indexmap! {}),
 				limit: Some(vec![]),
 				action: "count < 2".parse().unwrap(),
 			}),

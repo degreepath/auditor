@@ -1,8 +1,8 @@
 use super::Clause;
 use super::WrappedValue;
 use crate::util;
+use indexmap::IndexMap;
 use serde::de::{Deserialize, Deserializer};
-use std::collections::BTreeMap;
 
 pub fn deserialize_with<'de, D>(deserializer: D) -> Result<Option<Clause>, D::Error>
 where
@@ -13,7 +13,7 @@ where
 	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
 	// TODO: improve this to not transmute the hashmap right after creation
-	let v: Result<BTreeMap<String, Wrapper>, D::Error> = BTreeMap::deserialize(deserializer);
+	let v: Result<IndexMap<String, Wrapper>, D::Error> = IndexMap::deserialize(deserializer);
 
 	match v {
 		Ok(v) => {
@@ -33,7 +33,7 @@ where
 	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] WrappedValue);
 
 	// TODO: improve this to not transmute the hashmap right after creation
-	let v: Result<BTreeMap<String, Wrapper>, D::Error> = BTreeMap::deserialize(deserializer);
+	let v: Result<IndexMap<String, Wrapper>, D::Error> = IndexMap::deserialize(deserializer);
 
 	match v {
 		Ok(v) => {

@@ -857,7 +857,7 @@ do: count >= 3"#;
 	fn deserialize_filter_gereqs_single() {
 		let data = r#"{where: {gereqs: 'FYW'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = btreemap! {
+		let expected: filter::Clause = indexmap! {
 			"gereqs".into() => filter::WrappedValue::Single(filter::TaggedValue {
 				op: action::Operator::EqualTo,
 				value: filter::Value::String("FYW".into()),
@@ -879,7 +879,7 @@ do: count >= 3"#;
 	fn deserialize_filter_gereqs_or() {
 		let data = r#"{where: {gereqs: 'MCD | MCG'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = btreemap! {
+		let expected: filter::Clause = indexmap! {
 			"gereqs".into() => filter::WrappedValue::Or(vec![
 				filter::TaggedValue {
 					op: action::Operator::EqualTo,
@@ -907,7 +907,7 @@ do: count >= 3"#;
 	fn deserialize_filter_level_gte() {
 		let data = r#"{where: {level: '>= 200'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = btreemap! {
+		let expected: filter::Clause = indexmap! {
 			"level".into() => filter::WrappedValue::Single(filter::TaggedValue {
 				op: action::Operator::GreaterThanEqualTo,
 				value: filter::Value::Integer(200),
@@ -929,7 +929,7 @@ do: count >= 3"#;
 	fn deserialize_filter_graded_bool() {
 		let data = r#"{where: {graded: 'true'}, given: courses, what: courses, do: count > 1}"#;
 
-		let expected: filter::Clause = btreemap! {
+		let expected: filter::Clause = indexmap! {
 			"graded".into() => filter::WrappedValue::Single(filter::TaggedValue {
 				op: action::Operator::EqualTo,
 				value: filter::Value::Bool(true),

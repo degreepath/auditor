@@ -14,7 +14,7 @@ mod tests {
 
 	#[test]
 	fn serialize_level100() {
-		let clause: filter::Clause = btreemap! {
+		let clause: filter::Clause = indexmap! {
 			"level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
 		};
 
@@ -39,7 +39,7 @@ at_most: 2"#;
 
 	#[test]
 	fn serialize_not_math() {
-		let clause: filter::Clause = btreemap! {
+		let clause: filter::Clause = indexmap! {
 			"department".into() => "! MATH".parse::<filter::WrappedValue>().unwrap(),
 		};
 
@@ -64,7 +64,7 @@ at_most: 2"#;
 
 	#[test]
 	fn deserialize_level100() {
-		let clause: filter::Clause = btreemap! {
+		let clause: filter::Clause = indexmap! {
 			"level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
 		};
 

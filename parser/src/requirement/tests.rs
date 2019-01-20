@@ -111,7 +111,7 @@ result:
     - {given: save, save: Interim Courses, what: credits, do: sum >= 3}
     - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
-	let expected_filter: filter::Clause = btreemap! {
+	let expected_filter: filter::Clause = indexmap! {
 		"semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
 	};
 
