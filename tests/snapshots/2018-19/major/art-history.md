@@ -68,7 +68,7 @@ For this section, you must both:
 - “Art created before 1700 CE”
 - “Art created after 1700 CE”
 
-- and take enough courses at least six from among courses matched by the “Asian, African, Indigenous American, or Near Eastern/Islamic Art”, “European and American Art”, “Art created before 1700 CE”, and “Art created after 1700 CE” requirements
+- and have at least six courses in the set of courses matched by the “Asian, African, Indigenous American, or Near Eastern/Islamic Art”, “European and American Art”, “Art created before 1700 CE”, and “Art created after 1700 CE” requirements
 
 ### Asian, African, Indigenous American, or Near Eastern/Islamic Art
 For this requirement, you must take at least two courses with either the asian, african, indigenous-american, or near-eastern `art_locale` attribute.

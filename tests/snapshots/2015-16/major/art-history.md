@@ -58,7 +58,7 @@ For this section, you must do all of the following:
 - complete the “European and American art” requirement
 - complete the “art created before 1700 CE” requirement
 - complete the “art created after 1700 CE” requirement
-- take enough courses at least six from among courses matched by the “Asian, African, Indigenous American, or Near Eastern/Islamic art”, “European and American art”, “art created before 1700 CE”, and “art created after 1700 CE” requirements
+- have at least six courses in the set of courses matched by the “Asian, African, Indigenous American, or Near Eastern/Islamic art”, “European and American art”, “art created before 1700 CE”, and “art created after 1700 CE” requirements
 
 ### Asian, African, Indigenous American, or Near Eastern/Islamic art
 For this requirement, you must take at least two courses from among ART 259, ART 260, ART 262, ART 267, and ASIAN 310.

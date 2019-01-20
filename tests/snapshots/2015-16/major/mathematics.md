@@ -15,7 +15,7 @@ For this major, you must both:
 - “Sequence”
 - “Level III”
 
-- and take enough courses at St. Olaf College at least six from among courses matched by the “Basics”, “Transitions”, “Perspectives”, “Interdisciplinary”, “Sequence”, and “Level III” requirements
+- and have at least six courses at St. Olaf College in the set of courses matched by the “Basics”, “Transitions”, “Perspectives”, “Interdisciplinary”, “Sequence”, and “Level III” requirements
 
 ## Basics
 For this requirement, you must do all of the following:
