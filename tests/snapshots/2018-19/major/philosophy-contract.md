@@ -1,7 +1,12 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Philosophy
 > (Contract Major)” major from St. Olaf College.
 
-For this major, you must complete “Core”, “Level III Seminars”, and “Complementary Courses”.
+For this major, you must complete all of the following requirements:
+
+- “Core”
+- “Level III Seminars”
+- “Complementary Courses”
+- “Electives”
 
 # Core
 For this requirement, you must take PHIL 235, PHIL 236, and PHIL 240.

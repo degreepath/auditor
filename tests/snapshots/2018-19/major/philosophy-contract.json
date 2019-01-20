@@ -17,6 +17,10 @@
       {
         "requirement": "Complementary Courses",
         "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
       }
     ],
     "surplus": null

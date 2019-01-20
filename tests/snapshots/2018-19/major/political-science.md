@@ -12,9 +12,10 @@ For this major, you must both:
 - “Comparative Politics”
 - “International Relations”
 - “Political Theory”
+- “Level III”
 - “Additional Courses” (optional)
 
-- and take enough courses at least nine from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
+- and take enough courses at least nine from among courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, “Level III”, and “Additional Courses” requirements
 
 # Research Methods
 For this requirement, you must take PSCI 220.
