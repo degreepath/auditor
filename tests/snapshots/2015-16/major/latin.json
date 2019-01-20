@@ -22,6 +22,55 @@
     "surplus": null
   },
   "requirements": {
+    "Latin": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 7,
+        "of": [
+          {
+            "course": "LATIN 111"
+          },
+          {
+            "course": "LATIN 112"
+          },
+          {
+            "course": "LATIN 231"
+          },
+          {
+            "course": "LATIN 235"
+          },
+          {
+            "course": "LATIN 252"
+          },
+          {
+            "course": "LATIN 370"
+          },
+          {
+            "course": "LATIN 371"
+          },
+          {
+            "course": "LATIN 372"
+          },
+          {
+            "course": "LATIN 373"
+          },
+          {
+            "course": "LATIN 374"
+          },
+          {
+            "course": "LATIN 375"
+          },
+          {
+            "course": "LATIN 377"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Ancient Roman History": {
       "message": null,
       "department_audited": false,
@@ -79,55 +128,6 @@
           },
           {
             "course": "CLASS 396"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Latin": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 7,
-        "of": [
-          {
-            "course": "LATIN 111"
-          },
-          {
-            "course": "LATIN 112"
-          },
-          {
-            "course": "LATIN 231"
-          },
-          {
-            "course": "LATIN 235"
-          },
-          {
-            "course": "LATIN 252"
-          },
-          {
-            "course": "LATIN 370"
-          },
-          {
-            "course": "LATIN 371"
-          },
-          {
-            "course": "LATIN 372"
-          },
-          {
-            "course": "LATIN 373"
-          },
-          {
-            "course": "LATIN 374"
-          },
-          {
-            "course": "LATIN 375"
-          },
-          {
-            "course": "LATIN 377"
           }
         ],
         "surplus": null

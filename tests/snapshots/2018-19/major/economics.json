@@ -60,6 +60,25 @@
       "save": [],
       "requirements": {}
     },
+    "Foundation": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "MATH 120"
+          },
+          {
+            "course": "MATH 119"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Economic Analysis": {
       "message": null,
       "department_audited": false,
@@ -186,25 +205,6 @@
           "requirements": {}
         }
       }
-    },
-    "Foundation": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "MATH 120"
-          },
-          {
-            "course": "MATH 119"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
     }
   },
   "attributes": {

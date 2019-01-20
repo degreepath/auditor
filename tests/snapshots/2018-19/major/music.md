@@ -88,6 +88,15 @@ For this requirement, you must take MUSPF 104 enough times to span at least four
 ### Other Lessons
 For this requirement, you must take enough courses other than MUSPF 104 to span at least two terms.
 
+## Coll Keyboard Perfor
+For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
+
+### Lessons
+For this requirement, you must take MUSPF 106 enough times to span at least four terms.
+
+### Other Lessons
+For this requirement, you must take enough courses other than MUSPF 106 to span at least two terms.
+
 ## Drumset
 For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
 
@@ -105,6 +114,15 @@ For this requirement, you must take MUSPF 112 enough times to span at least four
 
 ### Other Lessons
 For this requirement, you must take enough courses other than MUSPF 112 to span at least two terms.
+
+## Organ
+For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
+
+### Lessons
+For this requirement, you must take MUSPF 128 enough times to span at least four terms.
+
+### Other Lessons
+For this requirement, you must take enough courses other than MUSPF 128 to span at least two terms.
 
 ## Flute
 For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
@@ -160,15 +178,6 @@ For this requirement, you must take MUSPF 124 enough times to span at least four
 ### Other Lessons
 For this requirement, you must take enough courses other than MUSPF 124 to span at least two terms.
 
-## Jazz Saxophone
-For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
-
-### Lessons
-For this requirement, you must take MUSPF 135 enough times to span at least four terms.
-
-### Other Lessons
-For this requirement, you must take enough courses other than MUSPF 135 to span at least two terms.
-
 ## Oboe
 For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
 
@@ -177,15 +186,6 @@ For this requirement, you must take MUSPF 126 enough times to span at least four
 
 ### Other Lessons
 For this requirement, you must take enough courses other than MUSPF 126 to span at least two terms.
-
-## Organ
-For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
-
-### Lessons
-For this requirement, you must take MUSPF 128 enough times to span at least four terms.
-
-### Other Lessons
-For this requirement, you must take enough courses other than MUSPF 128 to span at least two terms.
 
 ## Percussion
 For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
@@ -204,6 +204,15 @@ For this requirement, you must take MUSPF 134 enough times to span at least four
 
 ### Other Lessons
 For this requirement, you must take enough courses other than MUSPF 134 to span at least two terms.
+
+## Jazz Saxophone
+For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.
+
+### Lessons
+For this requirement, you must take MUSPF 135 enough times to span at least four terms.
+
+### Other Lessons
+For this requirement, you must take enough courses other than MUSPF 135 to span at least two terms.
 
 ## Saxophone
 For this section, you must take enough courses to span at least six terms from among courses matched by the “Lessons” and “Other Lessons” requirements.

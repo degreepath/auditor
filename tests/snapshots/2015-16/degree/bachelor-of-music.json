@@ -57,37 +57,6 @@
       "contract": false,
       "save": [],
       "requirements": {
-        "Course Level": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "level": {
-                "Single": {
-                  "op": "GreaterThanEqualTo",
-                  "value": {
-                    "Integer": 200
-                  }
-                }
-              }
-            },
-            "what": "credits",
-            "do": {
-              "lhs": {
-                "Command": "Sum"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 18
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
         "Courses": {
           "message": null,
           "department_audited": false,
@@ -110,40 +79,18 @@
           "save": [],
           "requirements": {}
         },
-        "Grade Point Average": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": null,
-            "what": "grades",
-            "do": {
-              "lhs": {
-                "Command": "Average"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Float": 2.0
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Graded Courses": {
+        "Residency": {
           "message": null,
           "department_audited": false,
           "result": {
             "given": "courses",
             "limit": null,
             "where": {
-              "graded": {
+              "institution": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "Bool": true
+                    "String": "St. Olaf College"
                   }
                 }
               }
@@ -155,7 +102,7 @@
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
-                "Integer": 24
+                "Integer": 17
               }
             }
           },
@@ -225,6 +172,90 @@
           ],
           "requirements": {}
         },
+        "Grade Point Average": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": null,
+            "what": "grades",
+            "do": {
+              "lhs": {
+                "Command": "Average"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Float": 2.0
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Course Level": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "level": {
+                "Single": {
+                  "op": "GreaterThanEqualTo",
+                  "value": {
+                    "Integer": 200
+                  }
+                }
+              }
+            },
+            "what": "credits",
+            "do": {
+              "lhs": {
+                "Command": "Sum"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 18
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Graded Courses": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "graded": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Bool": true
+                  }
+                }
+              }
+            },
+            "what": "credits",
+            "do": {
+              "lhs": {
+                "Command": "Sum"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 24
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
         "Major": {
           "message": null,
           "department_audited": false,
@@ -249,37 +280,6 @@
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Residency": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "institution": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "St. Olaf College"
-                  }
-                }
-              }
-            },
-            "what": "credits",
-            "do": {
-              "lhs": {
-                "Command": "Sum"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 17
               }
             }
           },
@@ -313,250 +313,6 @@
       "contract": false,
       "save": [],
       "requirements": {
-        "Core": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "requirement": "Historical Studies in Western Culture or Literary Studies",
-                "optional": false
-              },
-              {
-                "requirement": "Multicultural Studies",
-                "optional": false
-              },
-              {
-                "requirement": "Biblical and Theological Studies",
-                "optional": false
-              },
-              {
-                "requirement": "Studies in Human Behavior and Society",
-                "optional": false
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {
-            "Biblical and Theological Studies": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "all",
-                "of": [
-                  {
-                    "given": "save",
-                    "save": "Courses with a BTS-B or BTS-T",
-                    "limit": null,
-                    "where": null,
-                    "what": "courses",
-                    "do": {
-                      "lhs": {
-                        "Command": "Count"
-                      },
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
-                      }
-                    }
-                  },
-                  {
-                    "given": "save",
-                    "save": "Courses with a BTS-B or BTS-T",
-                    "limit": null,
-                    "where": {
-                      "gereqs": {
-                        "Single": {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-B"
-                          }
-                        }
-                      }
-                    },
-                    "what": "courses",
-                    "do": {
-                      "lhs": {
-                        "Command": "Count"
-                      },
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
-                      }
-                    }
-                  },
-                  {
-                    "given": "save",
-                    "save": "Courses with a BTS-B or BTS-T",
-                    "limit": null,
-                    "where": {
-                      "gereqs": {
-                        "Single": {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-T"
-                          }
-                        }
-                      }
-                    },
-                    "what": "courses",
-                    "do": {
-                      "lhs": {
-                        "Command": "Count"
-                      },
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
-                      }
-                    }
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [
-                {
-                  "name": "Courses with a BTS-B or BTS-T",
-                  "given": "courses",
-                  "limit": null,
-                  "where": {
-                    "gereqs": {
-                      "Or": [
-                        {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-B"
-                          }
-                        },
-                        {
-                          "op": "EqualTo",
-                          "value": {
-                            "String": "BTS-T"
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "what": "courses",
-                  "do": null
-                }
-              ],
-              "requirements": {}
-            },
-            "Historical Studies in Western Culture or Literary Studies": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "limit": null,
-                "where": {
-                  "gereqs": {
-                    "Or": [
-                      {
-                        "op": "EqualTo",
-                        "value": {
-                          "String": "HWC"
-                        }
-                      },
-                      {
-                        "op": "EqualTo",
-                        "value": {
-                          "String": "ALS-L"
-                        }
-                      }
-                    ]
-                  }
-                },
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 1
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Multicultural Studies": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "limit": null,
-                "where": {
-                  "gereqs": {
-                    "Or": [
-                      {
-                        "op": "EqualTo",
-                        "value": {
-                          "String": "MCD"
-                        }
-                      },
-                      {
-                        "op": "EqualTo",
-                        "value": {
-                          "String": "MCG"
-                        }
-                      }
-                    ]
-                  }
-                },
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 1
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Studies in Human Behavior and Society": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "limit": null,
-                "where": {
-                  "gereqs": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "HBS"
-                      }
-                    }
-                  }
-                },
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 1
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            }
-          }
-        },
         "Foundation": {
           "message": null,
           "department_audited": false,
@@ -617,6 +373,37 @@
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Writing in Context": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "gereqs": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "WRI"
+                      }
+                    }
+                  }
+                },
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
                   }
                 }
               },
@@ -770,8 +557,221 @@
               "contract": false,
               "save": [],
               "requirements": {}
+            }
+          }
+        },
+        "Core": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "requirement": "Historical Studies in Western Culture or Literary Studies",
+                "optional": false
+              },
+              {
+                "requirement": "Multicultural Studies",
+                "optional": false
+              },
+              {
+                "requirement": "Biblical and Theological Studies",
+                "optional": false
+              },
+              {
+                "requirement": "Studies in Human Behavior and Society",
+                "optional": false
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Historical Studies in Western Culture or Literary Studies": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "gereqs": {
+                    "Or": [
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "HWC"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "ALS-L"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
             },
-            "Writing in Context": {
+            "Multicultural Studies": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "gereqs": {
+                    "Or": [
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "MCD"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "MCG"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 1
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Biblical and Theological Studies": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "all",
+                "of": [
+                  {
+                    "given": "save",
+                    "save": "Courses with a BTS-B or BTS-T",
+                    "limit": null,
+                    "where": null,
+                    "what": "courses",
+                    "do": {
+                      "lhs": {
+                        "Command": "Count"
+                      },
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 2
+                      }
+                    }
+                  },
+                  {
+                    "given": "save",
+                    "save": "Courses with a BTS-B or BTS-T",
+                    "limit": null,
+                    "where": {
+                      "gereqs": {
+                        "Single": {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-B"
+                          }
+                        }
+                      }
+                    },
+                    "what": "courses",
+                    "do": {
+                      "lhs": {
+                        "Command": "Count"
+                      },
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 1
+                      }
+                    }
+                  },
+                  {
+                    "given": "save",
+                    "save": "Courses with a BTS-B or BTS-T",
+                    "limit": null,
+                    "where": {
+                      "gereqs": {
+                        "Single": {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-T"
+                          }
+                        }
+                      }
+                    },
+                    "what": "courses",
+                    "do": {
+                      "lhs": {
+                        "Command": "Count"
+                      },
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 1
+                      }
+                    }
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [
+                {
+                  "name": "Courses with a BTS-B or BTS-T",
+                  "given": "courses",
+                  "limit": null,
+                  "where": {
+                    "gereqs": {
+                      "Or": [
+                        {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-B"
+                          }
+                        },
+                        {
+                          "op": "EqualTo",
+                          "value": {
+                            "String": "BTS-T"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "what": "courses",
+                  "do": null
+                }
+              ],
+              "requirements": {}
+            },
+            "Studies in Human Behavior and Society": {
               "message": null,
               "department_audited": false,
               "result": {
@@ -782,7 +782,7 @@
                     "Single": {
                       "op": "EqualTo",
                       "value": {
-                        "String": "WRI"
+                        "String": "HBS"
                       }
                     }
                   }
@@ -794,7 +794,7 @@
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
-                    "Integer": 4
+                    "Integer": 1
                   }
                 }
               },

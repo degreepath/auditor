@@ -65,72 +65,32 @@
       "save": [],
       "requirements": {}
     },
-    "Level III": {
+    "U.S.": {
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 3,
-        "of": [
-          {
-            "course": "HIST 301"
-          },
-          {
-            "course": "HIST 302"
-          },
-          {
-            "course": "HIST 303"
-          },
-          {
-            "course": "HIST 310"
-          },
-          {
-            "course": "HIST 315"
-          },
-          {
-            "course": "HIST 320"
-          },
-          {
-            "course": "HIST 340"
-          },
-          {
-            "course": "HIST 345"
-          },
-          {
-            "course": "HIST 370"
-          },
-          {
-            "course": "HIST 375"
-          },
-          {
-            "course": "ASIAN 399"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "history_attr": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "region=us"
+              }
+            }
           }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Major Seminar": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "HIST 201"
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
           },
-          {
-            "course": "HIST 210"
-          },
-          {
-            "course": "HIST 240"
-          },
-          {
-            "course": "HIST 270"
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
           }
-        ],
-        "surplus": null
+        }
       },
       "contract": false,
       "save": [],
@@ -198,32 +158,72 @@
       "save": [],
       "requirements": {}
     },
-    "U.S.": {
+    "Major Seminar": {
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "courses",
-        "limit": null,
-        "where": {
-          "history_attr": {
-            "Single": {
-              "op": "EqualTo",
-              "value": {
-                "String": "region=us"
-              }
-            }
-          }
-        },
-        "what": "courses",
-        "do": {
-          "lhs": {
-            "Command": "Count"
+        "count": 1,
+        "of": [
+          {
+            "course": "HIST 201"
           },
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+          {
+            "course": "HIST 210"
+          },
+          {
+            "course": "HIST 240"
+          },
+          {
+            "course": "HIST 270"
           }
-        }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 3,
+        "of": [
+          {
+            "course": "HIST 301"
+          },
+          {
+            "course": "HIST 302"
+          },
+          {
+            "course": "HIST 303"
+          },
+          {
+            "course": "HIST 310"
+          },
+          {
+            "course": "HIST 315"
+          },
+          {
+            "course": "HIST 320"
+          },
+          {
+            "course": "HIST 340"
+          },
+          {
+            "course": "HIST 345"
+          },
+          {
+            "course": "HIST 370"
+          },
+          {
+            "course": "HIST 375"
+          },
+          {
+            "course": "ASIAN 399"
+          }
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

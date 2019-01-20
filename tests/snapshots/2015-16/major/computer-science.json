@@ -26,11 +26,54 @@
     "surplus": null
   },
   "requirements": {
-    "Capstone": {
+    "Foundation": {
       "message": null,
       "department_audited": false,
       "result": {
-        "course": "CSCI 390"
+        "count": 3,
+        "of": [
+          {
+            "either": [
+              {
+                "course": "CSCI 121"
+              },
+              {
+                "course": "CSCI 125"
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "course": "CSCI 241"
+          },
+          {
+            "both": [
+              {
+                "course": "CSCI 251"
+              },
+              {
+                "course": "CSCI 252"
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "count": "any",
+            "of": [
+              {
+                "course": "MATH 232"
+              },
+              {
+                "course": "MATH 252"
+              },
+              {
+                "course": "MATH 244"
+              }
+            ],
+            "surplus": null
+          }
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -151,54 +194,11 @@
       "save": [],
       "requirements": {}
     },
-    "Foundation": {
+    "Capstone": {
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 3,
-        "of": [
-          {
-            "either": [
-              {
-                "course": "CSCI 121"
-              },
-              {
-                "course": "CSCI 125"
-              }
-            ],
-            "surplus": null
-          },
-          {
-            "course": "CSCI 241"
-          },
-          {
-            "both": [
-              {
-                "course": "CSCI 251"
-              },
-              {
-                "course": "CSCI 252"
-              }
-            ],
-            "surplus": null
-          },
-          {
-            "count": "any",
-            "of": [
-              {
-                "course": "MATH 232"
-              },
-              {
-                "course": "MATH 252"
-              },
-              {
-                "course": "MATH 244"
-              }
-            ],
-            "surplus": null
-          }
-        ],
-        "surplus": null
+        "course": "CSCI 390"
       },
       "contract": false,
       "save": [],

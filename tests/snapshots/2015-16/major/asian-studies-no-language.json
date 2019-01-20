@@ -22,6 +22,34 @@
     "surplus": null
   },
   "requirements": {
+    "Interdisciplinary": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ASIAN 275"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Seminar": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "ASIAN 397"
+          },
+          {
+            "course": "ASIAN 399"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": "You may not count more than four courses about any one country. Additionally, at least two of the level II and III courses must be taken on-campus.",
       "department_audited": false,
@@ -301,34 +329,6 @@
           "do": null
         }
       ],
-      "requirements": {}
-    },
-    "Interdisciplinary": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "course": "ASIAN 275"
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Seminar": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "either": [
-          {
-            "course": "ASIAN 397"
-          },
-          {
-            "course": "ASIAN 399"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
       "requirements": {}
     }
   },

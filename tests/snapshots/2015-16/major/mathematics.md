@@ -64,23 +64,6 @@ For this requirement, you must both take ECON 385 and declare one “Economics�
 For this requirement, you must both take PHYS 375 and declare one “Physics” major.
 
 
-# Sequence
-> Note: A 200-300-level sequence of two courses, at least one of which must be a
-> Mathematics course.
-
-For this requirement, you must do one of the following:
-
-- take both MATH 230 and MATH 330
-- take both MATH 226 and MATH 340
-- take both MATH 244 and MATH 344
-- take both MATH 224 and MATH 348
-- take both MATH 252 and MATH 352
-- take both MATH 220 and MATH 356
-- take both MATH 232 and MATH 364
-- take both MATH 262 and STAT 322
-- take both MATH 220 and MSCS 341
-
-
 # Level III
 > Note: Two Level III courses, at least one of which must be a Mathematics
 > course.
@@ -110,5 +93,22 @@ For this requirement, you must do both of the following:
 - in the subset “Level III Courses”, there must be at least two courses
 - in the subset “Level III Courses”, there must be at least one course within the MATH department
 
+
+
+# Sequence
+> Note: A 200-300-level sequence of two courses, at least one of which must be a
+> Mathematics course.
+
+For this requirement, you must do one of the following:
+
+- take both MATH 230 and MATH 330
+- take both MATH 226 and MATH 340
+- take both MATH 244 and MATH 344
+- take both MATH 224 and MATH 348
+- take both MATH 252 and MATH 352
+- take both MATH 220 and MATH 356
+- take both MATH 232 and MATH 364
+- take both MATH 262 and STAT 322
+- take both MATH 220 and MSCS 341
 
 

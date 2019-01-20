@@ -30,6 +30,13 @@ For this requirement, you must do all of the following:
 - SOAN 267
 
 
+# Ethics
+> Note: Students should consult with their advisor to determine what courses
+> meet this requirement from among the general education EIN courses.
+
+For this requirement, you must take AMCON 101.
+
+
 # Requirements
 For this requirement, you must take all of the following courses:
 
@@ -44,13 +51,6 @@ For this requirement, you must take all of the following courses:
 - NURS 318
 - NURS 319
 - NURS 399
-
-
-# Ethics
-> Note: Students should consult with their advisor to determine what courses
-> meet this requirement from among the general education EIN courses.
-
-For this requirement, you must take AMCON 101.
 
 
 # Recommended

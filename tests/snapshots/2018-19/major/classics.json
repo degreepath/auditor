@@ -22,65 +22,6 @@
     "surplus": null
   },
   "requirements": {
-    "Ancient History": {
-      "message": "TODO find out what courses are considered \"ancient history\"",
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "CLASS 111"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Classics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "CLASS 121"
-          },
-          {
-            "course": "CLASS 123"
-          },
-          {
-            "course": "CLASS 126"
-          },
-          {
-            "course": "CLASS 129"
-          },
-          {
-            "course": "CLASS 241"
-          },
-          {
-            "course": "CLASS 243"
-          },
-          {
-            "course": "CLASS 244"
-          },
-          {
-            "course": "CLASS 251"
-          },
-          {
-            "course": "CLASS 253"
-          },
-          {
-            "course": "CLASS 396"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Language": {
       "message": null,
       "department_audited": false,
@@ -252,6 +193,65 @@
           "do": null
         }
       ],
+      "requirements": {}
+    },
+    "Classics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "CLASS 121"
+          },
+          {
+            "course": "CLASS 123"
+          },
+          {
+            "course": "CLASS 126"
+          },
+          {
+            "course": "CLASS 129"
+          },
+          {
+            "course": "CLASS 241"
+          },
+          {
+            "course": "CLASS 243"
+          },
+          {
+            "course": "CLASS 244"
+          },
+          {
+            "course": "CLASS 251"
+          },
+          {
+            "course": "CLASS 253"
+          },
+          {
+            "course": "CLASS 396"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Ancient History": {
+      "message": "TODO find out what courses are considered \"ancient history\"",
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "CLASS 111"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
       "requirements": {}
     }
   },

@@ -22,14 +22,38 @@
     "surplus": null
   },
   "requirements": {
-    "Ancient Greek History": {
-      "message": "TODO find out what courses are considered \"ancient greek history\"",
+    "Language": {
+      "message": null,
       "department_audited": false,
       "result": {
-        "count": 1,
+        "count": 7,
         "of": [
           {
-            "course": "CLASS 111"
+            "course": "GREEK 111"
+          },
+          {
+            "course": "GREEK 112"
+          },
+          {
+            "course": "GREEK 231"
+          },
+          {
+            "course": "GREEK 253"
+          },
+          {
+            "course": "GREEK 370"
+          },
+          {
+            "course": "GREEK 372"
+          },
+          {
+            "course": "GREEK 373"
+          },
+          {
+            "course": "GREEK 374"
+          },
+          {
+            "course": "GREEK 375"
           }
         ],
         "surplus": null
@@ -81,38 +105,14 @@
       "save": [],
       "requirements": {}
     },
-    "Language": {
-      "message": null,
+    "Ancient Greek History": {
+      "message": "TODO find out what courses are considered \"ancient greek history\"",
       "department_audited": false,
       "result": {
-        "count": 7,
+        "count": 1,
         "of": [
           {
-            "course": "GREEK 111"
-          },
-          {
-            "course": "GREEK 112"
-          },
-          {
-            "course": "GREEK 231"
-          },
-          {
-            "course": "GREEK 253"
-          },
-          {
-            "course": "GREEK 370"
-          },
-          {
-            "course": "GREEK 372"
-          },
-          {
-            "course": "GREEK 373"
-          },
-          {
-            "course": "GREEK 374"
-          },
-          {
-            "course": "GREEK 375"
+            "course": "CLASS 111"
           }
         ],
         "surplus": null

@@ -18,97 +18,6 @@
     "surplus": null
   },
   "requirements": {
-    "Art History": {
-      "message": "The department strongly recommends that you take ART 252 or 253 as one of your art history courses.",
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "ART 153"
-          },
-          {
-            "course": "ART 161"
-          },
-          {
-            "course": "ART 251"
-          },
-          {
-            "course": "ART 252"
-          },
-          {
-            "course": "ART 253"
-          },
-          {
-            "course": "ART 254"
-          },
-          {
-            "course": "ART 255"
-          },
-          {
-            "course": "ART 256"
-          },
-          {
-            "course": "ART 259"
-          },
-          {
-            "course": "ART 260"
-          },
-          {
-            "course": "ART 261"
-          },
-          {
-            "course": "ART 262"
-          },
-          {
-            "course": "ART 263"
-          },
-          {
-            "course": "ART 265"
-          },
-          {
-            "course": "ART 267"
-          },
-          {
-            "course": "ART 269"
-          },
-          {
-            "course": "ART 271"
-          },
-          {
-            "course": "ART 273"
-          },
-          {
-            "course": "ART 277"
-          },
-          {
-            "course": "ART 280"
-          },
-          {
-            "course": "ART 350"
-          },
-          {
-            "course": "ART 370"
-          },
-          {
-            "course": "ASIAN 270"
-          },
-          {
-            "course": "ASIAN 310"
-          },
-          {
-            "course": "ENVST 270"
-          },
-          {
-            "course": "PHIL 243"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Studio Art": {
       "message": null,
       "department_audited": false,
@@ -141,6 +50,28 @@
       "contract": false,
       "save": [],
       "requirements": {
+        "Foundations": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "ART 102"
+              },
+              {
+                "course": "ART 103"
+              },
+              {
+                "course": "ART 104"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
         "Areas": {
           "message": null,
           "department_audited": false,
@@ -215,22 +146,6 @@
                   "save": [],
                   "requirements": {}
                 },
-                "Graphic Design": {
-                  "message": null,
-                  "department_audited": false,
-                  "result": {
-                    "count": "any",
-                    "of": [
-                      {
-                        "course": "ART 236"
-                      }
-                    ],
-                    "surplus": null
-                  },
-                  "contract": false,
-                  "save": [],
-                  "requirements": {}
-                },
                 "Painting": {
                   "message": null,
                   "department_audited": false,
@@ -261,6 +176,22 @@
                       },
                       {
                         "course": "ART 227"
+                      }
+                    ],
+                    "surplus": null
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
+                "Graphic Design": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 236"
                       }
                     ],
                     "surplus": null
@@ -363,30 +294,17 @@
               "contract": false,
               "save": [],
               "requirements": {
-                "Digital Video": {
+                "Photography": {
                   "message": null,
                   "department_audited": false,
                   "result": {
                     "count": "any",
                     "of": [
                       {
-                        "course": "ART 229"
-                      }
-                    ],
-                    "surplus": null
-                  },
-                  "contract": false,
-                  "save": [],
-                  "requirements": {}
-                },
-                "Graphic Design": {
-                  "message": null,
-                  "department_audited": false,
-                  "result": {
-                    "count": "any",
-                    "of": [
+                        "course": "ART 205"
+                      },
                       {
-                        "course": "ART 236"
+                        "course": "ART 238"
                       }
                     ],
                     "surplus": null
@@ -411,6 +329,22 @@
                   "save": [],
                   "requirements": {}
                 },
+                "Digital Video": {
+                  "message": null,
+                  "department_audited": false,
+                  "result": {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ART 229"
+                      }
+                    ],
+                    "surplus": null
+                  },
+                  "contract": false,
+                  "save": [],
+                  "requirements": {}
+                },
                 "Performance": {
                   "message": null,
                   "department_audited": false,
@@ -427,17 +361,14 @@
                   "save": [],
                   "requirements": {}
                 },
-                "Photography": {
+                "Graphic Design": {
                   "message": null,
                   "department_audited": false,
                   "result": {
                     "count": "any",
                     "of": [
                       {
-                        "course": "ART 205"
-                      },
-                      {
-                        "course": "ART 238"
+                        "course": "ART 236"
                       }
                     ],
                     "surplus": null
@@ -449,6 +380,24 @@
               }
             }
           }
+        },
+        "Juried Show": {
+          "message": "To fulfill the requirements of the Studio Art major, you must enter at least two juried art exhibitions on or off campus by the beginning of your senior year.",
+          "department_audited": true,
+          "result": null,
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Senior Studies in Studio Art": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "course": "ART 343"
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
         },
         "Electives": {
           "message": null,
@@ -483,48 +432,99 @@
           "contract": false,
           "save": [],
           "requirements": {}
-        },
-        "Foundations": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "ART 102"
-              },
-              {
-                "course": "ART 103"
-              },
-              {
-                "course": "ART 104"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Juried Show": {
-          "message": "To fulfill the requirements of the Studio Art major, you must enter at least two juried art exhibitions on or off campus by the beginning of your senior year.",
-          "department_audited": true,
-          "result": null,
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Senior Studies in Studio Art": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "course": "ART 343"
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
         }
       }
+    },
+    "Art History": {
+      "message": "The department strongly recommends that you take ART 252 or 253 as one of your art history courses.",
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "ART 153"
+          },
+          {
+            "course": "ART 161"
+          },
+          {
+            "course": "ART 251"
+          },
+          {
+            "course": "ART 252"
+          },
+          {
+            "course": "ART 253"
+          },
+          {
+            "course": "ART 254"
+          },
+          {
+            "course": "ART 255"
+          },
+          {
+            "course": "ART 256"
+          },
+          {
+            "course": "ART 259"
+          },
+          {
+            "course": "ART 260"
+          },
+          {
+            "course": "ART 261"
+          },
+          {
+            "course": "ART 262"
+          },
+          {
+            "course": "ART 263"
+          },
+          {
+            "course": "ART 265"
+          },
+          {
+            "course": "ART 267"
+          },
+          {
+            "course": "ART 269"
+          },
+          {
+            "course": "ART 271"
+          },
+          {
+            "course": "ART 273"
+          },
+          {
+            "course": "ART 277"
+          },
+          {
+            "course": "ART 280"
+          },
+          {
+            "course": "ART 350"
+          },
+          {
+            "course": "ART 370"
+          },
+          {
+            "course": "ASIAN 270"
+          },
+          {
+            "course": "ASIAN 310"
+          },
+          {
+            "course": "ENVST 270"
+          },
+          {
+            "course": "PHIL 243"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     }
   },
   "attributes": null

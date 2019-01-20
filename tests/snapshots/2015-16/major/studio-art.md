@@ -15,27 +15,6 @@ For this section, you must complete all of the following requirements:
 ## Foundations
 For this requirement, you must take ART 102, ART 103, and ART 104.
 
-## Juried Show
-> Note: To fulfill the requirements of the Studio Art major, you must enter at
-> least two juried art exhibitions on or off campus by the beginning of your
-> senior year.
-
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
-## Senior Studies in Studio Art
-For this requirement, you must take ART 343.
-
-## Electives
-For this requirement, you must take one of the following courses:
-
-- ART 106
-- ART 246
-- ART 294
-- ART 298
-- ART 340
-- ART 394
-- ART 398
-
 ## Areas
 For this section, you must complete “2D Media”, “3D Media”, and “New Media”.
 
@@ -91,6 +70,27 @@ For this requirement, you must take ART 240.
 
 #### Graphic Design
 For this requirement, you must take ART 236.
+
+## Juried Show
+> Note: To fulfill the requirements of the Studio Art major, you must enter at
+> least two juried art exhibitions on or off campus by the beginning of your
+> senior year.
+
+For this requirement, you must have done what the note says. The Department must
+certify that you have done so.
+## Senior Studies in Studio Art
+For this requirement, you must take ART 343.
+
+## Electives
+For this requirement, you must take one of the following courses:
+
+- ART 106
+- ART 246
+- ART 294
+- ART 298
+- ART 340
+- ART 394
+- ART 398
 
 
 # Art History

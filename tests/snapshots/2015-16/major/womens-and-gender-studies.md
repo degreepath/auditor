@@ -7,6 +7,10 @@ For this major, you must complete “Introduction”, “Additional Courses”, 
 For this requirement, you must take WMGST 121.
 
 
+# Advanced Topics
+For this requirement, you must take WMGST 399.
+
+
 # Additional Courses
 Given the courses which fulfilled the “Theory and Methods”, “Women and Gender in Historical Context”, “Women and Gender in Global/Comparative/Diverse Contexts”, “Electives”, and “Lived Experiences” requirements, as “Taken Elective Courses”:
 
@@ -104,8 +108,4 @@ For this requirement, you must take one of the following courses:
 
 This section is a Contract section. You must talk to the Department to fill out,
 file, and update the Contract.
-
-# Advanced Topics
-For this requirement, you must take WMGST 399.
-
 

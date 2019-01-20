@@ -18,6 +18,28 @@
     "surplus": null
   },
   "requirements": {
+    "Major": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "ENVST 137"
+          },
+          {
+            "course": "ENVST 237"
+          },
+          {
+            "course": "ENVST 399"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Areas of Emphasis": {
       "message": null,
       "department_audited": false,
@@ -160,6 +182,451 @@
         }
       ],
       "requirements": {
+        "Natural Science": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "requirement": "Statistics, Modeling, and Mapping",
+                "optional": false
+              },
+              {
+                "requirement": "Intermediate Chemistry",
+                "optional": false
+              },
+              {
+                "requirement": "Intermediate Ecology",
+                "optional": false
+              },
+              {
+                "requirement": "Environmental Science",
+                "optional": false
+              },
+              {
+                "requirement": "Level III Natural Science",
+                "optional": false
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Statistics, Modeling, and Mapping": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 255"
+                  },
+                  {
+                    "course": "STAT 212"
+                  },
+                  {
+                    "course": "STAT 272"
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Intermediate Chemistry": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "both": [
+                      {
+                        "course": "CHEM 248"
+                      },
+                      {
+                        "course": "CHEM 254"
+                      }
+                    ],
+                    "surplus": null
+                  },
+                  {
+                    "both": [
+                      {
+                        "course": "CHEM 255"
+                      },
+                      {
+                        "course": "CHEM 256"
+                      }
+                    ],
+                    "surplus": null
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Intermediate Ecology": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "BIO 261"
+                  },
+                  {
+                    "course": "BIO 226"
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Environmental Science": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "ENVST 123"
+                  },
+                  {
+                    "course": "BI/ES 226"
+                  },
+                  {
+                    "course": "BI/ES 228"
+                  },
+                  {
+                    "course": "ENVST 245"
+                  },
+                  {
+                    "course": "ENVST 255"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "BI/ES 286"
+                  },
+                  {
+                    "course": "BI/ES 250"
+                  },
+                  {
+                    "course": "ENVST 381",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "ENVST 397"
+                  },
+                  {
+                    "course": "BIO 224"
+                  }
+                ],
+                "repeats": "first",
+                "limit": [
+                  {
+                    "where": {
+                      "department": {
+                        "Single": {
+                          "op": "NotEqualTo",
+                          "value": {
+                            "String": "ENVST"
+                          }
+                        }
+                      }
+                    },
+                    "at_most": 2
+                  }
+                ],
+                "where": null,
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Level III Natural Science": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "BI/ES 350"
+                  },
+                  {
+                    "course": "BIO 371"
+                  },
+                  {
+                    "course": "BIO 391",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "CHEM 391",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "ENVST 391",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
+        },
+        "Social Science": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "requirement": "Methodological Analysis",
+                "optional": false
+              },
+              {
+                "requirement": "Economic Analysis",
+                "optional": false
+              },
+              {
+                "requirement": "Environmental Political Policy and Institutions",
+                "optional": false
+              },
+              {
+                "requirement": "Social Science Electives",
+                "optional": false
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Methodological Analysis": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 255"
+                  },
+                  {
+                    "course": "STAT 110"
+                  },
+                  {
+                    "course": "STAT 212"
+                  },
+                  {
+                    "course": "STAT 214"
+                  },
+                  {
+                    "course": "STAT 272"
+                  },
+                  {
+                    "course": "ECON 263"
+                  },
+                  {
+                    "course": "SOAN 371"
+                  },
+                  {
+                    "course": "PSYCH 230"
+                  },
+                  {
+                    "course": "PSCI 220"
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Economic Analysis": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "all",
+                "of": [
+                  {
+                    "count": "any",
+                    "of": [
+                      {
+                        "course": "ECON 121"
+                      },
+                      {
+                        "course": "ECON 110"
+                      },
+                      {
+                        "course": "ECON 120"
+                      }
+                    ],
+                    "surplus": null
+                  },
+                  {
+                    "course": "ECON 242"
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Environmental Political Policy and Institutions": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 232"
+                  },
+                  {
+                    "course": "ES/PS 201"
+                  },
+                  {
+                    "course": "ES/PS 276"
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Social Science Electives": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 2,
+                "of": [
+                  {
+                    "course": "ES/PS 201"
+                  },
+                  {
+                    "course": "ENVST 232"
+                  },
+                  {
+                    "course": "ENVST 235"
+                  },
+                  {
+                    "course": "ES/PS 276"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "ENVST 381",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "ENVST 396",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "ECON 243"
+                  },
+                  {
+                    "course": "PSYCH 227"
+                  },
+                  {
+                    "course": "SOAN 247"
+                  },
+                  {
+                    "course": "SOAN 297",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
+                  },
+                  {
+                    "course": "PSCI 221"
+                  },
+                  {
+                    "course": "SOAN 222"
+                  },
+                  {
+                    "course": "ID 234"
+                  },
+                  {
+                    "course": "AS/ES 227"
+                  }
+                ],
+                "surplus": null
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
+        },
         "Arts and Humanities": {
           "message": null,
           "department_audited": false,
@@ -264,475 +731,8 @@
           "contract": false,
           "save": [],
           "requirements": {}
-        },
-        "Natural Science": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "requirement": "Statistics, Modeling, and Mapping",
-                "optional": false
-              },
-              {
-                "requirement": "Intermediate Chemistry",
-                "optional": false
-              },
-              {
-                "requirement": "Intermediate Ecology",
-                "optional": false
-              },
-              {
-                "requirement": "Environmental Science",
-                "optional": false
-              },
-              {
-                "requirement": "Level III Natural Science",
-                "optional": false
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {
-            "Environmental Science": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "these courses",
-                "courses": [
-                  {
-                    "course": "ENVST 123"
-                  },
-                  {
-                    "course": "BI/ES 226"
-                  },
-                  {
-                    "course": "BI/ES 228"
-                  },
-                  {
-                    "course": "ENVST 245"
-                  },
-                  {
-                    "course": "ENVST 255"
-                  },
-                  {
-                    "course": "ENVST 281",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "BI/ES 286"
-                  },
-                  {
-                    "course": "BI/ES 250"
-                  },
-                  {
-                    "course": "ENVST 381",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "ENVST 397"
-                  },
-                  {
-                    "course": "BIO 224"
-                  }
-                ],
-                "repeats": "first",
-                "limit": [
-                  {
-                    "where": {
-                      "department": {
-                        "Single": {
-                          "op": "NotEqualTo",
-                          "value": {
-                            "String": "ENVST"
-                          }
-                        }
-                      }
-                    },
-                    "at_most": 2
-                  }
-                ],
-                "where": null,
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 2
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Intermediate Chemistry": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 1,
-                "of": [
-                  {
-                    "both": [
-                      {
-                        "course": "CHEM 248"
-                      },
-                      {
-                        "course": "CHEM 254"
-                      }
-                    ],
-                    "surplus": null
-                  },
-                  {
-                    "both": [
-                      {
-                        "course": "CHEM 255"
-                      },
-                      {
-                        "course": "CHEM 256"
-                      }
-                    ],
-                    "surplus": null
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Intermediate Ecology": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 1,
-                "of": [
-                  {
-                    "course": "BIO 261"
-                  },
-                  {
-                    "course": "BIO 226"
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Level III Natural Science": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 1,
-                "of": [
-                  {
-                    "course": "BI/ES 350"
-                  },
-                  {
-                    "course": "BIO 371"
-                  },
-                  {
-                    "course": "BIO 391",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "CHEM 391",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "ENVST 391",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Statistics, Modeling, and Mapping": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 1,
-                "of": [
-                  {
-                    "course": "ENVST 255"
-                  },
-                  {
-                    "course": "STAT 212"
-                  },
-                  {
-                    "course": "STAT 272"
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            }
-          }
-        },
-        "Social Science": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "requirement": "Methodological Analysis",
-                "optional": false
-              },
-              {
-                "requirement": "Economic Analysis",
-                "optional": false
-              },
-              {
-                "requirement": "Environmental Political Policy and Institutions",
-                "optional": false
-              },
-              {
-                "requirement": "Social Science Electives",
-                "optional": false
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {
-            "Economic Analysis": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "all",
-                "of": [
-                  {
-                    "count": "any",
-                    "of": [
-                      {
-                        "course": "ECON 121"
-                      },
-                      {
-                        "course": "ECON 110"
-                      },
-                      {
-                        "course": "ECON 120"
-                      }
-                    ],
-                    "surplus": null
-                  },
-                  {
-                    "course": "ECON 242"
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Environmental Political Policy and Institutions": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 1,
-                "of": [
-                  {
-                    "course": "ENVST 232"
-                  },
-                  {
-                    "course": "ES/PS 201"
-                  },
-                  {
-                    "course": "ES/PS 276"
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Methodological Analysis": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 1,
-                "of": [
-                  {
-                    "course": "ENVST 255"
-                  },
-                  {
-                    "course": "STAT 110"
-                  },
-                  {
-                    "course": "STAT 212"
-                  },
-                  {
-                    "course": "STAT 214"
-                  },
-                  {
-                    "course": "STAT 272"
-                  },
-                  {
-                    "course": "ECON 263"
-                  },
-                  {
-                    "course": "SOAN 371"
-                  },
-                  {
-                    "course": "PSYCH 230"
-                  },
-                  {
-                    "course": "PSCI 220"
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Social Science Electives": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 2,
-                "of": [
-                  {
-                    "course": "ES/PS 201"
-                  },
-                  {
-                    "course": "ENVST 232"
-                  },
-                  {
-                    "course": "ENVST 235"
-                  },
-                  {
-                    "course": "ES/PS 276"
-                  },
-                  {
-                    "course": "ENVST 281",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "ENVST 381",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "ENVST 396",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "ECON 243"
-                  },
-                  {
-                    "course": "PSYCH 227"
-                  },
-                  {
-                    "course": "SOAN 247"
-                  },
-                  {
-                    "course": "SOAN 297",
-                    "term": "2000-1",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  },
-                  {
-                    "course": "PSCI 221"
-                  },
-                  {
-                    "course": "SOAN 222"
-                  },
-                  {
-                    "course": "ID 234"
-                  },
-                  {
-                    "course": "AS/ES 227"
-                  }
-                ],
-                "surplus": null
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            }
-          }
         }
       }
-    },
-    "Major": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "ENVST 137"
-          },
-          {
-            "course": "ENVST 237"
-          },
-          {
-            "course": "ENVST 399"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
     }
   },
   "attributes": null

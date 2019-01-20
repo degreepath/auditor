@@ -59,6 +59,34 @@ For this section, you must take all of the following courses:
 - Abstract and Quantitative Reasoning
 - Studies in Physical Movement
 
+### First-Year Writing
+For this requirement, you must take at least one course with the “FYW” general education attribute.
+
+### Writing in Context
+For this requirement, you must take at least four courses with the “WRI” general education attribute.
+
+### Foreign Language
+For this requirement, you must do one of the following:
+
+- take at least one course with the “FOL-C” general education attribute
+- take at least one course with the “FOL-F” general education attribute
+- take at least one course with the “FOL-G” general education attribute
+- take at least one course with the “FOL-K” general education attribute
+- take at least one course with the “FOL-J” general education attribute
+- take at least one course with the “FOL-L” general education attribute
+- take at least one course with the “FOL-N” general education attribute
+- take at least one course with the “FOL-R” general education attribute
+- take at least one course with the “FOL-S” general education attribute
+
+### Oral Communication
+For this requirement, you must take at least one course with the “ORC” general education attribute.
+
+### Abstract and Quantitative Reasoning
+For this requirement, you must take at least one course with the “AQR” general education attribute.
+
+### Studies in Physical Movement
+For this requirement, you must take at least two distinct courses with the “SPM” general education attribute.
+
 ## Core
 For this section, you must complete all of the following requirements:
 

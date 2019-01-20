@@ -5,16 +5,16 @@
 
 For this major, you must complete “Foundation”, “Core”, and “Economic Analysis”.
 
-# Foundation
-For this requirement, you must take either MATH 120 or MATH 119.
-
-
 # Core
 For this requirement, you must do all of the following:
 
 - take ECON 261
 - take ECON 262
 - either take ECON 263 or take both STAT 272 and ECON 385
+
+
+# Foundation
+For this requirement, you must take either MATH 120 or MATH 119.
 
 
 # Economic Analysis

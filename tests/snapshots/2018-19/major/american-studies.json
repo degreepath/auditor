@@ -145,6 +145,77 @@
         }
       ],
       "requirements": {
+        "Topics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these courses",
+            "courses": [
+              {
+                "course": "AMST 205"
+              },
+              {
+                "course": "AMST 206"
+              },
+              {
+                "course": "AMST 207"
+              },
+              {
+                "course": "AMST 208"
+              },
+              {
+                "course": "AMST 209"
+              },
+              {
+                "course": "AMST 210"
+              }
+            ],
+            "repeats": "all",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Seminar": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these courses",
+            "courses": [
+              {
+                "course": "AMST 301"
+              }
+            ],
+            "repeats": "all",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
         "Disciplinary": {
           "message": null,
           "department_audited": false,
@@ -420,77 +491,6 @@
               },
               {
                 "course": "WMGST 121"
-              }
-            ],
-            "repeats": "all",
-            "limit": null,
-            "where": null,
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Seminar": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "these courses",
-            "courses": [
-              {
-                "course": "AMST 301"
-              }
-            ],
-            "repeats": "all",
-            "limit": null,
-            "where": null,
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Topics": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "these courses",
-            "courses": [
-              {
-                "course": "AMST 205"
-              },
-              {
-                "course": "AMST 206"
-              },
-              {
-                "course": "AMST 207"
-              },
-              {
-                "course": "AMST 208"
-              },
-              {
-                "course": "AMST 209"
-              },
-              {
-                "course": "AMST 210"
               }
             ],
             "repeats": "all",

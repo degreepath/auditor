@@ -22,6 +22,74 @@
     "surplus": null
   },
   "requirements": {
+    "Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "CHIN 231"
+          },
+          {
+            "course": "CHIN 232"
+          },
+          {
+            "course": "CHIN 301"
+          },
+          {
+            "course": "CHIN 302"
+          },
+          {
+            "course": "CHIN 320"
+          },
+          {
+            "course": "CHIN 351"
+          },
+          {
+            "course": "JAPAN 231"
+          },
+          {
+            "course": "JAPAN 232"
+          },
+          {
+            "course": "JAPAN 301"
+          },
+          {
+            "course": "JAPAN 302"
+          },
+          {
+            "course": "JAPAN 320"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Seminar": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "ASIAN 397"
+          },
+          {
+            "course": "ASIAN 399"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".courses"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": null,
       "department_audited": false,
@@ -289,74 +357,6 @@
       "contract": false,
       "save": [],
       "requirements": {}
-    },
-    "Language": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "CHIN 231"
-          },
-          {
-            "course": "CHIN 232"
-          },
-          {
-            "course": "CHIN 301"
-          },
-          {
-            "course": "CHIN 302"
-          },
-          {
-            "course": "CHIN 320"
-          },
-          {
-            "course": "CHIN 351"
-          },
-          {
-            "course": "JAPAN 231"
-          },
-          {
-            "course": "JAPAN 232"
-          },
-          {
-            "course": "JAPAN 301"
-          },
-          {
-            "course": "JAPAN 302"
-          },
-          {
-            "course": "JAPAN 320"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Seminar": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "either": [
-          {
-            "course": "ASIAN 397"
-          },
-          {
-            "course": "ASIAN 399"
-          }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".courses"
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
     }
   },
   "attributes": {
@@ -370,21 +370,6 @@
       }
     },
     "courses": {
-      "ASIAN 230 <=2014-5": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "ASIAN 240": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "ASIAN 268 2012-3": {
-        "asian_region": [
-          "china"
-        ]
-      },
       "CHIN 231": {
         "asian_region": [
           "china"
@@ -436,6 +421,21 @@
         ]
       },
       "JAPAN 320": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "ASIAN 268 2012-3": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "ASIAN 240": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "ASIAN 230 <=2014-5": {
         "asian_region": [
           "japan"
         ]

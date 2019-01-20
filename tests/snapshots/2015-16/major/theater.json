@@ -22,6 +22,51 @@
     "surplus": null
   },
   "requirements": {
+    "Theater": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "THEAT 130"
+          },
+          {
+            "course": "THEAT 140"
+          },
+          {
+            "course": "THEAT 180"
+          },
+          {
+            "course": "THEAT 232"
+          },
+          {
+            "either": [
+              {
+                "course": "THEAT 240"
+              },
+              {
+                "course": "THEAT 250"
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "course": "THEAT 270"
+          },
+          {
+            "course": "THEAT 271"
+          },
+          {
+            "course": "THEAT 360"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": null,
       "department_audited": false,
@@ -154,51 +199,6 @@
           "requirements": {}
         }
       }
-    },
-    "Theater": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "THEAT 130"
-          },
-          {
-            "course": "THEAT 140"
-          },
-          {
-            "course": "THEAT 180"
-          },
-          {
-            "course": "THEAT 232"
-          },
-          {
-            "either": [
-              {
-                "course": "THEAT 240"
-              },
-              {
-                "course": "THEAT 250"
-              }
-            ],
-            "surplus": null
-          },
-          {
-            "course": "THEAT 270"
-          },
-          {
-            "course": "THEAT 271"
-          },
-          {
-            "course": "THEAT 360"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
     }
   },
   "attributes": null

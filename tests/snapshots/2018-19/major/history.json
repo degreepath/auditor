@@ -73,72 +73,32 @@
       "save": [],
       "requirements": {}
     },
-    "Level III": {
+    "U.S.": {
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 3,
-        "of": [
-          {
-            "course": "HIST 301"
-          },
-          {
-            "course": "HIST 302"
-          },
-          {
-            "course": "HIST 303"
-          },
-          {
-            "course": "HIST 310"
-          },
-          {
-            "course": "HIST 315"
-          },
-          {
-            "course": "HIST 320"
-          },
-          {
-            "course": "HIST 340"
-          },
-          {
-            "course": "HIST 345"
-          },
-          {
-            "course": "HIST 370"
-          },
-          {
-            "course": "HIST 375"
-          },
-          {
-            "course": "ASIAN 399"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "history_region": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "us"
+              }
+            }
           }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Major Seminar": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "HIST 201"
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
           },
-          {
-            "course": "HIST 210"
-          },
-          {
-            "course": "HIST 240"
-          },
-          {
-            "course": "HIST 270"
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
           }
-        ],
-        "surplus": null
+        }
       },
       "contract": false,
       "save": [],
@@ -220,32 +180,72 @@
       "save": [],
       "requirements": {}
     },
-    "U.S.": {
+    "Major Seminar": {
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "courses",
-        "limit": null,
-        "where": {
-          "history_region": {
-            "Single": {
-              "op": "EqualTo",
-              "value": {
-                "String": "us"
-              }
-            }
-          }
-        },
-        "what": "courses",
-        "do": {
-          "lhs": {
-            "Command": "Count"
+        "count": 1,
+        "of": [
+          {
+            "course": "HIST 201"
           },
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+          {
+            "course": "HIST 210"
+          },
+          {
+            "course": "HIST 240"
+          },
+          {
+            "course": "HIST 270"
           }
-        }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 3,
+        "of": [
+          {
+            "course": "HIST 301"
+          },
+          {
+            "course": "HIST 302"
+          },
+          {
+            "course": "HIST 303"
+          },
+          {
+            "course": "HIST 310"
+          },
+          {
+            "course": "HIST 315"
+          },
+          {
+            "course": "HIST 320"
+          },
+          {
+            "course": "HIST 340"
+          },
+          {
+            "course": "HIST 345"
+          },
+          {
+            "course": "HIST 370"
+          },
+          {
+            "course": "HIST 375"
+          },
+          {
+            "course": "ASIAN 399"
+          }
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],
@@ -257,42 +257,42 @@
       "may count for multiple requirements": true
     },
     "definitions": {
-      "history_era": {
-        "type": "string"
-      },
       "history_region": {
         "type": "array",
         "multiple values can be used": true
+      },
+      "history_era": {
+        "type": "string"
       }
     },
     "courses": {
       "HIST 101": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 111": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 115": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 117": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 121": {
         "history_region": [
@@ -307,20 +307,20 @@
         ]
       },
       "HIST 125": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 126": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 135": {
         "history_region": [
@@ -333,24 +333,24 @@
         "history_era": "pre-modern"
       },
       "HIST 151": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 161": {
-        "history_era": "pre-modern",
         "history_region": [
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 165": {
-        "history_era": "pre-modern",
         "history_region": [
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 168": {
         "history_region": [
@@ -378,11 +378,11 @@
         ]
       },
       "HIST 188": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 189": {
         "history_region": [
@@ -392,40 +392,40 @@
         ]
       },
       "HIST 190": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 191": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 194": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 195": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 198": {
-        "history_era": "pre-modern",
         "history_region": [
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 199": {
         "history_region": [
@@ -433,108 +433,108 @@
         ]
       },
       "HIST 201": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia",
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 202": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 203": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 204": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 205": {
         "history_era": "pre-modern"
       },
       "HIST 210": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 211": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 212": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 217": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 218": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 219": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 220": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 222": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 224": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 226": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 227": {
         "history_region": [
@@ -543,11 +543,11 @@
         ]
       },
       "HIST 230": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 231": {
         "history_region": [
@@ -556,25 +556,25 @@
         ]
       },
       "HIST 237": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 238": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 239": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 240": {
         "history_region": [
@@ -584,12 +584,12 @@
         ]
       },
       "HIST 241": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 242": {
         "history_region": [
@@ -620,12 +620,12 @@
         ]
       },
       "HIST 250": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 251": {
         "history_region": [
@@ -635,12 +635,12 @@
         ]
       },
       "HIST 252": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 253": {
         "history_region": [
@@ -664,16 +664,16 @@
         ]
       },
       "HIST 270": {
-        "history_era": "pre-modern",
         "history_region": [
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 272": {
-        "history_era": "pre-modern",
         "history_region": [
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 275": {
         "history_region": [
@@ -691,24 +691,24 @@
         ]
       },
       "HIST 282": {
-        "history_era": "pre-modern",
         "history_region": [
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 288": {
-        "history_era": "pre-modern",
         "history_region": [
           "us"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 289": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 290": {
         "history_region": [
@@ -716,12 +716,12 @@
         ]
       },
       "HIST 292": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 293": {
         "history_region": [
@@ -729,19 +729,19 @@
         ]
       },
       "HIST 295": {
-        "history_era": "pre-modern",
         "history_region": [
           "africa",
           "asia",
           "latin-america"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 296": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       },
       "HIST 297": {
         "history_region": [
@@ -749,11 +749,11 @@
         ]
       },
       "HIST 299": {
-        "history_era": "pre-modern",
         "history_region": [
           "europe",
           "russia"
-        ]
+        ],
+        "history_era": "pre-modern"
       }
     }
   }

@@ -26,6 +26,104 @@
     "surplus": null
   },
   "requirements": {
+    "Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "CHIN 231"
+          },
+          {
+            "course": "CHIN 232"
+          },
+          {
+            "course": "CHIN 294"
+          },
+          {
+            "course": "CHIN 298"
+          },
+          {
+            "course": "CHIN 301"
+          },
+          {
+            "course": "CHIN 302"
+          },
+          {
+            "course": "CHIN 320"
+          },
+          {
+            "course": "CHIN 351"
+          },
+          {
+            "course": "CHIN 394"
+          },
+          {
+            "course": "CHIN 398"
+          },
+          {
+            "course": "JAPAN 231"
+          },
+          {
+            "course": "JAPAN 232"
+          },
+          {
+            "course": "JAPAN 294"
+          },
+          {
+            "course": "JAPAN 298"
+          },
+          {
+            "course": "JAPAN 301"
+          },
+          {
+            "course": "JAPAN 302"
+          },
+          {
+            "course": "JAPAN 320"
+          },
+          {
+            "course": "JAPAN 394"
+          },
+          {
+            "course": "JAPAN 398"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Interdisciplinary": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ASIAN 275"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Seminar": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "ASIAN 397"
+          },
+          {
+            "course": "ASIAN 399"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": "You may not count more than four courses about any one country. Additionally, at least two of the level II and III courses must be taken on-campus.",
       "department_audited": false,
@@ -305,104 +403,6 @@
           "do": null
         }
       ],
-      "requirements": {}
-    },
-    "Interdisciplinary": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "course": "ASIAN 275"
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Language": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "CHIN 231"
-          },
-          {
-            "course": "CHIN 232"
-          },
-          {
-            "course": "CHIN 294"
-          },
-          {
-            "course": "CHIN 298"
-          },
-          {
-            "course": "CHIN 301"
-          },
-          {
-            "course": "CHIN 302"
-          },
-          {
-            "course": "CHIN 320"
-          },
-          {
-            "course": "CHIN 351"
-          },
-          {
-            "course": "CHIN 394"
-          },
-          {
-            "course": "CHIN 398"
-          },
-          {
-            "course": "JAPAN 231"
-          },
-          {
-            "course": "JAPAN 232"
-          },
-          {
-            "course": "JAPAN 294"
-          },
-          {
-            "course": "JAPAN 298"
-          },
-          {
-            "course": "JAPAN 301"
-          },
-          {
-            "course": "JAPAN 302"
-          },
-          {
-            "course": "JAPAN 320"
-          },
-          {
-            "course": "JAPAN 394"
-          },
-          {
-            "course": "JAPAN 398"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Seminar": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "either": [
-          {
-            "course": "ASIAN 397"
-          },
-          {
-            "course": "ASIAN 399"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
       "requirements": {}
     }
   },

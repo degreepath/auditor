@@ -36,6 +36,19 @@ For this requirement, you must take at least one course with the “internationa
 For this requirement, you must take at least one course with the “theory” `psci_topic` attribute.
 
 
+# Level III
+For this requirement, you must take two of the following courses:
+
+- PSCI 311
+- PSCI 321
+- PSCI 350
+- PSCI 367
+- PSCI 370
+- PSCI 382
+- PSCI 384
+- PSCI 385
+
+
 # Additional Courses
 For this section, you must complete either the “Statistics” or “World Langauge” requirement.
 

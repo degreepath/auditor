@@ -26,22 +26,6 @@
     "surplus": null
   },
   "requirements": {
-    "Ethics": {
-      "message": "Students should consult with their advisor to determine what courses meet this requirement from among the general education EIN courses.",
-      "department_audited": false,
-      "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "AMCON 101"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Prerequisites": {
       "message": "These courses must be completed before beginning level III nursing courses.",
       "department_audited": false,
@@ -106,14 +90,14 @@
       "save": [],
       "requirements": {}
     },
-    "Recommended": {
-      "message": null,
+    "Ethics": {
+      "message": "Students should consult with their advisor to determine what courses meet this requirement from among the general education EIN courses.",
       "department_audited": false,
       "result": {
-        "count": "all",
+        "count": "any",
         "of": [
           {
-            "course": "NURS 390"
+            "course": "AMCON 101"
           }
         ],
         "surplus": null
@@ -160,6 +144,22 @@
           },
           {
             "course": "NURS 399"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Recommended": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "NURS 390"
           }
         ],
         "surplus": null

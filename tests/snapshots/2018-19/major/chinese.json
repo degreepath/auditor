@@ -51,26 +51,20 @@
       "save": [],
       "requirements": {}
     },
-    "FLAC": {
+    "Upper-Level Language": {
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
+        "count": "all",
         "of": [
           {
-            "course": "ASIAN 156"
+            "course": "CHIN 320"
           },
           {
-            "course": "ASIAN 237"
+            "course": "CHIN 351"
           },
           {
-            "course": "ASIAN 270"
-          },
-          {
-            "course": "HIST 250"
-          },
-          {
-            "course": "HIST 251"
+            "course": "CHIN 360"
           }
         ],
         "surplus": null
@@ -289,20 +283,26 @@
       ],
       "requirements": {}
     },
-    "Upper-Level Language": {
+    "FLAC": {
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "all",
+        "count": "any",
         "of": [
           {
-            "course": "CHIN 320"
+            "course": "ASIAN 156"
           },
           {
-            "course": "CHIN 351"
+            "course": "ASIAN 237"
           },
           {
-            "course": "CHIN 360"
+            "course": "ASIAN 270"
+          },
+          {
+            "course": "HIST 250"
+          },
+          {
+            "course": "HIST 251"
           }
         ],
         "surplus": null

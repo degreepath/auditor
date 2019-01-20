@@ -19,6 +19,10 @@ For this requirement, you must take two of the following courses:
 - PHIL 375
 
 
+# Electives
+For this requirement, you must take at least two courses within the PHIL department.
+
+
 # Contract
 > Note: Three level II or III courses in another department chosen to complement
 > the work in philosophy.

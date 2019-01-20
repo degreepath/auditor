@@ -44,6 +44,60 @@
       "save": [],
       "requirements": {}
     },
+    "Level III Seminars": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "these courses",
+        "courses": [
+          {
+            "course": "PHIL 371"
+          },
+          {
+            "course": "PHIL 372"
+          },
+          {
+            "course": "PHIL 373"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 375"
+          }
+        ],
+        "repeats": "first",
+        "limit": [
+          {
+            "where": {
+              "s/u": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Bool": true
+                  }
+                }
+              }
+            },
+            "at_most": 0
+          }
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 3
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": null,
       "department_audited": false,
@@ -140,60 +194,6 @@
         ],
         "repeats": "first",
         "limit": null,
-        "where": null,
-        "what": "courses",
-        "do": {
-          "lhs": {
-            "Command": "Count"
-          },
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 3
-          }
-        }
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Level III Seminars": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "given": "these courses",
-        "courses": [
-          {
-            "course": "PHIL 371"
-          },
-          {
-            "course": "PHIL 372"
-          },
-          {
-            "course": "PHIL 373"
-          },
-          {
-            "course": "PHIL 374"
-          },
-          {
-            "course": "PHIL 375"
-          }
-        ],
-        "repeats": "first",
-        "limit": [
-          {
-            "where": {
-              "s/u": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "Bool": true
-                  }
-                }
-              }
-            },
-            "at_most": 0
-          }
-        ],
         "where": null,
         "what": "courses",
         "do": {

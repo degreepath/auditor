@@ -42,6 +42,120 @@
     "surplus": null
   },
   "requirements": {
+    "Introductory Sequence": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "requirement": "First Year 1",
+            "optional": false
+          },
+          {
+            "requirement": "First Year 2",
+            "optional": false
+          },
+          {
+            "requirement": "CH/BI",
+            "optional": false
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "First Year 1": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 121"
+              },
+              {
+                "course": "CHEM 123"
+              },
+              {
+                "course": "CHEM 125"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "First Year 2": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 125"
+              },
+              {
+                "course": "CHEM 126"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "CH/BI": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CH/BI 125"
+              },
+              {
+                "course": "CH/BI 126"
+              },
+              {
+                "course": "CH/BI 227"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Organic": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "CHEM 247"
+          },
+          {
+            "course": "CHEM 253"
+          },
+          {
+            "course": "CHEM 248"
+          },
+          {
+            "course": "CHEM 254"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Analytical": {
       "message": null,
       "department_audited": false,
@@ -61,16 +175,17 @@
       "save": [],
       "requirements": {}
     },
-    "Calculus": {
+    "Physical": {
       "message": null,
       "department_audited": false,
       "result": {
-        "either": [
+        "count": "all",
+        "of": [
           {
-            "course": "MATH 126"
+            "course": "CHEM 357"
           },
           {
-            "course": "MATH 128"
+            "course": "CHEM 371"
           }
         ],
         "surplus": null
@@ -130,139 +245,6 @@
       "save": [],
       "requirements": {}
     },
-    "Introductory Sequence": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "any",
-        "of": [
-          {
-            "requirement": "First Year 1",
-            "optional": false
-          },
-          {
-            "requirement": "First Year 2",
-            "optional": false
-          },
-          {
-            "requirement": "CH/BI",
-            "optional": false
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {
-        "CH/BI": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "CH/BI 125"
-              },
-              {
-                "course": "CH/BI 126"
-              },
-              {
-                "course": "CH/BI 227"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "First Year 1": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "CHEM 121"
-              },
-              {
-                "course": "CHEM 123"
-              },
-              {
-                "course": "CHEM 125"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "First Year 2": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "CHEM 125"
-              },
-              {
-                "course": "CHEM 126"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        }
-      }
-    },
-    "Organic": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "CHEM 247"
-          },
-          {
-            "course": "CHEM 253"
-          },
-          {
-            "course": "CHEM 248"
-          },
-          {
-            "course": "CHEM 254"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Physical": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "CHEM 357"
-          },
-          {
-            "course": "CHEM 371"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Physics": {
       "message": null,
       "department_audited": false,
@@ -282,6 +264,25 @@
       "contract": false,
       "save": [],
       "requirements": {
+        "Non-Majors": {
+          "message": "If you are not a Physics major…",
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "PHYS 142"
+              },
+              {
+                "course": "PHYS 124"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
         "Majors": {
           "message": "If you _are_ a Physics major…",
           "department_audited": false,
@@ -335,27 +336,26 @@
           "contract": false,
           "save": [],
           "requirements": {}
-        },
-        "Non-Majors": {
-          "message": "If you are not a Physics major…",
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "PHYS 142"
-              },
-              {
-                "course": "PHYS 124"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
         }
       }
+    },
+    "Calculus": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "MATH 126"
+          },
+          {
+            "course": "MATH 128"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     },
     "Seminars": {
       "message": "You are required to attend at least 12 departmental seminars during your junior and senior years.",

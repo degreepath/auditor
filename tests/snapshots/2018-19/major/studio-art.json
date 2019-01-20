@@ -34,6 +34,41 @@
     "surplus": null
   },
   "requirements": {
+    "Foundations": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "either": [
+              {
+                "course": "ART 102"
+              },
+              {
+                "course": "ART 106"
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "course": "ART 103"
+          },
+          {
+            "course": "ART 104"
+          }
+        ],
+        "surplus": [
+          "Studio Art",
+          "Electives",
+          ".result",
+          ".of"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Areas": {
       "message": null,
       "department_audited": false,
@@ -113,33 +148,6 @@
               "save": [],
               "requirements": {}
             },
-            "Graphic Design": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "any",
-                "of": [
-                  {
-                    "course": "ART 236",
-                    "term": "2000-0",
-                    "section": null,
-                    "year": null,
-                    "semester": null,
-                    "lab": null,
-                    "international": null
-                  }
-                ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ]
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
             "Painting": {
               "message": null,
               "department_audited": false,
@@ -175,6 +183,33 @@
                   },
                   {
                     "course": "ART 227"
+                  }
+                ],
+                "surplus": [
+                  "Studio Art",
+                  "Electives",
+                  ".result",
+                  ".of"
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Graphic Design": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "course": "ART 236",
+                    "term": "2000-0",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "international": null
                   }
                 ],
                 "surplus": [
@@ -292,6 +327,51 @@
           "contract": false,
           "save": [],
           "requirements": {
+            "Photography": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "course": "ART 205"
+                  },
+                  {
+                    "course": "ART 238"
+                  }
+                ],
+                "surplus": [
+                  "Studio Art",
+                  "Electives",
+                  ".result",
+                  ".of"
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Interactive Image": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "course": "ART 228"
+                  }
+                ],
+                "surplus": [
+                  "Studio Art",
+                  "Electives",
+                  ".result",
+                  ".of"
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
             "Digital Video": {
               "message": null,
               "department_audited": false,
@@ -300,6 +380,27 @@
                 "of": [
                   {
                     "course": "ART 229"
+                  }
+                ],
+                "surplus": [
+                  "Studio Art",
+                  "Electives",
+                  ".result",
+                  ".of"
+                ]
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Performance": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": "any",
+                "of": [
+                  {
+                    "course": "ART 240"
                   }
                 ],
                 "surplus": [
@@ -339,76 +440,62 @@
               "contract": false,
               "save": [],
               "requirements": {}
-            },
-            "Interactive Image": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "any",
-                "of": [
-                  {
-                    "course": "ART 228"
-                  }
-                ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ]
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Performance": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "any",
-                "of": [
-                  {
-                    "course": "ART 240"
-                  }
-                ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ]
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Photography": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": "any",
-                "of": [
-                  {
-                    "course": "ART 205"
-                  },
-                  {
-                    "course": "ART 238"
-                  }
-                ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ]
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
             }
           }
         }
       }
+    },
+    "Juried Show": {
+      "message": "Majors must participate in two juried shows. To fulfill the the requirements of the studio art major, you must either enter the student juried show in spring semester twice, or enter our student juried show once and one other non-class related exhibition on or off campus.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Senior Studies in Studio Art": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "ART 343"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "ART 106"
+          },
+          {
+            "course": "ART 246"
+          },
+          {
+            "course": "ART 294"
+          },
+          {
+            "course": "ART 298"
+          },
+          {
+            "course": "ART 340"
+          },
+          {
+            "course": "ART 394"
+          },
+          {
+            "course": "ART 398"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     },
     "Art History": {
       "message": "The department strongly recommends that you take ART 252 or 253 as one of your art history courses.",
@@ -496,93 +583,6 @@
           }
         ],
         "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Electives": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "ART 106"
-          },
-          {
-            "course": "ART 246"
-          },
-          {
-            "course": "ART 294"
-          },
-          {
-            "course": "ART 298"
-          },
-          {
-            "course": "ART 340"
-          },
-          {
-            "course": "ART 394"
-          },
-          {
-            "course": "ART 398"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Foundations": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "either": [
-              {
-                "course": "ART 102"
-              },
-              {
-                "course": "ART 106"
-              }
-            ],
-            "surplus": null
-          },
-          {
-            "course": "ART 103"
-          },
-          {
-            "course": "ART 104"
-          }
-        ],
-        "surplus": [
-          "Studio Art",
-          "Electives",
-          ".result",
-          ".of"
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Juried Show": {
-      "message": "Majors must participate in two juried shows. To fulfill the the requirements of the studio art major, you must either enter the student juried show in spring semester twice, or enter our student juried show once and one other non-class related exhibition on or off campus.",
-      "department_audited": true,
-      "result": null,
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Senior Studies in Studio Art": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "course": "ART 343"
       },
       "contract": false,
       "save": [],

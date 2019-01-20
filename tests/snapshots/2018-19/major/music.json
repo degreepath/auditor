@@ -74,6 +74,49 @@
       "save": [],
       "requirements": {}
     },
+    "Musicology": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "MUSIC 340"
+          },
+          {
+            "course": "MUSIC 341"
+          },
+          {
+            "course": "MUSIC 342"
+          },
+          {
+            "course": "MUSIC 343"
+          },
+          {
+            "course": "MUSIC 344"
+          },
+          {
+            "course": "MUSIC 345"
+          },
+          {
+            "course": "MUSIC 346"
+          },
+          {
+            "course": "MUSIC 347"
+          },
+          {
+            "course": "MUSIC 348"
+          },
+          {
+            "course": "MUSIC 349"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": null,
       "department_audited": false,
@@ -121,80 +164,6 @@
           }
         },
         "what": "courses",
-        "do": {
-          "lhs": {
-            "Command": "Count"
-          },
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 4
-          }
-        }
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Musicology": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "MUSIC 340"
-          },
-          {
-            "course": "MUSIC 341"
-          },
-          {
-            "course": "MUSIC 342"
-          },
-          {
-            "course": "MUSIC 343"
-          },
-          {
-            "course": "MUSIC 344"
-          },
-          {
-            "course": "MUSIC 345"
-          },
-          {
-            "course": "MUSIC 346"
-          },
-          {
-            "course": "MUSIC 347"
-          },
-          {
-            "course": "MUSIC 348"
-          },
-          {
-            "course": "MUSIC 349"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Official Ensemble Participation": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "given": "courses",
-        "limit": null,
-        "where": {
-          "department": {
-            "Single": {
-              "op": "EqualTo",
-              "value": {
-                "String": "MUSEN"
-              }
-            }
-          }
-        },
-        "what": "terms",
         "do": {
           "lhs": {
             "Command": "Count"
@@ -817,6 +786,106 @@
             }
           }
         },
+        "Organ": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these requirements",
+            "requirements": [
+              {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 128"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 128
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
+        },
         "Flute": {
           "message": null,
           "department_audited": false,
@@ -1417,106 +1486,6 @@
             }
           }
         },
-        "Jazz Saxophone": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "these requirements",
-            "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
-            ],
-            "limit": null,
-            "where": null,
-            "what": "terms",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 6
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {
-            "Lessons": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "these courses",
-                "courses": [
-                  {
-                    "course": "MUSPF 135"
-                  }
-                ],
-                "repeats": "all",
-                "limit": null,
-                "where": null,
-                "what": "terms",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 4
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Other Lessons": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "limit": null,
-                "where": {
-                  "department": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
-                  "number": {
-                    "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
-                        "Integer": 135
-                      }
-                    }
-                  }
-                },
-                "what": "terms",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 2
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            }
-          }
-        },
         "Oboe": {
           "message": null,
           "department_audited": false,
@@ -1596,106 +1565,6 @@
                       "op": "NotEqualTo",
                       "value": {
                         "Integer": 126
-                      }
-                    }
-                  }
-                },
-                "what": "terms",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 2
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            }
-          }
-        },
-        "Organ": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "these requirements",
-            "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
-            ],
-            "limit": null,
-            "where": null,
-            "what": "terms",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 6
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {
-            "Lessons": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "these courses",
-                "courses": [
-                  {
-                    "course": "MUSPF 128"
-                  }
-                ],
-                "repeats": "all",
-                "limit": null,
-                "where": null,
-                "what": "terms",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 4
-                  }
-                }
-              },
-              "contract": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Other Lessons": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "limit": null,
-                "where": {
-                  "department": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
-                  "number": {
-                    "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
-                        "Integer": 128
                       }
                     }
                   }
@@ -1896,6 +1765,106 @@
                       "op": "NotEqualTo",
                       "value": {
                         "Integer": 134
+                      }
+                    }
+                  }
+                },
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
+        },
+        "Jazz Saxophone": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these requirements",
+            "requirements": [
+              {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "terms",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {
+            "Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 135"
+                  }
+                ],
+                "repeats": "all",
+                "limit": null,
+                "where": null,
+                "what": "terms",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              "contract": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Other Lessons": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "op": "NotEqualTo",
+                      "value": {
+                        "Integer": 135
                       }
                     }
                   }
@@ -2818,6 +2787,37 @@
           }
         }
       }
+    },
+    "Official Ensemble Participation": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "department": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "MUSEN"
+              }
+            }
+          }
+        },
+        "what": "terms",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 4
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     },
     "Performances": {
       "message": "Two solo performances on a St. Olaf Student Recital.",

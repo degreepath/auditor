@@ -18,31 +18,6 @@ For this requirement, you must do all of the following:
 - take ART 104
 
 
-# Juried Show
-> Note: Majors must participate in two juried shows. To fulfill the the
-> requirements of the studio art major, you must either enter the student juried
-> show in spring semester twice, or enter our student juried show once and one
-> other non-class related exhibition on or off campus.
-
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
-
-# Senior Studies in Studio Art
-For this requirement, you must take ART 343.
-
-
-# Electives
-For this requirement, you must take one of the following courses:
-
-- ART 106
-- ART 246
-- ART 294
-- ART 298
-- ART 340
-- ART 394
-- ART 398
-
-
 # Areas
 For this section, you must complete “2D Media”, “3D Media”, and “New Media”.
 
@@ -98,6 +73,31 @@ For this requirement, you must take ART 240.
 
 ### Graphic Design
 For this requirement, you must take ART 236 (2000-0).
+
+
+# Juried Show
+> Note: Majors must participate in two juried shows. To fulfill the the
+> requirements of the studio art major, you must either enter the student juried
+> show in spring semester twice, or enter our student juried show once and one
+> other non-class related exhibition on or off campus.
+
+For this requirement, you must have done what the note says. The Department must
+certify that you have done so.
+
+# Senior Studies in Studio Art
+For this requirement, you must take ART 343.
+
+
+# Electives
+For this requirement, you must take one of the following courses:
+
+- ART 106
+- ART 246
+- ART 294
+- ART 298
+- ART 340
+- ART 394
+- ART 398
 
 
 # Art History

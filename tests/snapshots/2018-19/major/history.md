@@ -12,6 +12,22 @@ For this major, you must complete all of the following requirements:
 - “U.S.”
 - “Pre-Modern Period”
 
+# Europe & Russia
+For this requirement, you must take at least one course with either the europe or russia `history_region` attribute.
+
+
+# U.S.
+For this requirement, you must take at least one course with the “us” `history_region` attribute.
+
+
+# Non-Western World
+For this requirement, you must take at least one course with either the africa, asia, or latin-america `history_region` attribute.
+
+
+# Pre-Modern Period
+For this requirement, you must take at least two courses with the “pre-modern” `history_era` attribute.
+
+
 # Major Seminar
 For this requirement, you must take one of the following courses:
 
@@ -35,21 +51,5 @@ For this requirement, you must take three of the following courses:
 - HIST 370
 - HIST 375
 - ASIAN 399
-
-
-# Non-Western World
-For this requirement, you must take at least one course with either the africa, asia, or latin-america `history_region` attribute.
-
-
-# Europe & Russia
-For this requirement, you must take at least one course with either the europe or russia `history_region` attribute.
-
-
-# U.S.
-For this requirement, you must take at least one course with the “us” `history_region` attribute.
-
-
-# Pre-Modern Period
-For this requirement, you must take at least two courses with the “pre-modern” `history_era` attribute.
 
 

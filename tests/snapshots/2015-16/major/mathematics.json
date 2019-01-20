@@ -119,6 +119,182 @@
       "save": [],
       "requirements": {}
     },
+    "Transitions": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "MATH 242"
+          },
+          {
+            "course": "MATH 244"
+          },
+          {
+            "course": "MATH 252"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Perspectives": {
+      "message": "One course from each of three of the four perspectives.",
+      "department_audited": false,
+      "result": {
+        "count": 3,
+        "of": [
+          {
+            "requirement": "Axiomatic/Algebraic (A)",
+            "optional": false
+          },
+          {
+            "requirement": "Continuous/Analytic (C)",
+            "optional": false
+          },
+          {
+            "requirement": "Discrete/Combinatorial (D)",
+            "optional": false
+          },
+          {
+            "requirement": "Modeling/Computation (M)",
+            "optional": false
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Axiomatic/Algebraic (A)": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "math_perspectives": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "A"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Continuous/Analytic (C)": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "math_perspectives": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "C"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Discrete/Combinatorial (D)": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "math_perspectives": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "D"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Modeling/Computation (M)": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "math_perspectives": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "M"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
     "Interdisciplinary": {
       "message": null,
       "department_audited": false,
@@ -396,160 +572,6 @@
       ],
       "requirements": {}
     },
-    "Perspectives": {
-      "message": "One course from each of three of the four perspectives.",
-      "department_audited": false,
-      "result": {
-        "count": 3,
-        "of": [
-          {
-            "requirement": "Axiomatic/Algebraic (A)",
-            "optional": false
-          },
-          {
-            "requirement": "Continuous/Analytic (C)",
-            "optional": false
-          },
-          {
-            "requirement": "Discrete/Combinatorial (D)",
-            "optional": false
-          },
-          {
-            "requirement": "Modeling/Computation (M)",
-            "optional": false
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {
-        "Axiomatic/Algebraic (A)": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "math_perspectives": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "A"
-                  }
-                }
-              }
-            },
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Continuous/Analytic (C)": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "math_perspectives": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "C"
-                  }
-                }
-              }
-            },
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Discrete/Combinatorial (D)": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "math_perspectives": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "D"
-                  }
-                }
-              }
-            },
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Modeling/Computation (M)": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "courses",
-            "limit": null,
-            "where": {
-              "math_perspectives": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "String": "M"
-                  }
-                }
-              }
-            },
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
-              }
-            }
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        }
-      }
-    },
     "Sequence": {
       "message": "A 200-300-level sequence of two courses, at least one of which must be a Mathematics course.",
       "department_audited": false,
@@ -654,28 +676,6 @@
               }
             ],
             "surplus": null
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Transitions": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "MATH 242"
-          },
-          {
-            "course": "MATH 244"
-          },
-          {
-            "course": "MATH 252"
           }
         ],
         "surplus": null

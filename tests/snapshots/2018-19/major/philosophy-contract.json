@@ -22,14 +22,6 @@
     "surplus": null
   },
   "requirements": {
-    "Complementary Courses": {
-      "message": "Three level II or III courses in another department chosen to complement the work in philosophy.",
-      "department_audited": false,
-      "result": null,
-      "contract": true,
-      "save": [],
-      "requirements": {}
-    },
     "Core": {
       "message": null,
       "department_audited": false,
@@ -47,6 +39,60 @@
           }
         ],
         "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III Seminars": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "these courses",
+        "courses": [
+          {
+            "course": "PHIL 371"
+          },
+          {
+            "course": "PHIL 372"
+          },
+          {
+            "course": "PHIL 373"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 375"
+          }
+        ],
+        "repeats": "first",
+        "limit": [
+          {
+            "where": {
+              "s/u": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Bool": true
+                  }
+                }
+              }
+            },
+            "at_most": 0
+          }
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -161,57 +207,11 @@
       "save": [],
       "requirements": {}
     },
-    "Level III Seminars": {
-      "message": null,
+    "Complementary Courses": {
+      "message": "Three level II or III courses in another department chosen to complement the work in philosophy.",
       "department_audited": false,
-      "result": {
-        "given": "these courses",
-        "courses": [
-          {
-            "course": "PHIL 371"
-          },
-          {
-            "course": "PHIL 372"
-          },
-          {
-            "course": "PHIL 373"
-          },
-          {
-            "course": "PHIL 374"
-          },
-          {
-            "course": "PHIL 375"
-          }
-        ],
-        "repeats": "first",
-        "limit": [
-          {
-            "where": {
-              "s/u": {
-                "Single": {
-                  "op": "EqualTo",
-                  "value": {
-                    "Bool": true
-                  }
-                }
-              }
-            },
-            "at_most": 0
-          }
-        ],
-        "where": null,
-        "what": "courses",
-        "do": {
-          "lhs": {
-            "Command": "Count"
-          },
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
-          }
-        }
-      },
-      "contract": false,
+      "result": null,
+      "contract": true,
       "save": [],
       "requirements": {}
     }

@@ -26,6 +26,90 @@
     "surplus": null
   },
   "requirements": {
+    "Speaking and Writing": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "FREN 250"
+          },
+          {
+            "course": "FREN 251"
+          },
+          {
+            "course": "FREN 253"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".of"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "The Francophone World": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "FREN 271"
+          },
+          {
+            "course": "FREN 272"
+          },
+          {
+            "course": "FREN 273"
+          },
+          {
+            "course": "FREN 275"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".of"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "FREN 372"
+          },
+          {
+            "course": "FREN 373"
+          },
+          {
+            "course": "FREN 397"
+          },
+          {
+            "course": "FREN 399"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".of"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": null,
       "department_audited": false,
@@ -105,90 +189,6 @@
             "Integer": 2
           }
         }
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Level III": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "FREN 372"
-          },
-          {
-            "course": "FREN 373"
-          },
-          {
-            "course": "FREN 397"
-          },
-          {
-            "course": "FREN 399"
-          }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Speaking and Writing": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "FREN 250"
-          },
-          {
-            "course": "FREN 251"
-          },
-          {
-            "course": "FREN 253"
-          }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "The Francophone World": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "FREN 271"
-          },
-          {
-            "course": "FREN 272"
-          },
-          {
-            "course": "FREN 273"
-          },
-          {
-            "course": "FREN 275"
-          }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ]
       },
       "contract": false,
       "save": [],

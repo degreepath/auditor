@@ -18,6 +18,28 @@
     "surplus": null
   },
   "requirements": {
+    "Seminar": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "ASIAN 397"
+          },
+          {
+            "course": "ASIAN 399"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".courses"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": null,
       "department_audited": false,
@@ -285,28 +307,6 @@
       "contract": false,
       "save": [],
       "requirements": {}
-    },
-    "Seminar": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "either": [
-          {
-            "course": "ASIAN 397"
-          },
-          {
-            "course": "ASIAN 399"
-          }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".courses"
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
     }
   },
   "attributes": {
@@ -320,21 +320,6 @@
       }
     },
     "courses": {
-      "ASIAN 230 <=2014-5": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "ASIAN 240": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "ASIAN 268 2012-3": {
-        "asian_region": [
-          "china"
-        ]
-      },
       "CHIN 231": {
         "asian_region": [
           "china"
@@ -386,6 +371,21 @@
         ]
       },
       "JAPAN 320": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "ASIAN 268 2012-3": {
+        "asian_region": [
+          "china"
+        ]
+      },
+      "ASIAN 240": {
+        "asian_region": [
+          "japan"
+        ]
+      },
+      "ASIAN 230 <=2014-5": {
         "asian_region": [
           "japan"
         ]

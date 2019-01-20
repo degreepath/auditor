@@ -30,6 +30,24 @@
     "surplus": null
   },
   "requirements": {
+    "Foundation": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "both": [
+          {
+            "course": "PSYCH 125"
+          },
+          {
+            "course": "PSYCH 230"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Content Core": {
       "message": null,
       "department_audited": false,
@@ -110,89 +128,6 @@
         }
       }
     },
-    "Electives": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "PSYCH 220"
-          },
-          {
-            "course": "PSYCH 221"
-          },
-          {
-            "course": "PSYCH 222"
-          },
-          {
-            "course": "PSYCH 223"
-          },
-          {
-            "course": "PSYCH 224"
-          },
-          {
-            "course": "PSYCH 225"
-          },
-          {
-            "course": "PSYCH 227"
-          },
-          {
-            "course": "PSYCH 250"
-          },
-          {
-            "course": "PSYCH 251"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Foundation": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "both": [
-          {
-            "course": "PSYCH 125"
-          },
-          {
-            "course": "PSYCH 230"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "General Education": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "STAT 110"
-          },
-          {
-            "course": "STAT 212"
-          },
-          {
-            "course": "STAT 214"
-          },
-          {
-            "course": "ECON 263"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Level III Capstone": {
       "message": null,
       "department_audited": false,
@@ -247,6 +182,71 @@
           ".result",
           ".of"
         ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "General Education": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "STAT 110"
+          },
+          {
+            "course": "STAT 212"
+          },
+          {
+            "course": "STAT 214"
+          },
+          {
+            "course": "ECON 263"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "PSYCH 220"
+          },
+          {
+            "course": "PSYCH 221"
+          },
+          {
+            "course": "PSYCH 222"
+          },
+          {
+            "course": "PSYCH 223"
+          },
+          {
+            "course": "PSYCH 224"
+          },
+          {
+            "course": "PSYCH 225"
+          },
+          {
+            "course": "PSYCH 227"
+          },
+          {
+            "course": "PSYCH 250"
+          },
+          {
+            "course": "PSYCH 251"
+          }
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

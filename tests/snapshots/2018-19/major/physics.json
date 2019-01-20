@@ -52,40 +52,6 @@
       "save": [],
       "requirements": {}
     },
-    "Elective": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "PHYS 112"
-          },
-          {
-            "course": "PHYS 124"
-          },
-          {
-            "course": "PHYS 125"
-          },
-          {
-            "course": "PHYS 154"
-          },
-          {
-            "course": "PHYS 246"
-          },
-          {
-            "course": "PHYS 252"
-          },
-          {
-            "course": "PHYS 396"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Modern Physics": {
       "message": null,
       "department_audited": false,
@@ -157,6 +123,40 @@
           ".result",
           ".of"
         ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Elective": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "PHYS 112"
+          },
+          {
+            "course": "PHYS 124"
+          },
+          {
+            "course": "PHYS 125"
+          },
+          {
+            "course": "PHYS 154"
+          },
+          {
+            "course": "PHYS 246"
+          },
+          {
+            "course": "PHYS 252"
+          },
+          {
+            "course": "PHYS 396"
+          }
+        ],
+        "surplus": null
       },
       "contract": false,
       "save": [],

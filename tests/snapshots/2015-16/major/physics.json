@@ -52,6 +52,50 @@
       "save": [],
       "requirements": {}
     },
+    "Modern Physics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHYS 244"
+          },
+          {
+            "course": "PHYS 245"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Upper-Level": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHYS 374"
+          },
+          {
+            "course": "PHYS 375"
+          },
+          {
+            "course": "PHYS 385"
+          },
+          {
+            "course": "PHYS 386"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Elective": {
       "message": null,
       "department_audited": false,
@@ -93,50 +137,6 @@
           },
           {
             "course": "PHYS 396"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Modern Physics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "PHYS 244"
-          },
-          {
-            "course": "PHYS 245"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Upper-Level": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "PHYS 374"
-          },
-          {
-            "course": "PHYS 375"
-          },
-          {
-            "course": "PHYS 385"
-          },
-          {
-            "course": "PHYS 386"
           }
         ],
         "surplus": null

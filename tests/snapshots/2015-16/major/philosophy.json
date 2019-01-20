@@ -44,6 +44,34 @@
       "save": [],
       "requirements": {}
     },
+    "Level III Seminars": {
+      "message": "Level III seminar courses may not be taken S/U.",
+      "department_audited": false,
+      "result": {
+        "count": 3,
+        "of": [
+          {
+            "course": "PHIL 371"
+          },
+          {
+            "course": "PHIL 372"
+          },
+          {
+            "course": "PHIL 373"
+          },
+          {
+            "course": "PHIL 374"
+          },
+          {
+            "course": "PHIL 375"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Electives": {
       "message": null,
       "department_audited": false,
@@ -186,34 +214,6 @@
             "Integer": 3
           }
         }
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Level III Seminars": {
-      "message": "Level III seminar courses may not be taken S/U.",
-      "department_audited": false,
-      "result": {
-        "count": 3,
-        "of": [
-          {
-            "course": "PHIL 371"
-          },
-          {
-            "course": "PHIL 372"
-          },
-          {
-            "course": "PHIL 373"
-          },
-          {
-            "course": "PHIL 374"
-          },
-          {
-            "course": "PHIL 375"
-          }
-        ],
-        "surplus": null
       },
       "contract": false,
       "save": [],

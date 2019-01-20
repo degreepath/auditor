@@ -119,50 +119,6 @@
         }
       }
     },
-    "Mathematics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "either": [
-          {
-            "course": "MATH 126"
-          },
-          {
-            "course": "MATH 128"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Physics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "either": [
-          {
-            "course": "PHYS 125"
-          },
-          {
-            "course": "PHYS 232"
-          }
-        ],
-        "surplus": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Seminars": {
-      "message": "Attendance is required at 12 departmental seminars after declaration of major.",
-      "department_audited": true,
-      "result": null,
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Upper-Level Core": {
       "message": null,
       "department_audited": false,
@@ -191,6 +147,31 @@
       "contract": false,
       "save": [],
       "requirements": {
+        "Organic": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 247"
+              },
+              {
+                "course": "CHEM 253"
+              },
+              {
+                "course": "CHEM 248"
+              },
+              {
+                "course": "CHEM 254"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
         "Analytical": {
           "message": null,
           "department_audited": false,
@@ -202,6 +183,25 @@
               },
               {
                 "course": "CHEM 256"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Physical": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 357"
+              },
+              {
+                "course": "CHEM 371"
               }
             ],
             "surplus": null
@@ -246,52 +246,52 @@
           "contract": false,
           "save": [],
           "requirements": {}
-        },
-        "Organic": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "CHEM 247"
-              },
-              {
-                "course": "CHEM 253"
-              },
-              {
-                "course": "CHEM 248"
-              },
-              {
-                "course": "CHEM 254"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
-        },
-        "Physical": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "all",
-            "of": [
-              {
-                "course": "CHEM 357"
-              },
-              {
-                "course": "CHEM 371"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
         }
       }
+    },
+    "Physics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "PHYS 125"
+          },
+          {
+            "course": "PHYS 232"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Mathematics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "MATH 126"
+          },
+          {
+            "course": "MATH 128"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Seminars": {
+      "message": "Attendance is required at 12 departmental seminars after declaration of major.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
     }
   },
   "attributes": null

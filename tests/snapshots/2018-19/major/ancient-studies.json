@@ -30,6 +30,28 @@
     "surplus": null
   },
   "requirements": {
+    "Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "either": [
+          {
+            "course": "LATIN 252"
+          },
+          {
+            "course": "GREEK 253"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".of"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
     "Ancient History": {
       "message": null,
       "department_audited": false,
@@ -293,28 +315,6 @@
           },
           {
             "course": "GREEK 398"
-          }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ]
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Language": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "either": [
-          {
-            "course": "LATIN 252"
-          },
-          {
-            "course": "GREEK 253"
           }
         ],
         "surplus": [

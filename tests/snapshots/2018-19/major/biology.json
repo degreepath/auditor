@@ -30,53 +30,11 @@
     "surplus": null
   },
   "requirements": {
-    "Chemistry": {
+    "Foundation": {
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
-        "of": [
-          {
-            "count": "all",
-            "of": [
-              {
-                "course": "CHEM 121"
-              },
-              {
-                "course": "CHEM 123"
-              },
-              {
-                "course": "CHEM 126"
-              }
-            ],
-            "surplus": null
-          },
-          {
-            "count": "all",
-            "of": [
-              {
-                "course": "CHEM 125"
-              },
-              {
-                "course": "CHEM 126"
-              }
-            ],
-            "surplus": null
-          },
-          {
-            "count": "all",
-            "of": [
-              {
-                "course": "CH/BI 125"
-              },
-              {
-                "course": "CH/BI 126"
-              }
-            ],
-            "surplus": null
-          }
-        ],
-        "surplus": null
+        "course": "BIO 150"
       },
       "contract": false,
       "save": [],
@@ -110,6 +68,22 @@
       "contract": false,
       "save": [],
       "requirements": {
+        "Genetics": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 1,
+            "of": [
+              {
+                "course": "BIO 233"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
         "Cell Biology": {
           "message": null,
           "department_audited": false,
@@ -184,24 +158,61 @@
           "contract": false,
           "save": [],
           "requirements": {}
-        },
-        "Genetics": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": 1,
-            "of": [
-              {
-                "course": "BIO 233"
-              }
-            ],
-            "surplus": null
-          },
-          "contract": false,
-          "save": [],
-          "requirements": {}
         }
       }
+    },
+    "Level III": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "BIO 315"
+          },
+          {
+            "course": "BIO 341"
+          },
+          {
+            "course": "BIO 348"
+          },
+          {
+            "course": "BIO 363"
+          },
+          {
+            "course": "BIO 364"
+          },
+          {
+            "course": "BIO 371"
+          },
+          {
+            "course": "BIO 372"
+          },
+          {
+            "course": "BIO 382"
+          },
+          {
+            "course": "BIO 383"
+          },
+          {
+            "course": "BIO 385"
+          },
+          {
+            "course": "BIO 386"
+          },
+          {
+            "course": "BIO 391"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          ".result",
+          ".of"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
     },
     "Electives": {
       "message": null,
@@ -327,64 +338,53 @@
       "save": [],
       "requirements": {}
     },
-    "Foundation": {
+    "Chemistry": {
       "message": null,
       "department_audited": false,
       "result": {
-        "course": "BIO 150"
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Level III": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": 1,
+        "count": "any",
         "of": [
           {
-            "course": "BIO 315"
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 121"
+              },
+              {
+                "course": "CHEM 123"
+              },
+              {
+                "course": "CHEM 126"
+              }
+            ],
+            "surplus": null
           },
           {
-            "course": "BIO 341"
+            "count": "all",
+            "of": [
+              {
+                "course": "CHEM 125"
+              },
+              {
+                "course": "CHEM 126"
+              }
+            ],
+            "surplus": null
           },
           {
-            "course": "BIO 348"
-          },
-          {
-            "course": "BIO 363"
-          },
-          {
-            "course": "BIO 364"
-          },
-          {
-            "course": "BIO 371"
-          },
-          {
-            "course": "BIO 372"
-          },
-          {
-            "course": "BIO 382"
-          },
-          {
-            "course": "BIO 383"
-          },
-          {
-            "course": "BIO 385"
-          },
-          {
-            "course": "BIO 386"
-          },
-          {
-            "course": "BIO 391"
+            "count": "all",
+            "of": [
+              {
+                "course": "CH/BI 125"
+              },
+              {
+                "course": "CH/BI 126"
+              }
+            ],
+            "surplus": null
           }
         ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ]
+        "surplus": null
       },
       "contract": false,
       "save": [],

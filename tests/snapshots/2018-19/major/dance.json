@@ -34,22 +34,6 @@
     "surplus": null
   },
   "requirements": {
-    "Area of Speciality": {
-      "message": "Each student designs an individualized area of specialty derived from their own interests and investigation. Select at least two credits from within or outside the department.",
-      "department_audited": false,
-      "result": null,
-      "contract": true,
-      "save": [],
-      "requirements": {}
-    },
-    "Dance Companies": {
-      "message": "Majors are required to participate in one of the dance companies (Companydance™ or Veselica™ International Dance Ensemble) for a minimum of three semesters.",
-      "department_audited": true,
-      "result": null,
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Language-Intensive Courses (Theory)": {
       "message": null,
       "department_audited": false,
@@ -279,14 +263,6 @@
         }
       }
     },
-    "Productions": {
-      "message": "Majors are required to contribute in managing a dance production for a minimum of one semester.",
-      "department_audited": true,
-      "result": null,
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
     "Senior Dance Seminar": {
       "message": "Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.",
       "department_audited": false,
@@ -340,6 +316,30 @@
           "do": null
         }
       ],
+      "requirements": {}
+    },
+    "Area of Speciality": {
+      "message": "Each student designs an individualized area of specialty derived from their own interests and investigation. Select at least two credits from within or outside the department.",
+      "department_audited": false,
+      "result": null,
+      "contract": true,
+      "save": [],
+      "requirements": {}
+    },
+    "Dance Companies": {
+      "message": "Majors are required to participate in one of the dance companies (Companydance™ or Veselica™ International Dance Ensemble) for a minimum of three semesters.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Productions": {
+      "message": "Majors are required to contribute in managing a dance production for a minimum of one semester.",
+      "department_audited": true,
+      "result": null,
+      "contract": false,
+      "save": [],
       "requirements": {}
     }
   },
