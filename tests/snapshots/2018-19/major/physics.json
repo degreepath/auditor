@@ -1,0 +1,167 @@
+{
+  "name": "Physics",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Analytics",
+        "optional": false
+      },
+      {
+        "requirement": "Modern Physics",
+        "optional": false
+      },
+      {
+        "requirement": "Upper-Level",
+        "optional": false
+      },
+      {
+        "requirement": "Upper-Level Elective",
+        "optional": false
+      },
+      {
+        "requirement": "Elective",
+        "optional": false
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Analytics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHYS 130"
+          },
+          {
+            "course": "PHYS 131"
+          },
+          {
+            "course": "PHYS 232"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Elective": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "PHYS 112"
+          },
+          {
+            "course": "PHYS 124"
+          },
+          {
+            "course": "PHYS 125"
+          },
+          {
+            "course": "PHYS 154"
+          },
+          {
+            "course": "PHYS 246"
+          },
+          {
+            "course": "PHYS 252"
+          },
+          {
+            "course": "PHYS 396"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Modern Physics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHYS 244"
+          },
+          {
+            "course": "PHYS 245"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Upper-Level": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "PHYS 374"
+          },
+          {
+            "course": "PHYS 375"
+          },
+          {
+            "course": "PHYS 385"
+          },
+          {
+            "course": "PHYS 386"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Upper-Level Elective": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "PHYS 360"
+          },
+          {
+            "course": "PHYS 362"
+          },
+          {
+            "course": "PHYS 376"
+          },
+          {
+            "course": "PHYS 379"
+          },
+          {
+            "course": "PHYS 390"
+          }
+        ],
+        "surplus": [
+          "Elective",
+          ".result",
+          ".of"
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
