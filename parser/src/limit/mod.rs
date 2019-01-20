@@ -1,4 +1,4 @@
-use super::filter;
+use crate::filter;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
