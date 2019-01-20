@@ -6,7 +6,7 @@ mod tests;
 
 mod print;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Hash)]
 #[serde(deny_unknown_fields)]
 pub struct Rule {
 	pub requirement: String,

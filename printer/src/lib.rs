@@ -5,7 +5,7 @@ use degreepath_parser::area_of_study::AreaOfStudy;
 use degreepath_parser::requirement::Requirement;
 use degreepath_parser::rules;
 use degreepath_parser::rules::Rule;
-use degreepath_parser::rules::{both, either, given};
+use degreepath_parser::rules::{both, either, given, req_ref};
 use degreepath_parser::Print;
 use std::fmt;
 use std::fmt::Write;
@@ -183,7 +183,7 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<Stri
 }
 
 fn collect_active_requirements_from_area(area: &AreaOfStudy) -> Vec<(String, Requirement)> {
-	let refs = get_requirement_references_from_rule(&area.result);
+	let refs = get_unique_requirement_references_from_rule(&area.result);
 
 	refs.iter()
 		.map(|r| {
@@ -200,7 +200,7 @@ fn collect_active_requirements_from_area(area: &AreaOfStudy) -> Vec<(String, Req
 
 fn collect_active_requirements(req: &Requirement) -> Vec<(String, Requirement)> {
 	let refs = match &req.result {
-		Some(rule) => get_requirement_references_from_rule(rule),
+		Some(rule) => get_unique_requirement_references_from_rule(rule),
 		None => vec![],
 	};
 
@@ -217,6 +217,22 @@ fn collect_active_requirements(req: &Requirement) -> Vec<(String, Requirement)> 
 		.collect()
 }
 
+fn get_unique_requirement_references_from_rule(rule: &Rule) -> Vec<rules::req_ref::Rule> {
+	use std::collections::HashSet;
+	let mut set: HashSet<String> = HashSet::new();
+	let mut refs = vec![];
+
+	for req_ref in get_requirement_references_from_rule(rule) {
+		if set.contains(&req_ref.requirement) {
+			continue;
+		}
+		set.insert(req_ref.requirement.clone());
+		refs.push(req_ref);
+	}
+
+	refs
+}
+
 fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::req_ref::Rule> {
 	use degreepath_parser::rules::Rule::*;
 
@@ -229,8 +245,7 @@ fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::req_ref::Rule
 		Requirement(rule) => vec![rule.clone()],
 		Course(_) => vec![],
 		Both(both::Rule { both: pair, .. }) | Either(either::Rule { either: pair, .. }) => {
-			let pair = pair.clone();
-			vec![pair.0, pair.1]
+			vec![&pair.0, &pair.1]
 				.iter()
 				.flat_map(|r| get_requirement_references_from_rule(r))
 				.collect::<Vec<_>>()
