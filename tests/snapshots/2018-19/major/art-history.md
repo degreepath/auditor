@@ -81,18 +81,6 @@ For this requirement, you must take at least one course with the “pre-1700” 
 ## Art created after 1700 CE
 For this requirement, you must take at least one course with the “post-1700” `art_period` attribute.
 
-## Asian, African, Indigenous American, or Near Eastern/Islamic Art
-For this requirement, you must take at least two courses with either the asian, african, indigenous-american, or near-eastern `art_locale` attribute.
-
-## European and American Art
-For this requirement, you must take at least two courses with either the european or american `art_locale` attribute.
-
-## Art created before 1700 CE
-For this requirement, you must take at least one course with the “pre-1700” `art_period` attribute.
-
-## Art created after 1700 CE
-For this requirement, you must take at least one course with the “post-1700” `art_period` attribute.
-
 
 # Lasting Legacy
 > Note: Majors must successfully complete the non-credit, senior "lasting
