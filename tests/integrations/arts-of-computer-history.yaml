@@ -1,0 +1,62 @@
+name: Arts of Computer History
+type: major
+degree: Bachelor of Arts
+catalog: 2018-19
+
+result:
+  count: all
+  of:
+    - either: [CS 121, CS 125]
+    - requirement: History
+    - given: these requirements
+      requirements: [{requirement: X}, {requirement: Y}, {requirement: Z}]
+      what: credits
+      do: count >= 6
+
+requirements:
+  History:
+    message:
+      Designed to showcase ideas from the past, both good and bad, and to give
+      you a mental framework about how to evaluate future ideas. "Those who do
+      not learn from the past are doomed to repeat it."
+
+    result:
+      count: all
+      of:
+        - CS 251
+        - CS 252
+        - ART 103
+        - ART 104
+        - requirement: A
+        - given: these requirements
+          requirements: [{requirement: A}]
+          what: credits
+          do: count >= 1.5
+
+    requirements:
+      A:
+        result:
+          count: any
+          of:
+            - ART 231
+            - ART 241
+            - HIST 105
+            - HIST 206
+            - CLASS 110
+            - GCON 203
+
+  Y:
+    result:
+      count: any
+      of:
+        - AMCON 101
+        - GCON 101
+        - ENVST 150
+        - NURS 310
+
+  Z:
+    result:
+      given: courses
+      where: {gereqs: 'WRI'}
+      what: courses
+      do: count >= 4

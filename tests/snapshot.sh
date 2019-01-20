@@ -38,3 +38,16 @@ for catalog in $(find . -maxdepth 1 -type d -name '*-*' | sed 's|^./||' | grep -
 
 	cd ..
 done
+
+
+SNAPSHOT_DIR="$SCRIPT_DIR/snapshots/integrations"
+mkdir -p "$SNAPSHOT_DIR"
+
+cd "$SCRIPT_DIR/integrations"
+for area in $(find . -maxdepth 1 -name '*.yaml' | sed 's|^./||' | sed 's|\.yaml$||' | grep -v '^.$'); do
+	echo "current: integration, $area"
+	$printer "./$area.yaml" > "$SNAPSHOT_DIR/$area.md.out"
+	mv "$SNAPSHOT_DIR/$area.md.out" "$SNAPSHOT_DIR/$area.md"
+	$parser "./$area.yaml" > "$SNAPSHOT_DIR/$area.json.out"
+	mv "$SNAPSHOT_DIR/$area.json.out" "$SNAPSHOT_DIR/$area.json"
+done

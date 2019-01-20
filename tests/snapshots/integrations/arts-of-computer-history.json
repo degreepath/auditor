@@ -1,0 +1,197 @@
+{
+  "name": "Arts of Computer History",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "either": [
+          {
+            "course": "CS 121"
+          },
+          {
+            "course": "CS 125"
+          }
+        ],
+        "surplus": null
+      },
+      {
+        "requirement": "History",
+        "optional": false
+      },
+      {
+        "given": "these requirements",
+        "requirements": [
+          {
+            "requirement": "X",
+            "optional": false
+          },
+          {
+            "requirement": "Y",
+            "optional": false
+          },
+          {
+            "requirement": "Z",
+            "optional": false
+          }
+        ],
+        "limit": null,
+        "where": null,
+        "what": "credits",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 6
+          }
+        }
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "History": {
+      "message": "Designed to showcase ideas from the past, both good and bad, and to give you a mental framework about how to evaluate future ideas. \"Those who do not learn from the past are doomed to repeat it.\"",
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "CS 251"
+          },
+          {
+            "course": "CS 252"
+          },
+          {
+            "course": "ART 103"
+          },
+          {
+            "course": "ART 104"
+          },
+          {
+            "requirement": "A",
+            "optional": false
+          },
+          {
+            "given": "these requirements",
+            "requirements": [
+              {
+                "requirement": "A",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "credits",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Float": 1.5
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "A": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "ART 231"
+              },
+              {
+                "course": "ART 241"
+              },
+              {
+                "course": "HIST 105"
+              },
+              {
+                "course": "HIST 206"
+              },
+              {
+                "course": "CLASS 110"
+              },
+              {
+                "course": "GCON 203"
+              }
+            ],
+            "surplus": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    },
+    "Y": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "AMCON 101"
+          },
+          {
+            "course": "GCON 101"
+          },
+          {
+            "course": "ENVST 150"
+          },
+          {
+            "course": "NURS 310"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Z": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "gereqs": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "WRI"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 4
+          }
+        }
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
