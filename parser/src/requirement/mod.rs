@@ -1,7 +1,7 @@
 use crate::rules::Rule;
 use crate::save::SaveBlock;
 use crate::util;
-use std::collections::BTreeMap;
+use indexmap::IndexMap;
 
 #[cfg(test)]
 mod tests;
@@ -20,5 +20,5 @@ pub struct Requirement {
 	#[serde(default)]
 	pub save: Vec<SaveBlock>,
 	#[serde(default)]
-	pub requirements: BTreeMap<String, Requirement>,
+	pub requirements: IndexMap<String, Requirement>,
 }

@@ -1,6 +1,6 @@
 use crate::requirement::Requirement;
 use crate::rules::Rule;
-use std::collections::BTreeMap;
+use indexmap::IndexMap;
 
 mod attributes;
 
@@ -15,7 +15,7 @@ pub struct AreaOfStudy {
 	pub area_type: AreaType,
 	pub catalog: String,
 	pub result: Rule,
-	pub requirements: BTreeMap<String, Requirement>,
+	pub requirements: IndexMap<String, Requirement>,
 	#[serde(default)]
 	pub attributes: Option<attributes::Attributes>,
 }

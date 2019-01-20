@@ -72,7 +72,7 @@ requirements:
 					department_audited: false,
 					contract: false,
 					save: vec![],
-					requirements: BTreeMap::new(),
+					requirements: indexmap! {},
 					result: Some(Rule::CountOf(count_of::Rule {
 						count: count_of::Counter::All,
 						of: vec![
@@ -120,7 +120,7 @@ requirements:
 					department_audited: false,
 					contract: false,
 					save: vec![],
-					requirements: BTreeMap::new(),
+					requirements: indexmap! {},
 					result: Some(Rule::CountOf(count_of::Rule {
 						count: count_of::Counter::Number(2),
 						of: vec![

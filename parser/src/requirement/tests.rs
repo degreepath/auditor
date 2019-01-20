@@ -13,7 +13,7 @@ fn serialize() {
 		})),
 		contract: false,
 		save: vec![],
-		requirements: BTreeMap::new(),
+		requirements: indexmap! {},
 	};
 
 	let expected = "---
@@ -51,7 +51,7 @@ requirements: {}";
 		})),
 		contract: false,
 		save: vec![],
-		requirements: BTreeMap::new(),
+		requirements: indexmap! {},
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -73,7 +73,7 @@ result: {requirement: name, optional: false}";
 		})),
 		contract: false,
 		save: vec![],
-		requirements: BTreeMap::new(),
+		requirements: indexmap! {},
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -91,7 +91,7 @@ message: a message";
 		result: None,
 		contract: false,
 		save: vec![],
-		requirements: BTreeMap::new(),
+		requirements: indexmap! {},
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -150,7 +150,7 @@ result:
 			what: Some(given::What::Courses),
 			action: None,
 		}],
-		requirements: BTreeMap::new(),
+		requirements: indexmap! {},
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();

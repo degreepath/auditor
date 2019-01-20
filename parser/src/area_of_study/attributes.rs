@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use indexmap::IndexMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
@@ -6,9 +6,9 @@ pub struct Attributes {
 	#[serde(default)]
 	pub defaults: Defaults,
 	#[serde(default)]
-	pub definitions: BTreeMap<String, Definition>,
+	pub definitions: IndexMap<String, Definition>,
 	#[serde(default)]
-	pub courses: BTreeMap<String, Application>,
+	pub courses: IndexMap<String, Application>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Default)]
@@ -36,7 +36,7 @@ pub struct Definition {
 	pub kind: Mode,
 }
 
-pub type Application = BTreeMap<String, Value>;
+pub type Application = IndexMap<String, Value>;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(tag = "type", rename_all = "lowercase")]

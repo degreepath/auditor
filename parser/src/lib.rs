@@ -7,6 +7,10 @@ extern crate serde_derive;
 #[macro_use]
 extern crate maplit;
 
+#[cfg(test)]
+#[macro_use]
+extern crate indexmap;
+
 pub mod area_of_study;
 pub mod requirement;
 pub mod rules;
