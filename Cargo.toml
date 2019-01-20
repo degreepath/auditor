@@ -1,7 +1,5 @@
 [workspace]
 members = [
-    "auditor",
-    "auditor-cli",
     "parser",
     "parser-cli",
     "printer",
