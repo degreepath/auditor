@@ -680,32 +680,32 @@ fn pretty_print_inline_terms() {
 fn pretty_print_inline_given_requirements_what_courses() {
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}").unwrap();
-	let expected = "take enough courses to obtain at least one credit from among courses matched by the “Core” and “Modern” requirements";
+	let expected = "take enough courses to obtain at least one credit from the set of courses matched by the “Core” and “Modern” requirements";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}").unwrap();
-	let expected = "take enough courses with the “FOL-C” general education attribute to obtain at least one credit from among courses matched by the “Core” and “Modern” requirements";
+	let expected = "take enough courses with the “FOL-C” general education attribute to obtain at least one credit from the set of courses matched by the “Core” and “Modern” requirements";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Interim }, what: credits, do: sum >= 3}")
                 .unwrap();
-	let expected = "take enough courses during Interim semesters to obtain at least three credits from among courses matched by the “Core” and “Modern” requirements";
+	let expected = "take enough courses during Interim semesters to obtain at least three credits from the set of courses matched by the “Core” and “Modern” requirements";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Fall }, what: credits, do: sum >= 10}").unwrap();
-	let expected = "take enough courses during Fall semesters to obtain at least ten credits from among courses matched by the “Core” and “Modern” requirements";
+	let expected = "take enough courses during Fall semesters to obtain at least ten credits from the set of courses matched by the “Core” and “Modern” requirements";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: '2012' }, what: credits, do: sum >= 1}").unwrap();
-	let expected = "take enough courses during the 2012-13 academic year to obtain at least one credit from among courses matched by the “Core” and “Modern” requirements";
+	let expected = "take enough courses during the 2012-13 academic year to obtain at least one credit from the set of courses matched by the “Core” and “Modern” requirements";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}").unwrap();
-	let expected = "take enough courses at St. Olaf College to obtain at least 17 credits from among courses matched by the “Core” and “Modern” requirements";
+	let expected = "take enough courses at St. Olaf College to obtain at least 17 credits from the set of courses matched by the “Core” and “Modern” requirements";
 	assert_eq!(expected, input.print().unwrap());
 }

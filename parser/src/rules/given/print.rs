@@ -228,64 +228,6 @@ impl Rule {
 		let mut output = String::new();
 		let filter = self.print_filter()?;
 
-		match &self.what {
-			What::Courses => {
-				write!(&mut output, "take enough courses{} {}", filter, self.action.print()?)?;
-			}
-			What::DistinctCourses => {
-				write!(&mut output, "take enough courses{} {}", self.action.print()?, filter)?;
-			}
-			What::Credits => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "credits" } else { "credit" };
-
-				write!(
-					&mut output,
-					"take enough courses{} to obtain {} {}",
-					filter,
-					self.action.print()?,
-					word
-				)?;
-			}
-			What::Departments => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "departments" } else { "department" };
-
-				write!(
-					&mut output,
-					"take enough courses{} to span {} {}",
-					filter,
-					self.action.print()?,
-					word
-				)?;
-			}
-			What::Grades => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "courses" } else { "course" };
-
-				write!(
-					&mut output,
-					"maintain an average GPA {} from {}{}",
-					self.action.print()?,
-					word,
-					filter
-				)?;
-			}
-			What::Terms => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "terms" } else { "term" };
-
-				write!(
-					&mut output,
-					"take enough courses{} to span {} {}",
-					filter,
-					self.action.print()?,
-					word
-				)?;
-			}
-			What::AreasOfStudy => unimplemented!("given:these-requirements, what:areas makes no sense"),
-		};
-
 		let requirements: Vec<String> = requirements
 			.into_iter()
 			.filter_map(|r| match r.print() {
@@ -294,11 +236,91 @@ impl Rule {
 			})
 			.collect();
 
-		write!(
-			&mut output,
-			" from among courses matched by the {} requirements",
-			requirements.oxford("and")
-		)?;
+		let singular = requirements.len() == 1;
+		let reqs_word = if singular { "requirement" } else { "requirements" };
+		let ending = format!("matched by the {} {}", requirements.oxford("and"), reqs_word);
+
+		match &self.what {
+			What::Courses => {
+				let plur = self.action.should_pluralize();
+				let word = if plur { "courses" } else { "course" };
+
+				write!(
+					&mut output,
+					"have {} {}{} in the set of courses {}",
+					self.action.print()?,
+					word,
+					filter,
+					ending
+				)?;
+			}
+			What::DistinctCourses => {
+				let plur = self.action.should_pluralize();
+				let word = if plur { "distinct courses" } else { "distinct course" };
+
+				write!(
+					&mut output,
+					"have {} {}{} in the set of courses {}",
+					self.action.print()?,
+					word,
+					filter,
+					ending
+				)?;
+			}
+			What::Credits => {
+				let plur = self.action.should_pluralize();
+				let word = if plur { "credits" } else { "credit" };
+
+				write!(
+					&mut output,
+					"take enough courses{} to obtain {} {} from the set of courses {}",
+					filter,
+					self.action.print()?,
+					word,
+					ending
+				)?;
+			}
+			What::Departments => {
+				let plur = self.action.should_pluralize();
+				let word = if plur { "departments" } else { "department" };
+
+				write!(
+					&mut output,
+					"take enough courses{} to span {} {} from the set of courses {}",
+					filter,
+					self.action.print()?,
+					word,
+					ending
+				)?;
+			}
+			What::Grades => {
+				let plur = self.action.should_pluralize();
+				let word = if plur { "courses" } else { "course" };
+
+				write!(
+					&mut output,
+					"maintain an average GPA {} from {}{} from the set of courses {}",
+					self.action.print()?,
+					word,
+					filter,
+					ending
+				)?;
+			}
+			What::Terms => {
+				let plur = self.action.should_pluralize();
+				let word = if plur { "terms" } else { "term" };
+
+				write!(
+					&mut output,
+					"take enough courses{} to span {} {} from the set of courses {}",
+					filter,
+					self.action.print()?,
+					word,
+					ending
+				)?;
+			}
+			What::AreasOfStudy => unimplemented!("given:these-requirements, what:areas makes no sense"),
+		};
 
 		Ok(output)
 	}
