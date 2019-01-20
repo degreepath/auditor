@@ -295,19 +295,19 @@
           "repeats": "last",
           "limit": null,
           "where": {
-            "semester": {
-              "Single": {
-                "op": "EqualTo",
-                "value": {
-                  "String": "Fall"
-                }
-              }
-            },
             "year": {
               "Single": {
                 "op": "EqualTo",
                 "value": {
                   "Constant": "graduation-year"
+                }
+              }
+            },
+            "semester": {
+              "Single": {
+                "op": "EqualTo",
+                "value": {
+                  "String": "Fall"
                 }
               }
             }

@@ -331,19 +331,19 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "name": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "Chemistry"
-                      }
-                    }
-                  },
                   "type": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
                         "String": "major"
+                      }
+                    }
+                  },
+                  "name": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "Chemistry"
                       }
                     }
                   }
@@ -378,19 +378,19 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "name": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "Economics"
-                      }
-                    }
-                  },
                   "type": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
                         "String": "major"
+                      }
+                    }
+                  },
+                  "name": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "Economics"
                       }
                     }
                   }
@@ -425,19 +425,19 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "name": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "Physics"
-                      }
-                    }
-                  },
                   "type": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
                         "String": "major"
+                      }
+                    }
+                  },
+                  "name": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "Physics"
                       }
                     }
                   }

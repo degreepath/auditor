@@ -302,19 +302,19 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "name": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "String": "Physics"
-                      }
-                    }
-                  },
                   "type": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
                         "String": "major"
+                      }
+                    }
+                  },
+                  "name": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "Physics"
                       }
                     }
                   }
