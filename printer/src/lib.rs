@@ -3,9 +3,6 @@
 extern crate degreepath_parser;
 use degreepath_parser::area_of_study::AreaOfStudy;
 use degreepath_parser::requirement::Requirement;
-use degreepath_parser::rules;
-use degreepath_parser::rules::Rule;
-use degreepath_parser::rules::{both, either, given, req_ref};
 use degreepath_parser::Print;
 use std::fmt;
 use std::fmt::Write;
@@ -97,8 +94,8 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 		)?;
 	}
 
-	let active_children = collect_active_requirements_from_area(&area.clone());
-	let requirements: Vec<String> = active_children
+	let requirements: Vec<String> = area
+		.requirements
 		.iter()
 		.flat_map(|(name, r)| print_requirement(name, &r.clone(), 1))
 		.collect();
@@ -140,8 +137,6 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<Stri
 		}
 	}
 
-	let active_children = collect_active_requirements(&req);
-
 	if let Some(result) = &req.result {
 		if let Ok(mut what_to_do) = result.print() {
 			let kind = match req.requirements.len() {
@@ -166,7 +161,8 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<Stri
 		}
 	}
 
-	let requirements: Vec<String> = active_children
+	let requirements: Vec<String> = req
+		.requirements
 		.iter()
 		.flat_map(|(name, r)| print_requirement(name, &r.clone(), level + 1))
 		.collect();
@@ -180,80 +176,4 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<Stri
 	}
 
 	Ok(w)
-}
-
-fn collect_active_requirements_from_area(area: &AreaOfStudy) -> Vec<(String, Requirement)> {
-	let refs = get_unique_requirement_references_from_rule(&area.result);
-
-	refs.iter()
-		.map(|r| {
-			(
-				r.requirement.clone(),
-				area.requirements
-					.get(&r.requirement)
-					.expect(&format!("{} was not found in the requirements list", r.requirement))
-					.clone(),
-			)
-		})
-		.collect()
-}
-
-fn collect_active_requirements(req: &Requirement) -> Vec<(String, Requirement)> {
-	let refs = match &req.result {
-		Some(rule) => get_unique_requirement_references_from_rule(rule),
-		None => vec![],
-	};
-
-	refs.iter()
-		.map(|r| {
-			(
-				r.requirement.clone(),
-				req.requirements
-					.get(&r.requirement)
-					.expect(&format!("{} was not found in the requirements list", r.requirement))
-					.clone(),
-			)
-		})
-		.collect()
-}
-
-fn get_unique_requirement_references_from_rule(rule: &Rule) -> Vec<rules::req_ref::Rule> {
-	use std::collections::HashSet;
-	let mut set: HashSet<String> = HashSet::new();
-	let mut refs = vec![];
-
-	for req_ref in get_requirement_references_from_rule(rule) {
-		if set.contains(&req_ref.requirement) {
-			continue;
-		}
-		set.insert(req_ref.requirement.clone());
-		refs.push(req_ref);
-	}
-
-	refs
-}
-
-fn get_requirement_references_from_rule(rule: &Rule) -> Vec<rules::req_ref::Rule> {
-	use degreepath_parser::rules::Rule::*;
-
-	match rule {
-		CountOf(rule) => rule
-			.of
-			.iter()
-			.flat_map(|r| get_requirement_references_from_rule(r))
-			.collect::<Vec<_>>(),
-		Requirement(rule) => vec![rule.clone()],
-		Course(_) => vec![],
-		Both(both::Rule { both: pair, .. }) | Either(either::Rule { either: pair, .. }) => {
-			vec![&pair.0, &pair.1]
-				.iter()
-				.flat_map(|r| get_requirement_references_from_rule(r))
-				.collect::<Vec<_>>()
-		}
-		Given(rule) => match &rule.given {
-			given::Given::TheseRequirements { requirements } => requirements.clone(),
-			_ => vec![],
-		},
-		Do(_) => vec![],
-	}
 }
