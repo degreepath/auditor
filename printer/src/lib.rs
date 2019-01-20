@@ -65,6 +65,8 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 
 	writeln!(&mut w, "{}", blockquote(&textwrap::fill(&leader, 78)))?;
 
+	writeln!(&mut w, "# {}", &area.area_name)?;
+
 	let area_type = match area.area_type.clone() {
 		Degree => "degree",
 		Major { .. } => "major",
@@ -97,7 +99,7 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 	let requirements: Vec<String> = area
 		.requirements
 		.iter()
-		.flat_map(|(name, r)| print_requirement(name, &r.clone(), 1))
+		.flat_map(|(name, r)| print_requirement(name, &r.clone(), 2))
 		.collect();
 
 	for s in requirements {
