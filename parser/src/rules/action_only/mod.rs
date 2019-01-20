@@ -1,4 +1,4 @@
-use crate::rules::given::action::Action;
+use crate::action::Action;
 use crate::traits::Util;
 use crate::util;
 

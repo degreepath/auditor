@@ -1,5 +1,5 @@
 use super::*;
-use crate::rules::given::action;
+use crate::action;
 use crate::traits::print::Print;
 
 #[test]

@@ -3,7 +3,7 @@ use crate::traits::print;
 
 impl print::Print for Rule {
 	fn print(&self) -> print::Result {
-		use crate::rules::given::action::Operator;
+		use crate::action::Operator;
 		use std::fmt::Write;
 
 		let mut output = String::new();

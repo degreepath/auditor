@@ -1,4 +1,4 @@
-use super::action::Operator;
+use crate::action::Operator;
 use crate::traits::print;
 use crate::util::{self, Oxford};
 use serde::de::{Deserialize, Deserializer};
@@ -602,7 +602,7 @@ impl fmt::Display for Value {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::rules::given::action::Operator;
+	use crate::action::Operator;
 	use crate::traits::print::Print;
 
 	#[test]

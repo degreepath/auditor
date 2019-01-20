@@ -1,6 +1,6 @@
 use super::*;
-use crate::rules;
 use crate::rules::{given, req_ref};
+use crate::{filter, rules};
 
 #[test]
 fn serialize() {
@@ -111,8 +111,8 @@ result:
     - {given: save, save: Interim Courses, what: credits, do: sum >= 3}
     - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
-	let expected_filter: given::filter::Clause = btreemap! {
-		"semester".into() => "Interim".parse::<given::filter::WrappedValue>().unwrap(),
+	let expected_filter: filter::Clause = btreemap! {
+		"semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
 	};
 
 	let expected = Requirement {

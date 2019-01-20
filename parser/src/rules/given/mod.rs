@@ -1,10 +1,7 @@
 use crate::rules::{course, req_ref};
 use crate::traits::{print, Util};
 use crate::util::{self, Oxford};
-
-pub mod action;
-pub mod filter;
-pub mod limit;
+use crate::{action, filter, limit};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Rule {
