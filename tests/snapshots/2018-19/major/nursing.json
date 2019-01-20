@@ -1,0 +1,173 @@
+{
+  "name": "Nursing",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2015-16",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Prerequisites",
+        "optional": false
+      },
+      {
+        "requirement": "Requirements",
+        "optional": false
+      },
+      {
+        "requirement": "Ethics",
+        "optional": false
+      },
+      {
+        "requirement": "Recommended",
+        "optional": true
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Ethics": {
+      "message": "Students should consult with their advisor to determine what courses meet this requirement from among the general education EIN courses.",
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "AMCON 101"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Prerequisites": {
+      "message": "These courses must be completed before beginning level III nursing courses.",
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "BIO 143"
+          },
+          {
+            "course": "BIO 243"
+          },
+          {
+            "course": "ID 210"
+          },
+          {
+            "course": "NURS 110"
+          },
+          {
+            "course": "PSYCH 125"
+          },
+          {
+            "course": "PSYCH 241"
+          },
+          {
+            "count": 1,
+            "of": [
+              {
+                "course": "BIO 121"
+              },
+              {
+                "course": "BIO 231"
+              }
+            ],
+            "surplus": null
+          },
+          {
+            "count": 1,
+            "of": [
+              {
+                "course": "SOAN 121"
+              },
+              {
+                "course": "SOAN 128"
+              },
+              {
+                "course": "SOAN 260"
+              },
+              {
+                "course": "SOAN 264"
+              },
+              {
+                "course": "SOAN 267"
+              }
+            ],
+            "surplus": null
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Recommended": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "NURS 390"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Requirements": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "NURS 211"
+          },
+          {
+            "course": "NURS 311"
+          },
+          {
+            "course": "NURS 312"
+          },
+          {
+            "course": "NURS 313"
+          },
+          {
+            "course": "NURS 314"
+          },
+          {
+            "course": "NURS 315"
+          },
+          {
+            "course": "NURS 316"
+          },
+          {
+            "course": "NURS 317"
+          },
+          {
+            "course": "NURS 318"
+          },
+          {
+            "course": "NURS 319"
+          },
+          {
+            "course": "NURS 399"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
