@@ -1,0 +1,135 @@
+{
+  "name": "Exercise Science",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Core",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      },
+      {
+        "requirement": "Recomended",
+        "optional": true
+      }
+    ],
+    "surplus": null
+  },
+  "requirements": {
+    "Core": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "BIO 143"
+          },
+          {
+            "course": "BIO 243"
+          },
+          {
+            "course": "NURS 110"
+          },
+          {
+            "course": "ESTH 255"
+          },
+          {
+            "course": "ESTH 374"
+          },
+          {
+            "course": "ESTH 375"
+          },
+          {
+            "course": "ESTH 390"
+          },
+          {
+            "course": "PSYCH 125"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "BIO 247"
+          },
+          {
+            "course": "ESTH 295"
+          },
+          {
+            "course": "ESTH 373"
+          },
+          {
+            "course": "ESTH 376"
+          },
+          {
+            "course": "NEURO 239"
+          },
+          {
+            "course": "PSYCH 241"
+          },
+          {
+            "course": "PSYCH 247"
+          },
+          {
+            "count": 1,
+            "of": [
+              {
+                "course": "STAT 110"
+              },
+              {
+                "course": "STAT 212"
+              },
+              {
+                "course": "STAT 214"
+              }
+            ],
+            "surplus": null
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Recomended": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "ESTH 394"
+          },
+          {
+            "course": "EST 398"
+          },
+          {
+            "course": "CHEM 121"
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
