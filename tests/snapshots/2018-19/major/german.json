@@ -1,0 +1,262 @@
+{
+  "name": "German",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Speaking and Writing",
+        "optional": false
+      },
+      {
+        "requirement": "The Francophone World",
+        "optional": false
+      },
+      {
+        "requirement": "Level III",
+        "optional": false
+      },
+      {
+        "requirement": "Electives",
+        "optional": false
+      }
+    ],
+    "surplus": null,
+    "limit": null
+  },
+  "requirements": {
+    "Level 250": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "GERM 251"
+          },
+          {
+            "course": "GERM 252"
+          },
+          {
+            "course": "GERM 253"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          "Langauge",
+          ".result",
+          ".of"
+        ],
+        "limit": [
+          {
+            "where": {
+              "institution": {
+                "Single": {
+                  "op": "NotEqualTo",
+                  "value": {
+                    "String": "St. Olaf College"
+                  }
+                }
+              }
+            },
+            "at_most": 1
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level 270": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": 2,
+        "of": [
+          {
+            "course": "GERM 271"
+          },
+          {
+            "course": "GERM 272"
+          },
+          {
+            "course": "GERM 273"
+          },
+          {
+            "course": "GERM 276"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          "Langauge",
+          ".result",
+          ".of"
+        ],
+        "limit": [
+          {
+            "where": {
+              "institution": {
+                "Single": {
+                  "op": "NotEqualTo",
+                  "value": {
+                    "String": "St. Olaf College"
+                  }
+                }
+              }
+            },
+            "at_most": 1
+          }
+        ]
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Level III": {
+      "message": "This course will preferably be taken in the student's senior year.",
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [
+          {
+            "course": "GERM 371"
+          },
+          {
+            "course": "GERM 372"
+          }
+        ],
+        "surplus": [
+          "Electives",
+          "Langauge",
+          ".result",
+          ".of"
+        ],
+        "limit": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Electives": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "both": [
+          {
+            "count": "any",
+            "of": [
+              {
+                "requirement": "Language",
+                "optional": true
+              },
+              {
+                "requirement": "In Translation",
+                "optional": true
+              }
+            ],
+            "surplus": null,
+            "limit": null
+          },
+          {
+            "given": "these requirements",
+            "requirements": [
+              {
+                "requirement": "Langauge",
+                "optional": false
+              },
+              {
+                "requirement": "In Translation",
+                "optional": false
+              }
+            ],
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 3
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {
+        "Language": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": "any",
+            "of": [
+              {
+                "course": "GERM 232"
+              }
+            ],
+            "surplus": null,
+            "limit": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "In Translation": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these courses",
+            "courses": [
+              {
+                "course": "GERM 147"
+              },
+              {
+                "course": "GERM 249"
+              },
+              {
+                "course": "GERM 263"
+              }
+            ],
+            "repeats": "first",
+            "limit": [
+              {
+                "where": {
+                  "institution": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "St. Olaf College"
+                      }
+                    }
+                  }
+                },
+                "at_most": 1
+              }
+            ],
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "EqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
+    }
+  },
+  "attributes": null
+}
