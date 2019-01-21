@@ -9,15 +9,15 @@ For this requirement, you must do all of the following:
 
 - take BIO 150
 - do one of the following:
-
-- take CHEM 125, CHEM 126, and BIO 227
-- take all of the following courses:
-
-- CHEM 121
-- CHEM 123
-- CHEM 126
-- BIO 227
-- take CH/BI 125, CH/BI 126, and CH/BI 227
+  
+  - take CHEM 125, CHEM 126, and BIO 227
+  - take all of the following courses:
+    
+    - CHEM 121
+    - CHEM 123
+    - CHEM 126
+    - BIO 227
+  - take CH/BI 125, CH/BI 126, and CH/BI 227
 - take BIO 223
 - take BMOLS 201
 - take both CHEM 247 and CHEM 253

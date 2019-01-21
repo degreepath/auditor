@@ -18,11 +18,11 @@ For this requirement, you must do all of the following:
 - take PSYCH 125
 - take PSYCH 241
 - take one of the following courses:
-
-- SOAN 121
-- SOAN 128
-- SOAN 260
-- SOAN 264
+  
+  - SOAN 121
+  - SOAN 128
+  - SOAN 260
+  - SOAN 264
 
 
 ## Requirements
