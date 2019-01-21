@@ -23,7 +23,7 @@ fn print_and_join_for_block_elided(ref v: &[AnyRule]) -> String {
 
 fn print_and_join_for_block_verbose(ref v: &[AnyRule]) -> String {
 	v.iter()
-		.map(|r| r.print())
+		.map(|r| r.print_indented(1))
 		.filter_map(result_to_option)
 		.map(|r| format!("- {}", r))
 		.collect::<Vec<String>>()

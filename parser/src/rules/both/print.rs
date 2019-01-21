@@ -68,7 +68,10 @@ impl print::Print for Rule {
 				)?;
 			}
 			(a, b) => {
-				write!(&mut output, "both:\n\n- {}\n\n- and {}", a.print()?, b.print()?)?;
+				let a = a.print_indented(1)?;
+				let b = b.print_indented(1)?;
+
+				write!(&mut output, "both:\n\n- {}\n\n- and {}", a, b)?;
 			}
 		};
 
