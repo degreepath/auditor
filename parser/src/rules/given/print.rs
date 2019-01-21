@@ -190,9 +190,54 @@ impl Rule {
 				// TODO: special-case "once" and "twice"
 				let plur = self.action.should_pluralize();
 				let word = if plur { "times" } else { "time" };
-				let courses = courses.oxford("and");
 
-				write!(&mut output, "take {} {} {}", courses, self.action.print()?, word)?;
+				match (&self.action.lhs, &self.action.op, &self.action.rhs) {
+					(
+						action::Value::Command(action::Command::Count),
+						Some(action::Operator::GreaterThanEqualTo),
+						Some(action::Value::Integer(1)),
+					) => match courses.len() {
+						1...5 => {
+							write!(
+								&mut output,
+								"take {} {} {}",
+								courses.oxford("or"),
+								self.action.print()?,
+								word
+							)?;
+						}
+						_ => {
+							let as_list: Vec<_> = courses.iter().map(|l| format!("- {}", l)).collect();
+
+							write!(
+								&mut output,
+								"take {} of the following courses:\n\n{}",
+								self.action.print()?,
+								as_list.join("\n")
+							)?;
+						}
+					},
+					_ => match courses.len() {
+						1 => {
+							write!(
+								&mut output,
+								"take {} {} {}",
+								courses.oxford("and"),
+								self.action.print()?,
+								word
+							)?;
+						}
+						_ => {
+							write!(
+								&mut output,
+								"take a combination of {} {} {}",
+								courses.oxford("and"),
+								self.action.print()?,
+								word
+							)?;
+						}
+					},
+				}
 			}
 			(RepeatMode::All, What::Credits) => {
 				// TODO: special-case "once" and "twice"

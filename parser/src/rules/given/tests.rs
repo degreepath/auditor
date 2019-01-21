@@ -560,7 +560,18 @@ fn pretty_print_inline_repeats() {
 		&"{given: these courses, repeats: all, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 4}",
 	)
 	.unwrap();
-	let expected = "take THEAT 233 and THEAT 253 at least four times";
+	let expected = "take a combination of THEAT 233 and THEAT 253 at least four times";
+	assert_eq!(expected, input.print().unwrap());
+
+	let input: Rule = serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [AMST 205, AMST 206, AMST 207, AMST 208, AMST 209, AMST 210], what: courses, do: count >= 1}", ) .unwrap();
+	let expected = "take at least one of the following courses:
+
+- AMST 205
+- AMST 206
+- AMST 207
+- AMST 208
+- AMST 209
+- AMST 210";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
