@@ -41,6 +41,25 @@ For this section, you must both:
 For this requirement, you must take GERM 232.
 
 ### In Translation
-For this requirement, you must take exactly one course from among GERM 147, GERM 249, and GERM 263.
+For this requirement, you must take exactly one course from among the following:
+
+- GERM 147
+- GERM 249
+- GERM 263
+- ART 252
+- ART 271
+- HIST 224
+- MUSIC 342
+- MUSIC 343
+- PHIL 260
+- PHIL 261
+- PHIL 374
+- PSCI 283
+- PSCI 285
+- REL 213
+- REL 214
+- REL 262
+- REL 303
+- REL 304
 
 

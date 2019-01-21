@@ -221,6 +221,51 @@
               },
               {
                 "course": "GERM 263"
+              },
+              {
+                "course": "ART 252"
+              },
+              {
+                "course": "ART 271"
+              },
+              {
+                "course": "HIST 224"
+              },
+              {
+                "course": "MUSIC 342"
+              },
+              {
+                "course": "MUSIC 343"
+              },
+              {
+                "course": "PHIL 260"
+              },
+              {
+                "course": "PHIL 261"
+              },
+              {
+                "course": "PHIL 374"
+              },
+              {
+                "course": "PSCI 283"
+              },
+              {
+                "course": "PSCI 285"
+              },
+              {
+                "course": "REL 213"
+              },
+              {
+                "course": "REL 214"
+              },
+              {
+                "course": "REL 262"
+              },
+              {
+                "course": "REL 303"
+              },
+              {
+                "course": "REL 304"
               }
             ],
             "repeats": "first",
