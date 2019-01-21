@@ -596,7 +596,8 @@ fn pretty_print_inline_repeats() {
 fn pretty_print_inline_credits() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: credits, do: sum >= 1}").unwrap();
-	let expected = "have enough courses taken with the “FOL-C” general education attribute to obtain at least one credit";
+	let expected =
+		"have enough courses taken with the “FOL-C” general education attribute to obtain at least one credit";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
@@ -667,7 +668,8 @@ fn pretty_print_inline_grades() {
 fn pretty_print_inline_terms() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: terms, do: count >= 2}").unwrap();
-	let expected = "have enough courses taken with the “FOL-C” general education attribute to span at least two terms";
+	let expected =
+		"have enough courses taken with the “FOL-C” general education attribute to span at least two terms";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =

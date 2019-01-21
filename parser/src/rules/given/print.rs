@@ -132,19 +132,14 @@ impl Rule {
 		let mut output = String::new();
 		// let filter = self.print_filter()?;
 
-		let courses_vec = courses;
-		let courses = courses
-			.iter()
-			.map(|r| r.print().unwrap())
-			.collect::<Vec<String>>()
-			.oxford("and");
+		let courses: Vec<String> = courses.iter().map(|r| r.print().unwrap()).collect();
 
 		match (mode, &self.what) {
 			(RepeatMode::First, What::Courses) | (RepeatMode::Last, What::Courses) => {
-				match courses_vec.len() {
+				match courses.len() {
 					1 => {
 						// TODO: expose last vs. first in output somehow?
-						write!(&mut output, "take {}", courses)?;
+						write!(&mut output, "take {}", courses.oxford("and"))?;
 					}
 					2 => match (&self.action.lhs, &self.action.op, &self.action.rhs) {
 						(
@@ -153,26 +148,16 @@ impl Rule {
 							Some(action::Value::Integer(n)),
 						) => match n {
 							1 => {
-								write!(
-									&mut output,
-									"take either {} or {}",
-									courses_vec[0].print()?,
-									courses_vec[1].print()?
-								)?;
+								write!(&mut output, "take either {} or {}", courses[0], courses[1])?;
 							}
 							2 => {
-								write!(
-									&mut output,
-									"take both {} and {}",
-									courses_vec[0].print()?,
-									courses_vec[1].print()?
-								)?;
+								write!(&mut output, "take both {} and {}", courses[0], courses[1])?;
 							}
 							_ => panic!("should not require <1 or >len of the number of courses given"),
 						},
 						_ => unimplemented!("most actions on two-up given:these-courses rules"),
 					},
-					_ => {
+					3...5 => {
 						// TODO: expose last vs. first in output somehow?
 						let plur = self.action.should_pluralize();
 						let word = if plur { "courses" } else { "course" };
@@ -181,7 +166,22 @@ impl Rule {
 							"take {} {} from among {}",
 							self.action.print()?,
 							word,
-							courses
+							courses.oxford("and")
+						)?;
+					}
+					_ => {
+						// TODO: expose last vs. first in output somehow?
+						let plur = self.action.should_pluralize();
+						let word = if plur { "courses" } else { "course" };
+
+						let as_list: Vec<_> = courses.iter().map(|l| format!("- {}", l)).collect();
+
+						write!(
+							&mut output,
+							"take {} {} from among the following:\n\n{}",
+							self.action.print()?,
+							word,
+							as_list.join("\n")
 						)?;
 					}
 				}
@@ -190,6 +190,7 @@ impl Rule {
 				// TODO: special-case "once" and "twice"
 				let plur = self.action.should_pluralize();
 				let word = if plur { "times" } else { "time" };
+				let courses = courses.oxford("and");
 
 				write!(&mut output, "take {} {} {}", courses, self.action.print()?, word)?;
 			}
@@ -201,7 +202,7 @@ impl Rule {
 				write!(
 					&mut output,
 					"take {} enough times to yield {} {}",
-					courses,
+					courses.oxford("and"),
 					self.action.print()?,
 					word
 				)?;
@@ -214,7 +215,7 @@ impl Rule {
 				write!(
 					&mut output,
 					"take {} enough times to span {} {}",
-					courses,
+					courses.oxford("and"),
 					self.action.print()?,
 					word
 				)?;
