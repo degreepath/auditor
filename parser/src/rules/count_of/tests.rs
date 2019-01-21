@@ -7,12 +7,14 @@ fn serialize_count_of_any() {
 		count: Counter::Any,
 		of: vec![],
 		surplus: None,
+		limit: None,
 	};
 
 	let expected_str = "---
 count: any
 of: []
-surplus: ~";
+surplus: ~
+limit: ~";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
 	assert_eq!(actual, expected_str);
@@ -23,12 +25,14 @@ fn deserialize_count_of_any() {
 	let data = "---
 count: any
 of: []
-surplus: ~";
+surplus: ~
+limit: ~";
 
 	let expected_struct = Rule {
 		count: Counter::Any,
 		of: vec![],
 		surplus: None,
+		limit: None,
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -41,12 +45,14 @@ fn serialize_count_of_all() {
 		count: Counter::All,
 		of: vec![],
 		surplus: None,
+		limit: None,
 	};
 
 	let expected_str = "---
 count: all
 of: []
-surplus: ~";
+surplus: ~
+limit: ~";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
 	assert_eq!(actual, expected_str);
@@ -57,12 +63,14 @@ fn deserialize_count_of_all() {
 	let data = "---
 count: all
 of: []
-surplus: ~";
+surplus: ~
+limit: ~";
 
 	let expected_struct = Rule {
 		count: Counter::All,
 		of: vec![],
 		surplus: None,
+		limit: None,
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -75,12 +83,14 @@ fn serialize_count_of_number() {
 		count: Counter::Number(6),
 		of: vec![],
 		surplus: None,
+		limit: None,
 	};
 
 	let expected_str = "---
 count: 6
 of: []
-surplus: ~";
+surplus: ~
+limit: ~";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
 	assert_eq!(actual, expected_str);
@@ -91,12 +101,14 @@ fn deserialize_count_of_number() {
 	let data = "---
 count: 6
 of: []
-surplus: ~";
+surplus: ~
+limit: ~";
 
 	let expected_struct = Rule {
 		count: Counter::Number(6),
 		of: vec![],
 		surplus: None,
+		limit: None,
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();

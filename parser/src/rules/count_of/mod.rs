@@ -1,6 +1,7 @@
 use crate::rules::Rule as AnyRule;
 use crate::surplus::Surplus;
 use crate::traits::Util;
+use crate::limit;
 
 mod print;
 
@@ -17,6 +18,8 @@ pub struct Rule {
 	pub of: Vec<AnyRule>,
 	#[serde(default)]
 	pub surplus: Option<Surplus>,
+	#[serde(default)]
+	pub limit: Option<Vec<limit::Limiter>>,
 }
 
 impl Rule {

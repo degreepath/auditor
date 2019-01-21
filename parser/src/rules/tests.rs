@@ -37,6 +37,7 @@ fn serialize() {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
 			surplus: None,
+			limit: None,
 		}),
 		Rule::Both(both::Rule {
 			both: (
@@ -79,6 +80,7 @@ fn serialize() {
   of:
     - course: ASIAN 101
   surplus: ~
+  limit: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -142,6 +144,7 @@ fn deserialize() {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
 			surplus: None,
+			limit: None,
 		}),
 		Rule::Both(both::Rule {
 			both: (
@@ -229,6 +232,7 @@ fn deserialize() {
   of:
     - course: ASIAN 101
   surplus: ~
+  limit: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -307,6 +311,7 @@ fn deserialize_shorthands() {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
 			surplus: None,
+			limit: None,
 		}),
 		Rule::Both(both::Rule {
 			both: (
