@@ -262,7 +262,7 @@ impl Rule {
 					index = index
 				)?;
 				for req in requirements {
-					writeln!(&mut output, "  - {}", req)?;
+					writeln!(&mut output, "    - {}", req)?;
 				}
 			}
 		};
