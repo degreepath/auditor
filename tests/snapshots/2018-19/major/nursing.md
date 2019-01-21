@@ -1,4 +1,4 @@
-> This is the set of requirements for the 2015-16 Bachelor of Arts “Nursing”
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Nursing”
 > major from St. Olaf College.
 
 # Nursing

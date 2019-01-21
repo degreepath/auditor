@@ -1,4 +1,4 @@
-> This is the set of requirements for the 2015-16 Bachelor of Arts “Physics”
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Physics”
 > major from St. Olaf College.
 
 # Physics
