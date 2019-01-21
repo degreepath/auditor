@@ -19,7 +19,7 @@ For this requirement, you must take all of the following courses:
 
 
 ## Upper-Level Language
-For this requirement, you must take CHIN 320, CHIN 351, and CHIN 360.
+For this requirement, you must take one course from among CHIN 320, CHIN 351, or CHIN 360.
 
 
 ## Language and Culture

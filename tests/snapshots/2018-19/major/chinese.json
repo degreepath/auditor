@@ -57,7 +57,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "all",
+        "count": "any",
         "of": [
           {
             "course": "CHIN 320"
