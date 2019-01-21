@@ -81,11 +81,15 @@ pub fn print(area: AreaOfStudy) -> Result<String, fmt::Error> {
 
 	if let Ok(mut what_to_do) = area.result.print() {
 		// todo: remove this hack for adding periods to the end of inlined requirements
-		if !what_to_do.contains("\n- ") {
+		if !what_to_do.contains("\n") {
 			what_to_do += ".";
 		}
 
-		writeln!(
+		if !what_to_do.ends_with("\n") {
+			what_to_do += "\n";
+		}
+
+		write!(
 			&mut w,
 			"{}",
 			&format!(
@@ -147,11 +151,15 @@ fn print_requirement(name: &str, req: &Requirement, level: usize) -> Result<Stri
 			};
 
 			// todo: remove this hack for adding periods to the end of inlined requirements
-			if !what_to_do.contains("\n- ") {
+			if !what_to_do.contains("\n") {
 				what_to_do += ".";
 			}
 
-			writeln!(
+			if !what_to_do.ends_with("\n") {
+				what_to_do += "\n";
+			}
+
+			write!(
 				&mut w,
 				"{}\n",
 				&format!(
