@@ -1,0 +1,191 @@
+{
+  "name": "Religion",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "General Education",
+        "optional": false
+      },
+      {
+        "requirement": "What is Religion?",
+        "optional": false
+      },
+      {
+        "requirement": "Religious Dimensions",
+        "optional": false
+      },
+      {
+        "requirement": "Intensive Studies",
+        "optional": false
+      }
+    ],
+    "surplus": null,
+    "limit": null
+  },
+  "requirements": {
+    "General Education": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "both": [
+          {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "gereqs": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "BTS-B"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          {
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "gereqs": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "BTS-T"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "What is Religion?": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "course": "REL 285"
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Religious Dimensions": {
+      "message": "TODO. Not yet completed. At all.",
+      "department_audited": false,
+      "result": {
+        "count": 1,
+        "of": [],
+        "surplus": null,
+        "limit": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Intensive Studies": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "both": [
+          {
+            "count": 1,
+            "of": [
+              {
+                "course": "REL 302"
+              },
+              {
+                "course": "REL 303"
+              },
+              {
+                "course": "REL 304"
+              },
+              {
+                "course": "REL 320"
+              },
+              {
+                "course": "REL 341"
+              },
+              {
+                "course": "REL 344"
+              }
+            ],
+            "surplus": null,
+            "limit": null
+          },
+          {
+            "given": "these courses",
+            "courses": [
+              {
+                "course": "REL 390"
+              },
+              {
+                "course": "REL 391"
+              },
+              {
+                "course": "REL 392"
+              },
+              {
+                "course": "REL 393"
+              },
+              {
+                "course": "REL 395"
+              },
+              {
+                "course": "REL 397"
+              },
+              {
+                "course": "REL 399"
+              }
+            ],
+            "repeats": "all",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          }
+        ],
+        "surplus": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
