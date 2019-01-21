@@ -16,12 +16,12 @@ For this major, you must both:
 
 - and have the following be true:
     1. given the results of the following requirements
-      - “Basics”
-      - “Transitions”
-      - “Perspectives”
-      - “Interdisciplinary”
-      - “Sequence”
-      - “Level III”
+        - “Basics”
+        - “Transitions”
+        - “Perspectives”
+        - “Interdisciplinary”
+        - “Sequence”
+        - “Level III”
     2. restricted to only courses taken at St. Olaf College,
     3. there must be at least six courses
 

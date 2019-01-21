@@ -69,10 +69,10 @@ For this section, you must both:
 
 - and have the following be true:
     1. given the results of the following requirements
-      - “Asian, African, Indigenous American, or Near Eastern/Islamic Art”
-      - “European and American Art”
-      - “Art created before 1700 CE”
-      - “Art created after 1700 CE”
+        - “Asian, African, Indigenous American, or Near Eastern/Islamic Art”
+        - “European and American Art”
+        - “Art created before 1700 CE”
+        - “Art created after 1700 CE”
     2. there must be at least six courses
 
 ### Asian, African, Indigenous American, or Near Eastern/Islamic Art

@@ -26,11 +26,11 @@ For this requirement, you must take all of the following courses:
 For this section, you must have the following be true:
 
 1. given the results of the following requirements
-  - “Ballet”
-  - “Improvisation”
-  - “International and Social”
-  - “Modern”
-  - “Other Topics”
+    - “Ballet”
+    - “Improvisation”
+    - “International and Social”
+    - “Modern”
+    - “Other Topics”
 2. there must be at least 1.50 credits
 
 ### Ballet
