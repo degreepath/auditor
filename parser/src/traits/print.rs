@@ -15,7 +15,14 @@ pub trait Print {
 
 				let rest = rest
 					.iter()
-					.map(|l| format!("{}{}", indent, l))
+					// don't indent empty lines
+					.map(|l| if l.trim() != "" {
+						format!("{}{}", indent, l)
+					} else {
+						String::from("")
+					})
+					// skip the first blank line
+					.skip_while(|l| l == "")
 					.collect::<Vec<_>>()
 					.join("\n");
 
