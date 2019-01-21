@@ -35,7 +35,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Core": {
@@ -68,7 +69,8 @@
             "surplus": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -111,7 +113,8 @@
             "course": "MUSIC 349"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -281,7 +284,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

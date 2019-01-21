@@ -31,7 +31,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Language-Intensive Courses (Theory)": {
@@ -59,7 +60,8 @@
             "course": "DANCE 270"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -147,7 +149,8 @@
                 "surplus": null
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -178,7 +181,8 @@
                 "course": "DANCE 209"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -227,7 +231,8 @@
                 "surplus": null
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -255,7 +260,8 @@
                 "course": "DANCE 160"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],

@@ -23,7 +23,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Foundation": {
@@ -70,10 +71,12 @@
                 "course": "MATH 244"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -100,7 +103,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -121,7 +125,8 @@
                 "course": "CSCI 333"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -149,7 +154,8 @@
                 "international": null
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -188,7 +194,8 @@
             "course": "CSCI 350"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

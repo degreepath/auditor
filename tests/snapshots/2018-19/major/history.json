@@ -31,7 +31,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Europe & Russia": {
@@ -199,7 +200,8 @@
             "course": "HIST 270"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -245,7 +247,8 @@
             "course": "ASIAN 399"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

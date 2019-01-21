@@ -38,7 +38,8 @@
             "optional": true
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       {
         "given": "these requirements",
@@ -86,7 +87,8 @@
         }
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Research Methods": {
@@ -254,7 +256,8 @@
             "course": "PSCI 385"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -275,7 +278,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

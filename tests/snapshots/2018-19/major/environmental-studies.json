@@ -15,7 +15,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Major": {
@@ -34,7 +35,8 @@
             "course": "ENVST 399"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -122,7 +124,8 @@
             "surplus": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [
@@ -209,7 +212,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -230,7 +234,8 @@
                     "course": "STAT 272"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -265,7 +270,8 @@
                     "surplus": null
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -284,7 +290,8 @@
                     "course": "BIO 226"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -414,7 +421,8 @@
                     "international": null
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -445,7 +453,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -484,7 +493,8 @@
                     "course": "PSCI 220"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -509,13 +519,15 @@
                         "course": "ECON 120"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   {
                     "course": "ECON 242"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -537,7 +549,8 @@
                     "course": "ES/PS 276"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -619,7 +632,8 @@
                     "course": "AS/ES 227"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],

@@ -31,7 +31,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Foundations": {
@@ -63,7 +64,8 @@
           "Electives",
           ".result",
           ".of"
-        ]
+        ],
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -88,7 +90,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -116,7 +119,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -142,7 +146,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -166,7 +171,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -190,7 +196,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -217,7 +224,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -240,7 +248,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -263,7 +272,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -287,7 +297,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -322,7 +333,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -345,7 +357,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -366,7 +379,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -387,7 +401,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -408,7 +423,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -435,7 +451,8 @@
                   "Electives",
                   ".result",
                   ".of"
-                ]
+                ],
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -491,7 +508,8 @@
             "course": "ART 398"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -582,7 +600,8 @@
             "course": "PHIL 243"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

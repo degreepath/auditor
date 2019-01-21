@@ -15,7 +15,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Studio Art": {
@@ -45,7 +46,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -66,7 +68,8 @@
                 "course": "ART 104"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -91,7 +94,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -119,7 +123,8 @@
                     "optional": false
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -140,7 +145,8 @@
                         "course": "ART 233"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -159,7 +165,8 @@
                         "course": "ART 222"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -178,7 +185,8 @@
                         "course": "ART 227"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -194,7 +202,8 @@
                         "course": "ART 236"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -217,7 +226,8 @@
                     "optional": false
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -235,7 +245,8 @@
                         "course": "ART 234"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -254,7 +265,8 @@
                         "course": "ART 224"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -289,7 +301,8 @@
                     "optional": false
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -307,7 +320,8 @@
                         "course": "ART 238"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -323,7 +337,8 @@
                         "course": "ART 228"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -339,7 +354,8 @@
                         "course": "ART 229"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -355,7 +371,8 @@
                         "course": "ART 240"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -371,7 +388,8 @@
                         "course": "ART 236"
                       }
                     ],
-                    "surplus": null
+                    "surplus": null,
+                    "limit": null
                   },
                   "contract": false,
                   "save": [],
@@ -427,7 +445,8 @@
                 "course": "ART 398"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -520,7 +539,8 @@
             "course": "PHIL 243"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

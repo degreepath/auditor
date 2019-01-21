@@ -27,7 +27,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Foundation": {
@@ -63,7 +64,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -78,7 +80,8 @@
                 "course": "BIO 233"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -97,7 +100,8 @@
                 "course": "CH/BI 227"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -134,7 +138,8 @@
                 "course": "BIO 226"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -153,7 +158,8 @@
                 "course": "BIO 226"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -208,7 +214,8 @@
           "Electives",
           ".result",
           ".of"
-        ]
+        ],
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -332,7 +339,8 @@
             "course": "BIO 292"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -357,7 +365,8 @@
                 "course": "CHEM 126"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           {
             "count": "all",
@@ -369,7 +378,8 @@
                 "course": "CHEM 126"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           {
             "count": "all",
@@ -381,10 +391,12 @@
                 "course": "CH/BI 126"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

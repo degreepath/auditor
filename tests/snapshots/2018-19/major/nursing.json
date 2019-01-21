@@ -23,7 +23,8 @@
         "optional": true
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Prerequisites": {
@@ -60,7 +61,8 @@
                 "course": "BIO 231"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           {
             "count": 1,
@@ -81,10 +83,12 @@
                 "course": "SOAN 267"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -100,7 +104,8 @@
             "course": "AMCON 101"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -146,7 +151,8 @@
             "course": "NURS 399"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -162,7 +168,8 @@
             "course": "NURS 390"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

@@ -19,7 +19,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Core": {
@@ -47,7 +48,8 @@
                     "course": "BIO 227"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               {
                 "count": "all",
@@ -65,7 +67,8 @@
                     "course": "BIO 227"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               {
                 "count": "all",
@@ -80,10 +83,12 @@
                     "course": "CH/BI 227"
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           {
             "course": "BIO 223"
@@ -125,7 +130,8 @@
             "surplus": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -176,7 +182,8 @@
             "course": "CSCI 315"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

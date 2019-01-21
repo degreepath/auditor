@@ -14,7 +14,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Degree Requirements": {
@@ -52,7 +53,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -308,7 +310,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -344,7 +347,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -634,7 +638,8 @@
                     }
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [],
@@ -766,7 +771,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -931,7 +937,8 @@
                     }
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [
@@ -1036,7 +1043,8 @@
                     }
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [
@@ -1141,7 +1149,8 @@
                     }
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [
@@ -1262,7 +1271,8 @@
                     }
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [
@@ -1358,7 +1368,8 @@
                     }
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [
@@ -1395,7 +1406,8 @@
                 "optional": false
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],
@@ -1434,7 +1446,8 @@
                     }
                   }
                 ],
-                "surplus": null
+                "surplus": null,
+                "limit": null
               },
               "contract": false,
               "save": [

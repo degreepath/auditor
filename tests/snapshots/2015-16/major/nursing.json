@@ -15,7 +15,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Prerequisites": {
@@ -61,10 +62,12 @@
                 "course": "SOAN 264"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -111,7 +114,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -126,7 +130,8 @@
                 "course": "AMCON 101"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           },
           "contract": false,
           "save": [],

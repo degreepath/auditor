@@ -19,7 +19,8 @@
         "optional": true
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Core": {
@@ -53,7 +54,8 @@
             "course": "PSYCH 125"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -99,10 +101,12 @@
                 "course": "STAT 214"
               }
             ],
-            "surplus": null
+            "surplus": null,
+            "limit": null
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -124,7 +128,8 @@
             "course": "CHEM 121"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

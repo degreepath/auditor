@@ -34,7 +34,8 @@
             "optional": true
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       {
         "given": "these requirements",
@@ -128,7 +129,8 @@
         }
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Research Methods": {
@@ -175,7 +177,8 @@
             "course": "ES/PS 276"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -227,7 +230,8 @@
             "course": "AS/PS 255"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -267,7 +271,8 @@
             "course": "ES/PS 201"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -307,7 +312,8 @@
             "course": "ES/PS 225"
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -332,7 +338,8 @@
             "optional": false
           }
         ],
-        "surplus": null
+        "surplus": null,
+        "limit": null
       },
       "contract": false,
       "save": [],

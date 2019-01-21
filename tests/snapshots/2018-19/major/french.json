@@ -23,7 +23,8 @@
         "optional": false
       }
     ],
-    "surplus": null
+    "surplus": null,
+    "limit": null
   },
   "requirements": {
     "Speaking and Writing": {
@@ -46,7 +47,8 @@
           "Electives",
           ".result",
           ".of"
-        ]
+        ],
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -75,7 +77,8 @@
           "Electives",
           ".result",
           ".of"
-        ]
+        ],
+        "limit": null
       },
       "contract": false,
       "save": [],
@@ -104,7 +107,8 @@
           "Electives",
           ".result",
           ".of"
-        ]
+        ],
+        "limit": null
       },
       "contract": false,
       "save": [],
