@@ -20,7 +20,6 @@ For this major, you must do all of the following:
         - “Political Theory”
         - “Additional Courses”
     2. there must be at least nine courses
-
 - have the following be true:
     1. given the results of the following requirements
         - “Research Methods”
