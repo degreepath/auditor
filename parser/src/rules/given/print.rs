@@ -226,7 +226,6 @@ impl Rule {
 		use std::fmt::Write;
 
 		let mut output = String::new();
-		let filter = self.print_filter()?;
 
 		let requirements: Vec<String> = requirements
 			.into_iter()
@@ -236,87 +235,121 @@ impl Rule {
 			})
 			.collect();
 
-		let singular = requirements.len() == 1;
-		let reqs_word = if singular { "requirement" } else { "requirements" };
-		let ending = format!("matched by the {} {}", requirements.oxford("and"), reqs_word);
+		writeln!(&mut output, "have the following be true:\n")?;
+		let mut index = 0;
+
+		index += 1;
+		match requirements.len() {
+			0 => panic!("no requirements given!"),
+			1 | 2 | 3 => {
+				let singular = requirements.len() == 1;
+				let word = if singular { "requirement" } else { "requirements" };
+				writeln!(
+					&mut output,
+					"{index}. given the results of the {list} {word},",
+					index = index,
+					list = requirements.oxford("and"),
+					word = word
+				)?;
+			}
+			_ => {
+				writeln!(
+					&mut output,
+					"{index}. given the results of the following requirements",
+					index = index
+				)?;
+				for req in requirements {
+					writeln!(&mut output, "  - {}", req)?;
+				}
+			}
+		};
+
+		match &self.filter {
+			Some(f) => {
+				index += 1;
+				writeln!(
+					&mut output,
+					"{index}. restricted to only courses {filter},",
+					index = index,
+					filter = f.print()?
+				)?;
+			}
+			None => (),
+		};
+
+		index += 1;
+		let pluralize = self.action.should_pluralize();
 
 		match &self.what {
 			What::Courses => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "courses" } else { "course" };
+				let word = if pluralize { "courses" } else { "course" };
 
-				write!(
+				writeln!(
 					&mut output,
-					"have {} {}{} in the set of courses {}",
-					self.action.print()?,
-					word,
-					filter,
-					ending
+					"{index}. there must be {action} {word}",
+					index = index,
+					action = self.action.print()?,
+					word = word,
 				)?;
 			}
 			What::DistinctCourses => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "distinct courses" } else { "distinct course" };
+				let word = if pluralize {
+					"distinct courses"
+				} else {
+					"distinct course"
+				};
 
-				write!(
+				writeln!(
 					&mut output,
-					"have {} {}{} in the set of courses {}",
-					self.action.print()?,
-					word,
-					filter,
-					ending
+					"{index}. there must be {action} {word}",
+					index = index,
+					action = self.action.print()?,
+					word = word,
 				)?;
 			}
 			What::Credits => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "credits" } else { "credit" };
+				let word = if pluralize { "credits" } else { "credit" };
 
-				write!(
+				writeln!(
 					&mut output,
-					"take enough courses{} to obtain {} {} from the set of courses {}",
-					filter,
-					self.action.print()?,
-					word,
-					ending
+					"{index}. there must be {action} {word}",
+					index = index,
+					action = self.action.print()?,
+					word = word,
 				)?;
 			}
 			What::Departments => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "departments" } else { "department" };
+				let word = if pluralize {
+					"distinct departments"
+				} else {
+					"department"
+				};
 
-				write!(
+				writeln!(
 					&mut output,
-					"take enough courses{} to span {} {} from the set of courses {}",
-					filter,
-					self.action.print()?,
-					word,
-					ending
+					"{index}. there must be {action} {word}",
+					index = index,
+					action = self.action.print()?,
+					word = word,
 				)?;
 			}
 			What::Grades => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "courses" } else { "course" };
-
-				write!(
+				writeln!(
 					&mut output,
-					"maintain an average GPA {} from {}{} from the set of courses {}",
-					self.action.print()?,
-					word,
-					filter,
-					ending
+					"{index}. there must be an average GPA {action}",
+					index = index,
+					action = self.action.print()?,
 				)?;
 			}
 			What::Terms => {
-				let plur = self.action.should_pluralize();
-				let word = if plur { "terms" } else { "term" };
+				let word = if pluralize { "terms" } else { "term" };
 
-				write!(
+				writeln!(
 					&mut output,
-					"take enough courses{} to span {} {} from the set of courses {}",
-					filter,
-					self.action.print()?,
-					word,
-					ending
+					"{index}. there must be courses in {action} {word}",
+					index = index,
+					action = self.action.print()?,
+					word = word,
 				)?;
 			}
 			What::AreasOfStudy => unimplemented!("given:these-requirements, what:areas makes no sense"),
