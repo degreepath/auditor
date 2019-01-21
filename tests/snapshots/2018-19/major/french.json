@@ -46,7 +46,7 @@
         "surplus": [
           "Electives",
           ".result",
-          ".of"
+          ".courses"
         ],
         "limit": null
       },
@@ -76,7 +76,7 @@
         "surplus": [
           "Electives",
           ".result",
-          ".of"
+          ".courses"
         ],
         "limit": null
       },
@@ -106,7 +106,7 @@
         "surplus": [
           "Electives",
           ".result",
-          ".of"
+          ".courses"
         ],
         "limit": null
       },
