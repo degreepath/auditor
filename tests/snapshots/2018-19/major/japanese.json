@@ -1,0 +1,365 @@
+{
+  "name": "Chinese",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Core Language",
+        "optional": false
+      },
+      {
+        "requirement": "Upper-Level Language",
+        "optional": false
+      },
+      {
+        "requirement": "Language and Culture",
+        "optional": false
+      },
+      {
+        "requirement": "FLAC",
+        "optional": true
+      }
+    ],
+    "surplus": null,
+    "limit": null
+  },
+  "requirements": {
+    "Core Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "JAPAN 231"
+          },
+          {
+            "course": "JAPAN 232"
+          },
+          {
+            "course": "JAPAN 301"
+          },
+          {
+            "course": "JAPAN 302"
+          }
+        ],
+        "surplus": null,
+        "limit": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Upper-Level Language": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "JAPAN 320"
+          }
+        ],
+        "surplus": null,
+        "limit": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Language and Culture": {
+      "message": "The Asian Conversation sequence (ASIAN 210, ASIAN 215 or ASIAN 216, ASIAN 220) will count for no more than two courses.\nOne of these courses may be an Independent Study (capstone project) or the Asian Studies senior seminars (ASIAN 397 and ASIAN 399).\n",
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "given": "save",
+            "save": "Allowed Courses",
+            "limit": null,
+            "where": {
+              "level": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "Integer": 300
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
+          },
+          {
+            "given": "save",
+            "save": "Allowed Courses",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 4
+              }
+            }
+          }
+        ],
+        "surplus": null,
+        "limit": null
+      },
+      "contract": false,
+      "save": [
+        {
+          "name": "Allowed Courses",
+          "given": "these courses",
+          "courses": [
+            {
+              "course": "ASIAN 397"
+            },
+            {
+              "course": "ASIAN 399"
+            },
+            {
+              "course": "ASIAN 298"
+            },
+            {
+              "course": "ASIAN 296"
+            },
+            {
+              "course": "ASIAN 398"
+            },
+            {
+              "course": "ASIAN 396"
+            },
+            {
+              "course": "ASIAN 210"
+            },
+            {
+              "course": "ASIAN 215"
+            },
+            {
+              "course": "ASIAN 216"
+            },
+            {
+              "course": "ASIAN 220"
+            },
+            {
+              "course": "ART 260"
+            },
+            {
+              "course": "ASIAN 126"
+            },
+            {
+              "course": "ASIAN 130"
+            },
+            {
+              "course": "ASIAN 230"
+            },
+            {
+              "course": "ASIAN 235"
+            },
+            {
+              "course": "AS/ES 377"
+            },
+            {
+              "course": "HIST 252"
+            },
+            {
+              "course": "HIST 253"
+            },
+            {
+              "course": "ASIAN 121"
+            },
+            {
+              "course": "ASIAN 123"
+            },
+            {
+              "course": "ASIAN 200"
+            },
+            {
+              "course": "ASIAN 240"
+            },
+            {
+              "course": "ASIAN 268"
+            },
+            {
+              "course": "ASIAN 282"
+            },
+            {
+              "course": "ASIAN 300"
+            },
+            {
+              "course": "ASIAN 310"
+            },
+            {
+              "course": "ASIAN 333"
+            },
+            {
+              "course": "AS/PS 255"
+            },
+            {
+              "course": "AS/RE 256"
+            },
+            {
+              "course": "AS/RE 257"
+            },
+            {
+              "course": "AS/RE 289"
+            },
+            {
+              "course": "HIST 345"
+            },
+            {
+              "course": "PHIL 251"
+            },
+            {
+              "course": "PSCI 245"
+            }
+          ],
+          "repeats": "first",
+          "limit": [
+            {
+              "where": {
+                "level": {
+                  "Single": {
+                    "op": "EqualTo",
+                    "value": {
+                      "Integer": 100
+                    }
+                  }
+                }
+              },
+              "at_most": 1
+            },
+            {
+              "where": {
+                "department": {
+                  "Single": {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "ASIAN"
+                    }
+                  }
+                },
+                "number": {
+                  "Or": [
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 397
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 399
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 296
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 298
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 396
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 398
+                      }
+                    }
+                  ]
+                }
+              },
+              "at_most": 1
+            },
+            {
+              "where": {
+                "department": {
+                  "Single": {
+                    "op": "EqualTo",
+                    "value": {
+                      "String": "ASIAN"
+                    }
+                  }
+                },
+                "number": {
+                  "Or": [
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 210
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 215
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 216
+                      }
+                    },
+                    {
+                      "op": "EqualTo",
+                      "value": {
+                        "Integer": 220
+                      }
+                    }
+                  ]
+                }
+              },
+              "at_most": 2
+            }
+          ],
+          "where": null,
+          "what": null,
+          "do": null
+        }
+      ],
+      "requirements": {}
+    },
+    "FLAC": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [],
+        "surplus": null,
+        "limit": null
+      },
+      "contract": false,
+      "save": [],
+      "requirements": {}
+    }
+  },
+  "attributes": null
+}
