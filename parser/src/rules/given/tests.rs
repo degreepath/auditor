@@ -522,7 +522,7 @@ fn deserialize_filter_graded_bool() {
 #[test]
 fn pretty_print_inline() {
 	let input: Rule = serde_yaml::from_str(&"{given: courses, what: courses, do: count >= 1}").unwrap();
-	let expected = "take at least one course";
+	let expected = "have at least one course";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -530,13 +530,13 @@ fn pretty_print_inline() {
 fn pretty_print_inline_filters() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: courses, do: count >= 1}").unwrap();
-	let expected = "take at least one course with the “FOL-C” general education attribute";
+	let expected = "have at least one course taken with the “FOL-C” general education attribute";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct courses, do: count >= 2}")
 			.unwrap();
-	let expected = "take at least two distinct courses with the “SPM” general education attribute";
+	let expected = "have at least two distinct courses taken with the “SPM” general education attribute";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -596,34 +596,34 @@ fn pretty_print_inline_repeats() {
 fn pretty_print_inline_credits() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: credits, do: sum >= 1}").unwrap();
-	let expected = "take enough courses with the “FOL-C” general education attribute to obtain at least one credit";
+	let expected = "have enough courses taken with the “FOL-C” general education attribute to obtain at least one credit";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {semester: Interim}, what: credits, do: sum >= 3}").unwrap();
-	let expected = "take enough courses during Interim semesters to obtain at least three credits";
+	let expected = "have enough courses taken during Interim semesters to obtain at least three credits";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {semester: Fall}, what: credits, do: sum >= 10}").unwrap();
-	let expected = "take enough courses during Fall semesters to obtain at least ten credits";
+	let expected = "have enough courses taken during Fall semesters to obtain at least ten credits";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {semester: Fall | Interim}, what: credits, do: sum >= 10}")
 			.unwrap();
-	let expected = "take enough courses during a Fall or Interim semester to obtain at least ten credits";
+	let expected = "have enough courses taken during a Fall or Interim semester to obtain at least ten credits";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {year: '2012'}, what: credits, do: sum >= 3}").unwrap();
-	let expected = "take enough courses during the 2012-13 academic year to obtain at least three credits";
+	let expected = "have enough courses taken during the 2012-13 academic year to obtain at least three credits";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {institution: St. Olaf College}, what: credits, do: sum >= 17}")
 			.unwrap();
-	let expected = "take enough courses at St. Olaf College to obtain at least 17 credits";
+	let expected = "have enough courses taken at St. Olaf College to obtain at least 17 credits";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -632,19 +632,19 @@ fn pretty_print_inline_departments() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: departments, do: count >= 2}").unwrap();
 	let expected =
-		"take enough courses with the “FOL-C” general education attribute to span at least two departments";
+		"have enough courses taken with the “FOL-C” general education attribute to span at least two departments";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {semester: Interim}, what: departments, do: count >= 1}")
 			.unwrap();
-	let expected = "take enough courses during Interim semesters to span at least one department";
+	let expected = "have enough courses taken during Interim semesters to span at least one department";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { department: '! MATH' }, what: departments, do: count >= 2}")
 			.unwrap();
-	let expected = "take enough courses outside of the MATH department to span at least two departments";
+	let expected = "have enough courses taken outside of the MATH department to span at least two departments";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -653,13 +653,13 @@ fn pretty_print_inline_grades() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: grades, do: average >= 2.0}").unwrap();
 	let expected =
-		"maintain an average GPA at or above 2.00 from courses with the “FOL-C” general education attribute";
+		"maintain an average GPA at or above 2.00 from courses taken with the “FOL-C” general education attribute";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: grades, do: average >= 3.0}")
 			.unwrap();
-	let expected = "maintain an average GPA at or above 3.00 from courses during Interim semesters";
+	let expected = "maintain an average GPA at or above 3.00 from courses taken during Interim semesters";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -667,12 +667,12 @@ fn pretty_print_inline_grades() {
 fn pretty_print_inline_terms() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: terms, do: count >= 2}").unwrap();
-	let expected = "take enough courses with the “FOL-C” general education attribute to span at least two terms";
+	let expected = "have enough courses taken with the “FOL-C” general education attribute to span at least two terms";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: terms, do: count >= 3}").unwrap();
-	let expected = "take enough courses during Interim semesters to span at least three terms";
+	let expected = "have enough courses taken during Interim semesters to span at least three terms";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -680,32 +680,55 @@ fn pretty_print_inline_terms() {
 fn pretty_print_inline_given_requirements_what_courses() {
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}").unwrap();
-	let expected = "take enough courses to obtain at least one credit from the set of courses matched by the “Core” and “Modern” requirements";
+	let expected = "have the following be true:
+
+1. given the results of the “Core” and “Modern” requirements,
+2. there must be at least one credit\n";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}").unwrap();
-	let expected = "take enough courses with the “FOL-C” general education attribute to obtain at least one credit from the set of courses matched by the “Core” and “Modern” requirements";
+	let expected = "have the following be true:
+
+1. given the results of the “Core” and “Modern” requirements,
+2. restricted to only courses taken with the “FOL-C” general education attribute,
+3. there must be at least one credit\n";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Interim }, what: credits, do: sum >= 3}")
                 .unwrap();
-	let expected = "take enough courses during Interim semesters to obtain at least three credits from the set of courses matched by the “Core” and “Modern” requirements";
+	let expected = "have the following be true:
+
+1. given the results of the “Core” and “Modern” requirements,
+2. restricted to only courses taken during Interim semesters,
+3. there must be at least three credits\n";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Fall }, what: credits, do: sum >= 10}").unwrap();
-	let expected = "take enough courses during Fall semesters to obtain at least ten credits from the set of courses matched by the “Core” and “Modern” requirements";
+	let expected = "have the following be true:
+
+1. given the results of the “Core” and “Modern” requirements,
+2. restricted to only courses taken during Fall semesters,
+3. there must be at least ten credits\n";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: '2012' }, what: credits, do: sum >= 1}").unwrap();
-	let expected = "take enough courses during the 2012-13 academic year to obtain at least one credit from the set of courses matched by the “Core” and “Modern” requirements";
+	let expected = "have the following be true:
+
+1. given the results of the “Core” and “Modern” requirements,
+2. restricted to only courses taken during the 2012-13 academic year,
+3. there must be at least one credit\n";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
             serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}").unwrap();
-	let expected = "take enough courses at St. Olaf College to obtain at least 17 credits from the set of courses matched by the “Core” and “Modern” requirements";
+	let expected = "have the following be true:
+
+1. given the results of the “Core” and “Modern” requirements,
+2. restricted to only courses taken at St. Olaf College,
+3. there must be at least 17 credits\n";
 	assert_eq!(expected, input.print().unwrap());
 }

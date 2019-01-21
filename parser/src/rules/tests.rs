@@ -372,7 +372,7 @@ fn pretty_print() {
 		"take ASIAN 101",
 		"take both ASIAN 101 and ASIAN 102 (2014-1)",
 		"take either ASIAN 101 or ASIAN 102 (2014-1)",
-		"take fewer than two courses",
+		"have fewer than two courses",
 		"ensure that the computed result of the subset “X” is less than the computed result of the subset “Y”",
 	];
 

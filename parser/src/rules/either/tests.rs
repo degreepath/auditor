@@ -86,18 +86,18 @@ fn pretty_print() {
 
 	let input: Rule =
 		serde_yaml::from_str(&"{either: [{given: courses, what: courses, do: count >= 3}, CS 121]}").unwrap();
-	let expected = "either take at least three courses or take CS 121";
+	let expected = "either have at least three courses or take CS 121";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{either: [{given: courses, what: courses, do: count >= 3}, {requirement: A}]}").unwrap();
-	let expected = "either take at least three courses or complete the “A” requirement";
+	let expected = "either have at least three courses or complete the “A” requirement";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(&"{either: [{given: courses, what: courses, do: count >= 3}, {given: these courses, courses: [THEAT 233], repeats: all, what: courses, do: count >= 4}]}").unwrap();
 	let expected = "either:
 
-- take at least three courses
+- have at least three courses
 
 - or take THEAT 233 at least four times";
 	assert_eq!(expected, input.print().unwrap());
