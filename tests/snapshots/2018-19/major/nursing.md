@@ -23,12 +23,12 @@ For this requirement, you must do all of the following:
 - take PSYCH 241
 - take either BIO 121 or BIO 231
 - take one of the following courses:
-  
-  - SOAN 121
-  - SOAN 128
-  - SOAN 260
-  - SOAN 264
-  - SOAN 267
+    
+    - SOAN 121
+    - SOAN 128
+    - SOAN 260
+    - SOAN 264
+    - SOAN 267
 
 
 ## Ethics

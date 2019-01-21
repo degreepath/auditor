@@ -7,27 +7,27 @@
 For this major, you must both:
 
 - complete all of the following requirements:
-  
-  - “Research Methods”
-  - “American Politics and Public Policy”
-  - “Comparative Politics”
-  - “International Relations”
-  - “Political Theory”
-  - “Level III”
-  - “Additional Courses” (optional)
-
-- and have the following be true:
-  
-  1. given the results of the following requirements
+    
     - “Research Methods”
     - “American Politics and Public Policy”
     - “Comparative Politics”
     - “International Relations”
     - “Political Theory”
     - “Level III”
-    - “Additional Courses”
-  2. there must be at least nine courses
-  
+    - “Additional Courses” (optional)
+
+- and have the following be true:
+    
+    1. given the results of the following requirements
+      - “Research Methods”
+      - “American Politics and Public Policy”
+      - “Comparative Politics”
+      - “International Relations”
+      - “Political Theory”
+      - “Level III”
+      - “Additional Courses”
+    2. there must be at least nine courses
+    
 
 ## Research Methods
 For this requirement, you must take PSCI 220.

@@ -7,10 +7,10 @@ For this major, you must do all of the following:
 - take either CS 121 or CS 125
 - complete the “History” requirement
 - have the following be true:
-  
-  1. given the results of the “X”, “Y”, and “Z” requirements,
-  2. there must be at least six credits
-  
+    
+    1. given the results of the “X”, “Y”, and “Z” requirements,
+    2. there must be at least six credits
+    
 
 ## History
 > Note: Designed to showcase ideas from the past, both good and bad, and to give
@@ -25,10 +25,10 @@ For this section, you must do all of the following:
 - take ART 104
 - complete the “A” requirement
 - have the following be true:
-  
-  1. given the results of the “A” requirement,
-  2. there must be at least 1.50 credits
-  
+    
+    1. given the results of the “A” requirement,
+    2. there must be at least 1.50 credits
+    
 
 ### A
 For this requirement, you must take one of the following courses:
