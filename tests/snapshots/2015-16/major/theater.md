@@ -37,7 +37,7 @@ For this section, you must do all of the following:
 
 - complete the “Acting” requirement
 - complete the “Tech” requirement
-- take THEAT 233 and THEAT 253 at least four times
+- take a combination of THEAT 233 and THEAT 253 at least four times
 
 ### Acting
 For this requirement, you must take THEAT 233 at least one time.
