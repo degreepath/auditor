@@ -7,7 +7,6 @@
 For this major, you must both:
 
 - complete all of the following requirements:
-    
     - “Basics”
     - “Transitions”
     - “Perspectives”
@@ -16,7 +15,6 @@ For this major, you must both:
     - “Level III”
 
 - and have the following be true:
-    
     1. given the results of the following requirements
       - “Basics”
       - “Transitions”
@@ -26,7 +24,6 @@ For this major, you must both:
       - “Level III”
     2. restricted to only courses taken at St. Olaf College,
     3. there must be at least six courses
-    
 
 ## Basics
 For this requirement, you must do all of the following:

@@ -36,20 +36,16 @@ Given the courses which fulfilled the “Natural Science” and “Social Scienc
 For this section, you must do one of the following:
 
 - do both of the following:
-    
     - complete the “Natural Science” requirement
     - in the subset “social and arts”, there must be at least three courses
-    
+
 - do both of the following:
-    
     - complete the “Social Science” requirement
     - in the subset “natural and arts”, there must be at least three courses
-    
+
 - do both of the following:
-    
     - complete the “Arts and Humanities” requirement
     - in the subset “natural and social”, there must be at least three courses
-    
 
 ### Natural Science
 For this section, you must complete all of the following requirements:

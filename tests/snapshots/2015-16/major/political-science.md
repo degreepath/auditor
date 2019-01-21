@@ -5,7 +5,6 @@
 For this major, you must do all of the following:
 
 - complete all of the following requirements:
-    
     - “Research Methods”
     - “American Politics and Public Policy”
     - “Comparative Politics”
@@ -13,7 +12,6 @@ For this major, you must do all of the following:
     - “Political Theory”
     - “Additional Courses” (optional)
 - have the following be true:
-    
     1. given the results of the following requirements
       - “Research Methods”
       - “American Politics and Public Policy”
@@ -22,9 +20,8 @@ For this major, you must do all of the following:
       - “Political Theory”
       - “Additional Courses”
     2. there must be at least nine courses
-    
+
 - have the following be true:
-    
     1. given the results of the following requirements
       - “Research Methods”
       - “American Politics and Public Policy”
@@ -34,7 +31,6 @@ For this major, you must do all of the following:
       - “Additional Courses”
     2. restricted to only courses taken at the 300 level,
     3. there must be at least two courses
-    
 
 ## Research Methods
 For this requirement, you must take PSCI 220.
