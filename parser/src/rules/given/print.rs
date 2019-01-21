@@ -42,13 +42,13 @@ impl Rule {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 
-				write!(&mut output, "take {} {}{}", self.action.print()?, word, filter)?;
+				write!(&mut output, "have {} {}{}", self.action.print()?, word, filter)?;
 			}
 			What::DistinctCourses => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "distinct courses" } else { "course" };
 
-				write!(&mut output, "take {} {}{}", self.action.print()?, word, filter)?;
+				write!(&mut output, "have {} {}{}", self.action.print()?, word, filter)?;
 			}
 			What::Credits => {
 				let plur = self.action.should_pluralize();
@@ -56,7 +56,7 @@ impl Rule {
 
 				write!(
 					&mut output,
-					"take enough courses{} to obtain {} {}",
+					"have enough courses{} to obtain {} {}",
 					filter,
 					self.action.print()?,
 					word
@@ -68,7 +68,7 @@ impl Rule {
 
 				write!(
 					&mut output,
-					"take enough courses{} to span {} {}",
+					"have enough courses{} to span {} {}",
 					filter,
 					self.action.print()?,
 					word
@@ -92,7 +92,7 @@ impl Rule {
 
 				write!(
 					&mut output,
-					"take enough courses{} to span {} {}",
+					"have enough courses{} to span {} {}",
 					filter,
 					self.action.print()?,
 					word

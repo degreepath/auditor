@@ -53,9 +53,9 @@ impl print::Print for Clause {
 		if let Some(institution) = self.get("institution") {
 			used_keys.insert("institution".to_string());
 			match institution {
-				WrappedValue::Single(v) => clauses.push(format!("at {}", v.print()?)),
+				WrappedValue::Single(v) => clauses.push(format!("taken at {}", v.print()?)),
 				WrappedValue::Or(_) => {
-					clauses.push(format!("at either {}", institution.print()?));
+					clauses.push(format!("taken at either {}", institution.print()?));
 				}
 				WrappedValue::And(_) => unimplemented!("filter:institution, and-value"),
 			}

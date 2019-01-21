@@ -333,7 +333,7 @@ fn pretty_print_single_values() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Clause = deserialize_test(&"{institution: 'St. Olaf College'}").unwrap();
-	let expected = "at St. Olaf College";
+	let expected = "taken at St. Olaf College";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Clause = deserialize_test(&"{department: MATH}").unwrap();
@@ -353,7 +353,7 @@ fn pretty_print_multiple_values() {
 	// assert_eq!(expected, input.print().unwrap());
 
 	let input: Clause = deserialize_test(&"{institution: 'Carleton College | St. Olaf College'}").unwrap();
-	let expected = "at either Carleton College or St. Olaf College";
+	let expected = "taken at either Carleton College or St. Olaf College";
 	assert_eq!(expected, input.print().unwrap());
 }
 
