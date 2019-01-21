@@ -26,7 +26,7 @@ impl print::Print for Rule {
 impl Rule {
 	fn print_filter(&self) -> print::Result {
 		match &self.filter {
-			Some(f) => Ok(format!(" {}", f.print()?)),
+			Some(f) => Ok(format!(" taken {}", f.print()?)),
 			None => Ok("".to_string()),
 		}
 	}
@@ -108,7 +108,10 @@ impl Rule {
 		use std::fmt::Write;
 
 		let mut output = String::new();
-		let filter = self.print_filter()?;
+		let filter = match &self.filter {
+			Some(f) => format!(" {}", f.print()?),
+			None => "".to_string(),
+		};
 
 		match self.what {
 			What::AreasOfStudy => {
@@ -269,7 +272,7 @@ impl Rule {
 				index += 1;
 				writeln!(
 					&mut output,
-					"{index}. restricted to only courses {filter},",
+					"{index}. restricted to only courses taken {filter},",
 					index = index,
 					filter = f.print()?
 				)?;
