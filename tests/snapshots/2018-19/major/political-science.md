@@ -33,19 +33,19 @@ For this requirement, you must take PSCI 220.
 
 
 ## American Politics and Public Policy
-For this requirement, you must have at least one course with the “american” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “american” `psci_topic` attribute.
 
 
 ## Comparative Politics
-For this requirement, you must have at least one course with the “comparative” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “comparative” `psci_topic` attribute.
 
 
 ## International Relations
-For this requirement, you must have at least one course with the “international” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “international” `psci_topic` attribute.
 
 
 ## Political Theory
-For this requirement, you must have at least one course with the “theory” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “theory” `psci_topic` attribute.
 
 
 ## Level III
@@ -65,15 +65,15 @@ For this requirement, you must take two of the following courses:
 For this section, you must complete either the “Statistics” or “World Langauge” requirement.
 
 ### Statistics
-For this requirement, you must have at least one course within the STAT department.
+For this requirement, you must have at least one course taken within the STAT department.
 
 ### World Langauge
 For this section, you must complete either the “French, German, Spanish” or “Chinese, Greek, Latin, Japanese, Norwegian, Russian” requirement.
 
 #### French, German, Spanish
-For this requirement, you must have at least one course within the FREN, GERM, or SPAN department past 232.
+For this requirement, you must have at least one course taken within the FREN, GERM, or SPAN department past 232.
 
 #### Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must have at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
+For this requirement, you must have at least one course taken within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
 

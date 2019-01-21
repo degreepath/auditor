@@ -50,16 +50,16 @@ For this section, you must complete three from among the following requirements:
 - “Modeling/Computation (M)”
 
 ### Axiomatic/Algebraic (A)
-For this requirement, you must have at least one course with the “A” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “A” `math_perspectives` attribute.
 
 ### Continuous/Analytic (C)
-For this requirement, you must have at least one course with the “C” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “C” `math_perspectives` attribute.
 
 ### Discrete/Combinatorial (D)
-For this requirement, you must have at least one course with the “D” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “D” `math_perspectives` attribute.
 
 ### Modeling/Computation (M)
-For this requirement, you must have at least one course with the “M” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “M” `math_perspectives` attribute.
 
 
 ## Interdisciplinary
@@ -102,7 +102,7 @@ Given the intersection between this set of courses and the courses from your tra
 For this requirement, you must do both of the following:
 
 - in the subset “Level III Courses”, there must be at least two courses
-- in the subset “Level III Courses”, there must be at least one course within the MATH department
+- in the subset “Level III Courses”, there must be at least one course taken within the MATH department
 
 
 ## Sequence

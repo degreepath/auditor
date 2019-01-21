@@ -37,10 +37,10 @@ For this requirement, you must do both of the following:
 For this requirement, you must maintain an average GPA at or above 2.00 from courses.
 
 ### Course Level
-For this requirement, you must have enough courses at or above the 200 level to obtain at least 18 credits.
+For this requirement, you must have enough courses taken at or above the 200 level to obtain at least 18 credits.
 
 ### Graded Courses
-For this requirement, you must have enough courses as "graded" courses to obtain at least 24 credits.
+For this requirement, you must have enough courses taken as "graded" courses to obtain at least 24 credits.
 
 ### Major
 For this requirement, you must declare at least one major.
@@ -60,10 +60,10 @@ For this section, you must complete all of the following requirements:
 - “Studies in Physical Movement”
 
 #### First-Year Writing
-For this requirement, you must have at least one course with the “FYW” general education attribute.
+For this requirement, you must have at least one course taken with the “FYW” general education attribute.
 
 #### Writing in Context
-For this requirement, you must have at least four courses with the “WRI” general education attribute.
+For this requirement, you must have at least four courses taken with the “WRI” general education attribute.
 
 #### Foreign Language
 For this requirement, you must take one of the following courses:
@@ -79,13 +79,13 @@ For this requirement, you must take one of the following courses:
 - SPAN 112
 
 #### Oral Communication
-For this requirement, you must have at least one course with the “ORC” general education attribute.
+For this requirement, you must have at least one course taken with the “ORC” general education attribute.
 
 #### Reasoning
-For this requirement, you must have at least one course with the AQR, SED, or IST general education attribute.
+For this requirement, you must have at least one course taken with the AQR, SED, or IST general education attribute.
 
 #### Studies in Physical Movement
-For this requirement, you must have at least two distinct courses with the “SPM” general education attribute.
+For this requirement, you must have at least two distinct courses taken with the “SPM” general education attribute.
 
 ### Core
 For this section, you must complete all of the following requirements:
@@ -96,10 +96,10 @@ For this section, you must complete all of the following requirements:
 - “Studies in Human Behavior and Society”
 
 #### Historical Studies in Western Culture or Literary Studies
-For this requirement, you must have at least one course with the HWC or ALS-L general education attribute.
+For this requirement, you must have at least one course taken with the HWC or ALS-L general education attribute.
 
 #### Multicultural Studies
-For this requirement, you must have at least one course with the MCD or MCG general education attribute.
+For this requirement, you must have at least one course taken with the MCD or MCG general education attribute.
 
 #### Biblical and Theological Studies
 Given the subset of courses from your transcript, limited to only courses taken with the BTS-B or BTS-T general education attribute, as “Courses with a BTS-B or BTS-T”:
@@ -111,16 +111,16 @@ Given the subset of courses from your transcript, limited to only courses taken 
 For this requirement, you must do all of the following:
 
 - in the subset “Courses with a BTS-B or BTS-T”, there must be at least two courses
-- in the subset “Courses with a BTS-B or BTS-T”, there must be at least one course with the “BTS-B” general education attribute
-- in the subset “Courses with a BTS-B or BTS-T”, there must be at least one course with the “BTS-T” general education attribute
+- in the subset “Courses with a BTS-B or BTS-T”, there must be at least one course taken with the “BTS-B” general education attribute
+- in the subset “Courses with a BTS-B or BTS-T”, there must be at least one course taken with the “BTS-T” general education attribute
 
 #### Studies in Human Behavior and Society
-For this requirement, you must have at least one course with the “HBS” general education attribute.
+For this requirement, you must have at least one course taken with the “HBS” general education attribute.
 
 ### Integrative
 For this section, you must complete the “Ethical Issues and Normative Perspectives” requirement.
 
 #### Ethical Issues and Normative Perspectives
-For this requirement, you must have at least one course with the “EIN” general education attribute.
+For this requirement, you must have at least one course taken with the “EIN” general education attribute.
 
 

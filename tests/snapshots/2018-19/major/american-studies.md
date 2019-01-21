@@ -19,8 +19,8 @@ Given the courses which fulfilled the “Topics”, “Seminar”, and “Discip
 
 For this section, you must do all of the following:
 
-- in the subset “Taken Electives”, there must be at least two courses with the “MCD” general education attribute
-- in the subset “Taken Electives”, there must be at least two courses at the 300 level
+- in the subset “Taken Electives”, there must be at least two courses taken with the “MCD” general education attribute
+- in the subset “Taken Electives”, there must be at least two courses taken at the 300 level
 - in the subset “Taken Electives”, there must be enough courses to span at least three departments
 - in the subset “Taken Electives”, there must be at least six courses
 

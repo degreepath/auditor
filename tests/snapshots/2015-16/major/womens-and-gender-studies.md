@@ -29,7 +29,7 @@ For this section, you must do all of the following:
 - complete the “Electives” (optional) requirement
 - complete the “Lived Experiences” requirement
 - in the subset “Taken Elective Courses”, there must be at least seven courses
-- in the subset “Taken Elective Courses”, there must be at least one course at the 300 level
+- in the subset “Taken Elective Courses”, there must be at least one course taken at the 300 level
 
 ### Theory and Methods
 For this requirement, you must take one of the following courses:

@@ -49,7 +49,7 @@ todo: there's a limiter
 
 For this requirement, you must do both of the following:
 
-- in the subset “Allowed Courses”, there must be at least one course at the 300 level
+- in the subset “Allowed Courses”, there must be at least one course taken at the 300 level
 - in the subset “Allowed Courses”, there must be at least four courses
 
 

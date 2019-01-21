@@ -21,7 +21,7 @@ For this requirement, you must take two of the following courses:
 
 
 ## Electives
-For this requirement, you must have at least two courses within the PHIL department.
+For this requirement, you must have at least two courses taken within the PHIL department.
 
 
 ## Contract

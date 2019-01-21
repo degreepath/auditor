@@ -32,7 +32,7 @@ For this major, you must do all of the following:
   - “International Relations”
   - “Political Theory”
   - “Additional Courses”
-2. restricted to only courses at the 300 level,
+2. restricted to only courses taken at the 300 level,
 3. there must be at least two courses
 
 ## Research Methods
@@ -103,12 +103,12 @@ For this requirement, you must take one of the following courses:
 For this section, you must complete one requirement from among “Statistics”, “French, German, Spanish”, or “Chinese, Greek, Latin, Japanese, Norwegian, Russian”.
 
 ### Statistics
-For this requirement, you must have at least one course within the STAT department.
+For this requirement, you must have at least one course taken within the STAT department.
 
 ### French, German, Spanish
-For this requirement, you must have at least one course within the FREN, GERM, or SPAN department past 232.
+For this requirement, you must have at least one course taken within the FREN, GERM, or SPAN department past 232.
 
 ### Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must have at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
+For this requirement, you must have at least one course taken within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
 
