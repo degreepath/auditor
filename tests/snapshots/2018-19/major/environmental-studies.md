@@ -68,7 +68,19 @@ For this requirement, you must either:
 For this requirement, you must take either BIO 261 or BIO 226.
 
 #### Environmental Science
-For this requirement, you must take at least two courses from among ENVST 123, BI/ES 226, BI/ES 228, ENVST 245, ENVST 255, ENVST 281 (2000-1), BI/ES 286, BI/ES 250, ENVST 381 (2000-1), ENVST 397, and BIO 224.
+For this requirement, you must take at least two courses from among the following:
+
+- ENVST 123
+- BI/ES 226
+- BI/ES 228
+- ENVST 245
+- ENVST 255
+- ENVST 281 (2000-1)
+- BI/ES 286
+- BI/ES 250
+- ENVST 381 (2000-1)
+- ENVST 397
+- BIO 224
 
 #### Level III Natural Science
 For this requirement, you must take one of the following courses:
@@ -126,6 +138,21 @@ For this requirement, you must take two of the following courses:
 - AS/ES 227
 
 ### Arts and Humanities
-For this requirement, you must take at least six courses from among ENVST 202, ENVST 270, ENVST 281 (2000-1), ENVST 381 (2000-1), FILM 230, GERM 276, HIST 245, HIST 275, NORW 224 (2000-1), PHIL 257, ENGL 276, REL 278, ENVST 381, and DEPT 301 (2000-1).
+For this requirement, you must take at least six courses from among the following:
+
+- ENVST 202
+- ENVST 270
+- ENVST 281 (2000-1)
+- ENVST 381 (2000-1)
+- FILM 230
+- GERM 276
+- HIST 245
+- HIST 275
+- NORW 224 (2000-1)
+- PHIL 257
+- ENGL 276
+- REL 278
+- ENVST 381
+- DEPT 301 (2000-1)
 
 

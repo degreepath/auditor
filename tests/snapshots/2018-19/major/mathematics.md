@@ -74,7 +74,23 @@ For this requirement, you must both take PHYS 375 and declare one “Physics” 
 
 
 ## Level III
-For this requirement, you must take at least two courses from among MATH 330, MATH 340, MATH 344, MATH 348, MATH 352, MATH 356, MATH 364, MATH 382, MATH 384, MATH 396, MSCS 341, MSCS 390, STAT 322, CSCI 315, and CSCI 333.
+For this requirement, you must take at least two courses from among the following:
+
+- MATH 330
+- MATH 340
+- MATH 344
+- MATH 348
+- MATH 352
+- MATH 356
+- MATH 364
+- MATH 382
+- MATH 384
+- MATH 396
+- MSCS 341
+- MSCS 390
+- STAT 322
+- CSCI 315
+- CSCI 333
 
 
 ## Sequence

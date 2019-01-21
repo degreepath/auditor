@@ -32,6 +32,22 @@ For this requirement, you must take two of the following courses:
 
 
 ## Electives
-For this requirement, you must take at least two courses from among FREN 231, FREN 232, FREN 235, ART 251, ART 252, ART 263, ART 271, HIST 210, HIST 226, HIST 227, MUSIC 343, PHIL 236, PSCI 260, PSCI 283, and THEAT 270.
+For this requirement, you must take at least two courses from among the following:
+
+- FREN 231
+- FREN 232
+- FREN 235
+- ART 251
+- ART 252
+- ART 263
+- ART 271
+- HIST 210
+- HIST 226
+- HIST 227
+- MUSIC 343
+- PHIL 236
+- PSCI 260
+- PSCI 283
+- THEAT 270
 
 
