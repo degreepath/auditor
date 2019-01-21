@@ -2,6 +2,8 @@
 > major from St. Olaf College.
 
 # Chinese
+> todo: this area has custom attributes defined.
+
 For this major, you must complete all of the following requirements:
 
 - “Core Language”
@@ -25,32 +27,63 @@ For this requirement, you must take one course from among CHIN 320, CHIN 351, or
 ## Language and Culture
 > Note: The Asian Conversation sequence (ASIAN 210, ASIAN 215 or ASIAN 216,
 > ASIAN 220) will count for no more than two courses.
-> One of these courses can be an Independent Study (capstone project) or the
+> One of these courses may be an Independent Study (capstone project) or the
 > Asian Studies senior seminars (ASIAN 397 and ASIAN 399).
 
-Given the intersection between this set of courses and the courses from your transcript, as “Allowed Courses”:
+Given the courses which fulfilled the “China-focused” and “Comparative” requirements, as “Allowed Courses”:
 
-| “Allowed Courses” | Transcript |
-| ----------------- | ---------- |
-| ASIAN 397 | (todo: fill out if match) |
-| ASIAN 399 | (todo: fill out if match) |
-| ASIAN 298 | (todo: fill out if match) |
-| ASIAN 296 | (todo: fill out if match) |
-| ASIAN 398 | (todo: fill out if match) |
-| ASIAN 396 | (todo: fill out if match) |
-| ASIAN 210 | (todo: fill out if match) |
-| ASIAN 215 | (todo: fill out if match) |
-| ASIAN 216 | (todo: fill out if match) |
-| ASIAN 220 | (todo: fill out if match) |
-| ASIAN 268 | (todo: fill out if match) |
-| ASIAN 230 | (todo: fill out if match) |
+| “Allowed Courses” |
+| ----------------- |
+| (todo: list matched courses here) |
+
+> todo: describe what the save's limiters do
+> todo: describe what the save will generate
 
 todo: there's a limiter
 
-For this requirement, you must do both of the following:
+For this section, you must do all of the following:
 
-- in the subset “Allowed Courses”, there must be at least one course taken at the 300 level
+- complete the “China-focused” requirement
+- complete the “Comparative” requirement
 - in the subset “Allowed Courses”, there must be at least four courses
+- in the subset “Allowed Courses”, there must be at least one course taken at the 300 level
+
+### China-focused
+For this requirement, you must take one of the following courses:
+
+- ART 259
+- ASIAN 156
+- ASIAN 236
+- ASIAN 237
+- ASIAN 270
+- HIST 250
+- HIST 251
+- HIST 262
+
+### Comparative
+For this requirement, you must take one of the following courses:
+
+- ASIAN 121
+- ASIAN 123
+- ASIAN 200
+- ASIAN 210
+- ASIAN 215
+- ASIAN 216
+- ASIAN 220
+- ASIAN 268
+- ASIAN 282
+- ASIAN 300
+- ASIAN 310
+- ASIAN 333
+- ASIAN 397
+- ASIAN 399
+- AS/PS 255
+- AS/RE 256
+- AS/RE 257
+- AS/RE 289
+- HIST 345
+- PHIL 251
+- PSCI 245
 
 
 ## FLAC

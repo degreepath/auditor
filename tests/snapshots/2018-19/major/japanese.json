@@ -77,6 +77,30 @@
         "count": "all",
         "of": [
           {
+            "requirement": "Japan-focused",
+            "optional": false
+          },
+          {
+            "requirement": "Comparative",
+            "optional": false
+          },
+          {
+            "given": "save",
+            "save": "Allowed Courses",
+            "limit": null,
+            "where": null,
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 4
+              }
+            }
+          },
+          {
             "given": "save",
             "save": "Allowed Courses",
             "limit": null,
@@ -100,22 +124,6 @@
                 "Integer": 1
               }
             }
-          },
-          {
-            "given": "save",
-            "save": "Allowed Courses",
-            "limit": null,
-            "where": null,
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 4
-              }
-            }
           }
         ],
         "surplus": null,
@@ -125,112 +133,17 @@
       "save": [
         {
           "name": "Allowed Courses",
-          "given": "these courses",
-          "courses": [
+          "given": "these requirements",
+          "requirements": [
             {
-              "course": "ASIAN 397"
+              "requirement": "Japan-focused",
+              "optional": false
             },
             {
-              "course": "ASIAN 399"
-            },
-            {
-              "course": "ASIAN 298"
-            },
-            {
-              "course": "ASIAN 296"
-            },
-            {
-              "course": "ASIAN 398"
-            },
-            {
-              "course": "ASIAN 396"
-            },
-            {
-              "course": "ASIAN 210"
-            },
-            {
-              "course": "ASIAN 215"
-            },
-            {
-              "course": "ASIAN 216"
-            },
-            {
-              "course": "ASIAN 220"
-            },
-            {
-              "course": "ART 260"
-            },
-            {
-              "course": "ASIAN 126"
-            },
-            {
-              "course": "ASIAN 130"
-            },
-            {
-              "course": "ASIAN 230"
-            },
-            {
-              "course": "ASIAN 235"
-            },
-            {
-              "course": "AS/ES 377"
-            },
-            {
-              "course": "HIST 252"
-            },
-            {
-              "course": "HIST 253"
-            },
-            {
-              "course": "ASIAN 121"
-            },
-            {
-              "course": "ASIAN 123"
-            },
-            {
-              "course": "ASIAN 200"
-            },
-            {
-              "course": "ASIAN 240"
-            },
-            {
-              "course": "ASIAN 268"
-            },
-            {
-              "course": "ASIAN 282"
-            },
-            {
-              "course": "ASIAN 300"
-            },
-            {
-              "course": "ASIAN 310"
-            },
-            {
-              "course": "ASIAN 333"
-            },
-            {
-              "course": "AS/PS 255"
-            },
-            {
-              "course": "AS/RE 256"
-            },
-            {
-              "course": "AS/RE 257"
-            },
-            {
-              "course": "AS/RE 289"
-            },
-            {
-              "course": "HIST 345"
-            },
-            {
-              "course": "PHIL 251"
-            },
-            {
-              "course": "PSCI 245"
+              "requirement": "Comparative",
+              "optional": false
             }
           ],
-          "repeats": "first",
           "limit": [
             {
               "where": {
@@ -244,108 +157,168 @@
                 }
               },
               "at_most": 1
-            },
-            {
-              "where": {
-                "department": {
-                  "Single": {
-                    "op": "EqualTo",
-                    "value": {
-                      "String": "ASIAN"
-                    }
-                  }
-                },
-                "number": {
-                  "Or": [
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 397
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 399
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 296
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 298
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 396
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 398
-                      }
-                    }
-                  ]
-                }
-              },
-              "at_most": 1
-            },
-            {
-              "where": {
-                "department": {
-                  "Single": {
-                    "op": "EqualTo",
-                    "value": {
-                      "String": "ASIAN"
-                    }
-                  }
-                },
-                "number": {
-                  "Or": [
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 210
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 215
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 216
-                      }
-                    },
-                    {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 220
-                      }
-                    }
-                  ]
-                }
-              },
-              "at_most": 2
             }
           ],
           "where": null,
-          "what": null,
+          "what": "courses",
           "do": null
         }
       ],
-      "requirements": {}
+      "requirements": {
+        "Japan-focused": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 1,
+            "of": [
+              {
+                "course": "ART 260"
+              },
+              {
+                "course": "ASIAN 126"
+              },
+              {
+                "course": "ASIAN 130"
+              },
+              {
+                "course": "ASIAN 230"
+              },
+              {
+                "course": "ASIAN 235"
+              },
+              {
+                "course": "AS/ES 377"
+              },
+              {
+                "course": "HIST 252"
+              },
+              {
+                "course": "HIST 253"
+              }
+            ],
+            "surplus": null,
+            "limit": null
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Comparative": {
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "count": 1,
+            "of": [
+              {
+                "course": "ASIAN 121"
+              },
+              {
+                "course": "ASIAN 123"
+              },
+              {
+                "course": "ASIAN 200"
+              },
+              {
+                "course": "ASIAN 210"
+              },
+              {
+                "course": "ASIAN 215"
+              },
+              {
+                "course": "ASIAN 216"
+              },
+              {
+                "course": "ASIAN 220"
+              },
+              {
+                "course": "ASIAN 240"
+              },
+              {
+                "course": "ASIAN 268"
+              },
+              {
+                "course": "ASIAN 282"
+              },
+              {
+                "course": "ASIAN 300"
+              },
+              {
+                "course": "ASIAN 310"
+              },
+              {
+                "course": "ASIAN 333"
+              },
+              {
+                "course": "ASIAN 397"
+              },
+              {
+                "course": "ASIAN 399"
+              },
+              {
+                "course": "AS/PS 255"
+              },
+              {
+                "course": "AS/RE 256"
+              },
+              {
+                "course": "AS/RE 257"
+              },
+              {
+                "course": "AS/RE 289"
+              },
+              {
+                "course": "HIST 345"
+              },
+              {
+                "course": "PHIL 251"
+              },
+              {
+                "course": "PSCI 245"
+              }
+            ],
+            "surplus": null,
+            "limit": [
+              {
+                "where": {
+                  "japan_kind": {
+                    "Single": {
+                      "op": "EqualTo",
+                      "value": {
+                        "String": "asiancon"
+                      }
+                    }
+                  }
+                },
+                "at_most": 2
+              },
+              {
+                "where": {
+                  "japan_kind": {
+                    "Or": [
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "independent-study"
+                        }
+                      },
+                      {
+                        "op": "EqualTo",
+                        "value": {
+                          "String": "senior-seminar"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "at_most": 1
+              }
+            ]
+          },
+          "contract": false,
+          "save": [],
+          "requirements": {}
+        }
+      }
     },
     "FLAC": {
       "message": null,
@@ -361,5 +334,40 @@
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "defaults": {
+      "may count for multiple requirements": false
+    },
+    "definitions": {
+      "japan_kind": {
+        "type": "string"
+      }
+    },
+    "courses": {
+      "ASIAN 210": {
+        "japan_kind": "asiancon"
+      },
+      "ASIAN 215": {
+        "japan_kind": "asiancon"
+      },
+      "ASIAN 216": {
+        "japan_kind": "asiancon"
+      },
+      "ASIAN 220": {
+        "japan_kind": "asiancon"
+      },
+      "ASIAN 397": {
+        "japan_kind": "senior-seminar"
+      },
+      "ASIAN 399": {
+        "japan_kind": "senior-seminar"
+      },
+      "ASIAN 298": {
+        "japan_kind": "independent-study"
+      },
+      "ASIAN 398": {
+        "japan_kind": "independent-study"
+      }
+    }
+  }
 }
