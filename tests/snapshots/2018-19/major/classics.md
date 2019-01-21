@@ -50,7 +50,6 @@ For this requirement, you must do both of the following:
 
 
 
-
 ## Classics
 For this requirement, you must take one of the following courses:
 

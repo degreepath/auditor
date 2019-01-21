@@ -50,7 +50,6 @@ For this section, you must do one of the following:
 - complete the “Arts and Humanities” requirement
 - in the subset “natural and social”, there must be at least three courses
 
-
 ### Natural Science
 For this section, you must complete all of the following requirements:
 

@@ -97,7 +97,6 @@ Given the subset named “Asian Studies Courses”, limited it to only courses t
 For this requirement, you must do both of the following:
 
 - in the subset “Limited Asian Studies Courses”, there must be at least seven courses
-- in the subset “Upper-Level Asian Studies Courses”, there must be at least two courses at St. Olaf College
-
+- in the subset “Upper-Level Asian Studies Courses”, there must be at least two courses taken at St. Olaf College
 
 

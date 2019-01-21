@@ -12,8 +12,28 @@ For this major, you must do all of the following:
 - “International Relations”
 - “Political Theory”
 - “Additional Courses” (optional)
-- have at least nine courses in the set of courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
-- have at least two courses at the 300 level in the set of courses matched by the “Research Methods”, “American Politics and Public Policy”, “Comparative Politics”, “International Relations”, “Political Theory”, and “Additional Courses” requirements
+- have the following be true:
+
+1. given the results of the following requirements
+  - “Research Methods”
+  - “American Politics and Public Policy”
+  - “Comparative Politics”
+  - “International Relations”
+  - “Political Theory”
+  - “Additional Courses”
+2. there must be at least nine courses
+
+- have the following be true:
+
+1. given the results of the following requirements
+  - “Research Methods”
+  - “American Politics and Public Policy”
+  - “Comparative Politics”
+  - “International Relations”
+  - “Political Theory”
+  - “Additional Courses”
+2. restricted to only courses at the 300 level,
+3. there must be at least two courses
 
 ## Research Methods
 For this requirement, you must take PSCI 220.
@@ -83,12 +103,12 @@ For this requirement, you must take one of the following courses:
 For this section, you must complete one requirement from among “Statistics”, “French, German, Spanish”, or “Chinese, Greek, Latin, Japanese, Norwegian, Russian”.
 
 ### Statistics
-For this requirement, you must take at least one course within the STAT department.
+For this requirement, you must have at least one course within the STAT department.
 
 ### French, German, Spanish
-For this requirement, you must take at least one course within the FREN, GERM, or SPAN department past 232.
+For this requirement, you must have at least one course within the FREN, GERM, or SPAN department past 232.
 
 ### Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must take at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
+For this requirement, you must have at least one course within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
 

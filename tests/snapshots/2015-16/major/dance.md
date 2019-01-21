@@ -23,7 +23,15 @@ For this requirement, you must take all of the following courses:
 
 
 ## Movement-Intensive Courses (Technique)
-For this section, you must take enough courses to obtain at least 1.50 credits from the set of courses matched by the “Ballet”, “Improvisation”, “International and Social”, “Modern”, and “Other Topics” requirements.
+For this section, you must have the following be true:
+
+1. given the results of the following requirements
+  - “Ballet”
+  - “Improvisation”
+  - “International and Social”
+  - “Modern”
+  - “Other Topics”
+2. there must be at least 1.50 credits
 
 ### Ballet
 For this requirement, you must do one of the following:

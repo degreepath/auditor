@@ -51,7 +51,7 @@ For this requirement, you must take one of the following courses:
 
 
 ## Classics
-For this requirement, you must take at least one course within the CLASS department.
+For this requirement, you must have at least one course within the CLASS department.
 
 
 ## Electives

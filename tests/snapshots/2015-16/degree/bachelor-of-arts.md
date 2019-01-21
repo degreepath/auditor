@@ -16,10 +16,10 @@ For this section, you must complete all of the following requirements:
 - “Major”
 
 ### Courses
-For this requirement, you must take enough courses to obtain at least 35 credits.
+For this requirement, you must have enough courses to obtain at least 35 credits.
 
 ### Residency
-For this requirement, you must take enough courses at St. Olaf College to obtain at least 17 credits.
+For this requirement, you must have enough courses taken at St. Olaf College to obtain at least 17 credits.
 
 ### Interim
 Given the subset of courses from your transcript, limited to only courses taken during Interim semesters, as “Interim Courses”:
@@ -33,15 +33,14 @@ For this requirement, you must do both of the following:
 - in the subset “Interim Courses”, there must be enough courses to obtain at least three credits
 - in the subset “Interim Courses”, there must be at least three courses
 
-
 ### Grade Point Average
 For this requirement, you must maintain an average GPA at or above 2.00 from courses.
 
 ### Course Level
-For this requirement, you must take enough courses at or above the 200 level to obtain at least 18 credits.
+For this requirement, you must have enough courses at or above the 200 level to obtain at least 18 credits.
 
 ### Graded Courses
-For this requirement, you must take enough courses as "graded" courses to obtain at least 24 credits.
+For this requirement, you must have enough courses as "graded" courses to obtain at least 24 credits.
 
 ### Major
 For this requirement, you must declare at least one major.
@@ -61,32 +60,32 @@ For this section, you must complete all of the following requirements:
 - “Studies in Physical Movement”
 
 #### First-Year Writing
-For this requirement, you must take at least one course with the “FYW” general education attribute.
+For this requirement, you must have at least one course with the “FYW” general education attribute.
 
 #### Writing in Context
-For this requirement, you must take at least four courses with the “WRI” general education attribute.
+For this requirement, you must have at least four courses with the “WRI” general education attribute.
 
 #### Foreign Language
 For this requirement, you must do one of the following:
 
-- take at least one course with the “FOL-C” general education attribute
-- take at least one course with the “FOL-F” general education attribute
-- take at least one course with the “FOL-G” general education attribute
-- take at least one course with the “FOL-K” general education attribute
-- take at least one course with the “FOL-J” general education attribute
-- take at least one course with the “FOL-L” general education attribute
-- take at least one course with the “FOL-N” general education attribute
-- take at least one course with the “FOL-R” general education attribute
-- take at least one course with the “FOL-S” general education attribute
+- have at least one course with the “FOL-C” general education attribute
+- have at least one course with the “FOL-F” general education attribute
+- have at least one course with the “FOL-G” general education attribute
+- have at least one course with the “FOL-K” general education attribute
+- have at least one course with the “FOL-J” general education attribute
+- have at least one course with the “FOL-L” general education attribute
+- have at least one course with the “FOL-N” general education attribute
+- have at least one course with the “FOL-R” general education attribute
+- have at least one course with the “FOL-S” general education attribute
 
 #### Oral Communication
-For this requirement, you must take at least one course with the “ORC” general education attribute.
+For this requirement, you must have at least one course with the “ORC” general education attribute.
 
 #### Abstract and Quantitative Reasoning
-For this requirement, you must take at least one course with the “AQR” general education attribute.
+For this requirement, you must have at least one course with the “AQR” general education attribute.
 
 #### Studies in Physical Movement
-For this requirement, you must take at least two distinct courses with the “SPM” general education attribute.
+For this requirement, you must have at least two distinct courses with the “SPM” general education attribute.
 
 ### Core
 For this section, you must complete all of the following requirements:
@@ -110,8 +109,7 @@ Given the subset of courses from your transcript, limited to only courses taken 
 For this requirement, you must do both of the following:
 
 - in the subset “Courses with an HWC”, there must be at least two courses
-- in the subset “Courses with an HWC”, there must be at least one course at St. Olaf College
-
+- in the subset “Courses with an HWC”, there must be at least one course taken at St. Olaf College
 
 #### Multicultural Studies
 Given the subset of courses from your transcript, limited to only courses taken with the MCD or MCG general education attribute, as “Courses with an MCD or MCG”:
@@ -178,7 +176,7 @@ For this requirement, you must do all of the following:
 
 - in the subset “Courses with an HBS”, there must be at least two courses
 - in the subset “Courses with an HBS”, there must be enough courses to span at least two departments
-- in the subset “Courses with an HBS”, there must be at least one course at St. Olaf College
+- in the subset “Courses with an HBS”, there must be at least one course taken at St. Olaf College
 
 ### Integrative
 For this section, you must complete the “Ethical Issues and Normative Perspectives” requirement.
@@ -209,6 +207,5 @@ For this requirement, you must do both of the following:
 
 - in the subset “EIN courses”, there must be at least one course
 - ensure that the computed result of the subset “first BTS-T course” is less than the computed result of the subset “last EIN course”
-
 
 

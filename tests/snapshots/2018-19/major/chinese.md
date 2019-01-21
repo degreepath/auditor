@@ -53,7 +53,6 @@ For this requirement, you must do both of the following:
 - in the subset “Allowed Courses”, there must be at least four courses
 
 
-
 ## FLAC
 For this requirement, you must take one of the following courses:
 

@@ -23,7 +23,10 @@ For this section, you must do all of the following:
 
 - complete the “Level II” requirement
 - complete the “Level III” requirement
-- have at least two courses in the set of courses matched by the “Level II” and “Level III” requirements
+- have the following be true:
+
+1. given the results of the “Level II” and “Level III” requirements,
+2. there must be at least two courses
 
 ### Level II
 For this requirement, you must take one of the following courses:
