@@ -74,6 +74,7 @@ fn serialize() {
   semester: ~
   lab: ~
   international: ~
+  can_match_used: ~
 - requirement: Name
   optional: true
 - count: 1
@@ -90,6 +91,7 @@ fn serialize() {
       semester: ~
       lab: ~
       international: ~
+      can_match_used: ~
   surplus: ~
 - either:
     - course: ASIAN 101
@@ -100,6 +102,7 @@ fn serialize() {
       semester: ~
       lab: ~
       international: ~
+      can_match_used: ~
   surplus: ~
 - given: courses
   limit: []

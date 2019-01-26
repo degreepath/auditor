@@ -17,6 +17,7 @@ pub struct Rule {
 	pub semester: Option<String>,
 	pub lab: Option<bool>,
 	pub international: Option<bool>,
+	pub can_match_used: Option<bool>,
 }
 
 impl Util for Rule {
