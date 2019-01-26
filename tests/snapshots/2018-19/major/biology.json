@@ -210,11 +210,7 @@
             "course": "BIO 391"
           }
         ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ],
+        "surplus": null,
         "limit": null
       },
       "contract": false,
@@ -225,123 +221,28 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "BIO 298"
-          },
-          {
-            "course": "BIO 396"
-          },
-          {
-            "course": "BIO 398"
-          },
-          {
-            "course": "CHEM 379"
-          },
-          {
-            "course": "NEURO 239"
-          },
-          {
-            "course": "PSYCH 238"
-          },
-          {
-            "course": "ENVST 281",
-            "term": "2000-1",
-            "section": null,
-            "year": null,
-            "semester": null,
-            "lab": null,
-            "international": null,
-            "can_match_used": null
-          },
-          {
-            "course": "BIO 121"
-          },
-          {
-            "course": "BIO 123"
-          },
-          {
-            "course": "BIO 124"
-          },
-          {
-            "course": "BIO 127"
-          },
-          {
-            "course": "BIO 128"
-          },
-          {
-            "course": "BIO 130"
-          },
-          {
-            "course": "BIO 131"
-          },
-          {
-            "course": "BIO 135"
-          },
-          {
-            "course": "BIO 143"
-          },
-          {
-            "course": "BIO 150"
-          },
-          {
-            "course": "BIO 227"
-          },
-          {
-            "course": "BIO 231"
-          },
-          {
-            "course": "BIO 233"
-          },
-          {
-            "course": "BIO 242"
-          },
-          {
-            "course": "BIO 243"
-          },
-          {
-            "course": "BIO 247"
-          },
-          {
-            "course": "BIO 248"
-          },
-          {
-            "course": "BIO 249"
-          },
-          {
-            "course": "BIO 251"
-          },
-          {
-            "course": "BIO 252"
-          },
-          {
-            "course": "BIO 261"
-          },
-          {
-            "course": "BIO 266"
-          },
-          {
-            "course": "BIO 275"
-          },
-          {
-            "course": "BIO 282"
-          },
-          {
-            "course": "BIO 284"
-          },
-          {
-            "course": "BIO 287"
-          },
-          {
-            "course": "BIO 288"
-          },
-          {
-            "course": "BIO 292"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attribute": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "bio_elective"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -404,5 +305,156 @@
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "BIO 121": [
+        "bio_elective"
+      ],
+      "BIO 123": [
+        "bio_elective"
+      ],
+      "BIO 124": [
+        "bio_elective"
+      ],
+      "BIO 127": [
+        "bio_elective"
+      ],
+      "BIO 128": [
+        "bio_elective"
+      ],
+      "BIO 130": [
+        "bio_elective"
+      ],
+      "BIO 131": [
+        "bio_elective"
+      ],
+      "BIO 135": [
+        "bio_elective"
+      ],
+      "BIO 143": [
+        "bio_elective"
+      ],
+      "BIO 150": [
+        "bio_elective"
+      ],
+      "BIO 226": [
+        "bio_elective"
+      ],
+      "BIO 227": [
+        "bio_elective"
+      ],
+      "BIO 231": [
+        "bio_elective"
+      ],
+      "BIO 233": [
+        "bio_elective"
+      ],
+      "BIO 242": [
+        "bio_elective"
+      ],
+      "BIO 243": [
+        "bio_elective"
+      ],
+      "BIO 247": [
+        "bio_elective"
+      ],
+      "BIO 248": [
+        "bio_elective"
+      ],
+      "BIO 249": [
+        "bio_elective"
+      ],
+      "BIO 251": [
+        "bio_elective"
+      ],
+      "BIO 252": [
+        "bio_elective"
+      ],
+      "BIO 261": [
+        "bio_elective"
+      ],
+      "BIO 266": [
+        "bio_elective"
+      ],
+      "BIO 275": [
+        "bio_elective"
+      ],
+      "BIO 282": [
+        "bio_elective"
+      ],
+      "BIO 284": [
+        "bio_elective"
+      ],
+      "BIO 287": [
+        "bio_elective"
+      ],
+      "BIO 288": [
+        "bio_elective"
+      ],
+      "BIO 292": [
+        "bio_elective"
+      ],
+      "BIO 298": [
+        "bio_elective"
+      ],
+      "BIO 315": [
+        "bio_elective"
+      ],
+      "BIO 341": [
+        "bio_elective"
+      ],
+      "BIO 348": [
+        "bio_elective"
+      ],
+      "BIO 363": [
+        "bio_elective"
+      ],
+      "BIO 364": [
+        "bio_elective"
+      ],
+      "BIO 371": [
+        "bio_elective"
+      ],
+      "BIO 372": [
+        "bio_elective"
+      ],
+      "BIO 382": [
+        "bio_elective"
+      ],
+      "BIO 383": [
+        "bio_elective"
+      ],
+      "BIO 385": [
+        "bio_elective"
+      ],
+      "BIO 386": [
+        "bio_elective"
+      ],
+      "BIO 391": [
+        "bio_elective"
+      ],
+      "BIO 396": [
+        "bio_elective"
+      ],
+      "BIO 398": [
+        "bio_elective"
+      ],
+      "CH/BI 227": [
+        "bio_elective"
+      ],
+      "CHEM 379": [
+        "bio_elective"
+      ],
+      "ENVST 281 2000-1": [
+        "bio_elective"
+      ],
+      "NEURO 239": [
+        "bio_elective"
+      ],
+      "PSYCH 238": [
+        "bio_elective"
+      ]
+    }
+  }
 }

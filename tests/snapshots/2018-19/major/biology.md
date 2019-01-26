@@ -2,6 +2,8 @@
 > major from St. Olaf College.
 
 # Biology
+> todo: this area has custom attributes defined.
+
 For this major, you must complete all of the following requirements:
 
 - “Foundation”
@@ -62,43 +64,7 @@ For this requirement, you must take one of the following courses:
 
 
 ## Electives
-For this requirement, you must take two of the following courses:
-
-- BIO 298
-- BIO 396
-- BIO 398
-- CHEM 379
-- NEURO 239
-- PSYCH 238
-- ENVST 281 (2000-1)
-- BIO 121
-- BIO 123
-- BIO 124
-- BIO 127
-- BIO 128
-- BIO 130
-- BIO 131
-- BIO 135
-- BIO 143
-- BIO 150
-- BIO 227
-- BIO 231
-- BIO 233
-- BIO 242
-- BIO 243
-- BIO 247
-- BIO 248
-- BIO 249
-- BIO 251
-- BIO 252
-- BIO 261
-- BIO 266
-- BIO 275
-- BIO 282
-- BIO 284
-- BIO 287
-- BIO 288
-- BIO 292
+For this requirement, you must have at least two courses taken with the “bio_elective” `attribute` attribute.
 
 
 ## Chemistry
