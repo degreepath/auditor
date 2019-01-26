@@ -282,7 +282,8 @@
             "year": 2016,
             "semester": null,
             "lab": null,
-            "international": null
+            "international": null,
+            "can_match_used": null
           },
           {
             "course": "THEAT 270"

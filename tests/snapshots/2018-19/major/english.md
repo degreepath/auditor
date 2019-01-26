@@ -18,30 +18,30 @@ For this requirement, you must take ENGL 185.
 
 
 ## Cross-Cultural Studies
-For this requirement, you must have at least one course taken with the “cross-cultural” `english_topic` attribute.
+For this requirement, you must have at least one course taken with the “engl_topic_crosscultural” `attributes` attribute.
 
 
 ## Literary History
-For this requirement, you must have at least one course taken with the “literary-history” `english_topic` attribute.
+For this requirement, you must have at least one course taken with the “engl_topic_literary_history” `attributes` attribute.
 
 
 ## Cross-Disciplinary Studies
-For this requirement, you must have at least one course taken with the “cross-disciplinary” `english_topic` attribute.
+For this requirement, you must have at least one course taken with the “engl_topic_crossdisciplinary” `attributes` attribute.
 
 
 ## Genre Studies
-For this requirement, you must have at least one course taken with the “genre-studies” `english_topic` attribute.
+For this requirement, you must have at least one course taken with the “engl_topic_genre” `attributes` attribute.
 
 
 ## Electives
-For this requirement, you must have at least six courses taken with either the elective, genre-studies, cross-cultural, literary-history, or cross-disciplinary `english_topic` attribute.
+For this requirement, you must have at least six courses taken with either the engl_elective, engl_topic_genre, engl_topic_crosscultural, engl_topic_literary_history, or engl_topic_crossdisciplinary `attributes` attribute.
 
 
 ## 1800s
 For this requirement, you must both:
 
-- have at least one course taken with the “pre-1800” `english_period` attribute
+- have at least one course taken with the “engl_period_pre1800” `attributes` attribute
 
-- and have at least one course taken with the “post-1800” `english_period` attribute
+- and have at least one course taken with the “engl_period_post1800” `attributes` attribute
 
 

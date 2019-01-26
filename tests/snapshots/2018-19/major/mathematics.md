@@ -34,7 +34,7 @@ For this requirement, you must do all of the following:
 
 
 ## Transitions
-For this requirement, you must take two courses from among MATH 242, MATH 244, or MATH 252.
+For this requirement, you must have at least two courses taken with the “math_transitions” `attributes` attribute.
 
 
 ## Perspectives
@@ -48,16 +48,16 @@ For this section, you must complete three from among the following requirements:
 - “Modeling/Computation (M)”
 
 ### Axiomatic/Algebraic (A)
-For this requirement, you must have at least one course taken with the “A” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_a” `attributes` attribute.
 
 ### Continuous/Analytic (C)
-For this requirement, you must have at least one course taken with the “C” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_c” `attributes` attribute.
 
 ### Discrete/Combinatorial (D)
-For this requirement, you must have at least one course taken with the “D” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_d” `attributes` attribute.
 
 ### Modeling/Computation (M)
-For this requirement, you must have at least one course taken with the “M” `math_perspectives` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_m” `attributes` attribute.
 
 
 ## Interdisciplinary
@@ -74,39 +74,20 @@ For this requirement, you must both take PHYS 375 and declare one “Physics” 
 
 
 ## Level III
-For this requirement, you must take at least two courses from among the following:
-
-- MATH 330
-- MATH 340
-- MATH 344
-- MATH 348
-- MATH 352
-- MATH 356
-- MATH 364
-- MATH 382
-- MATH 384
-- MATH 396
-- MSCS 341
-- MSCS 390
-- STAT 322
-- CSCI 315
-- CSCI 333
+For this requirement, you must have at least two courses taken with the “math_level_3” `attributes` attribute.
 
 
 ## Sequence
-> Note: A 200-300-level sequence of two courses, at least one of which must be a
-> Mathematics course.
-
 For this requirement, you must do one of the following:
 
-- take both MATH 230 and MATH 330
-- take both MATH 226 and MATH 340
-- take both MATH 244 and MATH 344
-- take both MATH 224 and MATH 348
-- take both MATH 252 and MATH 352
 - take both MATH 220 and MATH 356
-- take both MATH 232 and MATH 364
-- take both MATH 262 and STAT 322
 - take both MATH 220 and MSCS 341
+- take both MATH 224 and MATH 348
+- take both MATH 226 and MATH 340
+- take both MATH 230 and MATH 330
+- take both MATH 232 and MATH 364
+- take both MATH 244 and MATH 344
+- take both MATH 252 and MATH 352
+- take both MATH 262 and STAT 322
 
 

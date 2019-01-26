@@ -4,53 +4,47 @@
 # History
 > todo: this area has custom attributes defined.
 
-For this major, you must complete all of the following requirements:
+For this major, you must both:
 
-- “Major Seminar”
-- “Level III”
-- “Non-Western World”
-- “Europe & Russia”
-- “U.S.”
-- “Pre-Modern Period”
+- complete all of the following requirements:
+    - “Major Seminar”
+    - “Level III”
+    - “Non-Western World”
+    - “Europe & Russia”
+    - “U.S.”
+    - “Pre-Modern Period”
 
-## Europe & Russia
-For this requirement, you must have at least one course taken with either the europe or russia `history_region` attribute.
+- and have the following be true:
+    1. given the results of the following requirements
+        - “Major Seminar”
+        - “Level III”
+        - “Non-Western World”
+        - “Europe & Russia”
+        - “U.S.”
+        - “Pre-Modern Period”
+    2. there must be at least nine courses
+
+## European
+For this requirement, you must have at least one course taken with the “history_region_europe” `attributes` attribute.
 
 
 ## U.S.
-For this requirement, you must have at least one course taken with the “us” `history_region` attribute.
+For this requirement, you must have at least one course taken with the “history_region_us” `attributes` attribute.
 
 
 ## Non-Western World
-For this requirement, you must have at least one course taken with either the africa, asia, or latin-america `history_region` attribute.
+For this requirement, you must have at least one course taken with the “history_region_nonwesternworld” `attributes` attribute.
 
 
 ## Pre-Modern Period
-For this requirement, you must have at least two courses taken with the “pre-modern” `history_era` attribute.
+For this requirement, you must have at least two courses taken with the “history_era_premodern” `attributes` attribute.
 
 
 ## Major Seminar
-For this requirement, you must take one of the following courses:
-
-- HIST 201
-- HIST 210
-- HIST 240
-- HIST 270
+For this requirement, you must have at least one course taken with the “history_l2_seminar” `attributes` attribute.
 
 
 ## Level III
-For this requirement, you must take three of the following courses:
-
-- HIST 301
-- HIST 302
-- HIST 303
-- HIST 310
-- HIST 315
-- HIST 320
-- HIST 340
-- HIST 345
-- HIST 370
-- HIST 375
-- ASIAN 399
+For this requirement, you must have at least three courses taken with the “history_level_3” `attributes` attribute.
 
 

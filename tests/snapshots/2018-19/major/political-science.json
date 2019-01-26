@@ -108,11 +108,11 @@
         "given": "courses",
         "limit": null,
         "where": {
-          "psci_topic": {
+          "attributes": {
             "Single": {
               "op": "EqualTo",
               "value": {
-                "String": "american"
+                "String": "psci_topic_american"
               }
             }
           }
@@ -139,11 +139,11 @@
         "given": "courses",
         "limit": null,
         "where": {
-          "psci_topic": {
+          "attributes": {
             "Single": {
               "op": "EqualTo",
               "value": {
-                "String": "comparative"
+                "String": "psci_topic_comparative"
               }
             }
           }
@@ -170,11 +170,11 @@
         "given": "courses",
         "limit": null,
         "where": {
-          "psci_topic": {
+          "attributes": {
             "Single": {
               "op": "EqualTo",
               "value": {
-                "String": "international"
+                "String": "psci_topic_international"
               }
             }
           }
@@ -201,11 +201,11 @@
         "given": "courses",
         "limit": null,
         "where": {
-          "psci_topic": {
+          "attributes": {
             "Single": {
               "op": "EqualTo",
               "value": {
-                "String": "theory"
+                "String": "psci_topic_theory"
               }
             }
           }
@@ -229,35 +229,28 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "PSCI 311"
-          },
-          {
-            "course": "PSCI 321"
-          },
-          {
-            "course": "PSCI 350"
-          },
-          {
-            "course": "PSCI 367"
-          },
-          {
-            "course": "PSCI 370"
-          },
-          {
-            "course": "PSCI 382"
-          },
-          {
-            "course": "PSCI 384"
-          },
-          {
-            "course": "PSCI 385"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "psci_level_3"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -464,105 +457,122 @@
     }
   },
   "attributes": {
-    "defaults": {
-      "may count for multiple requirements": false
-    },
-    "definitions": {
-      "psci_topic": {
-        "type": "string"
-      }
-    },
+    "multicountable": [],
     "courses": {
-      "PSCI 111": {
-        "psci_topic": "american"
-      },
-      "PSCI 204": {
-        "psci_topic": "american"
-      },
-      "PSCI 211": {
-        "psci_topic": "american"
-      },
-      "PSCI 244": {
-        "psci_topic": "american"
-      },
-      "PSCI 255": {
-        "psci_topic": "american"
-      },
-      "PSCI 272": {
-        "psci_topic": "american"
-      },
-      "ES/PS 276": {
-        "psci_topic": "american"
-      },
-      "PSCI 112": {
-        "psci_topic": "comparative"
-      },
-      "PSCI 115": {
-        "psci_topic": "international"
-      },
-      "PSCI 117": {
-        "psci_topic": "comparative"
-      },
-      "PSCI 252": {
-        "psci_topic": "comparative"
-      },
-      "PSCI 264": {
-        "psci_topic": "comparative"
-      },
-      "PSCI 282": {
-        "psci_topic": "comparative"
-      },
-      "PSCI 283": {
-        "psci_topic": "comparative"
-      },
-      "AS/PS 255": {
-        "psci_topic": "comparative"
-      },
-      "PSCI 119": {
-        "psci_topic": "theory"
-      },
-      "PSCI 121": {
-        "psci_topic": "international"
-      },
-      "PSCI 245": {
-        "psci_topic": "international"
-      },
-      "PSCI 257": {
-        "psci_topic": "international"
-      },
-      "PSCI 258": {
-        "psci_topic": "international"
-      },
-      "PSCI 285": {
-        "psci_topic": "international"
-      },
-      "ES/PS 201": {
-        "psci_topic": "international"
-      },
-      "PSCI 113": {
-        "psci_topic": "theory"
-      },
-      "PSCI 232": {
-        "psci_topic": "theory"
-      },
-      "PSCI 259": {
-        "psci_topic": "theory"
-      },
-      "PSCI 260": {
-        "psci_topic": "theory"
-      },
-      "PSCI 262": {
-        "psci_topic": "theory"
-      },
-      "PSCI 284": {
-        "psci_topic": "theory"
-      },
-      "ES/PS 225": {
-        "psci_topic": "theory"
-      },
-      "PSCI 299 2000-1": {
-        "psci_topic": "theory"
-      }
+      "AS/PS 255": [
+        "psci_topic_comparative"
+      ],
+      "ES/PS 201": [
+        "psci_topic_international"
+      ],
+      "ES/PS 225": [
+        "psci_topic_theory"
+      ],
+      "ES/PS 276": [
+        "psci_topic_american"
+      ],
+      "PSCI 111": [
+        "psci_topic_american"
+      ],
+      "PSCI 112": [
+        "psci_topic_comparative"
+      ],
+      "PSCI 113": [
+        "psci_topic_theory"
+      ],
+      "PSCI 115": [
+        "psci_topic_international"
+      ],
+      "PSCI 117": [
+        "psci_topic_comparative"
+      ],
+      "PSCI 119": [
+        "psci_topic_theory"
+      ],
+      "PSCI 121": [
+        "psci_topic_international"
+      ],
+      "PSCI 204": [
+        "psci_topic_american"
+      ],
+      "PSCI 211": [
+        "psci_topic_american"
+      ],
+      "PSCI 232": [
+        "psci_topic_theory"
+      ],
+      "PSCI 244": [
+        "psci_topic_american"
+      ],
+      "PSCI 245": [
+        "psci_topic_international"
+      ],
+      "PSCI 252": [
+        "psci_topic_comparative"
+      ],
+      "PSCI 255": [
+        "psci_topic_american"
+      ],
+      "PSCI 257": [
+        "psci_topic_international"
+      ],
+      "PSCI 258": [
+        "psci_topic_international"
+      ],
+      "PSCI 259": [
+        "psci_topic_theory"
+      ],
+      "PSCI 260": [
+        "psci_topic_theory"
+      ],
+      "PSCI 262": [
+        "psci_topic_theory"
+      ],
+      "PSCI 264": [
+        "psci_topic_comparative"
+      ],
+      "PSCI 272": [
+        "psci_topic_american"
+      ],
+      "PSCI 282": [
+        "psci_topic_comparative"
+      ],
+      "PSCI 283": [
+        "psci_topic_comparative"
+      ],
+      "PSCI 284": [
+        "psci_topic_theory"
+      ],
+      "PSCI 285": [
+        "psci_topic_international"
+      ],
+      "PSCI 311": [
+        "psci_level_3"
+      ],
+      "PSCI 321": [
+        "psci_level_3"
+      ],
+      "PSCI 350": [
+        "psci_level_3"
+      ],
+      "PSCI 367": [
+        "psci_level_3"
+      ],
+      "PSCI 370": [
+        "psci_level_3"
+      ],
+      "PSCI 382": [
+        "psci_level_3"
+      ],
+      "PSCI 384": [
+        "psci_level_3"
+      ],
+      "PSCI 385": [
+        "psci_level_3"
+      ],
+      "PSCI 299 2000-1": [
+        "psci_topic_theory"
+      ]
     }
   }
 }

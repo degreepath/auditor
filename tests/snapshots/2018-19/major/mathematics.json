@@ -125,20 +125,28 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "MATH 242"
-          },
-          {
-            "course": "MATH 244"
-          },
-          {
-            "course": "MATH 252"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "math_transitions"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -180,11 +188,11 @@
             "given": "courses",
             "limit": null,
             "where": {
-              "math_perspectives": {
+              "attributes": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "A"
+                    "String": "math_perspective_a"
                   }
                 }
               }
@@ -211,11 +219,11 @@
             "given": "courses",
             "limit": null,
             "where": {
-              "math_perspectives": {
+              "attributes": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "C"
+                    "String": "math_perspective_c"
                   }
                 }
               }
@@ -242,11 +250,11 @@
             "given": "courses",
             "limit": null,
             "where": {
-              "math_perspectives": {
+              "attributes": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "D"
+                    "String": "math_perspective_d"
                   }
                 }
               }
@@ -273,11 +281,11 @@
             "given": "courses",
             "limit": null,
             "where": {
-              "math_perspectives": {
+              "attributes": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "M"
+                    "String": "math_perspective_m"
                   }
                 }
               }
@@ -471,55 +479,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "these courses",
-        "courses": [
-          {
-            "course": "MATH 330"
-          },
-          {
-            "course": "MATH 340"
-          },
-          {
-            "course": "MATH 344"
-          },
-          {
-            "course": "MATH 348"
-          },
-          {
-            "course": "MATH 352"
-          },
-          {
-            "course": "MATH 356"
-          },
-          {
-            "course": "MATH 364"
-          },
-          {
-            "course": "MATH 382"
-          },
-          {
-            "course": "MATH 384"
-          },
-          {
-            "course": "MATH 396"
-          },
-          {
-            "course": "MSCS 341"
-          },
-          {
-            "course": "MSCS 390"
-          },
-          {
-            "course": "STAT 322"
-          },
-          {
-            "course": "CSCI 315"
-          },
-          {
-            "course": "CSCI 333"
-          }
-        ],
-        "repeats": "first",
+        "given": "courses",
         "limit": [
           {
             "where": {
@@ -535,7 +495,16 @@
             "at_most": 1
           }
         ],
-        "where": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "math_level_3"
+              }
+            }
+          }
+        },
         "what": "courses",
         "do": {
           "lhs": {
@@ -552,7 +521,7 @@
       "requirements": {}
     },
     "Sequence": {
-      "message": "A 200-300-level sequence of two courses, at least one of which must be a Mathematics course.",
+      "message": null,
       "department_audited": false,
       "result": {
         "count": 1,
@@ -560,10 +529,24 @@
           {
             "both": [
               {
-                "course": "MATH 230"
+                "course": "MATH 220",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MATH 330"
+                "course": "MATH 356",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -571,10 +554,24 @@
           {
             "both": [
               {
-                "course": "MATH 226"
+                "course": "MATH 220",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MATH 340"
+                "course": "MSCS 341",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -582,10 +579,24 @@
           {
             "both": [
               {
-                "course": "MATH 244"
+                "course": "MATH 224",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MATH 344"
+                "course": "MATH 348",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -593,10 +604,24 @@
           {
             "both": [
               {
-                "course": "MATH 224"
+                "course": "MATH 226",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MATH 348"
+                "course": "MATH 340",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -604,10 +629,24 @@
           {
             "both": [
               {
-                "course": "MATH 252"
+                "course": "MATH 230",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MATH 352"
+                "course": "MATH 330",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -615,10 +654,24 @@
           {
             "both": [
               {
-                "course": "MATH 220"
+                "course": "MATH 232",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MATH 356"
+                "course": "MATH 364",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -626,10 +679,24 @@
           {
             "both": [
               {
-                "course": "MATH 232"
+                "course": "MATH 244",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MATH 364"
+                "course": "MATH 344",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -637,10 +704,24 @@
           {
             "both": [
               {
-                "course": "MATH 262"
+                "course": "MATH 252",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "STAT 322"
+                "course": "MATH 352",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -648,10 +729,24 @@
           {
             "both": [
               {
-                "course": "MATH 220"
+                "course": "MATH 262",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               },
               {
-                "course": "MSCS 341"
+                "course": "STAT 322",
+                "term": null,
+                "section": null,
+                "year": null,
+                "semester": null,
+                "lab": null,
+                "international": null,
+                "can_match_used": true
               }
             ],
             "surplus": null
@@ -666,129 +761,154 @@
     }
   },
   "attributes": {
-    "defaults": {
-      "may count for multiple requirements": false
-    },
-    "definitions": {
-      "math_perspectives": {
-        "type": "array",
-        "multiple values can be used": false
-      }
-    },
+    "multicountable": [
+      [
+        {
+          "attribute": "math_perspective_a"
+        },
+        {
+          "attribute": "math_level_3"
+        },
+        {
+          "attribute": "math_transitions"
+        }
+      ],
+      [
+        {
+          "attribute": "math_perspective_c"
+        },
+        {
+          "attribute": "math_level_3"
+        },
+        {
+          "attribute": "math_transitions"
+        }
+      ],
+      [
+        {
+          "attribute": "math_perspective_d"
+        },
+        {
+          "attribute": "math_level_3"
+        },
+        {
+          "attribute": "math_transitions"
+        }
+      ],
+      [
+        {
+          "attribute": "math_perspective_m"
+        },
+        {
+          "attribute": "math_level_3"
+        },
+        {
+          "attribute": "math_transitions"
+        }
+      ]
+    ],
     "courses": {
-      "MATH 226": {
-        "math_perspectives": [
-          "C"
-        ]
-      },
-      "MATH 230": {
-        "math_perspectives": [
-          "C",
-          "M"
-        ]
-      },
-      "MATH 232": {
-        "math_perspectives": [
-          "D"
-        ]
-      },
-      "MATH 236": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "MATH 239": {
-        "math_perspectives": [
-          "D"
-        ]
-      },
-      "MATH 242": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "MATH 244": {
-        "math_perspectives": [
-          "C"
-        ]
-      },
-      "MATH 252": {
-        "math_perspectives": [
-          "A"
-        ]
-      },
-      "MATH 262": {
-        "math_perspectives": [
-          "C",
-          "D",
-          "M"
-        ]
-      },
-      "MATH 266": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "MATH 330": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "MATH 340": {
-        "math_perspectives": [
-          "C"
-        ]
-      },
-      "MATH 344": {
-        "math_perspectives": [
-          "C"
-        ]
-      },
-      "MATH 348": {
-        "math_perspectives": [
-          "A"
-        ]
-      },
-      "MATH 352": {
-        "math_perspectives": [
-          "A"
-        ]
-      },
-      "MATH 356": {
-        "math_perspectives": [
-          "A"
-        ]
-      },
-      "MATH 364": {
-        "math_perspectives": [
-          "D"
-        ]
-      },
-      "MSCS 341": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "STAT 212": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "STAT 214": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "STAT 272": {
-        "math_perspectives": [
-          "M"
-        ]
-      },
-      "STAT 316": {
-        "math_perspectives": [
-          "M"
-        ]
-      }
+      "CSCI 315": [
+        "math_level_3"
+      ],
+      "CSCI 333": [
+        "math_level_3"
+      ],
+      "MATH 226": [
+        "math_perspective_c"
+      ],
+      "MATH 230": [
+        "math_perspective_c",
+        "math_perspective_m"
+      ],
+      "MATH 232": [
+        "math_perspective_d"
+      ],
+      "MATH 236": [
+        "math_perspective_m"
+      ],
+      "MATH 239": [
+        "math_perspective_d"
+      ],
+      "MATH 242": [
+        "math_perspective_m",
+        "math_transitions"
+      ],
+      "MATH 244": [
+        "math_perspective_c",
+        "math_transitions"
+      ],
+      "MATH 252": [
+        "math_perspective_a",
+        "math_transitions"
+      ],
+      "MATH 262": [
+        "math_perspective_c",
+        "math_perspective_d",
+        "math_perspective_m"
+      ],
+      "MATH 266": [
+        "math_perspective_m"
+      ],
+      "MATH 330": [
+        "math_perspective_m",
+        "math_level_3"
+      ],
+      "MATH 340": [
+        "math_perspective_c",
+        "math_level_3"
+      ],
+      "MATH 344": [
+        "math_perspective_c",
+        "math_level_3"
+      ],
+      "MATH 348": [
+        "math_perspective_a",
+        "math_level_3"
+      ],
+      "MATH 352": [
+        "math_perspective_a",
+        "math_level_3"
+      ],
+      "MATH 356": [
+        "math_perspective_a",
+        "math_level_3"
+      ],
+      "MATH 364": [
+        "math_perspective_d",
+        "math_level_3"
+      ],
+      "MATH 382": [
+        "math_level_3"
+      ],
+      "MATH 384": [
+        "math_level_3"
+      ],
+      "MATH 396": [
+        "math_level_3"
+      ],
+      "MSCS 341": [
+        "math_perspective_m",
+        "math_level_3"
+      ],
+      "MSCS 390": [
+        "math_level_3"
+      ],
+      "STAT 212": [
+        "math_perspective_m"
+      ],
+      "STAT 214": [
+        "math_perspective_m"
+      ],
+      "STAT 272": [
+        "math_perspective_m"
+      ],
+      "STAT 316": [
+        "math_perspective_m"
+      ],
+      "STAT 322": [
+        "math_level_3"
+      ]
     }
   }
 }

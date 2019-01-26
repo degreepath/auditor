@@ -31,32 +31,23 @@ For this requirement, you must take PSCI 220.
 
 
 ## American Politics and Public Policy
-For this requirement, you must have at least one course taken with the “american” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “psci_topic_american” `attributes` attribute.
 
 
 ## Comparative Politics
-For this requirement, you must have at least one course taken with the “comparative” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “psci_topic_comparative” `attributes` attribute.
 
 
 ## International Relations
-For this requirement, you must have at least one course taken with the “international” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “psci_topic_international” `attributes` attribute.
 
 
 ## Political Theory
-For this requirement, you must have at least one course taken with the “theory” `psci_topic` attribute.
+For this requirement, you must have at least one course taken with the “psci_topic_theory” `attributes` attribute.
 
 
 ## Level III
-For this requirement, you must take two of the following courses:
-
-- PSCI 311
-- PSCI 321
-- PSCI 350
-- PSCI 367
-- PSCI 370
-- PSCI 382
-- PSCI 384
-- PSCI 385
+For this requirement, you must have at least two courses taken with the “psci_level_3” `attributes` attribute.
 
 
 ## Additional Courses

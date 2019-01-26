@@ -325,7 +325,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "BI/ES 286"
@@ -340,7 +341,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "ENVST 397"
@@ -400,7 +402,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "CHEM 391",
@@ -409,7 +412,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "ENVST 391",
@@ -418,7 +422,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   }
                 ],
                 "surplus": null,
@@ -581,7 +586,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "ENVST 381",
@@ -590,7 +596,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "ENVST 396",
@@ -599,7 +606,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "ECON 243"
@@ -617,7 +625,8 @@
                     "year": null,
                     "semester": null,
                     "lab": null,
-                    "international": null
+                    "international": null,
+                    "can_match_used": null
                   },
                   {
                     "course": "PSCI 221"
@@ -660,7 +669,8 @@
                 "year": null,
                 "semester": null,
                 "lab": null,
-                "international": null
+                "international": null,
+                "can_match_used": null
               },
               {
                 "course": "ENVST 381",
@@ -669,7 +679,8 @@
                 "year": null,
                 "semester": null,
                 "lab": null,
-                "international": null
+                "international": null,
+                "can_match_used": null
               },
               {
                 "course": "FILM 230"
@@ -690,7 +701,8 @@
                 "year": null,
                 "semester": null,
                 "lab": null,
-                "international": null
+                "international": null,
+                "can_match_used": null
               },
               {
                 "course": "PHIL 257"
@@ -711,7 +723,8 @@
                 "year": null,
                 "semester": null,
                 "lab": null,
-                "international": null
+                "international": null,
+                "can_match_used": null
               }
             ],
             "repeats": "first",

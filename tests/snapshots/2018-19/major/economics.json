@@ -117,7 +117,7 @@
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
-                "Integer": 2
+                "Integer": 4
               }
             }
           }
@@ -132,41 +132,28 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "count": 1,
-            "of": [
-              {
-                "course": "ECON 200"
-              },
-              {
-                "course": "ECON 210"
-              },
-              {
-                "course": "ECON 218"
-              },
-              {
-                "course": "ECON 220"
-              },
-              {
-                "course": "ECON 222"
-              },
-              {
-                "course": "ECON 242"
-              },
-              {
-                "course": "ECON 243"
-              },
-              {
-                "course": "ECON 245"
-              },
-              {
-                "course": "ECON 247"
-              },
-              {
-                "course": "ECON 249"
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "attributes": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "econ_level_2"
+                  }
+                }
               }
-            ],
-            "surplus": null,
-            "limit": null
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
           },
           "contract": false,
           "save": [],
@@ -176,35 +163,28 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "count": 2,
-            "of": [
-              {
-                "course": "ECON 371"
-              },
-              {
-                "course": "ECON 372"
-              },
-              {
-                "course": "ECON 373"
-              },
-              {
-                "course": "ECON 374"
-              },
-              {
-                "course": "ECON 376"
-              },
-              {
-                "course": "ECON 382"
-              },
-              {
-                "course": "ECON 385"
-              },
-              {
-                "course": "ECON 399"
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "attributes": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "econ_level_3"
+                  }
+                }
               }
-            ],
-            "surplus": null,
-            "limit": null
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 2
+              }
+            }
           },
           "contract": false,
           "save": [],
@@ -214,22 +194,71 @@
     }
   },
   "attributes": {
-    "defaults": {
-      "may count for multiple requirements": false
-    },
-    "definitions": {},
+    "multicountable": [
+      [
+        {
+          "course": "ECON 385"
+        },
+        {
+          "attribute": "econ_level_3"
+        }
+      ]
+    ],
     "courses": {
-      "ECON 385": {
-        "may count for multiple requirements": [
-          [
-            "Core"
-          ],
-          [
-            "Economic Analysis",
-            "Level III"
-          ]
-        ]
-      }
+      "ECON 200": [
+        "econ_level_2"
+      ],
+      "ECON 210": [
+        "econ_level_2"
+      ],
+      "ECON 218": [
+        "econ_level_2"
+      ],
+      "ECON 220": [
+        "econ_level_2"
+      ],
+      "ECON 222": [
+        "econ_level_2"
+      ],
+      "ECON 242": [
+        "econ_level_2"
+      ],
+      "ECON 243": [
+        "econ_level_2"
+      ],
+      "ECON 245": [
+        "econ_level_2"
+      ],
+      "ECON 247": [
+        "econ_level_2"
+      ],
+      "ECON 249": [
+        "econ_level_2"
+      ],
+      "ECON 371": [
+        "econ_level_3"
+      ],
+      "ECON 372": [
+        "econ_level_3"
+      ],
+      "ECON 373": [
+        "econ_level_3"
+      ],
+      "ECON 374": [
+        "econ_level_3"
+      ],
+      "ECON 376": [
+        "econ_level_3"
+      ],
+      "ECON 382": [
+        "econ_level_3"
+      ],
+      "ECON 385": [
+        "econ_level_3"
+      ],
+      "ECON 399": [
+        "econ_level_3"
+      ]
     }
   }
 }

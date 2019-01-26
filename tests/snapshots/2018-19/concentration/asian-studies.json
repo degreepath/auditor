@@ -12,157 +12,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "these courses",
-        "courses": [
-          {
-            "course": "ASIAN 121"
-          },
-          {
-            "course": "ASIAN 123"
-          },
-          {
-            "course": "ASIAN 126"
-          },
-          {
-            "course": "ASIAN 130"
-          },
-          {
-            "course": "ASIAN 156"
-          },
-          {
-            "course": "ASIAN 200"
-          },
-          {
-            "course": "ASIAN 210"
-          },
-          {
-            "course": "ASIAN 215"
-          },
-          {
-            "course": "ASIAN 216"
-          },
-          {
-            "course": "ASIAN 220"
-          },
-          {
-            "course": "ASIAN 230"
-          },
-          {
-            "course": "ASIAN 235"
-          },
-          {
-            "course": "ASIAN 236"
-          },
-          {
-            "course": "ASIAN 237"
-          },
-          {
-            "course": "ASIAN 240"
-          },
-          {
-            "course": "ASIAN 268"
-          },
-          {
-            "course": "ASIAN 294"
-          },
-          {
-            "course": "ASIAN 298"
-          },
-          {
-            "course": "ASIAN 300"
-          },
-          {
-            "course": "ASIAN 384"
-          },
-          {
-            "course": "ASIAN 396"
-          },
-          {
-            "course": "ASIAN 397"
-          },
-          {
-            "course": "ASIAN 398"
-          },
-          {
-            "course": "ASIAN 399"
-          },
-          {
-            "course": "AR/AS 259"
-          },
-          {
-            "course": "AR/AS 260"
-          },
-          {
-            "course": "AR/AS 262"
-          },
-          {
-            "course": "AR/AS 270"
-          },
-          {
-            "course": "AR/AS 310"
-          },
-          {
-            "course": "AS/ES 277"
-          },
-          {
-            "course": "AS/HI 250"
-          },
-          {
-            "course": "AS/HI 251"
-          },
-          {
-            "course": "AS/HI 252"
-          },
-          {
-            "course": "AS/HI 253"
-          },
-          {
-            "course": "AS/HI 262"
-          },
-          {
-            "course": "AS/HI 345"
-          },
-          {
-            "course": "AS/PH 251"
-          },
-          {
-            "course": "AS/PS 245"
-          },
-          {
-            "course": "AS/PS 250"
-          },
-          {
-            "course": "AS/RE 253"
-          },
-          {
-            "course": "AS/RE 254"
-          },
-          {
-            "course": "AS/RE 256"
-          },
-          {
-            "course": "AS/RE 257"
-          },
-          {
-            "course": "AS/RE 289"
-          },
-          {
-            "course": "AS/SA 239"
-          },
-          {
-            "course": "ECON 218"
-          },
-          {
-            "course": "ECON 238"
-          },
-          {
-            "course": "HIST 240"
-          },
-          {
-            "course": "PHIL 127"
-          }
-        ],
-        "repeats": "first",
+        "given": "courses",
         "limit": [
           {
             "where": {
@@ -178,7 +28,16 @@
             "at_most": 4
           }
         ],
-        "where": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "asian_elective"
+              }
+            }
+          }
+        },
         "what": "courses",
         "do": {
           "lhs": {
@@ -195,5 +54,1185 @@
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "ASIAN 121 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 121 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 121 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 121 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 121 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 121 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 121 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 121 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 123 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 126 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 130 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 156 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 200 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 210 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 215 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 216 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 220 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 230 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 235 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 236 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 237 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 240 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 268 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 294 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 298 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 300 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 384 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 396 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 397 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 398 2018-3": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2015-1": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2015-3": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2016-1": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2016-3": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2017-1": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2017-3": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2018-1": [
+        "asian_elective"
+      ],
+      "ASIAN 399 2018-3": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2015-1": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2015-3": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2016-1": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2016-3": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2017-1": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2017-3": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2018-1": [
+        "asian_elective"
+      ],
+      "AR/AS 259 2018-3": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2015-1": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2015-3": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2016-1": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2016-3": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2017-1": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2017-3": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2018-1": [
+        "asian_elective"
+      ],
+      "AR/AS 260 2018-3": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2015-1": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2015-3": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2016-1": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2016-3": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2017-1": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2017-3": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2018-1": [
+        "asian_elective"
+      ],
+      "AR/AS 262 2018-3": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2015-1": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2015-3": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2016-1": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2016-3": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2017-1": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2017-3": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2018-1": [
+        "asian_elective"
+      ],
+      "AR/AS 270 2018-3": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2015-1": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2015-3": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2016-1": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2016-3": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2017-1": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2017-3": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2018-1": [
+        "asian_elective"
+      ],
+      "AR/AS 310 2018-3": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2015-1": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2015-3": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2016-1": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2016-3": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2017-1": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2017-3": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2018-1": [
+        "asian_elective"
+      ],
+      "AS/ES 277 2018-3": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2015-1": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2015-3": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2016-1": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2016-3": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2017-1": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2017-3": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2018-1": [
+        "asian_elective"
+      ],
+      "AS/HI 250 2018-3": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2015-1": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2015-3": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2016-1": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2016-3": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2017-1": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2017-3": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2018-1": [
+        "asian_elective"
+      ],
+      "AS/HI 251 2018-3": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2015-1": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2015-3": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2016-1": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2016-3": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2017-1": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2017-3": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2018-1": [
+        "asian_elective"
+      ],
+      "AS/HI 252 2018-3": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2015-1": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2015-3": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2016-1": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2016-3": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2017-1": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2017-3": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2018-1": [
+        "asian_elective"
+      ],
+      "AS/HI 253 2018-3": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2015-1": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2015-3": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2016-1": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2016-3": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2017-1": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2017-3": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2018-1": [
+        "asian_elective"
+      ],
+      "AS/HI 262 2018-3": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2015-1": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2015-3": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2016-1": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2016-3": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2017-1": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2017-3": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2018-1": [
+        "asian_elective"
+      ],
+      "AS/HI 345 2018-3": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2015-1": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2015-3": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2016-1": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2016-3": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2017-1": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2017-3": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2018-1": [
+        "asian_elective"
+      ],
+      "AS/PH 251 2018-3": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2015-1": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2015-3": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2016-1": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2016-3": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2017-1": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2017-3": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2018-1": [
+        "asian_elective"
+      ],
+      "AS/PS 245 2018-3": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2015-1": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2015-3": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2016-1": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2016-3": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2017-1": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2017-3": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2018-1": [
+        "asian_elective"
+      ],
+      "AS/PS 250 2018-3": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2015-1": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2015-3": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2016-1": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2016-3": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2017-1": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2017-3": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2018-1": [
+        "asian_elective"
+      ],
+      "AS/RE 253 2018-3": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2015-1": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2015-3": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2016-1": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2016-3": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2017-1": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2017-3": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2018-1": [
+        "asian_elective"
+      ],
+      "AS/RE 254 2018-3": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2015-1": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2015-3": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2016-1": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2016-3": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2017-1": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2017-3": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2018-1": [
+        "asian_elective"
+      ],
+      "AS/RE 256 2018-3": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2015-1": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2015-3": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2016-1": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2016-3": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2017-1": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2017-3": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2018-1": [
+        "asian_elective"
+      ],
+      "AS/RE 257 2018-3": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2015-1": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2015-3": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2016-1": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2016-3": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2017-1": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2017-3": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2018-1": [
+        "asian_elective"
+      ],
+      "AS/RE 289 2018-3": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2015-1": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2015-3": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2016-1": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2016-3": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2017-1": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2017-3": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2018-1": [
+        "asian_elective"
+      ],
+      "AS/SA 239 2018-3": [
+        "asian_elective"
+      ],
+      "ECON 218 2015-1": [
+        "asian_elective"
+      ],
+      "ECON 218 2015-3": [
+        "asian_elective"
+      ],
+      "ECON 218 2016-1": [
+        "asian_elective"
+      ],
+      "ECON 218 2016-3": [
+        "asian_elective"
+      ],
+      "ECON 218 2017-1": [
+        "asian_elective"
+      ],
+      "ECON 218 2017-3": [
+        "asian_elective"
+      ],
+      "ECON 218 2018-1": [
+        "asian_elective"
+      ],
+      "ECON 218 2018-3": [
+        "asian_elective"
+      ],
+      "ECON 238 2015-1": [
+        "asian_elective"
+      ],
+      "ECON 238 2015-3": [
+        "asian_elective"
+      ],
+      "ECON 238 2016-1": [
+        "asian_elective"
+      ],
+      "ECON 238 2016-3": [
+        "asian_elective"
+      ],
+      "ECON 238 2017-1": [
+        "asian_elective"
+      ],
+      "ECON 238 2017-3": [
+        "asian_elective"
+      ],
+      "ECON 238 2018-1": [
+        "asian_elective"
+      ],
+      "ECON 238 2018-3": [
+        "asian_elective"
+      ],
+      "HIST 240 2015-1": [
+        "asian_elective"
+      ],
+      "HIST 240 2015-3": [
+        "asian_elective"
+      ],
+      "HIST 240 2016-1": [
+        "asian_elective"
+      ],
+      "HIST 240 2016-3": [
+        "asian_elective"
+      ],
+      "HIST 240 2017-1": [
+        "asian_elective"
+      ],
+      "HIST 240 2017-3": [
+        "asian_elective"
+      ],
+      "HIST 240 2018-1": [
+        "asian_elective"
+      ],
+      "HIST 240 2018-3": [
+        "asian_elective"
+      ],
+      "PHIL 127 2015-1": [
+        "asian_elective"
+      ],
+      "PHIL 127 2015-3": [
+        "asian_elective"
+      ],
+      "PHIL 127 2016-1": [
+        "asian_elective"
+      ],
+      "PHIL 127 2016-3": [
+        "asian_elective"
+      ],
+      "PHIL 127 2017-1": [
+        "asian_elective"
+      ],
+      "PHIL 127 2017-3": [
+        "asian_elective"
+      ],
+      "PHIL 127 2018-1": [
+        "asian_elective"
+      ],
+      "PHIL 127 2018-3": [
+        "asian_elective"
+      ]
+    }
+  }
 }

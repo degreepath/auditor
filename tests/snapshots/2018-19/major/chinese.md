@@ -49,50 +49,13 @@ For this section, you must do all of the following:
 - in the subset “Allowed Courses”, there must be at least one course taken at the 300 level
 
 ### China-focused
-For this requirement, you must take one of the following courses:
-
-- ART 259
-- ASIAN 156
-- ASIAN 236
-- ASIAN 237
-- ASIAN 270
-- HIST 250
-- HIST 251
-- HIST 262
+For this requirement, you must have at least one course taken with the “china_focused_on_china” `attributes` attribute.
 
 ### Comparative
-For this requirement, you must take one of the following courses:
-
-- ASIAN 121
-- ASIAN 123
-- ASIAN 200
-- ASIAN 210
-- ASIAN 215
-- ASIAN 216
-- ASIAN 220
-- ASIAN 268
-- ASIAN 282
-- ASIAN 300
-- ASIAN 310
-- ASIAN 333
-- ASIAN 397
-- ASIAN 399
-- AS/PS 255
-- AS/RE 256
-- AS/RE 257
-- AS/RE 289
-- HIST 345
-- PHIL 251
-- PSCI 245
+For this requirement, you must have at least one course taken with the “china_comparative_asia” `attributes` attribute.
 
 
 ## FLAC
-For this requirement, you must take one of the following courses:
-
-- ASIAN 156
-- ASIAN 237
-- ASIAN 270
-- HIST 250
-- HIST 251
+For this requirement, you must have at least one course taken with the “china_flac” `attributes` attribute.
 
 

@@ -1,5 +1,5 @@
 {
-  "name": "Chinese",
+  "name": "Japanese",
   "type": "major",
   "degree": "Bachelor of Arts",
   "catalog": "2018-19",
@@ -61,6 +61,9 @@
         "of": [
           {
             "course": "JAPAN 320"
+          },
+          {
+            "course": "JAPAN 350"
           }
         ],
         "surplus": null,
@@ -169,35 +172,28 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "count": 1,
-            "of": [
-              {
-                "course": "ART 260"
-              },
-              {
-                "course": "ASIAN 126"
-              },
-              {
-                "course": "ASIAN 130"
-              },
-              {
-                "course": "ASIAN 230"
-              },
-              {
-                "course": "ASIAN 235"
-              },
-              {
-                "course": "AS/ES 377"
-              },
-              {
-                "course": "HIST 252"
-              },
-              {
-                "course": "HIST 253"
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "attributes": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "japan_focused_on_japan"
+                  }
+                }
               }
-            ],
-            "surplus": null,
-            "limit": null
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
           },
           "contract": false,
           "save": [],
@@ -207,84 +203,15 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "count": 1,
-            "of": [
-              {
-                "course": "ASIAN 121"
-              },
-              {
-                "course": "ASIAN 123"
-              },
-              {
-                "course": "ASIAN 200"
-              },
-              {
-                "course": "ASIAN 210"
-              },
-              {
-                "course": "ASIAN 215"
-              },
-              {
-                "course": "ASIAN 216"
-              },
-              {
-                "course": "ASIAN 220"
-              },
-              {
-                "course": "ASIAN 240"
-              },
-              {
-                "course": "ASIAN 268"
-              },
-              {
-                "course": "ASIAN 282"
-              },
-              {
-                "course": "ASIAN 300"
-              },
-              {
-                "course": "ASIAN 310"
-              },
-              {
-                "course": "ASIAN 333"
-              },
-              {
-                "course": "ASIAN 397"
-              },
-              {
-                "course": "ASIAN 399"
-              },
-              {
-                "course": "AS/PS 255"
-              },
-              {
-                "course": "AS/RE 256"
-              },
-              {
-                "course": "AS/RE 257"
-              },
-              {
-                "course": "AS/RE 289"
-              },
-              {
-                "course": "HIST 345"
-              },
-              {
-                "course": "PHIL 251"
-              },
-              {
-                "course": "PSCI 245"
-              }
-            ],
-            "surplus": null,
+            "given": "courses",
             "limit": [
               {
                 "where": {
-                  "japan_kind": {
+                  "attributes": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
-                        "String": "asiancon"
+                        "String": "japan_asiancon"
                       }
                     }
                   }
@@ -293,18 +220,18 @@
               },
               {
                 "where": {
-                  "japan_kind": {
+                  "attributes": {
                     "Or": [
                       {
                         "op": "EqualTo",
                         "value": {
-                          "String": "independent-study"
+                          "String": "japan_independent_study"
                         }
                       },
                       {
                         "op": "EqualTo",
                         "value": {
-                          "String": "senior-seminar"
+                          "String": "japan_seminar"
                         }
                       }
                     ]
@@ -312,7 +239,27 @@
                 },
                 "at_most": 1
               }
-            ]
+            ],
+            "where": {
+              "attributes": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "japan_comparative_asia"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
           },
           "contract": false,
           "save": [],
@@ -324,10 +271,28 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
-        "of": [],
-        "surplus": null,
-        "limit": null
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "japan_flac"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -335,39 +300,113 @@
     }
   },
   "attributes": {
-    "defaults": {
-      "may count for multiple requirements": false
-    },
-    "definitions": {
-      "japan_kind": {
-        "type": "string"
-      }
-    },
+    "multicountable": [],
     "courses": {
-      "ASIAN 210": {
-        "japan_kind": "asiancon"
-      },
-      "ASIAN 215": {
-        "japan_kind": "asiancon"
-      },
-      "ASIAN 216": {
-        "japan_kind": "asiancon"
-      },
-      "ASIAN 220": {
-        "japan_kind": "asiancon"
-      },
-      "ASIAN 397": {
-        "japan_kind": "senior-seminar"
-      },
-      "ASIAN 399": {
-        "japan_kind": "senior-seminar"
-      },
-      "ASIAN 298": {
-        "japan_kind": "independent-study"
-      },
-      "ASIAN 398": {
-        "japan_kind": "independent-study"
-      }
+      "ART 260": [
+        "japan_focused_on_japan"
+      ],
+      "AS/ES 377": [
+        "japan_focused_on_japan"
+      ],
+      "AS/PS 255": [
+        "japan_comparative_asia"
+      ],
+      "AS/RE 256": [
+        "japan_comparative_asia"
+      ],
+      "AS/RE 257": [
+        "japan_comparative_asia"
+      ],
+      "AS/RE 289": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 121": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 123": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 126": [
+        "japan_focused_on_japan"
+      ],
+      "ASIAN 130": [
+        "japan_focused_on_japan"
+      ],
+      "ASIAN 200": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 210": [
+        "japan_comparative_asia",
+        "japan_asiancon"
+      ],
+      "ASIAN 215": [
+        "japan_comparative_asia",
+        "japan_asiancon"
+      ],
+      "ASIAN 216": [
+        "japan_comparative_asia",
+        "japan_asiancon"
+      ],
+      "ASIAN 220": [
+        "japan_comparative_asia",
+        "japan_asiancon"
+      ],
+      "ASIAN 230": [
+        "japan_focused_on_japan"
+      ],
+      "ASIAN 235": [
+        "japan_focused_on_japan"
+      ],
+      "ASIAN 240": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 268": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 282": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 298": [
+        "japan_independent_study"
+      ],
+      "ASIAN 300": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 310": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 333": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 397": [
+        "japan_comparative_asia",
+        "japan_seminar"
+      ],
+      "ASIAN 398": [
+        "japan_independent_study"
+      ],
+      "ASIAN 399": [
+        "japan_comparative_asia",
+        "japan_seminar"
+      ],
+      "HIST 252": [
+        "japan_focused_on_japan"
+      ],
+      "HIST 253": [
+        "japan_focused_on_japan"
+      ],
+      "HIST 345": [
+        "japan_comparative_asia"
+      ],
+      "PHIL 251": [
+        "japan_comparative_asia"
+      ],
+      "PSCI 245": [
+        "japan_comparative_asia"
+      ],
+      "ASIAN 001A.F": [
+        "japan_flac"
+      ]
     }
   }
 }

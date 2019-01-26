@@ -175,35 +175,28 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "count": 1,
-            "of": [
-              {
-                "course": "ART 259"
-              },
-              {
-                "course": "ASIAN 156"
-              },
-              {
-                "course": "ASIAN 236"
-              },
-              {
-                "course": "ASIAN 237"
-              },
-              {
-                "course": "ASIAN 270"
-              },
-              {
-                "course": "HIST 250"
-              },
-              {
-                "course": "HIST 251"
-              },
-              {
-                "course": "HIST 262"
+            "given": "courses",
+            "limit": null,
+            "where": {
+              "attributes": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "china_focused_on_china"
+                  }
+                }
               }
-            ],
-            "surplus": null,
-            "limit": null
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
           },
           "contract": false,
           "save": [],
@@ -213,81 +206,15 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "count": 1,
-            "of": [
-              {
-                "course": "ASIAN 121"
-              },
-              {
-                "course": "ASIAN 123"
-              },
-              {
-                "course": "ASIAN 200"
-              },
-              {
-                "course": "ASIAN 210"
-              },
-              {
-                "course": "ASIAN 215"
-              },
-              {
-                "course": "ASIAN 216"
-              },
-              {
-                "course": "ASIAN 220"
-              },
-              {
-                "course": "ASIAN 268"
-              },
-              {
-                "course": "ASIAN 282"
-              },
-              {
-                "course": "ASIAN 300"
-              },
-              {
-                "course": "ASIAN 310"
-              },
-              {
-                "course": "ASIAN 333"
-              },
-              {
-                "course": "ASIAN 397"
-              },
-              {
-                "course": "ASIAN 399"
-              },
-              {
-                "course": "AS/PS 255"
-              },
-              {
-                "course": "AS/RE 256"
-              },
-              {
-                "course": "AS/RE 257"
-              },
-              {
-                "course": "AS/RE 289"
-              },
-              {
-                "course": "HIST 345"
-              },
-              {
-                "course": "PHIL 251"
-              },
-              {
-                "course": "PSCI 245"
-              }
-            ],
-            "surplus": null,
+            "given": "courses",
             "limit": [
               {
                 "where": {
-                  "chin_kind": {
+                  "attributes": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
-                        "String": "asiancon"
+                        "String": "china_asiancon"
                       }
                     }
                   }
@@ -296,18 +223,18 @@
               },
               {
                 "where": {
-                  "chin_kind": {
+                  "attributes": {
                     "Or": [
                       {
                         "op": "EqualTo",
                         "value": {
-                          "String": "independent-study"
+                          "String": "china_independent_study"
                         }
                       },
                       {
                         "op": "EqualTo",
                         "value": {
-                          "String": "senior-seminar"
+                          "String": "china_seminar"
                         }
                       }
                     ]
@@ -315,7 +242,27 @@
                 },
                 "at_most": 1
               }
-            ]
+            ],
+            "where": {
+              "attributes": {
+                "Single": {
+                  "op": "EqualTo",
+                  "value": {
+                    "String": "china_comparative_asia"
+                  }
+                }
+              }
+            },
+            "what": "courses",
+            "do": {
+              "lhs": {
+                "Command": "Count"
+              },
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 1
+              }
+            }
           },
           "contract": false,
           "save": [],
@@ -327,26 +274,28 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "ASIAN 156"
-          },
-          {
-            "course": "ASIAN 237"
-          },
-          {
-            "course": "ASIAN 270"
-          },
-          {
-            "course": "HIST 250"
-          },
-          {
-            "course": "HIST 251"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "china_flac"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -354,39 +303,122 @@
     }
   },
   "attributes": {
-    "defaults": {
-      "may count for multiple requirements": false
-    },
-    "definitions": {
-      "chin_kind": {
-        "type": "string"
-      }
-    },
+    "multicountable": [],
     "courses": {
-      "ASIAN 210": {
-        "chin_kind": "asiancon"
-      },
-      "ASIAN 215": {
-        "chin_kind": "asiancon"
-      },
-      "ASIAN 216": {
-        "chin_kind": "asiancon"
-      },
-      "ASIAN 220": {
-        "chin_kind": "asiancon"
-      },
-      "ASIAN 397": {
-        "chin_kind": "senior-seminar"
-      },
-      "ASIAN 399": {
-        "chin_kind": "senior-seminar"
-      },
-      "ASIAN 298": {
-        "chin_kind": "independent-study"
-      },
-      "ASIAN 398": {
-        "chin_kind": "independent-study"
-      }
+      "ART 259": [
+        "china_focused_on_china"
+      ],
+      "AS/PS 255": [
+        "china_comparative_asia"
+      ],
+      "AS/RE 256": [
+        "china_comparative_asia"
+      ],
+      "AS/RE 257": [
+        "china_comparative_asia"
+      ],
+      "AS/RE 289": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 121": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 123": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 156.F": [
+        "china_flac"
+      ],
+      "ASIAN 156": [
+        "china_focused_on_china"
+      ],
+      "ASIAN 200": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 210": [
+        "china_comparative_asia",
+        "china_asiancon"
+      ],
+      "ASIAN 215": [
+        "china_comparative_asia",
+        "china_asiancon"
+      ],
+      "ASIAN 216": [
+        "china_comparative_asia",
+        "china_asiancon"
+      ],
+      "ASIAN 220": [
+        "china_comparative_asia",
+        "china_asiancon"
+      ],
+      "ASIAN 236": [
+        "china_focused_on_china"
+      ],
+      "ASIAN 237.F": [
+        "china_flac"
+      ],
+      "ASIAN 237": [
+        "china_focused_on_china"
+      ],
+      "ASIAN 268": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 270.F": [
+        "china_flac"
+      ],
+      "ASIAN 270": [
+        "china_focused_on_china"
+      ],
+      "ASIAN 282": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 298": [
+        "china_independent_study"
+      ],
+      "ASIAN 300": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 310": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 333": [
+        "china_comparative_asia"
+      ],
+      "ASIAN 397": [
+        "china_comparative_asia",
+        "china_senior_seminar"
+      ],
+      "ASIAN 398": [
+        "china_independent_study"
+      ],
+      "ASIAN 399": [
+        "china_comparative_asia",
+        "china_senior_seminar"
+      ],
+      "HIST 250.F": [
+        "china_flac"
+      ],
+      "HIST 250": [
+        "china_focused_on_china"
+      ],
+      "HIST 251.F": [
+        "china_flac"
+      ],
+      "HIST 251": [
+        "china_focused_on_china"
+      ],
+      "HIST 262": [
+        "china_focused_on_china"
+      ],
+      "HIST 345": [
+        "china_comparative_asia"
+      ],
+      "PHIL 251": [
+        "china_comparative_asia"
+      ],
+      "PSCI 245": [
+        "china_comparative_asia"
+      ]
     }
   }
 }

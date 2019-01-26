@@ -1,7 +1,7 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Chinese”
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Japanese”
 > major from St. Olaf College.
 
-# Chinese
+# Japanese
 > todo: this area has custom attributes defined.
 
 For this major, you must complete all of the following requirements:
@@ -21,7 +21,7 @@ For this requirement, you must take all of the following courses:
 
 
 ## Upper-Level Language
-For this requirement, you must take JAPAN 320.
+For this requirement, you must take both JAPAN 320 and JAPAN 350.
 
 
 ## Language and Culture
@@ -49,45 +49,13 @@ For this section, you must do all of the following:
 - in the subset “Allowed Courses”, there must be at least one course taken at the 300 level
 
 ### Japan-focused
-For this requirement, you must take one of the following courses:
-
-- ART 260
-- ASIAN 126
-- ASIAN 130
-- ASIAN 230
-- ASIAN 235
-- AS/ES 377
-- HIST 252
-- HIST 253
+For this requirement, you must have at least one course taken with the “japan_focused_on_japan” `attributes` attribute.
 
 ### Comparative
-For this requirement, you must take one of the following courses:
-
-- ASIAN 121
-- ASIAN 123
-- ASIAN 200
-- ASIAN 210
-- ASIAN 215
-- ASIAN 216
-- ASIAN 220
-- ASIAN 240
-- ASIAN 268
-- ASIAN 282
-- ASIAN 300
-- ASIAN 310
-- ASIAN 333
-- ASIAN 397
-- ASIAN 399
-- AS/PS 255
-- AS/RE 256
-- AS/RE 257
-- AS/RE 289
-- HIST 345
-- PHIL 251
-- PSCI 245
+For this requirement, you must have at least one course taken with the “japan_comparative_asia” `attributes` attribute.
 
 
 ## FLAC
-For this requirement, you must complete one requirement from among .
+For this requirement, you must have at least one course taken with the “japan_flac” `attributes` attribute.
 
 

@@ -25,32 +25,12 @@ For this section, you must do all of the following:
 - complete the “Level III” requirement
 - have the following be true:
     1. given the results of the “Level II” and “Level III” requirements,
-    2. there must be at least two courses
+    2. there must be at least four courses
 
 ### Level II
-For this requirement, you must take one of the following courses:
-
-- ECON 200
-- ECON 210
-- ECON 218
-- ECON 220
-- ECON 222
-- ECON 242
-- ECON 243
-- ECON 245
-- ECON 247
-- ECON 249
+For this requirement, you must have at least one course taken with the “econ_level_2” `attributes` attribute.
 
 ### Level III
-For this requirement, you must take two of the following courses:
-
-- ECON 371
-- ECON 372
-- ECON 373
-- ECON 374
-- ECON 376
-- ECON 382
-- ECON 385
-- ECON 399
+For this requirement, you must have at least two courses taken with the “econ_level_3” `attributes` attribute.
 
 

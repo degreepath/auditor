@@ -21,36 +21,7 @@ For this requirement, you must take ART 350.
 
 
 ## Studio Art
-For this requirement, you must take one of the following courses:
-
-- ART 102
-- ART 103
-- ART 104
-- ART 106
-- ART 205
-- ART 207
-- ART 221
-- ART 222
-- ART 223
-- ART 224
-- ART 225
-- ART 226
-- ART 227
-- ART 228
-- ART 229
-- ART 232
-- ART 233
-- ART 234
-- ART 236
-- ART 238
-- ART 240
-- ART 246
-- ART 294
-- ART 298
-- ART 340
-- ART 343
-- ART 394
-- ART 398
+For this requirement, you must have at least one course taken with the “art_studio_art” `attributes` attribute.
 
 
 ## Distribution
@@ -76,16 +47,16 @@ For this section, you must both:
     2. there must be at least six courses
 
 ### Asian, African, Indigenous American, or Near Eastern/Islamic Art
-For this requirement, you must have at least two courses taken with either the asian, african, indigenous-american, or near-eastern `art_locale` attribute.
+For this requirement, you must have at least two courses taken with either the art_locale_asian, art_locale_african, art_locale_indigenous_american, or art_locale_near_eastern `attributes` attribute.
 
 ### European and American Art
-For this requirement, you must have at least two courses taken with either the european or american `art_locale` attribute.
+For this requirement, you must have at least two courses taken with either the art_locale_european or art_locale_american `attributes` attribute.
 
 ### Art created before 1700 CE
-For this requirement, you must have at least one course taken with the “pre-1700” `art_period` attribute.
+For this requirement, you must have at least one course taken with the “art_period_pre1700” `attributes` attribute.
 
 ### Art created after 1700 CE
-For this requirement, you must have at least one course taken with the “post-1700” `art_period` attribute.
+For this requirement, you must have at least one course taken with the “art_period_post1700” `attributes` attribute.
 
 
 ## Lasting Legacy

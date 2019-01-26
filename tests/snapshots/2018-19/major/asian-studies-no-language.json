@@ -23,19 +23,28 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "either": [
-          {
-            "course": "ASIAN 397"
-          },
-          {
-            "course": "ASIAN 399"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "asian_seminar"
+              }
+            }
           }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".courses"
-        ]
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
       "save": [],
@@ -45,184 +54,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "these courses",
-        "courses": [
-          {
-            "course": "ASIAN 121"
-          },
-          {
-            "course": "ASIAN 123"
-          },
-          {
-            "course": "ASIAN 126"
-          },
-          {
-            "course": "ASIAN 130"
-          },
-          {
-            "course": "ASIAN 156"
-          },
-          {
-            "course": "ASIAN 200"
-          },
-          {
-            "course": "ASIAN 210"
-          },
-          {
-            "course": "ASIAN 215"
-          },
-          {
-            "course": "ASIAN 216"
-          },
-          {
-            "course": "ASIAN 220"
-          },
-          {
-            "course": "ASIAN 230"
-          },
-          {
-            "course": "ASIAN 235"
-          },
-          {
-            "course": "ASIAN 236"
-          },
-          {
-            "course": "ASIAN 237"
-          },
-          {
-            "course": "ASIAN 240"
-          },
-          {
-            "course": "ASIAN 268"
-          },
-          {
-            "course": "ASIAN 294"
-          },
-          {
-            "course": "ASIAN 298"
-          },
-          {
-            "course": "ASIAN 300"
-          },
-          {
-            "course": "ASIAN 384"
-          },
-          {
-            "course": "ASIAN 396"
-          },
-          {
-            "course": "ASIAN 398"
-          },
-          {
-            "course": "AR/AS 259"
-          },
-          {
-            "course": "AR/AS 260"
-          },
-          {
-            "course": "AR/AS 262"
-          },
-          {
-            "course": "AR/AS 270"
-          },
-          {
-            "course": "AR/AS 310"
-          },
-          {
-            "course": "AS/ES 277"
-          },
-          {
-            "course": "AS/HI 250"
-          },
-          {
-            "course": "AS/HI 251"
-          },
-          {
-            "course": "AS/HI 252"
-          },
-          {
-            "course": "AS/HI 253"
-          },
-          {
-            "course": "AS/HI 262"
-          },
-          {
-            "course": "AS/HI 345"
-          },
-          {
-            "course": "AS/PH 251"
-          },
-          {
-            "course": "AS/PS 245"
-          },
-          {
-            "course": "AS/PS 250"
-          },
-          {
-            "course": "AS/RE 253"
-          },
-          {
-            "course": "AS/RE 254"
-          },
-          {
-            "course": "AS/RE 256"
-          },
-          {
-            "course": "AS/RE 257"
-          },
-          {
-            "course": "AS/RE 289"
-          },
-          {
-            "course": "AS/SA 239"
-          },
-          {
-            "course": "CHIN 301"
-          },
-          {
-            "course": "CHIN 302"
-          },
-          {
-            "course": "CHIN 320"
-          },
-          {
-            "course": "CHIN 351"
-          },
-          {
-            "course": "CHIN 394"
-          },
-          {
-            "course": "CHIN 398"
-          },
-          {
-            "course": "JAPAN 301"
-          },
-          {
-            "course": "JAPAN 302"
-          },
-          {
-            "course": "JAPAN 320"
-          },
-          {
-            "course": "JAPAN 394"
-          },
-          {
-            "course": "JAPAN 398"
-          },
-          {
-            "course": "ECON 218"
-          },
-          {
-            "course": "ECON 238"
-          },
-          {
-            "course": "HIST 240"
-          },
-          {
-            "course": "PHIL 127"
-          }
-        ],
-        "repeats": "first",
+        "given": "courses",
         "limit": [
           {
             "where": {
@@ -239,11 +71,11 @@
           },
           {
             "where": {
-              "asian_region": {
+              "attributes": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "china"
+                    "String": "asian_region_china"
                   }
                 }
               }
@@ -252,11 +84,11 @@
           },
           {
             "where": {
-              "asian_region": {
+              "attributes": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
-                    "String": "japan"
+                    "String": "asian_region_japan"
                   }
                 }
               }
@@ -293,7 +125,16 @@
             "at_most": 5
           }
         ],
-        "where": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "asian_elective"
+              }
+            }
+          }
+        },
         "what": "courses",
         "do": {
           "lhs": {
@@ -311,86 +152,213 @@
     }
   },
   "attributes": {
-    "defaults": {
-      "may count for multiple requirements": false
-    },
-    "definitions": {
-      "asian_region": {
-        "type": "array",
-        "multiple values can be used": false
-      }
-    },
+    "multicountable": [],
     "courses": {
-      "CHIN 231": {
-        "asian_region": [
-          "china"
-        ]
-      },
-      "CHIN 232": {
-        "asian_region": [
-          "china"
-        ]
-      },
-      "CHIN 301": {
-        "asian_region": [
-          "china"
-        ]
-      },
-      "CHIN 302": {
-        "asian_region": [
-          "china"
-        ]
-      },
-      "CHIN 320": {
-        "asian_region": [
-          "china"
-        ]
-      },
-      "CHIN 351": {
-        "asian_region": [
-          "china"
-        ]
-      },
-      "JAPAN 231": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "JAPAN 232": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "JAPAN 301": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "JAPAN 302": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "JAPAN 320": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "ASIAN 268 2012-3": {
-        "asian_region": [
-          "china"
-        ]
-      },
-      "ASIAN 240": {
-        "asian_region": [
-          "japan"
-        ]
-      },
-      "ASIAN 230 <=2014-5": {
-        "asian_region": [
-          "japan"
-        ]
-      }
+      "AR/AS 259": [
+        "asian_elective"
+      ],
+      "AR/AS 260": [
+        "asian_elective"
+      ],
+      "AR/AS 262": [
+        "asian_elective"
+      ],
+      "AR/AS 270": [
+        "asian_elective"
+      ],
+      "AR/AS 310": [
+        "asian_elective"
+      ],
+      "AS/ES 277": [
+        "asian_elective"
+      ],
+      "AS/HI 250": [
+        "asian_elective"
+      ],
+      "AS/HI 251": [
+        "asian_elective"
+      ],
+      "AS/HI 252": [
+        "asian_elective"
+      ],
+      "AS/HI 253": [
+        "asian_elective"
+      ],
+      "AS/HI 262": [
+        "asian_elective"
+      ],
+      "AS/HI 345": [
+        "asian_elective"
+      ],
+      "AS/PH 251": [
+        "asian_elective"
+      ],
+      "AS/PS 245": [
+        "asian_elective"
+      ],
+      "AS/PS 250": [
+        "asian_elective"
+      ],
+      "AS/RE 253": [
+        "asian_elective"
+      ],
+      "AS/RE 254": [
+        "asian_elective"
+      ],
+      "AS/RE 256": [
+        "asian_elective"
+      ],
+      "AS/RE 257": [
+        "asian_elective"
+      ],
+      "AS/RE 289": [
+        "asian_elective"
+      ],
+      "AS/SA 239": [
+        "asian_elective"
+      ],
+      "ASIAN 121": [
+        "asian_elective"
+      ],
+      "ASIAN 123": [
+        "asian_elective"
+      ],
+      "ASIAN 126": [
+        "asian_elective"
+      ],
+      "ASIAN 130": [
+        "asian_elective"
+      ],
+      "ASIAN 156": [
+        "asian_elective"
+      ],
+      "ASIAN 200": [
+        "asian_elective"
+      ],
+      "ASIAN 210": [
+        "asian_elective"
+      ],
+      "ASIAN 215": [
+        "asian_elective"
+      ],
+      "ASIAN 216": [
+        "asian_elective"
+      ],
+      "ASIAN 220": [
+        "asian_elective"
+      ],
+      "ASIAN 230": [
+        "asian_elective"
+      ],
+      "ASIAN 235": [
+        "asian_elective"
+      ],
+      "ASIAN 236": [
+        "asian_elective"
+      ],
+      "ASIAN 237": [
+        "asian_elective"
+      ],
+      "ASIAN 240": [
+        "asian_elective"
+      ],
+      "ASIAN 268": [
+        "asian_elective"
+      ],
+      "ASIAN 294": [
+        "asian_elective"
+      ],
+      "ASIAN 298": [
+        "asian_elective"
+      ],
+      "ASIAN 300": [
+        "asian_elective"
+      ],
+      "ASIAN 384": [
+        "asian_elective"
+      ],
+      "ASIAN 396": [
+        "asian_elective"
+      ],
+      "ASIAN 397": [
+        "asian_elective",
+        "asian_seminar"
+      ],
+      "ASIAN 398": [
+        "asian_elective"
+      ],
+      "ASIAN 399": [
+        "asian_elective",
+        "asian_seminar"
+      ],
+      "CHIN 231": [
+        "asian_elective",
+        "asian_region_china"
+      ],
+      "CHIN 232": [
+        "asian_elective",
+        "asian_region_china"
+      ],
+      "CHIN 301": [
+        "asian_elective",
+        "asian_region_china"
+      ],
+      "CHIN 302": [
+        "asian_elective",
+        "asian_region_china"
+      ],
+      "CHIN 320": [
+        "asian_elective",
+        "asian_region_china"
+      ],
+      "CHIN 351": [
+        "asian_elective",
+        "asian_region_china"
+      ],
+      "CHIN 394": [
+        "asian_elective"
+      ],
+      "CHIN 398": [
+        "asian_elective"
+      ],
+      "ECON 218": [
+        "asian_elective"
+      ],
+      "ECON 238": [
+        "asian_elective"
+      ],
+      "HIST 240": [
+        "asian_elective"
+      ],
+      "JAPAN 231": [
+        "asian_elective",
+        "asian_region_japan"
+      ],
+      "JAPAN 232": [
+        "asian_elective",
+        "asian_region_japan"
+      ],
+      "JAPAN 301": [
+        "asian_elective",
+        "asian_region_japan"
+      ],
+      "JAPAN 302": [
+        "asian_elective",
+        "asian_region_japan"
+      ],
+      "JAPAN 320": [
+        "asian_elective",
+        "asian_region_japan"
+      ],
+      "JAPAN 394": [
+        "asian_elective"
+      ],
+      "JAPAN 398": [
+        "asian_elective"
+      ],
+      "PHIL 127": [
+        "asian_elective"
+      ]
     }
   }
 }
