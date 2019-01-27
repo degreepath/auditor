@@ -252,6 +252,10 @@ impl Rule {
 
 impl print::Print for Rule {
 	fn print(&self) -> print::Result {
+		if self.of.len() == 0 {
+			return Ok(String::from("warning: no items to choose from"));
+		}
+
 		if self.is_single() {
 			return self.print_singleton();
 		}

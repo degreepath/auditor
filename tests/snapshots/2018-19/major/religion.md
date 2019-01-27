@@ -23,7 +23,7 @@ For this requirement, you must take REL 285.
 ## Religious Dimensions
 > Note: TODO. Not yet completed. At all.
 
-For this requirement, you must complete one requirement from among .
+For this requirement, you must warning: no items to choose from.
 
 
 ## Intensive Studies
