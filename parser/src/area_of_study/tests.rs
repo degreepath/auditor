@@ -49,6 +49,7 @@ requirements:
 			degree: "Bachelor of Arts".to_string(),
 		},
 		catalog: "2015-16".to_string(),
+		institution: None,
 		result: Rule::CountOf(count_of::Rule {
 			count: count_of::Counter::All,
 			of: vec![
