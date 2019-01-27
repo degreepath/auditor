@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2015-16 “Bachelor of Music” degree
-> from St. Olaf College.
+> This is the set of requirements for the 2015-16 “Bachelor of Music” degree from St. Olaf College.
 
 # Bachelor of Music
 For this degree, you must complete both the “Degree Requirements” and “General Education” requirements.

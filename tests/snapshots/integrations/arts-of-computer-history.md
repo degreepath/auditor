@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Arts of
-> Computer History” major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Arts of Computer History” major from St. Olaf College.
 
 # Arts of Computer History
 For this major, you must do all of the following:
@@ -11,9 +10,7 @@ For this major, you must do all of the following:
     2. there must be at least six credits
 
 ## History
-> Note: Designed to showcase ideas from the past, both good and bad, and to give
-> you a mental framework about how to evaluate future ideas. "Those who do not
-> learn from the past are doomed to repeat it."
+> Note: Designed to showcase ideas from the past, both good and bad, and to give you a mental framework about how to evaluate future ideas. "Those who do not learn from the past are doomed to repeat it."
 
 For this section, you must do all of the following:
 

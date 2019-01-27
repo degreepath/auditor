@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Ancient
-> Studies” major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Ancient Studies” major from St. Olaf College.
 
 # Ancient Studies
 For this major, you must complete all of the following requirements:
@@ -55,10 +54,7 @@ For this requirement, you must have at least one course taken within the CLASS d
 
 
 ## Electives
-> Note: 1 course in Greek may be used as an elective if the student satisfies
-> the required language portion of the major with Latin courses. 1 course in
-> Latin may be used as an elective if the student satisfies the required
-> language portion of the major with Greek courses.
+> Note: 1 course in Greek may be used as an elective if the student satisfies the required language portion of the major with Latin courses. 1 course in Latin may be used as an elective if the student satisfies the required language portion of the major with Greek courses.
 
 For this requirement, you must take four of the following courses:
 

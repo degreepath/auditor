@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “American
-> Studies” major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “American Studies” major from St. Olaf College.
 
 # American Studies
 For this major, you must complete both the “American Culture” and “Electives” requirements.

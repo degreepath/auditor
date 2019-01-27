@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Studio Art”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Studio Art” major from St. Olaf College.
 
 # Studio Art
 For this major, you must complete all of the following requirements:
@@ -77,13 +76,10 @@ For this requirement, you must take ART 236 (2000-0).
 
 
 ## Juried Show
-> Note: Majors must participate in two juried shows. To fulfill the the
-> requirements of the studio art major, you must either enter the student juried
-> show in spring semester twice, or enter our student juried show once and one
-> other non-class related exhibition on or off campus.
+> Note: Majors must participate in two juried shows. To fulfill the the requirements of the studio art major, you must either enter the student juried show in spring semester twice, or enter our student juried show once and one other non-class related exhibition on or off campus.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 
 ## Senior Studies in Studio Art
 For this requirement, you must take ART 343.
@@ -102,8 +98,7 @@ For this requirement, you must take one of the following courses:
 
 
 ## Art History
-> Note: The department strongly recommends that you take ART 252 or 253 as one
-> of your art history courses.
+> Note: The department strongly recommends that you take ART 252 or 253 as one of your art history courses.
 
 For this requirement, you must take two of the following courses:
 

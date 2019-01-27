@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Art History”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Art History” major from St. Olaf College.
 
 # Art History
 > todo: this area has custom attributes defined.
@@ -25,10 +24,7 @@ For this requirement, you must have at least one course taken with the “art_st
 
 
 ## Distribution
-> Note: At least two courses must focus on Asian, African, Indigenous American,
-> or Near Eastern/Islamic art; at least two courses must focus on American or
-> European art; one course must cover art created before 1700 CE; one must cover
-> art created after 1700 CE.
+> Note: At least two courses must focus on Asian, African, Indigenous American, or Near Eastern/Islamic art; at least two courses must focus on American or European art; one course must cover art created before 1700 CE; one must cover art created after 1700 CE.
 
 For this section, you must both:
 
@@ -60,9 +56,8 @@ For this requirement, you must have at least one course taken with the “art_pe
 
 
 ## Lasting Legacy
-> Note: Majors must successfully complete the non-credit, senior "lasting
-> legacy" project or its equivalent.
+> Note: Majors must successfully complete the non-credit, senior "lasting legacy" project or its equivalent.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 

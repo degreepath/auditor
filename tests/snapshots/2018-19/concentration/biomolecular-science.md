@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Biomolecular
-> Science” concentration from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Biomolecular Science” concentration from St. Olaf College.
 
 # Biomolecular Science
 For this concentration, you must complete “Core”, “Experiential Learning”, and “Electives”.
@@ -24,14 +23,10 @@ For this requirement, you must do all of the following:
 
 
 ## Experiential Learning
-> Note: Participation in an experimentally based research experience or
-> employment that takes biomolecular sciences beyond the traditional classroom
-> is required of each concentrator. This can occur either on- or off-campus.
-> This activity must be pre-approved by the Biomolecular Science Committee and
-> be supported after the fact by a letter from a supervisor.
+> Note: Participation in an experimentally based research experience or employment that takes biomolecular sciences beyond the traditional classroom is required of each concentrator. This can occur either on- or off-campus. This activity must be pre-approved by the Biomolecular Science Committee and be supported after the fact by a letter from a supervisor.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 
 ## Electives
 For this requirement, you must take two of the following courses:

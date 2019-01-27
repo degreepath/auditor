@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts
-> “Environmental Studies” major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Environmental Studies” major from St. Olaf College.
 
 # Environmental Studies
 For this major, you must complete both the “Major” and “Areas of Emphasis” requirements.

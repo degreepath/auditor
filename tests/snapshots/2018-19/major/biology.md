@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Biology”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Biology” major from St. Olaf College.
 
 # Biology
 > todo: this area has custom attributes defined.

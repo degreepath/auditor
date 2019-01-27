@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts
-> “Sociology/Anthropology” major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Sociology/Anthropology” major from St. Olaf College.
 
 # Sociology/Anthropology
 For this major, you must complete all of the following requirements:
@@ -39,8 +38,7 @@ For this requirement, you must take STAT 110.
 
 
 ## Electives
-> Note: Students are permitted to take one of the four elective courses, but not
-> a core course, S/U.
+> Note: Students are permitted to take one of the four elective courses, but not a core course, S/U.
 
 For this requirement, you must take at least four courses from among the following:
 

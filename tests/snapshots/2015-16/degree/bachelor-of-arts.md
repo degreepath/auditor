@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2015-16 “Bachelor of Arts” degree from
-> St. Olaf College.
+> This is the set of requirements for the 2015-16 “Bachelor of Arts” degree from St. Olaf College.
 
 # Bachelor of Arts
 For this degree, you must complete both the “Degree Requirements” and “General Education” requirements.
@@ -182,8 +181,7 @@ For this requirement, you must do all of the following:
 For this section, you must complete the “Ethical Issues and Normative Perspectives” requirement.
 
 #### Ethical Issues and Normative Perspectives
-> Note: To complete any EIN course, you must have either completed the BTS-T
-> requirement or have obtained permission of the EIN instructor beforehand.
+> Note: To complete any EIN course, you must have either completed the BTS-T requirement or have obtained permission of the EIN instructor beforehand.
 
 Given the subset of courses from your transcript, limited to only courses taken with the “BTS-T” general education attribute, as “first BTS-T course”:
 

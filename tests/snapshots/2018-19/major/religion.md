@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Religion”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Religion” major from St. Olaf College.
 
 # Religion
 For this major, you must complete all of the following requirements:

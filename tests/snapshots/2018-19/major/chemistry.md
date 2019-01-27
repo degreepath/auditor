@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Chemistry”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Chemistry” major from St. Olaf College.
 
 # Chemistry
 For this major, you must complete all of the following requirements:
@@ -67,9 +66,8 @@ For this requirement, you must take either MATH 126 or MATH 128.
 
 
 ## Seminars
-> Note: Attendance is required at 12 departmental seminars after declaration of
-> major.
+> Note: Attendance is required at 12 departmental seminars after declaration of major.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 

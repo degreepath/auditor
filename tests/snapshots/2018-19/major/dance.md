@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2014-15 Bachelor of Arts “Dance” major
-> from St. Olaf College.
+> This is the set of requirements for the 2014-15 Bachelor of Arts “Dance” major from St. Olaf College.
 
 # Dance
 For this major, you must complete all of the following requirements:
@@ -69,8 +68,7 @@ For this requirement, you must take one of the following courses:
 
 
 ## Senior Dance Seminar
-> Note: Must be taken fall of senior year. Final projects may take the form of a
-> research paper, performance, choreography, or blended project.
+> Note: Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.
 
 Given the intersection between this set of courses and the courses from your transcript, as “Senior Dance Seminars”:
 
@@ -82,25 +80,20 @@ For this requirement, you must in the subset “Senior Dance Seminars”, there 
 
 
 ## Area of Speciality
-> Note: Each student designs an individualized area of specialty derived from
-> their own interests and investigation. Select at least two credits from within
-> or outside the department.
+> Note: Each student designs an individualized area of specialty derived from their own interests and investigation. Select at least two credits from within or outside the department.
 
-This section is a Contract section. You must talk to the Department to fill out,
-file, and update the Contract.
+This section is a Contract section. You must talk to the Department to fill out, file, and update the Contract.
+
 
 ## Dance Companies
-> Note: Majors are required to participate in one of the dance companies
-> (Companydance™ or Veselica™ International Dance Ensemble) for a minimum of
-> three semesters.
+> Note: Majors are required to participate in one of the dance companies (Companydance™ or Veselica™ International Dance Ensemble) for a minimum of three semesters.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 
 ## Productions
-> Note: Majors are required to contribute in managing a dance production for a
-> minimum of one semester.
+> Note: Majors are required to contribute in managing a dance production for a minimum of one semester.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 

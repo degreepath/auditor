@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2015-16 Bachelor of Arts “Women's and
-> Gender Studies” major from St. Olaf College.
+> This is the set of requirements for the 2015-16 Bachelor of Arts “Women's and Gender Studies” major from St. Olaf College.
 
 # Women's and Gender Studies
 For this major, you must complete “Introduction”, “Additional Courses”, and “Advanced Topics”.
@@ -107,6 +106,6 @@ For this requirement, you must take one of the following courses:
 ### Lived Experiences
 > Note: The major says, "One course must focus on women's lived experiences."
 
-This section is a Contract section. You must talk to the Department to fill out,
-file, and update the Contract.
+This section is a Contract section. You must talk to the Department to fill out, file, and update the Contract.
+
 

@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Philosophy
-> (Contract Major)” major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Philosophy (Contract Major)” major from St. Olaf College.
 
 # Philosophy (Contract Major)
 For this major, you must complete all of the following requirements:
@@ -51,9 +50,8 @@ For this requirement, you must take at least two courses from among the followin
 
 
 ## Complementary Courses
-> Note: Three level II or III courses in another department chosen to complement
-> the work in philosophy.
+> Note: Three level II or III courses in another department chosen to complement the work in philosophy.
 
-This section is a Contract section. You must talk to the Department to fill out,
-file, and update the Contract.
+This section is a Contract section. You must talk to the Department to fill out, file, and update the Contract.
+
 

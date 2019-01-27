@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Music” major
-> from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Music” major from St. Olaf College.
 
 # Music
 For this major, you must complete all of the following requirements:
@@ -379,12 +378,12 @@ For this requirement, you must have enough courses taken within the MUSEN depart
 ## Performances
 > Note: Two solo performances on a St. Olaf Student Recital.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 
 ## Recital Attendance
 > Note: Ten recitals per semester on campus, with a minimum of 60.
 
-For this requirement, you must have done what the note says. The Department must
-certify that you have done so.
+For this requirement, you must have done what the note says. The Department must certify that you have done so.
+
 

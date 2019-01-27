@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Exercise
-> Science” major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Exercise Science” major from St. Olaf College.
 
 # Exercise Science
 For this major, you must complete “Core”, “Electives”, and “Recomended” (optional).

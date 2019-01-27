@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Theater”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Theater” major from St. Olaf College.
 
 # Theater
 For this major, you must complete “Part 1”, “Part 2”, and “Practicum”.
@@ -27,9 +26,7 @@ For this requirement, you must take two of the following courses:
 
 
 ## Practicum
-> Note: All students must enroll in four practicum classes, of which at least
-> one must be THEAT 233 and at least two must be THEAT 253; the fourth practicum
-> class is then a choice of either 233 or 253.
+> Note: All students must enroll in four practicum classes, of which at least one must be THEAT 233 and at least two must be THEAT 253; the fourth practicum class is then a choice of either 233 or 253.
 
 For this section, you must do all of the following:
 

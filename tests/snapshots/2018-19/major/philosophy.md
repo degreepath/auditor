@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Philosophy”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Philosophy” major from St. Olaf College.
 
 # Philosophy
 For this major, you must complete “Core”, “Level III Seminars”, and “Electives”.

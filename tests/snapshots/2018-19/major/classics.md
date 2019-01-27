@@ -1,5 +1,4 @@
-> This is the set of requirements for the 2018-19 Bachelor of Arts “Classics”
-> major from St. Olaf College.
+> This is the set of requirements for the 2018-19 Bachelor of Arts “Classics” major from St. Olaf College.
 
 # Classics
 For this major, you must complete “Language”, “Classics”, and “Ancient History”.
