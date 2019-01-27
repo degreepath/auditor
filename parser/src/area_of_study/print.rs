@@ -15,13 +15,7 @@ impl AreaOfStudy {
 				let institution = "St. Olaf College";
 				let area_type = "degree".to_string();
 
-				format!(
-				"This is the set of requirements for the {catalog} “{area_name}” {area_type} from {institution}.",
-				catalog = catalog,
-				area_name = area_name,
-				area_type = area_type,
-				institution = institution
-			)
+				format!("This is the set of requirements for the {catalog} “{area_name}” {area_type} from {institution}.", catalog = catalog, area_name = area_name, area_type = area_type, institution = institution)
 			}
 			Major { degree } => {
 				let catalog = self.catalog.clone();
