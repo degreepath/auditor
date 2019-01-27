@@ -77,25 +77,17 @@ pub mod print {
 						what_to_do += "\n";
 					}
 
-					write!(
-						&mut w,
-						"{}\n",
-						&format!(
-							"For this {kind}, you must {what_to_do}",
-							kind = kind,
-							what_to_do = what_to_do
-						),
-					)?;
+					let what_to_do = format!(
+						"For this {kind}, you must {what_to_do}",
+						kind = kind,
+						what_to_do = what_to_do
+					);
+					write!(&mut w, "{}\n", what_to_do)?;
 				}
 			}
 
-			let requirements: Vec<String> = self
-				.requirements
-				.iter()
-				.flat_map(|(name, r)| r.print(name, level + 1))
-				.collect();
-
-			for s in requirements {
+			for (name, req) in &self.requirements {
+				let s = req.print(&name, level + 1)?;
 				write!(&mut w, "{}", s)?;
 			}
 
