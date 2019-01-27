@@ -1,6 +1,7 @@
 {
   "name": "Bachelor of Arts",
   "type": "degree",
+  "institution": null,
   "catalog": "2015-16",
   "result": {
     "count": "all",

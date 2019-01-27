@@ -2,6 +2,7 @@
   "name": "Biology",
   "type": "major",
   "degree": "Bachelor of Arts",
+  "institution": null,
   "catalog": "2018-19",
   "result": {
     "count": "all",
