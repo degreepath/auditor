@@ -20,7 +20,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -49,7 +48,6 @@
                     "course": "BIO 227"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               {
@@ -68,7 +66,6 @@
                     "course": "BIO 227"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               {
@@ -84,11 +81,9 @@
                     "course": "CH/BI 227"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               }
             ],
-            "surplus": null,
             "limit": null
           },
           {
@@ -105,8 +100,7 @@
               {
                 "course": "CHEM 253"
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -116,8 +110,7 @@
               {
                 "course": "CHEM 254"
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -127,14 +120,13 @@
               {
                 "course": "CHEM 373"
               }
-            ],
-            "surplus": null
+            ]
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -143,6 +135,7 @@
       "department_audited": true,
       "result": null,
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -183,10 +176,10 @@
             "course": "CSCI 315"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

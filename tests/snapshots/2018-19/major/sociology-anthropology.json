@@ -36,7 +36,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -47,6 +46,7 @@
         "course": "SOAN 291"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -57,6 +57,7 @@
         "course": "SOAN 292"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -67,6 +68,7 @@
         "course": "SOAN 371"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -77,6 +79,7 @@
         "course": "SOAN 373"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -87,6 +90,7 @@
         "course": "SOAN 399"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -97,6 +101,7 @@
         "course": "STAT 110"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -205,6 +210,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

@@ -9,16 +9,11 @@ For this major, you must complete all of the following requirements:
 - “Electives”
 
 ## Level 250
-For this requirement, you must take two courses from among GERM 251, GERM 252, or GERM 253.
+For this requirement, you must take at least two courses from among GERM 251, GERM 252, and GERM 253.
 
 
 ## Level 270
-For this requirement, you must take two of the following courses:
-
-- GERM 271
-- GERM 272
-- GERM 273
-- GERM 276
+For this requirement, you must take at least two courses from among GERM 271, GERM 272, GERM 273, and GERM 276.
 
 
 ## Level III
@@ -30,14 +25,19 @@ For this requirement, you must take either GERM 371 or GERM 372.
 ## Electives
 For this section, you must both:
 
-- complete either the “Language” (optional) or “In Translation” (optional) requirement
+- complete one requirement from among “Language” (optional), “Interim In German” (optional), or “In Translation” (optional)
 
 - and have the following be true:
-    1. given the results of the “Langauge” and “In Translation” requirements,
+    1. given the results of the “Langauge”, “Interim In German”, and “In Translation” requirements,
     2. there must be at least three courses
 
 ### Language
 For this requirement, you must take GERM 232.
+
+### Interim In German
+> Note: You may count one German Interim abroad towards this requirement.
+
+For this requirement, you must have done what the note says. This must be verified and set by the registrar.
 
 ### In Translation
 For this requirement, you must take exactly one course from among the following:

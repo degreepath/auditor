@@ -39,7 +39,6 @@
             "optional": true
           }
         ],
-        "surplus": null,
         "limit": null
       },
       {
@@ -88,7 +87,6 @@
         }
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -99,6 +97,7 @@
         "course": "PSCI 220"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -130,6 +129,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -161,6 +161,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -192,6 +193,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -223,6 +225,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -254,6 +257,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -272,10 +276,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Statistics": {
@@ -306,6 +310,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -322,10 +327,10 @@
                 "requirement": "Chinese, Greek, Latin, Japanese, Norwegian, Russian",
                 "optional": false
               }
-            ],
-            "surplus": null
+            ]
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "French, German, Spanish": {
@@ -378,6 +383,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -449,6 +455,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }

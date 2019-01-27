@@ -20,7 +20,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -60,6 +59,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -91,6 +91,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -191,6 +192,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

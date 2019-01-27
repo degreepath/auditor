@@ -15,8 +15,7 @@
           {
             "course": "CS 125"
           }
-        ],
-        "surplus": null
+        ]
       },
       {
         "requirement": "History",
@@ -52,7 +51,6 @@
         }
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -100,10 +98,10 @@
             }
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "A": {
@@ -131,10 +129,10 @@
                 "course": "GCON 203"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -159,10 +157,10 @@
             "course": "NURS 310"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -194,6 +192,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

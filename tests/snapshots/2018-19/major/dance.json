@@ -32,7 +32,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -61,10 +60,10 @@
             "course": "DANCE 270"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -105,6 +104,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Ballet": {
@@ -124,8 +124,7 @@
                   {
                     "course": "DANCE 131"
                   }
-                ],
-                "surplus": null
+                ]
               },
               {
                 "either": [
@@ -135,8 +134,7 @@
                   {
                     "course": "DANCE 221"
                   }
-                ],
-                "surplus": null
+                ]
               },
               {
                 "either": [
@@ -146,14 +144,13 @@
                   {
                     "course": "DANCE 321"
                   }
-                ],
-                "surplus": null
+                ]
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -182,10 +179,10 @@
                 "course": "DANCE 209"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -206,8 +203,7 @@
                   {
                     "course": "DANCE 211"
                   }
-                ],
-                "surplus": null
+                ]
               },
               {
                 "either": [
@@ -217,8 +213,7 @@
                   {
                     "course": "DANCE 251"
                   }
-                ],
-                "surplus": null
+                ]
               },
               {
                 "either": [
@@ -228,14 +223,13 @@
                   {
                     "course": "DANCE 311"
                   }
-                ],
-                "surplus": null
+                ]
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -261,10 +255,10 @@
                 "course": "DANCE 160"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -290,6 +284,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [
         {
           "name": "Senior Dance Seminars",
@@ -330,6 +325,7 @@
       "department_audited": false,
       "result": null,
       "contract": true,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -338,6 +334,7 @@
       "department_audited": true,
       "result": null,
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -346,6 +343,7 @@
       "department_audited": true,
       "result": null,
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

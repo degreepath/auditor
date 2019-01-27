@@ -20,7 +20,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -49,17 +48,15 @@
                   {
                     "course": "ECON 385"
                   }
-                ],
-                "surplus": null
+                ]
               }
-            ],
-            "surplus": null
+            ]
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -76,10 +73,10 @@
             "course": "MATH 119"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -123,10 +120,10 @@
             }
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Level II": {
@@ -157,6 +154,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -188,6 +186,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }

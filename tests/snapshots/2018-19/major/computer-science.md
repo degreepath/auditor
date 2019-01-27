@@ -1,6 +1,8 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Computer Science” major from St. Olaf College.
 
 # Computer Science
+> todo: this area has custom attributes defined.
+
 For this major, you must complete all of the following requirements:
 
 - “Foundation”
@@ -33,14 +35,7 @@ For this requirement, you must take one course from among CSCI 273, CSCI 284, or
 
 
 ## Electives
-For this requirement, you must take two of the following courses:
-
-- CSCI 316
-- CSCI 300
-- CSCI 315
-- CSCI 350
-- ID 259 (2000-1)
-- ID 259 (2003-3)
+For this requirement, you must have at least two courses taken with the “csci_elective” `attributes` attribute.
 
 
 ## Capstone

@@ -15,7 +15,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -54,10 +53,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Courses": {
@@ -79,6 +78,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -110,6 +110,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -150,10 +151,10 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [
             {
               "name": "Interim Courses",
@@ -194,6 +195,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -225,6 +227,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -256,6 +259,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -287,6 +291,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -311,10 +316,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Foundation": {
@@ -348,10 +353,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "First-Year Writing": {
@@ -382,6 +387,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -413,6 +419,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -450,10 +457,10 @@
                     "course": "SPAN 112"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -485,6 +492,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -530,6 +538,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -561,6 +570,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -589,10 +599,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Historical Studies in Western Culture or Literary Studies": {
@@ -631,6 +641,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -670,6 +681,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -746,10 +758,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "Courses with a BTS-B or BTS-T",
@@ -807,6 +819,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -823,10 +836,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Ethical Issues and Normative Perspectives": {
@@ -857,6 +870,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }

@@ -28,7 +28,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -39,6 +38,7 @@
         "course": "ART 153"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -49,6 +49,7 @@
         "course": "ART 350"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -80,6 +81,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -108,7 +110,6 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           {
@@ -144,10 +145,10 @@
               }
             }
           }
-        ],
-        "surplus": null
+        ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Asian, African, Indigenous American, or Near Eastern/Islamic Art": {
@@ -198,6 +199,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -237,6 +239,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -268,6 +271,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -299,6 +303,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -309,6 +314,7 @@
       "department_audited": true,
       "result": null,
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

@@ -20,7 +20,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -31,6 +30,7 @@
         "course": "WMGST 121"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -41,6 +41,7 @@
         "course": "WMGST 399"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -112,10 +113,10 @@
             }
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [
         {
           "name": "Taken Elective Courses",
@@ -208,10 +209,10 @@
                 "course": "SOAN 260"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -287,10 +288,10 @@
                 "course": "SPAN 250"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -441,10 +442,10 @@
                 "course": "SOAN 246"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -467,10 +468,10 @@
                 "course": "PSYCH 350"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -479,6 +480,7 @@
           "department_audited": false,
           "result": null,
           "contract": true,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }

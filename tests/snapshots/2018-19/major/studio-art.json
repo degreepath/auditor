@@ -32,7 +32,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -50,8 +49,7 @@
               {
                 "course": "ART 106"
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "course": "ART 103"
@@ -60,15 +58,10 @@
             "course": "ART 104"
           }
         ],
-        "surplus": [
-          "Studio Art",
-          "Electives",
-          ".result",
-          ".of"
-        ],
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -91,10 +84,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "2D Media": {
@@ -120,10 +113,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Drawing": {
@@ -142,15 +135,10 @@
                     "course": "ART 233"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -167,15 +155,10 @@
                     "course": "ART 222"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -192,15 +175,10 @@
                     "course": "ART 227"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -221,15 +199,10 @@
                     "can_match_used": null
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -250,10 +223,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Ceramics": {
@@ -269,15 +242,10 @@
                     "course": "ART 234"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -294,15 +262,10 @@
                     "course": "ART 224"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -335,10 +298,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Photography": {
@@ -354,15 +317,10 @@
                     "course": "ART 238"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -376,15 +334,10 @@
                     "course": "ART 228"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -398,15 +351,10 @@
                     "course": "ART 229"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -420,15 +368,10 @@
                     "course": "ART 240"
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -449,15 +392,10 @@
                     "can_match_used": null
                   }
                 ],
-                "surplus": [
-                  "Studio Art",
-                  "Electives",
-                  ".result",
-                  ".of"
-                ],
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -470,6 +408,7 @@
       "department_audited": true,
       "result": null,
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -480,6 +419,7 @@
         "course": "ART 343"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -487,34 +427,31 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "ART 106"
-          },
-          {
-            "course": "ART 246"
-          },
-          {
-            "course": "ART 294"
-          },
-          {
-            "course": "ART 298"
-          },
-          {
-            "course": "ART 340"
-          },
-          {
-            "course": "ART 394"
-          },
-          {
-            "course": "ART 398"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "art_elective"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -522,94 +459,188 @@
       "message": "The department strongly recommends that you take ART 252 or 253 as one of your art history courses.",
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "ART 153"
-          },
-          {
-            "course": "ART 161"
-          },
-          {
-            "course": "ART 251"
-          },
-          {
-            "course": "ART 252"
-          },
-          {
-            "course": "ART 253"
-          },
-          {
-            "course": "ART 254"
-          },
-          {
-            "course": "ART 255"
-          },
-          {
-            "course": "ART 256"
-          },
-          {
-            "course": "ART 259"
-          },
-          {
-            "course": "ART 260"
-          },
-          {
-            "course": "ART 261"
-          },
-          {
-            "course": "ART 262"
-          },
-          {
-            "course": "ART 263"
-          },
-          {
-            "course": "ART 265"
-          },
-          {
-            "course": "ART 267"
-          },
-          {
-            "course": "ART 269"
-          },
-          {
-            "course": "ART 271"
-          },
-          {
-            "course": "ART 273"
-          },
-          {
-            "course": "ART 277"
-          },
-          {
-            "course": "ART 280"
-          },
-          {
-            "course": "ART 350"
-          },
-          {
-            "course": "ART 370"
-          },
-          {
-            "course": "ASIAN 270"
-          },
-          {
-            "course": "ASIAN 310"
-          },
-          {
-            "course": "ENVST 270"
-          },
-          {
-            "course": "PHIL 243"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "art_history"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "ART 106": [
+        "art_elective"
+      ],
+      "ART 153": [
+        "art_history"
+      ],
+      "ART 161": [
+        "art_history"
+      ],
+      "ART 205": [
+        "art_elective"
+      ],
+      "ART 207": [
+        "art_elective"
+      ],
+      "ART 221": [
+        "art_elective"
+      ],
+      "ART 222": [
+        "art_elective"
+      ],
+      "ART 223": [
+        "art_elective"
+      ],
+      "ART 224": [
+        "art_elective"
+      ],
+      "ART 225": [
+        "art_elective"
+      ],
+      "ART 226": [
+        "art_elective"
+      ],
+      "ART 227": [
+        "art_elective"
+      ],
+      "ART 228": [
+        "art_elective"
+      ],
+      "ART 229": [
+        "art_elective"
+      ],
+      "ART 232": [
+        "art_elective"
+      ],
+      "ART 233": [
+        "art_elective"
+      ],
+      "ART 234": [
+        "art_elective"
+      ],
+      "ART 236 2000.0": [
+        "art_elective"
+      ],
+      "ART 238": [
+        "art_elective"
+      ],
+      "ART 240": [
+        "art_elective"
+      ],
+      "ART 246": [
+        "art_elective"
+      ],
+      "ART 251": [
+        "art_history"
+      ],
+      "ART 252": [
+        "art_history"
+      ],
+      "ART 253": [
+        "art_history"
+      ],
+      "ART 254": [
+        "art_history"
+      ],
+      "ART 255": [
+        "art_history"
+      ],
+      "ART 256": [
+        "art_history"
+      ],
+      "ART 259": [
+        "art_history"
+      ],
+      "ART 260": [
+        "art_history"
+      ],
+      "ART 261": [
+        "art_history"
+      ],
+      "ART 262": [
+        "art_history"
+      ],
+      "ART 263": [
+        "art_history"
+      ],
+      "ART 265": [
+        "art_history"
+      ],
+      "ART 267": [
+        "art_history"
+      ],
+      "ART 269": [
+        "art_history"
+      ],
+      "ART 271": [
+        "art_history"
+      ],
+      "ART 273": [
+        "art_history"
+      ],
+      "ART 277": [
+        "art_history"
+      ],
+      "ART 280": [
+        "art_history"
+      ],
+      "ART 294": [
+        "art_elective"
+      ],
+      "ART 298": [
+        "art_elective"
+      ],
+      "ART 340": [
+        "art_elective"
+      ],
+      "ART 350": [
+        "art_history"
+      ],
+      "ART 370": [
+        "art_history"
+      ],
+      "ART 394": [
+        "art_elective"
+      ],
+      "ART 398": [
+        "art_elective"
+      ],
+      "ASIAN 270": [
+        "art_history"
+      ],
+      "ASIAN 310": [
+        "art_history"
+      ],
+      "ENVST 270": [
+        "art_history"
+      ],
+      "PHIL 243": [
+        "art_history"
+      ]
+    }
+  }
 }

@@ -1,6 +1,8 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Physics” major from St. Olaf College.
 
 # Physics
+> todo: this area has custom attributes defined.
+
 For this major, you must complete all of the following requirements:
 
 - “Analytics”
@@ -37,14 +39,6 @@ For this requirement, you must take one of the following courses:
 
 
 ## Elective
-For this requirement, you must take one of the following courses:
-
-- PHYS 112
-- PHYS 124
-- PHYS 125
-- PHYS 154
-- PHYS 246
-- PHYS 252
-- PHYS 396
+For this requirement, you must have at least one course taken with the “physics_elective” `attributes` attribute.
 
 

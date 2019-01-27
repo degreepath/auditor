@@ -24,7 +24,6 @@
         "optional": true
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -47,10 +46,10 @@
             "course": "CHIN 302"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -70,10 +69,10 @@
             "course": "CHIN 360"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -133,10 +132,10 @@
             }
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [
         {
           "name": "Allowed Courses",
@@ -200,6 +199,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -266,6 +266,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -299,6 +300,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

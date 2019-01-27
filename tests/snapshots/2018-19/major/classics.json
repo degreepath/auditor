@@ -20,7 +20,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -64,8 +63,7 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -101,14 +99,13 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [
         {
           "name": "Latin Courses",
@@ -235,10 +232,10 @@
             "course": "CLASS 396"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -252,10 +249,10 @@
             "course": "CLASS 111"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

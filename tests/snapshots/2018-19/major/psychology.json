@@ -28,7 +28,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -43,10 +42,10 @@
           {
             "course": "PSYCH 230"
           }
-        ],
-        "surplus": null
+        ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -65,10 +64,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Natural Science": {
@@ -90,14 +89,10 @@
                 "course": "PSYCH 238"
               }
             ],
-            "surplus": [
-              "Electives",
-              ".result",
-              ".of"
-            ],
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -120,14 +115,10 @@
                 "course": "PSYCH 249"
               }
             ],
-            "surplus": [
-              "Electives",
-              ".result",
-              ".of"
-            ],
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -137,59 +128,31 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "PSYCH 336"
-          },
-          {
-            "course": "PSYCH 338"
-          },
-          {
-            "course": "PSYCH 339"
-          },
-          {
-            "course": "PSYCH 341"
-          },
-          {
-            "course": "PSYCH 342"
-          },
-          {
-            "course": "PSYCH 344"
-          },
-          {
-            "course": "PSYCH 350"
-          },
-          {
-            "course": "PSYCH 375"
-          },
-          {
-            "course": "PSYCH 378"
-          },
-          {
-            "course": "PSYCH 390"
-          },
-          {
-            "course": "PSYCH 391"
-          },
-          {
-            "course": "PSYCH 395"
-          },
-          {
-            "course": "PSYCH 396"
-          },
-          {
-            "course": "PSYCH 398"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "psych_level_3"
+              }
+            }
           }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ],
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -212,10 +175,10 @@
             "course": "ECON 263"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -223,43 +186,142 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
-          {
-            "course": "PSYCH 220"
-          },
-          {
-            "course": "PSYCH 221"
-          },
-          {
-            "course": "PSYCH 222"
-          },
-          {
-            "course": "PSYCH 223"
-          },
-          {
-            "course": "PSYCH 224"
-          },
-          {
-            "course": "PSYCH 225"
-          },
-          {
-            "course": "PSYCH 227"
-          },
-          {
-            "course": "PSYCH 250"
-          },
-          {
-            "course": "PSYCH 251"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "psych_elective"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "PSYCH 235": [
+        "psych_elective"
+      ],
+      "PSYCH 236": [
+        "psych_elective"
+      ],
+      "PSYCH 237": [
+        "psych_elective"
+      ],
+      "PSYCH 238": [
+        "psych_elective"
+      ],
+      "PSYCH 241": [
+        "psych_elective"
+      ],
+      "PSYCH 244": [
+        "psych_elective"
+      ],
+      "PSYCH 247": [
+        "psych_elective"
+      ],
+      "PSYCH 220": [
+        "psych_elective"
+      ],
+      "PSYCH 221": [
+        "psych_elective"
+      ],
+      "PSYCH 222": [
+        "psych_elective"
+      ],
+      "PSYCH 223": [
+        "psych_elective"
+      ],
+      "PSYCH 224": [
+        "psych_elective"
+      ],
+      "PSYCH 225": [
+        "psych_elective"
+      ],
+      "PSYCH 227": [
+        "psych_elective"
+      ],
+      "PSYCH 250": [
+        "psych_elective"
+      ],
+      "PSYCH 251": [
+        "psych_elective"
+      ],
+      "PSYCH 336": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 338": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 339": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 341": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 342": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 344": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 350": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 375": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 378": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 390": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 391": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 395": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 396": [
+        "psych_elective",
+        "psych_level_3"
+      ],
+      "PSYCH 398": [
+        "psych_elective",
+        "psych_level_3"
+      ]
+    }
+  }
 }

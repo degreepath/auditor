@@ -34,7 +34,6 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       {
@@ -87,8 +86,7 @@
           }
         }
       }
-    ],
-    "surplus": null
+    ]
   },
   "requirements": {
     "Basics": {
@@ -108,17 +106,16 @@
               {
                 "course": "MATH 128"
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "course": "MATH 220"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -150,6 +147,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -176,10 +174,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Axiomatic/Algebraic (A)": {
@@ -210,6 +208,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -241,6 +240,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -272,6 +272,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -303,6 +304,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -327,10 +329,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Chemistry": {
@@ -373,10 +375,10 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -420,10 +422,10 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -467,10 +469,10 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -518,6 +520,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -549,8 +552,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -574,8 +576,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -599,8 +600,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -624,8 +624,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -649,8 +648,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -674,8 +672,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -699,8 +696,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -724,8 +720,7 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -749,14 +744,13 @@
                 "international": null,
                 "can_match_used": true
               }
-            ],
-            "surplus": null
+            ]
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

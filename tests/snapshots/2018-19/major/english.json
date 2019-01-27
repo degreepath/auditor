@@ -29,8 +29,7 @@
             "requirement": "Genre Studies",
             "optional": false
           }
-        ],
-        "surplus": null
+        ]
       },
       {
         "requirement": "Electives",
@@ -41,7 +40,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -52,6 +50,7 @@
         "course": "ENGL 185"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -83,6 +82,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -114,6 +114,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -145,6 +146,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -176,6 +178,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -233,6 +236,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -289,10 +293,10 @@
               }
             }
           }
-        ],
-        "surplus": null
+        ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

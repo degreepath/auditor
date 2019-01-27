@@ -20,7 +20,6 @@
         "optional": true
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -55,10 +54,10 @@
             "course": "PSYCH 125"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -102,14 +101,13 @@
                 "course": "STAT 214"
               }
             ],
-            "surplus": null,
             "limit": null
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -129,10 +127,10 @@
             "course": "CHEM 121"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

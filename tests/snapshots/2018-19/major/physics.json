@@ -28,7 +28,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -48,10 +47,10 @@
             "course": "PHYS 232"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -68,10 +67,10 @@
             "course": "PHYS 245"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -94,10 +93,10 @@
             "course": "PHYS 386"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -123,14 +122,10 @@
             "course": "PHYS 390"
           }
         ],
-        "surplus": [
-          "Elective",
-          ".result",
-          ".of"
-        ],
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -138,37 +133,74 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "PHYS 112"
-          },
-          {
-            "course": "PHYS 124"
-          },
-          {
-            "course": "PHYS 125"
-          },
-          {
-            "course": "PHYS 154"
-          },
-          {
-            "course": "PHYS 246"
-          },
-          {
-            "course": "PHYS 252"
-          },
-          {
-            "course": "PHYS 396"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "physics_elective"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "PHYS 112": [
+        "physics_elective"
+      ],
+      "PHYS 124": [
+        "physics_elective"
+      ],
+      "PHYS 125": [
+        "physics_elective"
+      ],
+      "PHYS 154": [
+        "physics_elective"
+      ],
+      "PHYS 246": [
+        "physics_elective"
+      ],
+      "PHYS 252": [
+        "physics_elective"
+      ],
+      "PHYS 360": [
+        "physics_elective"
+      ],
+      "PHYS 362": [
+        "physics_elective"
+      ],
+      "PHYS 376": [
+        "physics_elective"
+      ],
+      "PHYS 379": [
+        "physics_elective"
+      ],
+      "PHYS 390": [
+        "physics_elective"
+      ],
+      "PHYS 396": [
+        "physics_elective"
+      ]
+    }
+  }
 }

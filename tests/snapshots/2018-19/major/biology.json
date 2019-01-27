@@ -28,7 +28,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -39,6 +38,7 @@
         "course": "BIO 150"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -65,10 +65,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Genetics": {
@@ -81,10 +81,10 @@
                 "course": "BIO 233"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -101,10 +101,10 @@
                 "course": "CH/BI 227"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -139,10 +139,10 @@
                 "course": "BIO 226"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -159,10 +159,10 @@
                 "course": "BIO 226"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -211,10 +211,10 @@
             "course": "BIO 391"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -246,6 +246,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -268,7 +269,6 @@
                 "course": "CHEM 126"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           {
@@ -281,7 +281,6 @@
                 "course": "CHEM 126"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           {
@@ -294,14 +293,13 @@
                 "course": "CH/BI 126"
               }
             ],
-            "surplus": null,
             "limit": null
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

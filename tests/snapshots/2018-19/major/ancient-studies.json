@@ -28,7 +28,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -43,14 +42,10 @@
           {
             "course": "GREEK 253"
           }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
         ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -58,121 +53,14 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "CLASS 126"
-          },
-          {
-            "course": "CLASS 240"
-          },
-          {
-            "course": "CLASS 243"
-          },
-          {
-            "course": "CLASS 253"
-          },
-          {
-            "course": "GREEK 111"
-          },
-          {
-            "course": "GREEK 112"
-          },
-          {
-            "course": "GREEK 231"
-          },
-          {
-            "course": "GREEK 253"
-          },
-          {
-            "course": "GREEK 374"
-          },
-          {
-            "course": "GREEK 375"
-          },
-          {
-            "course": "HIST 190"
-          },
-          {
-            "course": "HIST 201"
-          },
-          {
-            "course": "HIST 203"
-          },
-          {
-            "course": "HIST 204"
-          },
-          {
-            "course": "HIST 303"
-          },
-          {
-            "course": "HIST 396"
-          },
-          {
-            "course": "LATIN 111"
-          },
-          {
-            "course": "LATIN 112"
-          },
-          {
-            "course": "LATIN 231"
-          },
-          {
-            "course": "LATIN 235"
-          },
-          {
-            "course": "LATIN 373"
-          },
-          {
-            "course": "LATIN 375"
-          },
-          {
-            "course": "PHIL 235"
-          },
-          {
-            "course": "REL 221"
-          },
-          {
-            "course": "REL 221"
-          },
-          {
-            "course": "REL 222"
-          },
-          {
-            "course": "REL 272"
-          },
-          {
-            "course": "REL 273"
-          },
-          {
-            "course": "REL 320"
-          },
-          {
-            "course": "REL 393"
-          },
-          {
-            "course": "THEAT 270"
-          }
-        ],
-        "surplus": null,
-        "limit": null
-      },
-      "contract": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Classics": {
-      "message": null,
-      "department_audited": false,
-      "result": {
         "given": "courses",
         "limit": null,
         "where": {
-          "department": {
+          "attributes": {
             "Single": {
               "op": "EqualTo",
               "value": {
-                "String": "CLASS"
+                "String": "ancient_history"
               }
             }
           }
@@ -189,6 +77,39 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
+      "save": [],
+      "requirements": {}
+    },
+    "Classics": {
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "ancient_classics"
+              }
+            }
+          }
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -196,110 +117,31 @@
       "message": "1 course in Greek may be used as an elective if the student satisfies the required language portion of the major with Latin courses. 1 course in Latin may be used as an elective if the student satisfies the required language portion of the major with Greek courses.",
       "department_audited": false,
       "result": {
-        "count": 4,
-        "of": [
-          {
-            "course": "ART 161"
-          },
-          {
-            "course": "ART 267"
-          },
-          {
-            "course": "CLASS 126"
-          },
-          {
-            "course": "CLASS 129"
-          },
-          {
-            "course": "CLASS 240"
-          },
-          {
-            "course": "CLASS 241"
-          },
-          {
-            "course": "CLASS 243"
-          },
-          {
-            "course": "CLASS 244"
-          },
-          {
-            "course": "CLASS 251"
-          },
-          {
-            "course": "CLASS 253"
-          },
-          {
-            "course": "ENGL 255"
-          },
-          {
-            "course": "HIST 190"
-          },
-          {
-            "course": "HIST 201"
-          },
-          {
-            "course": "HIST 203"
-          },
-          {
-            "course": "HIST 204"
-          },
-          {
-            "course": "HIST 205"
-          },
-          {
-            "course": "HIST 303"
-          },
-          {
-            "course": "HIST 396"
-          },
-          {
-            "course": "PHIL 235"
-          },
-          {
-            "course": "REL 221"
-          },
-          {
-            "course": "REL 222"
-          },
-          {
-            "course": "REL 271"
-          },
-          {
-            "course": "REL 272"
-          },
-          {
-            "course": "REL 273"
-          },
-          {
-            "course": "REL 293"
-          },
-          {
-            "course": "REL 320"
-          },
-          {
-            "course": "REL 391",
-            "term": null,
-            "section": null,
-            "year": 2016,
-            "semester": null,
-            "lab": null,
-            "international": null,
-            "can_match_used": null
-          },
-          {
-            "course": "THEAT 270"
-          },
-          {
-            "course": "GCON 113"
-          },
-          {
-            "course": "GCON 115"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "ancient_elective"
+              }
+            }
           }
-        ],
-        "surplus": null,
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 4
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -307,32 +149,217 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "CLASS 398"
-          },
-          {
-            "course": "HIST 398"
-          },
-          {
-            "course": "LATIN 398"
-          },
-          {
-            "course": "GREEK 398"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "ancient_ir"
+              }
+            }
           }
-        ],
-        "surplus": [
-          "Electives",
-          ".result",
-          ".of"
-        ],
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "ART 161": [
+        "ancient_elective"
+      ],
+      "ART 267": [
+        "ancient_elective"
+      ],
+      "CLASS 126": [
+        "ancient_history",
+        "ancient_classics",
+        "ancient_elective"
+      ],
+      "CLASS 129": [
+        "ancient_elective"
+      ],
+      "CLASS 240": [
+        "ancient_history",
+        "ancient_classics",
+        "ancient_elective"
+      ],
+      "CLASS 241": [
+        "ancient_elective"
+      ],
+      "CLASS 243": [
+        "ancient_history",
+        "ancient_classics",
+        "ancient_elective"
+      ],
+      "CLASS 244": [
+        "ancient_elective"
+      ],
+      "CLASS 251": [
+        "ancient_elective"
+      ],
+      "CLASS 253": [
+        "ancient_history",
+        "ancient_classics",
+        "ancient_elective"
+      ],
+      "CLASS 398": [
+        "ancient_ir",
+        "ancient_elective"
+      ],
+      "ENGL 255": [
+        "ancient_elective"
+      ],
+      "GCON 113": [
+        "ancient_elective"
+      ],
+      "GCON 115": [
+        "ancient_elective"
+      ],
+      "GREEK 111": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "GREEK 112": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "GREEK 231": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "GREEK 253": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "GREEK 374": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "GREEK 375": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "GREEK 398": [
+        "ancient_ir",
+        "ancient_elective"
+      ],
+      "HIST 190": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "HIST 201": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "HIST 203": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "HIST 204": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "HIST 205": [
+        "ancient_elective"
+      ],
+      "HIST 303": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "HIST 396": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "HIST 398": [
+        "ancient_ir",
+        "ancient_elective"
+      ],
+      "LATIN 111": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "LATIN 112": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "LATIN 231": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "LATIN 235": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "LATIN 373": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "LATIN 375": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "LATIN 398": [
+        "ancient_ir",
+        "ancient_elective"
+      ],
+      "PHIL 235": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "REL 221": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "REL 222": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "REL 271": [
+        "ancient_elective"
+      ],
+      "REL 272": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "REL 273": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "REL 293": [
+        "ancient_elective"
+      ],
+      "REL 320": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "REL 391 2016.1": [
+        "ancient_elective"
+      ],
+      "REL 393": [
+        "ancient_history",
+        "ancient_elective"
+      ],
+      "THEAT 270": [
+        "ancient_history",
+        "ancient_elective"
+      ]
+    }
+  }
 }

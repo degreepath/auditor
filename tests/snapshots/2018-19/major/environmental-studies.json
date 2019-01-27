@@ -16,7 +16,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -36,10 +35,10 @@
             "course": "ENVST 399"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -71,8 +70,7 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -96,8 +94,7 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           {
             "both": [
@@ -121,14 +118,13 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [
         {
           "name": "social and arts",
@@ -213,10 +209,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Statistics, Modeling, and Mapping": {
@@ -235,10 +231,10 @@
                     "course": "STAT 272"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -256,8 +252,7 @@
                       {
                         "course": "CHEM 254"
                       }
-                    ],
-                    "surplus": null
+                    ]
                   },
                   {
                     "both": [
@@ -267,14 +262,13 @@
                       {
                         "course": "CHEM 256"
                       }
-                    ],
-                    "surplus": null
+                    ]
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -291,10 +285,10 @@
                     "course": "BIO 226"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -381,6 +375,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -427,10 +422,10 @@
                     "can_match_used": null
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -459,10 +454,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Methodological Analysis": {
@@ -499,10 +494,10 @@
                     "course": "PSCI 220"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -525,17 +520,16 @@
                         "course": "ECON 120"
                       }
                     ],
-                    "surplus": null,
                     "limit": null
                   },
                   {
                     "course": "ECON 242"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -555,10 +549,10 @@
                     "course": "ES/PS 276"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -642,10 +636,10 @@
                     "course": "AS/ES 227"
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -757,6 +751,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }

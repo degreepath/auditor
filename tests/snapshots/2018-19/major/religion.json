@@ -24,7 +24,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -81,10 +80,10 @@
               }
             }
           }
-        ],
-        "surplus": null
+        ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -95,6 +94,7 @@
         "course": "REL 285"
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -104,10 +104,10 @@
       "result": {
         "count": 1,
         "of": [],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -138,7 +138,6 @@
                 "course": "REL 344"
               }
             ],
-            "surplus": null,
             "limit": null
           },
           {
@@ -180,10 +179,10 @@
               }
             }
           }
-        ],
-        "surplus": null
+        ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

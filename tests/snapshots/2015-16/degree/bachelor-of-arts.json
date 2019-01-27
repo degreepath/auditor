@@ -15,7 +15,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -54,10 +53,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Courses": {
@@ -79,6 +78,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -110,6 +110,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -150,10 +151,10 @@
                   }
                 }
               }
-            ],
-            "surplus": null
+            ]
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [
             {
               "name": "Interim Courses",
@@ -194,6 +195,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -225,6 +227,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -256,6 +259,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         },
@@ -287,6 +291,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
@@ -311,10 +316,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Foundation": {
@@ -348,10 +353,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "First-Year Writing": {
@@ -382,6 +387,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -413,6 +419,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -639,10 +646,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -674,6 +681,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -705,6 +713,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -736,6 +745,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -772,10 +782,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Historical Studies in Western Culture": {
@@ -824,10 +834,10 @@
                       }
                     }
                   }
-                ],
-                "surplus": null
+                ]
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "Courses with an HWC",
@@ -938,10 +948,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "Courses with an MCD or MCG",
@@ -1044,10 +1054,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "Courses with an ALS-A or ALS-L",
@@ -1150,10 +1160,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "Courses with a BTS-B or BTS-T",
@@ -1272,10 +1282,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "Courses with an SED or IST",
@@ -1369,10 +1379,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "Courses with an HBS",
@@ -1407,10 +1417,10 @@
                 "optional": false
               }
             ],
-            "surplus": null,
             "limit": null
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Ethical Issues and Normative Perspectives": {
@@ -1447,10 +1457,10 @@
                     }
                   }
                 ],
-                "surplus": null,
                 "limit": null
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [
                 {
                   "name": "first BTS-T course",

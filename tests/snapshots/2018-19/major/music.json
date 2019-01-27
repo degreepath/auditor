@@ -36,7 +36,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -66,14 +65,13 @@
               {
                 "course": "MUSIC 214"
               }
-            ],
-            "surplus": null
+            ]
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -114,10 +112,10 @@
             "course": "MUSIC 349"
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -179,6 +177,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -285,10 +284,10 @@
             "optional": false
           }
         ],
-        "surplus": null,
         "limit": null
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Bassoon": {
@@ -320,6 +319,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -347,6 +347,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -386,6 +387,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -420,6 +422,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -447,6 +450,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -486,6 +490,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -520,6 +525,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -547,6 +553,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -586,6 +593,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -620,6 +628,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -647,6 +656,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -686,6 +696,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -720,6 +731,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -747,6 +759,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -786,6 +799,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -820,6 +834,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -847,6 +862,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -886,6 +902,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -920,6 +937,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -947,6 +965,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -986,6 +1005,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1020,6 +1040,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1047,6 +1068,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1086,6 +1108,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1120,6 +1143,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1147,6 +1171,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1186,6 +1211,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1220,6 +1246,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1247,6 +1274,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1286,6 +1314,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1320,6 +1349,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1347,6 +1377,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1386,6 +1417,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1420,6 +1452,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1447,6 +1480,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1486,6 +1520,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1520,6 +1555,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1547,6 +1583,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1586,6 +1623,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1620,6 +1658,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1647,6 +1686,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1686,6 +1726,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1720,6 +1761,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1747,6 +1789,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1786,6 +1829,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1820,6 +1864,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1847,6 +1892,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1886,6 +1932,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -1920,6 +1967,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -1947,6 +1995,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -1986,6 +2035,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2020,6 +2070,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2047,6 +2098,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2086,6 +2138,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2120,6 +2173,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2147,6 +2201,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2186,6 +2241,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2220,6 +2276,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2247,6 +2304,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2286,6 +2344,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2320,6 +2379,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2347,6 +2407,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2386,6 +2447,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2420,6 +2482,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2447,6 +2510,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2486,6 +2550,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2520,6 +2585,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2547,6 +2613,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2586,6 +2653,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2620,6 +2688,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2647,6 +2716,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2686,6 +2756,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2720,6 +2791,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {
             "Lessons": {
@@ -2747,6 +2819,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             },
@@ -2786,6 +2859,7 @@
                 }
               },
               "contract": false,
+              "registrar_audited": false,
               "save": [],
               "requirements": {}
             }
@@ -2821,6 +2895,7 @@
         }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -2829,6 +2904,7 @@
       "department_audited": true,
       "result": null,
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -2837,6 +2913,7 @@
       "department_audited": true,
       "result": null,
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     }

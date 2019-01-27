@@ -1,6 +1,8 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Studio Art” major from St. Olaf College.
 
 # Studio Art
+> todo: this area has custom attributes defined.
+
 For this major, you must complete all of the following requirements:
 
 - “Foundations”
@@ -86,47 +88,12 @@ For this requirement, you must take ART 343.
 
 
 ## Electives
-For this requirement, you must take one of the following courses:
-
-- ART 106
-- ART 246
-- ART 294
-- ART 298
-- ART 340
-- ART 394
-- ART 398
+For this requirement, you must have at least one course taken with the “art_elective” `attributes` attribute.
 
 
 ## Art History
 > Note: The department strongly recommends that you take ART 252 or 253 as one of your art history courses.
 
-For this requirement, you must take two of the following courses:
-
-- ART 153
-- ART 161
-- ART 251
-- ART 252
-- ART 253
-- ART 254
-- ART 255
-- ART 256
-- ART 259
-- ART 260
-- ART 261
-- ART 262
-- ART 263
-- ART 265
-- ART 267
-- ART 269
-- ART 271
-- ART 273
-- ART 277
-- ART 280
-- ART 350
-- ART 370
-- ASIAN 270
-- ASIAN 310
-- ENVST 270
-- PHIL 243
+For this requirement, you must have at least one course taken with the “art_history” `attributes` attribute.
 
 

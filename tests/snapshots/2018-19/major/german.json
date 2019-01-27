@@ -24,7 +24,6 @@
         "optional": false
       }
     ],
-    "surplus": null,
     "limit": null
   },
   "requirements": {
@@ -32,8 +31,8 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
+        "given": "these courses",
+        "courses": [
           {
             "course": "GERM 251"
           },
@@ -44,12 +43,7 @@
             "course": "GERM 253"
           }
         ],
-        "surplus": [
-          "Electives",
-          "Langauge",
-          ".result",
-          ".of"
-        ],
+        "repeats": "first",
         "limit": [
           {
             "where": {
@@ -64,9 +58,21 @@
             },
             "at_most": 1
           }
-        ]
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -74,8 +80,8 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 2,
-        "of": [
+        "given": "these courses",
+        "courses": [
           {
             "course": "GERM 271"
           },
@@ -89,12 +95,7 @@
             "course": "GERM 276"
           }
         ],
-        "surplus": [
-          "Electives",
-          "Langauge",
-          ".result",
-          ".of"
-        ],
+        "repeats": "first",
         "limit": [
           {
             "where": {
@@ -109,9 +110,21 @@
             },
             "at_most": 1
           }
-        ]
+        ],
+        "where": null,
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -119,24 +132,17 @@
       "message": "This course will preferably be taken in the student's senior year.",
       "department_audited": false,
       "result": {
-        "count": 1,
-        "of": [
+        "either": [
           {
             "course": "GERM 371"
           },
           {
             "course": "GERM 372"
           }
-        ],
-        "surplus": [
-          "Electives",
-          "Langauge",
-          ".result",
-          ".of"
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {}
     },
@@ -153,11 +159,14 @@
                 "optional": true
               },
               {
+                "requirement": "Interim In German",
+                "optional": true
+              },
+              {
                 "requirement": "In Translation",
                 "optional": true
               }
             ],
-            "surplus": null,
             "limit": null
           },
           {
@@ -165,6 +174,10 @@
             "requirements": [
               {
                 "requirement": "Langauge",
+                "optional": false
+              },
+              {
+                "requirement": "Interim In German",
                 "optional": false
               },
               {
@@ -185,26 +198,29 @@
               }
             }
           }
-        ],
-        "surplus": null
+        ]
       },
       "contract": false,
+      "registrar_audited": false,
       "save": [],
       "requirements": {
         "Language": {
           "message": null,
           "department_audited": false,
           "result": {
-            "count": "any",
-            "of": [
-              {
-                "course": "GERM 232"
-              }
-            ],
-            "surplus": null,
-            "limit": null
+            "course": "GERM 232"
           },
           "contract": false,
+          "registrar_audited": false,
+          "save": [],
+          "requirements": {}
+        },
+        "Interim In German": {
+          "message": "You may count one German Interim abroad towards this requirement.",
+          "department_audited": false,
+          "result": null,
+          "contract": false,
+          "registrar_audited": true,
           "save": [],
           "requirements": {}
         },
@@ -298,6 +314,7 @@
             }
           },
           "contract": false,
+          "registrar_audited": false,
           "save": [],
           "requirements": {}
         }
