@@ -5,7 +5,6 @@ use crate::traits::print::Print;
 #[test]
 fn serialize() {
 	let input = Rule {
-		surplus: None,
 		both: (
 			Box::new(AnyRule::Requirement(req_ref::Rule {
 				requirement: String::from("Name"),
@@ -23,8 +22,7 @@ both:
   - requirement: Name
     optional: false
   - requirement: Name 2
-    optional: false
-surplus: ~";
+    optional: false";
 
 	let actual = serde_yaml::to_string(&input).unwrap();
 	assert_eq!(actual, expected_str);
@@ -37,11 +35,9 @@ both:
   - requirement: Name
     optional: false
   - requirement: Name 2
-    optional: false
-surplus: ~";
+    optional: false";
 
 	let expected_struct = Rule {
-		surplus: None,
 		both: (
 			Box::new(AnyRule::Requirement(req_ref::Rule {
 				requirement: String::from("Name"),

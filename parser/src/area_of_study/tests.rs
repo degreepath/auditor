@@ -61,7 +61,6 @@ requirements:
 					optional: false,
 				}),
 			],
-			surplus: None,
 			limit: None,
 		}),
 		attributes: None,
@@ -110,7 +109,6 @@ requirements:
 								..Default::default()
 							}),
 						],
-						surplus: None,
 						limit: None,
 					})),
 				},
@@ -166,11 +164,9 @@ requirements:
 										..Default::default()
 									}),
 								],
-								surplus: None,
 								limit: None,
 							}),
 						],
-						surplus: None,
 						limit: None,
 					})),
 				},

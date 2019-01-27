@@ -6,14 +6,12 @@ fn serialize_count_of_any() {
 	let data = Rule {
 		count: Counter::Any,
 		of: vec![],
-		surplus: None,
 		limit: None,
 	};
 
 	let expected_str = "---
 count: any
 of: []
-surplus: ~
 limit: ~";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
@@ -25,13 +23,11 @@ fn deserialize_count_of_any() {
 	let data = "---
 count: any
 of: []
-surplus: ~
 limit: ~";
 
 	let expected_struct = Rule {
 		count: Counter::Any,
 		of: vec![],
-		surplus: None,
 		limit: None,
 	};
 
@@ -44,14 +40,12 @@ fn serialize_count_of_all() {
 	let data = Rule {
 		count: Counter::All,
 		of: vec![],
-		surplus: None,
 		limit: None,
 	};
 
 	let expected_str = "---
 count: all
 of: []
-surplus: ~
 limit: ~";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
@@ -63,13 +57,11 @@ fn deserialize_count_of_all() {
 	let data = "---
 count: all
 of: []
-surplus: ~
 limit: ~";
 
 	let expected_struct = Rule {
 		count: Counter::All,
 		of: vec![],
-		surplus: None,
 		limit: None,
 	};
 
@@ -82,14 +74,12 @@ fn serialize_count_of_number() {
 	let data = Rule {
 		count: Counter::Number(6),
 		of: vec![],
-		surplus: None,
 		limit: None,
 	};
 
 	let expected_str = "---
 count: 6
 of: []
-surplus: ~
 limit: ~";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
@@ -101,13 +91,11 @@ fn deserialize_count_of_number() {
 	let data = "---
 count: 6
 of: []
-surplus: ~
 limit: ~";
 
 	let expected_struct = Rule {
 		count: Counter::Number(6),
 		of: vec![],
-		surplus: None,
 		limit: None,
 	};
 

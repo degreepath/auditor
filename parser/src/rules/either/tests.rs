@@ -15,7 +15,6 @@ fn serialize() {
 				optional: false,
 			})),
 		),
-		surplus: None,
 	};
 
 	let expected_str = "---
@@ -23,8 +22,7 @@ either:
   - requirement: Name
     optional: false
   - requirement: Name 2
-    optional: false
-surplus: ~";
+    optional: false";
 
 	let actual = serde_yaml::to_string(&input).unwrap();
 	assert_eq!(actual, expected_str);
@@ -37,8 +35,7 @@ either:
   - requirement: Name
     optional: false
   - requirement: Name 2
-    optional: false
-surplus: ~";
+    optional: false";
 
 	let expected_struct = Rule {
 		either: (
@@ -51,7 +48,6 @@ surplus: ~";
 				optional: false,
 			})),
 		),
-		surplus: None,
 	};
 
 	let actual: Rule = serde_yaml::from_str(&input).unwrap();

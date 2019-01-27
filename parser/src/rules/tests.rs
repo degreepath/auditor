@@ -36,7 +36,6 @@ fn serialize() {
 		Rule::CountOf(count_of::Rule {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
-			surplus: None,
 			limit: None,
 		}),
 		Rule::Both(both::Rule {
@@ -44,14 +43,12 @@ fn serialize() {
 				Box::new(Rule::Course(course_a.clone())),
 				Box::new(Rule::Course(course_b.clone())),
 			),
-			surplus: None,
 		}),
 		Rule::Either(either::Rule {
 			either: (
 				Box::new(Rule::Course(course_a.clone())),
 				Box::new(Rule::Course(course_b.clone())),
 			),
-			surplus: None,
 		}),
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses,
@@ -80,7 +77,6 @@ fn serialize() {
 - count: 1
   of:
     - course: ASIAN 101
-  surplus: ~
   limit: ~
 - both:
     - course: ASIAN 101
@@ -92,7 +88,6 @@ fn serialize() {
       lab: ~
       international: ~
       can_match_used: ~
-  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -103,7 +98,6 @@ fn serialize() {
       lab: ~
       international: ~
       can_match_used: ~
-  surplus: ~
 - given: courses
   limit: []
   where: {}
@@ -146,7 +140,6 @@ fn deserialize() {
 		Rule::CountOf(count_of::Rule {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
-			surplus: None,
 			limit: None,
 		}),
 		Rule::Both(both::Rule {
@@ -154,14 +147,12 @@ fn deserialize() {
 				Box::new(Rule::Course(course_a.clone())),
 				Box::new(Rule::Course(course_b.clone())),
 			),
-			surplus: None,
 		}),
 		Rule::Either(either::Rule {
 			either: (
 				Box::new(Rule::Course(course_a.clone())),
 				Box::new(Rule::Course(course_b.clone())),
 			),
-			surplus: None,
 		}),
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses,
@@ -189,7 +180,6 @@ fn deserialize() {
 - count: 1
   of:
     - course: ASIAN 101
-  surplus: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -199,7 +189,6 @@ fn deserialize() {
       semester: ~
       lab: ~
       international: ~
-  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -209,7 +198,6 @@ fn deserialize() {
       semester: ~
       lab: ~
       international: ~
-  surplus: ~
 - given: courses
   what: courses
   where: {}
@@ -234,7 +222,6 @@ fn deserialize() {
 - count: 1
   of:
     - course: ASIAN 101
-  surplus: ~
   limit: ~
 - both:
     - course: ASIAN 101
@@ -245,7 +232,6 @@ fn deserialize() {
       semester: ~
       lab: ~
       international: ~
-  surplus: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -255,7 +241,6 @@ fn deserialize() {
       semester: ~
       lab: ~
       international: ~
-  surplus: ~
 - given: courses
   what: courses
   where: {}
@@ -313,7 +298,6 @@ fn deserialize_shorthands() {
 		Rule::CountOf(count_of::Rule {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
-			surplus: None,
 			limit: None,
 		}),
 		Rule::Both(both::Rule {
@@ -321,14 +305,12 @@ fn deserialize_shorthands() {
 				Box::new(Rule::Course(course_a.clone())),
 				Box::new(Rule::Course(course_b.clone())),
 			),
-			surplus: None,
 		}),
 		Rule::Either(either::Rule {
 			either: (
 				Box::new(Rule::Course(course_a.clone())),
 				Box::new(Rule::Course(course_b.clone())),
 			),
-			surplus: None,
 		}),
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses,

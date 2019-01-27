@@ -1,6 +1,5 @@
 use crate::limit;
 use crate::rules::Rule as AnyRule;
-use crate::surplus::Surplus;
 use crate::traits::Util;
 
 mod print;
@@ -16,8 +15,6 @@ mod tests;
 pub struct Rule {
 	pub count: Counter,
 	pub of: Vec<AnyRule>,
-	#[serde(default)]
-	pub surplus: Option<Surplus>,
 	#[serde(default)]
 	pub limit: Option<Vec<limit::Limiter>>,
 }
@@ -81,14 +78,12 @@ impl Rule {
 	fn into_both(&self) -> crate::rules::both::Rule {
 		crate::rules::both::Rule {
 			both: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
-			surplus: None,
 		}
 	}
 
 	fn into_either(&self) -> crate::rules::either::Rule {
 		crate::rules::either::Rule {
 			either: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
-			surplus: None,
 		}
 	}
 }

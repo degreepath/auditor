@@ -1,5 +1,4 @@
 use crate::rules::Rule as AnyRule;
-use crate::surplus::Surplus;
 use crate::traits::Util;
 
 mod print;
@@ -11,8 +10,6 @@ mod tests;
 #[serde(deny_unknown_fields)]
 pub struct Rule {
 	pub both: (Box<AnyRule>, Box<AnyRule>),
-	#[serde(default)]
-	pub surplus: Option<Surplus>,
 }
 
 impl Util for Rule {
