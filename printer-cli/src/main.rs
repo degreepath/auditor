@@ -2,7 +2,6 @@ use std::env;
 use std::fs;
 
 extern crate degreepath_parser;
-extern crate degreepath_printer;
 extern crate serde_yaml;
 
 use degreepath_parser::area_of_study::AreaOfStudy;
@@ -16,7 +15,7 @@ fn main() {
 
 	let area: AreaOfStudy = serde_yaml::from_str(&contents).unwrap();
 
-	match degreepath_printer::print(area) {
+	match area.print() {
 		Ok(s) => println!("{}", s),
 		Err(e) => eprintln!("{:?}", e),
 	}

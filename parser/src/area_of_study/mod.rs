@@ -3,6 +3,7 @@ use crate::rules::Rule;
 use indexmap::IndexMap;
 
 mod attributes;
+mod print;
 
 #[cfg(test)]
 mod tests;
