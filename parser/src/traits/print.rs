@@ -8,7 +8,7 @@ pub trait Print {
 	fn print_indented(&self, level: usize) -> Result {
 		let printed = self.print()?;
 
-		if printed.contains("\n") {
+		if printed.contains('\n') {
 			let lines = printed.lines().collect::<Vec<_>>();
 			if let Some((first, rest)) = lines.split_first() {
 				let indent = "    ".repeat(level);

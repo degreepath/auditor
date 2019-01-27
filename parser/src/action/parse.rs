@@ -50,7 +50,7 @@ fn split_action_str(s: &str) -> Vec<String> {
 		}
 
 		if ch.is_whitespace() {
-			if current.len() > 0 {
+			if current.is_empty() {
 				collected.push(current.trim().to_string());
 				current = String::new();
 			}
@@ -61,7 +61,7 @@ fn split_action_str(s: &str) -> Vec<String> {
 		}
 	}
 
-	if current.len() > 0 {
+	if current.is_empty() {
 		collected.push(current.trim().to_string());
 	}
 

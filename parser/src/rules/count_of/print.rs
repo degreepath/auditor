@@ -9,11 +9,11 @@ enum WhichUp {
 	Requirement,
 }
 
-fn print_and_collect(ref v: &[AnyRule]) -> Vec<String> {
+fn print_and_collect(v: &[AnyRule]) -> Vec<String> {
 	v.iter().map(|r| r.print_inner()).filter_map(result_to_option).collect()
 }
 
-fn print_and_join_for_block_elided(ref v: &[AnyRule]) -> String {
+fn print_and_join_for_block_elided(v: &[AnyRule]) -> String {
 	v.iter()
 		.map(|r| r.print_inner())
 		.filter_map(result_to_option)
@@ -22,7 +22,7 @@ fn print_and_join_for_block_elided(ref v: &[AnyRule]) -> String {
 		.join("\n")
 }
 
-fn print_and_join_for_block_verbose(ref v: &[AnyRule]) -> String {
+fn print_and_join_for_block_verbose(v: &[AnyRule]) -> String {
 	v.iter()
 		.map(|r| r.print_indented(1))
 		.filter_map(result_to_option)
@@ -31,7 +31,7 @@ fn print_and_join_for_block_verbose(ref v: &[AnyRule]) -> String {
 		.join("\n")
 }
 
-fn collect_and_sort_three_up(ref v: &[AnyRule]) -> (WhichUp, &AnyRule, &AnyRule, &AnyRule) {
+fn collect_and_sort_three_up(v: &[AnyRule]) -> (WhichUp, &AnyRule, &AnyRule, &AnyRule) {
 	let a = &v[0];
 	let b = &v[1];
 	let c = &v[2];
@@ -245,14 +245,14 @@ impl Rule {
 		} else if self.only_courses() {
 			Ok(format!("take {}", req))
 		} else {
-			Ok(format!("{}", req))
+			Ok(req.clone())
 		}
 	}
 }
 
 impl print::Print for Rule {
 	fn print(&self) -> print::Result {
-		if self.of.len() == 0 {
+		if self.of.is_empty() {
 			return Ok(String::from("warning: no items to choose from"));
 		}
 
@@ -261,11 +261,11 @@ impl print::Print for Rule {
 		}
 
 		if self.is_either() {
-			return self.into_either().print();
+			return self.to_either().print();
 		}
 
 		if self.is_both() {
-			return self.into_both().print();
+			return self.to_both().print();
 		}
 
 		assert!(self.of.len() > 2);
@@ -282,12 +282,10 @@ impl print::Print for Rule {
 			} else {
 				self.print_all_block()
 			}
+		} else if self.should_be_inline() {
+			self.print_mixed_inline()
 		} else {
-			if self.should_be_inline() {
-				self.print_mixed_inline()
-			} else {
-				self.print_mixed_block()
-			}
+			self.print_mixed_block()
 		}
 	}
 }

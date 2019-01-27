@@ -75,13 +75,13 @@ impl Rule {
 }
 
 impl Rule {
-	fn into_both(&self) -> crate::rules::both::Rule {
+	fn to_both(&self) -> crate::rules::both::Rule {
 		crate::rules::both::Rule {
 			both: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
 		}
 	}
 
-	fn into_either(&self) -> crate::rules::either::Rule {
+	fn to_either(&self) -> crate::rules::either::Rule {
 		crate::rules::either::Rule {
 			either: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
 		}

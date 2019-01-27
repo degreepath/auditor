@@ -70,7 +70,7 @@ impl FromStr for TaggedValue {
 impl print::Print for TaggedValue {
 	fn print(&self) -> print::Result {
 		match &self.op {
-			Operator::EqualTo => Ok(format!("{}", self.value.print()?)),
+			Operator::EqualTo => self.value.print(),
 			_ => Ok(format!("{} {}", self.op, self.value.print()?)),
 		}
 	}

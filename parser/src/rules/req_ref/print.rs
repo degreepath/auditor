@@ -8,7 +8,7 @@ impl print::Print for Rule {
 
 		write!(&mut output, "“{}”", self.requirement)?;
 
-		if self.optional == true {
+		if self.optional {
 			write!(&mut output, " (optional)")?;
 		}
 

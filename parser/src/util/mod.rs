@@ -2,13 +2,13 @@ mod oxford;
 pub use oxford::Oxford;
 
 mod errors;
-pub use errors::{ParseError, ValidationError};
+pub use errors::ParseError;
 
 mod serde;
 pub use self::serde::{serde_false, string_or_struct, string_or_struct_parseerror};
 
 pub fn pretty_term(term: &str) -> String {
-	format!("{}", term)
+	term.to_string()
 }
 
 pub fn expand_year(year: u64, mode: &str) -> String {

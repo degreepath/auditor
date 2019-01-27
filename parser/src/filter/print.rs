@@ -74,7 +74,7 @@ impl print::Print for Clause {
 						op: Operator::NotEqualTo,
 						value: v,
 					}) => clauses.push(format!("outside of the {} department", v.print()?)),
-					WrappedValue::Single(TaggedValue { op: _, value: _ }) => {
+					WrappedValue::Single(TaggedValue { .. }) => {
 						unimplemented!("filter:department, only implemented for = and !=")
 					}
 					WrappedValue::Or(v) => match v.len() {
@@ -178,7 +178,7 @@ impl print::Print for Clause {
 				| WrappedValue::Single(TaggedValue {
 					op: Operator::EqualTo,
 					value: Value::Bool(true),
-				}) => clauses.push(format!("as \"graded\" courses")),
+				}) => clauses.push("as \"graded\" courses".to_string()),
 				WrappedValue::Single(TaggedValue {
 					op: Operator::NotEqualTo,
 					value: Value::Bool(true),
@@ -186,7 +186,7 @@ impl print::Print for Clause {
 				| WrappedValue::Single(TaggedValue {
 					op: Operator::EqualTo,
 					value: Value::Bool(false),
-				}) => clauses.push(format!("as _not_ \"graded\" courses")),
+				}) => clauses.push("as _not_ \"graded\" courses".to_string()),
 				_ => unimplemented!("filter:graded, {:?}", graded),
 			}
 		}

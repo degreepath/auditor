@@ -88,12 +88,12 @@ impl print::Print for SaveBlock {
 					writeln!(&mut output, "> todo: describe what the save's action is doing")?;
 				}
 
-				if let Some(_) = &self.limit {
+				if self.limit.is_some() {
 					// todo: describe what the save's limiters do
 					writeln!(&mut output, "> todo: describe what the save's limiters do")?;
 				}
 
-				if let Some(_) = &self.what {
+				if self.what.is_some() {
 					// todo: describe what the save will generate
 					writeln!(&mut output, "> todo: describe what the save will generate")?;
 				}
@@ -130,7 +130,7 @@ impl print::Print for SaveBlock {
 		// TODO: decide on something to do for given:these-courses, repeats:all/first/last
 		// TODO: add limiter output
 
-		if let Some(_) = &self.limit {
+		if self.limit.is_some() {
 			writeln!(&mut output, "\ntodo: there's a limiter")?;
 		}
 

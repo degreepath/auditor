@@ -23,7 +23,7 @@ pub enum Value {
 impl print::Print for Value {
 	fn print(&self) -> print::Result {
 		match &self {
-			Value::String(s) => Ok(format!("{}", s)),
+			Value::String(s) => Ok(s.to_string()),
 			Value::Integer(n) => Ok(format!("{}", n)),
 			Value::Float(n) => Ok(format!("{:.2}", n)),
 			Value::Bool(b) => Ok(format!("{}", b)),
@@ -92,7 +92,7 @@ impl PartialEq<bool> for Value {
 impl fmt::Display for Value {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
 		let desc = match &self {
-			Value::String(s) => format!("{}", s),
+			Value::String(s) => s.to_string(),
 			Value::Integer(n) => format!("{}", n),
 			Value::Float(n) => format!("{:.2}", n),
 			Value::Bool(b) => format!("{}", b),

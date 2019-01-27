@@ -32,7 +32,7 @@ impl WrappedValue {
 impl print::Print for WrappedValue {
 	fn print(&self) -> print::Result {
 		match &self {
-			WrappedValue::Single(v) => Ok(format!("{}", v.print()?)),
+			WrappedValue::Single(v) => v.print(),
 			WrappedValue::Or(v) | WrappedValue::And(v) => {
 				let v: Vec<String> = v
 					.iter()
@@ -42,11 +42,11 @@ impl print::Print for WrappedValue {
 					})
 					.collect();
 
-				return match &self {
+				match &self {
 					WrappedValue::Or(_) => Ok(v.oxford("or")),
 					WrappedValue::And(_) => Ok(v.oxford("and")),
 					_ => panic!("we already checked for Single"),
-				};
+				}
 			}
 		}
 	}

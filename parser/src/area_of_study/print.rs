@@ -19,7 +19,10 @@ impl AreaOfStudy {
 		let leader = {
 			let catalog = &self.catalog;
 			let area_name = &self.area_name;
-			let institution = &self.institution.clone().unwrap_or("St. Olaf College".to_string());
+			let institution = &self
+				.institution
+				.clone()
+				.unwrap_or_else(|| "St. Olaf College".to_string());
 
 			match &self.area_type {
                 Degree => format!("This is the set of requirements for the {catalog} “{area_name}” {area_type} from {institution}.", catalog = catalog, area_name = area_name, area_type = area_type, institution = institution),
@@ -40,11 +43,11 @@ impl AreaOfStudy {
 
 		if let Ok(mut what_to_do) = self.result.print() {
 			// todo: remove this hack for adding periods to the end of inlined requirements
-			if !what_to_do.contains("\n") {
+			if !what_to_do.contains('\n') {
 				what_to_do += ".";
 			}
 
-			if !what_to_do.ends_with("\n") {
+			if !what_to_do.ends_with('\n') {
 				what_to_do += "\n";
 			}
 

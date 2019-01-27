@@ -126,7 +126,7 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_these_courses(&self, courses: &Vec<super::CourseRule>, mode: &super::RepeatMode) -> print::Result {
+	fn print_given_these_courses(&self, courses: &[super::CourseRule], mode: &super::RepeatMode) -> print::Result {
 		use std::fmt::Write;
 
 		let mut output = String::new();
@@ -271,13 +271,13 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_these_requirements(&self, requirements: &Vec<super::req_ref::Rule>) -> print::Result {
+	fn print_given_these_requirements(&self, requirements: &[super::req_ref::Rule]) -> print::Result {
 		use std::fmt::Write;
 
 		let mut output = String::new();
 
 		let requirements: Vec<String> = requirements
-			.into_iter()
+			.iter()
 			.filter_map(|r| match r.print() {
 				Ok(p) => Some(p),
 				Err(_) => None,

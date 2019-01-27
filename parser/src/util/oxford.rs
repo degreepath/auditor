@@ -5,7 +5,7 @@ pub trait Oxford {
 impl Oxford for Vec<String> {
 	fn oxford(&self, trailer: &str) -> String {
 		if self.len() == 1 {
-			return format!("{}", self[0]);
+			return self[0].clone();
 		}
 
 		if self.len() == 2 {
