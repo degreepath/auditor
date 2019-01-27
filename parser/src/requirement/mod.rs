@@ -35,18 +35,24 @@ pub mod print {
 			writeln!(&mut w, "{} {}", "#".repeat(level), name)?;
 
 			if let Some(message) = &self.message {
-				let message = format!("> Note: {}", message);
-				writeln!(&mut w, "{}", message)?;
+				let message = format!("Note: {}", message);
+				let message = message
+					.lines()
+					.map(|l| format!("> {}", l))
+					.collect::<Vec<_>>()
+					.join("\n");
+
+				writeln!(&mut w, "{}\n", message)?;
 			}
 
 			if self.department_audited {
 				let message = "For this requirement, you must have done what the note says. The Department must certify that you have done so.";
-				writeln!(&mut w, "{}", message)?;
+				writeln!(&mut w, "{}\n", message)?;
 			}
 
 			if self.contract {
 				let message = "This section is a Contract section. You must talk to the Department to fill out, file, and update the Contract.";
-				writeln!(&mut w, "{}", message)?;
+				writeln!(&mut w, "{}\n", message)?;
 			}
 
 			if !self.save.is_empty() {

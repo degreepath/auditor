@@ -57,7 +57,7 @@ impl AreaOfStudy {
 			}
 		};
 
-		writeln!(&mut w, "> {}", leader)?;
+		writeln!(&mut w, "> {}\n", leader)?;
 
 		writeln!(&mut w, "# {}", &self.area_name)?;
 
