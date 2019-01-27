@@ -6,7 +6,6 @@ edition = "2018"
 
 [dependencies]
 degreepath-parser = { path = "../parser" }
-degreepath-printer = { path = "../printer" }
 serde = "1.0"
 serde_derive = "1.0"
 serde_yaml = "0.8"
