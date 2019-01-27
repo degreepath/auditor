@@ -14,7 +14,7 @@ type CourseReference = String;
 #[derive(Debug, PartialEq, Eq, Hash, Serialize, Deserialize, Clone)]
 #[serde(untagged)]
 pub enum Matchable {
-	CourseId {course: String},
-	Attribute {attribute: String},
-	GeReq {gereq: String},
+	CourseId { course: String },
+	Attribute { attribute: String },
+	GeReq { gereq: String },
 }
