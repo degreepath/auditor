@@ -17,6 +17,8 @@ pub struct Requirement {
 	pub result: Option<Rule>,
 	#[serde(default = "util::serde_false")]
 	pub contract: bool,
+	#[serde(default = "util::serde_false")]
+	pub registrar_audited: bool,
 	#[serde(default)]
 	pub save: Vec<SaveBlock>,
 	#[serde(default)]
@@ -47,6 +49,11 @@ pub mod print {
 
 			if self.department_audited {
 				let message = "For this requirement, you must have done what the note says. The Department must certify that you have done so.";
+				writeln!(&mut w, "{}\n", message)?;
+			}
+
+			if self.registrar_audited {
+				let message = "For this requirement, you must have done what the note says. This must be verified and set by the registrar.";
 				writeln!(&mut w, "{}\n", message)?;
 			}
 

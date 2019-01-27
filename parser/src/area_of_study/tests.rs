@@ -71,6 +71,7 @@ requirements:
 				Requirement {
 					message: None,
 					department_audited: false,
+					registrar_audited: false,
 					contract: false,
 					save: vec![],
 					requirements: indexmap! {},
@@ -119,6 +120,7 @@ requirements:
 				Requirement {
 					message: None,
 					department_audited: false,
+					registrar_audited: false,
 					contract: false,
 					save: vec![],
 					requirements: indexmap! {},

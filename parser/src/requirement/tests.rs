@@ -7,6 +7,7 @@ fn serialize() {
 	let data = Requirement {
 		message: None,
 		department_audited: false,
+		registrar_audited: false,
 		result: Some(Rule::Requirement(req_ref::Rule {
 			requirement: String::from("name"),
 			optional: false,
@@ -23,6 +24,7 @@ result:
   requirement: name
   optional: false
 contract: false
+registrar_audited: false
 save: []
 requirements: {}";
 
@@ -35,6 +37,7 @@ fn deserialize() {
 	let data = "---
 message: ~
 department_audited: false
+registrar_audited: false
 result:
   requirement: name
   optional: false
@@ -45,6 +48,7 @@ requirements: {}";
 	let expected = Requirement {
 		message: None,
 		department_audited: false,
+		registrar_audited: false,
 		result: Some(Rule::Requirement(req_ref::Rule {
 			requirement: String::from("name"),
 			optional: false,
@@ -67,6 +71,7 @@ result: {requirement: name, optional: false}";
 	let expected = Requirement {
 		message: None,
 		department_audited: false,
+		registrar_audited: false,
 		result: Some(Rule::Requirement(req_ref::Rule {
 			requirement: String::from("name"),
 			optional: false,
@@ -88,6 +93,7 @@ message: a message";
 	let expected = Requirement {
 		message: Some("a message".to_string()),
 		department_audited: false,
+		registrar_audited: false,
 		result: None,
 		contract: false,
 		save: vec![],
@@ -118,6 +124,7 @@ result:
 	let expected = Requirement {
 		message: None,
 		department_audited: false,
+		registrar_audited: false,
 		result: Some(Rule::Both(rules::both::Rule {
 			both: (
 				Box::new(Rule::Given(given::Rule {
