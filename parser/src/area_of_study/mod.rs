@@ -14,6 +14,8 @@ pub struct AreaOfStudy {
 	pub area_name: String,
 	#[serde(flatten)]
 	pub area_type: AreaType,
+	#[serde(default)]
+	pub institution: Option<String>,
 	pub catalog: String,
 	pub result: Rule,
 	pub requirements: IndexMap<String, Requirement>,
