@@ -1,6 +1,3 @@
-mod validate;
-pub use validate::Validate;
-
 pub mod print;
 pub use self::print::Print;
 

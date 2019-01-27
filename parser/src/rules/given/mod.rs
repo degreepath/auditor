@@ -30,20 +30,6 @@ impl Util for Rule {
 	}
 }
 
-// impl Rule {
-//     fn validate(&self) -> Result<(), util::ValidationError> {
-//         match (&self.given, &self.what) {
-//             (Given::AreasOfStudy, What::AreasOfStudy) => (),
-//             (Given::AreasOfStudy, _) => {
-//                 return Err(util::ValidationError::GivenAreasMustOutputAreas)
-//             }
-//             _ => (),
-//         }
-//
-//         Ok(())
-//     }
-// }
-
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(tag = "given")]
 pub enum Given {
