@@ -1,7 +1,7 @@
+use crate::limit;
 use crate::rules::Rule as AnyRule;
 use crate::surplus::Surplus;
 use crate::traits::Util;
-use crate::limit;
 
 mod print;
 
@@ -74,6 +74,22 @@ impl Rule {
 
 	fn should_be_inline(&self) -> bool {
 		self.of.len() < 4 && !self.has_save_rule()
+	}
+}
+
+impl Rule {
+	fn into_both(&self) -> crate::rules::both::Rule {
+		crate::rules::both::Rule {
+			both: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
+			surplus: None,
+		}
+	}
+
+	fn into_either(&self) -> crate::rules::either::Rule {
+		crate::rules::either::Rule {
+			either: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
+			surplus: None,
+		}
 	}
 }
 
