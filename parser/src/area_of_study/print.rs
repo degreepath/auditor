@@ -59,13 +59,8 @@ impl AreaOfStudy {
 			)?;
 		}
 
-		let requirements: Vec<String> = self
-			.requirements
-			.iter()
-			.flat_map(|(name, r)| r.print(name, 2))
-			.collect();
-
-		for s in requirements {
+		for (name, req) in &self.requirements {
+			let s = req.print(&name, 2)?;
 			write!(&mut w, "\n{}", s)?;
 		}
 
