@@ -62,19 +62,11 @@ impl print::Print for Rule {
 		}
 
 		if self.is_either() {
-			let either = crate::rules::either::Rule {
-				either: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
-				surplus: None,
-			};
-			return either.print();
+			return self.into_either().print();
 		}
 
 		if self.is_both() {
-			let both = crate::rules::both::Rule {
-				both: (Box::new(self.of[0].clone()), Box::new(self.of[1].clone())),
-				surplus: None,
-			};
-			return both.print();
+			return self.into_both().print();
 		}
 
 		let mut output = String::new();
