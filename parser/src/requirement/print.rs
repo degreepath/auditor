@@ -66,8 +66,7 @@ impl Requirement {
 		}
 
 		for (name, req) in &self.requirements {
-			let s = req.print(&name, level + 1)?;
-			write!(&mut w, "{}", s)?;
+			write!(&mut w, "{}", req.print(&name, level + 1)?)?;
 		}
 
 		if !w.ends_with('\n') {

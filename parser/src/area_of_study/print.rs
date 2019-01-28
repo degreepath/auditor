@@ -51,20 +51,12 @@ impl AreaOfStudy {
 				what_to_do += "\n";
 			}
 
-			write!(
-				&mut w,
-				"{}",
-				&format!(
-					"For this {area_type}, you must {what_to_do}",
-					area_type = area_type,
-					what_to_do = what_to_do
-				)
-			)?;
+			let what_to_do = format!("For this {}, you must {}", area_type, what_to_do);
+			write!(&mut w, "{}", &what_to_do)?;
 		}
 
 		for (name, req) in &self.requirements {
-			let s = req.print(&name, 2)?;
-			write!(&mut w, "\n{}", s)?;
+			write!(&mut w, "\n{}", req.print(&name, 2)?)?;
 		}
 
 		Ok(w)
