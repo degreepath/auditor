@@ -70,7 +70,7 @@ For this requirement, you must take one of the following courses:
 ## Senior Dance Seminar
 > Note: Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.
 
-For this requirement, you must take DANCE 399.
+For this requirement, you must take DANCE 399 during the Fall of your graduation year.
 
 
 ## Area of Speciality
