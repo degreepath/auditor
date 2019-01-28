@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Mathematics” major from St. Olaf College.
 
 # Mathematics
-> todo: this area has custom attributes defined.
-
 For this major, you must both:
 
 - complete all of the following requirements:
@@ -89,4 +87,37 @@ For this requirement, you must do one of the following:
 - take both MATH 252 and MATH 352
 - take both MATH 262 and STAT 322
 
+# Custom Attributes
+
+Courses | `math_level_3` | `math_perspective_a` | `math_perspective_c` | `math_perspective_d` | `math_perspective_m` | `math_transitions`
+--- | :---: | :---: | :---: | :---: | :---: | :---:
+CSCI 315 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
+CSCI 333 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
+MATH 226 | ❌ | ❌ | ✅ | ❌ | ❌ | ❌
+MATH 230 | ❌ | ❌ | ✅ | ❌ | ✅ | ❌
+MATH 232 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+MATH 236 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+MATH 239 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+MATH 242 | ❌ | ❌ | ❌ | ❌ | ✅ | ✅
+MATH 244 | ❌ | ❌ | ✅ | ❌ | ❌ | ✅
+MATH 252 | ❌ | ✅ | ❌ | ❌ | ❌ | ✅
+MATH 262 | ❌ | ❌ | ✅ | ✅ | ✅ | ❌
+MATH 266 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+MATH 330 | ✅ | ❌ | ❌ | ❌ | ✅ | ❌
+MATH 340 | ✅ | ❌ | ✅ | ❌ | ❌ | ❌
+MATH 344 | ✅ | ❌ | ✅ | ❌ | ❌ | ❌
+MATH 348 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+MATH 352 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+MATH 356 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+MATH 364 | ✅ | ❌ | ❌ | ✅ | ❌ | ❌
+MATH 382 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
+MATH 384 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
+MATH 396 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
+MSCS 341 | ✅ | ❌ | ❌ | ❌ | ✅ | ❌
+MSCS 390 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
+STAT 212 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+STAT 214 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+STAT 272 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+STAT 316 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+STAT 322 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
 

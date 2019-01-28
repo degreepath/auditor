@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “French” major from St. Olaf College.
 
 # French
-> todo: this area has custom attributes defined.
-
 For this major, you must complete all of the following requirements:
 
 - “Speaking and Writing”
@@ -35,4 +33,34 @@ For this requirement, you must take two of the following courses:
 ## Electives
 For this requirement, you must have at least two courses taken with the “french_elective” attribute.
 
+# Custom Attributes
+
+Courses | `french_elective`
+--- | :---:
+FREN 250 | ✅
+FREN 251 | ✅
+FREN 253 | ✅
+ART 251 | ✅
+ART 252 | ✅
+ART 263 | ✅
+ART 271 | ✅
+FREN 231 | ✅
+FREN 232 | ✅
+FREN 235 | ✅
+FREN 271 | ✅
+FREN 272 | ✅
+FREN 273 | ✅
+FREN 275 | ✅
+FREN 372 | ✅
+FREN 373 | ✅
+FREN 397 | ✅
+FREN 399 | ✅
+HIST 210 | ✅
+HIST 226 | ✅
+HIST 227 | ✅
+MUSIC 343 | ✅
+PHIL 236 | ✅
+PSCI 260 | ✅
+PSCI 283 | ✅
+THEAT 270 | ✅
 

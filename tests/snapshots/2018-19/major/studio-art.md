@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Studio Art” major from St. Olaf College.
 
 # Studio Art
-> todo: this area has custom attributes defined.
-
 For this major, you must complete all of the following requirements:
 
 - “Foundations”
@@ -96,4 +94,58 @@ For this requirement, you must have at least one course taken with the “art_el
 
 For this requirement, you must have at least one course taken with the “art_history” attribute.
 
+# Custom Attributes
+
+Courses | `art_elective` | `art_history`
+--- | :---: | :---:
+ART 106 | ✅ | ❌
+ART 153 | ❌ | ✅
+ART 161 | ❌ | ✅
+ART 205 | ✅ | ❌
+ART 207 | ✅ | ❌
+ART 221 | ✅ | ❌
+ART 222 | ✅ | ❌
+ART 223 | ✅ | ❌
+ART 224 | ✅ | ❌
+ART 225 | ✅ | ❌
+ART 226 | ✅ | ❌
+ART 227 | ✅ | ❌
+ART 228 | ✅ | ❌
+ART 229 | ✅ | ❌
+ART 232 | ✅ | ❌
+ART 233 | ✅ | ❌
+ART 234 | ✅ | ❌
+ART 236 2000.0 | ✅ | ❌
+ART 238 | ✅ | ❌
+ART 240 | ✅ | ❌
+ART 246 | ✅ | ❌
+ART 251 | ❌ | ✅
+ART 252 | ❌ | ✅
+ART 253 | ❌ | ✅
+ART 254 | ❌ | ✅
+ART 255 | ❌ | ✅
+ART 256 | ❌ | ✅
+ART 259 | ❌ | ✅
+ART 260 | ❌ | ✅
+ART 261 | ❌ | ✅
+ART 262 | ❌ | ✅
+ART 263 | ❌ | ✅
+ART 265 | ❌ | ✅
+ART 267 | ❌ | ✅
+ART 269 | ❌ | ✅
+ART 271 | ❌ | ✅
+ART 273 | ❌ | ✅
+ART 277 | ❌ | ✅
+ART 280 | ❌ | ✅
+ART 294 | ✅ | ❌
+ART 298 | ✅ | ❌
+ART 340 | ✅ | ❌
+ART 350 | ❌ | ✅
+ART 370 | ❌ | ✅
+ART 394 | ✅ | ❌
+ART 398 | ✅ | ❌
+ASIAN 270 | ❌ | ✅
+ASIAN 310 | ❌ | ✅
+ENVST 270 | ❌ | ✅
+PHIL 243 | ❌ | ✅
 

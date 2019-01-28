@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Japanese” major from St. Olaf College.
 
 # Japanese
-> todo: this area has custom attributes defined.
-
 For this major, you must complete all of the following requirements:
 
 - “Core Language”
@@ -55,4 +53,41 @@ For this requirement, you must have at least one course taken with the “japan_
 ## FLAC
 For this requirement, you must have at least one course taken with the “japan_flac” attribute.
 
+# Custom Attributes
+
+Courses | `japan_asiancon` | `japan_comparative_asia` | `japan_flac` | `japan_focused_on_japan` | `japan_independent_study` | `japan_seminar`
+--- | :---: | :---: | :---: | :---: | :---: | :---:
+ART 260 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+AS/ES 377 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+AS/PS 255 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+AS/RE 256 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+AS/RE 257 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+AS/RE 289 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 121 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 123 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 126 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 130 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 200 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 210 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 215 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 216 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 220 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 230 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 235 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 240 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 268 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 282 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 298 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+ASIAN 300 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 310 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 333 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 397 | ❌ | ✅ | ❌ | ❌ | ❌ | ✅
+ASIAN 398 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+ASIAN 399 | ❌ | ✅ | ❌ | ❌ | ❌ | ✅
+HIST 252 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+HIST 253 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+HIST 345 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+PHIL 251 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 245 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 001A.F | ❌ | ❌ | ✅ | ❌ | ❌ | ❌
 

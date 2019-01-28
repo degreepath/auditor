@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Psychology” major from St. Olaf College.
 
 # Psychology
-> todo: this area has custom attributes defined.
-
 For this major, you must complete all of the following requirements:
 
 - “Foundation”
@@ -51,4 +49,38 @@ For this requirement, you must take one of the following courses:
 ## Electives
 For this requirement, you must have at least two courses taken with the “psych_elective” attribute.
 
+# Custom Attributes
+
+Courses | `psych_elective` | `psych_level_3`
+--- | :---: | :---:
+PSYCH 235 | ✅ | ❌
+PSYCH 236 | ✅ | ❌
+PSYCH 237 | ✅ | ❌
+PSYCH 238 | ✅ | ❌
+PSYCH 241 | ✅ | ❌
+PSYCH 244 | ✅ | ❌
+PSYCH 247 | ✅ | ❌
+PSYCH 220 | ✅ | ❌
+PSYCH 221 | ✅ | ❌
+PSYCH 222 | ✅ | ❌
+PSYCH 223 | ✅ | ❌
+PSYCH 224 | ✅ | ❌
+PSYCH 225 | ✅ | ❌
+PSYCH 227 | ✅ | ❌
+PSYCH 250 | ✅ | ❌
+PSYCH 251 | ✅ | ❌
+PSYCH 336 | ✅ | ✅
+PSYCH 338 | ✅ | ✅
+PSYCH 339 | ✅ | ✅
+PSYCH 341 | ✅ | ✅
+PSYCH 342 | ✅ | ✅
+PSYCH 344 | ✅ | ✅
+PSYCH 350 | ✅ | ✅
+PSYCH 375 | ✅ | ✅
+PSYCH 378 | ✅ | ✅
+PSYCH 390 | ✅ | ✅
+PSYCH 391 | ✅ | ✅
+PSYCH 395 | ✅ | ✅
+PSYCH 396 | ✅ | ✅
+PSYCH 398 | ✅ | ✅
 

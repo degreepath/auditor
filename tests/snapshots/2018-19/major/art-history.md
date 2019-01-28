@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Art History” major from St. Olaf College.
 
 # Art History
-> todo: this area has custom attributes defined.
-
 For this major, you must complete all of the following requirements:
 
 - “Intro”
@@ -60,4 +58,61 @@ For this requirement, you must have at least one course taken with the “art_pe
 
 For this requirement, you must have done what the note says. The Department must certify that you have done so.
 
+# Custom Attributes
+
+Courses | `art_locale_african` | `art_locale_american` | `art_locale_asian` | `art_locale_european` | `art_locale_near_eastern` | `art_period_post1700` | `art_period_pre1700` | `art_studio_art`
+--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---:
+ART 161, 2000-1 | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ART 161, 2001-1 | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ART 251 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 252 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 253 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 254 | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌
+ART 255 | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌
+ART 256 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 259 | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌
+ART 260 | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌
+ART 261 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 262 | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌
+ART 263 | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌
+ART 265 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 267 | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌
+ART 269 | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌
+ART 271 | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌
+ART 273 | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌
+ART 277 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 280 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 370 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ASIAN 270 | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 310 | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | ❌
+ENVST 270 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+PHIL 243 | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌
+ART 102 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 103 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 104 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 106 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 205 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 207 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 221 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 222 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 223 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 224 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 225 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 226 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 227 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 228 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 229 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 232 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 233 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 234 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 236 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 238 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 240 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 246 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 294 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 298 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 340 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 343 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 394 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
+ART 398 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅
 

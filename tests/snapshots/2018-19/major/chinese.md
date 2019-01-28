@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Chinese” major from St. Olaf College.
 
 # Chinese
-> todo: this area has custom attributes defined.
-
 For this major, you must complete all of the following requirements:
 
 - “Core Language”
@@ -55,4 +53,44 @@ For this requirement, you must have at least one course taken with the “china_
 ## FLAC
 For this requirement, you must have at least one course taken with the “china_flac” attribute.
 
+# Custom Attributes
+
+Courses | `china_asiancon` | `china_comparative_asia` | `china_flac` | `china_focused_on_china` | `china_independent_study` | `china_senior_seminar`
+--- | :---: | :---: | :---: | :---: | :---: | :---:
+ART 259 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+AS/PS 255 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+AS/RE 256 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+AS/RE 257 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+AS/RE 289 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 121 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 123 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 156.F | ❌ | ❌ | ✅ | ❌ | ❌ | ❌
+ASIAN 156 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 200 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 210 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 215 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 216 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 220 | ✅ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 236 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 237.F | ❌ | ❌ | ✅ | ❌ | ❌ | ❌
+ASIAN 237 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 268 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 270.F | ❌ | ❌ | ✅ | ❌ | ❌ | ❌
+ASIAN 270 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+ASIAN 282 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 298 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+ASIAN 300 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 310 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 333 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+ASIAN 397 | ❌ | ✅ | ❌ | ❌ | ❌ | ✅
+ASIAN 398 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌
+ASIAN 399 | ❌ | ✅ | ❌ | ❌ | ❌ | ✅
+HIST 250.F | ❌ | ❌ | ✅ | ❌ | ❌ | ❌
+HIST 250 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+HIST 251.F | ❌ | ❌ | ✅ | ❌ | ❌ | ❌
+HIST 251 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+HIST 262 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌
+HIST 345 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+PHIL 251 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 245 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌
 

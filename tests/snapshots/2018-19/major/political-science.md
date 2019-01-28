@@ -1,8 +1,6 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Political Science” major from St. Olaf College.
 
 # Political Science
-> todo: this area has custom attributes defined.
-
 For this major, you must both:
 
 - complete all of the following requirements:
@@ -64,4 +62,46 @@ For this requirement, you must have at least one course taken within the FREN, G
 #### Chinese, Greek, Latin, Japanese, Norwegian, Russian
 For this requirement, you must have at least one course taken within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
 
+# Custom Attributes
+
+Courses | `psci_level_3` | `psci_topic_american` | `psci_topic_comparative` | `psci_topic_international` | `psci_topic_theory`
+--- | :---: | :---: | :---: | :---: | :---:
+AS/PS 255 | ❌ | ❌ | ✅ | ❌ | ❌
+ES/PS 201 | ❌ | ❌ | ❌ | ✅ | ❌
+ES/PS 225 | ❌ | ❌ | ❌ | ❌ | ✅
+ES/PS 276 | ❌ | ✅ | ❌ | ❌ | ❌
+PSCI 111 | ❌ | ✅ | ❌ | ❌ | ❌
+PSCI 112 | ❌ | ❌ | ✅ | ❌ | ❌
+PSCI 113 | ❌ | ❌ | ❌ | ❌ | ✅
+PSCI 115 | ❌ | ❌ | ❌ | ✅ | ❌
+PSCI 117 | ❌ | ❌ | ✅ | ❌ | ❌
+PSCI 119 | ❌ | ❌ | ❌ | ❌ | ✅
+PSCI 121 | ❌ | ❌ | ❌ | ✅ | ❌
+PSCI 204 | ❌ | ✅ | ❌ | ❌ | ❌
+PSCI 211 | ❌ | ✅ | ❌ | ❌ | ❌
+PSCI 232 | ❌ | ❌ | ❌ | ❌ | ✅
+PSCI 244 | ❌ | ✅ | ❌ | ❌ | ❌
+PSCI 245 | ❌ | ❌ | ❌ | ✅ | ❌
+PSCI 252 | ❌ | ❌ | ✅ | ❌ | ❌
+PSCI 255 | ❌ | ✅ | ❌ | ❌ | ❌
+PSCI 257 | ❌ | ❌ | ❌ | ✅ | ❌
+PSCI 258 | ❌ | ❌ | ❌ | ✅ | ❌
+PSCI 259 | ❌ | ❌ | ❌ | ❌ | ✅
+PSCI 260 | ❌ | ❌ | ❌ | ❌ | ✅
+PSCI 262 | ❌ | ❌ | ❌ | ❌ | ✅
+PSCI 264 | ❌ | ❌ | ✅ | ❌ | ❌
+PSCI 272 | ❌ | ✅ | ❌ | ❌ | ❌
+PSCI 282 | ❌ | ❌ | ✅ | ❌ | ❌
+PSCI 283 | ❌ | ❌ | ✅ | ❌ | ❌
+PSCI 284 | ❌ | ❌ | ❌ | ❌ | ✅
+PSCI 285 | ❌ | ❌ | ❌ | ✅ | ❌
+PSCI 311 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 321 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 350 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 367 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 370 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 382 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 384 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 385 | ✅ | ❌ | ❌ | ❌ | ❌
+PSCI 299 2000-1 | ❌ | ❌ | ❌ | ❌ | ✅
 
