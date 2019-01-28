@@ -57,6 +57,16 @@ impl print::Print for Clause {
 			clauses.extend(new_clauses);
 		}
 
+		if let Some(value) = self.get("attribute") {
+			used_keys.insert("attribute".to_string());
+
+			match value {
+				WrappedValue::Single(v) => clauses.push(format!("with the “{}” attribute", v.print()?)),
+				WrappedValue::Or(_) => clauses.push(format!("with either the {} attribute", value.print()?)),
+				WrappedValue::And(_) => clauses.push(format!("with both the {} attributes", value.print()?)),
+			}
+		}
+
 		for key in self.keys() {
 			if used_keys.contains(key) {
 				continue;
