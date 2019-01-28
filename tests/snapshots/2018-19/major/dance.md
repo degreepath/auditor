@@ -70,13 +70,7 @@ For this requirement, you must take one of the following courses:
 ## Senior Dance Seminar
 > Note: Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.
 
-Given the intersection between this set of courses and the courses from your transcript, as “Senior Dance Seminars”:
-
-| “Senior Dance Seminars” | Transcript |
-| ----------------------- | ---------- |
-| DANCE 399 | (todo: fill out if match) |
-
-For this requirement, you must in the subset “Senior Dance Seminars”, there must be at least one course.
+For this requirement, you must take DANCE 399.
 
 
 ## Area of Speciality

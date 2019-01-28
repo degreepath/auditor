@@ -268,10 +268,32 @@
       "message": "Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.",
       "department_audited": false,
       "result": {
-        "given": "save",
-        "save": "Senior Dance Seminars",
+        "given": "these courses",
+        "courses": [
+          {
+            "course": "DANCE 399"
+          }
+        ],
+        "repeats": "last",
         "limit": null,
-        "where": null,
+        "where": {
+          "year": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "Constant": "graduation-year"
+              }
+            }
+          },
+          "semester": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "Fall"
+              }
+            }
+          }
+        },
         "what": "courses",
         "do": {
           "lhs": {
@@ -285,39 +307,7 @@
       },
       "contract": false,
       "registrar_audited": false,
-      "save": [
-        {
-          "name": "Senior Dance Seminars",
-          "given": "these courses",
-          "courses": [
-            {
-              "course": "DANCE 399"
-            }
-          ],
-          "repeats": "last",
-          "limit": null,
-          "where": {
-            "year": {
-              "Single": {
-                "op": "EqualTo",
-                "value": {
-                  "Constant": "graduation-year"
-                }
-              }
-            },
-            "semester": {
-              "Single": {
-                "op": "EqualTo",
-                "value": {
-                  "String": "Fall"
-                }
-              }
-            }
-          },
-          "what": null,
-          "do": null
-        }
-      ],
+      "save": [],
       "requirements": {}
     },
     "Area of Speciality": {

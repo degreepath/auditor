@@ -4,36 +4,17 @@
 For this major, you must complete “Language”, “Classics”, and “Ancient History”.
 
 ## Language
-Given the intersection between this set of courses and the courses from your transcript, as “Latin Courses”:
+Given the subset of courses from your transcript, limited to only courses taken with the “classics_latin” `attributes` attribute, as “Latin Courses”:
 
-| “Latin Courses” | Transcript |
-| --------------- | ---------- |
-| LATIN 111 | (todo: fill out if match) |
-| LATIN 112 | (todo: fill out if match) |
-| LATIN 231 | (todo: fill out if match) |
-| LATIN 235 | (todo: fill out if match) |
-| LATIN 252 | (todo: fill out if match) |
-| LATIN 370 | (todo: fill out if match) |
-| LATIN 371 | (todo: fill out if match) |
-| LATIN 372 | (todo: fill out if match) |
-| LATIN 373 | (todo: fill out if match) |
-| LATIN 374 | (todo: fill out if match) |
-| LATIN 375 | (todo: fill out if match) |
-| LATIN 377 | (todo: fill out if match) |
+| “Latin Courses” |
+| --------------- |
+| (todo: list matching courses here) |
 
-Given the intersection between this set of courses and the courses from your transcript, as “Greek Courses”:
+Given the subset of courses from your transcript, limited to only courses taken with the “classics_greek” `attributes` attribute, as “Greek Courses”:
 
-| “Greek Courses” | Transcript |
-| --------------- | ---------- |
-| GREEK 111 | (todo: fill out if match) |
-| GREEK 112 | (todo: fill out if match) |
-| GREEK 231 | (todo: fill out if match) |
-| GREEK 253 | (todo: fill out if match) |
-| GREEK 370 | (todo: fill out if match) |
-| GREEK 372 | (todo: fill out if match) |
-| GREEK 373 | (todo: fill out if match) |
-| GREEK 374 | (todo: fill out if match) |
-| GREEK 375 | (todo: fill out if match) |
+| “Greek Courses” |
+| --------------- |
+| (todo: list matching courses here) |
 
 For this requirement, you must do both of the following:
 
@@ -67,6 +48,32 @@ For this requirement, you must take one of the following courses:
 ## Ancient History
 > Note: TODO find out what courses are considered "ancient history"
 
-For this requirement, you must take CLASS 111.
+For this requirement, you must have at least one course taken with the “classics_ancient_history” `attributes` attribute.
 
+# Custom Attributes
+
+Courses | `classics_ancient_history` | `classics_greek` | `classics_latin`
+--- | :---: | :---: | :---:
+LATIN 111 | ❌ | ❌ | ✅
+LATIN 112 | ❌ | ❌ | ✅
+LATIN 231 | ❌ | ❌ | ✅
+LATIN 235 | ❌ | ❌ | ✅
+LATIN 252 | ❌ | ❌ | ✅
+LATIN 370 | ❌ | ❌ | ✅
+LATIN 371 | ❌ | ❌ | ✅
+LATIN 372 | ❌ | ❌ | ✅
+LATIN 373 | ❌ | ❌ | ✅
+LATIN 374 | ❌ | ❌ | ✅
+LATIN 375 | ❌ | ❌ | ✅
+LATIN 377 | ❌ | ❌ | ✅
+GREEK 111 | ❌ | ✅ | ❌
+GREEK 112 | ❌ | ✅ | ❌
+GREEK 231 | ❌ | ✅ | ❌
+GREEK 253 | ❌ | ✅ | ❌
+GREEK 370 | ❌ | ✅ | ❌
+GREEK 372 | ❌ | ✅ | ❌
+GREEK 373 | ❌ | ✅ | ❌
+GREEK 374 | ❌ | ✅ | ❌
+GREEK 375 | ❌ | ✅ | ❌
+CLASS 111 | ✅ | ❌ | ❌
 

@@ -31,7 +31,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 3,
+        "count": "all",
         "of": [
           {
             "either": [

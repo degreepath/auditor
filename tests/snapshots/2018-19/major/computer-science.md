@@ -9,7 +9,7 @@ For this major, you must complete all of the following requirements:
 - “Capstone”
 
 ## Foundation
-For this requirement, you must do three from among the following:
+For this requirement, you must do all of the following:
 
 - take either CSCI 121 or CSCI 125
 - take CSCI 241

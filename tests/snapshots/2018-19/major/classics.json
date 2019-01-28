@@ -109,86 +109,35 @@
       "save": [
         {
           "name": "Latin Courses",
-          "given": "these courses",
-          "courses": [
-            {
-              "course": "LATIN 111"
-            },
-            {
-              "course": "LATIN 112"
-            },
-            {
-              "course": "LATIN 231"
-            },
-            {
-              "course": "LATIN 235"
-            },
-            {
-              "course": "LATIN 252"
-            },
-            {
-              "course": "LATIN 370"
-            },
-            {
-              "course": "LATIN 371"
-            },
-            {
-              "course": "LATIN 372"
-            },
-            {
-              "course": "LATIN 373"
-            },
-            {
-              "course": "LATIN 374"
-            },
-            {
-              "course": "LATIN 375"
-            },
-            {
-              "course": "LATIN 377"
-            }
-          ],
-          "repeats": "first",
+          "given": "courses",
           "limit": null,
-          "where": null,
+          "where": {
+            "attributes": {
+              "Single": {
+                "op": "EqualTo",
+                "value": {
+                  "String": "classics_latin"
+                }
+              }
+            }
+          },
           "what": null,
           "do": null
         },
         {
           "name": "Greek Courses",
-          "given": "these courses",
-          "courses": [
-            {
-              "course": "GREEK 111"
-            },
-            {
-              "course": "GREEK 112"
-            },
-            {
-              "course": "GREEK 231"
-            },
-            {
-              "course": "GREEK 253"
-            },
-            {
-              "course": "GREEK 370"
-            },
-            {
-              "course": "GREEK 372"
-            },
-            {
-              "course": "GREEK 373"
-            },
-            {
-              "course": "GREEK 374"
-            },
-            {
-              "course": "GREEK 375"
-            }
-          ],
-          "repeats": "first",
+          "given": "courses",
           "limit": null,
-          "where": null,
+          "where": {
+            "attributes": {
+              "Single": {
+                "op": "EqualTo",
+                "value": {
+                  "String": "classics_greek"
+                }
+              }
+            }
+          },
           "what": null,
           "do": null
         }
@@ -243,13 +192,28 @@
       "message": "TODO find out what courses are considered \"ancient history\"",
       "department_audited": false,
       "result": {
-        "count": 1,
-        "of": [
-          {
-            "course": "CLASS 111"
+        "given": "courses",
+        "limit": null,
+        "where": {
+          "attributes": {
+            "Single": {
+              "op": "EqualTo",
+              "value": {
+                "String": "classics_ancient_history"
+              }
+            }
           }
-        ],
-        "limit": null
+        },
+        "what": "courses",
+        "do": {
+          "lhs": {
+            "Command": "Count"
+          },
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
       "registrar_audited": false,
@@ -257,5 +221,75 @@
       "requirements": {}
     }
   },
-  "attributes": null
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "LATIN 111": [
+        "classics_latin"
+      ],
+      "LATIN 112": [
+        "classics_latin"
+      ],
+      "LATIN 231": [
+        "classics_latin"
+      ],
+      "LATIN 235": [
+        "classics_latin"
+      ],
+      "LATIN 252": [
+        "classics_latin"
+      ],
+      "LATIN 370": [
+        "classics_latin"
+      ],
+      "LATIN 371": [
+        "classics_latin"
+      ],
+      "LATIN 372": [
+        "classics_latin"
+      ],
+      "LATIN 373": [
+        "classics_latin"
+      ],
+      "LATIN 374": [
+        "classics_latin"
+      ],
+      "LATIN 375": [
+        "classics_latin"
+      ],
+      "LATIN 377": [
+        "classics_latin"
+      ],
+      "GREEK 111": [
+        "classics_greek"
+      ],
+      "GREEK 112": [
+        "classics_greek"
+      ],
+      "GREEK 231": [
+        "classics_greek"
+      ],
+      "GREEK 253": [
+        "classics_greek"
+      ],
+      "GREEK 370": [
+        "classics_greek"
+      ],
+      "GREEK 372": [
+        "classics_greek"
+      ],
+      "GREEK 373": [
+        "classics_greek"
+      ],
+      "GREEK 374": [
+        "classics_greek"
+      ],
+      "GREEK 375": [
+        "classics_greek"
+      ],
+      "CLASS 111": [
+        "classics_ancient_history"
+      ]
+    }
+  }
 }
