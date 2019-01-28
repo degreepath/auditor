@@ -130,7 +130,10 @@ impl Rule {
 		use std::fmt::Write;
 
 		let mut output = String::new();
-		// let filter = self.print_filter()?;
+		let filter = match &self.filter {
+			Some(f) => Some(format!(" {}", f.print()?)),
+			None => None,
+		};
 
 		let courses: Vec<String> = courses.iter().map(|r| r.print().unwrap()).collect();
 
@@ -266,6 +269,10 @@ impl Rule {
 				)?;
 			}
 			_ => unimplemented!("certain modes of given:these-courses"),
+		}
+
+		if let Some(f) = filter {
+			write!(&mut output, "{}", f)?;
 		}
 
 		Ok(output)
