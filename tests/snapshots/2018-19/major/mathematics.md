@@ -33,7 +33,7 @@ For this requirement, you must do all of the following:
 
 
 ## Transitions
-For this requirement, you must have at least two courses taken with the “math_transitions” `attribute` attribute.
+For this requirement, you must have at least two courses taken with the “math_transitions” attribute.
 
 
 ## Perspectives
@@ -47,16 +47,16 @@ For this section, you must complete three from among the following requirements:
 - “Modeling/Computation (M)”
 
 ### Axiomatic/Algebraic (A)
-For this requirement, you must have at least one course taken with the “math_perspective_a” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_a” attribute.
 
 ### Continuous/Analytic (C)
-For this requirement, you must have at least one course taken with the “math_perspective_c” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_c” attribute.
 
 ### Discrete/Combinatorial (D)
-For this requirement, you must have at least one course taken with the “math_perspective_d” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_d” attribute.
 
 ### Modeling/Computation (M)
-For this requirement, you must have at least one course taken with the “math_perspective_m” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “math_perspective_m” attribute.
 
 
 ## Interdisciplinary
@@ -73,7 +73,7 @@ For this requirement, you must both take PHYS 375 and declare one “Physics” 
 
 
 ## Level III
-For this requirement, you must have at least two courses taken with the “math_level_3” `attribute` attribute.
+For this requirement, you must have at least two courses taken with the “math_level_3” attribute.
 
 
 ## Sequence

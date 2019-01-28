@@ -39,6 +39,6 @@ For this requirement, you must take one of the following courses:
 
 
 ## Elective
-For this requirement, you must have at least one course taken with the “physics_elective” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “physics_elective” attribute.
 
 

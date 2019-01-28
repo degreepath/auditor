@@ -16,20 +16,20 @@ For this requirement, you must take either LATIN 252 or GREEK 253.
 
 
 ## Ancient History
-For this requirement, you must have at least one course taken with the “ancient_history” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “ancient_history” attribute.
 
 
 ## Classics
-For this requirement, you must have at least one course taken with the “ancient_classics” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “ancient_classics” attribute.
 
 
 ## Electives
 > Note: 1 course in Greek may be used as an elective if the student satisfies the required language portion of the major with Latin courses. 1 course in Latin may be used as an elective if the student satisfies the required language portion of the major with Greek courses.
 
-For this requirement, you must have at least four courses taken with the “ancient_elective” `attribute` attribute.
+For this requirement, you must have at least four courses taken with the “ancient_elective” attribute.
 
 
 ## Independent Research
-For this requirement, you must have at least one course taken with the “ancient_ir” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “ancient_ir” attribute.
 
 

@@ -46,13 +46,13 @@ For this section, you must do all of the following:
 - in the subset “Allowed Courses”, there must be at least one course taken at the 300 level
 
 ### Japan-focused
-For this requirement, you must have at least one course taken with the “japan_focused_on_japan” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “japan_focused_on_japan” attribute.
 
 ### Comparative
-For this requirement, you must have at least one course taken with the “japan_comparative_asia” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “japan_comparative_asia” attribute.
 
 
 ## FLAC
-For this requirement, you must have at least one course taken with the “japan_flac” `attribute` attribute.
+For this requirement, you must have at least one course taken with the “japan_flac” attribute.
 
 
