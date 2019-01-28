@@ -1,5 +1,5 @@
 use super::Clause;
-use super::{TaggedValue, Value, WrappedValue};
+use super::{Constant, TaggedValue, Value, WrappedValue};
 use crate::action::Operator;
 use crate::traits::print;
 use crate::traits::print::Print;
@@ -17,14 +17,20 @@ impl print::Print for Clause {
 			clauses.extend(print_gereqs(gereq)?);
 		}
 
-		if let Some(semester) = self.get("semester") {
-			used_keys.insert("semester".to_string());
-			clauses.extend(print_semester(semester)?);
-		}
-
-		if let Some(year) = self.get("year") {
-			used_keys.insert("year".to_string());
-			clauses.extend(print_year(year)?);
+		match (self.get("year"), self.get("semester")) {
+			(Some(year), None) => {
+				used_keys.insert("year".to_string());
+				clauses.extend(print_year(year)?);
+			}
+			(None, Some(semester)) => {
+				used_keys.insert("semester".to_string());
+				clauses.extend(print_semester(semester)?);
+			}
+			(Some(year), Some(semester)) => {
+				used_keys.extend(vec!["semester".to_string(), "year".to_string()]);
+				clauses.extend(print_year_and_semester(year, semester)?);
+			}
+			(None, None) => {}
 		}
 
 		if let Some(institution) = self.get("institution") {
@@ -127,12 +133,44 @@ fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 			op: Operator::EqualTo,
 			value: Value::Integer(n),
 		}) => clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual"))),
+		WrappedValue::Single(TaggedValue {
+			op: Operator::EqualTo,
+			value: Value::Constant(Constant::GraduationYear),
+		}) => clauses.push(format!("during your graduation year")),
 		WrappedValue::Or(_) | WrappedValue::And(_) => {
 			// TODO: implement a .map() function on WrappedValue?
 			// to allow something like `year.map(util::expand_year).print()?`
 			clauses.push(format!("during the {} academic years", value.print()?));
 		}
 		_ => unimplemented!("filter:year, WrappedValue::Single, not using = [0-9] {:?}", value),
+	}
+
+	Ok(clauses)
+}
+
+fn print_year_and_semester(year: &WrappedValue, semester: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
+	let mut clauses = vec![];
+
+	match (year, semester) {
+		(
+			WrappedValue::Single(TaggedValue {
+				op: Operator::EqualTo,
+				value: Value::Integer(year),
+			}),
+			WrappedValue::Single(sem),
+		) => clauses.push(format!(
+			"during the {} of the {} academic year",
+			sem.print()?,
+			util::expand_year(*year, "dual")
+		)),
+		(
+			WrappedValue::Single(TaggedValue {
+				op: Operator::EqualTo,
+				value: Value::Constant(Constant::GraduationYear),
+			}),
+			WrappedValue::Single(sem),
+		) => clauses.push(format!("during the {} of your graduation year", sem.print()?)),
+		_ => unimplemented!("filter:year+semester, certain modes"),
 	}
 
 	Ok(clauses)
