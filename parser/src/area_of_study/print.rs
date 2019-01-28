@@ -37,10 +37,6 @@ impl AreaOfStudy {
 
 		writeln!(&mut w, "# {}", &self.area_name)?;
 
-		if let Some(_attributes) = &self.attributes {
-			writeln!(&mut w, "> todo: this area has custom attributes defined.\n")?;
-		}
-
 		if let Ok(mut what_to_do) = self.result.print() {
 			// todo: remove this hack for adding periods to the end of inlined requirements
 			if !what_to_do.contains('\n') {
@@ -57,6 +53,12 @@ impl AreaOfStudy {
 
 		for (name, req) in &self.requirements {
 			write!(&mut w, "\n{}", req.print(&name, 2)?)?;
+		}
+
+		if let Some(attributes) = &self.attributes {
+			writeln!(&mut w, "# Custom Attributes")?;
+			writeln!(&mut w)?;
+			write!(&mut w, "{}", attributes.print()?)?;
 		}
 
 		Ok(w)
