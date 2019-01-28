@@ -178,7 +178,7 @@
             "given": "courses",
             "limit": null,
             "where": {
-              "attributes": {
+              "attribute": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
@@ -211,7 +211,7 @@
             "limit": [
               {
                 "where": {
-                  "attributes": {
+                  "attribute": {
                     "Single": {
                       "op": "EqualTo",
                       "value": {
@@ -224,7 +224,7 @@
               },
               {
                 "where": {
-                  "attributes": {
+                  "attribute": {
                     "Or": [
                       {
                         "op": "EqualTo",
@@ -245,7 +245,7 @@
               }
             ],
             "where": {
-              "attributes": {
+              "attribute": {
                 "Single": {
                   "op": "EqualTo",
                   "value": {
@@ -279,7 +279,7 @@
         "given": "courses",
         "limit": null,
         "where": {
-          "attributes": {
+          "attribute": {
             "Single": {
               "op": "EqualTo",
               "value": {

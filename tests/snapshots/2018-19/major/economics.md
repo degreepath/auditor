@@ -27,9 +27,9 @@ For this section, you must do all of the following:
     2. there must be at least four courses
 
 ### Level II
-For this requirement, you must have at least one course taken with the “econ_level_2” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “econ_level_2” `attribute` attribute.
 
 ### Level III
-For this requirement, you must have at least two courses taken with the “econ_level_3” `attributes` attribute.
+For this requirement, you must have at least two courses taken with the “econ_level_3” `attribute` attribute.
 
 

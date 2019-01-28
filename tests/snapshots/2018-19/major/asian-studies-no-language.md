@@ -6,10 +6,10 @@
 For this major, you must complete both the “Seminar” and “Electives” requirements.
 
 ## Seminar
-For this requirement, you must have at least one course taken with the “asian_seminar” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “asian_seminar” `attribute` attribute.
 
 
 ## Electives
-For this requirement, you must have at least seven courses taken with the “asian_elective” `attributes` attribute.
+For this requirement, you must have at least seven courses taken with the “asian_elective” `attribute` attribute.
 
 

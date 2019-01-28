@@ -24,26 +24,26 @@ For this major, you must both:
     2. there must be at least nine courses
 
 ## European
-For this requirement, you must have at least one course taken with the “history_region_europe” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “history_region_europe” `attribute` attribute.
 
 
 ## U.S.
-For this requirement, you must have at least one course taken with the “history_region_us” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “history_region_us” `attribute` attribute.
 
 
 ## Non-Western World
-For this requirement, you must have at least one course taken with the “history_region_nonwesternworld” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “history_region_nonwesternworld” `attribute` attribute.
 
 
 ## Pre-Modern Period
-For this requirement, you must have at least two courses taken with the “history_era_premodern” `attributes` attribute.
+For this requirement, you must have at least two courses taken with the “history_era_premodern” `attribute` attribute.
 
 
 ## Major Seminar
-For this requirement, you must have at least one course taken with the “history_l2_seminar” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “history_l2_seminar” `attribute` attribute.
 
 
 ## Level III
-For this requirement, you must have at least three courses taken with the “history_level_3” `attributes` attribute.
+For this requirement, you must have at least three courses taken with the “history_level_3” `attribute` attribute.
 
 

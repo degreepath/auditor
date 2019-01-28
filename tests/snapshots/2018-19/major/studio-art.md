@@ -88,12 +88,12 @@ For this requirement, you must take ART 343.
 
 
 ## Electives
-For this requirement, you must have at least one course taken with the “art_elective” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “art_elective” `attribute` attribute.
 
 
 ## Art History
 > Note: The department strongly recommends that you take ART 252 or 253 as one of your art history courses.
 
-For this requirement, you must have at least one course taken with the “art_history” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “art_history” `attribute` attribute.
 
 

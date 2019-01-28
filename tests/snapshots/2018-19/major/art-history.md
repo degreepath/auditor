@@ -20,7 +20,7 @@ For this requirement, you must take ART 350.
 
 
 ## Studio Art
-For this requirement, you must have at least one course taken with the “art_studio_art” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “art_studio_art” `attribute` attribute.
 
 
 ## Distribution
@@ -43,16 +43,16 @@ For this section, you must both:
     2. there must be at least six courses
 
 ### Asian, African, Indigenous American, or Near Eastern/Islamic Art
-For this requirement, you must have at least two courses taken with either the art_locale_asian, art_locale_african, art_locale_indigenous_american, or art_locale_near_eastern `attributes` attribute.
+For this requirement, you must have at least two courses taken with either the art_locale_asian, art_locale_african, art_locale_indigenous_american, or art_locale_near_eastern `attribute` attribute.
 
 ### European and American Art
-For this requirement, you must have at least two courses taken with either the art_locale_european or art_locale_american `attributes` attribute.
+For this requirement, you must have at least two courses taken with either the art_locale_european or art_locale_american `attribute` attribute.
 
 ### Art created before 1700 CE
-For this requirement, you must have at least one course taken with the “art_period_pre1700” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “art_period_pre1700” `attribute` attribute.
 
 ### Art created after 1700 CE
-For this requirement, you must have at least one course taken with the “art_period_post1700” `attributes` attribute.
+For this requirement, you must have at least one course taken with the “art_period_post1700” `attribute` attribute.
 
 
 ## Lasting Legacy

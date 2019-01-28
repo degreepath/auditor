@@ -33,6 +33,6 @@ For this requirement, you must take two of the following courses:
 
 
 ## Electives
-For this requirement, you must have at least two courses taken with the “french_elective” `attributes` attribute.
+For this requirement, you must have at least two courses taken with the “french_elective” `attribute` attribute.
 
 

@@ -30,7 +30,7 @@
           }
         ],
         "where": {
-          "attributes": {
+          "attribute": {
             "Single": {
               "op": "EqualTo",
               "value": {
