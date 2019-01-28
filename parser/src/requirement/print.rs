@@ -56,12 +56,8 @@ impl Requirement {
 					what_to_do += "\n";
 				}
 
-				let what_to_do = format!(
-					"For this {kind}, you must {what_to_do}",
-					kind = kind,
-					what_to_do = what_to_do
-				);
-				write!(&mut w, "{}\n", what_to_do)?;
+				let what_to_do = format!("For this {}, you must {}", kind, what_to_do);
+				writeln!(&mut w, "{}", &what_to_do)?;
 			}
 		}
 
@@ -70,7 +66,7 @@ impl Requirement {
 		}
 
 		if !w.ends_with('\n') {
-			writeln!(&mut w, "")?;
+			writeln!(&mut w)?;
 		}
 
 		Ok(w)
