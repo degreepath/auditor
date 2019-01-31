@@ -32,16 +32,6 @@ impl print::Print for Rule {
 			_ => (),
 		}
 
-		match (self.international, &annotations) {
-			(Some(intl), Some(ant)) if intl => {
-				annotations = Some(format!("International; {}", ant));
-			}
-			(Some(intl), None) if intl => {
-				annotations = Some("International".to_string());
-			}
-			_ => (),
-		}
-
 		if let Some(annotations) = annotations {
 			write!(&mut output, " ({})", annotations)?;
 		}

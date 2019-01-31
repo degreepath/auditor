@@ -30,7 +30,6 @@ section: ~
 year: ~
 semester: ~
 lab: ~
-international: ~
 can_match_used: ~";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
@@ -63,7 +62,6 @@ section: ~
 year: ~
 semester: ~
 lab: ~
-international: ~
 can_match_used: ~";
 
 	let expected_struct = Rule {
@@ -151,10 +149,9 @@ fn pretty_print() {
 		semester: Some("Fall".to_string()),
 		year: Some(2015),
 		lab: Some(true),
-		international: Some(true),
 		term: None,
 		can_match_used: None,
 	};
-	let expected = "DEPT 111A (International; Lab; Fall 2015)";
+	let expected = "DEPT 111A (Lab; Fall 2015)";
 	assert_eq!(expected, input.print().unwrap());
 }

@@ -13,7 +13,6 @@ impl Serialize for Rule {
 				year: None,
 				semester: None,
 				lab: None,
-				international: None,
 				can_match_used: None,
 				course,
 			} => {
@@ -29,7 +28,6 @@ impl Serialize for Rule {
 				state.serialize_field("year", &self.year)?;
 				state.serialize_field("semester", &self.semester)?;
 				state.serialize_field("lab", &self.lab)?;
-				state.serialize_field("international", &self.international)?;
 				state.serialize_field("can_match_used", &self.can_match_used)?;
 				state.end()
 			}

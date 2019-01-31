@@ -69,7 +69,6 @@ fn serialize() {
   year: ~
   semester: ~
   lab: ~
-  international: ~
   can_match_used: ~
 - requirement: Name
   optional: true
@@ -84,7 +83,6 @@ fn serialize() {
       year: ~
       semester: ~
       lab: ~
-      international: ~
       can_match_used: ~
 - either:
     - course: ASIAN 101
@@ -94,7 +92,6 @@ fn serialize() {
       year: ~
       semester: ~
       lab: ~
-      international: ~
       can_match_used: ~
 - given: courses
   limit: []
@@ -171,7 +168,6 @@ fn deserialize() {
   year: ~
   semester: ~
   lab: ~
-  international: ~
 - requirement: Name
   optional: true
 - count: 1
@@ -185,7 +181,6 @@ fn deserialize() {
       year: ~
       semester: ~
       lab: ~
-      international: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -194,7 +189,6 @@ fn deserialize() {
       year: ~
       semester: ~
       lab: ~
-      international: ~
 - given: courses
   what: courses
   where: {}
@@ -213,7 +207,6 @@ fn deserialize() {
   year: ~
   semester: ~
   lab: ~
-  international: ~
 - requirement: Name
   optional: true
 - count: 1
@@ -227,7 +220,6 @@ fn deserialize() {
       year: ~
       semester: ~
       lab: ~
-      international: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -236,7 +228,6 @@ fn deserialize() {
       year: ~
       semester: ~
       lab: ~
-      international: ~
 - given: courses
   what: courses
   where: {}

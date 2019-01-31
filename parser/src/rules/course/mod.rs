@@ -16,7 +16,6 @@ pub struct Rule {
 	pub year: Option<u64>,
 	pub semester: Option<String>,
 	pub lab: Option<bool>,
-	pub international: Option<bool>,
 	pub can_match_used: Option<bool>,
 }
 
