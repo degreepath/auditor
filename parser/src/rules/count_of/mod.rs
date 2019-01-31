@@ -1,4 +1,3 @@
-use crate::limit;
 use crate::rules::Rule as AnyRule;
 use crate::traits::Util;
 
