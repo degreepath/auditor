@@ -1,10 +1,10 @@
 use crate::rules::Rule as AnyRule;
 use crate::traits::Util;
 
+mod audit;
+mod print;
 #[cfg(test)]
 mod tests;
-
-mod print;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]

@@ -6,7 +6,7 @@ pub mod either;
 pub mod given;
 pub mod req_ref;
 
-use crate::traits::{print, Util};
+use crate::traits::{audit, print, Util};
 use crate::util;
 
 #[cfg(test)]
@@ -52,6 +52,20 @@ impl Util for Rule {
 	}
 }
 
+impl audit::rule::Audit for Rule {
+	fn check(&self, state: &audit::AuditState) -> audit::rule::RuleState {
+		match &self {
+			Rule::Course(v) => v.check(state),
+			// Rule::Requirement(v) => v.check(state),
+			// Rule::CountOf(v) => v.check(state),
+			// Rule::Both(v) => v.check(state),
+			Rule::Either(v) => v.check(state),
+			// Rule::Given(v) => v.check(state),
+			// Rule::Do(v) => v.check(state),
+			_ => unimplemented!("auditing is in-progress"),
+		}
+	}
+}
 impl Rule {
 	fn print_inner(&self) -> print::Result {
 		use crate::traits::print::Print;

@@ -2,6 +2,7 @@ use crate::traits::Util;
 use std::str::FromStr;
 use void::Void;
 
+mod audit;
 mod print;
 mod serialize;
 
