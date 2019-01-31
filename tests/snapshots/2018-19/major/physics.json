@@ -27,8 +27,7 @@
         "requirement": "Elective",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Analytics": {
@@ -46,8 +45,7 @@
           {
             "course": "PHYS 232"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -66,8 +64,7 @@
           {
             "course": "PHYS 245"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -92,8 +89,7 @@
           {
             "course": "PHYS 386"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -121,8 +117,7 @@
           {
             "course": "PHYS 390"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

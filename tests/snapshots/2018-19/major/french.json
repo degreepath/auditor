@@ -23,8 +23,7 @@
         "requirement": "Electives",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Speaking and Writing": {
@@ -42,8 +41,7 @@
           {
             "course": "FREN 253"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -68,8 +66,7 @@
           {
             "course": "FREN 275"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -94,8 +91,7 @@
           {
             "course": "FREN 399"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

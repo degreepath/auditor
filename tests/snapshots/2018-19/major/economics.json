@@ -19,8 +19,7 @@
         "requirement": "Economic Analysis",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Core": {
@@ -52,8 +51,7 @@
               }
             ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -72,8 +70,7 @@
           {
             "course": "MATH 119"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -119,8 +116,7 @@
               }
             }
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

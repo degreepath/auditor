@@ -23,8 +23,7 @@
         "requirement": "Recommended",
         "optional": true
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Prerequisites": {
@@ -60,8 +59,7 @@
               {
                 "course": "BIO 231"
               }
-            ],
-            "limit": null
+            ]
           },
           {
             "count": 1,
@@ -81,11 +79,9 @@
               {
                 "course": "SOAN 267"
               }
-            ],
-            "limit": null
+            ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -101,8 +97,7 @@
           {
             "course": "AMCON 101"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -148,8 +143,7 @@
           {
             "course": "NURS 399"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -165,8 +159,7 @@
           {
             "course": "NURS 390"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

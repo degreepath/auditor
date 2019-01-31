@@ -23,8 +23,7 @@
         "requirement": "FLAC",
         "optional": true
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Core Language": {
@@ -45,8 +44,7 @@
           {
             "course": "CHIN 302"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -68,8 +66,7 @@
           {
             "course": "CHIN 360"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -131,8 +128,7 @@
               }
             }
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

@@ -19,8 +19,7 @@
         "requirement": "Ancient Greek History",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Language": {
@@ -56,8 +55,7 @@
           {
             "course": "GREEK 375"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -100,8 +98,7 @@
           {
             "course": "CLASS 396"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -117,8 +114,7 @@
           {
             "course": "CLASS 111"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

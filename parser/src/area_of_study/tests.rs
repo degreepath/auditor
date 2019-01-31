@@ -62,7 +62,6 @@ requirements:
 					optional: false,
 				}),
 			],
-			limit: None,
 		}),
 		attributes: None,
 		requirements: [
@@ -111,7 +110,6 @@ requirements:
 								..Default::default()
 							}),
 						],
-						limit: None,
 					})),
 				},
 			),
@@ -167,10 +165,8 @@ requirements:
 										..Default::default()
 									}),
 								],
-								limit: None,
 							}),
 						],
-						limit: None,
 					})),
 				},
 			),

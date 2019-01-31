@@ -23,8 +23,7 @@
         "requirement": "FLAC",
         "optional": true
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Core Language": {
@@ -45,8 +44,7 @@
           {
             "course": "JAPAN 302"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -65,8 +63,7 @@
           {
             "course": "JAPAN 350"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -128,8 +125,7 @@
               }
             }
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

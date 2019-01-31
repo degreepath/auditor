@@ -50,8 +50,7 @@
           }
         }
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "History": {
@@ -97,8 +96,7 @@
               }
             }
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -128,8 +126,7 @@
               {
                 "course": "GCON 203"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -156,8 +153,7 @@
           {
             "course": "NURS 310"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

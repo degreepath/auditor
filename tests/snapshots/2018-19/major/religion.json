@@ -23,8 +23,7 @@
         "requirement": "Intensive Studies",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "General Education": {
@@ -103,8 +102,7 @@
       "department_audited": false,
       "result": {
         "count": 1,
-        "of": [],
-        "limit": null
+        "of": []
       },
       "contract": false,
       "registrar_audited": false,
@@ -137,8 +135,7 @@
               {
                 "course": "REL 344"
               }
-            ],
-            "limit": null
+            ]
           },
           {
             "given": "these courses",

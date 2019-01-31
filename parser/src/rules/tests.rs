@@ -36,7 +36,6 @@ fn serialize() {
 		Rule::CountOf(count_of::Rule {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
-			limit: None,
 		}),
 		Rule::Both(both::Rule {
 			both: (
@@ -77,7 +76,6 @@ fn serialize() {
 - count: 1
   of:
     - course: ASIAN 101
-  limit: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -140,7 +138,6 @@ fn deserialize() {
 		Rule::CountOf(count_of::Rule {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
-			limit: None,
 		}),
 		Rule::Both(both::Rule {
 			both: (
@@ -222,7 +219,6 @@ fn deserialize() {
 - count: 1
   of:
     - course: ASIAN 101
-  limit: ~
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
@@ -298,7 +294,6 @@ fn deserialize_shorthands() {
 		Rule::CountOf(count_of::Rule {
 			count: count_of::Counter::Number(1),
 			of: vec![Rule::Course(course_a.clone())],
-			limit: None,
 		}),
 		Rule::Both(both::Rule {
 			both: (

@@ -14,8 +14,7 @@
         "requirement": "General Education",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Degree Requirements": {
@@ -52,8 +51,7 @@
             "requirement": "Major",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -315,8 +313,7 @@
             "requirement": "Integrative",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -352,8 +349,7 @@
                 "requirement": "Studies in Physical Movement",
                 "optional": false
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -456,8 +452,7 @@
                   {
                     "course": "SPAN 112"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -598,8 +593,7 @@
                 "requirement": "Studies in Human Behavior and Society",
                 "optional": false
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -757,8 +751,7 @@
                       }
                     }
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -835,8 +828,7 @@
                 "requirement": "Ethical Issues and Normative Perspectives",
                 "optional": false
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,

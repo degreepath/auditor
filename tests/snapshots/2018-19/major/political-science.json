@@ -38,8 +38,7 @@
             "requirement": "Additional Courses",
             "optional": true
           }
-        ],
-        "limit": null
+        ]
       },
       {
         "given": "these requirements",
@@ -86,8 +85,7 @@
           }
         }
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Research Methods": {
@@ -275,8 +273,7 @@
             "requirement": "World Langauge",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

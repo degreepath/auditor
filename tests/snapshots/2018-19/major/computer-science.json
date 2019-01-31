@@ -23,8 +23,7 @@
         "requirement": "Capstone",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Foundation": {
@@ -68,11 +67,9 @@
               {
                 "course": "MATH 244"
               }
-            ],
-            "limit": null
+            ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -99,8 +96,7 @@
             "requirement": "Systems",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -121,8 +117,7 @@
               {
                 "course": "CSCI 336"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -151,8 +146,7 @@
                 "international": null,
                 "can_match_used": null
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,

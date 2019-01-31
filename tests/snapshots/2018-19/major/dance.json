@@ -31,8 +31,7 @@
         "requirement": "Productions",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Language-Intensive Courses (Theory)": {
@@ -59,8 +58,7 @@
           {
             "course": "DANCE 270"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -146,8 +144,7 @@
                   }
                 ]
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -178,8 +175,7 @@
               {
                 "course": "DANCE 209"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -225,8 +221,7 @@
                   }
                 ]
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -254,8 +249,7 @@
               {
                 "course": "DANCE 160"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,

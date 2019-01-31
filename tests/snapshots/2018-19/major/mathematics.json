@@ -33,8 +33,7 @@
             "requirement": "Level III",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       {
         "given": "these requirements",
@@ -111,8 +110,7 @@
           {
             "course": "MATH 220"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -173,8 +171,7 @@
             "requirement": "Modeling/Computation (M)",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -328,8 +325,7 @@
             "requirement": "Physics",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -746,8 +742,7 @@
               }
             ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

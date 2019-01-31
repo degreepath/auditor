@@ -35,8 +35,7 @@
         "requirement": "Recital Attendance",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Core": {
@@ -67,8 +66,7 @@
               }
             ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -111,8 +109,7 @@
           {
             "course": "MUSIC 349"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -283,8 +280,7 @@
             "requirement": "Voice",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

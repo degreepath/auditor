@@ -15,8 +15,6 @@ mod tests;
 pub struct Rule {
 	pub count: Counter,
 	pub of: Vec<AnyRule>,
-	#[serde(default)]
-	pub limit: Option<Vec<limit::Limiter>>,
 }
 
 impl Rule {

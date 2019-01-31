@@ -19,8 +19,7 @@
         "requirement": "Electives",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Core": {
@@ -47,8 +46,7 @@
                   {
                     "course": "BIO 227"
                   }
-                ],
-                "limit": null
+                ]
               },
               {
                 "count": "all",
@@ -65,8 +63,7 @@
                   {
                     "course": "BIO 227"
                   }
-                ],
-                "limit": null
+                ]
               },
               {
                 "count": "all",
@@ -80,11 +77,9 @@
                   {
                     "course": "CH/BI 227"
                   }
-                ],
-                "limit": null
+                ]
               }
-            ],
-            "limit": null
+            ]
           },
           {
             "course": "BIO 223"
@@ -122,8 +117,7 @@
               }
             ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -175,8 +169,7 @@
           {
             "course": "CSCI 315"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

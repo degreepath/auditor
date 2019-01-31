@@ -19,8 +19,7 @@
         "requirement": "Advanced Topics",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Introduction": {
@@ -112,8 +111,7 @@
               }
             }
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -208,8 +206,7 @@
               {
                 "course": "SOAN 260"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -287,8 +284,7 @@
               {
                 "course": "SPAN 250"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -441,8 +437,7 @@
               {
                 "course": "SOAN 246"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -467,8 +462,7 @@
               {
                 "course": "PSYCH 350"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,

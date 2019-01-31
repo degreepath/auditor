@@ -31,8 +31,7 @@
         "requirement": "Art History",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Foundations": {
@@ -57,8 +56,7 @@
           {
             "course": "ART 104"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -83,8 +81,7 @@
             "requirement": "New Media",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -112,8 +109,7 @@
                 "requirement": "Graphic Design",
                 "optional": false
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -134,8 +130,7 @@
                   {
                     "course": "ART 233"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -154,8 +149,7 @@
                   {
                     "course": "ART 222"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -174,8 +168,7 @@
                   {
                     "course": "ART 227"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -198,8 +191,7 @@
                     "international": null,
                     "can_match_used": null
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -222,8 +214,7 @@
                 "requirement": "Sculpture",
                 "optional": false
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -241,8 +232,7 @@
                   {
                     "course": "ART 234"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -261,8 +251,7 @@
                   {
                     "course": "ART 224"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -297,8 +286,7 @@
                 "requirement": "Graphic Design",
                 "optional": false
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -316,8 +304,7 @@
                   {
                     "course": "ART 238"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -333,8 +320,7 @@
                   {
                     "course": "ART 228"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -350,8 +336,7 @@
                   {
                     "course": "ART 229"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -367,8 +352,7 @@
                   {
                     "course": "ART 240"
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,
@@ -391,8 +375,7 @@
                     "international": null,
                     "can_match_used": null
                   }
-                ],
-                "limit": null
+                ]
               },
               "contract": false,
               "registrar_audited": false,

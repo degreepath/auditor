@@ -27,8 +27,7 @@
         "requirement": "Independent Research",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Language": {

@@ -19,8 +19,7 @@
         "requirement": "Ancient History",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Language": {
@@ -101,8 +100,7 @@
               }
             ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -180,8 +178,7 @@
           {
             "course": "CLASS 396"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

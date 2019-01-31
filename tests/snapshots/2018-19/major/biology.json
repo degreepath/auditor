@@ -27,8 +27,7 @@
         "requirement": "Chemistry",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Foundation": {
@@ -64,8 +63,7 @@
             "requirement": "Ecology",
             "optional": false
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -80,8 +78,7 @@
               {
                 "course": "BIO 233"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -100,8 +97,7 @@
               {
                 "course": "CH/BI 227"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -138,8 +134,7 @@
               {
                 "course": "BIO 226"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -158,8 +153,7 @@
               {
                 "course": "BIO 226"
               }
-            ],
-            "limit": null
+            ]
           },
           "contract": false,
           "registrar_audited": false,
@@ -210,8 +204,7 @@
           {
             "course": "BIO 391"
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,
@@ -268,8 +261,7 @@
               {
                 "course": "CHEM 126"
               }
-            ],
-            "limit": null
+            ]
           },
           {
             "count": "all",
@@ -280,8 +272,7 @@
               {
                 "course": "CHEM 126"
               }
-            ],
-            "limit": null
+            ]
           },
           {
             "count": "all",
@@ -292,11 +283,9 @@
               {
                 "course": "CH/BI 126"
               }
-            ],
-            "limit": null
+            ]
           }
-        ],
-        "limit": null
+        ]
       },
       "contract": false,
       "registrar_audited": false,

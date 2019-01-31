@@ -27,8 +27,7 @@
         "requirement": "Lasting Legacy",
         "optional": false
       }
-    ],
-    "limit": null
+    ]
   },
   "requirements": {
     "Intro": {
@@ -109,8 +108,7 @@
                 "requirement": "Art created after 1700 CE",
                 "optional": false
               }
-            ],
-            "limit": null
+            ]
           },
           {
             "given": "these requirements",
