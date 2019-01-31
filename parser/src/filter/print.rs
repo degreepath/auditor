@@ -136,7 +136,7 @@ fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 		WrappedValue::Single(TaggedValue {
 			op: Operator::EqualTo,
 			value: Value::Constant(Constant::GraduationYear),
-		}) => clauses.push(format!("during your graduation year")),
+		}) => clauses.push("during your graduation year".to_string()),
 		WrappedValue::Or(_) | WrappedValue::And(_) => {
 			// TODO: implement a .map() function on WrappedValue?
 			// to allow something like `year.map(util::expand_year).print()?`
