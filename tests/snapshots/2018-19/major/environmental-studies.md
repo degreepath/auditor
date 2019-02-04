@@ -66,7 +66,7 @@ For this requirement, you must either:
 For this requirement, you must take either BIO 261 or BIO 226.
 
 #### Environmental Science
-For this requirement, you must take at least two courses from among the following:
+For this requirement, you must take at least three courses from among the following:
 
 - ENVST 123
 - BI/ES 226
@@ -79,10 +79,6 @@ For this requirement, you must take at least two courses from among the followin
 - ENVST 381 (2000-1)
 - ENVST 397
 - BIO 224
-
-#### Level III Natural Science
-For this requirement, you must take one of the following courses:
-
 - BI/ES 350
 - BIO 371
 - BIO 391 (2000-1)

@@ -364,47 +364,7 @@
                   },
                   {
                     "course": "BIO 224"
-                  }
-                ],
-                "repeats": "first",
-                "limit": [
-                  {
-                    "where": {
-                      "department": {
-                        "Single": {
-                          "op": "NotEqualTo",
-                          "value": {
-                            "String": "ENVST"
-                          }
-                        }
-                      }
-                    },
-                    "at_most": 2
-                  }
-                ],
-                "where": null,
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
                   },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 2
-                  }
-                }
-              },
-              "contract": false,
-              "registrar_audited": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Level III Natural Science": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "count": 1,
-                "of": [
                   {
                     "course": "BI/ES 350"
                   },
@@ -438,7 +398,55 @@
                     "lab": null,
                     "can_match_used": null
                   }
-                ]
+                ],
+                "repeats": "first",
+                "limit": [
+                  {
+                    "where": {
+                      "department": {
+                        "Single": {
+                          "op": "NotEqualTo",
+                          "value": {
+                            "String": "ENVST"
+                          }
+                        }
+                      },
+                      "level": {
+                        "Single": {
+                          "op": "EqualTo",
+                          "value": {
+                            "Integer": 200
+                          }
+                        }
+                      }
+                    },
+                    "at_most": 1
+                  },
+                  {
+                    "where": {
+                      "level": {
+                        "Single": {
+                          "op": "NotEqualTo",
+                          "value": {
+                            "Integer": 300
+                          }
+                        }
+                      }
+                    },
+                    "at_most": 2
+                  }
+                ],
+                "where": null,
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 3
+                  }
+                }
               },
               "contract": false,
               "registrar_audited": false,
