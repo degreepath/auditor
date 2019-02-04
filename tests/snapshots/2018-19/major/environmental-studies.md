@@ -150,7 +150,22 @@ For this requirement, you must take one of the following courses:
 - PSCI 220
 
 #### Economic Analysis
-For this requirement, you must both take one course from among ECON 121, ECON 110, or ECON 120 and take ECON 242.
+> Note: The department strongly recommends taking ECON 121
+
+For this requirement, you must both take one of the following courses:
+
+- ECON 121
+- ECON 110
+- ECON 111
+- ECON 112
+- ECON 113
+- ECON 114
+- ECON 115
+- ECON 116
+- ECON 117
+- ECON 118
+- ECON 119
+- ECON 120 and take ECON 242
 
 #### Environmental Political Policy and Institutions
 For this requirement, you must take one course from among ENVST 232, ES/PS 201, or ES/PS 276.

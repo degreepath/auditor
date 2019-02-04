@@ -732,7 +732,7 @@
               "requirements": {}
             },
             "Economic Analysis": {
-              "message": null,
+              "message": "The department strongly recommends taking ECON 121",
               "department_audited": false,
               "result": {
                 "count": "all",
@@ -745,6 +745,33 @@
                       },
                       {
                         "course": "ECON 110"
+                      },
+                      {
+                        "course": "ECON 111"
+                      },
+                      {
+                        "course": "ECON 112"
+                      },
+                      {
+                        "course": "ECON 113"
+                      },
+                      {
+                        "course": "ECON 114"
+                      },
+                      {
+                        "course": "ECON 115"
+                      },
+                      {
+                        "course": "ECON 116"
+                      },
+                      {
+                        "course": "ECON 117"
+                      },
+                      {
+                        "course": "ECON 118"
+                      },
+                      {
+                        "course": "ECON 119"
                       },
                       {
                         "course": "ECON 120"
