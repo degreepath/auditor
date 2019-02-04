@@ -8,12 +8,10 @@
     "count": "all",
     "of": [
       {
-        "requirement": "Major",
-        "optional": false
+        "course": "Major"
       },
       {
-        "requirement": "Areas of Emphasis",
-        "optional": false
+        "course": "Areas of Emphasis"
       }
     ]
   },
@@ -47,137 +45,22 @@
         "count": "any",
         "of": [
           {
-            "both": [
-              {
-                "requirement": "Natural Science",
-                "optional": false
-              },
-              {
-                "given": "save",
-                "save": "social and arts",
-                "limit": null,
-                "where": null,
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 3
-                  }
-                }
-              }
-            ]
+            "requirement": "Natural Science",
+            "optional": false
           },
           {
-            "both": [
-              {
-                "requirement": "Social Science",
-                "optional": false
-              },
-              {
-                "given": "save",
-                "save": "natural and arts",
-                "limit": null,
-                "where": null,
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 3
-                  }
-                }
-              }
-            ]
+            "requirement": "Social Science",
+            "optional": false
           },
           {
-            "both": [
-              {
-                "requirement": "Arts and Humanities",
-                "optional": false
-              },
-              {
-                "given": "save",
-                "save": "natural and social",
-                "limit": null,
-                "where": null,
-                "what": "courses",
-                "do": {
-                  "lhs": {
-                    "Command": "Count"
-                  },
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 3
-                  }
-                }
-              }
-            ]
+            "requirement": "Arts and Humanities",
+            "optional": false
           }
         ]
       },
       "contract": false,
       "registrar_audited": false,
-      "save": [
-        {
-          "name": "social and arts",
-          "given": "these requirements",
-          "requirements": [
-            {
-              "requirement": "Social Science",
-              "optional": false
-            },
-            {
-              "requirement": "Arts and Humanities",
-              "optional": false
-            }
-          ],
-          "limit": null,
-          "where": null,
-          "what": "courses",
-          "do": null
-        },
-        {
-          "name": "natural and arts",
-          "given": "these requirements",
-          "requirements": [
-            {
-              "requirement": "Natural Science",
-              "optional": false
-            },
-            {
-              "requirement": "Arts and Humanities",
-              "optional": false
-            }
-          ],
-          "limit": null,
-          "where": null,
-          "what": "courses",
-          "do": null
-        },
-        {
-          "name": "natural and social",
-          "given": "these requirements",
-          "requirements": [
-            {
-              "requirement": "Natural Science",
-              "optional": false
-            },
-            {
-              "requirement": "Social Science",
-              "optional": false
-            }
-          ],
-          "limit": null,
-          "where": null,
-          "what": "courses",
-          "do": null
-        }
-      ],
+      "save": [],
       "requirements": {
         "Natural Science": {
           "message": null,
@@ -185,6 +68,14 @@
           "result": {
             "count": "all",
             "of": [
+              {
+                "requirement": "Social Sciences for Natural Science",
+                "optional": false
+              },
+              {
+                "requirement": "Arts and Humanities for Natural Science",
+                "optional": false
+              },
               {
                 "requirement": "Statistics, Modeling, and Mapping",
                 "optional": false
@@ -202,8 +93,53 @@
                 "optional": false
               },
               {
-                "requirement": "Level III Natural Science",
+                "requirement": "Level III",
                 "optional": false
+              },
+              {
+                "given": "these requirements",
+                "requirements": [
+                  {
+                    "requirement": "Social Sciences for Natural Science",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Arts and Humanities for Natural Science",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Statistics, Modeling, and Mapping",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Intermediate Chemistry",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Intermediate Ecology",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Environmental Science",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Level III",
+                    "optional": false
+                  }
+                ],
+                "limit": null,
+                "where": null,
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 9
+                  }
+                }
               }
             ]
           },
@@ -211,6 +147,99 @@
           "registrar_audited": false,
           "save": [],
           "requirements": {
+            "Social Sciences for Natural Science": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ES/PS 201"
+                  },
+                  {
+                    "course": "ENVST 232"
+                  },
+                  {
+                    "course": "ENVST 235"
+                  },
+                  {
+                    "course": "ES/PS 276"
+                  },
+                  {
+                    "course": "AS/ES 277"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2014-5",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "ENVST 381"
+                  },
+                  {
+                    "course": "ECON 242"
+                  },
+                  {
+                    "course": "ID 234"
+                  },
+                  {
+                    "course": "PSCI 221"
+                  },
+                  {
+                    "course": "PSYCH 227"
+                  },
+                  {
+                    "course": "SOAN 222"
+                  },
+                  {
+                    "course": "SOAN 247"
+                  },
+                  {
+                    "course": "SOAN 297",
+                    "term": "2015-3",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  }
+                ]
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Arts and Humanities for Natural Science": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 202"
+                  },
+                  {
+                    "either": [
+                      {
+                        "course": "PHIL 257"
+                      },
+                      {
+                        "course": "REL 278"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": {}
+            },
             "Statistics, Modeling, and Mapping": {
               "message": null,
               "department_audited": false,
@@ -350,7 +379,7 @@
                         }
                       }
                     },
-                    "at_most": 1
+                    "at_most": 2
                   }
                 ],
                 "where": null,
@@ -425,6 +454,14 @@
             "count": "all",
             "of": [
               {
+                "requirement": "Natural Science for Social Sciences",
+                "optional": false
+              },
+              {
+                "requirement": "Arts and Humanities for Social Sciences",
+                "optional": false
+              },
+              {
                 "requirement": "Methodological Analysis",
                 "optional": false
               },
@@ -439,6 +476,47 @@
               {
                 "requirement": "Social Science Electives",
                 "optional": false
+              },
+              {
+                "given": "these requirements",
+                "requirements": [
+                  {
+                    "requirement": "Natural Science for Social Sciences",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Arts and Humanities for Social Sciences",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Methodological Analysis",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Economic Analysis",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Environmental Political Policy and Institutions",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Social Science Electives",
+                    "optional": false
+                  }
+                ],
+                "limit": null,
+                "where": null,
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 9
+                  }
+                }
               }
             ]
           },
@@ -446,6 +524,173 @@
           "registrar_audited": false,
           "save": [],
           "requirements": {
+            "Natural Science for Social Sciences": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 123"
+                  },
+                  {
+                    "course": "ENVST 245"
+                  },
+                  {
+                    "course": "ENVST 255"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "ENVST 381",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "BI/ES 226"
+                  },
+                  {
+                    "course": "BI/ES 228"
+                  },
+                  {
+                    "course": "BI/ES 286"
+                  },
+                  {
+                    "course": "BI/ES 350"
+                  },
+                  {
+                    "course": "BIO 224"
+                  },
+                  {
+                    "either": [
+                      {
+                        "course": "BIO 226"
+                      },
+                      {
+                        "course": "BIO 261"
+                      }
+                    ]
+                  },
+                  {
+                    "course": "CHEM 124"
+                  },
+                  {
+                    "both": [
+                      {
+                        "course": "CHEM 225"
+                      },
+                      {
+                        "course": "CHEM 256"
+                      }
+                    ]
+                  },
+                  {
+                    "course": "BIO 391",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "CHEM 391",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  }
+                ]
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Arts and Humanities for Social Sciences": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 202"
+                  },
+                  {
+                    "course": "ENVST 270"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "ENVST 381",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "FILM 230"
+                  },
+                  {
+                    "course": "GERM 276"
+                  },
+                  {
+                    "course": "HIST 245"
+                  },
+                  {
+                    "course": "HIST 275"
+                  },
+                  {
+                    "course": "NORW 224",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "either": [
+                      {
+                        "course": "PHIL 257"
+                      },
+                      {
+                        "course": "REL 278"
+                      }
+                    ]
+                  },
+                  {
+                    "course": "ENGL 276"
+                  }
+                ]
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": {}
+            },
             "Methodological Analysis": {
               "message": null,
               "department_audited": false,
@@ -626,107 +871,343 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these courses",
-            "courses": [
+            "count": "all",
+            "of": [
               {
-                "course": "ENVST 202"
+                "requirement": "Natural Science for Social Sciences",
+                "optional": false
               },
               {
-                "course": "ENVST 270"
+                "requirement": "Arts and Humanities for Social Sciences",
+                "optional": false
               },
               {
-                "course": "ENVST 281",
-                "term": "2000-1",
-                "section": null,
-                "year": null,
-                "semester": null,
-                "lab": null,
-                "can_match_used": null
+                "requirement": "Methodological Analysis",
+                "optional": false
               },
               {
-                "course": "ENVST 381",
-                "term": "2000-1",
-                "section": null,
-                "year": null,
-                "semester": null,
-                "lab": null,
-                "can_match_used": null
+                "requirement": "Economic Analysis",
+                "optional": false
               },
               {
-                "course": "FILM 230"
+                "requirement": "Environmental Political Policy and Institutions",
+                "optional": false
               },
               {
-                "course": "GERM 276"
+                "requirement": "Social Science Electives",
+                "optional": false
               },
               {
-                "course": "HIST 245"
-              },
-              {
-                "course": "HIST 275"
-              },
-              {
-                "course": "NORW 224",
-                "term": "2000-1",
-                "section": null,
-                "year": null,
-                "semester": null,
-                "lab": null,
-                "can_match_used": null
-              },
-              {
-                "course": "PHIL 257"
-              },
-              {
-                "course": "ENGL 276"
-              },
-              {
-                "course": "REL 278"
-              },
-              {
-                "course": "ENVST 381"
-              },
-              {
-                "course": "DEPT 301",
-                "term": "2000-1",
-                "section": null,
-                "year": null,
-                "semester": null,
-                "lab": null,
-                "can_match_used": null
-              }
-            ],
-            "repeats": "first",
-            "limit": [
-              {
-                "where": {
-                  "level": {
-                    "Single": {
-                      "op": "EqualTo",
-                      "value": {
-                        "Integer": 200
-                      }
-                    }
+                "given": "these requirements",
+                "requirements": [
+                  {
+                    "requirement": "Natural Science for Social Sciences",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Arts and Humanities for Social Sciences",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Methodological Analysis",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Economic Analysis",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Environmental Political Policy and Institutions",
+                    "optional": false
+                  },
+                  {
+                    "requirement": "Social Science Electives",
+                    "optional": false
                   }
-                },
-                "at_most": 5
+                ],
+                "limit": null,
+                "where": null,
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 9
+                  }
+                }
               }
-            ],
-            "where": null,
-            "what": "courses",
-            "do": {
-              "lhs": {
-                "Command": "Count"
-              },
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 6
-              }
-            }
+            ]
           },
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": {
+            "Natural Science for Arts and the Humanities": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 123"
+                  },
+                  {
+                    "course": "ENVST 245"
+                  },
+                  {
+                    "course": "ENVST 255"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "ENVST 381",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "BI/ES 226"
+                  },
+                  {
+                    "course": "BI/ES 228"
+                  },
+                  {
+                    "course": "BI/ES 286"
+                  },
+                  {
+                    "course": "BI/ES 350"
+                  },
+                  {
+                    "course": "BIO 224"
+                  },
+                  {
+                    "either": [
+                      {
+                        "course": "BIO 226"
+                      },
+                      {
+                        "course": "BIO 261"
+                      }
+                    ]
+                  },
+                  {
+                    "course": "CHEM 124"
+                  },
+                  {
+                    "both": [
+                      {
+                        "course": "CHEM 225"
+                      },
+                      {
+                        "course": "CHEM 256"
+                      }
+                    ]
+                  },
+                  {
+                    "course": "BIO 391",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "CHEM 391",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  }
+                ]
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Social Sciences for Arts and the Humanities": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "count": 1,
+                "of": [
+                  {
+                    "course": "ENVST 232"
+                  },
+                  {
+                    "course": "ENVST 235"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "ENVST 381",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "ES/PS 201"
+                  },
+                  {
+                    "course": "ES/PS 276"
+                  },
+                  {
+                    "course": "ECON 242"
+                  },
+                  {
+                    "course": "PSCI 221"
+                  },
+                  {
+                    "course": "PSYCH 227"
+                  },
+                  {
+                    "course": "SOAN 222"
+                  },
+                  {
+                    "course": "SOAN 247"
+                  },
+                  {
+                    "course": "AS/ES 277"
+                  }
+                ]
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": {}
+            },
+            "Courses for Arts and the Humanities": {
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "these courses",
+                "courses": [
+                  {
+                    "course": "ENVST 202"
+                  },
+                  {
+                    "course": "ENVST 270"
+                  },
+                  {
+                    "course": "ENVST 281",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "ENVST 381",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "FILM 230"
+                  },
+                  {
+                    "course": "GERM 276"
+                  },
+                  {
+                    "course": "HIST 245"
+                  },
+                  {
+                    "course": "HIST 275"
+                  },
+                  {
+                    "course": "NORW 224",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  },
+                  {
+                    "course": "PHIL 257"
+                  },
+                  {
+                    "course": "ENGL 276"
+                  },
+                  {
+                    "course": "REL 278"
+                  },
+                  {
+                    "course": "ENVST 381"
+                  },
+                  {
+                    "course": "DEPT 301",
+                    "term": "2000-1",
+                    "section": null,
+                    "year": null,
+                    "semester": null,
+                    "lab": null,
+                    "can_match_used": null
+                  }
+                ],
+                "repeats": "first",
+                "limit": [
+                  {
+                    "where": {
+                      "level": {
+                        "Single": {
+                          "op": "EqualTo",
+                          "value": {
+                            "Integer": 200
+                          }
+                        }
+                      }
+                    },
+                    "at_most": 5
+                  }
+                ],
+                "where": null,
+                "what": "courses",
+                "do": {
+                  "lhs": {
+                    "Command": "Count"
+                  },
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 6
+                  }
+                }
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": {}
+            }
+          }
         }
       }
     }
