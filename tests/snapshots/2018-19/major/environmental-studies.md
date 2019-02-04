@@ -19,7 +19,6 @@ For this section, you must do all of the following:
 - complete the “Intermediate Chemistry” requirement
 - complete the “Intermediate Ecology” requirement
 - complete the “Environmental Science” requirement
-- complete the “Level III” requirement
 - have the following be true:
     1. given the results of the following requirements
         - “Social Sciences for Natural Science”
@@ -28,7 +27,6 @@ For this section, you must do all of the following:
         - “Intermediate Chemistry”
         - “Intermediate Ecology”
         - “Environmental Science”
-        - “Level III”
     2. there must be at least nine courses
 
 #### Social Sciences for Natural Science

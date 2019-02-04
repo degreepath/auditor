@@ -93,10 +93,6 @@
                 "optional": false
               },
               {
-                "requirement": "Level III",
-                "optional": false
-              },
-              {
                 "given": "these requirements",
                 "requirements": [
                   {
@@ -121,10 +117,6 @@
                   },
                   {
                     "requirement": "Environmental Science",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Level III",
                     "optional": false
                   }
                 ],
