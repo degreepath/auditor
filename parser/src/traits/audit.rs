@@ -1,5 +1,4 @@
 #[allow(dead_code)]
-
 pub struct CourseInstance {
 	course: String,
 	department: String,
@@ -23,6 +22,7 @@ pub struct MatchedCourseParts {
 	attributes: MatchType<Vec<MatchType<String>>>,
 }
 
+#[allow(dead_code)]
 impl MatchedCourseParts {
 	pub fn any(&self) -> bool {
 		self.course.matched()
@@ -53,6 +53,7 @@ pub enum MatchType<T> {
 	Fail,
 }
 
+#[allow(dead_code)]
 impl<T> MatchType<T> {
 	pub fn matched(&self) -> bool {
 		match &self {
@@ -136,6 +137,7 @@ impl AuditState {
 	}
 }
 
+#[allow(dead_code)]
 enum Status {
 	Pass,
 	Fail,
@@ -143,6 +145,7 @@ enum Status {
 	Pending,
 }
 
+#[allow(dead_code)]
 pub mod rule {
 	use super::{AuditState, CourseInstance, Status};
 
@@ -189,6 +192,7 @@ pub mod rule {
 	}
 }
 
+#[allow(dead_code)]
 pub mod requirement {
 	use super::{AuditState, CourseInstance, Status};
 
