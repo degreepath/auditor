@@ -11,3 +11,4 @@ Cargo.lock
 
 # Ignore IntelliJ files
 /.idea/
+/.vscode/
