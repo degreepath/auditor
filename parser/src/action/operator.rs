@@ -3,7 +3,7 @@ use crate::util::ParseError;
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord, Hash)]
 pub enum Operator {
 	LessThan,
 	LessThanEqualTo,
