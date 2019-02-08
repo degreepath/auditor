@@ -1,6 +1,7 @@
 use crate::rules::Rule as AnyRule;
 use crate::traits::Util;
 
+mod audit;
 mod print;
 #[cfg(test)]
 mod tests;

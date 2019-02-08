@@ -1,4 +1,4 @@
-use crate::audit::{RuleInput, RuleResult, RuleStatus};
+use crate::audit::{RuleAudit, RuleInput, RuleResult, RuleStatus};
 
 impl super::Rule {
 	pub fn to_rule(&self) -> crate::rules::Rule {
@@ -6,8 +6,8 @@ impl super::Rule {
 	}
 }
 
-impl super::Rule {
-	pub fn check(&self, input: &RuleInput) -> RuleResult {
+impl RuleAudit for super::Rule {
+	fn check(&self, input: &RuleInput) -> RuleResult {
 		if let Some((course, matched_by_what)) = input.transcript.has_course_matching(self, input.already_used.clone())
 		{
 			let mut used = input.already_used.clone();

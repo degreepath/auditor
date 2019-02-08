@@ -6,6 +6,7 @@ pub mod either;
 pub mod given;
 pub mod req_ref;
 
+use crate::audit::RuleAudit;
 use crate::traits::{print, Util};
 use crate::util;
 
@@ -64,6 +65,22 @@ impl Rule {
 			Rule::Either(v) => v.print(),
 			Rule::Given(v) => v.print(),
 			Rule::Do(v) => v.print(),
+		}
+	}
+}
+
+use crate::audit::{RuleInput, RuleResult};
+impl RuleAudit for Rule {
+	fn check(&self, input: &RuleInput) -> RuleResult {
+		match &self {
+			Rule::Course(v) => v.check(input),
+			// Rule::Requirement(v) => v.print(),
+			// Rule::CountOf(v) => v.print(),
+			// Rule::Both(v) => v.print(),
+			Rule::Either(v) => v.check(input),
+			// Rule::Given(v) => v.print(),
+			// Rule::Do(v) => v.print(),
+			_ => unimplemented!(),
 		}
 	}
 }
