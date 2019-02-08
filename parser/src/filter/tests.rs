@@ -1,5 +1,4 @@
 use super::*;
-use crate::action::Operator;
 use crate::traits::print::Print;
 
 #[test]
@@ -11,8 +10,7 @@ fn serialize_simple() {
 	let expected = r#"---
 level:
   Single:
-    op: EqualTo
-    value:
+    EqualTo:
       Integer: 100"#;
 
 	let actual = serde_yaml::to_string(&data).unwrap();
@@ -28,11 +26,9 @@ fn serialize_or() {
 	let expected = r#"---
 level:
   Or:
-    - op: EqualTo
-      value:
+    - EqualTo:
         Integer: 100
-    - op: EqualTo
-      value:
+    - EqualTo:
         Integer: 200"#;
 
 	let actual = serde_yaml::to_string(&data).unwrap();
@@ -45,11 +41,9 @@ level:
 	let expected = r#"---
 level:
   Or:
-    - op: LessThan
-      value:
+    - LessThan:
         Integer: 100
-    - op: EqualTo
-      value:
+    - EqualTo:
         Integer: 200"#;
 
 	let actual = serde_yaml::to_string(&data).unwrap();

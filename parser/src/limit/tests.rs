@@ -15,8 +15,7 @@ fn serialize_level100() {
 where:
   level:
     Single:
-      op: EqualTo
-      value:
+      EqualTo:
         Integer: 100
 at_most: 2"#;
 
@@ -40,8 +39,7 @@ fn serialize_not_math() {
 where:
   department:
     Single:
-      op: NotEqualTo
-      value:
+      NotEqualTo:
         String: MATH
 at_most: 2"#;
 
