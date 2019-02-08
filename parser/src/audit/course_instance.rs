@@ -1,4 +1,6 @@
 use super::course_match::{MatchType, MatchedCourseParts};
+// use crate::filter::Clause as Filter;
+use crate::rules::course::Rule as CourseRule;
 
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct CourseInstance {
@@ -14,7 +16,7 @@ pub struct CourseInstance {
 }
 
 impl CourseInstance {
-	pub fn matches_filter(&self, filter: &crate::rules::course::Rule) -> MatchedCourseParts {
+	pub fn matches_rule(&self, filter: &CourseRule) -> MatchedCourseParts {
 		let course = match (&self.course, &filter.course) {
 			(a, b) if a == b => MatchType::Match(a.clone()),
 			_ => MatchType::Fail,

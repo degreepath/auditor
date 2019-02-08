@@ -26,7 +26,7 @@ impl Transcript {
 		already_used: ReservedPairings,
 	) -> Option<(CourseInstance, MatchedCourseParts)> {
 		for c in self.iter() {
-			let m = c.matches_filter(filter);
+			let m = c.matches_rule(filter);
 			if already_used.contains(&(c.clone(), filter.clone(), m.clone())) {
 				continue;
 			}
