@@ -57,10 +57,10 @@ For this requirement, you must have at least one course taken within the STAT de
 For this section, you must complete either the “French, German, Spanish” or “Chinese, Greek, Latin, Japanese, Norwegian, Russian” requirement.
 
 #### French, German, Spanish
-For this requirement, you must have at least one course taken within the FREN, GERM, or SPAN department past 232.
+For this requirement, you must have at least one course taken within any of the FREN, GERM, or SPAN departments past 232.
 
 #### Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must have at least one course taken within the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN department past 231.
+For this requirement, you must have at least one course taken within any of the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN departments past 231.
 
 # Custom Attributes
 

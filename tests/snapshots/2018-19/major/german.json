@@ -48,8 +48,7 @@
             "where": {
               "institution": {
                 "Single": {
-                  "op": "NotEqualTo",
-                  "value": {
+                  "NotEqualTo": {
                     "String": "St. Olaf College"
                   }
                 }
@@ -100,8 +99,7 @@
             "where": {
               "institution": {
                 "Single": {
-                  "op": "NotEqualTo",
-                  "value": {
+                  "NotEqualTo": {
                     "String": "St. Olaf College"
                   }
                 }
@@ -289,8 +287,7 @@
                 "where": {
                   "institution": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "St. Olaf College"
                       }
                     }

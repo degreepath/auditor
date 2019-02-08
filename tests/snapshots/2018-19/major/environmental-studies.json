@@ -397,16 +397,14 @@
                     "where": {
                       "department": {
                         "Single": {
-                          "op": "NotEqualTo",
-                          "value": {
+                          "NotEqualTo": {
                             "String": "ENVST"
                           }
                         }
                       },
                       "level": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "Integer": 200
                           }
                         }
@@ -418,8 +416,7 @@
                     "where": {
                       "level": {
                         "Single": {
-                          "op": "NotEqualTo",
-                          "value": {
+                          "NotEqualTo": {
                             "Integer": 300
                           }
                         }
@@ -1207,8 +1204,7 @@
                     "where": {
                       "level": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "Integer": 200
                           }
                         }

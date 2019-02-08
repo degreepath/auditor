@@ -57,8 +57,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "ancient_history"
               }
             }
@@ -89,8 +88,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "ancient_classics"
               }
             }
@@ -121,8 +119,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "ancient_elective"
               }
             }
@@ -153,8 +150,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "ancient_ir"
               }
             }

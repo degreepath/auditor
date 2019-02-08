@@ -67,8 +67,7 @@
         "where": {
           "institution": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "St. Olaf College"
               }
             }
@@ -126,8 +125,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "math_transitions"
               }
             }
@@ -186,8 +184,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "math_perspective_a"
                   }
                 }
@@ -218,8 +215,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "math_perspective_c"
                   }
                 }
@@ -250,8 +246,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "math_perspective_d"
                   }
                 }
@@ -282,8 +277,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "math_perspective_m"
                   }
                 }
@@ -345,16 +339,14 @@
                 "where": {
                   "type": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "major"
                       }
                     }
                   },
                   "name": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "Chemistry"
                       }
                     }
@@ -392,16 +384,14 @@
                 "where": {
                   "type": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "major"
                       }
                     }
                   },
                   "name": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "Economics"
                       }
                     }
@@ -439,16 +429,14 @@
                 "where": {
                   "type": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "major"
                       }
                     }
                   },
                   "name": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "Physics"
                       }
                     }
@@ -484,8 +472,7 @@
             "where": {
               "department": {
                 "Single": {
-                  "op": "NotEqualTo",
-                  "value": {
+                  "NotEqualTo": {
                     "String": "MATH"
                   }
                 }
@@ -497,8 +484,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "math_level_3"
               }
             }

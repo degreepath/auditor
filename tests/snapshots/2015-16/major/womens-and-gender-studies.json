@@ -93,8 +93,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Integer": 300
                   }
                 }

@@ -61,8 +61,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "art_studio_art"
               }
             }
@@ -159,26 +158,22 @@
               "attribute": {
                 "Or": [
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "art_locale_asian"
                     }
                   },
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "art_locale_african"
                     }
                   },
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "art_locale_indigenous_american"
                     }
                   },
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "art_locale_near_eastern"
                     }
                   }
@@ -211,14 +206,12 @@
               "attribute": {
                 "Or": [
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "art_locale_european"
                     }
                   },
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "art_locale_american"
                     }
                   }
@@ -250,8 +243,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "art_period_pre1700"
                   }
                 }
@@ -282,8 +274,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "art_period_post1700"
                   }
                 }

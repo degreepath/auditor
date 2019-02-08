@@ -131,8 +131,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "econ_level_2"
                   }
                 }
@@ -163,8 +162,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "econ_level_3"
                   }
                 }

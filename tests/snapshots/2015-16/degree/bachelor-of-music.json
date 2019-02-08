@@ -89,8 +89,7 @@
             "where": {
               "institution": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "St. Olaf College"
                   }
                 }
@@ -161,8 +160,7 @@
               "where": {
                 "semester": {
                   "Single": {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "Interim"
                     }
                   }
@@ -209,8 +207,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "GreaterThanEqualTo",
-                  "value": {
+                  "GreaterThanEqualTo": {
                     "Integer": 200
                   }
                 }
@@ -241,8 +238,7 @@
             "where": {
               "graded": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Bool": true
                   }
                 }
@@ -273,8 +269,7 @@
             "where": {
               "type": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "major"
                   }
                 }
@@ -367,8 +362,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "FYW"
                       }
                     }
@@ -399,8 +393,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "WRI"
                       }
                     }
@@ -471,8 +464,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "ORC"
                       }
                     }
@@ -504,20 +496,17 @@
                   "gereqs": {
                     "Or": [
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "AQR"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "SED"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "IST"
                         }
                       }
@@ -549,8 +538,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "SPM"
                       }
                     }
@@ -612,14 +600,12 @@
                   "gereqs": {
                     "Or": [
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "HWC"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "ALS-L"
                         }
                       }
@@ -652,14 +638,12 @@
                   "gereqs": {
                     "Or": [
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "MCD"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "MCG"
                         }
                       }
@@ -711,8 +695,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-B"
                           }
                         }
@@ -736,8 +719,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-T"
                           }
                         }
@@ -767,14 +749,12 @@
                     "gereqs": {
                       "Or": [
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-B"
                           }
                         },
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-T"
                           }
                         }
@@ -796,8 +776,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "HBS"
                       }
                     }
@@ -846,8 +825,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "EIN"
                       }
                     }

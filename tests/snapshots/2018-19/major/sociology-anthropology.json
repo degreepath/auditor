@@ -186,8 +186,7 @@
             "where": {
               "su": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Bool": true
                   }
                 }

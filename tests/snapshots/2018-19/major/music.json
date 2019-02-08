@@ -126,8 +126,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Integer": 200
                   }
                 }
@@ -139,8 +138,7 @@
         "where": {
           "department": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "MUSIC"
               }
             }
@@ -148,14 +146,12 @@
           "level": {
             "Or": [
               {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "Integer": 200
                 }
               },
               {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "Integer": 300
                 }
               }
@@ -356,16 +352,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 102
                       }
                     }
@@ -459,16 +453,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 104
                       }
                     }
@@ -562,16 +554,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 106
                       }
                     }
@@ -665,16 +655,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 109
                       }
                     }
@@ -768,16 +756,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 112
                       }
                     }
@@ -871,16 +857,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 128
                       }
                     }
@@ -974,16 +958,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 137
                       }
                     }
@@ -1077,16 +1059,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 116
                       }
                     }
@@ -1180,16 +1160,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 118
                       }
                     }
@@ -1283,16 +1261,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 120
                       }
                     }
@@ -1386,16 +1362,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 122
                       }
                     }
@@ -1489,16 +1463,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 124
                       }
                     }
@@ -1592,16 +1564,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 126
                       }
                     }
@@ -1695,16 +1665,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 132
                       }
                     }
@@ -1798,16 +1766,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 134
                       }
                     }
@@ -1901,16 +1867,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 135
                       }
                     }
@@ -2004,16 +1968,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 136
                       }
                     }
@@ -2107,16 +2069,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 138
                       }
                     }
@@ -2210,16 +2170,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 140
                       }
                     }
@@ -2313,16 +2271,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 142
                       }
                     }
@@ -2416,16 +2372,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 144
                       }
                     }
@@ -2519,16 +2473,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 146
                       }
                     }
@@ -2622,16 +2574,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 148
                       }
                     }
@@ -2725,16 +2675,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 150
                       }
                     }
@@ -2828,16 +2776,14 @@
                 "where": {
                   "department": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "MUSPF"
                       }
                     }
                   },
                   "number": {
                     "Single": {
-                      "op": "NotEqualTo",
-                      "value": {
+                      "NotEqualTo": {
                         "Integer": 152
                       }
                     }
@@ -2872,8 +2818,7 @@
         "where": {
           "department": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "MUSEN"
               }
             }

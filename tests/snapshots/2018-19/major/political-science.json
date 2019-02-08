@@ -108,8 +108,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "psci_topic_american"
               }
             }
@@ -140,8 +139,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "psci_topic_comparative"
               }
             }
@@ -172,8 +170,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "psci_topic_international"
               }
             }
@@ -204,8 +201,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "psci_topic_theory"
               }
             }
@@ -236,8 +232,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "psci_level_3"
               }
             }
@@ -288,8 +283,7 @@
             "where": {
               "department": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "STAT"
                   }
                 }
@@ -340,20 +334,17 @@
                   "department": {
                     "Or": [
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "FREN"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "GERM"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "SPAN"
                         }
                       }
@@ -361,8 +352,7 @@
                   },
                   "number": {
                     "Single": {
-                      "op": "GreaterThanEqualTo",
-                      "value": {
+                      "GreaterThanEqualTo": {
                         "Integer": 232
                       }
                     }
@@ -394,38 +384,32 @@
                   "department": {
                     "Or": [
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "CHIN"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "GREEK"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "LATIN"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "JAPAN"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "NORW"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "RUSSN"
                         }
                       }
@@ -433,8 +417,7 @@
                   },
                   "number": {
                     "Single": {
-                      "op": "GreaterThanEqualTo",
-                      "value": {
+                      "GreaterThanEqualTo": {
                         "Integer": 231
                       }
                     }

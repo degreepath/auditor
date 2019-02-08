@@ -89,8 +89,7 @@
             "where": {
               "institution": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "St. Olaf College"
                   }
                 }
@@ -161,8 +160,7 @@
               "where": {
                 "semester": {
                   "Single": {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "String": "Interim"
                     }
                   }
@@ -209,8 +207,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "GreaterThanEqualTo",
-                  "value": {
+                  "GreaterThanEqualTo": {
                     "Integer": 200
                   }
                 }
@@ -241,8 +238,7 @@
             "where": {
               "graded": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Bool": true
                   }
                 }
@@ -273,8 +269,7 @@
             "where": {
               "type": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "major"
                   }
                 }
@@ -367,8 +362,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "FYW"
                       }
                     }
@@ -399,8 +393,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "WRI"
                       }
                     }
@@ -434,8 +427,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-C"
                           }
                         }
@@ -458,8 +450,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-F"
                           }
                         }
@@ -482,8 +473,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-G"
                           }
                         }
@@ -506,8 +496,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-K"
                           }
                         }
@@ -530,8 +519,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-J"
                           }
                         }
@@ -554,8 +542,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-L"
                           }
                         }
@@ -578,8 +565,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-N"
                           }
                         }
@@ -602,8 +588,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-R"
                           }
                         }
@@ -626,8 +611,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "FOL-S"
                           }
                         }
@@ -660,8 +644,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "ORC"
                       }
                     }
@@ -692,8 +675,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "AQR"
                       }
                     }
@@ -724,8 +706,7 @@
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "SPM"
                       }
                     }
@@ -813,8 +794,7 @@
                     "where": {
                       "institution": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "St. Olaf College"
                           }
                         }
@@ -843,8 +823,7 @@
                   "where": {
                     "gereqs": {
                       "Single": {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "HWC"
                         }
                       }
@@ -901,8 +880,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "MCD"
                           }
                         }
@@ -926,8 +904,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "MCG"
                           }
                         }
@@ -957,14 +934,12 @@
                     "gereqs": {
                       "Or": [
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "MCD"
                           }
                         },
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "MCG"
                           }
                         }
@@ -1006,8 +981,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "ALS-A"
                           }
                         }
@@ -1031,8 +1005,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "ALS-L"
                           }
                         }
@@ -1062,14 +1035,12 @@
                     "gereqs": {
                       "Or": [
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "ALS-A"
                           }
                         },
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "ALS-L"
                           }
                         }
@@ -1111,8 +1082,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-B"
                           }
                         }
@@ -1136,8 +1106,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-T"
                           }
                         }
@@ -1167,14 +1136,12 @@
                     "gereqs": {
                       "Or": [
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-B"
                           }
                         },
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "BTS-T"
                           }
                         }
@@ -1232,8 +1199,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "SED"
                           }
                         }
@@ -1257,8 +1223,7 @@
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "IST"
                           }
                         }
@@ -1288,14 +1253,12 @@
                     "gereqs": {
                       "Or": [
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "SED"
                           }
                         },
                         {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "IST"
                           }
                         }
@@ -1353,8 +1316,7 @@
                     "where": {
                       "institution": {
                         "Single": {
-                          "op": "EqualTo",
-                          "value": {
+                          "EqualTo": {
                             "String": "St. Olaf College"
                           }
                         }
@@ -1383,8 +1345,7 @@
                   "where": {
                     "gereqs": {
                       "Single": {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "HBS"
                         }
                       }
@@ -1459,8 +1420,7 @@
                   "where": {
                     "gereqs": {
                       "Single": {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "BTS-T"
                         }
                       }
@@ -1482,8 +1442,7 @@
                   "where": {
                     "gereqs": {
                       "Single": {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "EIN"
                         }
                       }

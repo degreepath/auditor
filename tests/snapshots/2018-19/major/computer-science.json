@@ -163,8 +163,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "csci_elective"
               }
             }

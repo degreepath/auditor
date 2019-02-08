@@ -42,8 +42,7 @@
             "where": {
               "gereqs": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "MCD"
                   }
                 }
@@ -67,8 +66,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Integer": 300
                   }
                 }

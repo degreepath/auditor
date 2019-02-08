@@ -37,8 +37,7 @@
             "where": {
               "gereqs": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "BTS-B"
                   }
                 }
@@ -61,8 +60,7 @@
             "where": {
               "gereqs": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "BTS-T"
                   }
                 }

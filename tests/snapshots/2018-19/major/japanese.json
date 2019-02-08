@@ -107,8 +107,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Integer": 300
                   }
                 }
@@ -148,8 +147,7 @@
               "where": {
                 "level": {
                   "Single": {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "Integer": 100
                     }
                   }
@@ -173,8 +171,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "japan_focused_on_japan"
                   }
                 }
@@ -206,8 +203,7 @@
                 "where": {
                   "attribute": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "japan_asiancon"
                       }
                     }
@@ -220,14 +216,12 @@
                   "attribute": {
                     "Or": [
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "japan_independent_study"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "japan_seminar"
                         }
                       }
@@ -240,8 +234,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "japan_comparative_asia"
                   }
                 }
@@ -274,8 +267,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "japan_flac"
               }
             }

@@ -72,8 +72,7 @@
             "where": {
               "s/u": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Bool": true
                   }
                 }

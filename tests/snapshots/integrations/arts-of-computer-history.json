@@ -172,8 +172,7 @@
         "where": {
           "gereqs": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "WRI"
               }
             }

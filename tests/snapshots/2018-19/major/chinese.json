@@ -110,8 +110,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Integer": 300
                   }
                 }
@@ -151,8 +150,7 @@
               "where": {
                 "level": {
                   "Single": {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "Integer": 100
                     }
                   }
@@ -176,8 +174,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "china_focused_on_china"
                   }
                 }
@@ -209,8 +206,7 @@
                 "where": {
                   "attribute": {
                     "Single": {
-                      "op": "EqualTo",
-                      "value": {
+                      "EqualTo": {
                         "String": "china_asiancon"
                       }
                     }
@@ -223,14 +219,12 @@
                   "attribute": {
                     "Or": [
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "china_independent_study"
                         }
                       },
                       {
-                        "op": "EqualTo",
-                        "value": {
+                        "EqualTo": {
                           "String": "china_seminar"
                         }
                       }
@@ -243,8 +237,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "china_comparative_asia"
                   }
                 }
@@ -277,8 +270,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "china_flac"
               }
             }

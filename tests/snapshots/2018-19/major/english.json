@@ -62,8 +62,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "engl_topic_crosscultural"
               }
             }
@@ -94,8 +93,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "engl_topic_literary_history"
               }
             }
@@ -126,8 +124,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "engl_topic_crossdisciplinary"
               }
             }
@@ -158,8 +155,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "engl_topic_genre"
               }
             }
@@ -191,32 +187,27 @@
           "attribute": {
             "Or": [
               {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "String": "engl_elective"
                 }
               },
               {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "String": "engl_topic_genre"
                 }
               },
               {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "String": "engl_topic_crosscultural"
                 }
               },
               {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "String": "engl_topic_literary_history"
                 }
               },
               {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "String": "engl_topic_crossdisciplinary"
                 }
               }
@@ -250,8 +241,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "engl_period_pre1800"
                   }
                 }
@@ -274,8 +264,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "engl_period_post1800"
                   }
                 }

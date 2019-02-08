@@ -27,8 +27,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "asian_seminar"
               }
             }
@@ -60,8 +59,7 @@
             "where": {
               "level": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "Integer": 100
                   }
                 }
@@ -73,8 +71,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "asian_region_china"
                   }
                 }
@@ -86,8 +83,7 @@
             "where": {
               "attribute": {
                 "Single": {
-                  "op": "EqualTo",
-                  "value": {
+                  "EqualTo": {
                     "String": "asian_region_japan"
                   }
                 }
@@ -99,8 +95,7 @@
             "where": {
               "institution": {
                 "Single": {
-                  "op": "NotEqualTo",
-                  "value": {
+                  "NotEqualTo": {
                     "String": "St. Olaf College"
                   }
                 }
@@ -108,14 +103,12 @@
               "level": {
                 "Or": [
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "Integer": 200
                     }
                   },
                   {
-                    "op": "EqualTo",
-                    "value": {
+                    "EqualTo": {
                       "Integer": 300
                     }
                   }
@@ -128,8 +121,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "asian_elective"
               }
             }

@@ -108,8 +108,7 @@
             "where": {
               "department": {
                 "Single": {
-                  "op": "NotEqualTo",
-                  "value": {
+                  "NotEqualTo": {
                     "String": "FREN"
                   }
                 }
@@ -121,8 +120,7 @@
         "where": {
           "attribute": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "french_elective"
               }
             }

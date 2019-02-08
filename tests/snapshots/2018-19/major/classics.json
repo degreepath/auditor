@@ -112,8 +112,7 @@
           "where": {
             "attributes": {
               "Single": {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "String": "classics_latin"
                 }
               }
@@ -129,8 +128,7 @@
           "where": {
             "attributes": {
               "Single": {
-                "op": "EqualTo",
-                "value": {
+                "EqualTo": {
                   "String": "classics_greek"
                 }
               }
@@ -194,8 +192,7 @@
         "where": {
           "attributes": {
             "Single": {
-              "op": "EqualTo",
-              "value": {
+              "EqualTo": {
                 "String": "classics_ancient_history"
               }
             }
