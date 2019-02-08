@@ -12,10 +12,6 @@ impl ReservedPairings {
 		ReservedPairings(Set::new())
 	}
 
-	pub fn with_reservations(set: &Set<Reservation>) -> Self {
-		ReservedPairings(set.clone())
-	}
-
 	pub fn add(&mut self, r: &Reservation) {
 		self.0.insert(r.clone());
 	}
