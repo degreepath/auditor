@@ -1,6 +1,7 @@
 use super::{ReservedPairings, RuleResult, Transcript};
 use std::collections::HashMap;
 
+#[derive(Clone, Debug)]
 pub struct RuleInput {
 	pub transcript: Transcript,
 	pub already_used: ReservedPairings,

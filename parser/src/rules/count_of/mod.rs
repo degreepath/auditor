@@ -1,13 +1,13 @@
 use crate::rules::Rule as AnyRule;
 use crate::traits::Util;
 
-mod print;
-
+mod audit;
 mod counter;
-pub(crate) use counter::Counter;
-
+mod print;
 #[cfg(test)]
 mod tests;
+
+pub(crate) use counter::Counter;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
