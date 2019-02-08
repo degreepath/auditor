@@ -9,7 +9,7 @@ pub enum Value {
 	Command(Command),
 	String(String),
 	Integer(u64),
-	Float(f64),
+	Float((u16, u16)),
 }
 
 impl FromStr for Value {
@@ -20,8 +20,8 @@ impl FromStr for Value {
 			return Ok(Value::Integer(num));
 		}
 
-		if let Ok(num) = s.parse::<f64>() {
-			return Ok(Value::Float(num));
+		if let Ok(num) = s.parse::<f32>() {
+			return Ok(Value::Float((num.trunc() as u16, (num.fract() * 100.0) as u16)));
 		}
 
 		if let Ok(command) = s.parse::<Command>() {
@@ -38,7 +38,7 @@ impl fmt::Display for Value {
 			Value::Command(cmd) => write!(f, "{}", cmd),
 			Value::String(v) => write!(f, "{}", v),
 			Value::Integer(v) => write!(f, "{}", v),
-			Value::Float(v) => write!(f, "{:.2}", v),
+			Value::Float((i, r)) => write!(f, "{}.{:>02}", i, r),
 		}
 	}
 }
@@ -62,7 +62,7 @@ impl print::Print for Value {
 				10 => "ten".to_string(),
 				_ => format!("{}", n),
 			}),
-			Value::Float(v) => Ok(format!("{:.2}", v)),
+			Value::Float((i, r)) => Ok(format!("{}.{:>02}", i, r)),
 		}
 	}
 }

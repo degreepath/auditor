@@ -33,7 +33,7 @@ fn average_gte_2_0() {
 	let expected_struct = Action {
 		lhs: Value::Command(Command::Average),
 		op: Some(Operator::GreaterThanEqualTo),
-		rhs: Some(Value::Float(2.0)),
+		rhs: Some(Value::Float((2, 0))),
 	};
 
 	assert_eq!(actual, expected_struct);
@@ -72,7 +72,7 @@ fn sum_gte_1_5() {
 	let expected_struct = Action {
 		lhs: Value::Command(Command::Sum),
 		op: Some(Operator::GreaterThanEqualTo),
-		rhs: Some(Value::Float(1.5)),
+		rhs: Some(Value::Float((1, 50))),
 	};
 
 	assert_eq!(actual, expected_struct);

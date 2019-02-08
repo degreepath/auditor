@@ -21,17 +21,12 @@ pub struct Action {
 	pub rhs: Option<Value>,
 }
 
-// I think this comparison is OK, because we won't ever be _modifying_
-// these values; we'll just be comparing them against other values that
-// came attached to courses.
-const ONE: f64 = 1.0;
-
 impl Action {
 	pub fn should_pluralize(&self) -> bool {
 		match &self.rhs {
 			Some(Value::Integer(n)) if *n == 1 => false,
 			Some(Value::Integer(_)) => true,
-			Some(Value::Float(f)) if *f == ONE => false,
+			Some(Value::Float((i, f))) if (i, f) == (&1, &0) => false,
 			Some(Value::Float(_)) => true,
 			_ => false,
 		}

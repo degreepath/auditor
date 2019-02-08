@@ -83,12 +83,17 @@ mod value {
 	#[test]
 	fn deserialize_value_float() {
 		let data = "1.0";
-		let expected = Value::Float(1.0);
+		let expected = Value::Float((1, 0));
 		let actual: Value = data.parse().unwrap();
 		assert_eq!(actual, expected);
 
 		let data = "1.5";
-		let expected = Value::Float(1.5);
+		let expected = Value::Float((1, 50));
+		let actual: Value = data.parse().unwrap();
+		assert_eq!(actual, expected);
+
+		let data = "1.25";
+		let expected = Value::Float((1, 25));
 		let actual: Value = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -338,6 +343,18 @@ fn pretty_print_single_values() {
 
 	let input: Clause = deserialize_test(&"{department: MATH}").unwrap();
 	let expected = "within the MATH department";
+	assert_eq!(expected, input.print().unwrap());
+
+	let input: Clause = deserialize_test(&"{credits: '1.0'}").unwrap();
+	let expected = "with the “1.0” `credits` attribute";
+	assert_eq!(expected, input.print().unwrap());
+
+	let input: Clause = deserialize_test(&"{credits: '1.5'}").unwrap();
+	let expected = "with the “1.50” `credits` attribute";
+	assert_eq!(expected, input.print().unwrap());
+
+	let input: Clause = deserialize_test(&"{credits: '1.75'}").unwrap();
+	let expected = "with the “1.75” `credits` attribute";
 	assert_eq!(expected, input.print().unwrap());
 }
 

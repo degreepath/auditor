@@ -16,7 +16,7 @@ pub enum Value {
 	Constant(Constant),
 	Bool(bool),
 	Integer(u64),
-	Float(f64),
+	Float((u16, u16)),
 	String(String),
 }
 
@@ -25,7 +25,7 @@ impl print::Print for Value {
 		match &self {
 			Value::String(s) => Ok(s.to_string()),
 			Value::Integer(n) => Ok(format!("{}", n)),
-			Value::Float(n) => Ok(format!("{:.2}", n)),
+			Value::Float((i, f)) => Ok(format!("{}.{}", i, f)),
 			Value::Bool(b) => Ok(format!("{}", b)),
 			Value::Constant(s) => Ok(format!("{}", s)),
 		}
@@ -68,8 +68,8 @@ impl FromStr for Value {
 			return Ok(Value::Integer(num));
 		}
 
-		if let Ok(num) = s.parse::<f64>() {
-			return Ok(Value::Float(num));
+		if let Ok(num) = s.parse::<f32>() {
+			return Ok(Value::Float((num.trunc() as u16, (num.fract() * 100.0) as u16)));
 		}
 
 		if let Ok(b) = s.parse::<bool>() {
@@ -94,7 +94,7 @@ impl fmt::Display for Value {
 		let desc = match &self {
 			Value::String(s) => s.to_string(),
 			Value::Integer(n) => format!("{}", n),
-			Value::Float(n) => format!("{:.2}", n),
+			Value::Float((i, f)) => format!("{}.{:>02}", i, f),
 			Value::Bool(b) => format!("{}", b),
 			Value::Constant(s) => format!("{}", s),
 		};
