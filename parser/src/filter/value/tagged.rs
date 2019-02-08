@@ -12,6 +12,7 @@ pub struct TaggedValue {
 }
 
 impl TaggedValue {
+	// TODO: remove this method
 	pub fn is_true(&self) -> bool {
 		match &self.op {
 			Operator::EqualTo => self.value == true,
