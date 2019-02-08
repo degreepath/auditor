@@ -97,7 +97,10 @@
           },
           "op": "GreaterThanEqualTo",
           "rhs": {
-            "Float": 1.5
+            "Float": [
+              1,
+              50
+            ]
           }
         }
       },
