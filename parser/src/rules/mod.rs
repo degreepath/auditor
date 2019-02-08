@@ -6,7 +6,7 @@ pub mod either;
 pub mod given;
 pub mod req_ref;
 
-use crate::traits::{audit, print, Util};
+use crate::traits::{print, Util};
 use crate::util;
 
 #[cfg(test)]

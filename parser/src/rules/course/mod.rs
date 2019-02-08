@@ -9,7 +9,7 @@ mod serialize;
 #[cfg(test)]
 mod tests;
 
-#[derive(Default, Debug, PartialEq, Clone, Deserialize)]
+#[derive(Default, Debug, PartialEq, Clone, Deserialize, Hash, Eq)]
 pub struct Rule {
 	pub course: String,
 	pub term: Option<String>,
