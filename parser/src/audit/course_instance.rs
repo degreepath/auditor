@@ -2,15 +2,15 @@ use super::course_match::{MatchType, MatchedCourseParts};
 
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct CourseInstance {
-	pub course: String,
-	pub department: String,
-	pub section: Option<String>,
-	pub term: String,
-	pub year: u64,
-	pub semester: String,
-	pub gereqs: Vec<String>,
 	pub attributes: Vec<String>,
 	pub course_type: String,
+	pub course: String,
+	pub gereqs: Vec<String>,
+	pub section: Option<String>,
+	pub semester: String,
+	pub subjects: Vec<String>,
+	pub term: String,
+	pub year: u64,
 }
 
 impl CourseInstance {
@@ -50,6 +50,10 @@ impl CourseInstance {
 			(_, Some(_)) => MatchType::Fail,
 			(_, None) => MatchType::Skip,
 		};
+
+		// TODO: check subjects/departments
+		// TODO: check attributes
+		// TODO: check gereqs
 
 		MatchedCourseParts {
 			course,

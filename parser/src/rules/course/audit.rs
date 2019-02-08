@@ -42,15 +42,15 @@ mod tests {
 
 		let input = RuleInput {
 			transcript: Transcript::new(&[CourseInstance {
-				course: "AMCON 101".to_string(),
-				department: "AMCON".to_string(),
-				section: None,
-				term: "2018-1".to_string(),
-				year: 2018,
-				semester: "Fall".to_string(),
-				gereqs: vec![],
 				attributes: vec![],
 				course_type: "Instruction".to_string(),
+				course: "AMCON 101".to_string(),
+				gereqs: vec![],
+				section: None,
+				semester: "Fall".to_string(),
+				subjects: vec!["AMCON".to_string()],
+				term: "2018-1".to_string(),
+				year: 2018,
 			}]),
 			already_used: ReservedPairings::new(),
 			completed_siblings: HashMap::new(),
