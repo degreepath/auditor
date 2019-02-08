@@ -98,3 +98,91 @@ impl fmt::Display for WrappedValue {
 		fmt.write_str(&desc)
 	}
 }
+
+impl PartialEq<bool> for WrappedValue {
+	fn eq(&self, rhs: &bool) -> bool {
+		match &self {
+			WrappedValue::Single(value) => value == rhs,
+			WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+			WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+		}
+	}
+}
+
+impl PartialEq<String> for WrappedValue {
+	fn eq(&self, rhs: &String) -> bool {
+		match &self {
+			WrappedValue::Single(value) => value == rhs,
+			WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+			WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+		}
+	}
+}
+
+impl PartialEq<str> for WrappedValue {
+	fn eq(&self, rhs: &str) -> bool {
+		match &self {
+			WrappedValue::Single(value) => value == rhs,
+			WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+			WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+		}
+	}
+}
+
+impl PartialEq<u64> for WrappedValue {
+	fn eq(&self, rhs: &u64) -> bool {
+		match &self {
+			WrappedValue::Single(value) => value == rhs,
+			WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+			WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+		}
+	}
+}
+
+impl PartialEq<(u16, u16)> for WrappedValue {
+	fn eq(&self, rhs: &(u16, u16)) -> bool {
+		match &self {
+			WrappedValue::Single(value) => value == rhs,
+			WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+			WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+		}
+	}
+}
+
+impl PartialEq<WrappedValue> for bool {
+	fn eq(&self, rhs: &WrappedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<WrappedValue> for String {
+	fn eq(&self, rhs: &WrappedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<WrappedValue> for str {
+	fn eq(&self, rhs: &WrappedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<WrappedValue> for u64 {
+	fn eq(&self, rhs: &WrappedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<WrappedValue> for (u16, u16) {
+	fn eq(&self, rhs: &WrappedValue) -> bool {
+		rhs == self
+	}
+}
+
+fn foo() {
+	let w = WrappedValue::new("blargh");
+	let s = "blargh".to_string();
+
+	w == s;
+	s == w;
+}

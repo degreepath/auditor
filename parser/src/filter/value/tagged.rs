@@ -82,3 +82,93 @@ impl fmt::Display for TaggedValue {
 		fmt.write_str(&desc)
 	}
 }
+
+impl PartialEq<bool> for TaggedValue {
+	fn eq(&self, rhs: &bool) -> bool {
+		match &self {
+			TaggedValue {
+				op: Operator::EqualTo,
+				value,
+			} => value == rhs,
+			_ => unimplemented!(),
+		}
+	}
+}
+
+impl PartialEq<String> for TaggedValue {
+	fn eq(&self, rhs: &String) -> bool {
+		match &self {
+			TaggedValue {
+				op: Operator::EqualTo,
+				value,
+			} => value == rhs,
+			_ => unimplemented!(),
+		}
+	}
+}
+
+impl PartialEq<str> for TaggedValue {
+	fn eq(&self, rhs: &str) -> bool {
+		match &self {
+			TaggedValue {
+				op: Operator::EqualTo,
+				value,
+			} => value == rhs,
+			_ => unimplemented!(),
+		}
+	}
+}
+
+impl PartialEq<u64> for TaggedValue {
+	fn eq(&self, rhs: &u64) -> bool {
+		match &self {
+			TaggedValue {
+				op: Operator::EqualTo,
+				value,
+			} => value == rhs,
+			_ => unimplemented!(),
+		}
+	}
+}
+
+impl PartialEq<(u16, u16)> for TaggedValue {
+	fn eq(&self, rhs: &(u16, u16)) -> bool {
+		match &self {
+			TaggedValue {
+				op: Operator::EqualTo,
+				value,
+			} => value == rhs,
+			_ => unimplemented!(),
+		}
+	}
+}
+
+impl PartialEq<TaggedValue> for bool {
+	fn eq(&self, rhs: &TaggedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<TaggedValue> for String {
+	fn eq(&self, rhs: &TaggedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<TaggedValue> for str {
+	fn eq(&self, rhs: &TaggedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<TaggedValue> for u64 {
+	fn eq(&self, rhs: &TaggedValue) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<TaggedValue> for (u16, u16) {
+	fn eq(&self, rhs: &TaggedValue) -> bool {
+		rhs == self
+	}
+}

@@ -125,6 +125,36 @@ impl PartialEq<(u16, u16)> for Value {
 	}
 }
 
+impl PartialEq<Value> for bool {
+	fn eq(&self, rhs: &Value) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<Value> for String {
+	fn eq(&self, rhs: &Value) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<Value> for str {
+	fn eq(&self, rhs: &Value) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<Value> for u64 {
+	fn eq(&self, rhs: &Value) -> bool {
+		rhs == self
+	}
+}
+
+impl PartialEq<Value> for (u16, u16) {
+	fn eq(&self, rhs: &Value) -> bool {
+		rhs == self
+	}
+}
+
 impl fmt::Display for Value {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
 		let desc = match &self {
