@@ -6,7 +6,7 @@ use crate::util::{self, Oxford};
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
 pub enum WrappedValue {
 	Single(TaggedValue),
 	Or(Vec<TaggedValue>),

@@ -5,7 +5,7 @@ use crate::util;
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
 pub struct TaggedValue {
 	pub op: Operator,
 	pub value: Value,

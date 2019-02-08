@@ -2,7 +2,7 @@ use crate::util;
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
 pub enum Constant {
 	#[serde(rename = "graduation-year")]
 	GraduationYear,

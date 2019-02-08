@@ -2,7 +2,7 @@ use crate::util::ParseError;
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
 pub enum Command {
 	Count,
 	Sum,

@@ -11,7 +11,7 @@ pub use constant::Constant;
 pub use tagged::TaggedValue;
 pub use wrapped::WrappedValue;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
 pub enum Value {
 	Constant(Constant),
 	Bool(bool),
