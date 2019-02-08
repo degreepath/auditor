@@ -1,4 +1,4 @@
-use crate::audit::{RuleAudit, RuleInput, RuleResult};
+use crate::audit::{RuleAudit, RuleInput, RuleResult, RuleResultDetails, RuleStatus};
 use crate::rules::Rule as AnyRule;
 
 impl super::Rule {
@@ -11,14 +11,22 @@ impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
 		let a = self.either.0.check(input);
 		if a.is_pass() {
-			return a;
+			return RuleResult {
+				detail: RuleResultDetails::Either((Some(Box::new(a.clone())), None)),
+				reservations: a.reservations.clone(),
+				status: RuleStatus::Pass,
+			};
 		}
 
 		let b = self.either.1.check(input);
 		if b.is_pass() {
-			return b;
+			return RuleResult {
+				detail: RuleResultDetails::Either((None, Some(Box::new(b.clone())))),
+				reservations: b.reservations.clone(),
+				status: RuleStatus::Pass,
+			};
 		}
 
-		RuleResult::fail(self.to_rule())
+		RuleResult::fail(&RuleResultDetails::Either((None, None)))
 	}
 }

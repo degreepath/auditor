@@ -4,7 +4,7 @@ use std::collections::HashSet as Set;
 
 pub type Reservation = (CourseInstance, CourseRule, MatchedCourseParts);
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct ReservedPairings(Set<Reservation>);
 
 impl ReservedPairings {

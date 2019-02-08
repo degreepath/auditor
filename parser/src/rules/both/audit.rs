@@ -1,4 +1,4 @@
-use crate::audit::{RuleAudit, RuleInput, RuleResult, RuleStatus};
+use crate::audit::{RuleAudit, RuleInput, RuleResult, RuleResultDetails, RuleStatus};
 use crate::rules::Rule as AnyRule;
 
 impl super::Rule {
@@ -17,12 +17,12 @@ impl RuleAudit for super::Rule {
 
 		if a.is_pass() && b.is_pass() {
 			return RuleResult {
-				rule: self.to_rule(),
+				detail: RuleResultDetails::Both((Box::new(a.clone()), Box::new(b.clone()))),
 				reservations: a.reservations.union(&b.reservations),
 				status: RuleStatus::Pass,
 			};
 		}
 
-		RuleResult::fail(self.to_rule())
+		RuleResult::fail(&RuleResultDetails::Both((Box::new(a), Box::new(b))))
 	}
 }

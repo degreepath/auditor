@@ -10,6 +10,7 @@ pub struct MatchedCourseParts {
 	pub attributes: MatchType<Vec<MatchType<String>>>,
 }
 
+#[allow(dead_code)]
 impl MatchedCourseParts {
 	pub fn any(&self) -> bool {
 		self.course.matched()

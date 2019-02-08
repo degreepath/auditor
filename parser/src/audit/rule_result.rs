@@ -1,24 +1,31 @@
 use super::ReservedPairings;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RuleResult {
-	pub rule: crate::rules::Rule,
+	pub detail: RuleResultDetails,
 	pub reservations: ReservedPairings,
 	pub status: RuleStatus,
 }
 
-impl RuleResult {
-	pub fn pass(rule: crate::rules::Rule) -> RuleResult {
-		RuleResult {
-			rule: rule.clone(),
-			reservations: ReservedPairings::new(),
-			status: RuleStatus::Pass,
-		}
-	}
+#[derive(Debug, Clone, PartialEq)]
+pub struct RequirementResult {}
 
-	pub fn fail(rule: crate::rules::Rule) -> RuleResult {
+#[allow(dead_code)]
+#[derive(Debug, Clone, PartialEq)]
+pub enum RuleResultDetails {
+	Course,
+	Requirement(RequirementResult),
+	CountOf(Vec<Option<RuleResult>>),
+	Both((Box<RuleResult>, Box<RuleResult>)),
+	Either((Option<Box<RuleResult>>, Option<Box<RuleResult>>)),
+	Given,
+	Do,
+}
+
+impl RuleResult {
+	pub fn fail(detail: &RuleResultDetails) -> RuleResult {
 		RuleResult {
-			rule: rule.clone(),
+			detail: detail.clone(),
 			reservations: ReservedPairings::new(),
 			status: RuleStatus::Fail,
 		}
@@ -31,6 +38,7 @@ impl RuleResult {
 		}
 	}
 
+	#[allow(dead_code)]
 	pub fn is_fail(&self) -> bool {
 		match self.status {
 			RuleStatus::Fail => true,

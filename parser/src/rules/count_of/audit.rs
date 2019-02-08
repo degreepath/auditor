@@ -1,5 +1,5 @@
 use super::Counter;
-use crate::audit::{ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleStatus};
+use crate::audit::{ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails, RuleStatus};
 use crate::rules::Rule as AnyRule;
 
 impl super::Rule {
@@ -16,32 +16,44 @@ impl RuleAudit for super::Rule {
 			Counter::Number(n) => n as usize,
 		};
 
-		let mut successes = Vec::with_capacity(count);
+		let mut successes = 0;
+		let mut results = Vec::with_capacity(count);
 
 		let mut input: RuleInput = input.clone();
 		for rule in self.of.iter() {
 			let result = rule.check(&input);
 
+			results.push(Some(result.clone()));
+
 			if result.is_pass() {
-				successes.push(result.clone());
+				successes += 1;
 			}
 
-			if successes.len() == count {
+			if successes == count {
 				break;
 			}
 
 			input = input.update(result);
 		}
 
-		if successes.len() != count {
-			return RuleResult::fail(self.to_rule());
+		for _ in successes..count {
+			results.push(None);
 		}
 
+		assert_eq!(results.len(), count);
+
+		if successes != count {
+			return RuleResult::fail(&RuleResultDetails::CountOf(results));
+		}
+
+		let reservations = results
+			.iter()
+			.filter_map(|item| item.as_ref())
+			.fold(ReservedPairings::new(), |acc, r| acc.union(&r.reservations));
+
 		RuleResult {
-			rule: self.to_rule(),
-			reservations: successes
-				.iter()
-				.fold(ReservedPairings::new(), |acc, r| acc.union(&r.reservations)),
+			detail: RuleResultDetails::CountOf(results),
+			reservations,
 			status: RuleStatus::Pass,
 		}
 	}
