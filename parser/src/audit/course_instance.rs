@@ -1,6 +1,7 @@
 use super::course_match::{MatchType, MatchedCourseParts};
-// use crate::filter::Clause as Filter;
+use crate::filter::{Clause as Filter, TaggedValue, Value, WrappedValue};
 use crate::rules::course::Rule as CourseRule;
+use std::collections::HashSet;
 
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct CourseInstance {
@@ -59,6 +60,90 @@ impl CourseInstance {
 
 		MatchedCourseParts {
 			course,
+			section,
+			term,
+			year,
+			semester,
+			course_type,
+			attributes: MatchType::Skip,
+			gereqs: MatchType::Skip,
+		}
+	}
+
+	pub fn matches_filter(&self, filter: &Filter) -> MatchedCourseParts {
+		let section = match (&self.section, filter.get("section")) {
+			(Some(a), Some(b)) if a == b => MatchType::Match(a.clone()),
+			(_, Some(_)) => MatchType::Fail,
+			(None, _) | (_, None) => MatchType::Skip,
+		};
+
+		let term = match (&self.term, filter.get("term")) {
+			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+			(_, Some(_)) => MatchType::Fail,
+			(_, None) => MatchType::Skip,
+		};
+
+		let year = match (&self.year, filter.get("year")) {
+			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+			(_, Some(_)) => MatchType::Fail,
+			(_, None) => MatchType::Skip,
+		};
+
+		let semester = match (&self.semester, filter.get("semester")) {
+			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+			(_, Some(_)) => MatchType::Fail,
+			(_, None) => MatchType::Skip,
+		};
+
+		let course_type = match (&self.course_type, filter.get("type")) {
+			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+			(_, Some(_)) => MatchType::Fail,
+			(_, None) => MatchType::Skip,
+		};
+
+		// match (&self.gereqs, filter.get("gereqs")) {
+		// 	(a, Some(b)) => match (a, b) {
+		// 		(WrappedValue::Or(needed), WrappedValue::Or(available)) => {
+		// 			// needed.
+		// 			// for tag in set {
+		// 			// 	match tag {
+		// 			// 		TaggedValue::EqualTo(v) => match v {
+		// 			// 			Value::String(gereq) => b.contains(gereq),
+		// 			// 		},
+		// 			// 	}
+		// 			// }
+		// 			// let possibilities: HashSet<_> = set.iter().collect();
+		// 			// possibilities.intersection(a.iter().collect());
+		// 			// let matches = Vec::new();
+		// 			// for possibility in set {
+		// 			// 	for present in a {
+
+		// 			// 	}
+		// 			// }
+		// 			// let matches = set
+		// 			// 	.iter()
+		// 			// 	.map(|gereq| {
+		// 			// 		if gereq == a {
+		// 			// 			MatchType::Match(a.clone())
+		// 			// 		} else {
+		// 			// 			MatchType::Skip
+		// 			// 		}
+		// 			// 	})
+		// 			// 	.collect::<Vec<_>>();
+		// 			// matches.iter().any(|m| )
+		// 		}
+		// 	},
+		// 	// (_, Some(_)) => MatchType::Fail,
+		// 	// (_, None) => MatchType::Skip,
+		// 	_ => unimplemented!(),
+		// };
+
+		// TODO: check subjects/departments
+		// TODO: check attributes
+		// TODO: check gereqs
+
+		MatchedCourseParts {
+			course: MatchType::Skip,
 			section,
 			term,
 			year,
