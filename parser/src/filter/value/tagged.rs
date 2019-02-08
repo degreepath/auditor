@@ -6,16 +6,20 @@ use std::fmt;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord, Hash)]
-pub struct TaggedValue {
-	pub op: Operator,
-	pub value: Value,
+pub enum TaggedValue {
+	LessThan(Value),
+	LessThanEqualTo(Value),
+	EqualTo(Value),
+	GreaterThan(Value),
+	GreaterThanEqualTo(Value),
+	NotEqualTo(Value),
 }
 
 impl TaggedValue {
 	// TODO: remove this method
 	pub fn is_true(&self) -> bool {
-		match &self.op {
-			Operator::EqualTo => self.value == true,
+		match &self {
+			TaggedValue::EqualTo(v) => *v == true,
 			_ => false,
 		}
 	}
@@ -39,16 +43,22 @@ impl FromStr for TaggedValue {
 					[value] => {
 						let value = value.parse::<Value>()?;
 
-						Ok(TaggedValue {
-							op: Operator::EqualTo,
-							value,
-						})
+						Ok(TaggedValue::EqualTo(value))
 					}
 					[op, value] => {
 						let op = op.parse::<Operator>()?;
 						let value = value.parse::<Value>()?;
 
-						Ok(TaggedValue { op, value })
+						Ok(match op {
+							Operator::EqualTo => TaggedValue::EqualTo(value),
+							Operator::LessThan => TaggedValue::LessThan(value),
+							Operator::LessThanEqualTo => TaggedValue::LessThanEqualTo(value),
+							Operator::GreaterThan => TaggedValue::GreaterThan(value),
+							Operator::GreaterThanEqualTo => TaggedValue::GreaterThanEqualTo(value),
+							Operator::NotEqualTo => TaggedValue::NotEqualTo(value),
+						})
+
+						// Ok(TaggedValue { op, value })
 					}
 					_ => {
 						// println!("{:?}", splitted);
@@ -59,10 +69,7 @@ impl FromStr for TaggedValue {
 			_ => {
 				let value = s.parse::<Value>()?;
 
-				Ok(TaggedValue {
-					op: Operator::EqualTo,
-					value,
-				})
+				Ok(TaggedValue::EqualTo(value))
 			}
 		}
 	}
@@ -70,27 +77,34 @@ impl FromStr for TaggedValue {
 
 impl print::Print for TaggedValue {
 	fn print(&self) -> print::Result {
-		match &self.op {
-			Operator::EqualTo => self.value.print(),
-			_ => Ok(format!("{} {}", self.op, self.value.print()?)),
-		}
+		Ok(match &self {
+			TaggedValue::EqualTo(v) => format!("{}", v.print()?),
+			TaggedValue::LessThan(v) => format!("fewer than {}", v.print()?),
+			TaggedValue::LessThanEqualTo(v) => format!("at most {}", v.print()?),
+			TaggedValue::GreaterThan(v) => format!("more than {}", v.print()?),
+			TaggedValue::GreaterThanEqualTo(v) => format!("at least {}", v.print()?),
+			TaggedValue::NotEqualTo(v) => format!("not {}", v.print()?),
+		})
 	}
 }
 
 impl fmt::Display for TaggedValue {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-		let desc = format!("{} {}", self.op, self.value);
-		fmt.write_str(&desc)
+		match &self {
+			TaggedValue::LessThan(v) => write!(fmt, "< {}", v),
+			TaggedValue::LessThanEqualTo(v) => write!(fmt, "<= {}", v),
+			TaggedValue::EqualTo(v) => write!(fmt, "= {}", v),
+			TaggedValue::GreaterThan(v) => write!(fmt, "> {}", v),
+			TaggedValue::GreaterThanEqualTo(v) => write!(fmt, ">= {}", v),
+			TaggedValue::NotEqualTo(v) => write!(fmt, "! {}", v),
+		}
 	}
 }
 
 impl PartialEq<bool> for TaggedValue {
 	fn eq(&self, rhs: &bool) -> bool {
 		match &self {
-			TaggedValue {
-				op: Operator::EqualTo,
-				value,
-			} => value == rhs,
+			TaggedValue::EqualTo(value) => value == rhs,
 			_ => unimplemented!(),
 		}
 	}
@@ -99,10 +113,7 @@ impl PartialEq<bool> for TaggedValue {
 impl PartialEq<String> for TaggedValue {
 	fn eq(&self, rhs: &String) -> bool {
 		match &self {
-			TaggedValue {
-				op: Operator::EqualTo,
-				value,
-			} => value == rhs,
+			TaggedValue::EqualTo(value) => value == rhs,
 			_ => unimplemented!(),
 		}
 	}
@@ -111,10 +122,7 @@ impl PartialEq<String> for TaggedValue {
 impl PartialEq<str> for TaggedValue {
 	fn eq(&self, rhs: &str) -> bool {
 		match &self {
-			TaggedValue {
-				op: Operator::EqualTo,
-				value,
-			} => value == rhs,
+			TaggedValue::EqualTo(value) => value == rhs,
 			_ => unimplemented!(),
 		}
 	}
@@ -123,10 +131,7 @@ impl PartialEq<str> for TaggedValue {
 impl PartialEq<u64> for TaggedValue {
 	fn eq(&self, rhs: &u64) -> bool {
 		match &self {
-			TaggedValue {
-				op: Operator::EqualTo,
-				value,
-			} => value == rhs,
+			TaggedValue::EqualTo(value) => value == rhs,
 			_ => unimplemented!(),
 		}
 	}
@@ -135,10 +140,7 @@ impl PartialEq<u64> for TaggedValue {
 impl PartialEq<(u16, u16)> for TaggedValue {
 	fn eq(&self, rhs: &(u16, u16)) -> bool {
 		match &self {
-			TaggedValue {
-				op: Operator::EqualTo,
-				value,
-			} => value == rhs,
+			TaggedValue::EqualTo(value) => value == rhs,
 			_ => unimplemented!(),
 		}
 	}

@@ -430,10 +430,7 @@ fn deserialize_filter_gereqs_single() {
 	let data = r#"{where: {gereqs: 'FYW'}, given: courses, what: courses, do: count > 1}"#;
 
 	let expected: filter::Clause = indexmap! {
-		"gereqs".into() => filter::WrappedValue::Single(filter::TaggedValue {
-			op: action::Operator::EqualTo,
-			value: filter::Value::String("FYW".into()),
-		}),
+		"gereqs".into() => filter::WrappedValue::Single(filter::TaggedValue::EqualTo(filter::Value::String("FYW".into()))),
 	};
 	let expected = Rule {
 		given: Given::AllCourses,
@@ -453,14 +450,8 @@ fn deserialize_filter_gereqs_or() {
 
 	let expected: filter::Clause = indexmap! {
 		"gereqs".into() => filter::WrappedValue::Or(vec![
-			filter::TaggedValue {
-				op: action::Operator::EqualTo,
-				value: filter::Value::String("MCD".into()),
-			},
-			filter::TaggedValue {
-				op: action::Operator::EqualTo,
-				value: filter::Value::String("MCG".into()),
-			},
+			filter::TaggedValue::EqualTo(filter::Value::String("MCD".into())),
+			filter::TaggedValue::EqualTo(filter::Value::String("MCG".into())),
 		]),
 	};
 	let expected = Rule {
@@ -480,10 +471,7 @@ fn deserialize_filter_level_gte() {
 	let data = r#"{where: {level: '>= 200'}, given: courses, what: courses, do: count > 1}"#;
 
 	let expected: filter::Clause = indexmap! {
-		"level".into() => filter::WrappedValue::Single(filter::TaggedValue {
-			op: action::Operator::GreaterThanEqualTo,
-			value: filter::Value::Integer(200),
-		}),
+		"level".into() => filter::WrappedValue::Single(filter::TaggedValue::GreaterThanEqualTo(filter::Value::Integer(200)))
 	};
 	let expected = Rule {
 		given: Given::AllCourses,
@@ -502,10 +490,7 @@ fn deserialize_filter_graded_bool() {
 	let data = r#"{where: {graded: 'true'}, given: courses, what: courses, do: count > 1}"#;
 
 	let expected: filter::Clause = indexmap! {
-		"graded".into() => filter::WrappedValue::Single(filter::TaggedValue {
-			op: action::Operator::EqualTo,
-			value: filter::Value::Bool(true),
-		}),
+		"graded".into() => filter::WrappedValue::Single(filter::TaggedValue::EqualTo(filter::Value::Bool(true))),
 	};
 	let expected = Rule {
 		given: Given::AllCourses,

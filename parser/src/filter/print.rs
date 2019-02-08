@@ -129,14 +129,12 @@ fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 	let mut clauses = vec![];
 
 	match value {
-		WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::Integer(n),
-		}) => clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual"))),
-		WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::Constant(Constant::GraduationYear),
-		}) => clauses.push("during your graduation year".to_string()),
+		WrappedValue::Single(TaggedValue::EqualTo(Value::Integer(n))) => {
+			clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual")))
+		}
+		WrappedValue::Single(TaggedValue::EqualTo(Value::Constant(Constant::GraduationYear))) => {
+			clauses.push("during your graduation year".to_string())
+		}
 		WrappedValue::Or(_) | WrappedValue::And(_) => {
 			// TODO: implement a .map() function on WrappedValue?
 			// to allow something like `year.map(util::expand_year).print()?`
@@ -152,22 +150,15 @@ fn print_year_and_semester(year: &WrappedValue, semester: &WrappedValue) -> Resu
 	let mut clauses = vec![];
 
 	match (year, semester) {
+		(WrappedValue::Single(TaggedValue::EqualTo(Value::Integer(year))), WrappedValue::Single(sem)) => {
+			clauses.push(format!(
+				"during the {} of the {} academic year",
+				sem.print()?,
+				util::expand_year(*year, "dual")
+			))
+		}
 		(
-			WrappedValue::Single(TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::Integer(year),
-			}),
-			WrappedValue::Single(sem),
-		) => clauses.push(format!(
-			"during the {} of the {} academic year",
-			sem.print()?,
-			util::expand_year(*year, "dual")
-		)),
-		(
-			WrappedValue::Single(TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::Constant(Constant::GraduationYear),
-			}),
+			WrappedValue::Single(TaggedValue::EqualTo(Value::Constant(Constant::GraduationYear))),
 			WrappedValue::Single(sem),
 		) => clauses.push(format!("during the {} of your graduation year", sem.print()?)),
 		_ => unimplemented!("filter:year+semester, certain modes"),
@@ -192,15 +183,9 @@ fn print_institution(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Erro
 
 fn print_department_alone(department: &WrappedValue) -> print::Result {
 	Ok(match department {
-		WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: v,
-		}) => format!("within the {} department", v.print()?),
-		WrappedValue::Single(TaggedValue {
-			op: Operator::NotEqualTo,
-			value: v,
-		}) => format!("outside of the {} department", v.print()?),
-		WrappedValue::Single(TaggedValue { .. }) => unimplemented!("filter:department, only implemented for = and !="),
+		WrappedValue::Single(TaggedValue::EqualTo(v)) => format!("within the {} department", v.print()?),
+		WrappedValue::Single(TaggedValue::NotEqualTo(v)) => format!("outside of the {} department", v.print()?),
+		WrappedValue::Single(_) => unimplemented!("filter:department, only implemented for = and !="),
 		WrappedValue::Or(v) => match v.len() {
 			2 => format!("within either of the {} departments", department.print()?),
 			_ => format!("within the {} department", department.print()?),
@@ -212,38 +197,25 @@ fn print_department_alone(department: &WrappedValue) -> print::Result {
 fn print_department_and_number(department: &WrappedValue, number: &WrappedValue) -> print::Result {
 	Ok(match (department, number) {
 		(
-			WrappedValue::Single(TaggedValue {
-				op: Operator::EqualTo,
-				value: department,
-			}),
-			WrappedValue::Single(TaggedValue {
-				op: Operator::EqualTo,
-				value: number,
-			}),
+			WrappedValue::Single(TaggedValue::EqualTo(department)),
+			WrappedValue::Single(TaggedValue::EqualTo(number)),
 		) => format!("called {} {} [todo]", department.print()?, number.print()?),
 		(
-			WrappedValue::Single(TaggedValue {
-				op: Operator::EqualTo,
-				value: department,
-			}),
-			WrappedValue::Single(TaggedValue {
-				op: Operator::NotEqualTo,
-				value: number,
-			}),
+			WrappedValue::Single(TaggedValue::EqualTo(department)),
+			WrappedValue::Single(TaggedValue::NotEqualTo(number)),
 		) => format!("other than {} {}", department.print()?, number.print()?),
-		(
-			WrappedValue::Or(v),
-			WrappedValue::Single(TaggedValue {
-				op: Operator::GreaterThanEqualTo,
-				value: n,
-			}),
-		) => match v.len() {
+		(WrappedValue::Or(v), WrappedValue::Single(TaggedValue::GreaterThanEqualTo(n))) => match v.len() {
+			1 => format!("within the {} department past {}", department.print()?, n.print()?),
 			2 => format!(
 				"within either of the {} departments, past {}",
 				department.print()?,
 				n.print()?
 			),
-			_ => format!("within the {} department past {}", department.print()?, n.print()?),
+			_ => format!(
+				"within any of the {} departments past {}",
+				department.print()?,
+				n.print()?
+			),
 		},
 		_ => unimplemented!("filter:dept+num, certain modes"),
 	})
@@ -251,14 +223,8 @@ fn print_department_and_number(department: &WrappedValue, number: &WrappedValue)
 
 fn print_number_alone(number: &WrappedValue) -> print::Result {
 	Ok(match number {
-		WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: v,
-		}) => format!("numbered {}", v.print()?),
-		WrappedValue::Single(TaggedValue {
-			op: Operator::NotEqualTo,
-			value: v,
-		}) => format!("not numbered {}", v.print()?),
+		WrappedValue::Single(TaggedValue::EqualTo(v)) => format!("numbered {}", v.print()?),
+		WrappedValue::Single(TaggedValue::NotEqualTo(v)) => format!("not numbered {}", v.print()?),
 		_ => unimplemented!("filter:num, certain modes"),
 	})
 }
@@ -299,10 +265,9 @@ fn print_level(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 	let mut clauses = vec![];
 
 	match value {
-		WrappedValue::Single(TaggedValue {
-			op: Operator::GreaterThanEqualTo,
-			value: v,
-		}) => clauses.push(format!("at or above the {} level", v.print()?)),
+		WrappedValue::Single(TaggedValue::GreaterThanEqualTo(v)) => {
+			clauses.push(format!("at or above the {} level", v.print()?))
+		}
 		WrappedValue::Single(v) => clauses.push(format!("at the {} level", v.print()?)),
 		WrappedValue::Or(_) => {
 			clauses.push(format!("at either the {} level", value.print()?));
@@ -316,24 +281,12 @@ fn print_level(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 fn print_graded(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 	let mut clauses = vec![];
 
-	match value {
-		WrappedValue::Single(TaggedValue {
-			op: Operator::NotEqualTo,
-			value: Value::Bool(false),
-		})
-		| WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::Bool(true),
-		}) => clauses.push("as \"graded\" courses".to_string()),
-		WrappedValue::Single(TaggedValue {
-			op: Operator::NotEqualTo,
-			value: Value::Bool(true),
-		})
-		| WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::Bool(false),
-		}) => clauses.push("as _not_ \"graded\" courses".to_string()),
-		_ => unimplemented!("filter:graded, {:?}", value),
+	if *value == true {
+		clauses.push("as \"graded\" courses".to_string());
+	} else if *value == false {
+		clauses.push("as _not_ \"graded\" courses".to_string());
+	} else {
+		unimplemented!("filter:graded, {:?}", value)
 	}
 
 	Ok(clauses)

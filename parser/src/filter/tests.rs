@@ -118,10 +118,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_untagged() {
 		let data = "FYW";
-		let expected = TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::String("FYW".into()),
-		};
+		let expected = TaggedValue::EqualTo(Value::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -129,10 +126,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_eq() {
 		let data = "= FYW";
-		let expected = TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::String("FYW".into()),
-		};
+		let expected = TaggedValue::EqualTo(Value::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -140,10 +134,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_neq() {
 		let data = "! FYW";
-		let expected = TaggedValue {
-			op: Operator::NotEqualTo,
-			value: Value::String("FYW".into()),
-		};
+		let expected = TaggedValue::NotEqualTo(Value::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -151,10 +142,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_gt() {
 		let data = "> FYW";
-		let expected = TaggedValue {
-			op: Operator::GreaterThan,
-			value: Value::String("FYW".into()),
-		};
+		let expected = TaggedValue::GreaterThan(Value::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -162,10 +150,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_gte() {
 		let data = ">= FYW";
-		let expected = TaggedValue {
-			op: Operator::GreaterThanEqualTo,
-			value: Value::String("FYW".into()),
-		};
+		let expected = TaggedValue::GreaterThanEqualTo(Value::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -173,10 +158,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_lt() {
 		let data = "< FYW";
-		let expected = TaggedValue {
-			op: Operator::LessThan,
-			value: Value::String("FYW".into()),
-		};
+		let expected = TaggedValue::LessThan(Value::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -184,10 +166,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_lte() {
 		let data = "<= FYW";
-		let expected = TaggedValue {
-			op: Operator::LessThanEqualTo,
-			value: Value::String("FYW".into()),
-		};
+		let expected = TaggedValue::LessThanEqualTo(Value::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -200,10 +179,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize() {
 		let data = "FYW";
-		let expected = WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::String("FYW".into()),
-		});
+		let expected = WrappedValue::Single(TaggedValue::EqualTo(Value::String("FYW".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -211,10 +187,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize_ne() {
 		let data = "! FYW";
-		let expected = WrappedValue::Single(TaggedValue {
-			op: Operator::NotEqualTo,
-			value: Value::String("FYW".into()),
-		});
+		let expected = WrappedValue::Single(TaggedValue::NotEqualTo(Value::String("FYW".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -223,14 +196,8 @@ mod wrapped_value {
 	fn deserialize_or_ne() {
 		let data = "! FYW | = FYW";
 		let expected = WrappedValue::Or(vec![
-			TaggedValue {
-				op: Operator::NotEqualTo,
-				value: Value::String("FYW".into()),
-			},
-			TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::String("FYW".into()),
-			},
+			TaggedValue::NotEqualTo(Value::String("FYW".into())),
+			TaggedValue::EqualTo(Value::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -240,14 +207,8 @@ mod wrapped_value {
 	fn deserialize_or_untagged() {
 		let data = "FYW | FYW";
 		let expected = WrappedValue::Or(vec![
-			TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::String("FYW".into()),
-			},
-			TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::String("FYW".into()),
-			},
+			TaggedValue::EqualTo(Value::String("FYW".into())),
+			TaggedValue::EqualTo(Value::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -257,14 +218,8 @@ mod wrapped_value {
 	fn deserialize_and_untagged() {
 		let data = "FYW & FYW";
 		let expected = WrappedValue::And(vec![
-			TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::String("FYW".into()),
-			},
-			TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::String("FYW".into()),
-			},
+			TaggedValue::EqualTo(Value::String("FYW".into())),
+			TaggedValue::EqualTo(Value::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -274,14 +229,8 @@ mod wrapped_value {
 	fn deserialize_and_ne() {
 		let data = "! FYW & = FYW";
 		let expected = WrappedValue::And(vec![
-			TaggedValue {
-				op: Operator::NotEqualTo,
-				value: Value::String("FYW".into()),
-			},
-			TaggedValue {
-				op: Operator::EqualTo,
-				value: Value::String("FYW".into()),
-			},
+			TaggedValue::NotEqualTo(Value::String("FYW".into())),
+			TaggedValue::EqualTo(Value::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -290,10 +239,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize_multiword_single_value() {
 		let data = "St. Olaf College";
-		let expected = WrappedValue::Single(TaggedValue {
-			op: Operator::EqualTo,
-			value: Value::String("St. Olaf College".into()),
-		});
+		let expected = WrappedValue::Single(TaggedValue::EqualTo(Value::String("St. Olaf College".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -301,10 +247,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize_negated_multiword_single_value() {
 		let data = "! St. Olaf College";
-		let expected = WrappedValue::Single(TaggedValue {
-			op: Operator::NotEqualTo,
-			value: Value::String("St. Olaf College".into()),
-		});
+		let expected = WrappedValue::Single(TaggedValue::NotEqualTo(Value::String("St. Olaf College".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
