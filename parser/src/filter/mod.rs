@@ -1,10 +1,9 @@
 use indexmap::IndexMap;
 
-#[cfg(test)]
-mod tests;
-
 mod deserialize;
 mod print;
+#[cfg(test)]
+mod tests;
 mod value;
 
 pub(crate) use deserialize::{deserialize_with, deserialize_with_no_option};
