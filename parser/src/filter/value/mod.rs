@@ -83,7 +83,43 @@ impl FromStr for Value {
 impl PartialEq<bool> for Value {
 	fn eq(&self, rhs: &bool) -> bool {
 		match &self {
-			Value::Bool(b) => b == rhs,
+			Value::Bool(lhs) => lhs == rhs,
+			_ => false,
+		}
+	}
+}
+
+impl PartialEq<String> for Value {
+	fn eq(&self, rhs: &String) -> bool {
+		match &self {
+			Value::String(lhs) => lhs == rhs,
+			_ => false,
+		}
+	}
+}
+
+impl PartialEq<str> for Value {
+	fn eq(&self, rhs: &str) -> bool {
+		match &self {
+			Value::String(lhs) => lhs == rhs,
+			_ => false,
+		}
+	}
+}
+
+impl PartialEq<u64> for Value {
+	fn eq(&self, rhs: &u64) -> bool {
+		match &self {
+			Value::Integer(lhs) => lhs == rhs,
+			_ => false,
+		}
+	}
+}
+
+impl PartialEq<(u16, u16)> for Value {
+	fn eq(&self, rhs: &(u16, u16)) -> bool {
+		match &self {
+			Value::Float(lhs) => lhs == rhs,
 			_ => false,
 		}
 	}
