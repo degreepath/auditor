@@ -2,15 +2,15 @@ use super::course_match::{MatchType, MatchedCourseParts};
 
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct CourseInstance {
-	course: String,
-	department: String,
-	section: String,
-	term: String,
-	year: u64,
-	semester: String,
-	gereqs: Vec<String>,
-	attributes: Vec<String>,
-	course_type: String,
+	pub course: String,
+	pub department: String,
+	pub section: Option<String>,
+	pub term: String,
+	pub year: u64,
+	pub semester: String,
+	pub gereqs: Vec<String>,
+	pub attributes: Vec<String>,
+	pub course_type: String,
 }
 
 impl CourseInstance {
@@ -21,8 +21,9 @@ impl CourseInstance {
 		};
 
 		let section = match (&self.section, &filter.section) {
-			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+			(Some(a), Some(b)) if a == b => MatchType::Match(a.clone()),
 			(_, Some(_)) => MatchType::Fail,
+			(None, _) => MatchType::Skip,
 			(_, None) => MatchType::Skip,
 		};
 

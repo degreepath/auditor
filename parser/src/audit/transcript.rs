@@ -4,6 +4,13 @@ use crate::rules::course::Rule as CourseRule;
 #[derive(Debug, Clone)]
 pub struct Transcript(Vec<CourseInstance>);
 
+impl Transcript {
+	#[allow(dead_code)]
+	pub fn new(courses: &[CourseInstance]) -> Self {
+		Transcript(courses.to_vec())
+	}
+}
+
 impl std::ops::Deref for Transcript {
 	type Target = Vec<CourseInstance>;
 

@@ -26,3 +26,38 @@ impl RuleAudit for super::Rule {
 		}
 	}
 }
+
+#[cfg(test)]
+mod tests {
+	use super::super::Rule as CourseRule;
+	use crate::audit::{CourseInstance, ReservedPairings, RuleAudit, RuleInput, Transcript};
+	use std::collections::HashMap;
+
+	#[test]
+	fn basic() {
+		let rule = CourseRule {
+			course: "AMCON 101".to_string(),
+			..Default::default()
+		};
+
+		let input = RuleInput {
+			transcript: Transcript::new(&[CourseInstance {
+				course: "AMCON 101".to_string(),
+				department: "AMCON".to_string(),
+				section: None,
+				term: "2018-1".to_string(),
+				year: 2018,
+				semester: "Fall".to_string(),
+				gereqs: vec![],
+				attributes: vec![],
+				course_type: "Instruction".to_string(),
+			}]),
+			already_used: ReservedPairings::new(),
+			completed_siblings: HashMap::new(),
+		};
+
+		let result = rule.check(&input);
+
+		assert!(result.is_pass())
+	}
+}
