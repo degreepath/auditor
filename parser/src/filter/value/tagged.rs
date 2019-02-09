@@ -23,6 +23,10 @@ impl TaggedValue {
 			_ => false,
 		}
 	}
+
+	pub fn eq_string(s: &str) -> Self {
+		TaggedValue::EqualTo(Value::String(s.to_string()))
+	}
 }
 
 impl FromStr for TaggedValue {

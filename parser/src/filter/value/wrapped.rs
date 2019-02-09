@@ -183,3 +183,64 @@ fn foo() {
 	w == s;
 	s == w;
 }
+
+use crate::audit::MatchType;
+impl WrappedValue {
+	pub fn compare_to_slice(&self, available: &[String]) -> MatchType<Vec<MatchType<String>>> {
+		use std::collections::HashSet;
+
+		match &self {
+			WrappedValue::Single(needed) => {
+				let found = available.iter().find(|item| needed == *item);
+				match found {
+					Some(item) => MatchType::Match(vec![MatchType::Match(item.clone())]),
+					None => MatchType::Fail,
+				}
+			}
+			WrappedValue::Or(possible) => {
+				if possible.is_empty() {
+					return MatchType::Skip;
+				}
+
+				let available: HashSet<_> = available.iter().map(|v| TaggedValue::eq_string(v)).collect();
+				let possible: HashSet<_> = possible.iter().cloned().collect();
+
+				let overlap: Vec<_> = available
+					.intersection(&possible)
+					.map(|v| match v {
+						TaggedValue::EqualTo(Value::String(s)) => MatchType::Match(s.clone()),
+						_ => unimplemented!(),
+					})
+					.collect();
+
+				if overlap.is_empty() {
+					MatchType::Fail
+				} else {
+					MatchType::Match(overlap)
+				}
+			}
+			WrappedValue::And(needed) => {
+				if needed.is_empty() {
+					return MatchType::Skip;
+				}
+
+				let available: HashSet<_> = available.iter().map(|v| TaggedValue::eq_string(v)).collect();
+				let needed: HashSet<_> = needed.iter().cloned().collect();
+
+				let overlap: Vec<_> = available
+					.union(&needed)
+					.map(|v| match v {
+						TaggedValue::EqualTo(Value::String(s)) => MatchType::Match(s.clone()),
+						_ => unimplemented!(),
+					})
+					.collect();
+
+				if overlap.is_empty() || overlap.len() != needed.len() {
+					MatchType::Fail
+				} else {
+					MatchType::Match(overlap)
+				}
+			}
+		}
+	}
+}

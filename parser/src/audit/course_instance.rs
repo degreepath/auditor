@@ -54,10 +54,6 @@ impl CourseInstance {
 			(_, None) => MatchType::Skip,
 		};
 
-		// TODO: check subjects/departments
-		// TODO: check attributes
-		// TODO: check gereqs
-
 		MatchedCourseParts {
 			course,
 			section,
@@ -65,6 +61,7 @@ impl CourseInstance {
 			year,
 			semester,
 			course_type,
+			subjects: MatchType::Skip,
 			attributes: MatchType::Skip,
 			gereqs: MatchType::Skip,
 		}
@@ -101,56 +98,28 @@ impl CourseInstance {
 			(_, None) => MatchType::Skip,
 		};
 
-		// match (&self.gereqs, filter.get("gereqs")) {
-		// 	(a, Some(b)) => match (a, b) {
-		// 		(WrappedValue::Or(needed), WrappedValue::Or(available)) => {
-		// 			// needed.
-		// 			// for tag in set {
-		// 			// 	match tag {
-		// 			// 		TaggedValue::EqualTo(v) => match v {
-		// 			// 			Value::String(gereq) => b.contains(gereq),
-		// 			// 		},
-		// 			// 	}
-		// 			// }
-		// 			// let possibilities: HashSet<_> = set.iter().collect();
-		// 			// possibilities.intersection(a.iter().collect());
-		// 			// let matches = Vec::new();
-		// 			// for possibility in set {
-		// 			// 	for present in a {
+		let gereqs = filter
+			.get("gereqs")
+			.map_or(MatchType::Skip, |gereqs| gereqs.compare_to_slice(&self.gereqs));
 
-		// 			// 	}
-		// 			// }
-		// 			// let matches = set
-		// 			// 	.iter()
-		// 			// 	.map(|gereq| {
-		// 			// 		if gereq == a {
-		// 			// 			MatchType::Match(a.clone())
-		// 			// 		} else {
-		// 			// 			MatchType::Skip
-		// 			// 		}
-		// 			// 	})
-		// 			// 	.collect::<Vec<_>>();
-		// 			// matches.iter().any(|m| )
-		// 		}
-		// 	},
-		// 	// (_, Some(_)) => MatchType::Fail,
-		// 	// (_, None) => MatchType::Skip,
-		// 	_ => unimplemented!(),
-		// };
+		let attributes = filter
+			.get("attributes")
+			.map_or(MatchType::Skip, |attrs| attrs.compare_to_slice(&self.attributes));
 
-		// TODO: check subjects/departments
-		// TODO: check attributes
-		// TODO: check gereqs
+		let subjects = filter
+			.get("subjects")
+			.map_or(MatchType::Skip, |subjects| subjects.compare_to_slice(&self.subjects));
 
 		MatchedCourseParts {
 			course: MatchType::Skip,
+			subjects,
 			section,
 			term,
 			year,
 			semester,
 			course_type,
-			attributes: MatchType::Skip,
-			gereqs: MatchType::Skip,
+			attributes,
+			gereqs,
 		}
 	}
 }

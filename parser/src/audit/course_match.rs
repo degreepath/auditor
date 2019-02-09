@@ -1,6 +1,9 @@
+/// MatchedCourseParts reflects the _course_, not the matching rule or filter.
+/// That is, its values are those that _were matched_ from the course.
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct MatchedCourseParts {
 	pub course: MatchType<String>,
+	pub subjects: MatchType<Vec<MatchType<String>>>,
 	pub section: MatchType<String>,
 	pub term: MatchType<String>,
 	pub year: MatchType<u64>,
