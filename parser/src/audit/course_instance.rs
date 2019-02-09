@@ -66,6 +66,7 @@ impl CourseInstance {
 		}
 	}
 
+	#[allow(dead_code)]
 	pub fn matches_filter(&self, filter: &Filter) -> MatchedCourseParts {
 		let section = match (&self.section, filter.get("section")) {
 			(Some(a), Some(b)) if a == b => MatchType::Match(a.clone()),
