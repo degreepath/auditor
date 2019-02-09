@@ -82,7 +82,7 @@ impl FromStr for TaggedValue {
 impl print::Print for TaggedValue {
 	fn print(&self) -> print::Result {
 		Ok(match &self {
-			TaggedValue::EqualTo(v) => format!("{}", v.print()?),
+			TaggedValue::EqualTo(v) => v.print()?,
 			TaggedValue::LessThan(v) => format!("fewer than {}", v.print()?),
 			TaggedValue::LessThanEqualTo(v) => format!("at most {}", v.print()?),
 			TaggedValue::GreaterThan(v) => format!("more than {}", v.print()?),

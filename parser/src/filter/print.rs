@@ -1,6 +1,5 @@
 use super::Clause;
 use super::{Constant, TaggedValue, Value, WrappedValue};
-use crate::action::Operator;
 use crate::traits::print;
 use crate::traits::print::Print;
 use crate::util::{self, Oxford};

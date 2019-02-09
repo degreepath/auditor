@@ -1,7 +1,6 @@
 use super::course_match::{MatchType, MatchedCourseParts};
-use crate::filter::{Clause as Filter, TaggedValue, Value, WrappedValue};
+use crate::filter::Clause as Filter;
 use crate::rules::course::Rule as CourseRule;
-use std::collections::HashSet;
 
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct CourseInstance {
@@ -81,7 +80,7 @@ impl CourseInstance {
 		};
 
 		let year = match (&self.year, filter.get("year")) {
-			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+			(a, Some(b)) if a == b => MatchType::Match(*a),
 			(_, Some(_)) => MatchType::Fail,
 			(_, None) => MatchType::Skip,
 		};

@@ -1,6 +1,5 @@
 use super::TaggedValue;
 use super::Value;
-use crate::action::Operator;
 use crate::traits::print;
 use crate::util::{self, Oxford};
 use std::fmt;
@@ -174,14 +173,6 @@ impl PartialEq<WrappedValue> for (u16, u16) {
 	fn eq(&self, rhs: &WrappedValue) -> bool {
 		rhs == self
 	}
-}
-
-fn foo() {
-	let w = WrappedValue::new("blargh");
-	let s = "blargh".to_string();
-
-	w == s;
-	s == w;
 }
 
 use crate::audit::MatchType;
