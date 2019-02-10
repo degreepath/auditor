@@ -1,11 +1,10 @@
 use std::env;
 use std::fs;
 
-extern crate degreepath_parser;
-extern crate serde_json;
+extern crate degreepath_auditor;
 extern crate serde_yaml;
 
-use degreepath_parser::area_of_study::AreaOfStudy;
+use degreepath_auditor::area_of_study::AreaOfStudy;
 
 fn main() {
 	let args: Vec<String> = env::args().collect();
@@ -16,5 +15,8 @@ fn main() {
 
 	let area: AreaOfStudy = serde_yaml::from_str(&contents).unwrap();
 
-	println!("{}", serde_json::to_string_pretty(&area).unwrap());
+	match area.print() {
+		Ok(s) => println!("{}", s),
+		Err(e) => eprintln!("{:?}", e),
+	}
 }
