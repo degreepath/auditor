@@ -1,4 +1,4 @@
-use super::ReservedPairings;
+use super::{CourseInstance, ReservedPairings};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RuleResult {
@@ -6,9 +6,6 @@ pub struct RuleResult {
 	pub reservations: ReservedPairings,
 	pub status: RuleStatus,
 }
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct RequirementResult {}
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq)]
@@ -18,8 +15,33 @@ pub enum RuleResultDetails {
 	CountOf(Vec<Option<RuleResult>>),
 	Both((Box<RuleResult>, Box<RuleResult>)),
 	Either((Option<Box<RuleResult>>, Option<Box<RuleResult>>)),
-	Given,
+	Given(GivenResult),
 	Do,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RequirementResult {}
+
+/// The "None" variant here represents Given rules with no `what` line
+#[derive(Debug, Clone, PartialEq)]
+pub struct GivenResult(Option<Vec<GivenOutput>>);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AreaDescriptor {
+	catalog: String,
+	name: String,
+	kind: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+#[allow(dead_code)]
+pub enum GivenOutput {
+	Course(CourseInstance),
+	Credit((i16, i16)),
+	Department(String),
+	Term(i64),
+	Grade((i16, i16)),
+	AreaOfStudy(AreaDescriptor),
 }
 
 impl RuleResult {
@@ -59,7 +81,6 @@ impl RuleResult {
 pub enum RuleStatus {
 	Pass,
 	Fail,
-	#[allow(dead_code)]
 	Skipped,
 	#[allow(dead_code)]
 	Pending,
