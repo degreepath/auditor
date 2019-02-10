@@ -5,7 +5,7 @@ fn count_gte_6() {
 	let actual: Action = "count >= 6".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Count),
+		lhs: Value::String(Command::Count.to_string()),
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Integer(6)),
 	};
@@ -18,7 +18,7 @@ fn count_eq_1() {
 	let actual: Action = "count = 1".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Count),
+		lhs: Value::String(Command::Count.to_string()),
 		op: Some(Operator::EqualTo),
 		rhs: Some(Value::Integer(1)),
 	};
@@ -31,7 +31,7 @@ fn average_gte_2_0() {
 	let actual: Action = "average >= 2.0".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Average),
+		lhs: Value::String(Command::Average.to_string()),
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Float((2, 0))),
 	};
@@ -44,7 +44,7 @@ fn average_gte_2() {
 	let actual: Action = "average >= 2".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Average),
+		lhs: Value::String(Command::Average.to_string()),
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Integer(2)),
 	};
@@ -57,7 +57,7 @@ fn sum_eq_6() {
 	let actual: Action = "sum = 6".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Sum),
+		lhs: Value::String(Command::Sum.to_string()),
 		op: Some(Operator::EqualTo),
 		rhs: Some(Value::Integer(6)),
 	};
@@ -70,7 +70,7 @@ fn sum_gte_1_5() {
 	let actual: Action = "sum >= 1.5".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Sum),
+		lhs: Value::String(Command::Sum.to_string()),
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Float((1, 50))),
 	};
@@ -83,7 +83,7 @@ fn maximum() {
 	let actual: Action = "maximum".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Maximum),
+		lhs: Value::String(Command::Maximum.to_string()),
 		op: None,
 		rhs: None,
 	};
@@ -96,7 +96,7 @@ fn minimum() {
 	let actual: Action = "minimum".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::Command(Command::Minimum),
+		lhs: Value::String(Command::Minimum.to_string()),
 		op: None,
 		rhs: None,
 	};
