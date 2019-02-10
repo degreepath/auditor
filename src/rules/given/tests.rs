@@ -1,5 +1,6 @@
 use super::*;
 use crate::traits::print::Print;
+use indexmap::indexmap;
 
 #[test]
 fn serialize_all_courses() {
