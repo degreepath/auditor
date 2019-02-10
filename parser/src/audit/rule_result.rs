@@ -31,6 +31,14 @@ impl RuleResult {
 		}
 	}
 
+	pub fn skip(detail: &RuleResultDetails) -> RuleResult {
+		RuleResult {
+			detail: detail.clone(),
+			reservations: ReservedPairings::new(),
+			status: RuleStatus::Skipped,
+		}
+	}
+
 	pub fn is_pass(&self) -> bool {
 		match self.status {
 			RuleStatus::Pass => true,
