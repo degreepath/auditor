@@ -10,8 +10,10 @@ serde = { version = "1.0", features = ["derive"] }
 void = "1.0"
 
 [dev-dependencies]
-serde_yaml = "0.8"
+globwalk = "0.6"
+rayon = "1.0"
 serde_json = "1.0"
+serde_yaml = "0.8"
 
 [[example]]
 name = "parser"
@@ -20,3 +22,7 @@ path = "examples/parser.rs"
 [[example]]
 name = "printer"
 path = "examples/printer.rs"
+
+[[example]]
+name = "snapshot"
+path = "examples/snapshot.rs"
