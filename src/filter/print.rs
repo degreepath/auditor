@@ -1,8 +1,9 @@
+use super::constant::Constant;
 use super::Clause;
-use super::{Constant, TaggedValue, Value, WrappedValue};
 use crate::traits::print;
 use crate::traits::print::Print;
 use crate::util::{self, Oxford};
+use crate::value::{SingleValue, TaggedValue, WrappedValue};
 use std::collections::HashSet;
 
 impl print::Print for Clause {
@@ -125,16 +126,20 @@ fn print_semester(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> 
 }
 
 fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
+	use {
+		TaggedValue::EqualTo,
+		WrappedValue::{And, Or, Single},
+	};
 	let mut clauses = vec![];
 
 	match value {
-		WrappedValue::Single(TaggedValue::EqualTo(Value::Integer(n))) => {
+		Single(EqualTo(SingleValue::Integer(n))) => {
 			clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual")))
 		}
-		WrappedValue::Single(TaggedValue::EqualTo(Value::Constant(Constant::GraduationYear))) => {
+		Single(EqualTo(SingleValue::String(s))) if *s == Constant::GraduationYear => {
 			clauses.push("during your graduation year".to_string())
 		}
-		WrappedValue::Or(_) | WrappedValue::And(_) => {
+		Or(_) | And(_) => {
 			// TODO: implement a .map() function on WrappedValue?
 			// to allow something like `year.map(util::expand_year).print()?`
 			clauses.push(format!("during the {} academic years", value.print()?));
@@ -146,20 +151,18 @@ fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 }
 
 fn print_year_and_semester(year: &WrappedValue, semester: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
+	use {TaggedValue::EqualTo, WrappedValue::Single};
 	let mut clauses = vec![];
 
 	match (year, semester) {
-		(WrappedValue::Single(TaggedValue::EqualTo(Value::Integer(year))), WrappedValue::Single(sem)) => {
-			clauses.push(format!(
-				"during the {} of the {} academic year",
-				sem.print()?,
-				util::expand_year(*year, "dual")
-			))
+		(Single(EqualTo(SingleValue::Integer(year))), Single(sem)) => clauses.push(format!(
+			"during the {} of the {} academic year",
+			sem.print()?,
+			util::expand_year(*year, "dual")
+		)),
+		(Single(EqualTo(SingleValue::String(s))), Single(sem)) if *s == Constant::GraduationYear => {
+			clauses.push(format!("during the {} of your graduation year", sem.print()?))
 		}
-		(
-			WrappedValue::Single(TaggedValue::EqualTo(Value::Constant(Constant::GraduationYear))),
-			WrappedValue::Single(sem),
-		) => clauses.push(format!("during the {} of your graduation year", sem.print()?)),
 		_ => unimplemented!("filter:year+semester, certain modes"),
 	}
 
