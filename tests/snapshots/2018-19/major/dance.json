@@ -93,7 +93,7 @@
         "what": "credits",
         "do": {
           "lhs": {
-            "Command": "Sum"
+            "String": "sum"
           },
           "op": "GreaterThanEqualTo",
           "rhs": {
@@ -277,7 +277,7 @@
           "year": {
             "Single": {
               "EqualTo": {
-                "Constant": "graduation-year"
+                "String": "graduation-year"
               }
             }
           },
@@ -292,7 +292,7 @@
         "what": "courses",
         "do": {
           "lhs": {
-            "Command": "Count"
+            "String": "count"
           },
           "op": "GreaterThanEqualTo",
           "rhs": {

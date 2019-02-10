@@ -76,7 +76,7 @@
         "what": "courses",
         "do": {
           "lhs": {
-            "Command": "Count"
+            "String": "count"
           },
           "op": "GreaterThanEqualTo",
           "rhs": {
@@ -134,7 +134,7 @@
         "what": "courses",
         "do": {
           "lhs": {
-            "Command": "Count"
+            "String": "count"
           },
           "op": "GreaterThanEqualTo",
           "rhs": {
@@ -193,7 +193,7 @@
             "what": "courses",
             "do": {
               "lhs": {
-                "Command": "Count"
+                "String": "count"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -224,7 +224,7 @@
             "what": "courses",
             "do": {
               "lhs": {
-                "Command": "Count"
+                "String": "count"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -255,7 +255,7 @@
             "what": "courses",
             "do": {
               "lhs": {
-                "Command": "Count"
+                "String": "count"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -286,7 +286,7 @@
             "what": "courses",
             "do": {
               "lhs": {
-                "Command": "Count"
+                "String": "count"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -355,7 +355,7 @@
                 "what": "areas of study",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "EqualTo",
                   "rhs": {
@@ -400,7 +400,7 @@
                 "what": "areas of study",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "EqualTo",
                   "rhs": {
@@ -445,7 +445,7 @@
                 "what": "areas of study",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "EqualTo",
                   "rhs": {
@@ -493,7 +493,7 @@
         "what": "courses",
         "do": {
           "lhs": {
-            "Command": "Count"
+            "String": "count"
           },
           "op": "GreaterThanEqualTo",
           "rhs": {
