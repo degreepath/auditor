@@ -287,7 +287,7 @@ fn pretty_print_single_values() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Clause = deserialize_test(&"{credits: '1.0'}").unwrap();
-	let expected = "with the “1.0” `credits` attribute";
+	let expected = "with the “1.00” `credits` attribute";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Clause = deserialize_test(&"{credits: '1.5'}").unwrap();

@@ -100,7 +100,7 @@ fn serialize() {
   what: courses
   do:
     lhs:
-      Command: Count
+      String: count
     op: LessThan
     rhs:
       Integer: 2
@@ -384,7 +384,7 @@ save: "Senior Dance Seminars"
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThanEqualTo
   rhs:
     Integer: 1

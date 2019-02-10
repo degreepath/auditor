@@ -23,7 +23,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -61,7 +61,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -104,7 +104,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -162,7 +162,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -205,7 +205,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -260,7 +260,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -287,7 +287,7 @@ where: {}
 what: areas of study
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -325,7 +325,7 @@ where: {}
 what: areas of study
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -355,7 +355,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -397,7 +397,7 @@ where: {}
 what: courses
 do:
   lhs:
-    Command: Count
+    String: count
   op: GreaterThan
   rhs:
     Integer: 2"#;
@@ -494,11 +494,11 @@ fn deserialize_filter_level_gte() {
 
 #[test]
 fn deserialize_filter_graded_bool() {
-	use value::{SingleValue::Bool, TaggedValue::GreaterThanEqualTo, WrappedValue::Single};
+	use value::{SingleValue::Bool, TaggedValue::EqualTo, WrappedValue::Single};
 	let data = r#"{where: {graded: 'true'}, given: courses, what: courses, do: count > 1}"#;
 
 	let expected: filter::Clause = indexmap! {
-		"graded".into() => Single(GreaterThanEqualTo(Bool(true))),
+		"graded".into() => Single(EqualTo(Bool(true))),
 	};
 	let expected = Rule {
 		given: Given::AllCourses,
@@ -527,25 +527,22 @@ fn pretty_print_inline_filters() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-		serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct courses, do: count >= 2}")
-			.unwrap();
+		serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct courses, do: count >= 2}").unwrap();
 	let expected = "have at least two distinct courses taken with the “SPM” general education attribute";
 	assert_eq!(expected, input.print().unwrap());
 }
 
 #[test]
 fn pretty_print_inline_repeats() {
-	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}",
-	)
-	.unwrap();
+	let input: Rule =
+		serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}")
+			.unwrap();
 	let expected = "take THEAT 233 at least one time";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 4}",
-	)
-	.unwrap();
+	let input: Rule =
+		serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 4}")
+			.unwrap();
 	let expected = "take THEAT 233 at least four times";
 	assert_eq!(expected, input.print().unwrap());
 
@@ -567,10 +564,9 @@ fn pretty_print_inline_repeats() {
 - AMST 210";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: all, courses: [THEAT 233], what: credits, do: sum >= 4}",
-	)
-	.unwrap();
+	let input: Rule =
+		serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [THEAT 233], what: credits, do: sum >= 4}")
+			.unwrap();
 	let expected = "take THEAT 233 enough times to yield at least four credits";
 	assert_eq!(expected, input.print().unwrap());
 
@@ -615,8 +611,7 @@ fn pretty_print_inline_credits() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-		serde_yaml::from_str(&"{given: courses, where: {semester: Fall | Interim}, what: credits, do: sum >= 10}")
-			.unwrap();
+		serde_yaml::from_str(&"{given: courses, where: {semester: Fall | Interim}, what: credits, do: sum >= 10}").unwrap();
 	let expected = "have enough courses taken during a Fall or Interim semester to obtain at least ten credits";
 	assert_eq!(expected, input.print().unwrap());
 
@@ -641,8 +636,7 @@ fn pretty_print_inline_departments() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-		serde_yaml::from_str(&"{given: courses, where: {semester: Interim}, what: departments, do: count >= 1}")
-			.unwrap();
+		serde_yaml::from_str(&"{given: courses, where: {semester: Interim}, what: departments, do: count >= 1}").unwrap();
 	let expected = "have enough courses taken during Interim semesters to span at least one department";
 	assert_eq!(expected, input.print().unwrap());
 
@@ -662,8 +656,7 @@ fn pretty_print_inline_grades() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-		serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: grades, do: average >= 3.0}")
-			.unwrap();
+		serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: grades, do: average >= 3.0}").unwrap();
 	let expected = "maintain an average GPA at or above 3.00 from courses taken during Interim semesters";
 	assert_eq!(expected, input.print().unwrap());
 }
