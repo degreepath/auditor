@@ -16,8 +16,21 @@ impl print::Print for SingleValue {
 	fn print(&self) -> print::Result {
 		match &self {
 			SingleValue::String(s) => Ok(s.to_string()),
-			SingleValue::Integer(n) => Ok(format!("{}", n)),
-			SingleValue::Float((i, f)) => Ok(format!("{}.{}", i, f)),
+			SingleValue::Integer(n) => Ok(match n {
+				0 => "zero".to_string(),
+				1 => "one".to_string(),
+				2 => "two".to_string(),
+				3 => "three".to_string(),
+				4 => "four".to_string(),
+				5 => "five".to_string(),
+				6 => "six".to_string(),
+				7 => "seven".to_string(),
+				8 => "eight".to_string(),
+				9 => "nine".to_string(),
+				10 => "ten".to_string(),
+				_ => format!("{}", n),
+			}),
+			SingleValue::Float((i, f)) => Ok(format!("{}.{:>02}", i, f)),
 			SingleValue::Bool(b) => Ok(format!("{}", b)),
 		}
 	}
@@ -146,21 +159,7 @@ impl fmt::Display for SingleValue {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
 		let desc = match &self {
 			SingleValue::String(s) => s.to_string(),
-			// SingleValue::Integer(n) => format!("{}", n),
-			SingleValue::Integer(n) => match n {
-				0 => "zero".to_string(),
-				1 => "one".to_string(),
-				2 => "two".to_string(),
-				3 => "three".to_string(),
-				4 => "four".to_string(),
-				5 => "five".to_string(),
-				6 => "six".to_string(),
-				7 => "seven".to_string(),
-				8 => "eight".to_string(),
-				9 => "nine".to_string(),
-				10 => "ten".to_string(),
-				_ => format!("{}", n),
-			},
+			SingleValue::Integer(n) => format!("{}", n),
 			SingleValue::Float((i, f)) => format!("{}.{:>02}", i, f),
 			SingleValue::Bool(b) => format!("{}", b),
 		};
