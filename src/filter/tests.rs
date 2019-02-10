@@ -1,5 +1,7 @@
-use super::*;
+use super::deserialize_with;
+use super::Clause;
 use crate::traits::print::Print;
+use crate::value::{SingleValue, TaggedValue, WrappedValue};
 use indexmap::indexmap;
 
 #[test]
@@ -57,52 +59,52 @@ mod value {
 	#[test]
 	fn deserialize_value_str() {
 		let data = "FYW";
-		let expected = Value::String("FYW".into());
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::String("FYW".into());
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
 
 	#[test]
 	fn deserialize_value_int() {
 		let data = "1";
-		let expected = Value::Integer(1);
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::Integer(1);
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 
 		let data = "100";
-		let expected = Value::Integer(100);
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::Integer(100);
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
 
 	#[test]
 	fn deserialize_value_float() {
 		let data = "1.0";
-		let expected = Value::Float((1, 0));
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::Float((1, 0));
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 
 		let data = "1.5";
-		let expected = Value::Float((1, 50));
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::Float((1, 50));
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 
 		let data = "1.25";
-		let expected = Value::Float((1, 25));
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::Float((1, 25));
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
 
 	#[test]
 	fn deserialize_value_bool() {
 		let data = "true";
-		let expected = Value::Bool(true);
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::Bool(true);
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 
 		let data = "false";
-		let expected = Value::Bool(false);
-		let actual: Value = data.parse().unwrap();
+		let expected = SingleValue::Bool(false);
+		let actual: SingleValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
 }
@@ -113,7 +115,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_untagged() {
 		let data = "FYW";
-		let expected = TaggedValue::EqualTo(Value::String("FYW".into()));
+		let expected = TaggedValue::EqualTo(SingleValue::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -121,7 +123,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_eq() {
 		let data = "= FYW";
-		let expected = TaggedValue::EqualTo(Value::String("FYW".into()));
+		let expected = TaggedValue::EqualTo(SingleValue::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -129,7 +131,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_neq() {
 		let data = "! FYW";
-		let expected = TaggedValue::NotEqualTo(Value::String("FYW".into()));
+		let expected = TaggedValue::NotEqualTo(SingleValue::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -137,7 +139,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_gt() {
 		let data = "> FYW";
-		let expected = TaggedValue::GreaterThan(Value::String("FYW".into()));
+		let expected = TaggedValue::GreaterThan(SingleValue::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -145,7 +147,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_gte() {
 		let data = ">= FYW";
-		let expected = TaggedValue::GreaterThanEqualTo(Value::String("FYW".into()));
+		let expected = TaggedValue::GreaterThanEqualTo(SingleValue::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -153,7 +155,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_lt() {
 		let data = "< FYW";
-		let expected = TaggedValue::LessThan(Value::String("FYW".into()));
+		let expected = TaggedValue::LessThan(SingleValue::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -161,7 +163,7 @@ mod tagged_value {
 	#[test]
 	fn deserialize_lte() {
 		let data = "<= FYW";
-		let expected = TaggedValue::LessThanEqualTo(Value::String("FYW".into()));
+		let expected = TaggedValue::LessThanEqualTo(SingleValue::String("FYW".into()));
 		let actual: TaggedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -174,7 +176,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize() {
 		let data = "FYW";
-		let expected = WrappedValue::Single(TaggedValue::EqualTo(Value::String("FYW".into())));
+		let expected = WrappedValue::Single(TaggedValue::EqualTo(SingleValue::String("FYW".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -182,7 +184,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize_ne() {
 		let data = "! FYW";
-		let expected = WrappedValue::Single(TaggedValue::NotEqualTo(Value::String("FYW".into())));
+		let expected = WrappedValue::Single(TaggedValue::NotEqualTo(SingleValue::String("FYW".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -191,8 +193,8 @@ mod wrapped_value {
 	fn deserialize_or_ne() {
 		let data = "! FYW | = FYW";
 		let expected = WrappedValue::Or(vec![
-			TaggedValue::NotEqualTo(Value::String("FYW".into())),
-			TaggedValue::EqualTo(Value::String("FYW".into())),
+			TaggedValue::NotEqualTo(SingleValue::String("FYW".into())),
+			TaggedValue::EqualTo(SingleValue::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -202,8 +204,8 @@ mod wrapped_value {
 	fn deserialize_or_untagged() {
 		let data = "FYW | FYW";
 		let expected = WrappedValue::Or(vec![
-			TaggedValue::EqualTo(Value::String("FYW".into())),
-			TaggedValue::EqualTo(Value::String("FYW".into())),
+			TaggedValue::EqualTo(SingleValue::String("FYW".into())),
+			TaggedValue::EqualTo(SingleValue::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -213,8 +215,8 @@ mod wrapped_value {
 	fn deserialize_and_untagged() {
 		let data = "FYW & FYW";
 		let expected = WrappedValue::And(vec![
-			TaggedValue::EqualTo(Value::String("FYW".into())),
-			TaggedValue::EqualTo(Value::String("FYW".into())),
+			TaggedValue::EqualTo(SingleValue::String("FYW".into())),
+			TaggedValue::EqualTo(SingleValue::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -224,8 +226,8 @@ mod wrapped_value {
 	fn deserialize_and_ne() {
 		let data = "! FYW & = FYW";
 		let expected = WrappedValue::And(vec![
-			TaggedValue::NotEqualTo(Value::String("FYW".into())),
-			TaggedValue::EqualTo(Value::String("FYW".into())),
+			TaggedValue::NotEqualTo(SingleValue::String("FYW".into())),
+			TaggedValue::EqualTo(SingleValue::String("FYW".into())),
 		]);
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
@@ -234,7 +236,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize_multiword_single_value() {
 		let data = "St. Olaf College";
-		let expected = WrappedValue::Single(TaggedValue::EqualTo(Value::String("St. Olaf College".into())));
+		let expected = WrappedValue::Single(TaggedValue::EqualTo(SingleValue::String("St. Olaf College".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}
@@ -242,7 +244,7 @@ mod wrapped_value {
 	#[test]
 	fn deserialize_negated_multiword_single_value() {
 		let data = "! St. Olaf College";
-		let expected = WrappedValue::Single(TaggedValue::NotEqualTo(Value::String("St. Olaf College".into())));
+		let expected = WrappedValue::Single(TaggedValue::NotEqualTo(SingleValue::String("St. Olaf College".into())));
 		let actual: WrappedValue = data.parse().unwrap();
 		assert_eq!(actual, expected);
 	}

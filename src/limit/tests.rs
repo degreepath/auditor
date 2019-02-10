@@ -1,10 +1,12 @@
-use super::*;
+use super::Limiter;
+use crate::filter;
+use crate::value::WrappedValue;
 use indexmap::indexmap;
 
 #[test]
 fn serialize_level100() {
 	let clause: filter::Clause = indexmap! {
-		"level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
+		"level".into() => "100".parse::<WrappedValue>().unwrap(),
 	};
 
 	let data = Limiter {
@@ -28,7 +30,7 @@ at_most: 2"#;
 #[test]
 fn serialize_not_math() {
 	let clause: filter::Clause = indexmap! {
-		"department".into() => "! MATH".parse::<filter::WrappedValue>().unwrap(),
+		"department".into() => "! MATH".parse::<WrappedValue>().unwrap(),
 	};
 
 	let data = Limiter {
@@ -52,7 +54,7 @@ at_most: 2"#;
 #[test]
 fn deserialize_level100() {
 	let clause: filter::Clause = indexmap! {
-		"level".into() => "100".parse::<filter::WrappedValue>().unwrap(),
+		"level".into() => "100".parse::<WrappedValue>().unwrap(),
 	};
 
 	let expected = Limiter {
