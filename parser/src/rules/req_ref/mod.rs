@@ -1,10 +1,10 @@
 use crate::traits::Util;
 use crate::util;
 
+mod audit;
+mod print;
 #[cfg(test)]
 mod tests;
-
-mod print;
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Hash)]
 #[serde(deny_unknown_fields)]

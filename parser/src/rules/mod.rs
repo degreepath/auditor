@@ -74,7 +74,7 @@ impl RuleAudit for Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
 		match &self {
 			Rule::Course(v) => v.check(input),
-			Rule::Requirement(_v) => unimplemented!(), //v.check(input),
+			Rule::Requirement(v) => v.check(input),
 			Rule::CountOf(v) => v.check(input),
 			Rule::Both(v) => v.check(input),
 			Rule::Either(v) => v.check(input),
