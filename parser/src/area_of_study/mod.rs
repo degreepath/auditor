@@ -1,10 +1,10 @@
 use crate::requirement::Requirement;
 use crate::rules::Rule;
 use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
 
 mod attributes;
 mod print;
-
 #[cfg(test)]
 mod tests;
 

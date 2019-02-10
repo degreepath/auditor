@@ -2,7 +2,8 @@ use super::Clause;
 use super::WrappedValue;
 use crate::util;
 use indexmap::IndexMap;
-use serde::de::{Deserialize, Deserializer};
+use serde::de::Deserializer;
+use serde::Deserialize;
 
 pub fn deserialize_with<'de, D>(deserializer: D) -> Result<Option<Clause>, D::Error>
 where

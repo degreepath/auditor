@@ -1,6 +1,7 @@
 use super::Command;
 use crate::traits::print;
 use crate::util::ParseError;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
 

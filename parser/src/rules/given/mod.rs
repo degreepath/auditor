@@ -2,6 +2,7 @@ use crate::rules::{course, req_ref};
 use crate::traits::Util;
 use crate::util;
 use crate::{action, filter, limit};
+use serde::{Deserialize, Serialize};
 
 mod print;
 #[cfg(test)]

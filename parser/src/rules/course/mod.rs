@@ -1,4 +1,5 @@
 use crate::traits::Util;
+use serde::Deserialize;
 use std::str::FromStr;
 use void::Void;
 

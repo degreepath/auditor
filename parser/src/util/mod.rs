@@ -1,11 +1,10 @@
-mod oxford;
-pub use oxford::Oxford;
-
 mod errors;
-pub use errors::ParseError;
-
+mod oxford;
 mod serde;
+
 pub use self::serde::{serde_false, string_or_struct, string_or_struct_parseerror};
+pub use errors::ParseError;
+pub use oxford::Oxford;
 
 pub fn pretty_term(term: &str) -> String {
 	term.to_string()

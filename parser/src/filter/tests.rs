@@ -248,6 +248,7 @@ mod wrapped_value {
 }
 
 fn deserialize_test(s: &str) -> Option<Clause> {
+	use serde::Deserialize;
 	#[derive(Deserialize)]
 	struct Wrapper(#[serde(deserialize_with = "deserialize_with")] Option<Clause>);
 

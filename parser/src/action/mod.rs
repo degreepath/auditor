@@ -1,5 +1,6 @@
 use crate::util;
-use serde::de::{Deserialize, Deserializer};
+use serde::de::Deserializer;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
 #[cfg(test)]

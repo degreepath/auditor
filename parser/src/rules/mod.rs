@@ -5,6 +5,7 @@ pub mod course;
 pub mod either;
 pub mod given;
 pub mod req_ref;
+use serde::{Deserialize, Serialize};
 
 use crate::audit::RuleAudit;
 use crate::traits::{print, Util};

@@ -2,6 +2,7 @@ use crate::rules::Rule;
 use crate::save::SaveBlock;
 use crate::util;
 use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
 
 mod print;
 

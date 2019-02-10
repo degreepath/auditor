@@ -1,5 +1,6 @@
 use super::*;
-use serde::ser::{Serialize, SerializeStruct, Serializer};
+use serde::ser::{SerializeStruct, Serializer};
+use serde::Serialize;
 
 impl Serialize for Rule {
 	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
