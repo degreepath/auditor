@@ -3,9 +3,9 @@ set -e -o pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-cargo build
-printer="$SCRIPT_DIR/../target/debug/printer"
-parser="$SCRIPT_DIR/../target/debug/parser"
+cargo build --examples
+printer="$SCRIPT_DIR/../target/debug/examples/printer"
+parser="$SCRIPT_DIR/../target/debug/examples/parser"
 
 cd "$SCRIPT_DIR/area-data"
 
