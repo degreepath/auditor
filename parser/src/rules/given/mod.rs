@@ -3,10 +3,9 @@ use crate::traits::Util;
 use crate::util;
 use crate::{action, filter, limit};
 
+mod print;
 #[cfg(test)]
 mod tests;
-
-mod print;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Rule {
