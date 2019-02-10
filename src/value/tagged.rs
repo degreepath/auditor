@@ -1,4 +1,4 @@
-use super::Value;
+use super::SingleValue;
 use crate::action::Operator;
 use crate::traits::print;
 use crate::util;
@@ -8,12 +8,12 @@ use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord, Hash)]
 pub enum TaggedValue {
-	LessThan(Value),
-	LessThanEqualTo(Value),
-	EqualTo(Value),
-	GreaterThan(Value),
-	GreaterThanEqualTo(Value),
-	NotEqualTo(Value),
+	LessThan(SingleValue),
+	LessThanEqualTo(SingleValue),
+	EqualTo(SingleValue),
+	GreaterThan(SingleValue),
+	GreaterThanEqualTo(SingleValue),
+	NotEqualTo(SingleValue),
 }
 
 impl TaggedValue {
@@ -26,7 +26,7 @@ impl TaggedValue {
 	}
 
 	pub fn eq_string(s: &str) -> Self {
-		TaggedValue::EqualTo(Value::String(s.to_string()))
+		TaggedValue::EqualTo(SingleValue::String(s.to_string()))
 	}
 }
 
@@ -46,13 +46,13 @@ impl FromStr for TaggedValue {
 
 				match splitted.as_slice() {
 					[value] => {
-						let value = value.parse::<Value>()?;
+						let value = value.parse::<SingleValue>()?;
 
 						Ok(TaggedValue::EqualTo(value))
 					}
 					[op, value] => {
 						let op = op.parse::<Operator>()?;
-						let value = value.parse::<Value>()?;
+						let value = value.parse::<SingleValue>()?;
 
 						Ok(match op {
 							Operator::EqualTo => TaggedValue::EqualTo(value),
@@ -72,7 +72,7 @@ impl FromStr for TaggedValue {
 				}
 			}
 			_ => {
-				let value = s.parse::<Value>()?;
+				let value = s.parse::<SingleValue>()?;
 
 				Ok(TaggedValue::EqualTo(value))
 			}

@@ -1,5 +1,4 @@
-use super::TaggedValue;
-use super::Value;
+use super::{SingleValue, TaggedValue};
 use crate::traits::print;
 use crate::util::{self, Oxford};
 use serde::{Deserialize, Serialize};
@@ -15,9 +14,14 @@ pub enum WrappedValue {
 
 impl WrappedValue {
 	pub fn new(s: &str) -> Self {
-		WrappedValue::Single(TaggedValue::EqualTo(Value::String(s.to_string())))
+		WrappedValue::Single(TaggedValue::EqualTo(SingleValue::String(s.to_string())))
 	}
 
+	pub fn eq_string(s: &str) -> Self {
+		WrappedValue::Single(TaggedValue::eq_string(s))
+	}
+
+	// TODO: remove this method
 	pub fn is_true(&self) -> bool {
 		match &self {
 			WrappedValue::Single(val) => val.is_true(),
@@ -28,9 +32,11 @@ impl WrappedValue {
 
 impl print::Print for WrappedValue {
 	fn print(&self) -> print::Result {
+		use WrappedValue::{And, Or, Single};
+
 		match &self {
-			WrappedValue::Single(v) => v.print(),
-			WrappedValue::Or(v) | WrappedValue::And(v) => {
+			Single(v) => v.print(),
+			Or(v) | And(v) => {
 				let v: Vec<String> = v
 					.iter()
 					.filter_map(|r| match r.print() {
@@ -40,8 +46,8 @@ impl print::Print for WrappedValue {
 					.collect();
 
 				match &self {
-					WrappedValue::Or(_) => Ok(v.oxford("or")),
-					WrappedValue::And(_) => Ok(v.oxford("and")),
+					Or(_) => Ok(v.oxford("or")),
+					And(_) => Ok(v.oxford("and")),
 					_ => panic!("we already checked for Single"),
 				}
 			}
@@ -80,14 +86,16 @@ impl FromStr for WrappedValue {
 
 impl fmt::Display for WrappedValue {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+		use WrappedValue::{And, Or, Single};
+
 		let desc = match &self {
-			WrappedValue::Single(val) => format!("{}", val),
-			WrappedValue::And(values) | WrappedValue::Or(values) => {
+			Single(val) => format!("{}", val),
+			And(values) | Or(values) => {
 				let parts: Vec<_> = values.iter().map(|v| format!("{}", v)).collect();
 
 				match &self {
-					WrappedValue::And(_) => parts.join(" & "),
-					WrappedValue::Or(_) => parts.join(" | "),
+					And(_) => parts.join(" & "),
+					Or(_) => parts.join(" | "),
 					_ => panic!("we already checked for Single"),
 				}
 			}
@@ -200,7 +208,7 @@ impl WrappedValue {
 				let overlap: Vec<_> = available
 					.intersection(&possible)
 					.map(|v| match v {
-						TaggedValue::EqualTo(Value::String(s)) => MatchType::Match(s.clone()),
+						TaggedValue::EqualTo(SingleValue::String(s)) => MatchType::Match(s.clone()),
 						_ => unimplemented!(),
 					})
 					.collect();
@@ -222,7 +230,7 @@ impl WrappedValue {
 				let overlap: Vec<_> = available
 					.union(&needed)
 					.map(|v| match v {
-						TaggedValue::EqualTo(Value::String(s)) => MatchType::Match(s.clone()),
+						TaggedValue::EqualTo(SingleValue::String(s)) => MatchType::Match(s.clone()),
 						_ => unimplemented!(),
 					})
 					.collect();

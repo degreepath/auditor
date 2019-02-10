@@ -1,6 +1,8 @@
-use super::*;
+use super::Requirement;
+use crate::rules::Rule;
 use crate::rules::{given, req_ref};
-use crate::{filter, rules};
+use crate::save::SaveBlock;
+use crate::{filter, rules, value};
 use indexmap::indexmap;
 
 #[test]
@@ -119,7 +121,7 @@ result:
     - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
 	let expected_filter: filter::Clause = indexmap! {
-		"semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
+		"semester".into() => "Interim".parse::<value::WrappedValue>().unwrap(),
 	};
 
 	let expected = Requirement {

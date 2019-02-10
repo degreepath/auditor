@@ -67,7 +67,7 @@
             "what": "credits",
             "do": {
               "lhs": {
-                "Command": "Sum"
+                "String": "sum"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -98,7 +98,7 @@
             "what": "credits",
             "do": {
               "lhs": {
-                "Command": "Sum"
+                "String": "sum"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -124,7 +124,7 @@
                 "what": "credits",
                 "do": {
                   "lhs": {
-                    "Command": "Sum"
+                    "String": "sum"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -140,7 +140,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -182,7 +182,7 @@
             "what": "grades",
             "do": {
               "lhs": {
-                "Command": "Average"
+                "String": "average"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -216,7 +216,7 @@
             "what": "credits",
             "do": {
               "lhs": {
-                "Command": "Sum"
+                "String": "sum"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -247,7 +247,7 @@
             "what": "credits",
             "do": {
               "lhs": {
-                "Command": "Sum"
+                "String": "sum"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -278,7 +278,7 @@
             "what": "areas of study",
             "do": {
               "lhs": {
-                "Command": "Count"
+                "String": "count"
               },
               "op": "GreaterThanEqualTo",
               "rhs": {
@@ -371,7 +371,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -402,7 +402,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -473,7 +473,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -516,7 +516,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -547,7 +547,7 @@
                 "what": "distinct courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -615,7 +615,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -653,7 +653,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -680,7 +680,7 @@
                     "what": "courses",
                     "do": {
                       "lhs": {
-                        "Command": "Count"
+                        "String": "count"
                       },
                       "op": "GreaterThanEqualTo",
                       "rhs": {
@@ -704,7 +704,7 @@
                     "what": "courses",
                     "do": {
                       "lhs": {
-                        "Command": "Count"
+                        "String": "count"
                       },
                       "op": "GreaterThanEqualTo",
                       "rhs": {
@@ -728,7 +728,7 @@
                     "what": "courses",
                     "do": {
                       "lhs": {
-                        "Command": "Count"
+                        "String": "count"
                       },
                       "op": "GreaterThanEqualTo",
                       "rhs": {
@@ -785,7 +785,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {
@@ -834,7 +834,7 @@
                 "what": "courses",
                 "do": {
                   "lhs": {
-                    "Command": "Count"
+                    "String": "count"
                   },
                   "op": "GreaterThanEqualTo",
                   "rhs": {

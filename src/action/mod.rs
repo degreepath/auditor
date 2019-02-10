@@ -1,19 +1,17 @@
-use crate::util;
-use serde::de::Deserializer;
-use serde::{Deserialize, Serialize};
-use std::fmt;
-
-#[cfg(test)]
-mod tests;
-
 mod command;
-pub use command::Command;
-mod value;
-pub use value::Value;
 mod operator;
 mod parse;
 mod print;
+#[cfg(test)]
+mod tests;
+
+use crate::util;
+pub use crate::value::SingleValue as Value;
+pub use command::Command;
 pub use operator::Operator;
+use serde::de::Deserializer;
+use serde::{Deserialize, Serialize};
+use std::fmt;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Action {

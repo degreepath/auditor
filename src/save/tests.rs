@@ -1,6 +1,9 @@
-use super::*;
+use super::SaveBlock;
+use crate::filter;
+use crate::rules::given::{Given, What};
 use crate::rules::{course, given};
 use crate::traits::print::Print;
+use crate::value;
 use indexmap::indexmap;
 
 #[test]
@@ -12,7 +15,7 @@ what: courses
 name: Interim Courses"#;
 
 	let filter: filter::Clause = indexmap! {
-		"semester".into() => "Interim".parse::<filter::WrappedValue>().unwrap(),
+		"semester".into() => "Interim".parse::<value::WrappedValue>().unwrap(),
 	};
 
 	let expected = SaveBlock {
@@ -39,8 +42,8 @@ where: {year: graduation-year, semester: Fall}
 name: "Senior Dance Seminars""#;
 
 	let filter: filter::Clause = indexmap! {
-		"year".into() => "graduation-year".parse::<filter::WrappedValue>().unwrap(),
-		"semester".into() => "Fall".parse::<filter::WrappedValue>().unwrap(),
+		"year".into() => "graduation-year".parse::<value::WrappedValue>().unwrap(),
+		"semester".into() => "Fall".parse::<value::WrappedValue>().unwrap(),
 	};
 
 	let expected = SaveBlock {

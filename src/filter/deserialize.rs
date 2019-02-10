@@ -1,6 +1,6 @@
 use super::Clause;
-use super::WrappedValue;
 use crate::util;
+use crate::value::WrappedValue;
 use indexmap::IndexMap;
 use serde::de::Deserializer;
 use serde::Deserialize;

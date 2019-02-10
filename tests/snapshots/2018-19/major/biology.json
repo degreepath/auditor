@@ -229,7 +229,7 @@
         "what": "courses",
         "do": {
           "lhs": {
-            "Command": "Count"
+            "String": "count"
           },
           "op": "GreaterThanEqualTo",
           "rhs": {
