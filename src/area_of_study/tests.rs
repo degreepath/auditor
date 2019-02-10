@@ -1,6 +1,6 @@
-use crate::rules::{count_of, course, req_ref};
-
 use super::*;
+use crate::rules::{count_of, course, req_ref};
+use indexmap::indexmap;
 
 #[test]
 fn deserialize() {
