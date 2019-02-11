@@ -15,18 +15,15 @@ pub enum RuleResultDetails {
 	CountOf(Vec<Option<RuleResult>>),
 	Both((Box<RuleResult>, Box<RuleResult>)),
 	Either((Option<Box<RuleResult>>, Option<Box<RuleResult>>)),
-	Given(GivenResult),
+	/// The "None" variant here represents Given rules with no `what` line
+	Given(Option<Vec<GivenOutput>>),
 	Do,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RequirementResult {}
 
-/// The "None" variant here represents Given rules with no `what` line
-#[derive(Debug, Clone, PartialEq)]
-pub struct GivenResult(Option<Vec<GivenOutput>>);
-
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq)]
 pub struct AreaDescriptor {
 	catalog: String,
 	name: String,
