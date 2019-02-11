@@ -4,7 +4,7 @@ use crate::filter;
 use crate::rules::{course, req_ref};
 use crate::traits::print::Print;
 use crate::value;
-use indexmap::indexmap;
+use maplit::btreemap;
 
 #[test]
 fn serialize_all_courses() {
@@ -434,7 +434,7 @@ do: count >= 3"#;
 fn deserialize_filter_gereqs_single() {
 	let data = r#"{where: {gereqs: 'FYW'}, given: courses, what: courses, do: count > 1}"#;
 
-	let expected: filter::Clause = indexmap! {
+	let expected: filter::Clause = btreemap! {
 		"gereqs".into() => value::WrappedValue::eq_string("FYW"),
 	};
 	let expected = Rule {
@@ -454,7 +454,7 @@ fn deserialize_filter_gereqs_or() {
 	use value::{TaggedValue, WrappedValue};
 	let data = r#"{where: {gereqs: 'MCD | MCG'}, given: courses, what: courses, do: count > 1}"#;
 
-	let expected: filter::Clause = indexmap! {
+	let expected: filter::Clause = btreemap! {
 		"gereqs".into() => WrappedValue::Or(vec![
 			TaggedValue::eq_string("MCD"),
 			TaggedValue::eq_string("MCG"),
@@ -477,7 +477,7 @@ fn deserialize_filter_level_gte() {
 	use value::{SingleValue::Integer, TaggedValue::GreaterThanEqualTo, WrappedValue::Single};
 	let data = r#"{where: {level: '>= 200'}, given: courses, what: courses, do: count > 1}"#;
 
-	let expected: filter::Clause = indexmap! {
+	let expected: filter::Clause = btreemap! {
 		"level".into() => Single(GreaterThanEqualTo(Integer(200)))
 	};
 	let expected = Rule {
@@ -497,7 +497,7 @@ fn deserialize_filter_graded_bool() {
 	use value::{SingleValue::Bool, TaggedValue::EqualTo, WrappedValue::Single};
 	let data = r#"{where: {graded: 'true'}, given: courses, what: courses, do: count > 1}"#;
 
-	let expected: filter::Clause = indexmap! {
+	let expected: filter::Clause = btreemap! {
 		"graded".into() => Single(EqualTo(Bool(true))),
 	};
 	let expected = Rule {

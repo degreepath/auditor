@@ -1,6 +1,6 @@
 use super::*;
 use crate::traits::print::Print;
-use indexmap::indexmap;
+use std::collections::BTreeMap;
 
 #[test]
 fn deserialize_simple_course_in_array() {
@@ -53,7 +53,7 @@ fn serialize() {
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses,
 			what: given::What::Courses,
-			filter: Some(indexmap! {}),
+			filter: Some(BTreeMap::new()),
 			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
 		}),
@@ -152,7 +152,7 @@ fn deserialize() {
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses,
 			what: given::What::Courses,
-			filter: Some(indexmap! {}),
+			filter: Some(BTreeMap::new()),
 			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
 		}),
