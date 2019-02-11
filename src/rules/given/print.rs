@@ -146,10 +146,10 @@ impl Rule {
 					}
 					2 => match (&self.action.lhs, &self.action.op, &self.action.rhs) {
 						(
-							action::Value::String(s),
+							action::Command::Count,
 							Some(action::Operator::GreaterThanEqualTo),
 							Some(action::Value::Integer(n)),
-						) if *s == action::Command::Count => match n {
+						) => match n {
 							1 => {
 								write!(&mut output, "take either {} or {}", courses[0], courses[1])?;
 							}
@@ -196,10 +196,10 @@ impl Rule {
 
 				match (&self.action.lhs, &self.action.op, &self.action.rhs) {
 					(
-						action::Value::String(s),
+						action::Command::Count,
 						Some(action::Operator::GreaterThanEqualTo),
 						Some(action::Value::Integer(1)),
-					) if *s == action::Command::Count => match courses.len() {
+					) => match courses.len() {
 						1...5 => {
 							write!(
 								&mut output,

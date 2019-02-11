@@ -1,4 +1,4 @@
-use super::{Action, Operator, Value};
+use super::{Action, Command, Operator, Value};
 use crate::util::ParseError;
 use std::str::FromStr;
 
@@ -10,7 +10,7 @@ impl FromStr for Action {
 
 		match collected.as_slice() {
 			[command] => {
-				let lhs = command.parse::<Value>()?;
+				let lhs = command.parse::<Command>()?;
 
 				Ok(Action {
 					lhs,
@@ -19,7 +19,7 @@ impl FromStr for Action {
 				})
 			}
 			[left, operator, right] => {
-				let lhs = left.parse::<Value>()?;
+				let lhs = left.parse::<Command>()?;
 				let op = operator.parse::<Operator>()?;
 				let rhs = right.parse::<Value>()?;
 
