@@ -8,6 +8,6 @@ mod tests;
 #[serde(deny_unknown_fields)]
 pub struct Limiter {
 	#[serde(rename = "where", deserialize_with = "filter::deserialize_with_no_option")]
-	filter: filter::Clause,
-	at_most: u64,
+	pub filter: filter::Clause,
+	pub at_most: u64,
 }
