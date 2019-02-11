@@ -43,23 +43,6 @@ impl RuleAudit for super::Rule {
 	}
 }
 
-trait GivenData {}
-
-impl GivenData for CourseInstance {}
-impl GivenData for AreaDescriptor {}
-
-impl PartialEq<SingleValue> for AreaDescriptor {
-	fn eq(&self, rhs: &SingleValue) -> bool {
-		false
-	}
-}
-
-impl std::cmp::PartialOrd<SingleValue> for AreaDescriptor {
-	fn partial_cmp(&self, other: &SingleValue) -> Option<std::cmp::Ordering> {
-		None
-	}
-}
-
 fn match_area_against_filter(area: &AreaDescriptor, filter: &Filter) -> bool {
 	true
 }
