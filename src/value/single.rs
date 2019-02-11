@@ -166,3 +166,18 @@ impl fmt::Display for SingleValue {
 		fmt.write_str(&desc)
 	}
 }
+
+impl std::cmp::PartialOrd<u64> for SingleValue {
+	fn partial_cmp(&self, other: &u64) -> Option<std::cmp::Ordering> {
+		match self {
+			SingleValue::Integer(i) => Some(i.cmp(other)),
+			_ => None,
+		}
+	}
+}
+
+impl std::cmp::PartialOrd<SingleValue> for u64 {
+	fn partial_cmp(&self, other: &SingleValue) -> Option<std::cmp::Ordering> {
+		other.partial_cmp(self)
+	}
+}
