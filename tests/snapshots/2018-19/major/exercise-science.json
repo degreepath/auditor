@@ -14,10 +14,6 @@
       {
         "requirement": "Electives",
         "optional": false
-      },
-      {
-        "requirement": "Recomended",
-        "optional": true
       }
     ]
   },
@@ -99,28 +95,6 @@
                 "course": "STAT 214"
               }
             ]
-          }
-        ]
-      },
-      "contract": false,
-      "registrar_audited": false,
-      "save": [],
-      "requirements": {}
-    },
-    "Recomended": {
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "ESTH 394"
-          },
-          {
-            "course": "EST 398"
-          },
-          {
-            "course": "CHEM 121"
           }
         ]
       },
