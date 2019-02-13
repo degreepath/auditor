@@ -36,8 +36,8 @@ pub enum GivenOutputType {
 	SumInteger(u64),
 	SumFloat(f32),
 	Average(f32),
-	Max(Option<GivenOutput>),
-	Min(Option<GivenOutput>),
+	Max(Box<Option<GivenOutput>>),
+	Min(Box<Option<GivenOutput>>),
 	MultiValue(Vec<GivenOutput>),
 	None,
 }

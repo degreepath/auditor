@@ -170,14 +170,14 @@ impl Action {
 				let lhs = data.iter().max().cloned();
 				GivenActionResult {
 					status: RuleStatus::Pass,
-					detail: GivenOutputType::Max(lhs.map(GivenOutput::Term)),
+					detail: GivenOutputType::Max(Box::new(lhs.map(GivenOutput::Term))),
 				}
 			}
 			Minimum => {
 				let lhs = data.iter().min().cloned();
 				GivenActionResult {
 					status: RuleStatus::Pass,
-					detail: GivenOutputType::Min(lhs.map(GivenOutput::Term)),
+					detail: GivenOutputType::Min(Box::new(lhs.map(GivenOutput::Term))),
 				}
 			}
 		}
@@ -220,14 +220,14 @@ impl Action {
 				let lhs = data.to_vec().custom_max();
 				GivenActionResult {
 					status: RuleStatus::Pass,
-					detail: GivenOutputType::Max(lhs.map(GivenOutput::Credit)),
+					detail: GivenOutputType::Max(Box::new(lhs.map(GivenOutput::Credit))),
 				}
 			}
 			Minimum => {
 				let lhs = data.to_vec().custom_min();
 				GivenActionResult {
 					status: RuleStatus::Pass,
-					detail: GivenOutputType::Min(lhs.map(GivenOutput::Credit)),
+					detail: GivenOutputType::Min(Box::new(lhs.map(GivenOutput::Credit))),
 				}
 			}
 		}
@@ -270,14 +270,14 @@ impl Action {
 				let lhs = data.to_vec().custom_max();
 				GivenActionResult {
 					status: RuleStatus::Pass,
-					detail: GivenOutputType::Max(lhs.map(GivenOutput::Grade)),
+					detail: GivenOutputType::Max(Box::new(lhs.map(GivenOutput::Grade))),
 				}
 			}
 			Minimum => {
 				let lhs = data.to_vec().custom_min();
 				GivenActionResult {
 					status: RuleStatus::Pass,
-					detail: GivenOutputType::Min(lhs.map(GivenOutput::Grade)),
+					detail: GivenOutputType::Min(Box::new(lhs.map(GivenOutput::Grade))),
 				}
 			}
 		}
