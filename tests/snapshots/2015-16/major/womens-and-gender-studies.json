@@ -77,9 +77,7 @@
             "where": null,
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 7
@@ -101,9 +99,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1

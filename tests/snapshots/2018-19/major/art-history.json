@@ -69,9 +69,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 1
@@ -133,9 +131,7 @@
             "where": null,
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -182,9 +178,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 2
@@ -220,9 +214,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 2
@@ -251,9 +243,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
@@ -282,9 +272,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1

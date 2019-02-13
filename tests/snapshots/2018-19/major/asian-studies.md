@@ -12,7 +12,7 @@ For this requirement, you must have at least one course taken with the “asian_
 
 
 ## Electives
-For this requirement, you must have at least seven courses taken with the “asian_elective” attribute.
+For this requirement, you must have at least six courses taken with the “asian_elective” attribute.
 
 # Custom Attributes
 

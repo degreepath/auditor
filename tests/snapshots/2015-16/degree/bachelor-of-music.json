@@ -66,9 +66,7 @@
             "where": null,
             "what": "credits",
             "do": {
-              "lhs": {
-                "String": "sum"
-              },
+              "lhs": "Sum",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 35
@@ -97,9 +95,7 @@
             },
             "what": "credits",
             "do": {
-              "lhs": {
-                "String": "sum"
-              },
+              "lhs": "Sum",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 17
@@ -123,9 +119,7 @@
                 "where": null,
                 "what": "credits",
                 "do": {
-                  "lhs": {
-                    "String": "sum"
-                  },
+                  "lhs": "Sum",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 3
@@ -139,9 +133,7 @@
                 "where": null,
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 3
@@ -181,9 +173,7 @@
             "where": null,
             "what": "grades",
             "do": {
-              "lhs": {
-                "String": "average"
-              },
+              "lhs": "Average",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Float": [
@@ -215,9 +205,7 @@
             },
             "what": "credits",
             "do": {
-              "lhs": {
-                "String": "sum"
-              },
+              "lhs": "Sum",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 18
@@ -246,9 +234,7 @@
             },
             "what": "credits",
             "do": {
-              "lhs": {
-                "String": "sum"
-              },
+              "lhs": "Sum",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 24
@@ -277,9 +263,7 @@
             },
             "what": "areas of study",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
@@ -370,9 +354,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
@@ -401,9 +383,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -472,9 +452,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
@@ -515,9 +493,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
@@ -546,9 +522,7 @@
                 },
                 "what": "distinct courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -614,9 +588,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
@@ -652,9 +624,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
@@ -679,9 +649,7 @@
                     "where": null,
                     "what": "courses",
                     "do": {
-                      "lhs": {
-                        "String": "count"
-                      },
+                      "lhs": "Count",
                       "op": "GreaterThanEqualTo",
                       "rhs": {
                         "Integer": 2
@@ -703,9 +671,7 @@
                     },
                     "what": "courses",
                     "do": {
-                      "lhs": {
-                        "String": "count"
-                      },
+                      "lhs": "Count",
                       "op": "GreaterThanEqualTo",
                       "rhs": {
                         "Integer": 1
@@ -727,9 +693,7 @@
                     },
                     "what": "courses",
                     "do": {
-                      "lhs": {
-                        "String": "count"
-                      },
+                      "lhs": "Count",
                       "op": "GreaterThanEqualTo",
                       "rhs": {
                         "Integer": 1
@@ -784,9 +748,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1
@@ -833,9 +795,7 @@
                 },
                 "what": "courses",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 1

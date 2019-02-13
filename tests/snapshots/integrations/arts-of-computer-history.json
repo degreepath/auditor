@@ -41,9 +41,7 @@
         "where": null,
         "what": "credits",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 6
@@ -87,9 +85,7 @@
             "where": null,
             "what": "credits",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Float": [
@@ -180,9 +176,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 4
