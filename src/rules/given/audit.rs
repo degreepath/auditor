@@ -4,7 +4,6 @@ use crate::audit::{CourseInstance, ReservedPairings, RuleAudit, RuleInput, RuleR
 use crate::filter::Clause as Filter;
 use crate::limit::Limiter;
 use crate::rules::Rule as AnyRule;
-use crate::value::SingleValue;
 
 impl super::Rule {
 	pub fn to_rule(&self) -> AnyRule {
@@ -48,14 +47,86 @@ fn match_area_against_filter(area: &AreaDescriptor, filter: &Filter) -> bool {
 }
 
 impl super::Rule {
-	fn apply_action<T>(&self, data: &[T]) -> RuleStatus
-	where
-		T: Ord + PartialEq<SingleValue> + PartialOrd<SingleValue>,
-	{
-		let result = self.action.compute(data);
+	fn apply_action_to_areas(&self, data: &[AreaDescriptor]) -> RuleStatus {
+		use crate::action::Command::*;
 
-		RuleStatus::Pass
+		let rhs = match &self.action.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.action.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.action.clone().cmp(&lhs, &rhs);
+				if result {
+					RuleStatus::Pass
+				} else {
+					RuleStatus::Fail
+				}
+			}
+			Sum => unimplemented!("sum-action on area descriptor"),
+			Average => unimplemented!("average-action on area descriptor"),
+			Maximum => unimplemented!("maximum-action on area descriptor"),
+			Minimum => unimplemented!("minimum-action on area descriptor"),
+		}
 	}
+
+	fn apply_action_to_u64(&self, data: &[u64]) -> RuleStatus {
+		use crate::action::Command::*;
+
+		let rhs = match &self.action.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.action.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.action.clone().cmp(&lhs, &rhs);
+				if result {
+					RuleStatus::Pass
+				} else {
+					RuleStatus::Fail
+				}
+			}
+			Sum => {
+				let lhs: u64 = data.iter().sum();
+				let result = self.action.clone().cmp(&lhs, &rhs);
+				if result {
+					RuleStatus::Pass
+				} else {
+					RuleStatus::Fail
+				}
+			}
+			Average => {
+				let lhs: f32 = data.iter().sum::<u64>() as f32 / (data.len() as f32);
+				let result = self.action.clone().cmp(&lhs, &rhs);
+				if result {
+					RuleStatus::Pass
+				} else {
+					RuleStatus::Fail
+				}
+			}
+			Maximum => {
+				data.iter().max().cloned();
+				RuleStatus::Pass
+			}
+			Minimum => {
+				data.iter().min().cloned();
+				RuleStatus::Pass
+			}
+		}
+	}
+
+	// fn apply_action_to_<T>(&self, data: &[T]) -> RuleStatus
+	// where
+	// 	T: Ord + PartialEq<SingleValue> + PartialOrd<SingleValue>,
+	// {
+	// 	let result = self.action.compute(data);
+
+	// 	RuleStatus::Pass
+	// }
 }
 
 impl super::Rule {
@@ -66,28 +137,30 @@ impl super::Rule {
 			AreasOfStudy => self.in_areas(input),
 			TheseRequirements { requirements } => self.in_requirements_out_areas(input, requirements),
 			NamedVariable { save } => self.in_variable_out_areas(input, save),
+			AllCourses => unimplemented!("check_for_areas should not be given:all-courses"),
+			TheseCourses { .. } => unimplemented!("check_for_areas should not be given:these-courses"),
 		};
 
-		if let Some(filter) = self.filter {
+		if let Some(filter) = &self.filter {
 			areas = areas
 				.into_iter()
 				.filter(|area| match_area_against_filter(&area, &filter))
 				.collect();
 		}
 
-		if let Some(limits) = self.limit {
+		if let Some(limits) = &self.limit {
 			use std::collections::BTreeMap;
-			let limiters: BTreeMap<Limiter, u64> = BTreeMap::new();
+			let mut limiters: BTreeMap<&Limiter, u64> = BTreeMap::new();
 
-			let areas_which_passed_the_limits = Vec::new();
+			let mut areas_which_passed_the_limits = Vec::new();
 
 			for area in areas {
 				let mut area_allowed = true;
-				for limiter in limits {
+				for limiter in limits.iter() {
 					if match_area_against_filter(&area, &limiter.filter) {
-						limiters.entry(limiter).and_modify(|count| *count += 1).or_insert(0);
+						limiters.entry(&limiter).and_modify(|count| *count += 1).or_insert(1);
 
-						if limiters.get(&limiter).unwrap() > &limiter.at_most {
+						if limiters[limiter] > limiter.at_most {
 							area_allowed = false;
 						}
 					}
@@ -101,7 +174,7 @@ impl super::Rule {
 			areas = areas_which_passed_the_limits;
 		}
 
-		let status = self.apply_action(&areas);
+		let status = self.apply_action_to_areas(&areas);
 
 		use crate::audit::rule_result::GivenOutput;
 
@@ -122,6 +195,7 @@ impl super::Rule {
 			TheseCourses { courses, repeats } => self.in_these_courses(input, courses, repeats),
 			TheseRequirements { requirements } => self.in_requirements_out_courses(input, requirements),
 			NamedVariable { save } => self.in_variable_out_courses(input, save),
+			AreasOfStudy => unimplemented!("check_for_courses should not be given:areas"),
 		};
 
 		RuleResult {

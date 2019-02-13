@@ -4,7 +4,7 @@ use crate::audit::rule_result::AreaDescriptor;
 use crate::audit::CourseInstance;
 pub use crate::value::SingleValue;
 
-trait ActionableData {}
+pub(crate) trait ActionableData {}
 
 impl ActionableData for CourseInstance {}
 impl ActionableData for AreaDescriptor {}
@@ -12,13 +12,13 @@ impl ActionableData for u64 {}
 impl ActionableData for f32 {}
 
 impl PartialEq<SingleValue> for AreaDescriptor {
-	fn eq(&self, rhs: &SingleValue) -> bool {
+	fn eq(&self, _rhs: &SingleValue) -> bool {
 		false
 	}
 }
 
 impl std::cmp::PartialOrd<SingleValue> for AreaDescriptor {
-	fn partial_cmp(&self, other: &SingleValue) -> Option<std::cmp::Ordering> {
+	fn partial_cmp(&self, _other: &SingleValue) -> Option<std::cmp::Ordering> {
 		None
 	}
 }
@@ -100,6 +100,7 @@ impl ActionResult for f32 {}
 // 	}
 // }
 
+/*
 impl Action {
 	pub fn compute<T: ActionableData>(&self, data: &[T]) -> Option<impl ActionResult>
 	where
@@ -128,7 +129,34 @@ impl Action {
 		None
 	}
 
-	fn cmp<T: ActionableData>(self, lhs: &T, rhs: &SingleValue) -> bool
+	pub fn compute_u64(&self, data: &[u64]) -> Option<impl ActionResult> {
+		let rhs = match &self.rhs {
+			Some(v) => v,
+			None => return None,
+		};
+
+		if let Count = &self.lhs {
+			let lhs = data.len() as u64;
+			return Some(self.cmp(&lhs, &rhs));
+		} else if let Sum = &self.lhs {
+			let lhs = data.iter().sum();
+			return Some(self.cmp(&lhs, &rhs));
+		} else if let Average = &self.lhs {
+			let lhs = data.iter().sum() / (data.len() as f64);
+			return Some(self.cmp(&lhs, &rhs));
+		} else if let Maximum = &self.lhs {
+			return data.iter().max().cloned();
+		} else if let Minimum = &self.lhs {
+			return data.iter().min().cloned();
+		}
+
+		None
+	}
+}
+*/
+
+impl Action {
+	pub(crate) fn cmp<T: ActionableData>(self, lhs: &T, rhs: &SingleValue) -> bool
 	where
 		T: PartialEq<SingleValue> + PartialOrd<SingleValue>,
 	{
@@ -139,6 +167,7 @@ impl Action {
 			Some(Operator::LessThanEqualTo) => lhs <= rhs,
 			Some(Operator::GreaterThan) => lhs > rhs,
 			Some(Operator::GreaterThanEqualTo) => lhs >= rhs,
+			None => unimplemented!("should not be able to call self.cmp on a None action operator"),
 		}
 	}
 }

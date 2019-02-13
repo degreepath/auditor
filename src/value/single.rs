@@ -54,6 +54,12 @@ impl From<u64> for SingleValue {
 	}
 }
 
+impl From<f32> for SingleValue {
+	fn from(num: f32) -> SingleValue {
+		SingleValue::Float((num.trunc() as u16, (num.fract() * 100.0) as u16))
+	}
+}
+
 impl From<bool> for SingleValue {
 	fn from(b: bool) -> SingleValue {
 		SingleValue::Bool(b)
@@ -65,18 +71,18 @@ impl FromStr for SingleValue {
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		if let Ok(num) = s.parse::<u64>() {
-			return Ok(SingleValue::Integer(num));
+			return Ok(SingleValue::from(num));
 		}
 
 		if let Ok(num) = s.parse::<f32>() {
-			return Ok(SingleValue::Float((num.trunc() as u16, (num.fract() * 100.0) as u16)));
+			return Ok(SingleValue::from(num));
 		}
 
 		if let Ok(b) = s.parse::<bool>() {
-			return Ok(SingleValue::Bool(b));
+			return Ok(SingleValue::from(b));
 		}
 
-		Ok(SingleValue::String(s.to_string()))
+		Ok(SingleValue::from(s))
 	}
 }
 
@@ -116,6 +122,12 @@ impl PartialEq<u64> for SingleValue {
 	}
 }
 
+impl PartialEq<f32> for SingleValue {
+	fn eq(&self, rhs: &f32) -> bool {
+		self == &SingleValue::from(*rhs)
+	}
+}
+
 impl PartialEq<(u16, u16)> for SingleValue {
 	fn eq(&self, rhs: &(u16, u16)) -> bool {
 		match &self {
@@ -149,6 +161,12 @@ impl PartialEq<SingleValue> for u64 {
 	}
 }
 
+impl PartialEq<SingleValue> for f32 {
+	fn eq(&self, rhs: &SingleValue) -> bool {
+		rhs == self
+	}
+}
+
 impl PartialEq<SingleValue> for (u16, u16) {
 	fn eq(&self, rhs: &SingleValue) -> bool {
 		rhs == self
@@ -177,6 +195,18 @@ impl std::cmp::PartialOrd<u64> for SingleValue {
 }
 
 impl std::cmp::PartialOrd<SingleValue> for u64 {
+	fn partial_cmp(&self, other: &SingleValue) -> Option<std::cmp::Ordering> {
+		other.partial_cmp(self)
+	}
+}
+
+impl std::cmp::PartialOrd<f32> for SingleValue {
+	fn partial_cmp(&self, other: &f32) -> Option<std::cmp::Ordering> {
+		self.partial_cmp(&SingleValue::from(*other))
+	}
+}
+
+impl std::cmp::PartialOrd<SingleValue> for f32 {
 	fn partial_cmp(&self, other: &SingleValue) -> Option<std::cmp::Ordering> {
 		other.partial_cmp(self)
 	}
