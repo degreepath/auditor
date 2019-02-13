@@ -14,7 +14,7 @@ impl RuleAudit for super::Rule {
 		match transcript.has_course_matching(self, already_used.clone()) {
 			Some((course, matched_by_what)) => {
 				let mut used = already_used.clone();
-				used.add(&(course, self.clone(), matched_by_what));
+				used.add(&(course, matched_by_what));
 
 				RuleResult {
 					detail: RuleResultDetails::Course,

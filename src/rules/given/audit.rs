@@ -1,6 +1,9 @@
 use super::{Given, What};
 use crate::audit::rule_result::AreaDescriptor;
-use crate::audit::{CourseInstance, ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails, RuleStatus};
+use crate::audit::{
+	CourseInstance, MatchedCourseParts, Reservation, ReservedPairings, RuleAudit, RuleInput, RuleResult,
+	RuleResultDetails, RuleStatus,
+};
 use crate::filter::Clause as Filter;
 use crate::limit::Limiter;
 use crate::rules::Rule as AnyRule;
@@ -44,6 +47,10 @@ impl RuleAudit for super::Rule {
 
 fn match_area_against_filter(area: &AreaDescriptor, filter: &Filter) -> bool {
 	true
+}
+
+fn match_course_against_filter(course: &CourseInstance, filter: &Filter) -> Option<MatchedCourseParts> {
+	Some(MatchedCourseParts::blank())
 }
 
 use crate::audit::rule_result::{GivenOutput, GivenOutputType};
@@ -105,6 +112,7 @@ impl super::Rule {
 	}
 
 	fn check_for_courses(&self, input: &RuleInput) -> RuleResult {
+		use crate::audit::course_match::MatchedCourseParts;
 		use Given::*;
 
 		let courses = match &self.given {
@@ -115,10 +123,56 @@ impl super::Rule {
 			AreasOfStudy => unimplemented!("check_for_courses should not be given:areas"),
 		};
 
+		let mut courses: Vec<Reservation> = courses.into_iter().map(|c| (c, MatchedCourseParts::blank())).collect();
+
+		if let Some(filter) = &self.filter {
+			courses = courses
+				.into_iter()
+				.filter_map(|(course, _)| match match_course_against_filter(&course, &filter) {
+					Some(match_info) => Some((course, match_info)),
+					None => None,
+				})
+				.collect();
+		}
+
+		if let Some(limits) = &self.limit {
+			use std::collections::BTreeMap;
+			let mut limiters: BTreeMap<&Limiter, u64> = BTreeMap::new();
+
+			let mut items_which_passed_the_limits = Vec::new();
+
+			for (course, match_info) in courses {
+				let mut course_allowed = true;
+
+				for limiter in limits.iter() {
+					// during limitation application, we don't care about what parts of a course
+					// matched – we just care that _something_ matched
+					if match_course_against_filter(&course, &limiter.filter).is_some() {
+						limiters.entry(&limiter).and_modify(|count| *count += 1).or_insert(1);
+
+						if limiters[limiter] > limiter.at_most {
+							course_allowed = false;
+						}
+					}
+				}
+
+				if course_allowed {
+					items_which_passed_the_limits.push((course, match_info));
+				}
+			}
+
+			courses = items_which_passed_the_limits;
+		}
+
+		let only_the_courses: Vec<_> = courses.iter().map(|(c, _)| c).cloned().collect();
+		let computed = self.action.compute_with_courses(&only_the_courses);
+
 		RuleResult {
-			status: RuleStatus::Pending,
-			reservations: ReservedPairings::new(),
-			detail: RuleResultDetails::Given(GivenOutputType::None),
+			status: computed.status,
+			reservations: ReservedPairings::from_vec(&courses),
+			detail: RuleResultDetails::Given(GivenOutputType::MultiValue(
+				only_the_courses.iter().cloned().map(GivenOutput::Course).collect(),
+			)),
 		}
 	}
 
