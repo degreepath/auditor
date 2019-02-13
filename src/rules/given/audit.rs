@@ -1,8 +1,7 @@
 use super::{Given, What};
 use crate::audit::rule_result::AreaDescriptor;
 use crate::audit::{
-	CourseInstance, MatchedCourseParts, Reservation, ReservedPairings, RuleAudit, RuleInput, RuleResult,
-	RuleResultDetails,
+	CourseInstance, MatchedCourseParts, ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails,
 };
 use crate::filter::Clause as Filter;
 use crate::limit::Limiter;
@@ -113,7 +112,6 @@ impl super::Rule {
 	}
 
 	fn check_for_courses(&self, input: &RuleInput) -> RuleResult {
-		use crate::audit::course_match::MatchedCourseParts;
 		use Given::*;
 
 		let courses = match &self.given {
@@ -124,7 +122,7 @@ impl super::Rule {
 			AreasOfStudy => unimplemented!("check_for_courses should not be given:areas"),
 		};
 
-		let mut courses: Vec<Reservation> = courses.into_iter().map(|c| (c, MatchedCourseParts::blank())).collect();
+		let mut courses: Vec<_> = courses.iter().cloned().collect();
 
 		if let Some(filter) = &self.filter {
 			courses = courses
@@ -177,8 +175,8 @@ impl super::Rule {
 		}
 	}
 
-	fn in_all_courses(&self, input: &RuleInput) -> Vec<CourseInstance> {
-		input.transcript.to_vec()
+	fn in_all_courses(&self, input: &RuleInput) -> ReservedPairings {
+		ReservedPairings::from_courses(&input.transcript)
 	}
 
 	fn in_these_courses(
@@ -186,7 +184,7 @@ impl super::Rule {
 		input: &RuleInput,
 		allowed_courses: &[super::CourseRule],
 		repeats: &super::RepeatMode,
-	) -> Vec<CourseInstance> {
+	) -> ReservedPairings {
 		use super::CourseRule as GivenCourseRuleWrapper;
 		use super::RepeatMode;
 
@@ -219,22 +217,32 @@ impl super::Rule {
 
 		// essentially, given courses from the transcript, find the intersection between them and
 		// the listed "allowed" courses
-		courses
+		let courses: Vec<_> = courses
 			.into_iter()
 			.filter(|course| allowed_courses.iter().any(|rule| course.matches_rule(rule).any()))
-			.collect()
+			.collect();
+
+		ReservedPairings::from_courses(&courses)
 	}
 
 	fn in_areas(&self, _input: &RuleInput) -> Vec<AreaDescriptor> {
 		vec![]
 	}
 
-	fn in_requirements_out_courses(
-		&self,
-		_input: &RuleInput,
-		_these_requirements: &[req_ref::Rule],
-	) -> Vec<CourseInstance> {
-		vec![]
+	fn in_requirements_out_courses(&self, input: &RuleInput, these_requirements: &[req_ref::Rule]) -> ReservedPairings {
+		let collected: Vec<_> = these_requirements
+			.iter()
+			.filter_map(|req_ref| {
+				input
+					.completed_siblings
+					.get(&req_ref.requirement)
+					.map(|req| req.reservations.iter().collect::<Vec<_>>())
+			})
+			.flatten()
+			.cloned()
+			.collect();
+
+		ReservedPairings::from_vec(&collected)
 	}
 
 	fn in_requirements_out_areas(
@@ -245,8 +253,8 @@ impl super::Rule {
 		vec![]
 	}
 
-	fn in_variable_out_courses(&self, _input: &RuleInput, _save: &str) -> Vec<CourseInstance> {
-		vec![]
+	fn in_variable_out_courses(&self, _input: &RuleInput, _save: &str) -> ReservedPairings {
+		ReservedPairings::new()
 	}
 
 	fn in_variable_out_areas(&self, _input: &RuleInput, _save: &str) -> Vec<AreaDescriptor> {
