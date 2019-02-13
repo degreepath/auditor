@@ -4,7 +4,7 @@ use crate::rules::given::{Given, What};
 use crate::rules::{course, given};
 use crate::traits::print::Print;
 use crate::value;
-use indexmap::indexmap;
+use maplit::btreemap;
 
 #[test]
 fn deserialize() {
@@ -14,7 +14,7 @@ where: { semester: Interim }
 what: courses
 name: Interim Courses"#;
 
-	let filter: filter::Clause = indexmap! {
+	let filter: filter::Clause = btreemap! {
 		"semester".into() => "Interim".parse::<value::WrappedValue>().unwrap(),
 	};
 
@@ -41,7 +41,7 @@ repeats: last
 where: {year: graduation-year, semester: Fall}
 name: "Senior Dance Seminars""#;
 
-	let filter: filter::Clause = indexmap! {
+	let filter: filter::Clause = btreemap! {
 		"year".into() => "graduation-year".parse::<value::WrappedValue>().unwrap(),
 		"semester".into() => "Fall".parse::<value::WrappedValue>().unwrap(),
 	};

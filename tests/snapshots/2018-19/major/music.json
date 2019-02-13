@@ -160,9 +160,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 4
@@ -301,9 +299,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -329,9 +325,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -367,9 +361,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -402,9 +394,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -430,9 +420,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -468,9 +456,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -503,9 +489,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -531,9 +515,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -569,9 +551,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -604,9 +584,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -632,9 +610,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -670,9 +646,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -705,9 +679,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -733,9 +705,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -771,9 +741,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -806,9 +774,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -834,9 +800,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -872,9 +836,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -907,9 +869,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -935,9 +895,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -973,9 +931,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1008,9 +964,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1036,9 +990,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1074,9 +1026,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1109,9 +1059,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1137,9 +1085,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1175,9 +1121,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1210,9 +1154,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1238,9 +1180,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1276,9 +1216,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1311,9 +1249,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1339,9 +1275,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1377,9 +1311,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1412,9 +1344,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1440,9 +1370,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1478,9 +1406,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1513,9 +1439,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1541,9 +1465,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1579,9 +1501,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1614,9 +1534,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1642,9 +1560,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1680,9 +1596,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1715,9 +1629,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1743,9 +1655,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1781,9 +1691,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1816,9 +1724,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1844,9 +1750,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1882,9 +1786,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -1917,9 +1819,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -1945,9 +1845,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -1983,9 +1881,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2018,9 +1914,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2046,9 +1940,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2084,9 +1976,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2119,9 +2009,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2147,9 +2035,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2185,9 +2071,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2220,9 +2104,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2248,9 +2130,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2286,9 +2166,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2321,9 +2199,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2349,9 +2225,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2387,9 +2261,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2422,9 +2294,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2450,9 +2320,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2488,9 +2356,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2523,9 +2389,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2551,9 +2415,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2589,9 +2451,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2624,9 +2484,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2652,9 +2510,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2690,9 +2546,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2725,9 +2579,7 @@
             "where": null,
             "what": "terms",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 6
@@ -2753,9 +2605,7 @@
                 "where": null,
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 4
@@ -2791,9 +2641,7 @@
                 },
                 "what": "terms",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "GreaterThanEqualTo",
                   "rhs": {
                     "Integer": 2
@@ -2826,9 +2674,7 @@
         },
         "what": "terms",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 4

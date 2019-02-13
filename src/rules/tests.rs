@@ -1,6 +1,6 @@
 use super::*;
 use crate::traits::print::Print;
-use indexmap::indexmap;
+use std::collections::BTreeMap;
 
 #[test]
 fn deserialize_simple_course_in_array() {
@@ -53,12 +53,16 @@ fn serialize() {
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses,
 			what: given::What::Courses,
-			filter: Some(indexmap! {}),
+			filter: Some(BTreeMap::new()),
 			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
 		}),
 		Rule::Do(action_only::Rule {
-			action: "$a < $b".parse().unwrap(),
+			action: crate::action::LhsValueAction {
+				lhs: crate::action::Value::String("a".to_string()),
+				op: Some(crate::action::Operator::LessThan),
+				rhs: Some(crate::action::Value::String("b".to_string())),
+			},
 		}),
 	];
 
@@ -99,17 +103,16 @@ fn serialize() {
   where: {}
   what: courses
   do:
-    lhs:
-      String: count
+    lhs: Count
     op: LessThan
     rhs:
       Integer: 2
 - do:
     lhs:
-      String: $a
+      String: a
     op: LessThan
     rhs:
-      String: $b"#;
+      String: b"#;
 
 	let actual = serde_yaml::to_string(&data).unwrap();
 	assert_eq!(actual, expected, "actual: {}\n\nexpected: {}", actual, expected);
@@ -152,12 +155,16 @@ fn deserialize() {
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses,
 			what: given::What::Courses,
-			filter: Some(indexmap! {}),
+			filter: Some(BTreeMap::new()),
 			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
 		}),
 		Rule::Do(action_only::Rule {
-			action: "$a < $b".parse().unwrap(),
+			action: crate::action::LhsValueAction {
+				lhs: crate::action::Value::String("a".to_string()),
+				op: Some(crate::action::Operator::LessThan),
+				rhs: Some(crate::action::Value::String("b".to_string())),
+			},
 		}),
 	];
 
@@ -195,7 +202,7 @@ fn deserialize() {
   where: {}
   limit: []
   do: count < 2
-- do: $a < $b"#;
+- do: {lhs: a, op: <, rhs: b}"#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
 	assert_eq!(actual, expected);
@@ -234,7 +241,7 @@ fn deserialize() {
   where: {}
   limit: []
   do: count < 2
-- do: $a < $b"#;
+- do: {lhs: a, op: <, rhs: b}"#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
 	assert_eq!(actual, expected);
@@ -260,7 +267,7 @@ fn deserialize_shorthands() {
 - given: courses
   what: courses
   do: count < 2
-- do: $a < $b"#;
+- do: {lhs: a, op: <, rhs: b}"#;
 
 	let course_a = course::Rule {
 		course: "ASIAN 101".to_string(),
@@ -307,7 +314,11 @@ fn deserialize_shorthands() {
 			action: "count < 2".parse().unwrap(),
 		}),
 		Rule::Do(action_only::Rule {
-			action: "$a < $b".parse().unwrap(),
+			action: crate::action::LhsValueAction {
+				lhs: crate::action::Value::String("a".to_string()),
+				op: Some(crate::action::Operator::LessThan),
+				rhs: Some(crate::action::Value::String("b".to_string())),
+			},
 		}),
 	];
 
@@ -327,8 +338,7 @@ fn pretty_print() {
 - {both: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
 - {either: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
 - {given: courses, what: courses, do: count < 2}
-- do: >
-    "X" < "Y"
+- {do: {lhs: X, op: <, rhs: Y}}
 "#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
@@ -383,8 +393,7 @@ given: save
 save: "Senior Dance Seminars"
 what: courses
 do:
-  lhs:
-    String: count
+  lhs: Count
   op: GreaterThanEqualTo
   rhs:
     Integer: 1

@@ -92,9 +92,7 @@
         "where": null,
         "what": "credits",
         "do": {
-          "lhs": {
-            "String": "sum"
-          },
+          "lhs": "Sum",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Float": [
@@ -274,26 +272,24 @@
         "repeats": "last",
         "limit": null,
         "where": {
-          "year": {
-            "Single": {
-              "EqualTo": {
-                "String": "graduation-year"
-              }
-            }
-          },
           "semester": {
             "Single": {
               "EqualTo": {
                 "String": "Fall"
               }
             }
+          },
+          "year": {
+            "Single": {
+              "EqualTo": {
+                "String": "graduation-year"
+              }
+            }
           }
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 1

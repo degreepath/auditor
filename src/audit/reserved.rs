@@ -1,22 +1,25 @@
 use super::{CourseInstance, MatchedCourseParts};
-use crate::rules::course::Rule as CourseRule;
 use std::collections::HashSet as Set;
 
-pub type Reservation = (CourseInstance, CourseRule, MatchedCourseParts);
+pub type Reservation = (CourseInstance, MatchedCourseParts);
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct ReservedPairings(Set<Reservation>);
 
 impl ReservedPairings {
-	pub fn new() -> Self {
+	pub fn new() -> ReservedPairings {
 		ReservedPairings(Set::new())
+	}
+
+	pub fn from_vec(input: &[Reservation]) -> ReservedPairings {
+		ReservedPairings(input.iter().cloned().collect())
 	}
 
 	pub fn add(&mut self, r: &Reservation) {
 		self.0.insert(r.clone());
 	}
 
-	pub fn union(&self, r: &Set<Reservation>) -> Self {
+	pub fn union(&self, r: &Set<Reservation>) -> ReservedPairings {
 		ReservedPairings(self.0.union(&r).cloned().collect())
 	}
 }

@@ -15,18 +15,15 @@ pub enum RuleResultDetails {
 	CountOf(Vec<Option<RuleResult>>),
 	Both((Box<RuleResult>, Box<RuleResult>)),
 	Either((Option<Box<RuleResult>>, Option<Box<RuleResult>>)),
-	Given(GivenResult),
+	/// The "None" variant here represents Given rules with no `what` line
+	Given(GivenOutputType),
 	Do,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RequirementResult {}
 
-/// The "None" variant here represents Given rules with no `what` line
-#[derive(Debug, Clone, PartialEq)]
-pub struct GivenResult(Option<Vec<GivenOutput>>);
-
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq)]
 pub struct AreaDescriptor {
 	catalog: String,
 	name: String,
@@ -34,13 +31,24 @@ pub struct AreaDescriptor {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-#[allow(dead_code)]
+pub enum GivenOutputType {
+	Count(u64),
+	SumInteger(u64),
+	SumFloat(f32),
+	Average(f32),
+	Max(Box<Option<GivenOutput>>),
+	Min(Box<Option<GivenOutput>>),
+	MultiValue(Vec<GivenOutput>),
+	None,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum GivenOutput {
 	Course(CourseInstance),
-	Credit((i16, i16)),
+	Credit(f32),
 	Department(String),
-	Term(i64),
-	Grade((i16, i16)),
+	Term(u64),
+	Grade(f32),
 	AreaOfStudy(AreaDescriptor),
 }
 

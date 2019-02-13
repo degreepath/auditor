@@ -75,9 +75,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 6
@@ -133,9 +131,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 2
@@ -192,9 +188,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
@@ -223,9 +217,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
@@ -254,9 +246,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
@@ -285,9 +275,7 @@
             },
             "what": "courses",
             "do": {
-              "lhs": {
-                "String": "count"
-              },
+              "lhs": "Count",
               "op": "GreaterThanEqualTo",
               "rhs": {
                 "Integer": 1
@@ -337,26 +325,24 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "type": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "major"
-                      }
-                    }
-                  },
                   "name": {
                     "Single": {
                       "EqualTo": {
                         "String": "Chemistry"
                       }
                     }
+                  },
+                  "type": {
+                    "Single": {
+                      "EqualTo": {
+                        "String": "major"
+                      }
+                    }
                   }
                 },
                 "what": "areas of study",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "EqualTo",
                   "rhs": {
                     "Integer": 1
@@ -382,26 +368,24 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "type": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "major"
-                      }
-                    }
-                  },
                   "name": {
                     "Single": {
                       "EqualTo": {
                         "String": "Economics"
                       }
                     }
+                  },
+                  "type": {
+                    "Single": {
+                      "EqualTo": {
+                        "String": "major"
+                      }
+                    }
                   }
                 },
                 "what": "areas of study",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "EqualTo",
                   "rhs": {
                     "Integer": 1
@@ -427,26 +411,24 @@
                 "given": "areas of study",
                 "limit": null,
                 "where": {
-                  "type": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "major"
-                      }
-                    }
-                  },
                   "name": {
                     "Single": {
                       "EqualTo": {
                         "String": "Physics"
                       }
                     }
+                  },
+                  "type": {
+                    "Single": {
+                      "EqualTo": {
+                        "String": "major"
+                      }
+                    }
                   }
                 },
                 "what": "areas of study",
                 "do": {
-                  "lhs": {
-                    "String": "count"
-                  },
+                  "lhs": "Count",
                   "op": "EqualTo",
                   "rhs": {
                     "Integer": 1
@@ -492,9 +474,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 2

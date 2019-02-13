@@ -2,11 +2,11 @@ use super::deserialize_with;
 use super::Clause;
 use crate::traits::print::Print;
 use crate::value::{SingleValue, TaggedValue, WrappedValue};
-use indexmap::indexmap;
+use maplit::btreemap;
 
 #[test]
 fn serialize_simple() {
-	let data: Clause = indexmap! {
+	let data: Clause = btreemap! {
 		"level".into() => "100".parse::<WrappedValue>().unwrap(),
 	};
 
@@ -22,7 +22,7 @@ level:
 
 #[test]
 fn serialize_or() {
-	let data: Clause = indexmap! {
+	let data: Clause = btreemap! {
 		"level".into() => "100 | 200".parse::<WrappedValue>().unwrap(),
 	};
 
@@ -37,7 +37,7 @@ level:
 	let actual = serde_yaml::to_string(&data).unwrap();
 	assert_eq!(actual, expected);
 
-	let data: Clause = indexmap! {
+	let data: Clause = btreemap! {
 		"level".into() =>  "< 100 | 200".parse::<WrappedValue>().unwrap(),
 	};
 

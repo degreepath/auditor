@@ -4,6 +4,7 @@ use crate::util;
 use crate::{action, filter, limit};
 use serde::{Deserialize, Serialize};
 
+mod audit;
 mod print;
 #[cfg(test)]
 mod tests;

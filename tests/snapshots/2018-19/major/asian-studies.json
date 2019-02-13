@@ -46,9 +46,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 1
@@ -77,9 +75,7 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
             "Integer": 1
@@ -157,7 +153,7 @@
                 ]
               }
             },
-            "at_most": 5
+            "at_most": 4
           }
         ],
         "where": {
@@ -171,12 +167,10 @@
         },
         "what": "courses",
         "do": {
-          "lhs": {
-            "String": "count"
-          },
+          "lhs": "Count",
           "op": "GreaterThanEqualTo",
           "rhs": {
-            "Integer": 7
+            "Integer": 6
           }
         }
       },

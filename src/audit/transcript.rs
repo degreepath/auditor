@@ -27,7 +27,7 @@ impl Transcript {
 	) -> Option<(CourseInstance, MatchedCourseParts)> {
 		for c in self.iter() {
 			let m = c.matches_rule(filter);
-			if already_used.contains(&(c.clone(), filter.clone(), m.clone())) {
+			if already_used.contains(&(c.clone(), m.clone())) {
 				continue;
 			}
 			if m.any() {

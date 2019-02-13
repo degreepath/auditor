@@ -15,6 +15,20 @@ pub struct MatchedCourseParts {
 
 #[allow(dead_code)]
 impl MatchedCourseParts {
+	pub fn blank() -> MatchedCourseParts {
+		MatchedCourseParts {
+			course: MatchType::Skip,
+			subjects: MatchType::Skip,
+			section: MatchType::Skip,
+			term: MatchType::Skip,
+			year: MatchType::Skip,
+			semester: MatchType::Skip,
+			course_type: MatchType::Skip,
+			gereqs: MatchType::Skip,
+			attributes: MatchType::Skip,
+		}
+	}
+
 	pub fn any(&self) -> bool {
 		self.course.matched()
 			|| self.section.matched()

@@ -1,4 +1,4 @@
-use super::{Action, Command, Operator, Value};
+use super::{Action, Command, Operator};
 use crate::traits::print;
 use std::fmt::Write;
 
@@ -7,16 +7,12 @@ impl print::Print for Action {
 		let mut output = String::new();
 
 		match (&self.lhs, &self.op, &self.rhs) {
-			(Value::String(s), Some(op), Some(val)) if *s == Command::Count => {
-				write!(&mut output, "{} {}", op.print()?, val.print()?)?
-			}
-			(Value::String(s), Some(op), Some(val)) if *s == Command::Sum => {
-				write!(&mut output, "{} {}", op.print()?, val.print()?)?
-			}
-			(Value::String(s), Some(Operator::GreaterThan), Some(val)) if *s == Command::Average => {
+			(Command::Count, Some(op), Some(val)) => write!(&mut output, "{} {}", op.print()?, val.print()?)?,
+			(Command::Sum, Some(op), Some(val)) => write!(&mut output, "{} {}", op.print()?, val.print()?)?,
+			(Command::Average, Some(Operator::GreaterThan), Some(val)) => {
 				write!(&mut output, "above {}", val.print()?)?
 			}
-			(Value::String(s), Some(Operator::GreaterThanEqualTo), Some(val)) if *s == Command::Average => {
+			(Command::Average, Some(Operator::GreaterThanEqualTo), Some(val)) => {
 				write!(&mut output, "at or above {}", val.print()?)?
 			}
 			_ => unimplemented!(

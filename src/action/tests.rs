@@ -5,7 +5,7 @@ fn count_gte_6() {
 	let actual: Action = "count >= 6".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Count.to_string()),
+		lhs: Command::Count,
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Integer(6)),
 	};
@@ -18,7 +18,7 @@ fn count_eq_1() {
 	let actual: Action = "count = 1".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Count.to_string()),
+		lhs: Command::Count,
 		op: Some(Operator::EqualTo),
 		rhs: Some(Value::Integer(1)),
 	};
@@ -31,7 +31,7 @@ fn average_gte_2_0() {
 	let actual: Action = "average >= 2.0".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Average.to_string()),
+		lhs: Command::Average,
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Float((2, 0))),
 	};
@@ -44,7 +44,7 @@ fn average_gte_2() {
 	let actual: Action = "average >= 2".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Average.to_string()),
+		lhs: Command::Average,
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Integer(2)),
 	};
@@ -57,7 +57,7 @@ fn sum_eq_6() {
 	let actual: Action = "sum = 6".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Sum.to_string()),
+		lhs: Command::Sum,
 		op: Some(Operator::EqualTo),
 		rhs: Some(Value::Integer(6)),
 	};
@@ -70,7 +70,7 @@ fn sum_gte_1_5() {
 	let actual: Action = "sum >= 1.5".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Sum.to_string()),
+		lhs: Command::Sum,
 		op: Some(Operator::GreaterThanEqualTo),
 		rhs: Some(Value::Float((1, 50))),
 	};
@@ -83,7 +83,7 @@ fn maximum() {
 	let actual: Action = "maximum".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Maximum.to_string()),
+		lhs: Command::Maximum,
 		op: None,
 		rhs: None,
 	};
@@ -96,22 +96,9 @@ fn minimum() {
 	let actual: Action = "minimum".parse().unwrap();
 
 	let expected_struct = Action {
-		lhs: Value::String(Command::Minimum.to_string()),
+		lhs: Command::Minimum,
 		op: None,
 		rhs: None,
-	};
-
-	assert_eq!(actual, expected_struct);
-}
-
-#[test]
-fn var_lt_var() {
-	let actual: Action = r#""first BTS-T course" < "last EIN course""#.parse().unwrap();
-
-	let expected_struct = Action {
-		lhs: Value::String(String::from("first BTS-T course")),
-		op: Some(Operator::LessThan),
-		rhs: Some(Value::String(String::from("last EIN course"))),
 	};
 
 	assert_eq!(actual, expected_struct);

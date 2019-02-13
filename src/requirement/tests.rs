@@ -4,6 +4,7 @@ use crate::rules::{given, req_ref};
 use crate::save::SaveBlock;
 use crate::{filter, rules, value};
 use indexmap::indexmap;
+use maplit::btreemap;
 
 #[test]
 fn serialize() {
@@ -120,7 +121,7 @@ result:
     - {given: save, save: Interim Courses, what: credits, do: sum >= 3}
     - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
-	let expected_filter: filter::Clause = indexmap! {
+	let expected_filter: filter::Clause = btreemap! {
 		"semester".into() => "Interim".parse::<value::WrappedValue>().unwrap(),
 	};
 
