@@ -1,6 +1,7 @@
 use super::Action;
 use super::Operator;
 use crate::audit::rule_result::AreaDescriptor;
+use crate::audit::rule_result::{GivenOutput, GivenOutputType, RuleStatus};
 use crate::audit::CourseInstance;
 pub use crate::value::SingleValue;
 
@@ -23,151 +24,286 @@ impl std::cmp::PartialOrd<SingleValue> for AreaDescriptor {
 	}
 }
 
-trait ActionResult {}
-impl ActionResult for bool {}
-impl ActionResult for CourseInstance {}
-impl ActionResult for AreaDescriptor {}
-impl ActionResult for u64 {}
-impl ActionResult for f32 {}
+trait CustomMaxMinOnFloatVecs {
+	fn custom_max(&self) -> Option<f32>;
+	fn custom_min(&self) -> Option<f32>;
+}
 
-// trait ActionsForSlice<T> {
-// 	fn count(&self) -> usize;
-// 	fn sum(&self) -> T;
-// 	fn average(&self) -> f32;
-// 	fn maximum(&self) -> Option<&T>;
-// 	fn minimum(&self) -> Option<&T>;
-// }
-
-// impl<T> ActionsForSlice<T> for &[u64] {
-// 	fn count(&self) -> usize {
-// 		self.len()
-// 	}
-
-// 	fn sum(&self) -> u64 {
-// 		self.iter().sum()
-// 	}
-
-// 	fn average(&self) -> f32 {
-// 		self.sum() / self.count()
-// 	}
-
-// 	fn maximum(&self) -> Option<&u64> {
-// 		self.iter().max()
-// 	}
-
-// 	fn minimum(&self) -> Option<&u64> {
-// 		self.iter().min()
-// 	}
-// }
-
-// impl<T> ActionsForSlice<T> for &[f32] {
-// 	fn count(&self) -> usize {
-// 		self.len()
-// 	}
-
-// 	fn sum(&self) -> f32 {
-// 		self.iter().sum()
-// 	}
-
-// 	fn average(&self) -> f32 {
-// 		self.sum() / self.count()
-// 	}
-
-// 	fn maximum(&self) -> Option<&f32> {
-// 		if self.is_empty() {
-// 			return None;
-// 		}
-
-// 		let mut biggest = &self[0];
-// 		for item in self.iter() {
-// 			biggest = &item.max(*biggest);
-// 		}
-
-// 		Some(biggest)
-// 	}
-
-// 	fn minimum(&self) -> Option<&f32> {
-// 		if self.is_empty() {
-// 			return None;
-// 		}
-
-// 		let mut smallest = &self[0];
-// 		for item in self.iter() {
-// 			smallest = &item.min(*smallest);
-// 		}
-
-// 		Some(smallest)
-// 	}
-// }
-
-/*
-impl Action {
-	pub fn compute<T: ActionableData>(&self, data: &[T]) -> Option<impl ActionResult>
-	where
-		T: PartialEq<SingleValue> + PartialOrd<SingleValue> + Eq + Ord + Clone + ActionResult,
-	{
-		let rhs = match &self.rhs {
-			Some(v) => v,
-			None => return None,
-		};
-
-		if let Count = &self.lhs {
-			let lhs = data.len() as u64;
-			return Some(self.cmp(&lhs, &rhs));
-		} else if let Sum = &self.lhs {
-			let lhs = data.iter().sum();
-			return Some(self.cmp(&lhs, &rhs));
-		} else if let Average = &self.lhs {
-			let lhs = data.iter().sum() / (data.len() as f64);
-			return Some(self.cmp(&lhs, &rhs));
-		} else if let Maximum = &self.lhs {
-			return data.iter().max().cloned();
-		} else if let Minimum = &self.lhs {
-			return data.iter().min().cloned();
+impl CustomMaxMinOnFloatVecs for Vec<f32> {
+	fn custom_max(&self) -> Option<f32> {
+		if self.is_empty() {
+			return None;
 		}
 
-		None
+		let mut extreme: f32 = self[0];
+		for item in self.iter() {
+			extreme = item.max(extreme);
+		}
+
+		Some(extreme)
 	}
 
-	pub fn compute_u64(&self, data: &[u64]) -> Option<impl ActionResult> {
-		let rhs = match &self.rhs {
-			Some(v) => v,
-			None => return None,
-		};
-
-		if let Count = &self.lhs {
-			let lhs = data.len() as u64;
-			return Some(self.cmp(&lhs, &rhs));
-		} else if let Sum = &self.lhs {
-			let lhs = data.iter().sum();
-			return Some(self.cmp(&lhs, &rhs));
-		} else if let Average = &self.lhs {
-			let lhs = data.iter().sum() / (data.len() as f64);
-			return Some(self.cmp(&lhs, &rhs));
-		} else if let Maximum = &self.lhs {
-			return data.iter().max().cloned();
-		} else if let Minimum = &self.lhs {
-			return data.iter().min().cloned();
+	fn custom_min(&self) -> Option<f32> {
+		if self.is_empty() {
+			return None;
 		}
 
-		None
+		let mut extreme: f32 = self[0];
+		for item in self.iter() {
+			extreme = item.max(extreme);
+		}
+
+		Some(extreme)
 	}
 }
-*/
 
 impl Action {
 	pub(crate) fn cmp<T: ActionableData>(self, lhs: &T, rhs: &SingleValue) -> bool
 	where
 		T: PartialEq<SingleValue> + PartialOrd<SingleValue>,
 	{
-		match &self.op {
-			Some(Operator::EqualTo) => lhs == rhs,
-			Some(Operator::NotEqualTo) => lhs != rhs,
-			Some(Operator::LessThan) => lhs < rhs,
-			Some(Operator::LessThanEqualTo) => lhs <= rhs,
-			Some(Operator::GreaterThan) => lhs > rhs,
-			Some(Operator::GreaterThanEqualTo) => lhs >= rhs,
-			None => unimplemented!("should not be able to call self.cmp on a None action operator"),
+		if self.op.is_none() {
+			unimplemented!("should not be able to call self.cmp on a None action operator")
+		}
+
+		match &self.op.unwrap() {
+			Operator::EqualTo => lhs == rhs,
+			Operator::NotEqualTo => lhs != rhs,
+			Operator::LessThan => lhs < rhs,
+			Operator::LessThanEqualTo => lhs <= rhs,
+			Operator::GreaterThan => lhs > rhs,
+			Operator::GreaterThanEqualTo => lhs >= rhs,
+		}
+	}
+}
+
+pub struct GivenActionResult {
+	pub status: RuleStatus,
+	pub detail: GivenOutputType,
+}
+
+impl Action {
+	pub fn compute_with_areas(&self, data: &[AreaDescriptor]) -> GivenActionResult {
+		use crate::action::Command::*;
+
+		let rhs = match &self.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.clone().cmp(&lhs, &rhs);
+
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Count(lhs),
+				}
+			}
+			Sum => unimplemented!("sum-action on area descriptor"),
+			Average => unimplemented!("average-action on area descriptor"),
+			Maximum => unimplemented!("maximum-action on area descriptor"),
+			Minimum => unimplemented!("minimum-action on area descriptor"),
+		}
+	}
+
+	pub fn compute_with_departments(&self, data: &[&str]) -> GivenActionResult {
+		use crate::action::Command::*;
+
+		let rhs = match &self.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.clone().cmp(&lhs, &rhs);
+
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Count(lhs),
+				}
+			}
+			Sum => unimplemented!("sum-action on department"),
+			Average => unimplemented!("average-action on department"),
+			Maximum => unimplemented!("maximum-action on department"),
+			Minimum => unimplemented!("minimum-action on department"),
+		}
+	}
+
+	pub fn compute_with_terms(&self, data: &[u64]) -> GivenActionResult {
+		use crate::action::Command::*;
+
+		let rhs = match &self.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Count(lhs),
+				}
+			}
+			Sum => {
+				let lhs: u64 = data.iter().sum();
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::SumInteger(lhs),
+				}
+			}
+			Average => {
+				let lhs: f32 = data.iter().sum::<u64>() as f32 / (data.len() as f32);
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Average(lhs),
+				}
+			}
+			Maximum => {
+				let lhs = data.iter().max().cloned();
+				GivenActionResult {
+					status: RuleStatus::Pass,
+					detail: GivenOutputType::Max(lhs.map(GivenOutput::Term)),
+				}
+			}
+			Minimum => {
+				let lhs = data.iter().min().cloned();
+				GivenActionResult {
+					status: RuleStatus::Pass,
+					detail: GivenOutputType::Min(lhs.map(GivenOutput::Term)),
+				}
+			}
+		}
+	}
+
+	pub fn compute_with_credits(&self, data: &[f32]) -> GivenActionResult {
+		use crate::action::Command::*;
+
+		let rhs = match &self.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Count(lhs),
+				}
+			}
+			Sum => {
+				let lhs: f32 = data.iter().sum();
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::SumFloat(lhs),
+				}
+			}
+			Average => {
+				let lhs: f32 = data.iter().sum::<f32>() as f32 / (data.len() as f32);
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Average(lhs),
+				}
+			}
+			Maximum => {
+				let lhs = data.to_vec().custom_max();
+				GivenActionResult {
+					status: RuleStatus::Pass,
+					detail: GivenOutputType::Max(lhs.map(GivenOutput::Credit)),
+				}
+			}
+			Minimum => {
+				let lhs = data.to_vec().custom_min();
+				GivenActionResult {
+					status: RuleStatus::Pass,
+					detail: GivenOutputType::Min(lhs.map(GivenOutput::Credit)),
+				}
+			}
+		}
+	}
+
+	pub fn compute_with_grades(&self, data: &[f32]) -> GivenActionResult {
+		use crate::action::Command::*;
+
+		let rhs = match &self.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Count(lhs),
+				}
+			}
+			Sum => {
+				let lhs: f32 = data.iter().sum();
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::SumFloat(lhs),
+				}
+			}
+			Average => {
+				let lhs: f32 = data.iter().sum::<f32>() as f32 / (data.len() as f32);
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Average(lhs),
+				}
+			}
+			Maximum => {
+				let lhs = data.to_vec().custom_max();
+				GivenActionResult {
+					status: RuleStatus::Pass,
+					detail: GivenOutputType::Max(lhs.map(GivenOutput::Grade)),
+				}
+			}
+			Minimum => {
+				let lhs = data.to_vec().custom_min();
+				GivenActionResult {
+					status: RuleStatus::Pass,
+					detail: GivenOutputType::Min(lhs.map(GivenOutput::Grade)),
+				}
+			}
+		}
+	}
+
+	pub fn compute_with_courses(&self, data: &[CourseInstance]) -> GivenActionResult {
+		use crate::action::Command::*;
+
+		let rhs = match &self.rhs {
+			Some(v) => v,
+			None => unimplemented!("empty-rhs rule evaluation"),
+		};
+
+		match &self.lhs {
+			Count => {
+				let lhs = data.len() as u64;
+				let result = self.clone().cmp(&lhs, &rhs);
+				GivenActionResult {
+					status: if result { RuleStatus::Pass } else { RuleStatus::Fail },
+					detail: GivenOutputType::Count(lhs),
+				}
+			}
+			Sum => unimplemented!("sum-action on course instances"),
+			Average => unimplemented!("average-action on course instances"),
+			Maximum => unimplemented!("max-action on course instances"),
+			Minimum => unimplemented!("min-action on course instances"),
 		}
 	}
 }

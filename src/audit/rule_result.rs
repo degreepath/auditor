@@ -16,7 +16,7 @@ pub enum RuleResultDetails {
 	Both((Box<RuleResult>, Box<RuleResult>)),
 	Either((Option<Box<RuleResult>>, Option<Box<RuleResult>>)),
 	/// The "None" variant here represents Given rules with no `what` line
-	Given(Option<Vec<GivenOutput>>),
+	Given(GivenOutputType),
 	Do,
 }
 
@@ -31,13 +31,24 @@ pub struct AreaDescriptor {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-#[allow(dead_code)]
+pub enum GivenOutputType {
+	Count(u64),
+	SumInteger(u64),
+	SumFloat(f32),
+	Average(f32),
+	Max(Option<GivenOutput>),
+	Min(Option<GivenOutput>),
+	MultiValue(Vec<GivenOutput>),
+	None,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum GivenOutput {
 	Course(CourseInstance),
-	Credit((i16, i16)),
+	Credit(f32),
 	Department(String),
-	Term(i64),
-	Grade((i16, i16)),
+	Term(u64),
+	Grade(f32),
 	AreaOfStudy(AreaDescriptor),
 }
 

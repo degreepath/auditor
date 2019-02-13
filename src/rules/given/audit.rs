@@ -46,88 +46,7 @@ fn match_area_against_filter(area: &AreaDescriptor, filter: &Filter) -> bool {
 	true
 }
 
-impl super::Rule {
-	fn apply_action_to_areas(&self, data: &[AreaDescriptor]) -> RuleStatus {
-		use crate::action::Command::*;
-
-		let rhs = match &self.action.rhs {
-			Some(v) => v,
-			None => unimplemented!("empty-rhs rule evaluation"),
-		};
-
-		match &self.action.lhs {
-			Count => {
-				let lhs = data.len() as u64;
-				let result = self.action.clone().cmp(&lhs, &rhs);
-				if result {
-					RuleStatus::Pass
-				} else {
-					RuleStatus::Fail
-				}
-			}
-			Sum => unimplemented!("sum-action on area descriptor"),
-			Average => unimplemented!("average-action on area descriptor"),
-			Maximum => unimplemented!("maximum-action on area descriptor"),
-			Minimum => unimplemented!("minimum-action on area descriptor"),
-		}
-	}
-
-	fn apply_action_to_u64(&self, data: &[u64]) -> RuleStatus {
-		use crate::action::Command::*;
-
-		let rhs = match &self.action.rhs {
-			Some(v) => v,
-			None => unimplemented!("empty-rhs rule evaluation"),
-		};
-
-		match &self.action.lhs {
-			Count => {
-				let lhs = data.len() as u64;
-				let result = self.action.clone().cmp(&lhs, &rhs);
-				if result {
-					RuleStatus::Pass
-				} else {
-					RuleStatus::Fail
-				}
-			}
-			Sum => {
-				let lhs: u64 = data.iter().sum();
-				let result = self.action.clone().cmp(&lhs, &rhs);
-				if result {
-					RuleStatus::Pass
-				} else {
-					RuleStatus::Fail
-				}
-			}
-			Average => {
-				let lhs: f32 = data.iter().sum::<u64>() as f32 / (data.len() as f32);
-				let result = self.action.clone().cmp(&lhs, &rhs);
-				if result {
-					RuleStatus::Pass
-				} else {
-					RuleStatus::Fail
-				}
-			}
-			Maximum => {
-				data.iter().max().cloned();
-				RuleStatus::Pass
-			}
-			Minimum => {
-				data.iter().min().cloned();
-				RuleStatus::Pass
-			}
-		}
-	}
-
-	// fn apply_action_to_<T>(&self, data: &[T]) -> RuleStatus
-	// where
-	// 	T: Ord + PartialEq<SingleValue> + PartialOrd<SingleValue>,
-	// {
-	// 	let result = self.action.compute(data);
-
-	// 	RuleStatus::Pass
-	// }
-}
+use crate::audit::rule_result::{GivenOutput, GivenOutputType};
 
 impl super::Rule {
 	fn check_for_areas(&self, input: &RuleInput) -> RuleResult {
@@ -174,14 +93,12 @@ impl super::Rule {
 			areas = areas_which_passed_the_limits;
 		}
 
-		let status = self.apply_action_to_areas(&areas);
-
-		use crate::audit::rule_result::GivenOutput;
+		let status = self.action.compute_with_areas(&areas).status;
 
 		RuleResult {
 			status,
 			reservations: ReservedPairings::new(),
-			detail: RuleResultDetails::Given(Some(
+			detail: RuleResultDetails::Given(GivenOutputType::MultiValue(
 				areas.iter().map(|a| GivenOutput::AreaOfStudy(a.clone())).collect(),
 			)),
 		}
@@ -201,7 +118,7 @@ impl super::Rule {
 		RuleResult {
 			status: RuleStatus::Pending,
 			reservations: ReservedPairings::new(),
-			detail: RuleResultDetails::Given(None),
+			detail: RuleResultDetails::Given(GivenOutputType::None),
 		}
 	}
 
