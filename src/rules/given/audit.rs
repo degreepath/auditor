@@ -6,6 +6,7 @@ use crate::audit::{
 };
 use crate::filter::Clause as Filter;
 use crate::limit::Limiter;
+use crate::rules::req_ref;
 use crate::rules::Rule as AnyRule;
 
 impl super::Rule {
@@ -183,35 +184,45 @@ impl super::Rule {
 	fn in_these_courses(
 		&self,
 		input: &RuleInput,
-		these_courses: &[super::CourseRule],
+		allowed_courses: &[super::CourseRule],
 		repeats: &super::RepeatMode,
 	) -> Vec<CourseInstance> {
 		use super::CourseRule as GivenCourseRuleWrapper;
 		use super::RepeatMode;
-		use std::collections::HashSet;
 
-		let mut matching_courses = vec![];
-		let mut matched_course_ids: HashSet<String> = HashSet::new();
-
-		for course in &input.transcript.into_iter() {
-			match repeats {
-				RepeatMode::All => (),
-				RepeatMode::First => {
-					if matched_course_ids.contains(&course.course) {
-						continue;
-					}
-				}
-			};
-
-			if these_courses.iter().any(|rule| match rule {
-				GivenCourseRuleWrapper::Value(rule) => course.matches_rule(rule).any(),
-			}) {
-				matching_courses.push(course);
-				matched_course_ids.insert(course.course.clone());
+		let courses = input.transcript.to_vec();
+		let courses = match repeats {
+			RepeatMode::All => courses,
+			RepeatMode::First => {
+				// sort by term; take the first occurrence of each course
+				let mut courses = courses;
+				courses.sort_unstable_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses.dedup_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses
 			}
-		}
+			RepeatMode::Last => {
+				// sort by term; take the last occurrence of each course
+				let mut courses = courses;
+				courses.sort_unstable_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses.reverse();
+				courses.dedup_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses
+			}
+		};
 
-		matching_courses
+		let allowed_courses: Vec<_> = allowed_courses
+			.iter()
+			.map(|rule| match rule {
+				GivenCourseRuleWrapper::Value(rule) => rule,
+			})
+			.collect();
+
+		// essentially, given courses from the transcript, find the intersection between them and
+		// the listed "allowed" courses
+		courses
+			.into_iter()
+			.filter(|course| allowed_courses.iter().any(|rule| course.matches_rule(rule).any()))
+			.collect()
 	}
 
 	fn in_areas(&self, _input: &RuleInput) -> Vec<AreaDescriptor> {
@@ -221,7 +232,7 @@ impl super::Rule {
 	fn in_requirements_out_courses(
 		&self,
 		_input: &RuleInput,
-		_these_requirements: &[super::req_ref::Rule],
+		_these_requirements: &[req_ref::Rule],
 	) -> Vec<CourseInstance> {
 		vec![]
 	}
@@ -229,7 +240,7 @@ impl super::Rule {
 	fn in_requirements_out_areas(
 		&self,
 		_input: &RuleInput,
-		_these_requirements: &[super::req_ref::Rule],
+		_these_requirements: &[req_ref::Rule],
 	) -> Vec<AreaDescriptor> {
 		vec![]
 	}
