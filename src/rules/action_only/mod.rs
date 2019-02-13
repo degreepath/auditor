@@ -1,4 +1,4 @@
-use crate::action::Action;
+use crate::action::LhsValueAction;
 use crate::traits::Util;
 use crate::util;
 use serde::{Deserialize, Serialize};
@@ -11,8 +11,8 @@ mod tests;
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Rule {
-	#[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
-	pub action: Action,
+	#[serde(rename = "do")]
+	pub action: LhsValueAction,
 }
 
 impl Util for Rule {

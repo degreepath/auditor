@@ -21,6 +21,13 @@ pub struct Action {
 	pub rhs: Option<Value>,
 }
 
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub struct LhsValueAction {
+	pub lhs: Value,
+	pub op: Option<Operator>,
+	pub rhs: Option<Value>,
+}
+
 impl Action {
 	pub fn should_pluralize(&self) -> bool {
 		match &self.rhs {

@@ -105,19 +105,6 @@ fn minimum() {
 }
 
 #[test]
-fn var_lt_var() {
-	let actual: Action = r#""first BTS-T course" < "last EIN course""#.parse().unwrap();
-
-	let expected_struct = Action {
-		lhs: Value::String(String::from("first BTS-T course")),
-		op: Some(Operator::LessThan),
-		rhs: Some(Value::String(String::from("last EIN course"))),
-	};
-
-	assert_eq!(actual, expected_struct);
-}
-
-#[test]
 #[should_panic]
 fn invalid_flipped_operator() {
 	"a => b".parse::<Action>().unwrap();
