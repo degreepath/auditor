@@ -176,17 +176,42 @@ impl super::Rule {
 		}
 	}
 
-	fn in_all_courses(&self, _input: &RuleInput) -> Vec<CourseInstance> {
-		vec![]
+	fn in_all_courses(&self, input: &RuleInput) -> Vec<CourseInstance> {
+		input.transcript.to_vec()
 	}
 
 	fn in_these_courses(
 		&self,
-		_input: &RuleInput,
-		_these_courses: &[super::CourseRule],
-		_repeats: &super::RepeatMode,
+		input: &RuleInput,
+		these_courses: &[super::CourseRule],
+		repeats: &super::RepeatMode,
 	) -> Vec<CourseInstance> {
-		vec![]
+		use super::CourseRule as GivenCourseRuleWrapper;
+		use super::RepeatMode;
+		use std::collections::HashSet;
+
+		let mut matching_courses = vec![];
+		let mut matched_course_ids: HashSet<String> = HashSet::new();
+
+		for course in &input.transcript.into_iter() {
+			match repeats {
+				RepeatMode::All => (),
+				RepeatMode::First => {
+					if matched_course_ids.contains(&course.course) {
+						continue;
+					}
+				}
+			};
+
+			if these_courses.iter().any(|rule| match rule {
+				GivenCourseRuleWrapper::Value(rule) => course.matches_rule(rule).any(),
+			}) {
+				matching_courses.push(course);
+				matched_course_ids.insert(course.course.clone());
+			}
+		}
+
+		matching_courses
 	}
 
 	fn in_areas(&self, _input: &RuleInput) -> Vec<AreaDescriptor> {
