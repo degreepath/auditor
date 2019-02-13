@@ -23,8 +23,11 @@ pub struct Action {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct LhsValueAction {
+	#[serde(deserialize_with = "util::string_or_struct_parseerror")]
 	pub lhs: Value,
+	#[serde(default, deserialize_with = "option_operator")]
 	pub op: Option<Operator>,
+	#[serde(default, deserialize_with = "option_value")]
 	pub rhs: Option<Value>,
 }
 
@@ -64,6 +67,28 @@ where
 {
 	#[derive(Deserialize)]
 	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] Action);
+
+	let v = Option::deserialize(deserializer)?;
+	Ok(v.map(|Wrapper(a)| a))
+}
+
+pub fn option_operator<'de, D>(deserializer: D) -> Result<Option<Operator>, D::Error>
+where
+	D: Deserializer<'de>,
+{
+	#[derive(Deserialize)]
+	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] Operator);
+
+	let v = Option::deserialize(deserializer)?;
+	Ok(v.map(|Wrapper(a)| a))
+}
+
+pub fn option_value<'de, D>(deserializer: D) -> Result<Option<Value>, D::Error>
+where
+	D: Deserializer<'de>,
+{
+	#[derive(Deserialize)]
+	struct Wrapper(#[serde(deserialize_with = "util::string_or_struct_parseerror")] Value);
 
 	let v = Option::deserialize(deserializer)?;
 	Ok(v.map(|Wrapper(a)| a))

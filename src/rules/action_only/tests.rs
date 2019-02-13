@@ -5,7 +5,7 @@ use crate::traits::print::Print;
 #[test]
 fn deserialize() {
 	let data = r#"---
-do: {lhs: "first BTS-T course", op: ">=", rhs: "last EIN course"}"#;
+do: {lhs: "first BTS-T course", op: "<", rhs: "last EIN course"}"#;
 
 	let expected_struct = Rule {
 		action: LhsValueAction {
@@ -22,7 +22,7 @@ do: {lhs: "first BTS-T course", op: ">=", rhs: "last EIN course"}"#;
 #[test]
 fn pretty_print() {
 	let data = r#"---
-do: {lhs: "first BTS-T course", op: ">=", rhs: "last EIN course"}"#;
+do: {lhs: "first BTS-T course", op: "<", rhs: "last EIN course"}"#;
 
 	let expected = "ensure that the computed result of the subset “first BTS-T course” is less than the computed result of the subset “last EIN course”";
 

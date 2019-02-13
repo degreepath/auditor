@@ -103,8 +103,7 @@ fn serialize() {
   where: {}
   what: courses
   do:
-    lhs:
-      String: count
+    lhs: Count
     op: LessThan
     rhs:
       Integer: 2
@@ -394,8 +393,7 @@ given: save
 save: "Senior Dance Seminars"
 what: courses
 do:
-  lhs:
-    String: count
+  lhs: Count
   op: GreaterThanEqualTo
   rhs:
     Integer: 1
