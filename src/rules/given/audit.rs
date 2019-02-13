@@ -2,7 +2,7 @@ use super::{Given, What};
 use crate::audit::rule_result::AreaDescriptor;
 use crate::audit::{
 	CourseInstance, MatchedCourseParts, Reservation, ReservedPairings, RuleAudit, RuleInput, RuleResult,
-	RuleResultDetails, RuleStatus,
+	RuleResultDetails,
 };
 use crate::filter::Clause as Filter;
 use crate::limit::Limiter;
@@ -45,11 +45,11 @@ impl RuleAudit for super::Rule {
 	}
 }
 
-fn match_area_against_filter(area: &AreaDescriptor, filter: &Filter) -> bool {
+fn match_area_against_filter(_area: &AreaDescriptor, _filter: &Filter) -> bool {
 	true
 }
 
-fn match_course_against_filter(course: &CourseInstance, filter: &Filter) -> Option<MatchedCourseParts> {
+fn match_course_against_filter(_course: &CourseInstance, _filter: &Filter) -> Option<MatchedCourseParts> {
 	Some(MatchedCourseParts::blank())
 }
 
@@ -176,44 +176,44 @@ impl super::Rule {
 		}
 	}
 
-	fn in_all_courses(&self, input: &RuleInput) -> Vec<CourseInstance> {
+	fn in_all_courses(&self, _input: &RuleInput) -> Vec<CourseInstance> {
 		vec![]
 	}
 
 	fn in_these_courses(
 		&self,
-		input: &RuleInput,
-		these_courses: &[super::CourseRule],
-		repeats: &super::RepeatMode,
+		_input: &RuleInput,
+		_these_courses: &[super::CourseRule],
+		_repeats: &super::RepeatMode,
 	) -> Vec<CourseInstance> {
 		vec![]
 	}
 
-	fn in_areas(&self, input: &RuleInput) -> Vec<AreaDescriptor> {
+	fn in_areas(&self, _input: &RuleInput) -> Vec<AreaDescriptor> {
 		vec![]
 	}
 
 	fn in_requirements_out_courses(
 		&self,
-		input: &RuleInput,
-		these_requirements: &[super::req_ref::Rule],
+		_input: &RuleInput,
+		_these_requirements: &[super::req_ref::Rule],
 	) -> Vec<CourseInstance> {
 		vec![]
 	}
 
 	fn in_requirements_out_areas(
 		&self,
-		input: &RuleInput,
-		these_requirements: &[super::req_ref::Rule],
+		_input: &RuleInput,
+		_these_requirements: &[super::req_ref::Rule],
 	) -> Vec<AreaDescriptor> {
 		vec![]
 	}
 
-	fn in_variable_out_courses(&self, input: &RuleInput, save: &str) -> Vec<CourseInstance> {
+	fn in_variable_out_courses(&self, _input: &RuleInput, _save: &str) -> Vec<CourseInstance> {
 		vec![]
 	}
 
-	fn in_variable_out_areas(&self, input: &RuleInput, save: &str) -> Vec<AreaDescriptor> {
+	fn in_variable_out_areas(&self, _input: &RuleInput, _save: &str) -> Vec<AreaDescriptor> {
 		vec![]
 	}
 }

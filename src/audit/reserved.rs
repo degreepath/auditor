@@ -12,7 +12,7 @@ impl ReservedPairings {
 	}
 
 	pub fn from_vec(input: &[Reservation]) -> ReservedPairings {
-		ReservedPairings(input.into_iter().cloned().collect())
+		ReservedPairings(input.iter().cloned().collect())
 	}
 
 	pub fn add(&mut self, r: &Reservation) {
