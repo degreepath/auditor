@@ -1,6 +1,7 @@
 use super::*;
 use crate::traits::print::Print;
 use std::collections::BTreeMap;
+use crate::audit::area_of_study::{Semester};
 
 #[test]
 fn deserialize_simple_course_in_array() {
@@ -24,7 +25,8 @@ fn serialize() {
 	};
 	let course_b = course::Rule {
 		course: "ASIAN 101".to_string(),
-		term: Some("2014-1".to_string()),
+		semester: Some(Semester::Fall),
+		year: Some(2014),
 		..Default::default()
 	};
 	let data = vec![
@@ -69,10 +71,9 @@ fn serialize() {
 	let expected = r#"---
 - course: ASIAN 101
 - course: ASIAN 101
-  term: 2014-1
   section: ~
-  year: ~
-  semester: ~
+  year: 2014
+  semester: Fall
   lab: ~
   can_match_used: ~
 - requirement: Name
@@ -83,19 +84,17 @@ fn serialize() {
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
-      term: 2014-1
       section: ~
-      year: ~
-      semester: ~
+      year: 2014
+      semester: Fall
       lab: ~
       can_match_used: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
-      term: 2014-1
       section: ~
-      year: ~
-      semester: ~
+      year: 2014
+      semester: Fall
       lab: ~
       can_match_used: ~
 - given: courses
@@ -126,7 +125,8 @@ fn deserialize() {
 	};
 	let course_b = course::Rule {
 		course: "ASIAN 101".to_string(),
-		term: Some("2014-1".to_string()),
+		semester: Some(Semester::Fall),
+		year: Some(2014),
 		..Default::default()
 	};
 	let expected = vec![
@@ -171,10 +171,9 @@ fn deserialize() {
 	let data = r#"---
 - course: ASIAN 101
 - course: ASIAN 101
-  term: 2014-1
   section: ~
-  year: ~
-  semester: ~
+  year: 2014
+  semester: Fall
   lab: ~
 - requirement: Name
   optional: true
@@ -184,18 +183,16 @@ fn deserialize() {
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
-      term: 2014-1
       section: ~
-      year: ~
-      semester: ~
+      year: 2014
+      semester: Fall
       lab: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
-      term: 2014-1
       section: ~
-      year: ~
-      semester: ~
+      year: 2014
+      semester: Fall
       lab: ~
 - given: courses
   what: courses
@@ -210,10 +207,9 @@ fn deserialize() {
 	let data = r#"---
 - course: ASIAN 101
 - course: ASIAN 101
-  term: 2014-1
   section: ~
-  year: ~
-  semester: ~
+  year: 2014
+  semester: Fall
   lab: ~
 - requirement: Name
   optional: true
@@ -223,18 +219,16 @@ fn deserialize() {
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
-      term: 2014-1
       section: ~
-      year: ~
-      semester: ~
+      year: 2014
+      semester: Fall
       lab: ~
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
-      term: 2014-1
       section: ~
-      year: ~
-      semester: ~
+      year: 2014
+      semester: Fall
       lab: ~
 - given: courses
   what: courses
@@ -252,7 +246,7 @@ fn deserialize_shorthands() {
 	let data = r#"---
 - ASIAN 101
 - course: ASIAN 101
-- {course: ASIAN 102, term: 2014-1}
+- {course: ASIAN 102, year: 2014, semester: Fall}
 - requirement: Name 1
 - {requirement: Name 2, optional: true}
 - count: 1
@@ -260,10 +254,10 @@ fn deserialize_shorthands() {
     - ASIAN 101
 - both:
     - ASIAN 101
-    - {course: ASIAN 102, term: 2014-1}
+    - {course: ASIAN 102, year: 2014, semester: Fall}
 - either:
     - ASIAN 101
-    - {course: ASIAN 102, term: 2014-1}
+    - {course: ASIAN 102, year: 2014, semester: Fall}
 - given: courses
   what: courses
   do: count < 2
@@ -275,7 +269,8 @@ fn deserialize_shorthands() {
 	};
 	let course_b = course::Rule {
 		course: "ASIAN 102".to_string(),
-		term: Some("2014-1".to_string()),
+		semester: Some(Semester::Fall),
+		year: Some(2014),
 		..Default::default()
 	};
 	let expected = vec![
@@ -331,12 +326,12 @@ fn pretty_print() {
 	let data = r#"---
 - ASIAN 101
 - course: ASIAN 101
-- {course: ASIAN 102, term: 2014-1}
+- {course: ASIAN 102, year: 2014, semester: Fall}
 - requirement: Name 1
 - {requirement: Name 2, optional: true}
 - {count: 1, of: [ASIAN 101]}
-- {both: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
-- {either: [ASIAN 101, {course: ASIAN 102, term: 2014-1}]}
+- {both: [ASIAN 101, {course: ASIAN 102, year: 2014, semester: Fall}]}
+- {either: [ASIAN 101, {course: ASIAN 102, year: 2014, semester: Fall}]}
 - {given: courses, what: courses, do: count < 2}
 - {do: {lhs: X, op: <, rhs: Y}}
 "#;
@@ -353,12 +348,12 @@ fn pretty_print() {
 	let expected = vec![
 		"take ASIAN 101",
 		"take ASIAN 101",
-		"take ASIAN 102 (2014-1)",
+		"take ASIAN 102 (Fall 2014)",
 		"complete the “Name 1” requirement",
 		"complete the “Name 2” (optional) requirement",
 		"take ASIAN 101",
-		"take both ASIAN 101 and ASIAN 102 (2014-1)",
-		"take either ASIAN 101 or ASIAN 102 (2014-1)",
+		"take both ASIAN 101 and ASIAN 102 (Fall 2014)",
+		"take either ASIAN 101 or ASIAN 102 (Fall 2014)",
 		"have fewer than two courses",
 		"ensure that the computed result of the subset “X” is less than the computed result of the subset “Y”",
 	];

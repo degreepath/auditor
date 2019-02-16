@@ -5,6 +5,7 @@ authors = ["Hawken Rives <hawkrives@fastmail.fm>"]
 edition = "2018"
 
 [dependencies]
+chrono = { version = "0.4", features = ["serde"] }
 indexmap = { version = "1.0", features = ["serde-1"] }
 serde = { version = "1.0", features = ["derive"] }
 void = "1.0"

@@ -2,6 +2,7 @@ use crate::traits::Util;
 use serde::Deserialize;
 use std::str::FromStr;
 use void::Void;
+use crate::audit::area_of_study::Semester;
 
 mod audit;
 mod print;
@@ -13,10 +14,9 @@ mod tests;
 #[derive(Default, Debug, PartialEq, Clone, Deserialize, Hash, Eq)]
 pub struct Rule {
 	pub course: String,
-	pub term: Option<String>,
 	pub section: Option<String>,
-	pub year: Option<u64>,
-	pub semester: Option<String>,
+	pub year: Option<u16>,
+	pub semester: Option<Semester>,
 	pub lab: Option<bool>,
 	pub can_match_used: Option<bool>,
 }

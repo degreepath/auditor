@@ -1,4 +1,4 @@
-use super::{CourseInstance, ReservedPairings};
+use super::{AreaDescriptor, CourseInstance, ReservedPairings};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RuleResult {
@@ -22,13 +22,6 @@ pub enum RuleResultDetails {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RequirementResult {}
-
-#[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq)]
-pub struct AreaDescriptor {
-	catalog: String,
-	name: String,
-	kind: String,
-}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum GivenOutputType {

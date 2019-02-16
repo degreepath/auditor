@@ -1,5 +1,6 @@
 use super::*;
 use crate::traits::print::Print;
+use crate::audit::area_of_study::{Semester};
 
 #[test]
 fn serialize() {
@@ -19,16 +20,16 @@ course: STAT 214";
 fn serialize_expanded() {
 	let data = Rule {
 		course: "STAT 214".to_string(),
-		term: Some("2014-4".to_string()),
+		year: Some(2014),
+		semester: Some(Semester::Summer1),
 		..Default::default()
 	};
 
 	let expected_str = "---
 course: STAT 214
-term: 2014-4
 section: ~
-year: ~
-semester: ~
+year: 2014
+semester: Summer Session 1
 lab: ~
 can_match_used: ~";
 
@@ -57,16 +58,16 @@ course: STAT 214";
 fn deserialize_expanded() {
 	let data = "---
 course: STAT 214
-term: 2014-4
 section: ~
-year: ~
-semester: ~
+year: 2014
+semester: Summer Session 1
 lab: ~
 can_match_used: ~";
 
 	let expected_struct = Rule {
 		course: "STAT 214".to_string(),
-		term: Some("2014-4".to_string()),
+		year: Some(2014),
+		semester: Some(Semester::Summer1),
 		..Default::default()
 	};
 
@@ -85,25 +86,25 @@ fn pretty_print() {
 
 	let input = Rule {
 		course: "DEPT 111".into(),
-		semester: Some("Fall".to_string()),
+		semester: Some(Semester::Fall),
 		year: Some(2015),
 		..Default::default()
 	};
 	let expected = "DEPT 111 (Fall 2015)";
 	assert_eq!(expected, input.print().unwrap());
 
-	// TODO: implement term parsing to get to this point `let expected = "DEPT 111 (Fall 2015)";`
 	let input = Rule {
 		course: "DEPT 111".into(),
-		term: Some("2015-1".to_string()),
+		semester: Some(Semester::Fall),
+		year: Some(2015),
 		..Default::default()
 	};
-	let expected = "DEPT 111 (2015-1)";
+	let expected = "DEPT 111 (Fall 2015)";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input = Rule {
 		course: "DEPT 111".into(),
-		semester: Some("Fall".to_string()),
+		semester: Some(Semester::Fall),
 		..Default::default()
 	};
 	let expected = "DEPT 111 (Fall)";
@@ -135,7 +136,7 @@ fn pretty_print() {
 
 	let input = Rule {
 		course: "DEPT 111".into(),
-		semester: Some("Fall".to_string()),
+		semester: Some(Semester::Fall),
 		year: Some(2015),
 		lab: Some(true),
 		..Default::default()
@@ -146,10 +147,9 @@ fn pretty_print() {
 	let input = Rule {
 		course: "DEPT 111".into(),
 		section: Some("A".to_string()),
-		semester: Some("Fall".to_string()),
+		semester: Some(Semester::Fall),
 		year: Some(2015),
 		lab: Some(true),
-		term: None,
 		can_match_used: None,
 	};
 	let expected = "DEPT 111A (Lab; Fall 2015)";

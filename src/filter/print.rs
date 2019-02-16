@@ -134,7 +134,7 @@ fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 
 	match value {
 		Single(EqualTo(SingleValue::Integer(n))) => {
-			clauses.push(format!("during the {} academic year", util::expand_year(*n, "dual")))
+			clauses.push(format!("during the {} academic year", util::expand_year(*n as u16, "dual")))
 		}
 		Single(EqualTo(SingleValue::String(s))) if *s == Constant::GraduationYear => {
 			clauses.push("during your graduation year".to_string())
@@ -158,7 +158,7 @@ fn print_year_and_semester(year: &WrappedValue, semester: &WrappedValue) -> Resu
 		(Single(EqualTo(SingleValue::Integer(year))), Single(sem)) => clauses.push(format!(
 			"during the {} of the {} academic year",
 			sem.print()?,
-			util::expand_year(*year, "dual")
+			util::expand_year(*year as u16, "dual")
 		)),
 		(Single(EqualTo(SingleValue::String(s))), Single(sem)) if *s == Constant::GraduationYear => {
 			clauses.push(format!("during the {} of your graduation year", sem.print()?))

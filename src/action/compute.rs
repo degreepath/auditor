@@ -1,7 +1,7 @@
 use super::Action;
 use super::Operator;
-use crate::audit::rule_result::AreaDescriptor;
 use crate::audit::rule_result::{GivenOutput, GivenOutputType, RuleStatus};
+use crate::audit::AreaDescriptor;
 use crate::audit::CourseInstance;
 pub use crate::value::SingleValue;
 

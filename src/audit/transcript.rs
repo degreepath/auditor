@@ -1,7 +1,7 @@
 use super::{CourseInstance, MatchedCourseParts, ReservedPairings};
 use crate::rules::course::Rule as CourseRule;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Transcript(Vec<CourseInstance>);
 
 impl Transcript {

@@ -1,18 +1,17 @@
 use super::course_match::{MatchType, MatchedCourseParts};
 use crate::filter::Clause as Filter;
 use crate::rules::course::Rule as CourseRule;
+use super::area_of_study::{Term};
 
-#[derive(Hash, PartialEq, Eq, Debug, Clone)]
+#[derive(Hash, PartialEq, Eq, Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CourseInstance {
+	pub course: String,
+	pub term: Term,
 	pub attributes: Vec<String>,
 	pub course_type: String,
-	pub course: String,
 	pub gereqs: Vec<String>,
 	pub section: Option<String>,
-	pub semester: String,
 	pub subjects: Vec<String>,
-	pub term: String,
-	pub year: u64,
 }
 
 impl CourseInstance {
@@ -29,19 +28,13 @@ impl CourseInstance {
 			(_, None) => MatchType::Skip,
 		};
 
-		let term = match (&self.term, &filter.term) {
-			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
-			(_, Some(_)) => MatchType::Fail,
-			(_, None) => MatchType::Skip,
-		};
-
-		let year = match (&self.year, &filter.year) {
+		let year = match (&self.term.year, &filter.year) {
 			(a, Some(b)) if a == b => MatchType::Match(*a),
 			(_, Some(_)) => MatchType::Fail,
 			(_, None) => MatchType::Skip,
 		};
 
-		let semester = match (&self.semester, &filter.semester) {
+		let semester = match (&self.term.semester, &filter.semester) {
 			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
 			(_, Some(_)) => MatchType::Fail,
 			(_, None) => MatchType::Skip,
@@ -56,7 +49,6 @@ impl CourseInstance {
 		MatchedCourseParts {
 			course,
 			section,
-			term,
 			year,
 			semester,
 			course_type,
@@ -74,20 +66,14 @@ impl CourseInstance {
 			(None, _) | (_, None) => MatchType::Skip,
 		};
 
-		let term = match (&self.term, filter.get("term")) {
-			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+		let year = match (&self.term.year, filter.get("year")) {
+			(a, Some(b)) if &(*a as u64) == b => MatchType::Match(*a),
 			(_, Some(_)) => MatchType::Fail,
 			(_, None) => MatchType::Skip,
 		};
 
-		let year = match (&self.year, filter.get("year")) {
-			(a, Some(b)) if a == b => MatchType::Match(*a),
-			(_, Some(_)) => MatchType::Fail,
-			(_, None) => MatchType::Skip,
-		};
-
-		let semester = match (&self.semester, filter.get("semester")) {
-			(a, Some(b)) if a == b => MatchType::Match(a.clone()),
+		let semester = match (&self.term.semester, filter.get("semester")) {
+			(a, Some(b)) if &a.to_string() == b => MatchType::Match(a.clone()),
 			(_, Some(_)) => MatchType::Fail,
 			(_, None) => MatchType::Skip,
 		};
@@ -114,7 +100,6 @@ impl CourseInstance {
 			course: MatchType::Skip,
 			subjects,
 			section,
-			term,
 			year,
 			semester,
 			course_type,

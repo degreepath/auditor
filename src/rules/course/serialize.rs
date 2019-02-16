@@ -9,7 +9,6 @@ impl Serialize for Rule {
 	{
 		match &self {
 			Rule {
-				term: None,
 				section: None,
 				year: None,
 				semester: None,
@@ -24,7 +23,6 @@ impl Serialize for Rule {
 			_ => {
 				let mut state = serializer.serialize_struct("Rule", 7)?;
 				state.serialize_field("course", &self.course)?;
-				state.serialize_field("term", &self.term)?;
 				state.serialize_field("section", &self.section)?;
 				state.serialize_field("year", &self.year)?;
 				state.serialize_field("semester", &self.semester)?;

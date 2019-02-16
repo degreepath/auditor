@@ -13,13 +13,11 @@ impl print::Print for Rule {
 			write!(&mut output, "{}", section)?;
 		}
 
-		let mut annotations = match (&self.term, self.year, &self.semester) {
-			(Some(term), None, None) => Some(util::pretty_term(&term)),
-			(None, Some(year), None) => Some(util::expand_year(year, "dual")),
-			(None, None, Some(semester)) => Some(semester.clone()),
-			(None, Some(year), Some(semester)) => Some(format!("{} {}", semester, util::expand_year(year, "short"))),
-			(Some(_), Some(_), _) | (Some(_), _, Some(_)) => unimplemented!("courses with term+year or term+semester"),
-			(None, None, None) => None,
+		let mut annotations = match (self.year, &self.semester) {
+			(Some(year), None) => Some(util::expand_year(year, "dual")),
+			(None, Some(semester)) => Some(semester.to_string()),
+			(Some(year), Some(semester)) => Some(format!("{} {}", semester, util::expand_year(year, "short"))),
+			(None, None) => None,
 		};
 
 		match (self.lab, &annotations) {

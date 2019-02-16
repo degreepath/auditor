@@ -6,11 +6,7 @@ pub use self::serde::{serde_false, string_or_struct, string_or_struct_parseerror
 pub use errors::ParseError;
 pub use oxford::Oxford;
 
-pub fn pretty_term(term: &str) -> String {
-	term.to_string()
-}
-
-pub fn expand_year(year: u64, mode: &str) -> String {
+pub fn expand_year(year: u16, mode: &str) -> String {
 	match mode {
 		"short" => format!("{}", year),
 		"dual" => {

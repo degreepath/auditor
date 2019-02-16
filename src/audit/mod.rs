@@ -1,3 +1,4 @@
+pub mod area_of_study;
 pub mod course_instance;
 pub mod course_match;
 pub mod reserved;
@@ -6,6 +7,7 @@ pub mod rule_result;
 pub mod rule_trait;
 pub mod transcript;
 
+pub use area_of_study::{AreaDescriptor, AuditInput};
 pub use course_instance::CourseInstance;
 pub use course_match::{MatchType, MatchedCourseParts};
 pub use reserved::{Reservation, ReservedPairings};

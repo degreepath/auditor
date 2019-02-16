@@ -1,12 +1,11 @@
 use super::{Given, What};
-use crate::audit::rule_result::AreaDescriptor;
 use crate::audit::{
-	CourseInstance, MatchedCourseParts, ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails,
+	AreaDescriptor, CourseInstance, MatchedCourseParts, ReservedPairings, RuleAudit, RuleInput, RuleResult,
+	RuleResultDetails,
 };
 use crate::filter::Clause as Filter;
 use crate::limit::Limiter;
-use crate::rules::req_ref;
-use crate::rules::Rule as AnyRule;
+use crate::rules::{req_ref, Rule as AnyRule};
 
 impl super::Rule {
 	pub fn to_rule(&self) -> AnyRule {

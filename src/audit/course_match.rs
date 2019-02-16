@@ -3,11 +3,10 @@
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct MatchedCourseParts {
 	pub course: MatchType<String>,
+	pub year: MatchType<u16>,
+	pub semester: MatchType<super::area_of_study::Semester>,
 	pub subjects: MatchType<Vec<MatchType<String>>>,
 	pub section: MatchType<String>,
-	pub term: MatchType<String>,
-	pub year: MatchType<u64>,
-	pub semester: MatchType<String>,
 	pub course_type: MatchType<String>,
 	pub gereqs: MatchType<Vec<MatchType<String>>>,
 	pub attributes: MatchType<Vec<MatchType<String>>>,
@@ -20,7 +19,6 @@ impl MatchedCourseParts {
 			course: MatchType::Skip,
 			subjects: MatchType::Skip,
 			section: MatchType::Skip,
-			term: MatchType::Skip,
 			year: MatchType::Skip,
 			semester: MatchType::Skip,
 			course_type: MatchType::Skip,
@@ -32,7 +30,6 @@ impl MatchedCourseParts {
 	pub fn any(&self) -> bool {
 		self.course.matched()
 			|| self.section.matched()
-			|| self.term.matched()
 			|| self.year.matched()
 			|| self.semester.matched()
 			|| self.course_type.matched()
@@ -43,7 +40,6 @@ impl MatchedCourseParts {
 	pub fn all(&self) -> bool {
 		self.course.matched()
 			&& self.section.matched()
-			&& self.term.matched()
 			&& self.year.matched()
 			&& self.semester.matched()
 			&& self.course_type.matched()
