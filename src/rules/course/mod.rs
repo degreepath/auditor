@@ -12,6 +12,7 @@ mod serialize;
 mod tests;
 
 #[derive(Default, Debug, PartialEq, Clone, Deserialize, Hash, Eq)]
+#[serde(deny_unknown_fields)]
 pub struct Rule {
 	pub course: String,
 	pub section: Option<String>,
