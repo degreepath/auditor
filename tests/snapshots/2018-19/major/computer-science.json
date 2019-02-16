@@ -138,10 +138,9 @@
               },
               {
                 "course": "CSCI 300",
-                "term": "2000-1",
                 "section": null,
-                "year": null,
-                "semester": null,
+                "year": 2000,
+                "semester": "Fall",
                 "lab": null,
                 "can_match_used": null
               }

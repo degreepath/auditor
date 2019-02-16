@@ -178,7 +178,6 @@
               },
               {
                 "course": "PSYCH 396",
-                "term": null,
                 "section": null,
                 "year": 2013,
                 "semester": "Spring",
@@ -215,7 +214,6 @@
             "of": [
               {
                 "course": "FREN 372",
-                "term": null,
                 "section": null,
                 "year": 2017,
                 "semester": "Fall",
@@ -242,7 +240,6 @@
               },
               {
                 "course": "HIST 320",
-                "term": null,
                 "section": null,
                 "year": 2014,
                 "semester": "Spring",
@@ -297,7 +294,6 @@
               },
               {
                 "course": "ENGL 340",
-                "term": null,
                 "section": null,
                 "year": 2011,
                 "semester": "Interim",
@@ -306,7 +302,6 @@
               },
               {
                 "course": "ENGL 340",
-                "term": null,
                 "section": null,
                 "year": 2011,
                 "semester": "Spring",
@@ -315,7 +310,6 @@
               },
               {
                 "course": "ENGL 340",
-                "term": null,
                 "section": null,
                 "year": 2012,
                 "semester": "Fall",
@@ -324,7 +318,6 @@
               },
               {
                 "course": "ENGL 340",
-                "term": null,
                 "section": null,
                 "year": 2012,
                 "semester": "Interim",
@@ -333,7 +326,6 @@
               },
               {
                 "course": "ENGL 340",
-                "term": null,
                 "section": null,
                 "year": 2013,
                 "semester": "Interim",
@@ -342,7 +334,6 @@
               },
               {
                 "course": "ENGL 340",
-                "term": null,
                 "section": null,
                 "year": 2014,
                 "semester": "Interim",
@@ -351,7 +342,6 @@
               },
               {
                 "course": "ENGL 340",
-                "term": null,
                 "section": null,
                 "year": 2015,
                 "semester": "Interim",
@@ -372,7 +362,6 @@
               },
               {
                 "course": "HIST 189",
-                "term": null,
                 "section": null,
                 "year": 2011,
                 "semester": "Fall",
@@ -381,7 +370,6 @@
               },
               {
                 "course": "HIST 189",
-                "term": null,
                 "section": null,
                 "year": 2012,
                 "semester": "Fall",
@@ -393,7 +381,6 @@
               },
               {
                 "course": "HIST 320",
-                "term": null,
                 "section": null,
                 "year": 2011,
                 "semester": "Fall",
@@ -402,7 +389,6 @@
               },
               {
                 "course": "HIST 320",
-                "term": null,
                 "section": null,
                 "year": 2013,
                 "semester": "Fall",

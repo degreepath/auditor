@@ -37,7 +37,7 @@ For this requirement, you must take one of the following courses:
 - ENVST 235
 - ES/PS 276
 - AS/ES 277
-- ENVST 281 (2014-5)
+- ENVST 281 (Summer Session 2 2014)
 - ENVST 381
 - ECON 242
 - ID 234
@@ -45,7 +45,7 @@ For this requirement, you must take one of the following courses:
 - PSYCH 227
 - SOAN 222
 - SOAN 247
-- SOAN 297 (2015-3)
+- SOAN 297 (Spring 2015)
 
 #### Arts and Humanities for Natural Science
 For this requirement, you must either take ENVST 202 or take either PHIL 257 or REL 278.
@@ -71,17 +71,17 @@ For this requirement, you must take at least three courses from among the follow
 - BI/ES 228
 - ENVST 245
 - ENVST 255
-- ENVST 281 (2000-1)
+- ENVST 281 (Fall 2000)
 - BI/ES 286
 - BI/ES 250
-- ENVST 381 (2000-1)
+- ENVST 381 (Fall 2000)
 - ENVST 397
 - BIO 224
 - BI/ES 350
 - BIO 371
-- BIO 391 (2000-1)
-- CHEM 391 (2000-1)
-- ENVST 391 (2000-1)
+- BIO 391 (Fall 2000)
+- CHEM 391 (Fall 2000)
+- ENVST 391 (Fall 2000)
 
 ### Social Science
 For this section, you must do all of the following:
@@ -108,8 +108,8 @@ For this requirement, you must do one of the following:
 - take ENVST 123
 - take ENVST 245
 - take ENVST 255
-- take ENVST 281 (2000-1)
-- take ENVST 381 (2000-1)
+- take ENVST 281 (Fall 2000)
+- take ENVST 381 (Fall 2000)
 - take BI/ES 226
 - take BI/ES 228
 - take BI/ES 286
@@ -118,21 +118,21 @@ For this requirement, you must do one of the following:
 - take either BIO 226 or BIO 261
 - take CHEM 124
 - take both CHEM 225 and CHEM 256
-- take BIO 391 (2000-1)
-- take CHEM 391 (2000-1)
+- take BIO 391 (Fall 2000)
+- take CHEM 391 (Fall 2000)
 
 #### Arts and Humanities for Social Sciences
 For this requirement, you must do one of the following:
 
 - take ENVST 202
 - take ENVST 270
-- take ENVST 281 (2000-1)
-- take ENVST 381 (2000-1)
+- take ENVST 281 (Fall 2000)
+- take ENVST 381 (Fall 2000)
 - take FILM 230
 - take GERM 276
 - take HIST 245
 - take HIST 275
-- take NORW 224 (2000-1)
+- take NORW 224 (Fall 2000)
 - take either PHIL 257 or REL 278
 - take ENGL 276
 
@@ -177,13 +177,13 @@ For this requirement, you must take two of the following courses:
 - ENVST 232
 - ENVST 235
 - ES/PS 276
-- ENVST 281 (2000-1)
-- ENVST 381 (2000-1)
-- ENVST 396 (2000-1)
+- ENVST 281 (Fall 2000)
+- ENVST 381 (Fall 2000)
+- ENVST 396 (Fall 2000)
 - ECON 243
 - PSYCH 227
 - SOAN 247
-- SOAN 297 (2000-1)
+- SOAN 297 (Fall 2000)
 - PSCI 221
 - SOAN 222
 - ID 234
@@ -214,8 +214,8 @@ For this requirement, you must do one of the following:
 - take ENVST 123
 - take ENVST 245
 - take ENVST 255
-- take ENVST 281 (2000-1)
-- take ENVST 381 (2000-1)
+- take ENVST 281 (Fall 2000)
+- take ENVST 381 (Fall 2000)
 - take BI/ES 226
 - take BI/ES 228
 - take BI/ES 286
@@ -224,16 +224,16 @@ For this requirement, you must do one of the following:
 - take either BIO 226 or BIO 261
 - take CHEM 124
 - take both CHEM 225 and CHEM 256
-- take BIO 391 (2000-1)
-- take CHEM 391 (2000-1)
+- take BIO 391 (Fall 2000)
+- take CHEM 391 (Fall 2000)
 
 #### Social Sciences for Arts and the Humanities
 For this requirement, you must take one of the following courses:
 
 - ENVST 232
 - ENVST 235
-- ENVST 281 (2000-1)
-- ENVST 381 (2000-1)
+- ENVST 281 (Fall 2000)
+- ENVST 381 (Fall 2000)
 - ES/PS 201
 - ES/PS 276
 - ECON 242
@@ -248,17 +248,17 @@ For this requirement, you must take at least six courses from among the followin
 
 - ENVST 202
 - ENVST 270
-- ENVST 281 (2000-1)
-- ENVST 381 (2000-1)
+- ENVST 281 (Fall 2000)
+- ENVST 381 (Fall 2000)
 - FILM 230
 - GERM 276
 - HIST 245
 - HIST 275
-- NORW 224 (2000-1)
+- NORW 224 (Fall 2000)
 - PHIL 257
 - ENGL 276
 - REL 278
 - ENVST 381
-- DEPT 301 (2000-1)
+- DEPT 301 (Fall 2000)
 
 

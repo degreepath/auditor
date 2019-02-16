@@ -39,7 +39,7 @@ For this requirement, you must take either ART 221 or ART 222.
 For this requirement, you must take either ART 226 or ART 227.
 
 #### Graphic Design
-For this requirement, you must take ART 236 (2000-0).
+For this requirement, you must take ART 236 (Fall 2000).
 
 ### 3D Media
 For this section, you must complete either the “Ceramics” or “Sculpture” requirement.
@@ -72,7 +72,7 @@ For this requirement, you must take ART 229.
 For this requirement, you must take ART 240.
 
 #### Graphic Design
-For this requirement, you must take ART 236 (2000-0).
+For this requirement, you must take ART 236 (Fall 2000).
 
 
 ## Juried Show

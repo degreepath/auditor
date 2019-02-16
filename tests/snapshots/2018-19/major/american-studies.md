@@ -72,7 +72,7 @@ For this requirement, you must take at least one of the following courses:
 - ENGL 340
 - ENGL 345
 - ENGL 392
-- ENGL 280B (2018-1)
+- ENGL 280B (Fall 2018)
 - ENVST 202
 - ENVST 232
 - ENVST 270

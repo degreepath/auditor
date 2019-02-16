@@ -29,7 +29,7 @@ For this section, you must do all of the following:
 For this requirement, you must take one course from among CSCI 276, CSCI 333, or CSCI 336.
 
 ### Systems
-For this requirement, you must take one course from among CSCI 273, CSCI 284, or CSCI 300 (2000-1).
+For this requirement, you must take one course from among CSCI 273, CSCI 284, or CSCI 300 (Fall 2000).
 
 
 ## Electives

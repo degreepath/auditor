@@ -183,10 +183,9 @@
                 "of": [
                   {
                     "course": "ART 236",
-                    "term": "2000-0",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   }
@@ -366,10 +365,9 @@
                 "of": [
                   {
                     "course": "ART 236",
-                    "term": "2000-0",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   }

@@ -312,10 +312,9 @@
               },
               {
                 "course": "ENGL 280",
-                "term": "2018-1",
                 "section": "B",
-                "year": null,
-                "semester": null,
+                "year": 2018,
+                "semester": "Fall",
                 "lab": null,
                 "can_match_used": null
               },

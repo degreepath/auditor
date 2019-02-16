@@ -160,10 +160,9 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2014-5",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2014,
+                    "semester": "Summer Session 2",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -190,10 +189,9 @@
                   },
                   {
                     "course": "SOAN 297",
-                    "term": "2015-3",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2015,
+                    "semester": "Spring",
                     "lab": null,
                     "can_match_used": null
                   }
@@ -327,10 +325,9 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -342,10 +339,9 @@
                   },
                   {
                     "course": "ENVST 381",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -363,28 +359,25 @@
                   },
                   {
                     "course": "BIO 391",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "CHEM 391",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 391",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   }
@@ -532,19 +525,17 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 381",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -588,19 +579,17 @@
                   },
                   {
                     "course": "BIO 391",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "CHEM 391",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   }
@@ -625,19 +614,17 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 381",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -655,10 +642,9 @@
                   },
                   {
                     "course": "NORW 224",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -821,28 +807,25 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 381",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 396",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -857,10 +840,9 @@
                   },
                   {
                     "course": "SOAN 297",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -977,19 +959,17 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 381",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -1033,19 +1013,17 @@
                   },
                   {
                     "course": "BIO 391",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "CHEM 391",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   }
@@ -1070,19 +1048,17 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 381",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -1131,19 +1107,17 @@
                   },
                   {
                     "course": "ENVST 281",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
                   {
                     "course": "ENVST 381",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -1161,10 +1135,9 @@
                   },
                   {
                     "course": "NORW 224",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   },
@@ -1182,10 +1155,9 @@
                   },
                   {
                     "course": "DEPT 301",
-                    "term": "2000-1",
                     "section": null,
-                    "year": null,
-                    "semester": null,
+                    "year": 2000,
+                    "semester": "Fall",
                     "lab": null,
                     "can_match_used": null
                   }
