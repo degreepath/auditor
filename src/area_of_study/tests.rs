@@ -1,6 +1,5 @@
 use super::*;
 use crate::rules::{count_of, course, req_ref};
-use indexmap::indexmap;
 
 #[test]
 fn deserialize() {
@@ -17,7 +16,7 @@ result:
     - requirement: Electives
 
 requirements:
-  Core:
+  - name: Core
     result:
       count: all
       of:
@@ -30,7 +29,7 @@ requirements:
         - ESTH 390
         - PSYCH 125
 
-  Electives:
+  - name: Electives
     result:
       count: 2
       of:
@@ -65,111 +64,107 @@ requirements:
 		}),
 		attributes: None,
 		requirements: [
-			(
-				"Core".to_string(),
-				Requirement {
-					message: None,
-					department_audited: false,
-					registrar_audited: false,
-					contract: false,
-					save: vec![],
-					requirements: indexmap! {},
-					result: Some(Rule::CountOf(count_of::Rule {
-						count: count_of::Counter::All,
-						of: vec![
-							Rule::Course(course::Rule {
-								course: "BIO 143".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "BIO 243".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "ESTH 110".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "ESTH 255".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "ESTH 374".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "ESTH 375".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "ESTH 390".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "PSYCH 125".to_string(),
-								..Default::default()
-							}),
-						],
-					})),
-				},
-			),
-			(
-				"Electives".to_string(),
-				Requirement {
-					message: None,
-					department_audited: false,
-					registrar_audited: false,
-					contract: false,
-					save: vec![],
-					requirements: indexmap! {},
-					result: Some(Rule::CountOf(count_of::Rule {
-						count: count_of::Counter::Number(2),
-						of: vec![
-							Rule::Course(course::Rule {
-								course: "ESTH 290".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "ESTH 376".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "PSYCH 230".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "NEURO 239".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "PSYCH 241".to_string(),
-								..Default::default()
-							}),
-							Rule::Course(course::Rule {
-								course: "PSYCH 247".to_string(),
-								..Default::default()
-							}),
-							Rule::CountOf(count_of::Rule {
-								count: count_of::Counter::Number(1),
-								of: vec![
-									Rule::Course(course::Rule {
-										course: "STAT 110".to_string(),
-										..Default::default()
-									}),
-									Rule::Course(course::Rule {
-										course: "STAT 212".to_string(),
-										..Default::default()
-									}),
-									Rule::Course(course::Rule {
-										course: "STAT 214".to_string(),
-										..Default::default()
-									}),
-								],
-							}),
-						],
-					})),
-				},
-			),
+			Requirement {
+				name: "Core".to_string(),
+				message: None,
+				department_audited: false,
+				registrar_audited: false,
+				contract: false,
+				save: vec![],
+				requirements: vec![],
+				result: Some(Rule::CountOf(count_of::Rule {
+					count: count_of::Counter::All,
+					of: vec![
+						Rule::Course(course::Rule {
+							course: "BIO 143".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "BIO 243".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "ESTH 110".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "ESTH 255".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "ESTH 374".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "ESTH 375".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "ESTH 390".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "PSYCH 125".to_string(),
+							..Default::default()
+						}),
+					],
+				})),
+			},
+			Requirement {
+				name: "Electives".to_string(),
+				message: None,
+				department_audited: false,
+				registrar_audited: false,
+				contract: false,
+				save: vec![],
+				requirements: vec![],
+				result: Some(Rule::CountOf(count_of::Rule {
+					count: count_of::Counter::Number(2),
+					of: vec![
+						Rule::Course(course::Rule {
+							course: "ESTH 290".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "ESTH 376".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "PSYCH 230".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "NEURO 239".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "PSYCH 241".to_string(),
+							..Default::default()
+						}),
+						Rule::Course(course::Rule {
+							course: "PSYCH 247".to_string(),
+							..Default::default()
+						}),
+						Rule::CountOf(count_of::Rule {
+							count: count_of::Counter::Number(1),
+							of: vec![
+								Rule::Course(course::Rule {
+									course: "STAT 110".to_string(),
+									..Default::default()
+								}),
+								Rule::Course(course::Rule {
+									course: "STAT 212".to_string(),
+									..Default::default()
+								}),
+								Rule::Course(course::Rule {
+									course: "STAT 214".to_string(),
+									..Default::default()
+								}),
+							],
+						}),
+					],
+				})),
+			},
 		]
 		.iter()
 		.cloned()

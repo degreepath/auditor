@@ -3,12 +3,12 @@ use crate::rules::Rule;
 use crate::rules::{given, req_ref};
 use crate::save::SaveBlock;
 use crate::{filter, rules, value};
-use indexmap::indexmap;
 use maplit::btreemap;
 
 #[test]
 fn serialize() {
 	let data = Requirement {
+		name: String::from("a requirement"),
 		message: None,
 		department_audited: false,
 		registrar_audited: false,
@@ -18,10 +18,11 @@ fn serialize() {
 		})),
 		contract: false,
 		save: vec![],
-		requirements: indexmap! {},
+		requirements: vec![],
 	};
 
 	let expected = "---
+name: a requirement
 message: ~
 department_audited: false
 result:
@@ -30,7 +31,7 @@ result:
 contract: false
 registrar_audited: false
 save: []
-requirements: {}";
+requirements: []";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
 	assert_eq!(actual, expected);
@@ -39,6 +40,7 @@ requirements: {}";
 #[test]
 fn deserialize() {
 	let data = "---
+name: a requirement
 message: ~
 department_audited: false
 registrar_audited: false
@@ -47,9 +49,10 @@ result:
   optional: false
 contract: false
 save: []
-requirements: {}";
+requirements: []";
 
 	let expected = Requirement {
+		name: String::from("a requirement"),
 		message: None,
 		department_audited: false,
 		registrar_audited: false,
@@ -59,7 +62,7 @@ requirements: {}";
 		})),
 		contract: false,
 		save: vec![],
-		requirements: indexmap! {},
+		requirements: vec![],
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -69,10 +72,12 @@ requirements: {}";
 #[test]
 fn deserialize_with_defaults() {
 	let data = "---
+name: a requirement
 message: ~
 result: {requirement: name, optional: false}";
 
 	let expected = Requirement {
+		name: String::from("a requirement"),
 		message: None,
 		department_audited: false,
 		registrar_audited: false,
@@ -82,7 +87,7 @@ result: {requirement: name, optional: false}";
 		})),
 		contract: false,
 		save: vec![],
-		requirements: indexmap! {},
+		requirements: vec![],
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -92,16 +97,18 @@ result: {requirement: name, optional: false}";
 #[test]
 fn deserialize_message_only() {
 	let data = "---
+name: a requirement
 message: a message";
 
 	let expected = Requirement {
+		name: String::from("a requirement"),
 		message: Some("a message".to_string()),
 		department_audited: false,
 		registrar_audited: false,
 		result: None,
 		contract: false,
 		save: vec![],
-		requirements: indexmap! {},
+		requirements: vec![],
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();
@@ -111,6 +118,7 @@ message: a message";
 #[test]
 fn deserialize_ba_interim() {
 	let data = "---
+name: a requirement
 save:
   - given: courses
     where: {semester: Interim}
@@ -126,6 +134,7 @@ result:
 	};
 
 	let expected = Requirement {
+		name: String::from("a requirement"),
 		message: None,
 		department_audited: false,
 		registrar_audited: false,
@@ -161,7 +170,7 @@ result:
 			filter: Some(expected_filter),
 			action: None,
 		}],
-		requirements: indexmap! {},
+		requirements: vec![],
 	};
 
 	let actual: Requirement = serde_yaml::from_str(&data).unwrap();

@@ -1,7 +1,6 @@
 use crate::rules::Rule;
 use crate::save::SaveBlock;
 use crate::util;
-use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
 mod print;
@@ -12,6 +11,7 @@ mod tests;
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Requirement {
+	pub name: String,
 	#[serde(default)]
 	pub message: Option<String>,
 	#[serde(default = "util::serde_false")]
@@ -25,5 +25,5 @@ pub struct Requirement {
 	#[serde(default)]
 	pub save: Vec<SaveBlock>,
 	#[serde(default)]
-	pub requirements: IndexMap<String, Requirement>,
+	pub requirements: Vec<Requirement>,
 }

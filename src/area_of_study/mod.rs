@@ -1,6 +1,5 @@
 use crate::requirement::Requirement;
 use crate::rules::Rule;
-use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
 mod attributes;
@@ -18,7 +17,7 @@ pub struct AreaOfStudy {
 	pub institution: Option<String>,
 	pub catalog: String,
 	pub result: Rule,
-	pub requirements: IndexMap<String, Requirement>,
+	pub requirements: Vec<Requirement>,
 	#[serde(default)]
 	pub attributes: Option<attributes::Attributes>,
 }

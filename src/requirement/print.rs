@@ -3,10 +3,10 @@ use crate::traits::print::Print;
 use std::fmt::Write;
 
 impl Requirement {
-	pub fn print(&self, name: &str, level: usize) -> Result<String, std::fmt::Error> {
+	pub fn print(&self, level: usize) -> Result<String, std::fmt::Error> {
 		let mut w = String::new();
 
-		writeln!(&mut w, "{} {}", "#".repeat(level), name)?;
+		writeln!(&mut w, "{} {}", "#".repeat(level), self.name)?;
 
 		if let Some(message) = &self.message {
 			let message = format!("Note: {}", message);
@@ -61,8 +61,8 @@ impl Requirement {
 			}
 		}
 
-		for (name, req) in &self.requirements {
-			write!(&mut w, "{}", req.print(&name, level + 1)?)?;
+		for req in &self.requirements {
+			write!(&mut w, "{}", req.print(level + 1)?)?;
 		}
 
 		if !w.ends_with('\n') {

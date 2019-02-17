@@ -51,8 +51,8 @@ impl AreaOfStudy {
 			write!(&mut w, "{}", &what_to_do)?;
 		}
 
-		for (name, req) in &self.requirements {
-			write!(&mut w, "\n{}", req.print(&name, 2)?)?;
+		for req in &self.requirements {
+			write!(&mut w, "\n{}", req.print(2)?)?;
 		}
 
 		if let Some(attributes) = &self.attributes {
