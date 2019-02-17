@@ -166,9 +166,7 @@ requirements:
 				})),
 			},
 		]
-		.iter()
-		.cloned()
-		.collect(),
+		.to_vec(),
 	};
 
 	let actual: AreaOfStudy = serde_yaml::from_str(&data).unwrap();
