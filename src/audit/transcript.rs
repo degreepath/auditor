@@ -27,15 +27,18 @@ impl Transcript {
 		filter: &CourseRule,
 		already_used: ReservedPairings,
 	) -> Option<(CourseInstance, MatchedParts)> {
-		for c in self.iter() {
+		self.0.iter().find_map(|c| {
 			let m = c.matches_rule(filter);
+
 			if already_used.contains(&(c.clone(), m.clone())) {
-				continue;
+				return None;
 			}
+
 			if m.any() {
 				return Some((c.clone(), m));
 			}
-		}
-		None
+
+			None
+		})
 	}
 }
