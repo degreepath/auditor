@@ -148,15 +148,6 @@
   "attributes": {
     "multicountable": [],
     "courses": {
-      "FREN 250": [
-        "french_elective"
-      ],
-      "FREN 251": [
-        "french_elective"
-      ],
-      "FREN 253": [
-        "french_elective"
-      ],
       "ART 251": [
         "french_elective"
       ],
@@ -176,6 +167,15 @@
         "french_elective"
       ],
       "FREN 235": [
+        "french_elective"
+      ],
+      "FREN 250": [
+        "french_elective"
+      ],
+      "FREN 251": [
+        "french_elective"
+      ],
+      "FREN 253": [
         "french_elective"
       ],
       "FREN 271": [

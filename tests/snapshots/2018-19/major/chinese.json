@@ -313,11 +313,11 @@
       "ASIAN 123": [
         "china_comparative_asia"
       ],
-      "ASIAN 156.F": [
-        "china_flac"
-      ],
       "ASIAN 156": [
         "china_focused_on_china"
+      ],
+      "ASIAN 156.F": [
+        "china_flac"
       ],
       "ASIAN 200": [
         "china_comparative_asia"
@@ -341,20 +341,20 @@
       "ASIAN 236": [
         "china_focused_on_china"
       ],
-      "ASIAN 237.F": [
-        "china_flac"
-      ],
       "ASIAN 237": [
         "china_focused_on_china"
+      ],
+      "ASIAN 237.F": [
+        "china_flac"
       ],
       "ASIAN 268": [
         "china_comparative_asia"
       ],
-      "ASIAN 270.F": [
-        "china_flac"
-      ],
       "ASIAN 270": [
         "china_focused_on_china"
+      ],
+      "ASIAN 270.F": [
+        "china_flac"
       ],
       "ASIAN 282": [
         "china_comparative_asia"
@@ -382,17 +382,17 @@
         "china_comparative_asia",
         "china_senior_seminar"
       ],
-      "HIST 250.F": [
-        "china_flac"
-      ],
       "HIST 250": [
         "china_focused_on_china"
       ],
-      "HIST 251.F": [
+      "HIST 250.F": [
         "china_flac"
       ],
       "HIST 251": [
         "china_focused_on_china"
+      ],
+      "HIST 251.F": [
+        "china_flac"
       ],
       "HIST 262": [
         "china_focused_on_china"

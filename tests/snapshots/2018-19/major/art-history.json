@@ -308,6 +308,18 @@
   "attributes": {
     "multicountable": [],
     "courses": {
+      "ART 102": [
+        "art_studio_art"
+      ],
+      "ART 103": [
+        "art_studio_art"
+      ],
+      "ART 104": [
+        "art_studio_art"
+      ],
+      "ART 106": [
+        "art_studio_art"
+      ],
       "ART 161, 2000-1": [
         "art_locale_american",
         "art_period_post1700"
@@ -315,6 +327,60 @@
       "ART 161, 2001-1": [
         "art_locale_african",
         "art_period_post1700"
+      ],
+      "ART 205": [
+        "art_studio_art"
+      ],
+      "ART 207": [
+        "art_studio_art"
+      ],
+      "ART 221": [
+        "art_studio_art"
+      ],
+      "ART 222": [
+        "art_studio_art"
+      ],
+      "ART 223": [
+        "art_studio_art"
+      ],
+      "ART 224": [
+        "art_studio_art"
+      ],
+      "ART 225": [
+        "art_studio_art"
+      ],
+      "ART 226": [
+        "art_studio_art"
+      ],
+      "ART 227": [
+        "art_studio_art"
+      ],
+      "ART 228": [
+        "art_studio_art"
+      ],
+      "ART 229": [
+        "art_studio_art"
+      ],
+      "ART 232": [
+        "art_studio_art"
+      ],
+      "ART 233": [
+        "art_studio_art"
+      ],
+      "ART 234": [
+        "art_studio_art"
+      ],
+      "ART 236": [
+        "art_studio_art"
+      ],
+      "ART 238": [
+        "art_studio_art"
+      ],
+      "ART 240": [
+        "art_studio_art"
+      ],
+      "ART 246": [
+        "art_studio_art"
       ],
       "ART 251": [
         "art_locale_european",
@@ -410,10 +476,28 @@
         "art_locale_american",
         "art_period_post1700"
       ],
+      "ART 294": [
+        "art_studio_art"
+      ],
+      "ART 298": [
+        "art_studio_art"
+      ],
+      "ART 340": [
+        "art_studio_art"
+      ],
+      "ART 343": [
+        "art_studio_art"
+      ],
       "ART 370": [
         "art_locale_european",
         "art_locale_american",
         "art_period_post1700"
+      ],
+      "ART 394": [
+        "art_studio_art"
+      ],
+      "ART 398": [
+        "art_studio_art"
       ],
       "ASIAN 270": [
         "art_locale_asian",
@@ -434,90 +518,6 @@
         "art_locale_european",
         "art_locale_american",
         "art_period_post1700"
-      ],
-      "ART 102": [
-        "art_studio_art"
-      ],
-      "ART 103": [
-        "art_studio_art"
-      ],
-      "ART 104": [
-        "art_studio_art"
-      ],
-      "ART 106": [
-        "art_studio_art"
-      ],
-      "ART 205": [
-        "art_studio_art"
-      ],
-      "ART 207": [
-        "art_studio_art"
-      ],
-      "ART 221": [
-        "art_studio_art"
-      ],
-      "ART 222": [
-        "art_studio_art"
-      ],
-      "ART 223": [
-        "art_studio_art"
-      ],
-      "ART 224": [
-        "art_studio_art"
-      ],
-      "ART 225": [
-        "art_studio_art"
-      ],
-      "ART 226": [
-        "art_studio_art"
-      ],
-      "ART 227": [
-        "art_studio_art"
-      ],
-      "ART 228": [
-        "art_studio_art"
-      ],
-      "ART 229": [
-        "art_studio_art"
-      ],
-      "ART 232": [
-        "art_studio_art"
-      ],
-      "ART 233": [
-        "art_studio_art"
-      ],
-      "ART 234": [
-        "art_studio_art"
-      ],
-      "ART 236": [
-        "art_studio_art"
-      ],
-      "ART 238": [
-        "art_studio_art"
-      ],
-      "ART 240": [
-        "art_studio_art"
-      ],
-      "ART 246": [
-        "art_studio_art"
-      ],
-      "ART 294": [
-        "art_studio_art"
-      ],
-      "ART 298": [
-        "art_studio_art"
-      ],
-      "ART 340": [
-        "art_studio_art"
-      ],
-      "ART 343": [
-        "art_studio_art"
-      ],
-      "ART 394": [
-        "art_studio_art"
-      ],
-      "ART 398": [
-        "art_studio_art"
       ]
     }
   }

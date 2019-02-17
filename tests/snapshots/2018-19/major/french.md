@@ -37,9 +37,6 @@ For this requirement, you must have at least two courses taken with the “frenc
 
 Courses | `french_elective`
 --- | :---:
-FREN 250 | ✅
-FREN 251 | ✅
-FREN 253 | ✅
 ART 251 | ✅
 ART 252 | ✅
 ART 263 | ✅
@@ -47,6 +44,9 @@ ART 271 | ✅
 FREN 231 | ✅
 FREN 232 | ✅
 FREN 235 | ✅
+FREN 250 | ✅
+FREN 251 | ✅
+FREN 253 | ✅
 FREN 271 | ✅
 FREN 272 | ✅
 FREN 273 | ✅

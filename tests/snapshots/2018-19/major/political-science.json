@@ -529,6 +529,9 @@
       "PSCI 285": [
         "psci_topic_international"
       ],
+      "PSCI 299 2000-1": [
+        "psci_topic_theory"
+      ],
       "PSCI 311": [
         "psci_level_3"
       ],
@@ -552,9 +555,6 @@
       ],
       "PSCI 385": [
         "psci_level_3"
-      ],
-      "PSCI 299 2000-1": [
-        "psci_topic_theory"
       ]
     }
   }

@@ -214,27 +214,6 @@
   "attributes": {
     "multicountable": [],
     "courses": {
-      "PSYCH 235": [
-        "psych_elective"
-      ],
-      "PSYCH 236": [
-        "psych_elective"
-      ],
-      "PSYCH 237": [
-        "psych_elective"
-      ],
-      "PSYCH 238": [
-        "psych_elective"
-      ],
-      "PSYCH 241": [
-        "psych_elective"
-      ],
-      "PSYCH 244": [
-        "psych_elective"
-      ],
-      "PSYCH 247": [
-        "psych_elective"
-      ],
       "PSYCH 220": [
         "psych_elective"
       ],
@@ -254,6 +233,27 @@
         "psych_elective"
       ],
       "PSYCH 227": [
+        "psych_elective"
+      ],
+      "PSYCH 235": [
+        "psych_elective"
+      ],
+      "PSYCH 236": [
+        "psych_elective"
+      ],
+      "PSYCH 237": [
+        "psych_elective"
+      ],
+      "PSYCH 238": [
+        "psych_elective"
+      ],
+      "PSYCH 241": [
+        "psych_elective"
+      ],
+      "PSYCH 244": [
+        "psych_elective"
+      ],
+      "PSYCH 247": [
         "psych_elective"
       ],
       "PSYCH 250": [

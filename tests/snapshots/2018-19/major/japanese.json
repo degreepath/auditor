@@ -307,6 +307,9 @@
       "AS/RE 289": [
         "japan_comparative_asia"
       ],
+      "ASIAN 001A.F": [
+        "japan_flac"
+      ],
       "ASIAN 121": [
         "japan_comparative_asia"
       ],
@@ -390,9 +393,6 @@
       ],
       "PSCI 245": [
         "japan_comparative_asia"
-      ],
-      "ASIAN 001A.F": [
-        "japan_flac"
       ]
     }
   }

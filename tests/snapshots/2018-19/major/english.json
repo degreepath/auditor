@@ -341,6 +341,26 @@
       ]
     ],
     "courses": {
+      "ENGL 200 2017-3": [
+        "engl_topic_crosscultural",
+        "engl_period_post1800"
+      ],
+      "ENGL 200 2018-3": [
+        "engl_topic_crosscultural",
+        "engl_period_post1800"
+      ],
+      "ENGL 203 2017-1": [
+        "engl_topic_crosscultural",
+        "engl_period_post1800"
+      ],
+      "ENGL 204 2017-3": [
+        "engl_topic_crosscultural",
+        "engl_period_post1800"
+      ],
+      "ENGL 205 2017-1": [
+        "engl_topic_crosscultural",
+        "engl_period_post1800"
+      ],
       "ENGL 205 2018-1": [
         "engl_topic_crosscultural",
         "engl_period_post1800"
@@ -349,78 +369,7 @@
         "engl_topic_crosscultural",
         "engl_period_post1800"
       ],
-      "ENGL 209 2018-1": [
-        "engl_topic_crosscultural",
-        "engl_period_post1800"
-      ],
-      "ENGL 223 2018-1": [
-        "engl_topic_literary_history",
-        "engl_period_pre1800"
-      ],
-      "ENGL 253 2018-1": [
-        "engl_elective",
-        "engl_period_post1800"
-      ],
-      "ENGL 258 2018-1": [
-        "engl_elective",
-        "engl_period_post1800"
-      ],
-      "ENGL 275 2018-1": [
-        "engl_topic_crossdisciplinary",
-        "engl_period_post1800"
-      ],
-      "ENGL 276 2018-1": [
-        "engl_topic_crossdisciplinary",
-        "engl_period_post1800"
-      ],
-      "ENGL 280A 2018-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 280B 2018-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 284 2018-1": [
-        "engl_topic_genre"
-      ],
-      "ENGL 285 2018-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 292 2018-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 293 2018-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 296 2018-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 280A 2018-2": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 280B 2018-2": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 282 2018-2": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 287 2018-2": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ID 258 2018-2": [
-        "engl_elective",
-        "engl_period_post1800"
-      ],
-      "ENGL 200 2018-3": [
+      "ENGL 207 2017-3": [
         "engl_topic_crosscultural",
         "engl_period_post1800"
       ],
@@ -432,12 +381,48 @@
         "engl_topic_crosscultural",
         "engl_period_post1800"
       ],
+      "ENGL 209 2017-3": [
+        "engl_topic_crosscultural",
+        "engl_period_post1800"
+      ],
+      "ENGL 209 2018-1": [
+        "engl_topic_crosscultural",
+        "engl_period_post1800"
+      ],
+      "ENGL 220 2017-1": [
+        "engl_topic_literary_history",
+        "engl_period_post1800"
+      ],
       "ENGL 220 2018-3": [
         "engl_topic_literary_history",
         "engl_period_pre1800"
       ],
+      "ENGL 223 2017-1": [
+        "engl_topic_literary_history",
+        "engl_period_pre1800"
+      ],
+      "ENGL 223 2018-1": [
+        "engl_topic_literary_history",
+        "engl_period_pre1800"
+      ],
+      "ENGL 228 2017-1": [
+        "engl_topic_literary_history",
+        "engl_period_post1800"
+      ],
+      "ENGL 229 2017-3": [
+        "engl_topic_literary_history",
+        "engl_period_post1800"
+      ],
       "ENGL 229 2018-3": [
         "engl_topic_literary_history",
+        "engl_period_post1800"
+      ],
+      "ENGL 232 2017-3": [
+        "engl_topic_literary_history",
+        "engl_period_pre1800"
+      ],
+      "ENGL 242 2017-3": [
+        "engl_topic_genre",
         "engl_period_post1800"
       ],
       "ENGL 242 2018-3": [
@@ -448,51 +433,47 @@
         "engl_elective",
         "engl_period_post1800"
       ],
+      "ENGL 253 2018-1": [
+        "engl_elective",
+        "engl_period_post1800"
+      ],
       "ENGL 256 2018-3": [
         "engl_elective",
         "engl_period_pre1800"
       ],
-      "ENGL 260 2018-3": [
-        "engl_topic_crossdisciplinary",
+      "ENGL 258 2017-3": [
+        "engl_elective",
         "engl_period_post1800"
       ],
-      "ENGL 283 2018-3": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 286 2018-3": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 289 2018-3": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 203 2017-1": [
-        "engl_topic_crosscultural",
-        "engl_period_post1800"
-      ],
-      "ENGL 205 2017-1": [
-        "engl_topic_crosscultural",
-        "engl_period_post1800"
-      ],
-      "ENGL 220 2017-1": [
-        "engl_topic_literary_history",
-        "engl_period_post1800"
-      ],
-      "ENGL 223 2017-1": [
-        "engl_topic_literary_history",
-        "engl_period_pre1800"
-      ],
-      "ENGL 228 2017-1": [
-        "engl_topic_literary_history",
+      "ENGL 258 2018-1": [
+        "engl_elective",
         "engl_period_post1800"
       ],
       "ENGL 260 2017-1": [
         "engl_topic_crossdisciplinary",
         "engl_period_pre1800"
       ],
+      "ENGL 260 2017-2": [
+        "engl_topic_crossdisciplinary",
+        "engl_period_pre1800"
+      ],
+      "ENGL 260 2017-3": [
+        "engl_topic_crossdisciplinary",
+        "engl_period_post1800"
+      ],
+      "ENGL 260 2018-3": [
+        "engl_topic_crossdisciplinary",
+        "engl_period_post1800"
+      ],
+      "ENGL 263 2017-2": [
+        "engl_topic_crossdisciplinary",
+        "engl_period_post1800"
+      ],
       "ENGL 266 2017-1": [
+        "engl_topic_crossdisciplinary",
+        "engl_period_post1800"
+      ],
+      "ENGL 267 2017-2": [
         "engl_topic_crossdisciplinary",
         "engl_period_post1800"
       ],
@@ -508,39 +489,35 @@
         "engl_topic_crossdisciplinary",
         "engl_period_post1800"
       ],
+      "ENGL 275 2018-1": [
+        "engl_topic_crossdisciplinary",
+        "engl_period_post1800"
+      ],
+      "ENGL 276 2018-1": [
+        "engl_topic_crossdisciplinary",
+        "engl_period_post1800"
+      ],
       "ENGL 280 2017-1": [
         "engl_topic_genre",
         "engl_period_post1800"
       ],
-      "ENGL 283 2017-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 292 2017-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 293 2017-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 296 2017-1": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 260 2017-2": [
-        "engl_topic_crossdisciplinary",
-        "engl_period_pre1800"
-      ],
-      "ENGL 263 2017-2": [
-        "engl_topic_crossdisciplinary",
-        "engl_period_post1800"
-      ],
-      "ENGL 267 2017-2": [
-        "engl_topic_crossdisciplinary",
-        "engl_period_post1800"
-      ],
       "ENGL 280 2017-2": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 280A 2018-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 280A 2018-2": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 280B 2018-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 280B 2018-2": [
         "engl_topic_genre",
         "engl_period_post1800"
       ],
@@ -548,8 +525,71 @@
         "engl_topic_genre",
         "engl_period_post1800"
       ],
+      "ENGL 282 2018-2": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 283 2017-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 283 2018-3": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 284 2018-1": [
+        "engl_topic_genre"
+      ],
+      "ENGL 285 2018-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 286 2018-3": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 287 2018-2": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 289 2017-3": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 289 2018-3": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
       "ENGL 290 2017-2": [
         "engl_topic_crossdisciplinary",
+        "engl_period_post1800"
+      ],
+      "ENGL 291 2017-3": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 292 2017-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 292 2018-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 293 2017-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 293 2018-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 296 2017-1": [
+        "engl_topic_genre",
+        "engl_period_post1800"
+      ],
+      "ENGL 296 2018-1": [
+        "engl_topic_genre",
         "engl_period_post1800"
       ],
       "ID 257 2017-2": [
@@ -560,48 +600,8 @@
         "engl_elective",
         "engl_period_post1800"
       ],
-      "ENGL 200 2017-3": [
-        "engl_topic_crosscultural",
-        "engl_period_post1800"
-      ],
-      "ENGL 204 2017-3": [
-        "engl_topic_crosscultural",
-        "engl_period_post1800"
-      ],
-      "ENGL 207 2017-3": [
-        "engl_topic_crosscultural",
-        "engl_period_post1800"
-      ],
-      "ENGL 209 2017-3": [
-        "engl_topic_crosscultural",
-        "engl_period_post1800"
-      ],
-      "ENGL 229 2017-3": [
-        "engl_topic_literary_history",
-        "engl_period_post1800"
-      ],
-      "ENGL 232 2017-3": [
-        "engl_topic_literary_history",
-        "engl_period_pre1800"
-      ],
-      "ENGL 242 2017-3": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 258 2017-3": [
+      "ID 258 2018-2": [
         "engl_elective",
-        "engl_period_post1800"
-      ],
-      "ENGL 260 2017-3": [
-        "engl_topic_crossdisciplinary",
-        "engl_period_post1800"
-      ],
-      "ENGL 289 2017-3": [
-        "engl_topic_genre",
-        "engl_period_post1800"
-      ],
-      "ENGL 291 2017-3": [
-        "engl_topic_genre",
         "engl_period_post1800"
       ]
     }

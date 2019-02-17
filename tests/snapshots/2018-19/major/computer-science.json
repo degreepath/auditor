@@ -203,16 +203,10 @@
   "attributes": {
     "multicountable": [],
     "courses": {
-      "CSCI 276": [
-        "csci_elective"
-      ],
-      "CSCI 333": [
-        "csci_elective"
-      ],
-      "CSCI 336": [
-        "csci_elective"
-      ],
       "CSCI 273": [
+        "csci_elective"
+      ],
+      "CSCI 276": [
         "csci_elective"
       ],
       "CSCI 284": [
@@ -221,10 +215,16 @@
       "CSCI 300": [
         "csci_elective"
       ],
+      "CSCI 315": [
+        "csci_elective"
+      ],
       "CSCI 316": [
         "csci_elective"
       ],
-      "CSCI 315": [
+      "CSCI 333": [
+        "csci_elective"
+      ],
+      "CSCI 336": [
         "csci_elective"
       ],
       "CSCI 350": [

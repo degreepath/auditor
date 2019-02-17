@@ -211,6 +211,36 @@
   "attributes": {
     "multicountable": [],
     "courses": {
+      "CLASS 111": [
+        "classics_ancient_history"
+      ],
+      "GREEK 111": [
+        "classics_greek"
+      ],
+      "GREEK 112": [
+        "classics_greek"
+      ],
+      "GREEK 231": [
+        "classics_greek"
+      ],
+      "GREEK 253": [
+        "classics_greek"
+      ],
+      "GREEK 370": [
+        "classics_greek"
+      ],
+      "GREEK 372": [
+        "classics_greek"
+      ],
+      "GREEK 373": [
+        "classics_greek"
+      ],
+      "GREEK 374": [
+        "classics_greek"
+      ],
+      "GREEK 375": [
+        "classics_greek"
+      ],
       "LATIN 111": [
         "classics_latin"
       ],
@@ -246,36 +276,6 @@
       ],
       "LATIN 377": [
         "classics_latin"
-      ],
-      "GREEK 111": [
-        "classics_greek"
-      ],
-      "GREEK 112": [
-        "classics_greek"
-      ],
-      "GREEK 231": [
-        "classics_greek"
-      ],
-      "GREEK 253": [
-        "classics_greek"
-      ],
-      "GREEK 370": [
-        "classics_greek"
-      ],
-      "GREEK 372": [
-        "classics_greek"
-      ],
-      "GREEK 373": [
-        "classics_greek"
-      ],
-      "GREEK 374": [
-        "classics_greek"
-      ],
-      "GREEK 375": [
-        "classics_greek"
-      ],
-      "CLASS 111": [
-        "classics_ancient_history"
       ]
     }
   }

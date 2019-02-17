@@ -54,6 +54,16 @@ For this requirement, you must have at least one course taken with the “classi
 
 Courses | `classics_ancient_history` | `classics_greek` | `classics_latin`
 --- | :---: | :---: | :---:
+CLASS 111 | ✅ | ❌ | ❌
+GREEK 111 | ❌ | ✅ | ❌
+GREEK 112 | ❌ | ✅ | ❌
+GREEK 231 | ❌ | ✅ | ❌
+GREEK 253 | ❌ | ✅ | ❌
+GREEK 370 | ❌ | ✅ | ❌
+GREEK 372 | ❌ | ✅ | ❌
+GREEK 373 | ❌ | ✅ | ❌
+GREEK 374 | ❌ | ✅ | ❌
+GREEK 375 | ❌ | ✅ | ❌
 LATIN 111 | ❌ | ❌ | ✅
 LATIN 112 | ❌ | ❌ | ✅
 LATIN 231 | ❌ | ❌ | ✅
@@ -66,14 +76,4 @@ LATIN 373 | ❌ | ❌ | ✅
 LATIN 374 | ❌ | ❌ | ✅
 LATIN 375 | ❌ | ❌ | ✅
 LATIN 377 | ❌ | ❌ | ✅
-GREEK 111 | ❌ | ✅ | ❌
-GREEK 112 | ❌ | ✅ | ❌
-GREEK 231 | ❌ | ✅ | ❌
-GREEK 253 | ❌ | ✅ | ❌
-GREEK 370 | ❌ | ✅ | ❌
-GREEK 372 | ❌ | ✅ | ❌
-GREEK 373 | ❌ | ✅ | ❌
-GREEK 374 | ❌ | ✅ | ❌
-GREEK 375 | ❌ | ✅ | ❌
-CLASS 111 | ✅ | ❌ | ❌
 

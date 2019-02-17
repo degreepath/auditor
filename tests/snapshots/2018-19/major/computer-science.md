@@ -43,14 +43,14 @@ For this requirement, you must take CSCI 390.
 
 Courses | `csci_elective`
 --- | :---:
-CSCI 276 | ✅
-CSCI 333 | ✅
-CSCI 336 | ✅
 CSCI 273 | ✅
+CSCI 276 | ✅
 CSCI 284 | ✅
 CSCI 300 | ✅
-CSCI 316 | ✅
 CSCI 315 | ✅
+CSCI 316 | ✅
+CSCI 333 | ✅
+CSCI 336 | ✅
 CSCI 350 | ✅
 ID 259 2000.1 | ✅
 

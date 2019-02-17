@@ -53,13 +53,6 @@ For this requirement, you must have at least two courses taken with the “psych
 
 Courses | `psych_elective` | `psych_level_3`
 --- | :---: | :---:
-PSYCH 235 | ✅ | ❌
-PSYCH 236 | ✅ | ❌
-PSYCH 237 | ✅ | ❌
-PSYCH 238 | ✅ | ❌
-PSYCH 241 | ✅ | ❌
-PSYCH 244 | ✅ | ❌
-PSYCH 247 | ✅ | ❌
 PSYCH 220 | ✅ | ❌
 PSYCH 221 | ✅ | ❌
 PSYCH 222 | ✅ | ❌
@@ -67,6 +60,13 @@ PSYCH 223 | ✅ | ❌
 PSYCH 224 | ✅ | ❌
 PSYCH 225 | ✅ | ❌
 PSYCH 227 | ✅ | ❌
+PSYCH 235 | ✅ | ❌
+PSYCH 236 | ✅ | ❌
+PSYCH 237 | ✅ | ❌
+PSYCH 238 | ✅ | ❌
+PSYCH 241 | ✅ | ❌
+PSYCH 244 | ✅ | ❌
+PSYCH 247 | ✅ | ❌
 PSYCH 250 | ✅ | ❌
 PSYCH 251 | ✅ | ❌
 PSYCH 336 | ✅ | ✅
