@@ -9,9 +9,9 @@ mod limit;
 pub mod requirement;
 mod rules;
 mod save;
+mod student;
 mod traits;
 mod util;
 mod value;
-mod student;
 
 pub use traits::print::Print;

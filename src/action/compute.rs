@@ -1,8 +1,8 @@
 use super::Action;
 use super::Operator;
 use crate::audit::rule_result::{GivenOutput, GivenOutputType, RuleStatus};
-use crate::student::AreaDescriptor;
 use crate::audit::CourseInstance;
+use crate::student::AreaDescriptor;
 pub use crate::value::SingleValue;
 
 pub(crate) trait ActionableData {}

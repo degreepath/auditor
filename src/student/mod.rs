@@ -1,5 +1,5 @@
 use crate::audit::{CourseInstance, Transcript};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::area_of_study::AreaType;
 use attendance::AttendanceInstance;
@@ -79,8 +79,8 @@ impl std::fmt::Display for Semester {
 }
 
 mod organization {
-	use serde::{Serialize, Deserialize};
 	use super::Term;
+	use serde::{Deserialize, Serialize};
 
 	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct OrganizationDescriptor {
@@ -91,8 +91,8 @@ mod organization {
 }
 
 mod performance {
-	use serde::{Serialize, Deserialize};
 	use super::Term;
+	use serde::{Deserialize, Serialize};
 
 	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct PerformanceInstance {
@@ -103,8 +103,8 @@ mod performance {
 }
 
 mod attendance {
-	use serde::{Serialize, Deserialize};
 	use super::Term;
+	use serde::{Deserialize, Serialize};
 
 	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct AttendanceInstance {
@@ -115,8 +115,8 @@ mod attendance {
 }
 
 mod overrides {
-	use serde::{Serialize, Deserialize};
 	use super::{AreaDescriptor, AttendanceInstance, CourseInstance, PerformanceInstance};
+	use serde::{Deserialize, Serialize};
 
 	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct Override {
