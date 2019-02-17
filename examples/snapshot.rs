@@ -67,7 +67,10 @@ fn run() -> Result<()> {
 
 	input_files
 		.into_par_iter()
-		.for_each(|input| convert_file(&input).unwrap());
+		.for_each(|input| match convert_file(&input) {
+			Ok(_) => (),
+			Err(err) => println!("error while processing {}: {}", input.0, err),
+		});
 
 	Ok(())
 }
