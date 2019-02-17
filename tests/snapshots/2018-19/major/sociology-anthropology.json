@@ -108,7 +108,7 @@
       "message": "Students are permitted to take one of the four elective courses, but not a core course, S/U.",
       "department_audited": false,
       "result": {
-        "given": "these courses",
+        "given": "these-courses",
         "courses": [
           {
             "course": "SOAN 121"
@@ -181,6 +181,7 @@
           }
         ],
         "repeats": "first",
+        "what": "courses",
         "limit": [
           {
             "where": {
@@ -196,7 +197,6 @@
           }
         ],
         "where": null,
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

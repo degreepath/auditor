@@ -62,9 +62,9 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "credits",
             "limit": null,
             "where": null,
-            "what": "credits",
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -83,6 +83,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "credits",
             "limit": null,
             "where": {
               "institution": {
@@ -93,7 +94,6 @@
                 }
               }
             },
-            "what": "credits",
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -115,9 +115,9 @@
               {
                 "given": "save",
                 "save": "Interim Courses",
+                "what": "credits",
                 "limit": null,
                 "where": null,
-                "what": "credits",
                 "do": {
                   "lhs": "Sum",
                   "op": "GreaterThanEqualTo",
@@ -129,9 +129,9 @@
               {
                 "given": "save",
                 "save": "Interim Courses",
+                "what": "courses",
                 "limit": null,
                 "where": null,
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -148,6 +148,7 @@
             {
               "name": "Interim Courses",
               "given": "courses",
+              "what": "courses",
               "limit": null,
               "where": {
                 "semester": {
@@ -158,7 +159,6 @@
                   }
                 }
               },
-              "what": "courses",
               "do": null
             }
           ],
@@ -169,9 +169,9 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "grades",
             "limit": null,
             "where": null,
-            "what": "grades",
             "do": {
               "lhs": "Average",
               "op": "GreaterThanEqualTo",
@@ -193,6 +193,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "credits",
             "limit": null,
             "where": {
               "level": {
@@ -203,7 +204,6 @@
                 }
               }
             },
-            "what": "credits",
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -222,6 +222,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "credits",
             "limit": null,
             "where": {
               "graded": {
@@ -232,7 +233,6 @@
                 }
               }
             },
-            "what": "credits",
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -250,7 +250,8 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "areas of study",
+            "given": "areas",
+            "what": "areas",
             "limit": null,
             "where": {
               "type": {
@@ -261,7 +262,6 @@
                 }
               }
             },
-            "what": "areas of study",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -342,6 +342,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "courses",
                 "limit": null,
                 "where": {
                   "gereqs": {
@@ -352,7 +353,6 @@
                     }
                   }
                 },
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -371,6 +371,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "courses",
                 "limit": null,
                 "where": {
                   "gereqs": {
@@ -381,7 +382,6 @@
                     }
                   }
                 },
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -403,6 +403,7 @@
                 "of": [
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -413,7 +414,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -424,6 +424,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -434,7 +435,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -445,6 +445,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -455,7 +456,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -466,6 +466,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -476,7 +477,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -487,6 +487,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -497,7 +498,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -508,6 +508,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -518,7 +519,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -529,6 +529,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -539,7 +540,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -550,6 +550,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -560,7 +561,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -571,6 +571,7 @@
                   },
                   {
                     "given": "courses",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -581,7 +582,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -602,6 +602,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "courses",
                 "limit": null,
                 "where": {
                   "gereqs": {
@@ -612,7 +613,6 @@
                     }
                   }
                 },
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -631,6 +631,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "courses",
                 "limit": null,
                 "where": {
                   "gereqs": {
@@ -641,7 +642,6 @@
                     }
                   }
                 },
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -660,6 +660,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "distinct-courses",
                 "limit": null,
                 "where": {
                   "gereqs": {
@@ -670,7 +671,6 @@
                     }
                   }
                 },
-                "what": "distinct courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -730,9 +730,9 @@
                   {
                     "given": "save",
                     "save": "Courses with an HWC",
+                    "what": "courses",
                     "limit": null,
                     "where": null,
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -744,6 +744,7 @@
                   {
                     "given": "save",
                     "save": "Courses with an HWC",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "institution": {
@@ -754,7 +755,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -771,6 +771,7 @@
                 {
                   "name": "Courses with an HWC",
                   "given": "courses",
+                  "what": "courses",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -781,7 +782,6 @@
                       }
                     }
                   },
-                  "what": "courses",
                   "do": null
                 }
               ],
@@ -796,23 +796,9 @@
                   {
                     "given": "save",
                     "save": "Courses with an MCD or MCG",
-                    "limit": null,
-                    "where": null,
                     "what": "courses",
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
-                      }
-                    }
-                  },
-                  {
-                    "given": "save",
-                    "save": "Courses with an MCD or MCG",
                     "limit": null,
                     "where": null,
-                    "what": "departments",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -824,6 +810,21 @@
                   {
                     "given": "save",
                     "save": "Courses with an MCD or MCG",
+                    "what": "departments",
+                    "limit": null,
+                    "where": null,
+                    "do": {
+                      "lhs": "Count",
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 2
+                      }
+                    }
+                  },
+                  {
+                    "given": "save",
+                    "save": "Courses with an MCD or MCG",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -834,7 +835,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -846,6 +846,7 @@
                   {
                     "given": "save",
                     "save": "Courses with an MCD or MCG",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -856,7 +857,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -873,6 +873,7 @@
                 {
                   "name": "Courses with an MCD or MCG",
                   "given": "courses",
+                  "what": "courses",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -890,7 +891,6 @@
                       ]
                     }
                   },
-                  "what": "courses",
                   "do": null
                 }
               ],
@@ -905,9 +905,9 @@
                   {
                     "given": "save",
                     "save": "Courses with an ALS-A or ALS-L",
+                    "what": "courses",
                     "limit": null,
                     "where": null,
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -919,6 +919,7 @@
                   {
                     "given": "save",
                     "save": "Courses with an ALS-A or ALS-L",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -929,7 +930,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -941,6 +941,7 @@
                   {
                     "given": "save",
                     "save": "Courses with an ALS-A or ALS-L",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -951,7 +952,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -968,6 +968,7 @@
                 {
                   "name": "Courses with an ALS-A or ALS-L",
                   "given": "courses",
+                  "what": "courses",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -985,7 +986,6 @@
                       ]
                     }
                   },
-                  "what": "courses",
                   "do": null
                 }
               ],
@@ -1000,9 +1000,9 @@
                   {
                     "given": "save",
                     "save": "Courses with a BTS-B or BTS-T",
+                    "what": "courses",
                     "limit": null,
                     "where": null,
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1014,6 +1014,7 @@
                   {
                     "given": "save",
                     "save": "Courses with a BTS-B or BTS-T",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -1024,7 +1025,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1036,6 +1036,7 @@
                   {
                     "given": "save",
                     "save": "Courses with a BTS-B or BTS-T",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -1046,7 +1047,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1063,6 +1063,7 @@
                 {
                   "name": "Courses with a BTS-B or BTS-T",
                   "given": "courses",
+                  "what": "courses",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1080,7 +1081,6 @@
                       ]
                     }
                   },
-                  "what": "courses",
                   "do": null
                 }
               ],
@@ -1095,23 +1095,9 @@
                   {
                     "given": "save",
                     "save": "Courses with an SED or IST",
-                    "limit": null,
-                    "where": null,
                     "what": "courses",
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
-                      }
-                    }
-                  },
-                  {
-                    "given": "save",
-                    "save": "Courses with an SED or IST",
                     "limit": null,
                     "where": null,
-                    "what": "departments",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1123,6 +1109,21 @@
                   {
                     "given": "save",
                     "save": "Courses with an SED or IST",
+                    "what": "departments",
+                    "limit": null,
+                    "where": null,
+                    "do": {
+                      "lhs": "Count",
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 2
+                      }
+                    }
+                  },
+                  {
+                    "given": "save",
+                    "save": "Courses with an SED or IST",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -1133,7 +1134,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1145,6 +1145,7 @@
                   {
                     "given": "save",
                     "save": "Courses with an SED or IST",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "gereqs": {
@@ -1155,7 +1156,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1172,6 +1172,7 @@
                 {
                   "name": "Courses with an SED or IST",
                   "given": "courses",
+                  "what": "courses",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1189,7 +1190,6 @@
                       ]
                     }
                   },
-                  "what": "courses",
                   "do": null
                 }
               ],
@@ -1204,23 +1204,9 @@
                   {
                     "given": "save",
                     "save": "Courses with an HBS",
-                    "limit": null,
-                    "where": null,
                     "what": "courses",
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
-                      }
-                    }
-                  },
-                  {
-                    "given": "save",
-                    "save": "Courses with an HBS",
                     "limit": null,
                     "where": null,
-                    "what": "departments",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1232,6 +1218,21 @@
                   {
                     "given": "save",
                     "save": "Courses with an HBS",
+                    "what": "departments",
+                    "limit": null,
+                    "where": null,
+                    "do": {
+                      "lhs": "Count",
+                      "op": "GreaterThanEqualTo",
+                      "rhs": {
+                        "Integer": 2
+                      }
+                    }
+                  },
+                  {
+                    "given": "save",
+                    "save": "Courses with an HBS",
+                    "what": "courses",
                     "limit": null,
                     "where": {
                       "institution": {
@@ -1242,7 +1243,6 @@
                         }
                       }
                     },
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1259,6 +1259,7 @@
                 {
                   "name": "Courses with an HBS",
                   "given": "courses",
+                  "what": "courses",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1269,7 +1270,6 @@
                       }
                     }
                   },
-                  "what": "courses",
                   "do": null
                 }
               ],
@@ -1302,9 +1302,9 @@
                   {
                     "given": "save",
                     "save": "EIN courses",
+                    "what": "courses",
                     "limit": null,
                     "where": null,
-                    "what": "courses",
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -1332,6 +1332,7 @@
                 {
                   "name": "first BTS-T course",
                   "given": "courses",
+                  "what": "terms",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1342,7 +1343,6 @@
                       }
                     }
                   },
-                  "what": "terms",
                   "do": {
                     "lhs": "Minimum",
                     "op": null,
@@ -1352,6 +1352,7 @@
                 {
                   "name": "EIN courses",
                   "given": "courses",
+                  "what": "courses",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1362,16 +1363,15 @@
                       }
                     }
                   },
-                  "what": "courses",
                   "do": null
                 },
                 {
                   "name": "last EIN course",
                   "given": "save",
                   "save": "EIN courses",
+                  "what": "terms",
                   "limit": null,
                   "where": null,
-                  "what": "terms",
                   "do": {
                     "lhs": "Maximum",
                     "op": null,

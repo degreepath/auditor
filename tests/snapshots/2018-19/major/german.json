@@ -30,7 +30,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "these courses",
+        "given": "these-courses",
         "courses": [
           {
             "course": "GERM 251"
@@ -43,6 +43,7 @@
           }
         ],
         "repeats": "first",
+        "what": "courses",
         "limit": [
           {
             "where": {
@@ -58,7 +59,6 @@
           }
         ],
         "where": null,
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -76,7 +76,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "these courses",
+        "given": "these-courses",
         "courses": [
           {
             "course": "GERM 271"
@@ -92,6 +92,7 @@
           }
         ],
         "repeats": "first",
+        "what": "courses",
         "limit": [
           {
             "where": {
@@ -107,7 +108,6 @@
           }
         ],
         "where": null,
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -162,7 +162,7 @@
             ]
           },
           {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Langauge",
@@ -177,9 +177,9 @@
                 "optional": false
               }
             ],
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -218,7 +218,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "GERM 147"
@@ -276,6 +276,7 @@
               }
             ],
             "repeats": "first",
+            "what": "courses",
             "limit": [
               {
                 "where": {
@@ -291,7 +292,6 @@
               }
             ],
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "EqualTo",

@@ -8,7 +8,7 @@ result:
   of:
     - either: [CS 121, CS 125]
     - requirement: History
-    - given: these requirements
+    - given: these-requirements
       requirements: [{requirement: X}, {requirement: Y}, {requirement: Z}]
       what: credits
       do: count >= 6
@@ -28,7 +28,7 @@ requirements:
         - ART 103
         - ART 104
         - requirement: A
-        - given: these requirements
+        - given: these-requirements
           requirements: [{requirement: A}]
           what: credits
           do: count >= 1.5

@@ -90,9 +90,9 @@
           {
             "given": "save",
             "save": "Allowed Courses",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -104,6 +104,7 @@
           {
             "given": "save",
             "save": "Allowed Courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "level": {
@@ -114,7 +115,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -130,7 +130,7 @@
       "save": [
         {
           "name": "Allowed Courses",
-          "given": "these requirements",
+          "given": "these-requirements",
           "requirements": [
             {
               "requirement": "China-focused",
@@ -141,6 +141,7 @@
               "optional": false
             }
           ],
+          "what": "courses",
           "limit": [
             {
               "where": {
@@ -156,7 +157,6 @@
             }
           ],
           "where": null,
-          "what": "courses",
           "do": null
         }
       ],
@@ -166,6 +166,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "attribute": {
@@ -176,7 +177,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -195,6 +195,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": [
               {
                 "where": {
@@ -237,7 +238,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -258,6 +258,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -268,7 +269,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

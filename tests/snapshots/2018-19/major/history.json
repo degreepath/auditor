@@ -36,7 +36,7 @@
         ]
       },
       {
-        "given": "these requirements",
+        "given": "these-requirements",
         "requirements": [
           {
             "requirement": "Major Seminar",
@@ -63,9 +63,9 @@
             "optional": false
           }
         ],
+        "what": "courses",
         "limit": null,
         "where": null,
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -82,6 +82,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -92,7 +93,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -111,6 +111,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -121,7 +122,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -140,6 +140,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -150,7 +151,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -169,6 +169,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -179,7 +180,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -198,6 +198,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -208,7 +209,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -227,6 +227,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -237,7 +238,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

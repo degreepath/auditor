@@ -36,7 +36,7 @@
         ]
       },
       {
-        "given": "these requirements",
+        "given": "these-requirements",
         "requirements": [
           {
             "requirement": "Basics",
@@ -63,6 +63,7 @@
             "optional": false
           }
         ],
+        "what": "courses",
         "limit": null,
         "where": {
           "institution": {
@@ -73,7 +74,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -119,6 +119,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -129,7 +130,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -176,6 +176,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "attribute": {
@@ -186,7 +187,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -205,6 +205,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "attribute": {
@@ -215,7 +216,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -234,6 +234,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "attribute": {
@@ -244,7 +245,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -263,6 +263,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "attribute": {
@@ -273,7 +274,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -322,7 +322,8 @@
                 "course": "CHEM 371"
               },
               {
-                "given": "areas of study",
+                "given": "areas",
+                "what": "areas",
                 "limit": null,
                 "where": {
                   "name": {
@@ -340,7 +341,6 @@
                     }
                   }
                 },
-                "what": "areas of study",
                 "do": {
                   "lhs": "Count",
                   "op": "EqualTo",
@@ -365,7 +365,8 @@
                 "course": "ECON 385"
               },
               {
-                "given": "areas of study",
+                "given": "areas",
+                "what": "areas",
                 "limit": null,
                 "where": {
                   "name": {
@@ -383,7 +384,6 @@
                     }
                   }
                 },
-                "what": "areas of study",
                 "do": {
                   "lhs": "Count",
                   "op": "EqualTo",
@@ -408,7 +408,8 @@
                 "course": "PHYS 375"
               },
               {
-                "given": "areas of study",
+                "given": "areas",
+                "what": "areas",
                 "limit": null,
                 "where": {
                   "name": {
@@ -426,7 +427,6 @@
                     }
                   }
                 },
-                "what": "areas of study",
                 "do": {
                   "lhs": "Count",
                   "op": "EqualTo",
@@ -449,6 +449,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": [
           {
             "where": {
@@ -472,7 +473,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

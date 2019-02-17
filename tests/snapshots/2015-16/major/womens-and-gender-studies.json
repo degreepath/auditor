@@ -73,9 +73,9 @@
           {
             "given": "save",
             "save": "Taken Elective Courses",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -87,6 +87,7 @@
           {
             "given": "save",
             "save": "Taken Elective Courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "level": {
@@ -97,7 +98,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -113,7 +113,7 @@
       "save": [
         {
           "name": "Taken Elective Courses",
-          "given": "these requirements",
+          "given": "these-requirements",
           "requirements": [
             {
               "requirement": "Theory and Methods",
@@ -136,9 +136,9 @@
               "optional": false
             }
           ],
+          "what": "courses",
           "limit": null,
           "where": null,
-          "what": "courses",
           "do": null
         }
       ],

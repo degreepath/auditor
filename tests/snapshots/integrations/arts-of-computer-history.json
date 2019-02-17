@@ -22,7 +22,7 @@
         "optional": false
       },
       {
-        "given": "these requirements",
+        "given": "these-requirements",
         "requirements": [
           {
             "requirement": "X",
@@ -37,9 +37,9 @@
             "optional": false
           }
         ],
+        "what": "credits",
         "limit": null,
         "where": null,
-        "what": "credits",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -74,16 +74,16 @@
             "optional": false
           },
           {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "A",
                 "optional": false
               }
             ],
+            "what": "credits",
             "limit": null,
             "where": null,
-            "what": "credits",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -164,6 +164,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "gereqs": {
@@ -174,7 +175,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

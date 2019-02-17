@@ -38,6 +38,7 @@
           {
             "given": "save",
             "save": "Taken Electives",
+            "what": "courses",
             "limit": null,
             "where": {
               "gereqs": {
@@ -48,7 +49,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -60,6 +60,7 @@
           {
             "given": "save",
             "save": "Taken Electives",
+            "what": "courses",
             "limit": null,
             "where": {
               "level": {
@@ -70,7 +71,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -82,9 +82,9 @@
           {
             "given": "save",
             "save": "Taken Electives",
+            "what": "departments",
             "limit": null,
             "where": null,
-            "what": "departments",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -96,9 +96,9 @@
           {
             "given": "save",
             "save": "Taken Electives",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -114,7 +114,7 @@
       "save": [
         {
           "name": "Taken Electives",
-          "given": "these requirements",
+          "given": "these-requirements",
           "requirements": [
             {
               "requirement": "Topics",
@@ -129,9 +129,9 @@
               "optional": false
             }
           ],
+          "what": "courses",
           "limit": null,
           "where": null,
-          "what": "courses",
           "do": null
         }
       ],
@@ -140,7 +140,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "AMST 205"
@@ -162,9 +162,9 @@
               }
             ],
             "repeats": "all",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -182,16 +182,16 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "AMST 301"
               }
             ],
             "repeats": "all",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -209,7 +209,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "AFAM 231"
@@ -482,9 +482,9 @@
               }
             ],
             "repeats": "all",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

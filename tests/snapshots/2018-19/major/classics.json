@@ -33,9 +33,9 @@
               {
                 "given": "save",
                 "save": "Latin Courses",
+                "what": "courses",
                 "limit": null,
                 "where": null,
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -47,9 +47,9 @@
               {
                 "given": "save",
                 "save": "Greek Courses",
+                "what": "courses",
                 "limit": null,
                 "where": null,
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -65,9 +65,9 @@
               {
                 "given": "save",
                 "save": "Greek Courses",
+                "what": "courses",
                 "limit": null,
                 "where": null,
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -79,9 +79,9 @@
               {
                 "given": "save",
                 "save": "Latin Courses",
+                "what": "courses",
                 "limit": null,
                 "where": null,
-                "what": "courses",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -100,6 +100,7 @@
         {
           "name": "Latin Courses",
           "given": "courses",
+          "what": "courses",
           "limit": null,
           "where": {
             "attributes": {
@@ -110,12 +111,12 @@
               }
             }
           },
-          "what": null,
           "do": null
         },
         {
           "name": "Greek Courses",
           "given": "courses",
+          "what": "courses",
           "limit": null,
           "where": {
             "attributes": {
@@ -126,7 +127,6 @@
               }
             }
           },
-          "what": null,
           "do": null
         }
       ],
@@ -180,6 +180,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attributes": {
@@ -190,7 +191,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

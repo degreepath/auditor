@@ -52,7 +52,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "these courses",
+        "given": "these-courses",
         "courses": [
           {
             "course": "PHIL 371"
@@ -71,6 +71,7 @@
           }
         ],
         "repeats": "first",
+        "what": "courses",
         "limit": [
           {
             "where": {
@@ -86,7 +87,6 @@
           }
         ],
         "where": null,
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -104,7 +104,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "given": "these courses",
+        "given": "these-courses",
         "courses": [
           {
             "course": "PHIL 118"
@@ -192,9 +192,9 @@
           }
         ],
         "repeats": "first",
+        "what": "courses",
         "limit": null,
         "where": null,
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

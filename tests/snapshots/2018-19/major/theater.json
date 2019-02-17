@@ -106,7 +106,7 @@
             "optional": false
           },
           {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "THEAT 233"
@@ -116,9 +116,9 @@
               }
             ],
             "repeats": "all",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -137,16 +137,16 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "THEAT 233"
               }
             ],
             "repeats": "all",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -164,16 +164,16 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "THEAT 253"
               }
             ],
             "repeats": "all",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

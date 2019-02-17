@@ -92,7 +92,7 @@
             "optional": false
           },
           {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Level II",
@@ -103,9 +103,9 @@
                 "optional": false
               }
             ],
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -125,6 +125,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "attribute": {
@@ -135,7 +136,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -154,6 +154,7 @@
           "department_audited": false,
           "result": {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "attribute": {
@@ -164,7 +165,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

@@ -33,6 +33,7 @@
         "both": [
           {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "gereqs": {
@@ -43,7 +44,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -54,6 +54,7 @@
           },
           {
             "given": "courses",
+            "what": "courses",
             "limit": null,
             "where": {
               "gereqs": {
@@ -64,7 +65,6 @@
                 }
               }
             },
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -132,7 +132,7 @@
             ]
           },
           {
-            "given": "these courses",
+            "given": "these-courses",
             "courses": [
               {
                 "course": "REL 390"
@@ -157,9 +157,9 @@
               }
             ],
             "repeats": "all",
+            "what": "courses",
             "limit": null,
             "where": null,
-            "what": "courses",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

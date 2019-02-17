@@ -121,6 +121,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": [
           {
             "where": {
@@ -158,7 +159,6 @@
             ]
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -284,7 +284,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -295,9 +295,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -314,16 +314,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 102"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -342,6 +342,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -359,7 +360,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -379,7 +379,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -390,9 +390,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -409,16 +409,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 104"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -437,6 +437,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -454,7 +455,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -474,7 +474,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -485,9 +485,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -504,16 +504,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 106"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -532,6 +532,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -549,7 +550,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -569,7 +569,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -580,9 +580,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -599,16 +599,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 109"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -627,6 +627,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -644,7 +645,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -664,7 +664,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -675,9 +675,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -694,16 +694,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 112"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -722,6 +722,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -739,7 +740,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -759,7 +759,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -770,9 +770,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -789,16 +789,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 128"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -817,6 +817,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -834,7 +835,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -854,7 +854,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -865,9 +865,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -884,16 +884,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 137"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -912,6 +912,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -929,7 +930,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -949,7 +949,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -960,9 +960,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -979,16 +979,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 116"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1007,6 +1007,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1024,7 +1025,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1044,7 +1044,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1055,9 +1055,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1074,16 +1074,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 118"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1102,6 +1102,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1119,7 +1120,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1139,7 +1139,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1150,9 +1150,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1169,16 +1169,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 120"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1197,6 +1197,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1214,7 +1215,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1234,7 +1234,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1245,9 +1245,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1264,16 +1264,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 122"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1292,6 +1292,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1309,7 +1310,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1329,7 +1329,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1340,9 +1340,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1359,16 +1359,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 124"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1387,6 +1387,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1404,7 +1405,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1424,7 +1424,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1435,9 +1435,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1454,16 +1454,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 126"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1482,6 +1482,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1499,7 +1500,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1519,7 +1519,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1530,9 +1530,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1549,16 +1549,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 132"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1577,6 +1577,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1594,7 +1595,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1614,7 +1614,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1625,9 +1625,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1644,16 +1644,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 134"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1672,6 +1672,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1689,7 +1690,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1709,7 +1709,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1720,9 +1720,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1739,16 +1739,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 135"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1767,6 +1767,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1784,7 +1785,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1804,7 +1804,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1815,9 +1815,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1834,16 +1834,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 136"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1862,6 +1862,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1879,7 +1880,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1899,7 +1899,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -1910,9 +1910,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1929,16 +1929,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 138"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1957,6 +1957,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -1974,7 +1975,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1994,7 +1994,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -2005,9 +2005,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2024,16 +2024,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 140"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2052,6 +2052,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -2069,7 +2070,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2089,7 +2089,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -2100,9 +2100,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2119,16 +2119,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 142"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2147,6 +2147,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -2164,7 +2165,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2184,7 +2184,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -2195,9 +2195,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2214,16 +2214,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 144"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2242,6 +2242,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -2259,7 +2260,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2279,7 +2279,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -2290,9 +2290,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2309,16 +2309,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 146"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2337,6 +2337,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -2354,7 +2355,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2374,7 +2374,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -2385,9 +2385,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2404,16 +2404,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 148"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2432,6 +2432,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -2449,7 +2450,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2469,7 +2469,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -2480,9 +2480,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2499,16 +2499,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 150"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2527,6 +2527,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -2544,7 +2545,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2564,7 +2564,7 @@
           "message": null,
           "department_audited": false,
           "result": {
-            "given": "these requirements",
+            "given": "these-requirements",
             "requirements": [
               {
                 "requirement": "Lessons",
@@ -2575,9 +2575,9 @@
                 "optional": false
               }
             ],
+            "what": "terms",
             "limit": null,
             "where": null,
-            "what": "terms",
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2594,16 +2594,16 @@
               "message": null,
               "department_audited": false,
               "result": {
-                "given": "these courses",
+                "given": "these-courses",
                 "courses": [
                   {
                     "course": "MUSPF 152"
                   }
                 ],
                 "repeats": "all",
+                "what": "terms",
                 "limit": null,
                 "where": null,
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2622,6 +2622,7 @@
               "department_audited": false,
               "result": {
                 "given": "courses",
+                "what": "terms",
                 "limit": null,
                 "where": {
                   "department": {
@@ -2639,7 +2640,6 @@
                     }
                   }
                 },
-                "what": "terms",
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2662,6 +2662,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "terms",
         "limit": null,
         "where": {
           "department": {
@@ -2672,7 +2673,6 @@
             }
           }
         },
-        "what": "terms",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
