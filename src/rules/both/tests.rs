@@ -90,7 +90,7 @@ fn pretty_print() {
 	let expected = "both have at least three courses and complete the “A” requirement";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: Rule = serde_yaml::from_str(&"{both: [{given: courses, what: courses, do: count >= 3}, {given: these courses, courses: [THEAT 233], repeats: all, what: courses, do: count >= 4}]}").unwrap();
+	let input: Rule = serde_yaml::from_str(&"{both: [{given: courses, what: courses, do: count >= 3}, {given: these-courses, courses: [THEAT 233], repeats: all, what: courses, do: count >= 4}]}").unwrap();
 	let expected = "both:
 
 - have at least three courses

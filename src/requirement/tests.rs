@@ -134,19 +134,19 @@ result:
 				Box::new(Rule::Given(given::Rule {
 					given: given::Given::NamedVariable {
 						save: "Interim Courses".to_string(),
+						what: given::GivenCoursesWhatOptions::Credits,
 					},
 					limit: None,
 					filter: None,
-					what: given::What::Credits,
 					action: "sum >= 3".parse().unwrap(),
 				})),
 				Box::new(Rule::Given(given::Rule {
 					given: given::Given::NamedVariable {
 						save: "Interim Courses".to_string(),
+						what: given::GivenCoursesWhatOptions::Courses,
 					},
 					limit: None,
 					filter: None,
-					what: given::What::Courses,
 					action: "count >= 3".parse().unwrap(),
 				})),
 			),
@@ -154,10 +154,11 @@ result:
 		contract: false,
 		save: vec![SaveBlock {
 			name: "Interim Courses".to_string(),
-			given: given::Given::AllCourses,
+			given: given::GivenForSaveBlock::AllCourses {
+				what: given::GivenCoursesWhatOptions::Courses,
+			},
 			limit: None,
 			filter: Some(expected_filter),
-			what: Some(given::What::Courses),
 			action: None,
 		}],
 		requirements: indexmap! {},

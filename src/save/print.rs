@@ -1,5 +1,5 @@
 use super::SaveBlock;
-use crate::rules::given::Given;
+use crate::rules::given::GivenForSaveBlock as Given;
 use crate::traits::print;
 
 impl print::Print for SaveBlock {
@@ -9,7 +9,7 @@ impl print::Print for SaveBlock {
 		let mut output = String::new();
 
 		match &self.given {
-			Given::AllCourses => match &self.filter {
+			Given::AllCourses { what: _ } => match &self.filter {
 				Some(f) => {
 					write!(&mut output, "Given the subset of courses from your transcript, limited to only courses taken {}, as “{}”:\n\n", f.print()?, self.name)?;
 
@@ -31,6 +31,7 @@ impl print::Print for SaveBlock {
 			Given::TheseCourses {
 				courses,
 				repeats: _mode,
+				what: _what,
 			} => {
 				write!(&mut output, "Given the intersection between this set of courses and the courses from your transcript, as “{}”:\n\n", self.name)?;
 
@@ -50,7 +51,7 @@ impl print::Print for SaveBlock {
 					writeln!(&mut output, "| {} | (todo: fill out if match) |", c)?;
 				}
 			}
-			Given::TheseRequirements { requirements } => {
+			Given::TheseRequirements { requirements, what: _ } => {
 				use crate::util::Oxford;
 
 				let req_names = requirements
@@ -93,13 +94,10 @@ impl print::Print for SaveBlock {
 					writeln!(&mut output, "> todo: describe what the save's limiters do")?;
 				}
 
-				if self.what.is_some() {
-					// todo: describe what the save will generate
-					writeln!(&mut output, "> todo: describe what the save will generate")?;
-				}
+				// todo: describe what the save will generate
+				writeln!(&mut output, "> todo: describe what the save will generate")?;
 			}
-			Given::AreasOfStudy => unimplemented!("save-block given:areas"),
-			Given::NamedVariable { save } => match &self.filter {
+			Given::NamedVariable { save, what: _ } => match &self.filter {
 				Some(f) => {
 					write!(
 						&mut output,

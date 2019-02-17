@@ -53,8 +53,9 @@ fn serialize() {
 			),
 		}),
 		Rule::Given(given::Rule {
-			given: given::Given::AllCourses,
-			what: given::What::Courses,
+			given: given::Given::AllCourses {
+				what: given::GivenCoursesWhatOptions::Courses,
+			},
 			filter: Some(BTreeMap::new()),
 			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
@@ -98,9 +99,9 @@ fn serialize() {
       lab: ~
       can_match_used: ~
 - given: courses
+  what: courses
   limit: []
   where: {}
-  what: courses
   do:
     lhs: Count
     op: LessThan
@@ -153,8 +154,9 @@ fn deserialize() {
 			),
 		}),
 		Rule::Given(given::Rule {
-			given: given::Given::AllCourses,
-			what: given::What::Courses,
+			given: given::Given::AllCourses {
+				what: given::GivenCoursesWhatOptions::Courses,
+			},
 			filter: Some(BTreeMap::new()),
 			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
@@ -302,8 +304,9 @@ fn deserialize_shorthands() {
 			),
 		}),
 		Rule::Given(given::Rule {
-			given: given::Given::AllCourses,
-			what: given::What::Courses,
+			given: given::Given::AllCourses {
+				what: given::GivenCoursesWhatOptions::Courses,
+			},
 			filter: None,
 			limit: None,
 			action: "count < 2".parse().unwrap(),
@@ -366,8 +369,8 @@ fn dance_seminar() {
 	let expected = Rule::Given(given::Rule {
 		given: given::Given::NamedVariable {
 			save: "Senior Dance Seminars".to_string(),
+			what: given::GivenCoursesWhatOptions::Courses,
 		},
-		what: given::What::Courses,
 		filter: None,
 		limit: None,
 		action: "count >= 1".parse().unwrap(),

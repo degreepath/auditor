@@ -1,5 +1,5 @@
 use super::Rule;
-use super::{CourseRule, Given, RepeatMode, What};
+use super::{CourseRule, Given, GivenAreasWhatOptions, GivenCoursesWhatOptions, RepeatMode};
 use crate::filter;
 use crate::rules::{course, req_ref};
 use crate::traits::print::Print;
@@ -9,18 +9,19 @@ use maplit::btreemap;
 #[test]
 fn serialize_all_courses() {
 	let data = Rule {
-		given: Given::AllCourses,
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let expected = r#"---
 given: courses
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -35,18 +36,19 @@ do:
 #[test]
 fn deserialize_all_courses() {
 	let expected = Rule {
-		given: Given::AllCourses,
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let data = r#"---
 given: courses
+what: courses
 limit: []
 where: {}
-what: courses
 do: count > 2"#;
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -55,9 +57,9 @@ do: count > 2"#;
 
 	let data = r#"---
 given: courses
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -84,22 +86,22 @@ fn serialize_these_courses() {
 				}),
 			],
 			repeats: RepeatMode::First,
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let expected = r#"---
-given: these courses
+given: these-courses
 courses:
   - course: ASIAN 110
   - course: ASIAN 110
 repeats: first
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -126,22 +128,22 @@ fn deserialize_these_courses() {
 				}),
 			],
 			repeats: RepeatMode::First,
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let data = r#"---
-given: these courses
+given: these-courses
 courses:
   - ASIAN 110
   - course: ASIAN 110
 repeats: first
+what: courses
 limit: []
 where: {}
-what: courses
 do: count > 2"#;
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -149,14 +151,14 @@ do: count > 2"#;
 	assert_eq!(actual, expected);
 
 	let data = r#"---
-given: these courses
+given: these-courses
 courses:
   - ASIAN 110
   - course: ASIAN 110
 repeats: first
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -182,23 +184,23 @@ fn serialize_these_requirements() {
 					optional: true,
 				},
 			],
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let expected = r#"---
-given: these requirements
+given: these-requirements
 requirements:
   - requirement: A Name 1
     optional: false
   - requirement: A Name 2
     optional: true
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -224,21 +226,21 @@ fn deserialize_these_requirements() {
 					optional: true,
 				},
 			],
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let data = r#"---
-given: these requirements
+given: these-requirements
 requirements:
   - requirement: A Name 1
   - {requirement: A Name 2, optional: true}
+what: courses
 limit: []
 where: {}
-what: courses
 do: count > 2"#;
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -246,13 +248,13 @@ do: count > 2"#;
 	assert_eq!(actual, expected);
 
 	let data = r#"---
-given: these requirements
+given: these-requirements
 requirements:
   - requirement: A Name 1
   - {requirement: A Name 2, optional: true}
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -267,18 +269,19 @@ do:
 #[test]
 fn serialize_areas() {
 	let data = Rule {
-		given: Given::AreasOfStudy,
+		given: Given::Areas {
+			what: GivenAreasWhatOptions::Areas,
+		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::AreasOfStudy,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let expected = r#"---
-given: areas of study
+given: areas
+what: areas
 limit: []
 where: {}
-what: areas of study
 do:
   lhs: Count
   op: GreaterThan
@@ -293,18 +296,19 @@ do:
 #[test]
 fn deserialize_areas() {
 	let expected = Rule {
-		given: Given::AreasOfStudy,
+		given: Given::Areas {
+			what: GivenAreasWhatOptions::Areas,
+		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::AreasOfStudy,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let data = r#"---
-given: areas of study
+given: areas
+what: areas
 limit: []
 where: {}
-what: areas of study
 do: count > 2"#;
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -312,10 +316,10 @@ do: count > 2"#;
 	assert_eq!(actual, expected);
 
 	let data = r#"---
-given: areas of study
+given: areas
+what: areas
 limit: []
 where: {}
-what: areas of study
 do:
   lhs: Count
   op: GreaterThan
@@ -332,19 +336,19 @@ fn serialize_save() {
 	let data = Rule {
 		given: Given::NamedVariable {
 			save: String::from("$my_var"),
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let expected = r#"---
 given: save
 save: $my_var
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -361,19 +365,19 @@ fn deserialize_save() {
 	let expected = Rule {
 		given: Given::NamedVariable {
 			save: String::from("$my_var"),
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: Some(vec![]),
 		filter: Some(filter::Clause::new()),
-		what: What::Courses,
 		action: "count > 2".parse().unwrap(),
 	};
 
 	let data = r#"---
 given: save
 save: $my_var
+what: courses
 limit: []
 where: {}
-what: courses
 do: count > 2"#;
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -383,9 +387,9 @@ do: count > 2"#;
 	let data = r#"---
 given: save
 save: $my_var
+what: courses
 limit: []
 where: {}
-what: courses
 do:
   lhs: Count
   op: GreaterThan
@@ -408,10 +412,10 @@ do: count >= 3"#;
 	let expected = Rule {
 		given: Given::NamedVariable {
 			save: String::from("$interim_courses"),
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: None,
 		filter: None,
-		what: What::Courses,
 		action: "count >= 3".parse().unwrap(),
 	};
 
@@ -428,10 +432,11 @@ fn deserialize_filter_gereqs_single() {
 		"gereqs".into() => value::WrappedValue::eq_string("FYW"),
 	};
 	let expected = Rule {
-		given: Given::AllCourses,
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+		},
 		limit: None,
 		filter: Some(expected),
-		what: What::Courses,
 		action: "count > 1".parse().unwrap(),
 	};
 
@@ -451,10 +456,11 @@ fn deserialize_filter_gereqs_or() {
 		]),
 	};
 	let expected = Rule {
-		given: Given::AllCourses,
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+		},
 		limit: None,
 		filter: Some(expected),
-		what: What::Courses,
 		action: "count > 1".parse().unwrap(),
 	};
 
@@ -471,10 +477,11 @@ fn deserialize_filter_level_gte() {
 		"level".into() => Single(GreaterThanEqualTo(Integer(200)))
 	};
 	let expected = Rule {
-		given: Given::AllCourses,
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+		},
 		limit: None,
 		filter: Some(expected),
-		what: What::Courses,
 		action: "count > 1".parse().unwrap(),
 	};
 
@@ -491,10 +498,11 @@ fn deserialize_filter_graded_bool() {
 		"graded".into() => Single(EqualTo(Bool(true))),
 	};
 	let expected = Rule {
-		given: Given::AllCourses,
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+		},
 		limit: None,
 		filter: Some(expected),
-		what: What::Courses,
 		action: "count > 1".parse().unwrap(),
 	};
 
@@ -517,7 +525,7 @@ fn pretty_print_inline_filters() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-		serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct courses, do: count >= 2}")
+		serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct-courses, do: count >= 2}")
 			.unwrap();
 	let expected = "have at least two distinct courses taken with the “SPM” general education attribute";
 	assert_eq!(expected, input.print().unwrap());
@@ -526,27 +534,27 @@ fn pretty_print_inline_filters() {
 #[test]
 fn pretty_print_inline_repeats() {
 	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}",
+		&"{given: these-courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}",
 	)
 	.unwrap();
 	let expected = "take THEAT 233 at least one time";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 4}",
+		&"{given: these-courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 4}",
 	)
 	.unwrap();
 	let expected = "take THEAT 233 at least four times";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: all, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 4}",
+		&"{given: these-courses, repeats: all, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 4}",
 	)
 	.unwrap();
 	let expected = "take a combination of THEAT 233 and THEAT 253 at least four times";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: Rule = serde_yaml::from_str(&"{given: these courses, repeats: all, courses: [AMST 205, AMST 206, AMST 207, AMST 208, AMST 209, AMST 210], what: courses, do: count >= 1}", ) .unwrap();
+	let input: Rule = serde_yaml::from_str(&"{given: these-courses, repeats: all, courses: [AMST 205, AMST 206, AMST 207, AMST 208, AMST 209, AMST 210], what: courses, do: count >= 1}", ) .unwrap();
 	let expected = "take at least one of the following courses:
 
 - AMST 205
@@ -558,28 +566,28 @@ fn pretty_print_inline_repeats() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: all, courses: [THEAT 233], what: credits, do: sum >= 4}",
+		&"{given: these-courses, repeats: all, courses: [THEAT 233], what: credits, do: sum >= 4}",
 	)
 	.unwrap();
 	let expected = "take THEAT 233 enough times to yield at least four credits";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: first, courses: [THEAT 233], what: courses, do: count >= 1}",
+		&"{given: these-courses, repeats: first, courses: [THEAT 233], what: courses, do: count >= 1}",
 	)
 	.unwrap();
 	let expected = "take THEAT 233";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 1}",
+		&"{given: these-courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 1}",
 	)
 	.unwrap();
 	let expected = "take either THEAT 233 or THEAT 253";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
-		&"{given: these courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 2}",
+		&"{given: these-courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 2}",
 	)
 	.unwrap();
 	let expected = "take both THEAT 233 and THEAT 253";
@@ -675,7 +683,7 @@ fn pretty_print_inline_terms() {
 #[test]
 fn pretty_print_inline_given_requirements_what_courses() {
 	let input: Rule =
-            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}").unwrap();
+            serde_yaml::from_str(&"{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}").unwrap();
 	let expected = "have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
@@ -683,7 +691,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}").unwrap();
+            serde_yaml::from_str(&"{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}").unwrap();
 	let expected = "have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
@@ -692,7 +700,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Interim }, what: credits, do: sum >= 3}")
+            serde_yaml::from_str(&"{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Interim }, what: credits, do: sum >= 3}")
                 .unwrap();
 	let expected = "have the following be true:
 
@@ -702,7 +710,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Fall }, what: credits, do: sum >= 10}").unwrap();
+            serde_yaml::from_str(&"{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Fall }, what: credits, do: sum >= 10}").unwrap();
 	let expected = "have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
@@ -711,7 +719,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: '2012' }, what: credits, do: sum >= 1}").unwrap();
+            serde_yaml::from_str(&"{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: '2012' }, what: credits, do: sum >= 1}").unwrap();
 	let expected = "have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
@@ -720,7 +728,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-            serde_yaml::from_str(&"{given: these requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}").unwrap();
+            serde_yaml::from_str(&"{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}").unwrap();
 	let expected = "have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,

@@ -1,4 +1,4 @@
-use super::{Given, What};
+use super::Given;
 use crate::audit::{
 	AreaDescriptor, CourseInstance, MatchedCourseParts, ReservedPairings, RuleAudit, RuleInput, RuleResult,
 	RuleResultDetails,
@@ -35,11 +35,33 @@ impl super::Rule {
 /// 5. apply the action to the output vector
 impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
-		use What::*;
-
-		match &self.what {
-			AreasOfStudy => self.check_for_areas(input),
-			Courses | DistinctCourses | Credits | Departments | Terms | Grades => self.check_for_courses(input),
+		match &self.given {
+			Given::AllCourses { what: _ } => {
+				let data = self.in_all_courses(input);
+				self.check_for_courses(input, &data)
+			}
+			Given::TheseCourses {
+				what: _,
+				courses,
+				repeats,
+			} => {
+				let data = self.in_these_courses(input, courses, repeats);
+				self.check_for_courses(input, &data)
+			}
+			Given::TheseRequirements { what: _, requirements } => {
+				let data = self.in_requirements_out_courses(input, requirements);
+				self.check_for_courses(input, &data)
+			}
+			Given::NamedVariable { save, what: _ } => {
+				let data = self.in_variable_out_courses(input, save);
+				self.check_for_courses(input, &data)
+			}
+			Given::Areas { what: _ } => {
+				let data = self.in_areas(input);
+				self.check_for_areas(input, &data)
+			}
+			Given::Performances { what: _ } => unimplemented!("performances"),
+			Given::Attendances { what: _ } => unimplemented!("attendances"),
 		}
 	}
 }
@@ -55,16 +77,8 @@ fn match_course_against_filter(_course: &CourseInstance, _filter: &Filter) -> Op
 use crate::audit::rule_result::{GivenOutput, GivenOutputType};
 
 impl super::Rule {
-	fn check_for_areas(&self, input: &RuleInput) -> RuleResult {
-		use Given::*;
-
-		let mut areas = match &self.given {
-			AreasOfStudy => self.in_areas(input),
-			TheseRequirements { requirements } => self.in_requirements_out_areas(input, requirements),
-			NamedVariable { save } => self.in_variable_out_areas(input, save),
-			AllCourses => unimplemented!("check_for_areas should not be given:all-courses"),
-			TheseCourses { .. } => unimplemented!("check_for_areas should not be given:these-courses"),
-		};
+	fn check_for_areas(&self, _input: &RuleInput, areas: &[AreaDescriptor]) -> RuleResult {
+		let mut areas: Vec<_> = areas.iter().cloned().collect();
 
 		if let Some(filter) = &self.filter {
 			areas = areas
@@ -110,17 +124,7 @@ impl super::Rule {
 		}
 	}
 
-	fn check_for_courses(&self, input: &RuleInput) -> RuleResult {
-		use Given::*;
-
-		let courses = match &self.given {
-			AllCourses => self.in_all_courses(input),
-			TheseCourses { courses, repeats } => self.in_these_courses(input, courses, repeats),
-			TheseRequirements { requirements } => self.in_requirements_out_courses(input, requirements),
-			NamedVariable { save } => self.in_variable_out_courses(input, save),
-			AreasOfStudy => unimplemented!("check_for_courses should not be given:areas"),
-		};
-
+	fn check_for_courses(&self, _input: &RuleInput, courses: &ReservedPairings) -> RuleResult {
 		let mut courses: Vec<_> = courses.iter().cloned().collect();
 
 		if let Some(filter) = &self.filter {
@@ -244,19 +248,7 @@ impl super::Rule {
 		ReservedPairings::from_vec(&collected)
 	}
 
-	fn in_requirements_out_areas(
-		&self,
-		_input: &RuleInput,
-		_these_requirements: &[req_ref::Rule],
-	) -> Vec<AreaDescriptor> {
-		vec![]
-	}
-
 	fn in_variable_out_courses(&self, _input: &RuleInput, _save: &str) -> ReservedPairings {
 		ReservedPairings::new()
-	}
-
-	fn in_variable_out_areas(&self, _input: &RuleInput, _save: &str) -> Vec<AreaDescriptor> {
-		vec![]
 	}
 }

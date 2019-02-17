@@ -17,7 +17,6 @@ pub struct Rule {
 	pub limit: Option<Vec<limit::Limiter>>,
 	#[serde(rename = "where", default, deserialize_with = "filter::deserialize_with")]
 	pub filter: Option<filter::Clause>,
-	pub what: What,
 	#[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
 	pub action: action::Action,
 }
@@ -32,21 +31,67 @@ impl Util for Rule {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-#[serde(tag = "given")]
+#[serde(tag = "given", rename_all = "kebab-case")]
 pub enum Given {
 	#[serde(rename = "courses")]
-	AllCourses,
-	#[serde(rename = "these courses")]
+	AllCourses {
+		what: GivenCoursesWhatOptions,
+	},
 	TheseCourses {
 		courses: Vec<CourseRule>,
 		repeats: RepeatMode,
+		what: GivenCoursesWhatOptions,
 	},
-	#[serde(rename = "these requirements")]
-	TheseRequirements { requirements: Vec<req_ref::Rule> },
-	#[serde(rename = "areas of study")]
-	AreasOfStudy,
+	TheseRequirements {
+		requirements: Vec<req_ref::Rule>,
+		what: GivenCoursesWhatOptions,
+	},
+	Areas {
+		what: GivenAreasWhatOptions,
+	},
 	#[serde(rename = "save")]
-	NamedVariable { save: String },
+	NamedVariable {
+		save: String,
+		what: GivenCoursesWhatOptions,
+	},
+	Performances {
+		what: GivenPerformancesWhatOptions,
+	},
+	Attendances {
+		what: GivenAttendancesWhatOptions,
+	},
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(tag = "given", rename_all = "kebab-case")]
+pub enum GivenForSaveBlock {
+	#[serde(rename = "courses")]
+	AllCourses { what: GivenCoursesWhatOptions },
+	TheseCourses {
+		courses: Vec<CourseRule>,
+		repeats: RepeatMode,
+		what: GivenCoursesWhatOptions,
+	},
+	TheseRequirements {
+		requirements: Vec<req_ref::Rule>,
+		what: GivenCoursesWhatOptions,
+	},
+	#[serde(rename = "save")]
+	NamedVariable {
+		save: String,
+		what: GivenCoursesWhatOptions,
+	},
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "kebab-case")]
+pub enum GivenCoursesWhatOptions {
+	Courses,
+	DistinctCourses,
+	Credits,
+	Departments,
+	Terms,
+	Grades,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -63,30 +108,28 @@ impl crate::traits::print::Print for CourseRule {
 	}
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "kebab-case")]
 pub enum RepeatMode {
-	#[serde(rename = "first")]
 	First,
-	#[serde(rename = "last")]
 	Last,
-	#[serde(rename = "all")]
 	All,
 }
 
 #[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
-pub enum What {
-	#[serde(rename = "courses")]
-	Courses,
-	#[serde(rename = "distinct courses")]
-	DistinctCourses,
-	#[serde(rename = "credits")]
-	Credits,
-	#[serde(rename = "departments")]
-	Departments,
-	#[serde(rename = "terms")]
-	Terms,
-	#[serde(rename = "grades")]
-	Grades,
-	#[serde(rename = "areas of study")]
-	AreasOfStudy,
+#[serde(rename_all = "kebab-case")]
+pub enum GivenAreasWhatOptions {
+	Areas,
+}
+
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "kebab-case")]
+pub enum GivenPerformancesWhatOptions {
+	Performances,
+}
+
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "kebab-case")]
+pub enum GivenAttendancesWhatOptions {
+	Attendances,
 }

@@ -1,4 +1,6 @@
-use super::*;
+use super::{CourseRule, Given, GivenAreasWhatOptions, GivenCoursesWhatOptions, RepeatMode, Rule};
+use crate::action;
+use crate::rules::req_ref;
 use crate::traits::print;
 use crate::traits::print::Print;
 use crate::util::Oxford;
@@ -10,11 +12,19 @@ impl print::Print for Rule {
 		let mut output = String::new();
 
 		let rule = match &self.given {
-			Given::AllCourses => self.print_given_all_courses()?,
-			Given::TheseCourses { courses, repeats: mode } => self.print_given_these_courses(courses, mode)?,
-			Given::TheseRequirements { requirements } => self.print_given_these_requirements(requirements)?,
-			Given::AreasOfStudy => self.print_given_areas()?,
-			Given::NamedVariable { save } => self.print_given_save(save)?,
+			Given::AllCourses { what } => self.print_given_all_courses(what)?,
+			Given::TheseCourses {
+				what,
+				courses,
+				repeats: mode,
+			} => self.print_given_these_courses(courses, mode, what)?,
+			Given::TheseRequirements { what, requirements } => {
+				self.print_given_these_requirements(requirements, what)?
+			}
+			Given::Areas { what } => self.print_given_areas(what)?,
+			Given::NamedVariable { save, what } => self.print_given_save(save, what)?,
+			Given::Performances { .. } => unimplemented!("performances"),
+			Given::Attendances { .. } => unimplemented!("attendances"),
 		};
 
 		write!(&mut output, "{}", rule)?;
@@ -31,13 +41,14 @@ impl Rule {
 		}
 	}
 
-	fn print_given_all_courses(&self) -> print::Result {
+	fn print_given_all_courses(&self, what: &GivenCoursesWhatOptions) -> print::Result {
 		use std::fmt::Write;
+		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 		let filter = self.print_filter()?;
 
-		match &self.what {
+		match &what {
 			What::Courses => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
@@ -98,14 +109,14 @@ impl Rule {
 					word
 				)?;
 			}
-			What::AreasOfStudy => panic!("given:all-courses and what:area makes no sense"),
 		}
 
 		Ok(output)
 	}
 
-	fn print_given_areas(&self) -> print::Result {
+	fn print_given_areas(&self, what: &GivenAreasWhatOptions) -> print::Result {
 		use std::fmt::Write;
+		use GivenAreasWhatOptions as What;
 
 		let mut output = String::new();
 		let filter = match &self.filter {
@@ -113,21 +124,26 @@ impl Rule {
 			None => "".to_string(),
 		};
 
-		match self.what {
-			What::AreasOfStudy => {
+		match &what {
+			What::Areas => {
 				// TODO: find a better way to special-case "exactly one" major
 				let action = self.action.print()?;
 				let action = action.replace("exactly ", "");
 				write!(&mut output, "declare {}{}", action, filter)?;
 			}
-			_ => panic!("given: areas, what: !areas…"),
 		}
 
 		Ok(output)
 	}
 
-	fn print_given_these_courses(&self, courses: &[super::CourseRule], mode: &super::RepeatMode) -> print::Result {
+	fn print_given_these_courses(
+		&self,
+		courses: &[CourseRule],
+		mode: &RepeatMode,
+		what: &GivenCoursesWhatOptions,
+	) -> print::Result {
 		use std::fmt::Write;
+		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 		let filter = match &self.filter {
@@ -137,7 +153,7 @@ impl Rule {
 
 		let courses: Vec<String> = courses.iter().map(|r| r.print().unwrap()).collect();
 
-		match (mode, &self.what) {
+		match (mode, what) {
 			(RepeatMode::First, What::Courses) | (RepeatMode::Last, What::Courses) => {
 				match courses.len() {
 					1 => {
@@ -278,8 +294,13 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_these_requirements(&self, requirements: &[super::req_ref::Rule]) -> print::Result {
+	fn print_given_these_requirements(
+		&self,
+		requirements: &[req_ref::Rule],
+		what: &GivenCoursesWhatOptions,
+	) -> print::Result {
 		use std::fmt::Write;
+		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 
@@ -336,7 +357,7 @@ impl Rule {
 		index += 1;
 		let pluralize = self.action.should_pluralize();
 
-		match &self.what {
+		match &what {
 			What::Courses => {
 				let word = if pluralize { "courses" } else { "course" };
 
@@ -408,19 +429,19 @@ impl Rule {
 					word = word,
 				)?;
 			}
-			What::AreasOfStudy => unimplemented!("given:these-requirements, what:areas makes no sense"),
 		};
 
 		Ok(output)
 	}
 
-	fn print_given_save(&self, save: &str) -> print::Result {
+	fn print_given_save(&self, save: &str, what: &GivenCoursesWhatOptions) -> print::Result {
 		use std::fmt::Write;
+		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 		let filter = self.print_filter()?;
 
-		match &self.what {
+		match &what {
 			What::Courses => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
@@ -489,7 +510,6 @@ impl Rule {
 					word
 				)?;
 			}
-			What::AreasOfStudy => unimplemented!("given:variable, what:areas is not yet implemented"),
 		}
 
 		Ok(output)

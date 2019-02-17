@@ -1,6 +1,6 @@
 use super::SaveBlock;
 use crate::filter;
-use crate::rules::given::{Given, What};
+use crate::rules::given::{GivenCoursesWhatOptions, GivenForSaveBlock as Given};
 use crate::rules::{course, given};
 use crate::traits::print::Print;
 use crate::value;
@@ -20,10 +20,11 @@ name: Interim Courses"#;
 
 	let expected = SaveBlock {
 		name: "Interim Courses".to_string(),
-		given: Given::AllCourses,
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+		},
 		limit: None,
 		filter: Some(filter),
-		what: Some(What::Courses),
 		action: None,
 	};
 
@@ -35,10 +36,11 @@ name: Interim Courses"#;
 #[test]
 fn deserialize_dance() {
 	let data = r#"---
-given: these courses
+given: these-courses
 courses: [DANCE 399]
 repeats: last
 where: {year: graduation-year, semester: Fall}
+what: courses
 name: "Senior Dance Seminars""#;
 
 	let filter: filter::Clause = btreemap! {
@@ -54,10 +56,10 @@ name: "Senior Dance Seminars""#;
 				..Default::default()
 			})],
 			repeats: given::RepeatMode::Last,
+			what: GivenCoursesWhatOptions::Courses,
 		},
 		limit: None,
 		filter: Some(filter),
-		what: None,
 		action: None,
 	};
 
@@ -68,8 +70,8 @@ name: "Senior Dance Seminars""#;
 
 #[test]
 fn pretty_print() {
-	let input: SaveBlock =
-		serde_yaml::from_str(&"{name: Interim, given: courses, where: {semester: Interim}}").unwrap();
+	let input = "{name: Interim, given: courses, where: {semester: Interim}, what: courses}";
+	let input: SaveBlock = serde_yaml::from_str(&input).unwrap();
 	let expected = "Given the subset of courses from your transcript, limited to only courses taken during Interim semesters, as “Interim”:
 
 | “Interim” |
@@ -78,7 +80,8 @@ fn pretty_print() {
 ";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: SaveBlock = serde_yaml::from_str(&"{name: Interim, given: courses}").unwrap();
+	let input = "{name: Interim, given: courses, what: courses}";
+	let input: SaveBlock = serde_yaml::from_str(&input).unwrap();
 	let expected = "Given the courses from your transcript as “Interim”:
 
 | “Interim” |
@@ -87,8 +90,8 @@ fn pretty_print() {
 ";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: SaveBlock =
-		serde_yaml::from_str(&"{name: Interim, given: these courses, courses: [THEAT 244], repeats: all}").unwrap();
+	let input = "{name: Interim, given: these-courses, courses: [THEAT 244], repeats: all, what: courses}";
+	let input: SaveBlock = serde_yaml::from_str(&input).unwrap();
 	let expected =
 		"Given the intersection between this set of courses and the courses from your transcript, as “Interim”:
 
@@ -98,7 +101,8 @@ fn pretty_print() {
 ";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: SaveBlock = serde_yaml::from_str(&"{name: Interim, given: save, save: Before}").unwrap();
+	let input = "{name: Interim, given: save, what: courses, save: Before}";
+	let input: SaveBlock = serde_yaml::from_str(&input).unwrap();
 	let expected = "Given the subset named “Before”, as “Interim”:
 
 | “Interim” |
@@ -107,8 +111,8 @@ fn pretty_print() {
 ";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: SaveBlock =
-		serde_yaml::from_str(&"{name: Interim, given: save, save: Before, where: {semester: Interim}}").unwrap();
+	let input = "{name: Interim, given: save, save: Before, where: {semester: Interim}, what: courses}";
+	let input: SaveBlock = serde_yaml::from_str(&input).unwrap();
 	let expected = "Given the subset named “Before”, limited it to only courses taken during Interim semesters, as “Interim”:
 
 | “Interim” |
