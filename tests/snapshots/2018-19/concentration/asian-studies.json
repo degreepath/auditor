@@ -14,6 +14,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": [
           {
             "where": {
@@ -37,7 +38,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

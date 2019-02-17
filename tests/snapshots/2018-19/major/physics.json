@@ -129,6 +129,7 @@
       "department_audited": false,
       "result": {
         "given": "courses",
+        "what": "courses",
         "limit": null,
         "where": {
           "attribute": {
@@ -139,7 +140,6 @@
             }
           }
         },
-        "what": "courses",
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
