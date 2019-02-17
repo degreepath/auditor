@@ -5,6 +5,7 @@ mod action;
 pub mod area_of_study;
 mod audit;
 mod filter;
+mod filterable_data;
 mod limit;
 pub mod requirement;
 mod rules;
