@@ -1,12 +1,14 @@
-use super::{CourseInstance, Transcript};
+use crate::audit::{CourseInstance, Transcript};
+use serde::{Serialize, Deserialize};
 
+use crate::area_of_study::AreaType;
 use attendance::AttendanceInstance;
 use organization::OrganizationDescriptor;
 use overrides::Override;
 use performance::PerformanceInstance;
 
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
-pub struct AuditInput {
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct StudentData {
 	pub transcript: Transcript,
 	pub organizations: Vec<OrganizationDescriptor>,
 	pub performances: Vec<PerformanceInstance>,
@@ -15,20 +17,22 @@ pub struct AuditInput {
 	pub overrides: Vec<Override>,
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq, Serialize, Deserialize)]
 pub struct AreaDescriptor {
-	catalog: String,
-	name: String,
-	kind: String,
+	pub name: String,
+	pub catalog: String,
+	#[serde(flatten)]
+	pub area_type: AreaType,
+	pub institution: Option<String>,
 }
 
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Hash, Ord, PartialOrd)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub struct Term {
 	pub year: u16,
 	pub semester: Semester,
 }
 
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Hash, Ord, PartialOrd)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub enum Semester {
 	Fall,
 	Interim,
@@ -75,9 +79,10 @@ impl std::fmt::Display for Semester {
 }
 
 mod organization {
+	use serde::{Serialize, Deserialize};
 	use super::Term;
 
-	#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct OrganizationDescriptor {
 		pub name: String,
 		pub role: String,
@@ -86,9 +91,10 @@ mod organization {
 }
 
 mod performance {
+	use serde::{Serialize, Deserialize};
 	use super::Term;
 
-	#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct PerformanceInstance {
 		pub name: String,
 		pub term: Term,
@@ -97,9 +103,10 @@ mod performance {
 }
 
 mod attendance {
+	use serde::{Serialize, Deserialize};
 	use super::Term;
 
-	#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct AttendanceInstance {
 		pub name: String,
 		pub term: Term,
@@ -108,22 +115,23 @@ mod attendance {
 }
 
 mod overrides {
+	use serde::{Serialize, Deserialize};
 	use super::{AreaDescriptor, AttendanceInstance, CourseInstance, PerformanceInstance};
 
-	#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub struct Override {
 		pub path: Vec<PathSegment>,
 		pub value: Value,
 		pub mode: Mode,
 	}
 
-	#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub enum Mode {
 		SetResult,
 		AllowValue,
 	}
 
-	#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub enum Value {
 		Course(CourseInstance),
 		Area(AreaDescriptor),
@@ -131,7 +139,7 @@ mod overrides {
 		Attendance(AttendanceInstance),
 	}
 
-	#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 	pub enum PathSegment {
 		Root,
 		Requirement(String),
@@ -144,9 +152,3 @@ mod overrides {
 		// [Root, Requirement("Core"), Path("result"), Path("of"), Index(4), Path("either"), Index(0)]
 	}
 }
-
-// impl AreaOfStudy {
-//     pub fn check(&self, input: AuditInput) -> AuditResult {
-//
-//     }
-// }

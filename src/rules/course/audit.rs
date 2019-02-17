@@ -30,7 +30,7 @@ impl RuleAudit for super::Rule {
 #[cfg(test)]
 mod tests {
 	use super::super::Rule as CourseRule;
-	use crate::audit::area_of_study::{Semester, Term};
+	use crate::student::{Semester, Term};
 	use crate::audit::{CourseInstance, ReservedPairings, RuleAudit, RuleInput, Transcript};
 	use std::collections::HashMap;
 

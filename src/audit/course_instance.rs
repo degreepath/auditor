@@ -1,4 +1,4 @@
-use super::area_of_study::Term;
+use crate::student::Term;
 use super::course_match::{MatchType, MatchedCourseParts};
 use crate::filter::Clause as Filter;
 use crate::rules::course::Rule as CourseRule;

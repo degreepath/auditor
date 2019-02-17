@@ -1,10 +1,12 @@
+use crate::student::Semester;
+
 /// MatchedCourseParts reflects the _course_, not the matching rule or filter.
 /// That is, its values are those that _were matched_ from the course.
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct MatchedCourseParts {
 	pub course: MatchType<String>,
 	pub year: MatchType<u16>,
-	pub semester: MatchType<super::area_of_study::Semester>,
+	pub semester: MatchType<Semester>,
 	pub subjects: MatchType<Vec<MatchType<String>>>,
 	pub section: MatchType<String>,
 	pub course_type: MatchType<String>,

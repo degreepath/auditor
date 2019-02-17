@@ -1,5 +1,5 @@
 use super::*;
-use crate::audit::area_of_study::Semester;
+use crate::student::Semester;
 use crate::traits::print::Print;
 
 #[test]

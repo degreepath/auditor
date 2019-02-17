@@ -1,4 +1,4 @@
-use crate::audit::area_of_study::Semester;
+use crate::student::Semester;
 use crate::traits::Util;
 use serde::Deserialize;
 use std::str::FromStr;
@@ -7,7 +7,6 @@ use void::Void;
 mod audit;
 mod print;
 mod serialize;
-
 #[cfg(test)]
 mod tests;
 

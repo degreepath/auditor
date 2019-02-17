@@ -1,4 +1,5 @@
-use super::{AreaDescriptor, CourseInstance, ReservedPairings};
+use super::{CourseInstance, ReservedPairings};
+use crate::student::AreaDescriptor;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RuleResult {

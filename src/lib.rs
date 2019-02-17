@@ -12,5 +12,6 @@ mod save;
 mod traits;
 mod util;
 mod value;
+mod student;
 
 pub use traits::print::Print;
