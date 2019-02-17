@@ -179,7 +179,7 @@ impl super::Rule {
 	}
 
 	fn in_all_courses(&self, input: &RuleInput) -> ReservedPairings {
-		ReservedPairings::from_courses(&input.transcript)
+		ReservedPairings::from_courses(&input.data.transcript)
 	}
 
 	fn in_these_courses(
@@ -191,7 +191,7 @@ impl super::Rule {
 		use super::CourseRule as GivenCourseRuleWrapper;
 		use super::RepeatMode;
 
-		let courses = input.transcript.to_vec();
+		let courses = input.data.transcript.to_vec();
 		let courses = match repeats {
 			RepeatMode::All => courses,
 			RepeatMode::First => {

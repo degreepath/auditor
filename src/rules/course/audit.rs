@@ -8,7 +8,7 @@ impl super::Rule {
 
 impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
-		let transcript = &input.transcript;
+		let transcript = &input.data.transcript;
 		let already_used = &input.already_used;
 
 		match transcript.has_course_matching(self, already_used.clone()) {
@@ -31,7 +31,7 @@ impl RuleAudit for super::Rule {
 mod tests {
 	use super::super::Rule as CourseRule;
 	use crate::audit::{CourseInstance, ReservedPairings, RuleAudit, RuleInput, Transcript};
-	use crate::student::{Semester, Term};
+	use crate::student::{Semester, StudentData, Term};
 	use std::collections::HashMap;
 
 	#[test]
@@ -42,18 +42,25 @@ mod tests {
 		};
 
 		let input = RuleInput {
-			transcript: Transcript::new(&[CourseInstance {
-				attributes: vec![],
-				course_type: "Instruction".to_string(),
-				course: "AMCON 101".to_string(),
-				gereqs: vec![],
-				section: None,
-				term: Term {
-					year: 2018,
-					semester: Semester::Fall,
-				},
-				subjects: vec!["AMCON".to_string()],
-			}]),
+			data: StudentData {
+				transcript: Transcript::new(&[CourseInstance {
+					attributes: vec![],
+					course_type: "Instruction".to_string(),
+					course: "AMCON 101".to_string(),
+					gereqs: vec![],
+					section: None,
+					term: Term {
+						year: 2018,
+						semester: Semester::Fall,
+					},
+					subjects: vec!["AMCON".to_string()],
+				}]),
+				areas: vec![],
+				attendances: vec![],
+				organizations: vec![],
+				performances: vec![],
+				overrides: vec![],
+			},
 			already_used: ReservedPairings::new(),
 			completed_siblings: HashMap::new(),
 		};
