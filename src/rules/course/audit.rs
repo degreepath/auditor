@@ -30,8 +30,10 @@ impl RuleAudit for super::Rule {
 #[cfg(test)]
 mod tests {
 	use super::super::Rule as CourseRule;
-	use crate::audit::{CourseInstance, ReservedPairings, RuleAudit, RuleInput, Transcript};
-	use crate::student::{Semester, StudentData, Term};
+	use crate::audit::{ReservedPairings, RuleAudit, RuleInput, Transcript};
+	use crate::filterable_data::{DataValue, FilterableData};
+	use crate::student::{CourseInstance, StudentData};
+	use maplit::btreemap;
 	use std::collections::HashMap;
 
 	#[test]
@@ -43,18 +45,9 @@ mod tests {
 
 		let input = RuleInput {
 			data: StudentData {
-				transcript: Transcript::new(&[CourseInstance {
-					attributes: vec![],
-					course_type: "Instruction".to_string(),
-					course: "AMCON 101".to_string(),
-					gereqs: vec![],
-					section: None,
-					term: Term {
-						year: 2018,
-						semester: Semester::Fall,
-					},
-					subjects: vec!["AMCON".to_string()],
-				}]),
+				transcript: Transcript::new(&[CourseInstance::new(FilterableData::new(btreemap! {
+					"course".into() => DataValue::String("AMCON 101".to_string()),
+				}))]),
 				areas: vec![],
 				attendances: vec![],
 				organizations: vec![],

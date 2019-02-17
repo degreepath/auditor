@@ -1,11 +1,9 @@
 use super::Given;
-use crate::audit::{
-	CourseInstance, MatchedCourseParts, ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails,
-};
+use crate::audit::{MatchedParts, ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails};
 use crate::filter::Clause as Filter;
 use crate::limit::Limiter;
 use crate::rules::{req_ref, Rule as AnyRule};
-use crate::student::AreaDescriptor;
+use crate::student::{AreaDescriptor, CourseInstance};
 
 impl super::Rule {
 	pub fn to_rule(&self) -> AnyRule {
@@ -70,8 +68,8 @@ fn match_area_against_filter(_area: &AreaDescriptor, _filter: &Filter) -> bool {
 	true
 }
 
-fn match_course_against_filter(_course: &CourseInstance, _filter: &Filter) -> Option<MatchedCourseParts> {
-	Some(MatchedCourseParts::blank())
+fn match_course_against_filter(_course: &CourseInstance, _filter: &Filter) -> Option<MatchedParts> {
+	Some(MatchedParts::blank())
 }
 
 use crate::audit::rule_result::{GivenOutput, GivenOutputType};
@@ -197,16 +195,16 @@ impl super::Rule {
 			RepeatMode::First => {
 				// sort by term; take the first occurrence of each course
 				let mut courses = courses;
-				courses.sort_unstable_by_key(|c| (c.course.clone(), c.term.clone()));
-				courses.dedup_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses.sort_unstable_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
+				courses.dedup_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
 				courses
 			}
 			RepeatMode::Last => {
 				// sort by term; take the last occurrence of each course
 				let mut courses = courses;
-				courses.sort_unstable_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses.sort_unstable_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
 				courses.reverse();
-				courses.dedup_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses.dedup_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
 				courses
 			}
 		};

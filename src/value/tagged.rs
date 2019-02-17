@@ -1,5 +1,6 @@
 use super::SingleValue;
 use crate::action::Operator;
+use crate::filterable_data::DataValue;
 use crate::traits::print;
 use crate::util;
 use serde::{Deserialize, Serialize};
@@ -27,6 +28,16 @@ impl TaggedValue {
 
 	pub fn eq_string(s: &str) -> Self {
 		TaggedValue::EqualTo(SingleValue::String(s.to_string()))
+	}
+
+	pub fn eq_value(s: &DataValue) -> Self {
+		match s {
+			DataValue::String(s) => TaggedValue::EqualTo(SingleValue::String(s.clone())),
+			DataValue::Integer(s) => TaggedValue::EqualTo(SingleValue::Integer(*s)),
+			DataValue::Float(s) => TaggedValue::EqualTo(SingleValue::Float(*s)),
+			DataValue::Boolean(s) => TaggedValue::EqualTo(SingleValue::Bool(*s)),
+			_ => unimplemented!(),
+		}
 	}
 }
 
@@ -102,6 +113,15 @@ impl fmt::Display for TaggedValue {
 			TaggedValue::GreaterThan(v) => write!(fmt, "> {}", v),
 			TaggedValue::GreaterThanEqualTo(v) => write!(fmt, ">= {}", v),
 			TaggedValue::NotEqualTo(v) => write!(fmt, "! {}", v),
+		}
+	}
+}
+
+impl PartialEq<DataValue> for TaggedValue {
+	fn eq(&self, rhs: &DataValue) -> bool {
+		match &self {
+			TaggedValue::EqualTo(value) => value == rhs,
+			_ => unimplemented!(),
 		}
 	}
 }

@@ -1,4 +1,5 @@
 use super::{SingleValue, TaggedValue};
+use crate::filterable_data::DataValue;
 use crate::traits::print;
 use crate::util::{self, Oxford};
 use serde::{Deserialize, Serialize};
@@ -104,6 +105,46 @@ impl fmt::Display for WrappedValue {
 	}
 }
 
+impl PartialEq<DataValue> for WrappedValue {
+	fn eq(&self, rhs: &DataValue) -> bool {
+		use DataValue::*;
+
+		match rhs {
+			Boolean(rhs) => match &self {
+				WrappedValue::Single(value) => value == rhs,
+				WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+				WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+			},
+			String(rhs) => match &self {
+				WrappedValue::Single(value) => value == rhs,
+				WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+				WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+			},
+			Integer(rhs) => match &self {
+				WrappedValue::Single(value) => value == rhs,
+				WrappedValue::Or(vec) => vec.iter().any(|v| v == rhs),
+				WrappedValue::And(vec) => vec.iter().all(|v| v == rhs),
+			},
+			Float((a, b)) => match &self {
+				WrappedValue::Single(value) => *value == (*a, *b),
+				WrappedValue::Or(vec) => vec.iter().any(|v| *v == (*a, *b)),
+				WrappedValue::And(vec) => vec.iter().all(|v| *v == (*a, *b)),
+			},
+			Vec(rhs) => match &self {
+				WrappedValue::Single(value) => rhs.iter().any(|v| *value == *v),
+				WrappedValue::Or(_vec) => {
+					// I think this is going to want to convert them both to HashSets and
+					// run an intersection on them?
+					unimplemented!("'vec' data-value and 'or' wrapped-value")
+				}
+				WrappedValue::And(_vec) => unimplemented!("'vec' data-value and 'and' wrapped-value"),
+			},
+			Map(_rhs) => unimplemented!("'map' data-value compared to wrapped-value"),
+			DateTime(_rhs) => unimplemented!("'datetime' data-value compared to wrapped-value"),
+		}
+	}
+}
+
 impl PartialEq<bool> for WrappedValue {
 	fn eq(&self, rhs: &bool) -> bool {
 		match &self {
@@ -184,9 +225,16 @@ impl PartialEq<WrappedValue> for (u16, u16) {
 	}
 }
 
+impl PartialEq<WrappedValue> for DataValue {
+	fn eq(&self, rhs: &WrappedValue) -> bool {
+		rhs == self
+	}
+}
+
+/*
 use crate::audit::MatchType;
 impl WrappedValue {
-	pub fn compare_to_slice(&self, available: &[String]) -> MatchType<Vec<MatchType<String>>> {
+	pub fn compare_to_slice(&self, available: &[DataValue]) -> MatchType<Vec<MatchType<DataValue>>> {
 		use std::collections::HashSet;
 
 		match &self {
@@ -202,13 +250,13 @@ impl WrappedValue {
 					return MatchType::Skip;
 				}
 
-				let available: HashSet<_> = available.iter().map(|v| TaggedValue::eq_string(v)).collect();
+				let available: HashSet<_> = available.iter().map(|v| TaggedValue::eq_value(v)).collect();
 				let possible: HashSet<_> = possible.iter().cloned().collect();
 
 				let overlap: Vec<_> = available
 					.intersection(&possible)
 					.map(|v| match v {
-						TaggedValue::EqualTo(SingleValue::String(s)) => MatchType::Match(s.clone()),
+						TaggedValue::EqualTo(v @ SingleValue::String(s)) => MatchType::Match(v.clone()),
 						_ => unimplemented!(),
 					})
 					.collect();
@@ -224,7 +272,7 @@ impl WrappedValue {
 					return MatchType::Skip;
 				}
 
-				let available: HashSet<_> = available.iter().map(|v| TaggedValue::eq_string(v)).collect();
+				let available: HashSet<_> = available.iter().map(|v| TaggedValue::eq_value(v)).collect();
 				let needed: HashSet<_> = needed.iter().cloned().collect();
 
 				let overlap: Vec<_> = available
@@ -244,3 +292,4 @@ impl WrappedValue {
 		}
 	}
 }
+*/

@@ -1,56 +1,40 @@
-use crate::student::Semester;
+use crate::filterable_data::DataValue;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 /// MatchedCourseParts reflects the _course_, not the matching rule or filter.
 /// That is, its values are those that _were matched_ from the course.
-#[derive(Hash, PartialEq, Eq, Debug, Clone)]
-pub struct MatchedCourseParts {
-	pub course: MatchType<String>,
-	pub year: MatchType<u16>,
-	pub semester: MatchType<Semester>,
-	pub subjects: MatchType<Vec<MatchType<String>>>,
-	pub section: MatchType<String>,
-	pub course_type: MatchType<String>,
-	pub gereqs: MatchType<Vec<MatchType<String>>>,
-	pub attributes: MatchType<Vec<MatchType<String>>>,
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct MatchedParts(BTreeMap<String, MatchType<DataValue>>);
+
+impl std::ops::Deref for MatchedParts {
+	type Target = BTreeMap<String, MatchType<DataValue>>;
+
+	fn deref(&self) -> &Self::Target {
+		&self.0
+	}
 }
 
 #[allow(dead_code)]
-impl MatchedCourseParts {
-	pub fn blank() -> MatchedCourseParts {
-		MatchedCourseParts {
-			course: MatchType::Skip,
-			subjects: MatchType::Skip,
-			section: MatchType::Skip,
-			year: MatchType::Skip,
-			semester: MatchType::Skip,
-			course_type: MatchType::Skip,
-			gereqs: MatchType::Skip,
-			attributes: MatchType::Skip,
-		}
+impl MatchedParts {
+	pub fn new(data: &BTreeMap<String, MatchType<DataValue>>) -> MatchedParts {
+		MatchedParts(data.clone())
+	}
+
+	pub fn blank() -> MatchedParts {
+		MatchedParts(BTreeMap::new())
 	}
 
 	pub fn any(&self) -> bool {
-		self.course.matched()
-			|| self.section.matched()
-			|| self.year.matched()
-			|| self.semester.matched()
-			|| self.course_type.matched()
-			|| self.gereqs.matched()
-			|| self.attributes.matched()
+		self.0.values().any(|v| v.matched())
 	}
 
 	pub fn all(&self) -> bool {
-		self.course.matched()
-			&& self.section.matched()
-			&& self.year.matched()
-			&& self.semester.matched()
-			&& self.course_type.matched()
-			&& self.gereqs.matched()
-			&& self.attributes.matched()
+		self.0.values().all(|v| v.matched())
 	}
 }
 
-#[derive(Hash, PartialEq, Eq, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum MatchType<T> {
 	Match(T),
 	Skip,

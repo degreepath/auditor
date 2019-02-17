@@ -1,7 +1,9 @@
-use super::{CourseInstance, MatchedCourseParts, ReservedPairings};
+use super::{MatchedParts, ReservedPairings};
 use crate::rules::course::Rule as CourseRule;
+use crate::student::CourseInstance;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Transcript(Vec<CourseInstance>);
 
 impl Transcript {
@@ -24,7 +26,7 @@ impl Transcript {
 		&self,
 		filter: &CourseRule,
 		already_used: ReservedPairings,
-	) -> Option<(CourseInstance, MatchedCourseParts)> {
+	) -> Option<(CourseInstance, MatchedParts)> {
 		for c in self.iter() {
 			let m = c.matches_rule(filter);
 			if already_used.contains(&(c.clone(), m.clone())) {

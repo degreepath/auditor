@@ -1,13 +1,9 @@
-use crate::audit::{CourseInstance, Transcript};
+use crate::audit::Transcript;
+use crate::filterable_data::FilterableData;
+use overrides::Override;
 use serde::{Deserialize, Serialize};
 
-use crate::area_of_study::AreaType;
-use attendance::AttendanceInstance;
-use organization::OrganizationDescriptor;
-use overrides::Override;
-use performance::PerformanceInstance;
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct StudentData {
 	pub transcript: Transcript,
 	pub organizations: Vec<OrganizationDescriptor>,
@@ -17,22 +13,42 @@ pub struct StudentData {
 	pub overrides: Vec<Override>,
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq, Serialize, Deserialize)]
-pub struct AreaDescriptor {
-	pub name: String,
-	pub catalog: String,
-	#[serde(flatten)]
-	pub area_type: AreaType,
-	pub institution: Option<String>,
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct AreaDescriptor(FilterableData);
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct OrganizationDescriptor(FilterableData);
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PerformanceInstance(FilterableData);
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct AttendanceInstance(FilterableData);
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct CourseInstance(FilterableData);
+
+impl CourseInstance {
+	pub fn new(data: FilterableData) -> CourseInstance {
+		CourseInstance(data)
+	}
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash, Ord, PartialOrd)]
+impl std::ops::Deref for CourseInstance {
+	type Target = FilterableData;
+
+	fn deref(&self) -> &Self::Target {
+		&self.0
+	}
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Term {
 	pub year: u16,
 	pub semester: Semester,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash, Ord, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Semester {
 	Fall,
 	Interim,
@@ -78,60 +94,24 @@ impl std::fmt::Display for Semester {
 	}
 }
 
-mod organization {
-	use super::Term;
-	use serde::{Deserialize, Serialize};
-
-	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-	pub struct OrganizationDescriptor {
-		pub name: String,
-		pub role: String,
-		pub term: Term,
-	}
-}
-
-mod performance {
-	use super::Term;
-	use serde::{Deserialize, Serialize};
-
-	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-	pub struct PerformanceInstance {
-		pub name: String,
-		pub term: Term,
-		pub when: chrono::DateTime<chrono::Utc>,
-	}
-}
-
-mod attendance {
-	use super::Term;
-	use serde::{Deserialize, Serialize};
-
-	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-	pub struct AttendanceInstance {
-		pub name: String,
-		pub term: Term,
-		pub when: chrono::DateTime<chrono::Utc>,
-	}
-}
-
 mod overrides {
 	use super::{AreaDescriptor, AttendanceInstance, CourseInstance, PerformanceInstance};
 	use serde::{Deserialize, Serialize};
 
-	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+	#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 	pub struct Override {
 		pub path: Vec<PathSegment>,
 		pub value: Value,
 		pub mode: Mode,
 	}
 
-	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+	#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 	pub enum Mode {
 		SetResult,
 		AllowValue,
 	}
 
-	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+	#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 	pub enum Value {
 		Course(CourseInstance),
 		Area(AreaDescriptor),
@@ -139,7 +119,7 @@ mod overrides {
 		Attendance(AttendanceInstance),
 	}
 
-	#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+	#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 	pub enum PathSegment {
 		Root,
 		Requirement(String),

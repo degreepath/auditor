@@ -1,6 +1,6 @@
 use crate::traits::print;
 use serde::{Deserialize, Serialize};
-use std::collections::{HashSet, BTreeMap};
+use std::collections::{BTreeMap, HashSet};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]

@@ -6,8 +6,7 @@ pub mod rule_result;
 pub mod rule_trait;
 pub mod transcript;
 
-pub use course_instance::CourseInstance;
-pub use course_match::{MatchType, MatchedCourseParts};
+pub use course_match::{MatchType, MatchedParts};
 pub use reserved::{Reservation, ReservedPairings};
 pub use rule_input::RuleInput;
 pub use rule_result::{RequirementResult, RuleResult, RuleResultDetails, RuleStatus};

@@ -1,7 +1,8 @@
-use super::{CourseInstance, MatchedCourseParts};
+use super::MatchedParts;
+use crate::student::CourseInstance;
 use std::collections::HashSet as Set;
 
-pub type Reservation = (CourseInstance, MatchedCourseParts);
+pub type Reservation = (CourseInstance, MatchedParts);
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct ReservedPairings(Set<Reservation>);
@@ -16,7 +17,7 @@ impl ReservedPairings {
 	}
 
 	pub fn from_courses(input: &[CourseInstance]) -> ReservedPairings {
-		ReservedPairings(input.iter().map(|c| (c.clone(), MatchedCourseParts::blank())).collect())
+		ReservedPairings(input.iter().map(|c| (c.clone(), MatchedParts::blank())).collect())
 	}
 
 	pub fn add(&mut self, r: &Reservation) {
