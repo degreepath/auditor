@@ -1,6 +1,6 @@
 use super::*;
+use crate::audit::area_of_study::Semester;
 use crate::traits::print::Print;
-use crate::audit::area_of_study::{Semester};
 
 #[test]
 fn serialize() {

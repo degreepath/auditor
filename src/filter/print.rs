@@ -133,9 +133,10 @@ fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 	let mut clauses = vec![];
 
 	match value {
-		Single(EqualTo(SingleValue::Integer(n))) => {
-			clauses.push(format!("during the {} academic year", util::expand_year(*n as u16, "dual")))
-		}
+		Single(EqualTo(SingleValue::Integer(n))) => clauses.push(format!(
+			"during the {} academic year",
+			util::expand_year(*n as u16, "dual")
+		)),
 		Single(EqualTo(SingleValue::String(s))) if *s == Constant::GraduationYear => {
 			clauses.push("during your graduation year".to_string())
 		}

@@ -1,7 +1,7 @@
+use super::area_of_study::Term;
 use super::course_match::{MatchType, MatchedCourseParts};
 use crate::filter::Clause as Filter;
 use crate::rules::course::Rule as CourseRule;
-use super::area_of_study::{Term};
 
 #[derive(Hash, PartialEq, Eq, Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CourseInstance {

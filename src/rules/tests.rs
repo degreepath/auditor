@@ -1,7 +1,7 @@
 use super::*;
+use crate::audit::area_of_study::Semester;
 use crate::traits::print::Print;
 use std::collections::BTreeMap;
-use crate::audit::area_of_study::{Semester};
 
 #[test]
 fn deserialize_simple_course_in_array() {

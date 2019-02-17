@@ -30,7 +30,7 @@ impl RuleAudit for super::Rule {
 #[cfg(test)]
 mod tests {
 	use super::super::Rule as CourseRule;
-	use crate::audit::area_of_study::{Term, Semester};
+	use crate::audit::area_of_study::{Semester, Term};
 	use crate::audit::{CourseInstance, ReservedPairings, RuleAudit, RuleInput, Transcript};
 	use std::collections::HashMap;
 
@@ -48,7 +48,10 @@ mod tests {
 				course: "AMCON 101".to_string(),
 				gereqs: vec![],
 				section: None,
-				term: Term {year: 2018, semester: Semester::Fall},
+				term: Term {
+					year: 2018,
+					semester: Semester::Fall,
+				},
 				subjects: vec!["AMCON".to_string()],
 			}]),
 			already_used: ReservedPairings::new(),

@@ -1,8 +1,8 @@
+use crate::audit::area_of_study::Semester;
 use crate::traits::Util;
 use serde::Deserialize;
 use std::str::FromStr;
 use void::Void;
-use crate::audit::area_of_study::Semester;
 
 mod audit;
 mod print;

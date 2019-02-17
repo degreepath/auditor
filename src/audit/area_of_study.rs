@@ -33,11 +33,11 @@ pub enum Semester {
 	Fall,
 	Interim,
 	Spring,
-	#[serde(rename="Summer Session 1")]
+	#[serde(rename = "Summer Session 1")]
 	Summer1,
-	#[serde(rename="Summer Session 2")]
+	#[serde(rename = "Summer Session 2")]
 	Summer2,
-	#[serde(rename="Non-St. Olaf")]
+	#[serde(rename = "Non-St. Olaf")]
 	NonStOlaf,
 }
 
@@ -71,7 +71,7 @@ impl std::fmt::Display for Semester {
 			Summer2 => write!(f, "Summer Session 2"),
 			NonStOlaf => write!(f, "Non-St. Olaf"),
 		}
-    }
+	}
 }
 
 mod organization {
