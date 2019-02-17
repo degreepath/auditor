@@ -1,7 +1,6 @@
 use crate::traits::print;
-use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
+use std::collections::{HashSet, BTreeMap};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone)]
 #[serde(deny_unknown_fields)]
@@ -9,7 +8,7 @@ pub struct Attributes {
 	#[serde(default)]
 	pub multicountable: Vec<Vec<Matchable>>,
 	#[serde(default)]
-	pub courses: IndexMap<CourseReference, Vec<String>>,
+	pub courses: BTreeMap<CourseReference, Vec<String>>,
 }
 
 type CourseReference = String;
