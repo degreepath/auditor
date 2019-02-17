@@ -25,8 +25,9 @@
       }
     ]
   },
-  "requirements": {
-    "Level 250": {
+  "requirements": [
+    {
+      "name": "Level 250",
       "message": null,
       "department_audited": false,
       "result": {
@@ -70,9 +71,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Level 270": {
+    {
+      "name": "Level 270",
       "message": null,
       "department_audited": false,
       "result": {
@@ -119,9 +121,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Level III": {
+    {
+      "name": "Level III",
       "message": "This course will preferably be taken in the student's senior year.",
       "department_audited": false,
       "result": {
@@ -137,9 +140,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -193,8 +197,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Language": {
+      "requirements": [
+        {
+          "name": "Language",
           "message": null,
           "department_audited": false,
           "result": {
@@ -203,18 +208,20 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Interim In German": {
+        {
+          "name": "Interim In German",
           "message": "You may count one German Interim abroad towards this requirement.",
           "department_audited": false,
           "result": null,
           "contract": false,
           "registrar_audited": true,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "In Translation": {
+        {
+          "name": "In Translation",
           "message": null,
           "department_audited": false,
           "result": {
@@ -303,10 +310,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": null
 }

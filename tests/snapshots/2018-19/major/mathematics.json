@@ -84,8 +84,9 @@
       }
     ]
   },
-  "requirements": {
-    "Basics": {
+  "requirements": [
+    {
+      "name": "Basics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -112,9 +113,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Transitions": {
+    {
+      "name": "Transitions",
       "message": null,
       "department_audited": false,
       "result": {
@@ -141,9 +143,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Perspectives": {
+    {
+      "name": "Perspectives",
       "message": "One course from each of three of the four perspectives.",
       "department_audited": false,
       "result": {
@@ -170,8 +173,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Axiomatic/Algebraic (A)": {
+      "requirements": [
+        {
+          "name": "Axiomatic/Algebraic (A)",
           "message": null,
           "department_audited": false,
           "result": {
@@ -198,9 +202,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Continuous/Analytic (C)": {
+        {
+          "name": "Continuous/Analytic (C)",
           "message": null,
           "department_audited": false,
           "result": {
@@ -227,9 +232,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Discrete/Combinatorial (D)": {
+        {
+          "name": "Discrete/Combinatorial (D)",
           "message": null,
           "department_audited": false,
           "result": {
@@ -256,9 +262,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Modeling/Computation (M)": {
+        {
+          "name": "Modeling/Computation (M)",
           "message": null,
           "department_audited": false,
           "result": {
@@ -285,11 +292,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Interdisciplinary": {
+    {
+      "name": "Interdisciplinary",
       "message": null,
       "department_audited": false,
       "result": {
@@ -312,8 +320,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Chemistry": {
+      "requirements": [
+        {
+          "name": "Chemistry",
           "message": null,
           "department_audited": false,
           "result": {
@@ -354,9 +363,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Economics": {
+        {
+          "name": "Economics",
           "message": null,
           "department_audited": false,
           "result": {
@@ -397,9 +407,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Physics": {
+        {
+          "name": "Physics",
           "message": null,
           "department_audited": false,
           "result": {
@@ -440,11 +451,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Level III": {
+    {
+      "name": "Level III",
       "message": null,
       "department_audited": false,
       "result": {
@@ -484,9 +496,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Sequence": {
+    {
+      "name": "Sequence",
       "message": null,
       "department_audited": false,
       "result": {
@@ -677,9 +690,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [
       [

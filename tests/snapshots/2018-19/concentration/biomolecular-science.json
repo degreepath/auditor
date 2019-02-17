@@ -21,8 +21,9 @@
       }
     ]
   },
-  "requirements": {
-    "Core": {
+  "requirements": [
+    {
+      "name": "Core",
       "message": null,
       "department_audited": false,
       "result": {
@@ -122,18 +123,20 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Experiential Learning": {
+    {
+      "name": "Experiential Learning",
       "message": "Participation in an experimentally based research experience or employment that takes biomolecular sciences beyond the traditional classroom is required of each concentrator. This can occur either on- or off-campus. This activity must be pre-approved by the Biomolecular Science Committee and be supported after the fact by a letter from a supervisor.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -174,8 +177,8 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

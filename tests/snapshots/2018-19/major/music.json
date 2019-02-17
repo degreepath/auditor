@@ -37,8 +37,9 @@
       }
     ]
   },
-  "requirements": {
-    "Core": {
+  "requirements": [
+    {
+      "name": "Core",
       "message": null,
       "department_audited": false,
       "result": {
@@ -71,9 +72,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Musicology": {
+    {
+      "name": "Musicology",
       "message": null,
       "department_audited": false,
       "result": {
@@ -114,9 +116,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -170,9 +173,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Performance Studies": {
+    {
+      "name": "Performance Studies",
       "message": "6 semesters; 4 in the same instrument/voice",
       "department_audited": false,
       "result": {
@@ -279,8 +283,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Bassoon": {
+      "requirements": [
+        {
+          "name": "Bassoon",
           "message": null,
           "department_audited": false,
           "result": {
@@ -309,8 +314,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -335,9 +341,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -371,11 +378,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Clarinet": {
+        {
+          "name": "Clarinet",
           "message": null,
           "department_audited": false,
           "result": {
@@ -404,8 +412,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -430,9 +439,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -466,11 +476,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Coll Keyboard Perfor": {
+        {
+          "name": "Coll Keyboard Perfor",
           "message": null,
           "department_audited": false,
           "result": {
@@ -499,8 +510,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -525,9 +537,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -561,11 +574,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Drumset": {
+        {
+          "name": "Drumset",
           "message": null,
           "department_audited": false,
           "result": {
@@ -594,8 +608,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -620,9 +635,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -656,11 +672,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Euphonium": {
+        {
+          "name": "Euphonium",
           "message": null,
           "department_audited": false,
           "result": {
@@ -689,8 +706,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -715,9 +733,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -751,11 +770,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Organ": {
+        {
+          "name": "Flute",
           "message": null,
           "department_audited": false,
           "result": {
@@ -784,15 +804,16 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
                 "given": "these-courses",
                 "courses": [
                   {
-                    "course": "MUSPF 128"
+                    "course": "MUSPF 114"
                   }
                 ],
                 "repeats": "all",
@@ -810,9 +831,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -830,7 +852,7 @@
                   "number": {
                     "Single": {
                       "NotEqualTo": {
-                        "Integer": 128
+                        "Integer": 114
                       }
                     }
                   }
@@ -846,11 +868,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Flute": {
+        {
+          "name": "French Horn",
           "message": null,
           "department_audited": false,
           "result": {
@@ -879,103 +902,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "these-courses",
-                "courses": [
-                  {
-                    "course": "MUSPF 137"
-                  }
-                ],
-                "repeats": "all",
-                "what": "terms",
-                "limit": null,
-                "where": null,
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 4
-                  }
-                }
-              },
-              "contract": false,
-              "registrar_audited": false,
-              "save": [],
-              "requirements": {}
-            },
-            "Other Lessons": {
-              "message": null,
-              "department_audited": false,
-              "result": {
-                "given": "courses",
-                "what": "terms",
-                "limit": null,
-                "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
-                  "number": {
-                    "Single": {
-                      "NotEqualTo": {
-                        "Integer": 137
-                      }
-                    }
-                  }
-                },
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 2
-                  }
-                }
-              },
-              "contract": false,
-              "registrar_audited": false,
-              "save": [],
-              "requirements": {}
-            }
-          }
-        },
-        "French Horn": {
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "given": "these-requirements",
-            "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
-            ],
-            "what": "terms",
-            "limit": null,
-            "where": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 6
-              }
-            }
-          },
-          "contract": false,
-          "registrar_audited": false,
-          "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1000,9 +929,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1036,11 +966,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Hardanger Fiddle": {
+        {
+          "name": "Hardanger Fiddle",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1069,8 +1000,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1095,9 +1027,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1131,11 +1064,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Harp": {
+        {
+          "name": "Harp",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1164,8 +1098,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1190,9 +1125,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1226,11 +1162,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Harpsichord": {
+        {
+          "name": "Harpsichord",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1259,8 +1196,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1285,9 +1223,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1321,11 +1260,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Jazz Piano": {
+        {
+          "name": "Jazz Piano",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1354,8 +1294,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1380,9 +1321,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1416,11 +1358,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Oboe": {
+        {
+          "name": "Oboe",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1449,8 +1392,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1475,9 +1419,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1511,11 +1456,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Percussion": {
+        {
+          "name": "Organ",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1544,8 +1490,107 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "these-courses",
+                "courses": [
+                  {
+                    "course": "MUSPF 128"
+                  }
+                ],
+                "repeats": "all",
+                "what": "terms",
+                "limit": null,
+                "where": null,
+                "do": {
+                  "lhs": "Count",
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 4
+                  }
+                }
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": []
+            },
+            {
+              "name": "Other Lessons",
+              "message": null,
+              "department_audited": false,
+              "result": {
+                "given": "courses",
+                "what": "terms",
+                "limit": null,
+                "where": {
+                  "department": {
+                    "Single": {
+                      "EqualTo": {
+                        "String": "MUSPF"
+                      }
+                    }
+                  },
+                  "number": {
+                    "Single": {
+                      "NotEqualTo": {
+                        "Integer": 128
+                      }
+                    }
+                  }
+                },
+                "do": {
+                  "lhs": "Count",
+                  "op": "GreaterThanEqualTo",
+                  "rhs": {
+                    "Integer": 2
+                  }
+                }
+              },
+              "contract": false,
+              "registrar_audited": false,
+              "save": [],
+              "requirements": []
+            }
+          ]
+        },
+        {
+          "name": "Percussion",
+          "message": null,
+          "department_audited": false,
+          "result": {
+            "given": "these-requirements",
+            "requirements": [
+              {
+                "requirement": "Lessons",
+                "optional": false
+              },
+              {
+                "requirement": "Other Lessons",
+                "optional": false
+              }
+            ],
+            "what": "terms",
+            "limit": null,
+            "where": null,
+            "do": {
+              "lhs": "Count",
+              "op": "GreaterThanEqualTo",
+              "rhs": {
+                "Integer": 6
+              }
+            }
+          },
+          "contract": false,
+          "registrar_audited": false,
+          "save": [],
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1570,9 +1615,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1606,11 +1652,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Piano": {
+        {
+          "name": "Piano",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1639,8 +1686,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1665,9 +1713,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1701,11 +1750,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Jazz Saxophone": {
+        {
+          "name": "Jazz Saxophone",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1734,8 +1784,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1760,9 +1811,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1796,11 +1848,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Saxophone": {
+        {
+          "name": "Saxophone",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1829,8 +1882,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1855,9 +1909,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1891,11 +1946,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "String Bass": {
+        {
+          "name": "String Bass",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1924,8 +1980,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1950,9 +2007,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1986,11 +2044,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Trombone": {
+        {
+          "name": "Trombone",
           "message": null,
           "department_audited": false,
           "result": {
@@ -2019,8 +2078,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2045,9 +2105,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2081,11 +2142,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Trumpet": {
+        {
+          "name": "Trumpet",
           "message": null,
           "department_audited": false,
           "result": {
@@ -2114,8 +2176,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2140,9 +2203,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2176,11 +2240,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Tuba": {
+        {
+          "name": "Tuba",
           "message": null,
           "department_audited": false,
           "result": {
@@ -2209,8 +2274,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2235,9 +2301,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2271,11 +2338,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Viola": {
+        {
+          "name": "Viola",
           "message": null,
           "department_audited": false,
           "result": {
@@ -2304,8 +2372,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2330,9 +2399,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2366,11 +2436,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Violin": {
+        {
+          "name": "Violin",
           "message": null,
           "department_audited": false,
           "result": {
@@ -2399,8 +2470,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2425,9 +2497,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2461,11 +2534,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Violoncello": {
+        {
+          "name": "Violoncello",
           "message": null,
           "department_audited": false,
           "result": {
@@ -2494,8 +2568,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2520,9 +2595,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2556,11 +2632,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Voice": {
+        {
+          "name": "Voice",
           "message": null,
           "department_audited": false,
           "result": {
@@ -2589,8 +2666,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Lessons": {
+          "requirements": [
+            {
+              "name": "Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2615,9 +2693,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Other Lessons": {
+            {
+              "name": "Other Lessons",
               "message": null,
               "department_audited": false,
               "result": {
@@ -2651,13 +2730,14 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         }
-      }
+      ]
     },
-    "Official Ensemble Participation": {
+    {
+      "name": "Official Ensemble Participation",
       "message": null,
       "department_audited": false,
       "result": {
@@ -2684,26 +2764,28 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Performances": {
+    {
+      "name": "Performances",
       "message": "Two solo performances on a St. Olaf Student Recital.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Recital Attendance": {
+    {
+      "name": "Recital Attendance",
       "message": "Ten recitals per semester on campus, with a minimum of 60.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

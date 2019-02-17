@@ -25,8 +25,9 @@
       }
     ]
   },
-  "requirements": {
-    "Core Language": {
+  "requirements": [
+    {
+      "name": "Core Language",
       "message": null,
       "department_audited": false,
       "result": {
@@ -49,9 +50,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Upper-Level Language": {
+    {
+      "name": "Upper-Level Language",
       "message": null,
       "department_audited": false,
       "result": {
@@ -71,9 +73,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Language and Culture": {
+    {
+      "name": "Language and Culture",
       "message": "The Asian Conversation sequence (ASIAN 210, ASIAN 215 or ASIAN 216, ASIAN 220) will count for no more than two courses.\nOne of these courses may be an Independent Study (capstone project) or the Asian Studies senior seminars (ASIAN 397 and ASIAN 399).\n",
       "department_audited": false,
       "result": {
@@ -160,8 +163,9 @@
           "do": null
         }
       ],
-      "requirements": {
-        "China-focused": {
+      "requirements": [
+        {
+          "name": "China-focused",
           "message": null,
           "department_audited": false,
           "result": {
@@ -188,9 +192,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Comparative": {
+        {
+          "name": "Comparative",
           "message": null,
           "department_audited": false,
           "result": {
@@ -249,11 +254,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "FLAC": {
+    {
+      "name": "FLAC",
       "message": null,
       "department_audited": false,
       "result": {
@@ -280,9 +286,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

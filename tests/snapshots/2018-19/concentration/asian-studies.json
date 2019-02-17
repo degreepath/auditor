@@ -8,8 +8,9 @@
     "requirement": "Electives",
     "optional": false
   },
-  "requirements": {
-    "Electives": {
+  "requirements": [
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -49,9 +50,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

@@ -16,8 +16,9 @@
       }
     ]
   },
-  "requirements": {
-    "Degree Requirements": {
+  "requirements": [
+    {
+      "name": "Degree Requirements",
       "message": null,
       "department_audited": false,
       "result": {
@@ -56,8 +57,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Courses": {
+      "requirements": [
+        {
+          "name": "Courses",
           "message": null,
           "department_audited": false,
           "result": {
@@ -76,9 +78,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Residency": {
+        {
+          "name": "Residency",
           "message": null,
           "department_audited": false,
           "result": {
@@ -105,9 +108,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Interim": {
+        {
+          "name": "Interim",
           "message": null,
           "department_audited": false,
           "result": {
@@ -162,9 +166,10 @@
               "do": null
             }
           ],
-          "requirements": {}
+          "requirements": []
         },
-        "Grade Point Average": {
+        {
+          "name": "Grade Point Average",
           "message": null,
           "department_audited": false,
           "result": {
@@ -186,9 +191,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Course Level": {
+        {
+          "name": "Course Level",
           "message": null,
           "department_audited": false,
           "result": {
@@ -215,9 +221,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Graded Courses": {
+        {
+          "name": "Graded Courses",
           "message": null,
           "department_audited": false,
           "result": {
@@ -244,9 +251,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Major": {
+        {
+          "name": "Major",
           "message": null,
           "department_audited": false,
           "result": {
@@ -273,11 +281,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "General Education": {
+    {
+      "name": "General Education",
       "message": null,
       "department_audited": false,
       "result": {
@@ -300,8 +309,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Foundation": {
+      "requirements": [
+        {
+          "name": "Foundation",
           "message": null,
           "department_audited": false,
           "result": {
@@ -336,8 +346,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "First-Year Writing": {
+          "requirements": [
+            {
+              "name": "First-Year Writing",
               "message": null,
               "department_audited": false,
               "result": {
@@ -364,9 +375,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Writing in Context": {
+            {
+              "name": "Writing in Context",
               "message": null,
               "department_audited": false,
               "result": {
@@ -393,9 +405,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Foreign Language": {
+            {
+              "name": "Foreign Language",
               "message": null,
               "department_audited": false,
               "result": {
@@ -433,9 +446,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Oral Communication": {
+            {
+              "name": "Oral Communication",
               "message": null,
               "department_audited": false,
               "result": {
@@ -462,9 +476,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Reasoning": {
+            {
+              "name": "Reasoning",
               "message": null,
               "department_audited": false,
               "result": {
@@ -503,9 +518,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Studies in Physical Movement": {
+            {
+              "name": "Studies in Physical Movement",
               "message": null,
               "department_audited": false,
               "result": {
@@ -532,11 +548,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Core": {
+        {
+          "name": "Core",
           "message": null,
           "department_audited": false,
           "result": {
@@ -563,8 +580,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Historical Studies in Western Culture or Literary Studies": {
+          "requirements": [
+            {
+              "name": "Historical Studies in Western Culture or Literary Studies",
               "message": null,
               "department_audited": false,
               "result": {
@@ -598,9 +616,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Multicultural Studies": {
+            {
+              "name": "Multicultural Studies",
               "message": null,
               "department_audited": false,
               "result": {
@@ -634,9 +653,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Biblical and Theological Studies": {
+            {
+              "name": "Biblical and Theological Studies",
               "message": null,
               "department_audited": false,
               "result": {
@@ -729,9 +749,10 @@
                   "do": null
                 }
               ],
-              "requirements": {}
+              "requirements": []
             },
-            "Studies in Human Behavior and Society": {
+            {
+              "name": "Studies in Human Behavior and Society",
               "message": null,
               "department_audited": false,
               "result": {
@@ -758,11 +779,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Integrative": {
+        {
+          "name": "Integrative",
           "message": null,
           "department_audited": false,
           "result": {
@@ -777,8 +799,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Ethical Issues and Normative Perspectives": {
+          "requirements": [
+            {
+              "name": "Ethical Issues and Normative Perspectives",
               "message": null,
               "department_audited": false,
               "result": {
@@ -805,12 +828,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": null
 }

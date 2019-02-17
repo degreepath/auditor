@@ -16,8 +16,9 @@
       }
     ]
   },
-  "requirements": {
-    "Degree Requirements": {
+  "requirements": [
+    {
+      "name": "Degree Requirements",
       "message": null,
       "department_audited": false,
       "result": {
@@ -56,8 +57,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Courses": {
+      "requirements": [
+        {
+          "name": "Courses",
           "message": null,
           "department_audited": false,
           "result": {
@@ -76,9 +78,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Residency": {
+        {
+          "name": "Residency",
           "message": null,
           "department_audited": false,
           "result": {
@@ -105,9 +108,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Interim": {
+        {
+          "name": "Interim",
           "message": null,
           "department_audited": false,
           "result": {
@@ -162,9 +166,10 @@
               "do": null
             }
           ],
-          "requirements": {}
+          "requirements": []
         },
-        "Grade Point Average": {
+        {
+          "name": "Grade Point Average",
           "message": null,
           "department_audited": false,
           "result": {
@@ -186,9 +191,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Course Level": {
+        {
+          "name": "Course Level",
           "message": null,
           "department_audited": false,
           "result": {
@@ -215,9 +221,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Graded Courses": {
+        {
+          "name": "Graded Courses",
           "message": null,
           "department_audited": false,
           "result": {
@@ -244,9 +251,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Major": {
+        {
+          "name": "Major",
           "message": null,
           "department_audited": false,
           "result": {
@@ -273,11 +281,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "General Education": {
+    {
+      "name": "General Education",
       "message": null,
       "department_audited": false,
       "result": {
@@ -300,8 +309,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Foundation": {
+      "requirements": [
+        {
+          "name": "Foundation",
           "message": null,
           "department_audited": false,
           "result": {
@@ -336,8 +346,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "First-Year Writing": {
+          "requirements": [
+            {
+              "name": "First-Year Writing",
               "message": null,
               "department_audited": false,
               "result": {
@@ -364,9 +375,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Writing in Context": {
+            {
+              "name": "Writing in Context",
               "message": null,
               "department_audited": false,
               "result": {
@@ -393,9 +405,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Foreign Language": {
+            {
+              "name": "Foreign Language",
               "message": null,
               "department_audited": false,
               "result": {
@@ -595,9 +608,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Oral Communication": {
+            {
+              "name": "Oral Communication",
               "message": null,
               "department_audited": false,
               "result": {
@@ -624,9 +638,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Abstract and Quantitative Reasoning": {
+            {
+              "name": "Abstract and Quantitative Reasoning",
               "message": null,
               "department_audited": false,
               "result": {
@@ -653,9 +668,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Studies in Physical Movement": {
+            {
+              "name": "Studies in Physical Movement",
               "message": null,
               "department_audited": false,
               "result": {
@@ -682,11 +698,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Core": {
+        {
+          "name": "Core",
           "message": null,
           "department_audited": false,
           "result": {
@@ -721,8 +738,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Historical Studies in Western Culture": {
+          "requirements": [
+            {
+              "name": "Historical Studies in Western Culture",
               "message": "One course must be taught by a St. Olaf professor.",
               "department_audited": false,
               "result": {
@@ -785,9 +803,10 @@
                   "do": null
                 }
               ],
-              "requirements": {}
+              "requirements": []
             },
-            "Multicultural Studies": {
+            {
+              "name": "Multicultural Studies",
               "message": null,
               "department_audited": false,
               "result": {
@@ -894,9 +913,10 @@
                   "do": null
                 }
               ],
-              "requirements": {}
+              "requirements": []
             },
-            "Artistic and Literary Studies": {
+            {
+              "name": "Artistic and Literary Studies",
               "message": null,
               "department_audited": false,
               "result": {
@@ -989,9 +1009,10 @@
                   "do": null
                 }
               ],
-              "requirements": {}
+              "requirements": []
             },
-            "Biblical and Theological Studies": {
+            {
+              "name": "Biblical and Theological Studies",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1084,9 +1105,10 @@
                   "do": null
                 }
               ],
-              "requirements": {}
+              "requirements": []
             },
-            "Studies in Natural Science": {
+            {
+              "name": "Studies in Natural Science",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1193,9 +1215,10 @@
                   "do": null
                 }
               ],
-              "requirements": {}
+              "requirements": []
             },
-            "Studies in Human Behavior and Society": {
+            {
+              "name": "Studies in Human Behavior and Society",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1273,11 +1296,12 @@
                   "do": null
                 }
               ],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Integrative": {
+        {
+          "name": "Integrative",
           "message": null,
           "department_audited": false,
           "result": {
@@ -1292,8 +1316,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Ethical Issues and Normative Perspectives": {
+          "requirements": [
+            {
+              "name": "Ethical Issues and Normative Perspectives",
               "message": "To complete any EIN course, you must have either completed the BTS-T requirement or have obtained permission of the EIN instructor beforehand.",
               "department_audited": false,
               "result": {
@@ -1379,12 +1404,12 @@
                   }
                 }
               ],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": null
 }

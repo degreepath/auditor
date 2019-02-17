@@ -17,8 +17,9 @@
       }
     ]
   },
-  "requirements": {
-    "Core": {
+  "requirements": [
+    {
+      "name": "Core",
       "message": null,
       "department_audited": false,
       "result": {
@@ -53,9 +54,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -101,8 +103,8 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

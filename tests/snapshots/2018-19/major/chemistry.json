@@ -29,8 +29,9 @@
       }
     ]
   },
-  "requirements": {
-    "Introductory Sequence": {
+  "requirements": [
+    {
+      "name": "Introductory Sequence",
       "message": null,
       "department_audited": false,
       "result": {
@@ -53,8 +54,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Option A": {
+      "requirements": [
+        {
+          "name": "Option A",
           "message": null,
           "department_audited": false,
           "result": {
@@ -74,9 +76,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Option B": {
+        {
+          "name": "Option B",
           "message": null,
           "department_audited": false,
           "result": {
@@ -93,9 +96,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Option C": {
+        {
+          "name": "Option C",
           "message": null,
           "department_audited": false,
           "result": {
@@ -115,11 +119,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Upper-Level Core": {
+    {
+      "name": "Upper-Level Core",
       "message": null,
       "department_audited": false,
       "result": {
@@ -146,8 +151,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Organic": {
+      "requirements": [
+        {
+          "name": "Organic",
           "message": null,
           "department_audited": false,
           "result": {
@@ -170,9 +176,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Analytical": {
+        {
+          "name": "Analytical",
           "message": null,
           "department_audited": false,
           "result": {
@@ -189,9 +196,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Physical": {
+        {
+          "name": "Physical",
           "message": null,
           "department_audited": false,
           "result": {
@@ -208,9 +216,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Elective": {
+        {
+          "name": "Elective",
           "message": null,
           "department_audited": false,
           "result": {
@@ -245,11 +254,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Physics": {
+    {
+      "name": "Physics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -265,9 +275,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Mathematics": {
+    {
+      "name": "Mathematics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -283,17 +294,18 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Seminars": {
+    {
+      "name": "Seminars",
       "message": "Attendance is required at 12 departmental seminars after declaration of major.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

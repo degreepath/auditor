@@ -76,8 +76,9 @@
       }
     ]
   },
-  "requirements": {
-    "European": {
+  "requirements": [
+    {
+      "name": "European",
       "message": null,
       "department_audited": false,
       "result": {
@@ -104,9 +105,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "U.S.": {
+    {
+      "name": "U.S.",
       "message": null,
       "department_audited": false,
       "result": {
@@ -133,9 +135,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Non-Western World": {
+    {
+      "name": "Non-Western World",
       "message": null,
       "department_audited": false,
       "result": {
@@ -162,9 +165,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Pre-Modern Period": {
+    {
+      "name": "Pre-Modern Period",
       "message": null,
       "department_audited": false,
       "result": {
@@ -191,9 +195,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Major Seminar": {
+    {
+      "name": "Major Seminar",
       "message": null,
       "department_audited": false,
       "result": {
@@ -220,9 +225,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Level III": {
+    {
+      "name": "Level III",
       "message": null,
       "department_audited": false,
       "result": {
@@ -249,9 +255,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [
       [

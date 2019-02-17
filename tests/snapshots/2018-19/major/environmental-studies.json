@@ -15,8 +15,9 @@
       }
     ]
   },
-  "requirements": {
-    "Major": {
+  "requirements": [
+    {
+      "name": "Major",
       "message": null,
       "department_audited": false,
       "result": {
@@ -36,9 +37,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Areas of Emphasis": {
+    {
+      "name": "Areas of Emphasis",
       "message": null,
       "department_audited": false,
       "result": {
@@ -61,8 +63,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Natural Science": {
+      "requirements": [
+        {
+          "name": "Natural Science",
           "message": null,
           "department_audited": false,
           "result": {
@@ -136,8 +139,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Social Sciences for Natural Science": {
+          "requirements": [
+            {
+              "name": "Social Sciences for Natural Science",
               "message": null,
               "department_audited": false,
               "result": {
@@ -200,9 +204,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Arts and Humanities for Natural Science": {
+            {
+              "name": "Arts and Humanities for Natural Science",
               "message": null,
               "department_audited": false,
               "result": {
@@ -226,9 +231,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Statistics, Modeling, and Mapping": {
+            {
+              "name": "Statistics, Modeling, and Mapping",
               "message": null,
               "department_audited": false,
               "result": {
@@ -248,9 +254,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Intermediate Chemistry": {
+            {
+              "name": "Intermediate Chemistry",
               "message": null,
               "department_audited": false,
               "result": {
@@ -281,9 +288,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Intermediate Ecology": {
+            {
+              "name": "Intermediate Ecology",
               "message": null,
               "department_audited": false,
               "result": {
@@ -300,9 +308,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Environmental Science": {
+            {
+              "name": "Environmental Science",
               "message": null,
               "department_audited": false,
               "result": {
@@ -429,11 +438,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Social Science": {
+        {
+          "name": "Social Science",
           "message": null,
           "department_audited": false,
           "result": {
@@ -507,8 +517,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Natural Science for Social Sciences": {
+          "requirements": [
+            {
+              "name": "Natural Science for Social Sciences",
               "message": null,
               "department_audited": false,
               "result": {
@@ -598,9 +609,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Arts and Humanities for Social Sciences": {
+            {
+              "name": "Arts and Humanities for Social Sciences",
               "message": null,
               "department_audited": false,
               "result": {
@@ -666,9 +678,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Methodological Analysis": {
+            {
+              "name": "Methodological Analysis",
               "message": null,
               "department_audited": false,
               "result": {
@@ -706,9 +719,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Economic Analysis": {
+            {
+              "name": "Economic Analysis",
               "message": "The department strongly recommends taking ECON 121",
               "department_audited": false,
               "result": {
@@ -763,9 +777,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Environmental Political Policy and Institutions": {
+            {
+              "name": "Environmental Political Policy and Institutions",
               "message": null,
               "department_audited": false,
               "result": {
@@ -785,9 +800,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Social Science Electives": {
+            {
+              "name": "Social Science Electives",
               "message": null,
               "department_audited": false,
               "result": {
@@ -863,11 +879,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "Arts and Humanities": {
+        {
+          "name": "Arts and Humanities",
           "message": null,
           "department_audited": false,
           "result": {
@@ -941,8 +958,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Natural Science for Arts and the Humanities": {
+          "requirements": [
+            {
+              "name": "Natural Science for Arts and the Humanities",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1032,9 +1050,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Social Sciences for Arts and the Humanities": {
+            {
+              "name": "Social Sciences for Arts and the Humanities",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1091,9 +1110,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Courses for Arts and the Humanities": {
+            {
+              "name": "Courses for Arts and the Humanities",
               "message": null,
               "department_audited": false,
               "result": {
@@ -1190,12 +1210,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": null
 }

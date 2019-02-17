@@ -29,8 +29,9 @@
       }
     ]
   },
-  "requirements": {
-    "Intro": {
+  "requirements": [
+    {
+      "name": "Intro",
       "message": null,
       "department_audited": false,
       "result": {
@@ -39,9 +40,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Methods": {
+    {
+      "name": "Methods",
       "message": null,
       "department_audited": false,
       "result": {
@@ -50,9 +52,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Studio Art": {
+    {
+      "name": "Studio Art",
       "message": null,
       "department_audited": false,
       "result": {
@@ -79,9 +82,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Distribution": {
+    {
+      "name": "Distribution",
       "message": "At least two courses must focus on Asian, African, Indigenous American, or Near Eastern/Islamic art; at least two courses must focus on American or European art; one course must cover art created before 1700 CE; one must cover art created after 1700 CE.",
       "department_audited": false,
       "result": {
@@ -143,8 +147,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Asian, African, Indigenous American, or Near Eastern/Islamic Art": {
+      "requirements": [
+        {
+          "name": "Asian, African, Indigenous American, or Near Eastern/Islamic Art",
           "message": null,
           "department_audited": false,
           "result": {
@@ -188,9 +193,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "European and American Art": {
+        {
+          "name": "European and American Art",
           "message": null,
           "department_audited": false,
           "result": {
@@ -224,9 +230,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Art created before 1700 CE": {
+        {
+          "name": "Art created before 1700 CE",
           "message": null,
           "department_audited": false,
           "result": {
@@ -253,9 +260,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Art created after 1700 CE": {
+        {
+          "name": "Art created after 1700 CE",
           "message": null,
           "department_audited": false,
           "result": {
@@ -282,20 +290,21 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Lasting Legacy": {
+    {
+      "name": "Lasting Legacy",
       "message": "Majors must successfully complete the non-credit, senior \"lasting legacy\" project or its equivalent.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

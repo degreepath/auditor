@@ -37,8 +37,9 @@
       }
     ]
   },
-  "requirements": {
-    "History of Sociological Theory": {
+  "requirements": [
+    {
+      "name": "History of Sociological Theory",
       "message": null,
       "department_audited": false,
       "result": {
@@ -47,9 +48,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Anthropological Theory": {
+    {
+      "name": "Anthropological Theory",
       "message": null,
       "department_audited": false,
       "result": {
@@ -58,9 +60,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Foundations of Social Science Research": {
+    {
+      "name": "Foundations of Social Science Research",
       "message": "STAT 110 must be taken before SOAN 371.",
       "department_audited": false,
       "result": {
@@ -69,9 +72,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Ethnographic Research Methods": {
+    {
+      "name": "Ethnographic Research Methods",
       "message": null,
       "department_audited": false,
       "result": {
@@ -80,9 +84,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Senior Seminar": {
+    {
+      "name": "Senior Seminar",
       "message": null,
       "department_audited": false,
       "result": {
@@ -91,9 +96,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Principles of Statistics": {
+    {
+      "name": "Principles of Statistics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -102,9 +108,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": "Students are permitted to take one of the four elective courses, but not a core course, S/U.",
       "department_audited": false,
       "result": {
@@ -208,8 +215,8 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

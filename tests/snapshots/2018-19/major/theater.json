@@ -21,8 +21,9 @@
       }
     ]
   },
-  "requirements": {
-    "Part 1": {
+  "requirements": [
+    {
+      "name": "Part 1",
       "message": null,
       "department_audited": false,
       "result": {
@@ -61,9 +62,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Part 2": {
+    {
+      "name": "Part 2",
       "message": null,
       "department_audited": false,
       "result": {
@@ -89,9 +91,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Practicum": {
+    {
+      "name": "Practicum",
       "message": "All students must enroll in four practicum classes, of which at least one must be THEAT 233 and at least two must be THEAT 253; the fourth practicum class is then a choice of either 233 or 253.",
       "department_audited": false,
       "result": {
@@ -132,8 +135,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Acting": {
+      "requirements": [
+        {
+          "name": "Acting",
           "message": null,
           "department_audited": false,
           "result": {
@@ -158,9 +162,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Tech": {
+        {
+          "name": "Tech",
           "message": null,
           "department_audited": false,
           "result": {
@@ -185,10 +190,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": null
 }

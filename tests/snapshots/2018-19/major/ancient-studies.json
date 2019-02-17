@@ -29,8 +29,9 @@
       }
     ]
   },
-  "requirements": {
-    "Language": {
+  "requirements": [
+    {
+      "name": "Language",
       "message": null,
       "department_audited": false,
       "result": {
@@ -46,9 +47,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Ancient History": {
+    {
+      "name": "Ancient History",
       "message": null,
       "department_audited": false,
       "result": {
@@ -75,9 +77,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Classics": {
+    {
+      "name": "Classics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -104,9 +107,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": "1 course in Greek may be used as an elective if the student satisfies the required language portion of the major with Latin courses. 1 course in Latin may be used as an elective if the student satisfies the required language portion of the major with Greek courses.",
       "department_audited": false,
       "result": {
@@ -133,9 +137,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Independent Research": {
+    {
+      "name": "Independent Research",
       "message": null,
       "department_audited": false,
       "result": {
@@ -162,9 +167,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

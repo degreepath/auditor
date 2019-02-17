@@ -85,8 +85,9 @@
       }
     ]
   },
-  "requirements": {
-    "Research Methods": {
+  "requirements": [
+    {
+      "name": "Research Methods",
       "message": null,
       "department_audited": false,
       "result": {
@@ -95,9 +96,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "American Politics and Public Policy": {
+    {
+      "name": "American Politics and Public Policy",
       "message": null,
       "department_audited": false,
       "result": {
@@ -124,9 +126,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Comparative Politics": {
+    {
+      "name": "Comparative Politics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -153,9 +156,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "International Relations": {
+    {
+      "name": "International Relations",
       "message": null,
       "department_audited": false,
       "result": {
@@ -182,9 +186,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Political Theory": {
+    {
+      "name": "Political Theory",
       "message": null,
       "department_audited": false,
       "result": {
@@ -211,9 +216,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Level III": {
+    {
+      "name": "Level III",
       "message": null,
       "department_audited": false,
       "result": {
@@ -240,9 +246,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Additional Courses": {
+    {
+      "name": "Additional Courses",
       "message": null,
       "department_audited": false,
       "result": {
@@ -261,8 +268,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Statistics": {
+      "requirements": [
+        {
+          "name": "Statistics",
           "message": null,
           "department_audited": false,
           "result": {
@@ -289,9 +297,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "World Langauge": {
+        {
+          "name": "World Langauge",
           "message": null,
           "department_audited": false,
           "result": {
@@ -309,8 +318,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "French, German, Spanish": {
+          "requirements": [
+            {
+              "name": "French, German, Spanish",
               "message": null,
               "department_audited": false,
               "result": {
@@ -356,9 +366,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Chinese, Greek, Latin, Japanese, Norwegian, Russian": {
+            {
+              "name": "Chinese, Greek, Latin, Japanese, Norwegian, Russian",
               "message": null,
               "department_audited": false,
               "result": {
@@ -419,13 +430,13 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

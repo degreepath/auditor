@@ -17,8 +17,9 @@
       }
     ]
   },
-  "requirements": {
-    "Seminar": {
+  "requirements": [
+    {
+      "name": "Seminar",
       "message": null,
       "department_audited": false,
       "result": {
@@ -45,9 +46,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -137,9 +139,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

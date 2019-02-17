@@ -21,8 +21,9 @@
       }
     ]
   },
-  "requirements": {
-    "Core": {
+  "requirements": [
+    {
+      "name": "Core",
       "message": null,
       "department_audited": false,
       "result": {
@@ -56,9 +57,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Foundation": {
+    {
+      "name": "Foundation",
       "message": null,
       "department_audited": false,
       "result": {
@@ -75,9 +77,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Economic Analysis": {
+    {
+      "name": "Economic Analysis",
       "message": null,
       "department_audited": false,
       "result": {
@@ -119,8 +122,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Level II": {
+      "requirements": [
+        {
+          "name": "Level II",
           "message": null,
           "department_audited": false,
           "result": {
@@ -147,9 +151,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Level III": {
+        {
+          "name": "Level III",
           "message": null,
           "department_audited": false,
           "result": {
@@ -176,11 +181,11 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": {
     "multicountable": [
       [

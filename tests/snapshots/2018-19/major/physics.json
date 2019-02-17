@@ -29,8 +29,9 @@
       }
     ]
   },
-  "requirements": {
-    "Analytics": {
+  "requirements": [
+    {
+      "name": "Analytics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -50,9 +51,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Modern Physics": {
+    {
+      "name": "Modern Physics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -69,9 +71,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Upper-Level": {
+    {
+      "name": "Upper-Level",
       "message": null,
       "department_audited": false,
       "result": {
@@ -94,9 +97,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Upper-Level Elective": {
+    {
+      "name": "Upper-Level Elective",
       "message": null,
       "department_audited": false,
       "result": {
@@ -122,9 +126,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Elective": {
+    {
+      "name": "Elective",
       "message": null,
       "department_audited": false,
       "result": {
@@ -151,9 +156,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

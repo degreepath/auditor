@@ -33,8 +33,9 @@
       }
     ]
   },
-  "requirements": {
-    "Foundations": {
+  "requirements": [
+    {
+      "name": "Foundations",
       "message": null,
       "department_audited": false,
       "result": {
@@ -61,9 +62,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Areas": {
+    {
+      "name": "Areas",
       "message": null,
       "department_audited": false,
       "result": {
@@ -86,8 +88,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "2D Media": {
+      "requirements": [
+        {
+          "name": "2D Media",
           "message": null,
           "department_audited": false,
           "result": {
@@ -114,8 +117,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Drawing": {
+          "requirements": [
+            {
+              "name": "Drawing",
               "message": null,
               "department_audited": false,
               "result": {
@@ -135,9 +139,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Painting": {
+            {
+              "name": "Painting",
               "message": null,
               "department_audited": false,
               "result": {
@@ -154,9 +159,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Printmaking": {
+            {
+              "name": "Printmaking",
               "message": null,
               "department_audited": false,
               "result": {
@@ -173,9 +179,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Graphic Design": {
+            {
+              "name": "Graphic Design",
               "message": null,
               "department_audited": false,
               "result": {
@@ -194,11 +201,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "3D Media": {
+        {
+          "name": "3D Media",
           "message": null,
           "department_audited": false,
           "result": {
@@ -217,8 +225,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Ceramics": {
+          "requirements": [
+            {
+              "name": "Ceramics",
               "message": null,
               "department_audited": false,
               "result": {
@@ -235,9 +244,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Sculpture": {
+            {
+              "name": "Sculpture",
               "message": null,
               "department_audited": false,
               "result": {
@@ -254,11 +264,12 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         },
-        "New Media": {
+        {
+          "name": "New Media",
           "message": null,
           "department_audited": false,
           "result": {
@@ -289,8 +300,9 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {
-            "Photography": {
+          "requirements": [
+            {
+              "name": "Photography",
               "message": null,
               "department_audited": false,
               "result": {
@@ -307,9 +319,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Interactive Image": {
+            {
+              "name": "Interactive Image",
               "message": null,
               "department_audited": false,
               "result": {
@@ -323,9 +336,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Digital Video": {
+            {
+              "name": "Digital Video",
               "message": null,
               "department_audited": false,
               "result": {
@@ -339,9 +353,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Performance": {
+            {
+              "name": "Performance",
               "message": null,
               "department_audited": false,
               "result": {
@@ -355,9 +370,10 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             },
-            "Graphic Design": {
+            {
+              "name": "Graphic Design",
               "message": null,
               "department_audited": false,
               "result": {
@@ -376,22 +392,24 @@
               "contract": false,
               "registrar_audited": false,
               "save": [],
-              "requirements": {}
+              "requirements": []
             }
-          }
+          ]
         }
-      }
+      ]
     },
-    "Juried Show": {
+    {
+      "name": "Juried Show",
       "message": "Majors must participate in two juried shows. To fulfill the the requirements of the studio art major, you must either enter the student juried show in spring semester twice, or enter our student juried show once and one other non-class related exhibition on or off campus.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Senior Studies in Studio Art": {
+    {
+      "name": "Senior Studies in Studio Art",
       "message": null,
       "department_audited": false,
       "result": {
@@ -400,9 +418,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -429,9 +448,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Art History": {
+    {
+      "name": "Art History",
       "message": "The department strongly recommends that you take ART 252 or 253 as one of your art history courses.",
       "department_audited": false,
       "result": {
@@ -458,9 +478,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

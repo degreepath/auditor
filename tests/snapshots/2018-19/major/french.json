@@ -25,8 +25,9 @@
       }
     ]
   },
-  "requirements": {
-    "Speaking and Writing": {
+  "requirements": [
+    {
+      "name": "Speaking and Writing",
       "message": null,
       "department_audited": false,
       "result": {
@@ -46,9 +47,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "The Francophone World": {
+    {
+      "name": "The Francophone World",
       "message": null,
       "department_audited": false,
       "result": {
@@ -71,9 +73,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Level III": {
+    {
+      "name": "Level III",
       "message": null,
       "department_audited": false,
       "result": {
@@ -96,9 +99,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -138,9 +142,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

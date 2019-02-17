@@ -17,8 +17,9 @@
       }
     ]
   },
-  "requirements": {
-    "American Culture": {
+  "requirements": [
+    {
+      "name": "American Culture",
       "message": null,
       "department_audited": false,
       "result": {
@@ -27,9 +28,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -135,8 +137,9 @@
           "do": null
         }
       ],
-      "requirements": {
-        "Topics": {
+      "requirements": [
+        {
+          "name": "Topics",
           "message": null,
           "department_audited": false,
           "result": {
@@ -176,9 +179,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Seminar": {
+        {
+          "name": "Seminar",
           "message": null,
           "department_audited": false,
           "result": {
@@ -203,9 +207,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Disciplinary": {
+        {
+          "name": "Disciplinary",
           "message": null,
           "department_audited": false,
           "result": {
@@ -496,10 +501,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": null
 }

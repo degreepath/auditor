@@ -130,18 +130,6 @@ For this requirement, you must take MUSPF 112 enough times to span at least four
 #### Other Lessons
 For this requirement, you must have enough courses taken other than MUSPF 112 to span at least two terms.
 
-### Organ
-For this section, you must have the following be true:
-
-1. given the results of the “Lessons” and “Other Lessons” requirements,
-2. there must be courses in at least six terms
-
-#### Lessons
-For this requirement, you must take MUSPF 128 enough times to span at least four terms.
-
-#### Other Lessons
-For this requirement, you must have enough courses taken other than MUSPF 128 to span at least two terms.
-
 ### Flute
 For this section, you must have the following be true:
 
@@ -149,10 +137,10 @@ For this section, you must have the following be true:
 2. there must be courses in at least six terms
 
 #### Lessons
-For this requirement, you must take MUSPF 137 enough times to span at least four terms.
+For this requirement, you must take MUSPF 114 enough times to span at least four terms.
 
 #### Other Lessons
-For this requirement, you must have enough courses taken other than MUSPF 137 to span at least two terms.
+For this requirement, you must have enough courses taken other than MUSPF 114 to span at least two terms.
 
 ### French Horn
 For this section, you must have the following be true:
@@ -225,6 +213,18 @@ For this requirement, you must take MUSPF 126 enough times to span at least four
 
 #### Other Lessons
 For this requirement, you must have enough courses taken other than MUSPF 126 to span at least two terms.
+
+### Organ
+For this section, you must have the following be true:
+
+1. given the results of the “Lessons” and “Other Lessons” requirements,
+2. there must be courses in at least six terms
+
+#### Lessons
+For this requirement, you must take MUSPF 128 enough times to span at least four terms.
+
+#### Other Lessons
+For this requirement, you must have enough courses taken other than MUSPF 128 to span at least two terms.
 
 ### Percussion
 For this section, you must have the following be true:

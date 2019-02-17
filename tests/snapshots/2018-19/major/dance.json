@@ -33,8 +33,9 @@
       }
     ]
   },
-  "requirements": {
-    "Language-Intensive Courses (Theory)": {
+  "requirements": [
+    {
+      "name": "Language-Intensive Courses (Theory)",
       "message": null,
       "department_audited": false,
       "result": {
@@ -63,9 +64,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Movement-Intensive Courses (Technique)": {
+    {
+      "name": "Movement-Intensive Courses (Technique)",
       "message": null,
       "department_audited": false,
       "result": {
@@ -105,8 +107,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Ballet": {
+      "requirements": [
+        {
+          "name": "Ballet",
           "message": null,
           "department_audited": false,
           "result": {
@@ -150,9 +153,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "International and Social": {
+        {
+          "name": "International and Social",
           "message": null,
           "department_audited": false,
           "result": {
@@ -181,9 +185,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Modern": {
+        {
+          "name": "Modern",
           "message": null,
           "department_audited": false,
           "result": {
@@ -227,9 +232,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Other Topics": {
+        {
+          "name": "Other Topics",
           "message": null,
           "department_audited": false,
           "result": {
@@ -255,11 +261,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Senior Dance Seminar": {
+    {
+      "name": "Senior Dance Seminar",
       "message": "Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.",
       "department_audited": false,
       "result": {
@@ -299,35 +306,38 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Area of Speciality": {
+    {
+      "name": "Area of Speciality",
       "message": "Each student designs an individualized area of specialty derived from their own interests and investigation. Select at least two credits from within or outside the department.",
       "department_audited": false,
       "result": null,
       "contract": true,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Dance Companies": {
+    {
+      "name": "Dance Companies",
       "message": "Majors are required to participate in one of the dance companies (Companydance™ or Veselica™ International Dance Ensemble) for a minimum of three semesters.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Productions": {
+    {
+      "name": "Productions",
       "message": "Majors are required to contribute in managing a dance production for a minimum of one semester.",
       "department_audited": true,
       "result": null,
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

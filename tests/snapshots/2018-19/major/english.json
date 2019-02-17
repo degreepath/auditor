@@ -41,8 +41,9 @@
       }
     ]
   },
-  "requirements": {
-    "Literary Studies": {
+  "requirements": [
+    {
+      "name": "Literary Studies",
       "message": null,
       "department_audited": false,
       "result": {
@@ -51,9 +52,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Cross-Cultural Studies": {
+    {
+      "name": "Cross-Cultural Studies",
       "message": null,
       "department_audited": false,
       "result": {
@@ -80,9 +82,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Literary History": {
+    {
+      "name": "Literary History",
       "message": null,
       "department_audited": false,
       "result": {
@@ -109,9 +112,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Cross-Disciplinary Studies": {
+    {
+      "name": "Cross-Disciplinary Studies",
       "message": null,
       "department_audited": false,
       "result": {
@@ -138,9 +142,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Genre Studies": {
+    {
+      "name": "Genre Studies",
       "message": null,
       "department_audited": false,
       "result": {
@@ -167,9 +172,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -218,9 +224,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "1800s": {
+    {
+      "name": "1800s",
       "message": null,
       "department_audited": false,
       "result": {
@@ -272,9 +279,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [
       [

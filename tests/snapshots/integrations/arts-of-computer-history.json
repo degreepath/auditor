@@ -50,8 +50,9 @@
       }
     ]
   },
-  "requirements": {
-    "History": {
+  "requirements": [
+    {
+      "name": "History",
       "message": "Designed to showcase ideas from the past, both good and bad, and to give you a mental framework about how to evaluate future ideas. \"Those who do not learn from the past are doomed to repeat it.\"",
       "department_audited": false,
       "result": {
@@ -100,8 +101,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "A": {
+      "requirements": [
+        {
+          "name": "A",
           "message": null,
           "department_audited": false,
           "result": {
@@ -130,11 +132,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Y": {
+    {
+      "name": "Y",
       "message": null,
       "department_audited": false,
       "result": {
@@ -157,9 +160,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Z": {
+    {
+      "name": "Z",
       "message": null,
       "department_audited": false,
       "result": {
@@ -186,8 +190,8 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

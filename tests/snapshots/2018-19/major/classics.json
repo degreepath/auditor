@@ -21,8 +21,9 @@
       }
     ]
   },
-  "requirements": {
-    "Language": {
+  "requirements": [
+    {
+      "name": "Language",
       "message": null,
       "department_audited": false,
       "result": {
@@ -130,9 +131,10 @@
           "do": null
         }
       ],
-      "requirements": {}
+      "requirements": []
     },
-    "Classics": {
+    {
+      "name": "Classics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -173,9 +175,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Ancient History": {
+    {
+      "name": "Ancient History",
       "message": "TODO find out what courses are considered \"ancient history\"",
       "department_audited": false,
       "result": {
@@ -202,9 +205,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

@@ -29,8 +29,9 @@
       }
     ]
   },
-  "requirements": {
-    "Foundation": {
+  "requirements": [
+    {
+      "name": "Foundation",
       "message": null,
       "department_audited": false,
       "result": {
@@ -39,9 +40,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Core": {
+    {
+      "name": "Core",
       "message": null,
       "department_audited": false,
       "result": {
@@ -68,8 +70,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Genetics": {
+      "requirements": [
+        {
+          "name": "Genetics",
           "message": null,
           "department_audited": false,
           "result": {
@@ -83,9 +86,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Cell Biology": {
+        {
+          "name": "Cell Biology",
           "message": null,
           "department_audited": false,
           "result": {
@@ -102,9 +106,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Comparative Organismal Biology": {
+        {
+          "name": "Comparative Organismal Biology",
           "message": null,
           "department_audited": false,
           "result": {
@@ -139,9 +144,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Ecology": {
+        {
+          "name": "Ecology",
           "message": null,
           "department_audited": false,
           "result": {
@@ -158,11 +164,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Level III": {
+    {
+      "name": "Level III",
       "message": null,
       "department_audited": false,
       "result": {
@@ -209,9 +216,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -238,9 +246,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Chemistry": {
+    {
+      "name": "Chemistry",
       "message": null,
       "department_audited": false,
       "result": {
@@ -287,9 +296,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

@@ -21,8 +21,9 @@
       }
     ]
   },
-  "requirements": {
-    "Introduction": {
+  "requirements": [
+    {
+      "name": "Introduction",
       "message": null,
       "department_audited": false,
       "result": {
@@ -31,9 +32,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Advanced Topics": {
+    {
+      "name": "Advanced Topics",
       "message": null,
       "department_audited": false,
       "result": {
@@ -42,9 +44,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Additional Courses": {
+    {
+      "name": "Additional Courses",
       "message": null,
       "department_audited": false,
       "result": {
@@ -142,8 +145,9 @@
           "do": null
         }
       ],
-      "requirements": {
-        "Theory and Methods": {
+      "requirements": [
+        {
+          "name": "Theory and Methods",
           "message": null,
           "department_audited": false,
           "result": {
@@ -204,9 +208,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Gender in Historical Context": {
+        {
+          "name": "Gender in Historical Context",
           "message": null,
           "department_audited": false,
           "result": {
@@ -278,9 +283,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Gender in Global/Comparative/Diverse Contexts": {
+        {
+          "name": "Gender in Global/Comparative/Diverse Contexts",
           "message": null,
           "department_audited": false,
           "result": {
@@ -409,9 +415,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Electives": {
+        {
+          "name": "Electives",
           "message": null,
           "department_audited": false,
           "result": {
@@ -434,19 +441,20 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Lived Experiences": {
+        {
+          "name": "Lived Experiences",
           "message": "The major says, \"One course must focus on women's lived experiences.\"",
           "department_audited": false,
           "result": null,
           "contract": true,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     }
-  },
+  ],
   "attributes": null
 }

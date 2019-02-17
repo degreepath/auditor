@@ -29,8 +29,9 @@
       }
     ]
   },
-  "requirements": {
-    "Foundation": {
+  "requirements": [
+    {
+      "name": "Foundation",
       "message": null,
       "department_audited": false,
       "result": {
@@ -46,9 +47,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Content Core": {
+    {
+      "name": "Content Core",
       "message": null,
       "department_audited": false,
       "result": {
@@ -67,8 +69,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {
-        "Natural Science": {
+      "requirements": [
+        {
+          "name": "Natural Science",
           "message": null,
           "department_audited": false,
           "result": {
@@ -91,9 +94,10 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         },
-        "Social Science": {
+        {
+          "name": "Social Science",
           "message": null,
           "department_audited": false,
           "result": {
@@ -116,11 +120,12 @@
           "contract": false,
           "registrar_audited": false,
           "save": [],
-          "requirements": {}
+          "requirements": []
         }
-      }
+      ]
     },
-    "Level III Capstone": {
+    {
+      "name": "Level III Capstone",
       "message": null,
       "department_audited": false,
       "result": {
@@ -147,9 +152,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "General Education": {
+    {
+      "name": "General Education",
       "message": null,
       "department_audited": false,
       "result": {
@@ -172,9 +178,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Electives": {
+    {
+      "name": "Electives",
       "message": null,
       "department_audited": false,
       "result": {
@@ -201,9 +208,9 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": {
     "multicountable": [],
     "courses": {

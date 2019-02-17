@@ -14,7 +14,7 @@ result:
       do: count >= 6
 
 requirements:
-  History:
+  - name: History
     message:
       Designed to showcase ideas from the past, both good and bad, and to give
       you a mental framework about how to evaluate future ideas. "Those who do
@@ -34,7 +34,7 @@ requirements:
           do: count >= 1.5
 
     requirements:
-      A:
+      - name: A
         result:
           count: any
           of:
@@ -45,7 +45,7 @@ requirements:
             - CLASS 110
             - GCON 203
 
-  Y:
+  - name: Y
     result:
       count: any
       of:
@@ -54,7 +54,7 @@ requirements:
         - ENVST 150
         - NURS 310
 
-  Z:
+  - name: Z
     result:
       given: courses
       where: {gereqs: 'WRI'}

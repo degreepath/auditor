@@ -25,8 +25,9 @@
       }
     ]
   },
-  "requirements": {
-    "General Education": {
+  "requirements": [
+    {
+      "name": "General Education",
       "message": null,
       "department_audited": false,
       "result": {
@@ -78,9 +79,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "What is Religion?": {
+    {
+      "name": "What is Religion?",
       "message": null,
       "department_audited": false,
       "result": {
@@ -89,9 +91,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Religious Dimensions": {
+    {
+      "name": "Religious Dimensions",
       "message": "TODO. Not yet completed. At all.",
       "department_audited": false,
       "result": {
@@ -101,9 +104,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Intensive Studies": {
+    {
+      "name": "Intensive Studies",
       "message": null,
       "department_audited": false,
       "result": {
@@ -173,8 +177,8 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }

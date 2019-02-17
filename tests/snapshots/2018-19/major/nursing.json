@@ -25,8 +25,9 @@
       }
     ]
   },
-  "requirements": {
-    "Prerequisites": {
+  "requirements": [
+    {
+      "name": "Prerequisites",
       "message": "These courses must be completed before beginning level III nursing courses.",
       "department_audited": false,
       "result": {
@@ -86,9 +87,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Ethics": {
+    {
+      "name": "Ethics",
       "message": "Students should consult with their advisor to determine what courses meet this requirement from among the general education EIN courses.",
       "department_audited": false,
       "result": {
@@ -102,9 +104,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Requirements": {
+    {
+      "name": "Requirements",
       "message": null,
       "department_audited": false,
       "result": {
@@ -148,9 +151,10 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     },
-    "Recommended": {
+    {
+      "name": "Recommended",
       "message": null,
       "department_audited": false,
       "result": {
@@ -164,8 +168,8 @@
       "contract": false,
       "registrar_audited": false,
       "save": [],
-      "requirements": {}
+      "requirements": []
     }
-  },
+  ],
   "attributes": null
 }
