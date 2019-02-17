@@ -1,9 +1,9 @@
 use super::Given;
-use crate::audit::{MatchedParts, ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails};
-use crate::filter::Clause as Filter;
-use crate::limit::Limiter;
+use crate::audit::{ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails};
+use crate::filter::{match_area_against_filter, match_course_against_filter};
+use crate::limit::{apply_limits_to_areas, apply_limits_to_courses};
 use crate::rules::{req_ref, Rule as AnyRule};
-use crate::student::{AreaDescriptor, CourseInstance};
+use crate::student::AreaDescriptor;
 
 impl super::Rule {
 	pub fn to_rule(&self) -> AnyRule {
@@ -64,14 +64,6 @@ impl RuleAudit for super::Rule {
 	}
 }
 
-fn match_area_against_filter(_area: &AreaDescriptor, _filter: &Filter) -> bool {
-	true
-}
-
-fn match_course_against_filter(_course: &CourseInstance, _filter: &Filter) -> Option<MatchedParts> {
-	Some(MatchedParts::blank())
-}
-
 use crate::audit::rule_result::{GivenOutput, GivenOutputType};
 
 impl super::Rule {
@@ -86,29 +78,7 @@ impl super::Rule {
 		}
 
 		if let Some(limits) = &self.limit {
-			use std::collections::BTreeMap;
-			let mut limiters: BTreeMap<&Limiter, u64> = BTreeMap::new();
-
-			let mut areas_which_passed_the_limits = Vec::new();
-
-			for area in areas {
-				let mut area_allowed = true;
-				for limiter in limits.iter() {
-					if match_area_against_filter(&area, &limiter.filter) {
-						limiters.entry(&limiter).and_modify(|count| *count += 1).or_insert(1);
-
-						if limiters[limiter] > limiter.at_most {
-							area_allowed = false;
-						}
-					}
-				}
-
-				if area_allowed {
-					areas_which_passed_the_limits.push(area);
-				}
-			}
-
-			areas = areas_which_passed_the_limits;
+			areas = apply_limits_to_areas(&limits, &areas);
 		}
 
 		let status = self.action.compute_with_areas(&areas).status;
@@ -135,36 +105,11 @@ impl super::Rule {
 				.collect();
 		}
 
+		let mut only_the_courses: Vec<_> = courses.iter().map(|(c, _)| c).cloned().collect();
 		if let Some(limits) = &self.limit {
-			use std::collections::BTreeMap;
-			let mut limiters: BTreeMap<&Limiter, u64> = BTreeMap::new();
-
-			let mut items_which_passed_the_limits = Vec::new();
-
-			for (course, match_info) in courses {
-				let mut course_allowed = true;
-
-				for limiter in limits.iter() {
-					// during limitation application, we don't care about what parts of a course
-					// matched – we just care that _something_ matched
-					if match_course_against_filter(&course, &limiter.filter).is_some() {
-						limiters.entry(&limiter).and_modify(|count| *count += 1).or_insert(1);
-
-						if limiters[limiter] > limiter.at_most {
-							course_allowed = false;
-						}
-					}
-				}
-
-				if course_allowed {
-					items_which_passed_the_limits.push((course, match_info));
-				}
-			}
-
-			courses = items_which_passed_the_limits;
+			only_the_courses = apply_limits_to_courses(&limits, &only_the_courses);
 		}
 
-		let only_the_courses: Vec<_> = courses.iter().map(|(c, _)| c).cloned().collect();
 		let computed = self.action.compute_with_courses(&only_the_courses);
 
 		RuleResult {
