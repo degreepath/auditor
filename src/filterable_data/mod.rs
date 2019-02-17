@@ -84,7 +84,7 @@ impl PartialEq<(u16, u16)> for DataValue {
 impl PartialEq<u16> for DataValue {
 	fn eq(&self, rhs: &u16) -> bool {
 		match &self {
-			DataValue::Integer(lhs) => *lhs == *rhs as u64,
+			DataValue::Integer(lhs) => *lhs == u64::from(*rhs),
 			_ => false,
 		}
 	}

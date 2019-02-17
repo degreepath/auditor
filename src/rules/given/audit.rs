@@ -76,7 +76,7 @@ use crate::audit::rule_result::{GivenOutput, GivenOutputType};
 
 impl super::Rule {
 	fn check_for_areas(&self, _input: &RuleInput, areas: &[AreaDescriptor]) -> RuleResult {
-		let mut areas: Vec<_> = areas.iter().cloned().collect();
+		let mut areas: Vec<_> = areas.to_vec();
 
 		if let Some(filter) = &self.filter {
 			areas = areas
