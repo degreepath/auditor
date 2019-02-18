@@ -13,6 +13,15 @@ pub struct StudentData {
 	pub overrides: Vec<Override>,
 }
 
+impl StudentData {
+	pub fn update_transcript(self, courses: &[CourseInstance]) -> StudentData {
+		StudentData {
+			transcript: Transcript::new(courses),
+			..self
+		}
+	}
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AreaDescriptor(FilterableData);
 
@@ -94,20 +103,21 @@ impl std::fmt::Display for Semester {
 	}
 }
 
-mod overrides {
+pub mod overrides {
 	use super::{AreaDescriptor, AttendanceInstance, CourseInstance, PerformanceInstance};
 	use serde::{Deserialize, Serialize};
 
 	#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 	pub struct Override {
 		pub path: Vec<PathSegment>,
-		pub value: Value,
+		#[serde(default)]
+		pub value: Option<Value>,
 		pub mode: Mode,
 	}
 
 	#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 	pub enum Mode {
-		SetResult,
+		Pass,
 		AllowValue,
 	}
 

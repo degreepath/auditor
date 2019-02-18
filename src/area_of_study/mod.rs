@@ -1,8 +1,10 @@
+use crate::limit::Limiter;
 use crate::requirement::Requirement;
 use crate::rules::Rule;
 use serde::{Deserialize, Serialize};
 
 mod attributes;
+mod audit;
 mod print;
 #[cfg(test)]
 mod tests;
@@ -20,6 +22,8 @@ pub struct AreaOfStudy {
 	pub requirements: Vec<Requirement>,
 	#[serde(default)]
 	pub attributes: Option<attributes::Attributes>,
+	#[serde(default)]
+	pub limits: Option<Vec<Limiter>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialOrd, Ord, PartialEq, Eq)]
