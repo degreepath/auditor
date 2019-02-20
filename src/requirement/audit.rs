@@ -31,7 +31,7 @@ impl super::Requirement {
 	}
 }
 
-#[derive(Default)]
+#[derive(Default, Clone, Debug)]
 pub struct RequirementResult {}
 
 impl RequirementResult {

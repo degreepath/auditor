@@ -9,7 +9,7 @@ impl super::Rule {
 impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
 		let transcript = &input.data.transcript;
-		let already_used = &input.already_used;
+		let already_used = &input.used_courses;
 
 		match transcript.has_course_matching(self, already_used.clone()) {
 			Some((course, matched_by_what)) => {
@@ -31,10 +31,8 @@ impl RuleAudit for super::Rule {
 mod tests {
 	use super::super::Rule as CourseRule;
 	use crate::audit::{ReservedPairings, RuleAudit, RuleInput, Transcript};
-	use crate::filterable_data::{DataValue, FilterableData};
 	use crate::student::{CourseInstance, StudentData};
-	use maplit::btreemap;
-	use std::collections::HashMap;
+	use maplit::{btreemap, hashmap};
 
 	#[test]
 	fn basic() {
@@ -45,17 +43,16 @@ mod tests {
 
 		let input = RuleInput {
 			data: StudentData {
-				transcript: Transcript::new(&[CourseInstance::new(FilterableData::new(btreemap! {
-					"course".into() => DataValue::String("AMCON 101".to_string()),
-				}))]),
+				transcript: Transcript::new(&[CourseInstance::from(btreemap! { "course" => "AMCON 101" })]),
 				areas: vec![],
 				attendances: vec![],
 				organizations: vec![],
 				performances: vec![],
 				overrides: vec![],
 			},
-			already_used: ReservedPairings::new(),
-			completed_siblings: HashMap::new(),
+			used_courses: ReservedPairings::new(),
+			preceding_requirements: hashmap! {},
+			saves: hashmap! {},
 		};
 
 		let result = rule.check(&input);

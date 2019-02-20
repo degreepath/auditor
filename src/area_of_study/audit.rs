@@ -26,14 +26,19 @@ impl super::AreaOfStudy {
 	}
 }
 
-pub struct AreaResult {}
+#[derive(Default, Clone, Debug)]
+pub struct AreaResult {
+	requirements: Vec<RequirementResult>,
+}
 
 impl AreaResult {
 	pub fn new() -> AreaResult {
-		AreaResult {}
+		AreaResult { requirements: vec![] }
 	}
 
-	pub fn update(self, _data: &RequirementResult) -> AreaResult {
-		AreaResult {}
+	pub fn update(self, data: &RequirementResult) -> AreaResult {
+		let mut requirements = self.requirements.clone();
+		requirements.push(data.clone());
+		AreaResult { requirements }
 	}
 }

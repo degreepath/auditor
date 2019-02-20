@@ -34,32 +34,28 @@ impl super::Rule {
 impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
 		match &self.given {
-			Given::AllCourses { what: _ } => {
+			Given::AllCourses { .. } => {
 				let data = self.in_all_courses(input);
 				self.check_for_courses(input, &data)
 			}
-			Given::TheseCourses {
-				what: _,
-				courses,
-				repeats,
-			} => {
+			Given::TheseCourses { courses, repeats, .. } => {
 				let data = self.in_these_courses(input, courses, repeats);
 				self.check_for_courses(input, &data)
 			}
-			Given::TheseRequirements { what: _, requirements } => {
+			Given::TheseRequirements { requirements, .. } => {
 				let data = self.in_requirements_out_courses(input, requirements);
 				self.check_for_courses(input, &data)
 			}
-			Given::NamedVariable { save, what: _ } => {
+			Given::NamedVariable { save, .. } => {
 				let data = self.in_variable_out_courses(input, save);
 				self.check_for_courses(input, &data)
 			}
-			Given::Areas { what: _ } => {
+			Given::Areas { .. } => {
 				let data = self.in_areas(input);
 				self.check_for_areas(input, &data)
 			}
-			Given::Performances { what: _ } => unimplemented!("performances"),
-			Given::Attendances { what: _ } => unimplemented!("attendances"),
+			Given::Performances { .. } => unimplemented!("performances"),
+			Given::Attendances { .. } => unimplemented!("attendances"),
 		}
 	}
 }
@@ -180,7 +176,7 @@ impl super::Rule {
 			.iter()
 			.filter_map(|req_ref| {
 				input
-					.completed_siblings
+					.preceding_requirements
 					.get(&req_ref.requirement)
 					.map(|req| req.reservations.iter().collect::<Vec<_>>())
 			})

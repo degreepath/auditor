@@ -1,7 +1,8 @@
 use crate::audit::Transcript;
-use crate::filterable_data::FilterableData;
+use crate::filterable_data::{DataValue, FilterableData};
 use overrides::Override;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct StudentData {
@@ -40,6 +41,24 @@ pub struct CourseInstance(FilterableData);
 impl CourseInstance {
 	pub fn new(data: FilterableData) -> CourseInstance {
 		CourseInstance(data)
+	}
+}
+
+impl From<BTreeMap<String, DataValue>> for CourseInstance {
+	fn from(map: BTreeMap<String, DataValue>) -> Self {
+		CourseInstance(FilterableData::from(map))
+	}
+}
+
+impl From<BTreeMap<&str, DataValue>> for CourseInstance {
+	fn from(map: BTreeMap<&str, DataValue>) -> Self {
+		CourseInstance(FilterableData::from(map))
+	}
+}
+
+impl From<BTreeMap<&str, &str>> for CourseInstance {
+	fn from(map: BTreeMap<&str, &str>) -> Self {
+		CourseInstance(FilterableData::from(map))
 	}
 }
 

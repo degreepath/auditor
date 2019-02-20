@@ -9,7 +9,7 @@ impl print::Print for SaveBlock {
 		let mut output = String::new();
 
 		match &self.given {
-			Given::AllCourses { what: _ } => match &self.filter {
+			Given::AllCourses { .. } => match &self.filter {
 				Some(f) => {
 					write!(&mut output, "Given the subset of courses from your transcript, limited to only courses taken {}, as “{}”:\n\n", f.print()?, self.name)?;
 
@@ -28,11 +28,7 @@ impl print::Print for SaveBlock {
 					writeln!(&mut output, "| (todo: list all??? courses here???) |")?;
 				}
 			},
-			Given::TheseCourses {
-				courses,
-				repeats: _mode,
-				what: _what,
-			} => {
+			Given::TheseCourses { courses, .. } => {
 				write!(&mut output, "Given the intersection between this set of courses and the courses from your transcript, as “{}”:\n\n", self.name)?;
 
 				let courses = courses.iter().map(|r| r.print().unwrap()).collect::<Vec<String>>();
@@ -51,7 +47,7 @@ impl print::Print for SaveBlock {
 					writeln!(&mut output, "| {} | (todo: fill out if match) |", c)?;
 				}
 			}
-			Given::TheseRequirements { requirements, what: _ } => {
+			Given::TheseRequirements { requirements, .. } => {
 				use crate::util::Oxford;
 
 				let req_names = requirements
@@ -97,7 +93,7 @@ impl print::Print for SaveBlock {
 				// todo: describe what the save will generate
 				writeln!(&mut output, "> todo: describe what the save will generate")?;
 			}
-			Given::NamedVariable { save, what: _ } => match &self.filter {
+			Given::NamedVariable { save, .. } => match &self.filter {
 				Some(f) => {
 					write!(
 						&mut output,

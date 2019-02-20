@@ -11,6 +11,28 @@ impl FilterableData {
 	}
 }
 
+impl From<BTreeMap<String, DataValue>> for FilterableData {
+	fn from(map: BTreeMap<String, DataValue>) -> Self {
+		FilterableData(map)
+	}
+}
+
+impl From<BTreeMap<&str, DataValue>> for FilterableData {
+	fn from(map: BTreeMap<&str, DataValue>) -> Self {
+		FilterableData(map.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+	}
+}
+
+impl From<BTreeMap<&str, &str>> for FilterableData {
+	fn from(map: BTreeMap<&str, &str>) -> Self {
+		FilterableData(
+			map.into_iter()
+				.map(|(k, v)| (k.to_string(), DataValue::from(v)))
+				.collect(),
+		)
+	}
+}
+
 impl Deref for FilterableData {
 	type Target = BTreeMap<String, DataValue>;
 
@@ -33,6 +55,18 @@ pub enum DataValue {
 impl From<f32> for DataValue {
 	fn from(num: f32) -> DataValue {
 		DataValue::Float((num.trunc() as u16, (num.fract() * 100.0) as u16))
+	}
+}
+
+impl From<&str> for DataValue {
+	fn from(s: &str) -> DataValue {
+		DataValue::String(s.to_string())
+	}
+}
+
+impl From<u64> for DataValue {
+	fn from(n: u64) -> DataValue {
+		DataValue::Integer(n)
 	}
 }
 
