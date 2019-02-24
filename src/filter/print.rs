@@ -73,6 +73,16 @@ impl print::Print for Clause {
 			}
 		}
 
+		if let Some(value) = self.get("performance") {
+			used_keys.insert("performance".to_string());
+
+			match value {
+				WrappedValue::Single(v) => clauses.push(format!("named “{}”", v.print()?)),
+				WrappedValue::Or(_) => clauses.push(format!("named either {}", value.print()?)),
+				WrappedValue::And(_) => clauses.push(format!("named both {}", value.print()?)),
+			}
+		}
+
 		for key in self.keys() {
 			if used_keys.contains(key) {
 				continue;

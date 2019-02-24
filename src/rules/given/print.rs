@@ -1,4 +1,7 @@
-use super::{CourseRule, Given, GivenAreasWhatOptions, GivenCoursesWhatOptions, RepeatMode, Rule};
+use super::{
+	CourseRule, Given, GivenAreasWhatOptions, GivenAttendancesWhatOptions, GivenCoursesWhatOptions,
+	GivenPerformancesWhatOptions, RepeatMode, Rule,
+};
 use crate::action;
 use crate::rules::req_ref;
 use crate::traits::print;
@@ -23,8 +26,8 @@ impl print::Print for Rule {
 			}
 			Given::Areas { what } => self.print_given_areas(what)?,
 			Given::NamedVariable { save, what } => self.print_given_save(save, what)?,
-			Given::Performances { .. } => unimplemented!("performances"),
-			Given::Attendances { .. } => unimplemented!("attendances"),
+			Given::Performances { what } => self.print_given_performances(what)?,
+			Given::Attendances { what } => self.print_given_attendances(what)?,
 		};
 
 		write!(&mut output, "{}", rule)?;
@@ -130,6 +133,46 @@ impl Rule {
 				let action = self.action.print()?;
 				let action = action.replace("exactly ", "");
 				write!(&mut output, "declare {}{}", action, filter)?;
+			}
+		}
+
+		Ok(output)
+	}
+
+	fn print_given_performances(&self, what: &GivenPerformancesWhatOptions) -> print::Result {
+		use std::fmt::Write;
+		use GivenPerformancesWhatOptions as What;
+
+		let mut output = String::new();
+		let filter = match &self.filter {
+			Some(f) => format!(" {}", f.print()?),
+			None => "".to_string(),
+		};
+
+		match &what {
+			What::Performances => {
+				let action = self.action.print()?;
+				write!(&mut output, "perform {} recitals{}", action, filter)?;
+			}
+		}
+
+		Ok(output)
+	}
+
+	fn print_given_attendances(&self, what: &GivenAttendancesWhatOptions) -> print::Result {
+		use std::fmt::Write;
+		use GivenAttendancesWhatOptions as What;
+
+		let mut output = String::new();
+		let filter = match &self.filter {
+			Some(f) => format!(" {}", f.print()?),
+			None => "".to_string(),
+		};
+
+		match &what {
+			What::Attendances => {
+				let action = self.action.print()?;
+				write!(&mut output, "attend {}{} recitals", action, filter)?;
 			}
 		}
 
