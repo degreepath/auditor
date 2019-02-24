@@ -2769,8 +2769,35 @@
     {
       "name": "Performances",
       "message": "Two solo performances on a St. Olaf Student Recital.",
-      "department_audited": true,
-      "result": null,
+      "department_audited": false,
+      "result": {
+        "given": "performances",
+        "what": "performances",
+        "limit": null,
+        "where": {
+          "performance": {
+            "Or": [
+              {
+                "EqualTo": {
+                  "String": "Instrumental Student Recital"
+                }
+              },
+              {
+                "EqualTo": {
+                  "String": "Vocal Lab Choir Solo"
+                }
+              }
+            ]
+          }
+        },
+        "do": {
+          "lhs": "Count",
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 2
+          }
+        }
+      },
       "contract": false,
       "registrar_audited": false,
       "save": [],
@@ -2778,9 +2805,21 @@
     },
     {
       "name": "Recital Attendance",
-      "message": "Ten recitals per semester on campus, with a minimum of 60.",
-      "department_audited": true,
-      "result": null,
+      "message": "You must attend 10 recitals per semester on campus, with a minimum of 60 overall.",
+      "department_audited": false,
+      "result": {
+        "given": "attendances",
+        "what": "attendances",
+        "limit": null,
+        "where": null,
+        "do": {
+          "lhs": "Count",
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 60
+          }
+        }
+      },
       "contract": false,
       "registrar_audited": false,
       "save": [],

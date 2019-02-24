@@ -378,12 +378,12 @@ For this requirement, you must have enough courses taken within the MUSEN depart
 ## Performances
 > Note: Two solo performances on a St. Olaf Student Recital.
 
-For this requirement, you must have done what the note says. The Department must certify that you have done so.
+For this requirement, you must perform at least two recitals named either Instrumental Student Recital or Vocal Lab Choir Solo.
 
 
 ## Recital Attendance
-> Note: Ten recitals per semester on campus, with a minimum of 60.
+> Note: You must attend 10 recitals per semester on campus, with a minimum of 60 overall.
 
-For this requirement, you must have done what the note says. The Department must certify that you have done so.
+For this requirement, you must attend at least 60 recitals.
 
 
