@@ -24,6 +24,8 @@ pub struct AreaOfStudy {
 	pub attributes: Option<attributes::Attributes>,
 	#[serde(default)]
 	pub limits: Option<Vec<Limiter>>,
+	#[serde(default)]
+	pub emphases: Option<Emphases>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialOrd, Ord, PartialEq, Eq)]
@@ -34,4 +36,10 @@ pub enum AreaType {
 	Minor { degree: String },
 	Concentration { degree: String },
 	Emphasis { degree: String, major: String },
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub struct Emphases {
+	pub limits: Vec<Limiter>,
+	pub choices: Vec<Requirement>,
 }
