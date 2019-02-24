@@ -254,5 +254,334 @@
       ]
     }
   },
-  "limits": null
+  "limits": null,
+  "emphases": {
+    "limits": [
+      {
+        "where": {
+          "grade": {
+            "Single": {
+              "LessThan": {
+                "Float": [
+                  2,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "at_most": 0
+      }
+    ],
+    "choices": [
+      {
+        "name": "International Economic Analysis and Policy",
+        "message": null,
+        "department_audited": false,
+        "result": {
+          "both": [
+            {
+              "requirement": "International Economics",
+              "optional": false
+            },
+            {
+              "requirement": "Electives",
+              "optional": false
+            }
+          ]
+        },
+        "contract": false,
+        "registrar_audited": false,
+        "save": [],
+        "requirements": [
+          {
+            "name": "International Economics",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "course": "ECON 382"
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Electives",
+            "message": "You may also choose an course outside of Economics Department that relates to international topics.",
+            "department_audited": false,
+            "result": {
+              "count": 2,
+              "of": [
+                {
+                  "course": "ECON 218"
+                },
+                {
+                  "course": "ECON 243"
+                },
+                {
+                  "requirement": "Non-Econ International Topics",
+                  "optional": false
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": [
+              {
+                "name": "Non-Econ International Topics",
+                "message": "You may also choose an course outside of Economics Department that relates to international topics.",
+                "department_audited": false,
+                "result": null,
+                "contract": true,
+                "registrar_audited": false,
+                "save": [],
+                "requirements": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Public Policy",
+        "message": null,
+        "department_audited": false,
+        "result": {
+          "both": [
+            {
+              "requirement": "Public Policy",
+              "optional": false
+            },
+            {
+              "requirement": "Electives",
+              "optional": false
+            }
+          ]
+        },
+        "contract": false,
+        "registrar_audited": false,
+        "save": [],
+        "requirements": [
+          {
+            "name": "Public Policy",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "course": "ECON 371"
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Electives",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": 3,
+              "of": [
+                {
+                  "course": "ECON 242"
+                },
+                {
+                  "course": "ECON 245"
+                },
+                {
+                  "course": "ECON 249"
+                },
+                {
+                  "course": "ECON 385"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          }
+        ]
+      },
+      {
+        "name": "Management",
+        "message": null,
+        "department_audited": false,
+        "result": {
+          "both": [
+            {
+              "requirement": "Management",
+              "optional": false
+            },
+            {
+              "requirement": "Electives",
+              "optional": false
+            }
+          ]
+        },
+        "contract": false,
+        "registrar_audited": false,
+        "save": [],
+        "requirements": [
+          {
+            "name": "Management",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": "all",
+              "of": [
+                {
+                  "course": "MGMT 225"
+                },
+                {
+                  "course": "MGMT 237"
+                },
+                {
+                  "course": "MGMT 251"
+                },
+                {
+                  "course": "MGMT 383"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Electives",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": "any",
+              "of": [
+                {
+                  "course": "MGMT 250"
+                },
+                {
+                  "course": "MGMT 252"
+                },
+                {
+                  "course": "MGMT 256"
+                },
+                {
+                  "course": "MGMT 281"
+                },
+                {
+                  "requirement": "Other MGMT Course",
+                  "optional": false
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": [
+              {
+                "name": "Other MGMT Course",
+                "message": "You may also negotiate some other MGMT course.",
+                "department_audited": false,
+                "result": null,
+                "contract": true,
+                "registrar_audited": false,
+                "save": [],
+                "requirements": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Finance",
+        "message": null,
+        "department_audited": false,
+        "result": {
+          "both": [
+            {
+              "requirement": "Finance",
+              "optional": false
+            },
+            {
+              "requirement": "Electives",
+              "optional": false
+            }
+          ]
+        },
+        "contract": false,
+        "registrar_audited": false,
+        "save": [],
+        "requirements": [
+          {
+            "name": "Finance",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": "all",
+              "of": [
+                {
+                  "course": "MGMT 225"
+                },
+                {
+                  "course": "MGMT 237"
+                },
+                {
+                  "course": "MGMT 281"
+                },
+                {
+                  "course": "MGMT 380"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Electives",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": "any",
+              "of": [
+                {
+                  "both": [
+                    {
+                      "course": "MGMT 250"
+                    },
+                    {
+                      "course": "MGMT 251"
+                    }
+                  ]
+                },
+                {
+                  "course": "MGMT 252"
+                },
+                {
+                  "course": "MGMT 256"
+                },
+                {
+                  "course": "ECON 371"
+                },
+                {
+                  "course": "ECON 374"
+                },
+                {
+                  "course": "ECON 382"
+                },
+                {
+                  "course": "ECON 385"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          }
+        ]
+      }
+    ]
+  }
 }

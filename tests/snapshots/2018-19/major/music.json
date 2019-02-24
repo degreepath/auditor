@@ -2827,5 +2827,372 @@
     }
   ],
   "attributes": null,
-  "limits": null
+  "limits": null,
+  "emphases": {
+    "limits": [],
+    "choices": [
+      {
+        "name": "Composition",
+        "message": null,
+        "department_audited": false,
+        "result": {
+          "count": "all",
+          "of": [
+            {
+              "requirement": "Courses",
+              "optional": false
+            },
+            {
+              "requirement": "Lessons",
+              "optional": false
+            },
+            {
+              "requirement": "Performances",
+              "optional": false
+            },
+            {
+              "requirement": "Portfolio",
+              "optional": false
+            }
+          ]
+        },
+        "contract": false,
+        "registrar_audited": false,
+        "save": [],
+        "requirements": [
+          {
+            "name": "Courses",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": "all",
+              "of": [
+                {
+                  "course": "MUSIC 225"
+                },
+                {
+                  "course": "MUSIC 324"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Lessons",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "given": "these-courses",
+              "courses": [
+                {
+                  "course": "MUSPF 326"
+                }
+              ],
+              "repeats": "all",
+              "what": "terms",
+              "limit": null,
+              "where": null,
+              "do": {
+                "lhs": "Count",
+                "op": "GreaterThanEqualTo",
+                "rhs": {
+                  "Integer": 4
+                }
+              }
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Performances",
+            "message": "2 composition performances, at least 1 in junior or senior year",
+            "department_audited": false,
+            "result": {
+              "both": [
+                {
+                  "given": "performances",
+                  "what": "performances",
+                  "limit": null,
+                  "where": {
+                    "performance": {
+                      "Or": [
+                        {
+                          "EqualTo": {
+                            "String": "AAA"
+                          }
+                        },
+                        {
+                          "EqualTo": {
+                            "String": "BBB"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "do": {
+                    "lhs": "Count",
+                    "op": "GreaterThanEqualTo",
+                    "rhs": {
+                      "Integer": 2
+                    }
+                  }
+                },
+                {
+                  "given": "performances",
+                  "what": "performances",
+                  "limit": null,
+                  "where": {
+                    "performance": {
+                      "Or": [
+                        {
+                          "EqualTo": {
+                            "String": "AAA"
+                          }
+                        },
+                        {
+                          "EqualTo": {
+                            "String": "BBB"
+                          }
+                        }
+                      ]
+                    },
+                    "year": {
+                      "Or": [
+                        {
+                          "EqualTo": {
+                            "String": "$senior-year"
+                          }
+                        },
+                        {
+                          "EqualTo": {
+                            "String": "$junior-year"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "do": {
+                    "lhs": "Count",
+                    "op": "GreaterThanEqualTo",
+                    "rhs": {
+                      "Integer": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Portfolio",
+            "message": "With approval of the composition faculty, the student submits a portfolio of at least 3 compositions previously submitted for Level III composition courses to the Music Office by May 1 of the senior year",
+            "department_audited": true,
+            "result": null,
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          }
+        ]
+      },
+      {
+        "name": "Musicology",
+        "message": null,
+        "department_audited": false,
+        "result": {
+          "count": "all",
+          "of": [
+            {
+              "requirement": "Courses",
+              "optional": false
+            },
+            {
+              "requirement": "More Courses",
+              "optional": false
+            },
+            {
+              "requirement": "Portfolio",
+              "optional": false
+            }
+          ]
+        },
+        "contract": false,
+        "registrar_audited": false,
+        "save": [],
+        "requirements": [
+          {
+            "name": "Courses",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": 2,
+              "of": [
+                {
+                  "course": "MUSIC 340"
+                },
+                {
+                  "course": "MUSIC 341"
+                },
+                {
+                  "course": "MUSIC 342"
+                },
+                {
+                  "course": "MUSIC 343"
+                },
+                {
+                  "course": "MUSIC 344"
+                },
+                {
+                  "course": "MUSIC 345"
+                },
+                {
+                  "course": "MUSIC 346"
+                },
+                {
+                  "course": "MUSIC 347"
+                },
+                {
+                  "course": "MUSIC 348"
+                },
+                {
+                  "course": "MUSIC 349"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "More Courses",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": 1,
+              "of": [
+                {
+                  "course": "MUSIC 312"
+                },
+                {
+                  "course": "MUSIC 313"
+                },
+                {
+                  "course": "MUSIC 314"
+                },
+                {
+                  "course": "MUSIC 340"
+                },
+                {
+                  "course": "MUSIC 341"
+                },
+                {
+                  "course": "MUSIC 342"
+                },
+                {
+                  "course": "MUSIC 343"
+                },
+                {
+                  "course": "MUSIC 344"
+                },
+                {
+                  "course": "MUSIC 345"
+                },
+                {
+                  "course": "MUSIC 346"
+                },
+                {
+                  "course": "MUSIC 347"
+                },
+                {
+                  "course": "MUSIC 348"
+                },
+                {
+                  "course": "MUSIC 349"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Portfolio",
+            "message": "With approval of the musicology faculty, the student submits a portfolio of at least 3 papers previously submitted for Level III musicology courses to the Music Office by May 1 of the senior year. One of these must be revised with faculty supervision to demonstrate the student's best work in musiciology",
+            "department_audited": true,
+            "result": null,
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          }
+        ]
+      },
+      {
+        "name": "Theory",
+        "message": null,
+        "department_audited": false,
+        "result": {
+          "count": "all",
+          "of": [
+            {
+              "requirement": "Courses",
+              "optional": false
+            },
+            {
+              "requirement": "Portfolio",
+              "optional": false
+            }
+          ]
+        },
+        "contract": false,
+        "registrar_audited": false,
+        "save": [],
+        "requirements": [
+          {
+            "name": "Courses",
+            "message": null,
+            "department_audited": false,
+            "result": {
+              "count": "all",
+              "of": [
+                {
+                  "course": "MUSIC 312"
+                },
+                {
+                  "course": "MUSIC 313"
+                },
+                {
+                  "course": "MUSIC 314"
+                }
+              ]
+            },
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          },
+          {
+            "name": "Portfolio",
+            "message": "With approval of the theory faculty, the student submits a portfolio of at least 3 papers previously submitted for Level III theory courses to the Music Office by May 1 of the senior year. One of these must be revised with faculty supervision to demonstrate the student's best work in music analysis",
+            "department_audited": true,
+            "result": null,
+            "contract": false,
+            "registrar_audited": false,
+            "save": [],
+            "requirements": []
+          }
+        ]
+      }
+    ]
+  }
 }
