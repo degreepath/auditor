@@ -64,6 +64,7 @@ requirements:
 		}),
 		attributes: None,
 		limits: None,
+		emphases: None,
 		requirements: [
 			Requirement {
 				name: "Core".to_string(),

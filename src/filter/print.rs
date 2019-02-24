@@ -150,6 +150,12 @@ fn print_year(value: &WrappedValue) -> Result<Vec<String>, std::fmt::Error> {
 		Single(EqualTo(SingleValue::String(s))) if *s == Constant::GraduationYear => {
 			clauses.push("during your graduation year".to_string())
 		}
+		Single(EqualTo(SingleValue::String(s))) if *s == Constant::SeniorYear => {
+			clauses.push("during your junior year".to_string())
+		}
+		Single(EqualTo(SingleValue::String(s))) if *s == Constant::JuniorYear => {
+			clauses.push("during your senior year".to_string())
+		}
 		Or(_) | And(_) => {
 			// TODO: implement a .map() function on WrappedValue?
 			// to allow something like `year.map(util::expand_year).print()?`
@@ -173,6 +179,12 @@ fn print_year_and_semester(year: &WrappedValue, semester: &WrappedValue) -> Resu
 		)),
 		(Single(EqualTo(SingleValue::String(s))), Single(sem)) if *s == Constant::GraduationYear => {
 			clauses.push(format!("during the {} of your graduation year", sem.print()?))
+		}
+		(Single(EqualTo(SingleValue::String(s))), Single(sem)) if *s == Constant::SeniorYear => {
+			clauses.push(format!("during the {} of your senior year", sem.print()?))
+		}
+		(Single(EqualTo(SingleValue::String(s))), Single(sem)) if *s == Constant::JuniorYear => {
+			clauses.push(format!("during the {} of your junior year", sem.print()?))
 		}
 		_ => unimplemented!("filter:year+semester, certain modes"),
 	}

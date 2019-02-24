@@ -39,12 +39,12 @@ fn deserialize_dance() {
 given: these-courses
 courses: [DANCE 399]
 repeats: last
-where: {year: graduation-year, semester: Fall}
+where: {year: $graduation-year, semester: Fall}
 what: courses
 name: "Senior Dance Seminars""#;
 
 	let filter: filter::Clause = btreemap! {
-		"year".into() => "graduation-year".parse::<value::WrappedValue>().unwrap(),
+		"year".into() => "$graduation-year".parse::<value::WrappedValue>().unwrap(),
 		"semester".into() => "Fall".parse::<value::WrappedValue>().unwrap(),
 	};
 
