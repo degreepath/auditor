@@ -26,6 +26,14 @@ impl StudentData {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AreaDescriptor(FilterableData);
 
+impl std::ops::Deref for AreaDescriptor {
+	type Target = FilterableData;
+
+	fn deref(&self) -> &Self::Target {
+		&self.0
+	}
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OrganizationDescriptor(FilterableData);
 
