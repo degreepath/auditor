@@ -37,37 +37,38 @@ impl print::Print for Rule {
 }
 
 impl Rule {
-	fn print_filter(&self) -> print::Result {
-		match &self.filter {
-			Some(f) => Ok(format!(" taken {}", f.print()?)),
-			None => Ok("".to_string()),
-		}
-	}
-
 	fn print_given_all_courses(&self, what: &GivenCoursesWhatOptions) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 		let action = self.action.print()?;
-		let filter = self.print_filter()?;
+		let filter = match &self.filter {
+			Some(f) => format!(" {}", f.print()?),
+			None => "".to_string(),
+		};
 
 		match &what {
 			What::Courses => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 
-				write!(&mut output, "have {} {}{}", action, word, filter)?;
+				write!(&mut output, "take {} {}{}", action, word, filter)?;
 			}
 			What::DistinctCourses => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "distinct courses" } else { "course" };
 
-				write!(&mut output, "have {} {}{}", action, word, filter)?;
+				write!(&mut output, "take {} {}{}", action, word, filter)?;
 			}
 			What::Credits => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "credits" } else { "credit" };
+				let filter = if filter.is_empty() {
+					"".to_owned()
+				} else {
+					format!(" taken{}", filter)
+				};
 
 				write!(
 					&mut output,
@@ -95,7 +96,7 @@ impl Rule {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "terms" } else { "term" };
 
-				write!(&mut output, "have enough courses{} to span {} {}", filter, action, word)?;
+				write!(&mut output, "have taken enough courses{} to span {} {}", filter, action, word)?;
 			}
 		}
 
@@ -467,7 +468,10 @@ impl Rule {
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = self.print_filter()?;
+		let filter = match &self.filter {
+			Some(f) => format!(" taken {}", f.print()?),
+			None => "".to_string(),
+		};
 
 		match &what {
 			What::Courses => {
