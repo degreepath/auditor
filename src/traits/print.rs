@@ -32,7 +32,7 @@ fn indent_non_empty_lines(s: &str, times: usize) -> String {
 		});
 
 		// skip the first blank line
-		let rest = rest.skip_while(|l| l.is_empty());
+		let rest = rest.skip_while(String::is_empty);
 
 		let rest = rest.collect::<Vec<_>>().join("\n");
 
