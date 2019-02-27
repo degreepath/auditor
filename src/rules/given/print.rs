@@ -49,6 +49,7 @@ impl Rule {
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
+		let action = self.action.print()?;
 		let filter = self.print_filter()?;
 
 		match &what {
@@ -56,13 +57,13 @@ impl Rule {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 
-				write!(&mut output, "have {} {}{}", self.action.print()?, word, filter)?;
+				write!(&mut output, "have {} {}{}", action, word, filter)?;
 			}
 			What::DistinctCourses => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "distinct courses" } else { "course" };
 
-				write!(&mut output, "have {} {}{}", self.action.print()?, word, filter)?;
+				write!(&mut output, "have {} {}{}", action, word, filter)?;
 			}
 			What::Credits => {
 				let plur = self.action.should_pluralize();
@@ -71,22 +72,14 @@ impl Rule {
 				write!(
 					&mut output,
 					"have enough courses{} to obtain {} {}",
-					filter,
-					self.action.print()?,
-					word
+					filter, action, word
 				)?;
 			}
 			What::Departments => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "departments" } else { "department" };
 
-				write!(
-					&mut output,
-					"have enough courses{} to span {} {}",
-					filter,
-					self.action.print()?,
-					word
-				)?;
+				write!(&mut output, "have enough courses{} to span {} {}", filter, action, word)?;
 			}
 			What::Grades => {
 				let plur = self.action.should_pluralize();
@@ -95,22 +88,14 @@ impl Rule {
 				write!(
 					&mut output,
 					"maintain an average GPA {} from {}{}",
-					self.action.print()?,
-					word,
-					filter
+					action, word, filter
 				)?;
 			}
 			What::Terms => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "terms" } else { "term" };
 
-				write!(
-					&mut output,
-					"have enough courses{} to span {} {}",
-					filter,
-					self.action.print()?,
-					word
-				)?;
+				write!(&mut output, "have enough courses{} to span {} {}", filter, action, word)?;
 			}
 		}
 
