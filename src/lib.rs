@@ -10,7 +10,7 @@ mod limit;
 pub mod requirement;
 mod rules;
 mod save;
-mod student;
+pub mod student;
 mod traits;
 mod util;
 mod value;
