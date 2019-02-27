@@ -1,0 +1,38 @@
+---
+created: "2019-02-27T18:11:59.440747Z"
+creator: insta@0.6.3
+source: src/rules/given/tests.rs
+expression: data
+---
+Rule {
+    given: TheseRequirements {
+        requirements: [
+            Rule {
+                requirement: "A Name 1",
+                optional: false
+            },
+            Rule {
+                requirement: "A Name 2",
+                optional: true
+            }
+        ],
+        what: Courses
+    },
+    limit: Some(
+        []
+    ),
+    filter: Some(
+        {}
+    ),
+    action: Action {
+        lhs: Count,
+        op: Some(
+            GreaterThan
+        ),
+        rhs: Some(
+            Integer(
+                2
+            )
+        )
+    }
+}

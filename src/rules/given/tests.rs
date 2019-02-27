@@ -4,6 +4,7 @@ use crate::filter;
 use crate::rules::{course, req_ref};
 use crate::traits::print::Print;
 use crate::value;
+use insta::{assert_snapshot_matches, assert_debug_snapshot_matches};
 use maplit::btreemap;
 
 #[test]
@@ -17,20 +18,7 @@ fn serialize_all_courses() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	let expected = r#"---
-given: courses
-what: courses
-limit: []
-where: {}
-do:
-  lhs: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+	assert_debug_snapshot_matches!("ser_all_courses", data);
 }
 
 #[test]
@@ -93,24 +81,7 @@ fn serialize_these_courses() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	let expected = r#"---
-given: these-courses
-courses:
-  - course: ASIAN 110
-  - course: ASIAN 110
-repeats: first
-what: courses
-limit: []
-where: {}
-do:
-  lhs: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+	assert_debug_snapshot_matches!("ser_these_courses_1", data);
 }
 
 #[test]
@@ -191,25 +162,7 @@ fn serialize_these_requirements() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	let expected = r#"---
-given: these-requirements
-requirements:
-  - requirement: A Name 1
-    optional: false
-  - requirement: A Name 2
-    optional: true
-what: courses
-limit: []
-where: {}
-do:
-  lhs: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+	assert_debug_snapshot_matches!("ser_these_reqs", data);
 }
 
 #[test]
@@ -277,20 +230,7 @@ fn serialize_areas() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	let expected = r#"---
-given: areas
-what: areas
-limit: []
-where: {}
-do:
-  lhs: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+	assert_debug_snapshot_matches!("ser_areas", data);
 }
 
 #[test]
@@ -343,21 +283,7 @@ fn serialize_save() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	let expected = r#"---
-given: save
-save: $my_var
-what: courses
-limit: []
-where: {}
-do:
-  lhs: Count
-  op: GreaterThan
-  rhs:
-    Integer: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+	assert_debug_snapshot_matches!("ser_save", data);
 }
 
 #[test]
@@ -513,207 +439,178 @@ fn deserialize_filter_graded_bool() {
 #[test]
 fn pretty_print_inline() {
 	let input: Rule = serde_yaml::from_str(&"{given: courses, what: courses, do: count >= 1}").unwrap();
-	let expected = "take at least one course";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take at least one course");
 }
 
 #[test]
 fn pretty_print_inline_filters() {
-	let input: Rule =
-		serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: courses, do: count >= 1}").unwrap();
-	let expected = "take at least one course with the “FOL-C” general education attribute";
-	assert_eq!(expected, input.print().unwrap());
+	let s = "{given: courses, where: {gereqs: FOL-C}, what: courses, do: count >= 1}";
+	let input: Rule = serde_yaml::from_str(&s).unwrap();
+	assert_snapshot_matches!(input.print().unwrap(), @"take at least one course with the “FOL-C” general education attribute");
 
-	let input: Rule =
-		serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct-courses, do: count >= 2}")
-			.unwrap();
-	let expected = "take at least two distinct courses with the “SPM” general education attribute";
-	assert_eq!(expected, input.print().unwrap());
+	let s = "{given: courses, where: {gereqs: SPM}, what: distinct-courses, do: count >= 2}";
+	let input: Rule = serde_yaml::from_str(&s).unwrap();
+	assert_snapshot_matches!(input.print().unwrap(), @"take at least two distinct courses with the “SPM” general education attribute");
 }
 
 #[test]
 fn pretty_print_inline_repeats() {
 	let s = "{given: these-courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take THEAT 233 at least one time";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take THEAT 233 at least one time");
 
 	let s = "{given: these-courses, repeats: all, courses: [THEAT 233], what: courses, do: count >= 4}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take THEAT 233 at least four times";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take THEAT 233 at least four times");
 
 	let s = "{given: these-courses, repeats: all, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 4}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take a combination of THEAT 233 and THEAT 253 at least four times";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take a combination of THEAT 233 and THEAT 253 at least four times");
 
 	let s = "{given: these-courses, repeats: all, courses: [AMST 205, AMST 206, AMST 207, AMST 208, AMST 209, AMST 210], what: courses, do: count >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take at least one of the following courses:
+	assert_snapshot_matches!(input.print().unwrap(), @r###"take at least one of the following courses:
 
 - AMST 205
 - AMST 206
 - AMST 207
 - AMST 208
 - AMST 209
-- AMST 210";
-	assert_eq!(expected, input.print().unwrap());
+- AMST 210"###);
 
 	let s = "{given: these-courses, repeats: all, courses: [THEAT 233], what: credits, do: sum >= 4}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take THEAT 233 enough times to yield at least four credits";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take THEAT 233 enough times to yield at least four credits");
 
 	let s = "{given: these-courses, repeats: first, courses: [THEAT 233], what: courses, do: count >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take THEAT 233";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take THEAT 233");
 
 	let s = "{given: these-courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take either THEAT 233 or THEAT 253";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take either THEAT 233 or THEAT 253");
 
 	let s = "{given: these-courses, repeats: first, courses: [THEAT 233, THEAT 253], what: courses, do: count >= 2}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "take both THEAT 233 and THEAT 253";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"take both THEAT 233 and THEAT 253");
 }
 
 #[test]
 fn pretty_print_inline_credits() {
 	let s = "{given: courses, where: {gereqs: FOL-C}, what: credits, do: sum >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected =
-		"have enough courses taken with the “FOL-C” general education attribute to obtain at least one credit";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken with the “FOL-C” general education attribute to obtain at least one credit");
 
 	let s = "{given: courses, where: {semester: Interim}, what: credits, do: sum >= 3}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have enough courses taken during Interim semesters to obtain at least three credits";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during Interim semesters to obtain at least three credits");
 
 	let s = "{given: courses, where: {semester: Fall}, what: credits, do: sum >= 10}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have enough courses taken during Fall semesters to obtain at least ten credits";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during Fall semesters to obtain at least ten credits");
 
 	let s = "{given: courses, where: {semester: Fall | Interim}, what: credits, do: sum >= 10}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have enough courses taken during a Fall or Interim semester to obtain at least ten credits";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during a Fall or Interim semester to obtain at least ten credits");
 
 	let s = "{given: courses, where: {year: '2012'}, what: credits, do: sum >= 3}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have enough courses taken during the 2012-13 academic year to obtain at least three credits";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during the 2012-13 academic year to obtain at least three credits");
 
 	let s = "{given: courses, where: {institution: St. Olaf College}, what: credits, do: sum >= 17}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have enough courses taken at St. Olaf College to obtain at least 17 credits";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken at St. Olaf College to obtain at least 17 credits");
 }
 
 #[test]
 fn pretty_print_inline_departments() {
 	let s = "{given: courses, where: {gereqs: FOL-C}, what: departments, do: count >= 2}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected =
-		"have enough courses taken with the “FOL-C” general education attribute to span at least two departments";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken with the “FOL-C” general education attribute to span at least two departments");
 
 	let s = "{given: courses, where: {semester: Interim}, what: departments, do: count >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have enough courses taken during Interim semesters to span at least one department";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during Interim semesters to span at least one department");
 
 	let s = "{given: courses, where: { department: '! MATH' }, what: departments, do: count >= 2}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have enough courses taken outside of the MATH department to span at least two departments";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken outside of the MATH department to span at least two departments");
 }
 
 #[test]
 fn pretty_print_inline_grades() {
 	let s = "{given: courses, where: { gereqs: FOL-C }, what: grades, do: average >= 2.0}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected =
-		"maintain an average GPA at or above 2.00 from courses taken with the “FOL-C” general education attribute";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"maintain an average GPA at or above 2.00 from courses taken with the “FOL-C” general education attribute");
 
 	let s = "{given: courses, where: { semester: Interim }, what: grades, do: average >= 3.0}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "maintain an average GPA at or above 3.00 from courses taken during Interim semesters";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"maintain an average GPA at or above 3.00 from courses taken during Interim semesters");
 }
 
 #[test]
 fn pretty_print_inline_terms() {
 	let s = "{given: courses, where: { gereqs: FOL-C }, what: terms, do: count >= 2}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected =
-		"have taken enough courses with the “FOL-C” general education attribute to span at least two terms";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have taken enough courses with the “FOL-C” general education attribute to span at least two terms");
 
 	let s = "{given: courses, where: { semester: Interim }, what: terms, do: count >= 3}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have taken enough courses during Interim semesters to span at least three terms";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"have taken enough courses during Interim semesters to span at least three terms");
 }
 
 #[test]
 fn pretty_print_inline_given_requirements_what_courses() {
 	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have the following be true:
+	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
-2. there must be at least one credit\n";
-	assert_eq!(expected, input.print().unwrap());
+2. there must be at least one credit
+"###);
 
 	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have the following be true:
+	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
 2. restricted to only courses taken with the “FOL-C” general education attribute,
-3. there must be at least one credit\n";
-	assert_eq!(expected, input.print().unwrap());
+3. there must be at least one credit
+"###);
 
 	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Interim }, what: credits, do: sum >= 3}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have the following be true:
+	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
 2. restricted to only courses taken during Interim semesters,
-3. there must be at least three credits\n";
-	assert_eq!(expected, input.print().unwrap());
+3. there must be at least three credits
+"###);
 
 	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Fall }, what: credits, do: sum >= 10}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have the following be true:
+	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
 2. restricted to only courses taken during Fall semesters,
-3. there must be at least ten credits\n";
-	assert_eq!(expected, input.print().unwrap());
+3. there must be at least ten credits
+"###);
 
 	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: '2012' }, what: credits, do: sum >= 1}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have the following be true:
+	assert_snapshot_matches!(input.print().unwrap(), @"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
 2. restricted to only courses taken during the 2012-13 academic year,
-3. there must be at least one credit\n";
-	assert_eq!(expected, input.print().unwrap());
+3. there must be at least one credit
+");
 
 	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
-	let expected = "have the following be true:
+	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
 2. restricted to only courses taken at St. Olaf College,
-3. there must be at least 17 credits\n";
-	assert_eq!(expected, input.print().unwrap());
+3. there must be at least 17 credits
+"###);
 }
