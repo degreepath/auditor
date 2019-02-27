@@ -1,4 +1,4 @@
-use crate::grade::{Grade, option_grade};
+use crate::grade::{option_grade, Grade};
 use crate::student::Semester;
 use crate::traits::Util;
 use serde::Deserialize;

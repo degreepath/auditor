@@ -34,12 +34,8 @@ impl print::Print for Rule {
 		}
 
 		match (&self.grade, &annotations) {
-			(Some(grade), Some(ann)) => {
-				annotations = Some(format!("{}; {} or higher", ann, String::from(grade)))
-			},
-			(Some(grade), None) => {
-				annotations = Some(format!("{} or higher", String::from(grade)))
-			},
+			(Some(grade), Some(ann)) => annotations = Some(format!("{}; {} or higher", ann, String::from(grade))),
+			(Some(grade), None) => annotations = Some(format!("{} or higher", String::from(grade))),
 			_ => (),
 		}
 

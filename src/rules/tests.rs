@@ -1,8 +1,8 @@
 use super::*;
 use crate::student::Semester;
 use crate::traits::print::Print;
-use std::collections::BTreeMap;
 use insta::{assert_debug_snapshot_matches, assert_yaml_snapshot_matches};
+use std::collections::BTreeMap;
 
 #[test]
 fn deserialize_simple_course_in_array() {
