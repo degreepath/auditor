@@ -317,6 +317,7 @@
               },
               {
                 "course": "ENGL 280",
+                "grade": null,
                 "section": "B",
                 "year": 2018,
                 "semester": "Fall",
