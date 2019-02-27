@@ -6,6 +6,8 @@ impl super::AreaOfStudy {
 	pub fn check(&self, input: &StudentData) -> AreaResult {
 		let mut data = input.clone();
 
+		// 0. remove any courses with a grade of "F"
+
 		// 1. apply global course limits, if given
 		if let Some(limits) = &self.limits {
 			let courses = input.transcript.to_vec();
@@ -29,16 +31,20 @@ impl super::AreaOfStudy {
 #[derive(Default, Clone, Debug)]
 pub struct AreaResult {
 	requirements: Vec<RequirementResult>,
+	emphases: Vec<RequirementResult>,
 }
 
 impl AreaResult {
 	pub fn new() -> AreaResult {
-		AreaResult { requirements: vec![] }
+		AreaResult {
+			requirements: vec![],
+			emphases: vec![],
+		}
 	}
 
 	pub fn update(self, data: &RequirementResult) -> AreaResult {
 		let mut requirements = self.requirements.clone();
 		requirements.push(data.clone());
-		AreaResult { requirements }
+		AreaResult { requirements, ..self }
 	}
 }

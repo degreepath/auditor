@@ -1,4 +1,4 @@
-use crate::student::{overrides, StudentData};
+use crate::student::{overrides, CourseInstance, StudentData};
 
 impl super::Requirement {
 	pub fn check(&self, input: &StudentData, path: &[overrides::PathSegment]) -> RequirementResult {
@@ -27,27 +27,35 @@ impl super::Requirement {
 		// 	save.check(&input, &path)
 		// }
 
-		RequirementResult {}
+		RequirementResult::new()
 	}
 }
 
 #[derive(Default, Clone, Debug)]
-pub struct RequirementResult {}
+pub struct RequirementResult {
+	pub matched_courses: Vec<CourseInstance>,
+}
 
 impl RequirementResult {
 	pub fn new() -> RequirementResult {
-		RequirementResult {}
+		RequirementResult {
+			matched_courses: vec![],
+		}
 	}
 
-	pub fn update(self, _data: &RequirementResult) -> RequirementResult {
-		RequirementResult {}
+	pub fn update(self, data: &RequirementResult) -> RequirementResult {
+		RequirementResult { ..data.clone() }
 	}
 
 	pub fn pass() -> RequirementResult {
-		RequirementResult {}
+		RequirementResult {
+			matched_courses: vec![],
+		}
 	}
 
 	pub fn fail() -> RequirementResult {
-		RequirementResult {}
+		RequirementResult {
+			matched_courses: vec![],
+		}
 	}
 }
