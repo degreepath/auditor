@@ -1,5 +1,6 @@
 #![warn(clippy::all)]
 #![allow(clippy::bool_comparison)]
+#![allow(clippy::redundant_closure)]
 
 mod action;
 pub mod area_of_study;
