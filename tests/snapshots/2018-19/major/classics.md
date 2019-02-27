@@ -48,7 +48,7 @@ For this requirement, you must take one of the following courses:
 ## Ancient History
 > Note: TODO find out what courses are considered "ancient history"
 
-For this requirement, you must have at least one course taken with the “classics_ancient_history” `attributes` attribute.
+For this requirement, you must take at least one course with the “classics_ancient_history” `attributes` attribute.
 
 # Custom Attributes
 

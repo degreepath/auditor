@@ -11,9 +11,9 @@ For this major, you must complete all of the following requirements:
 ## General Education
 For this requirement, you must both:
 
-- have at least one course taken with the “BTS-B” general education attribute
+- take at least one course with the “BTS-B” general education attribute
 
-- and have at least one course taken with the “BTS-T” general education attribute
+- and take at least one course with the “BTS-T” general education attribute
 
 
 ## What is Religion?

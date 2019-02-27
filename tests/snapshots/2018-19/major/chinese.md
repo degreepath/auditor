@@ -44,14 +44,14 @@ For this section, you must do all of the following:
 - in the subset “Allowed Courses”, there must be at least one course taken at the 300 level
 
 ### China-focused
-For this requirement, you must have at least one course taken with the “china_focused_on_china” attribute.
+For this requirement, you must take at least one course with the “china_focused_on_china” attribute.
 
 ### Comparative
-For this requirement, you must have at least one course taken with the “china_comparative_asia” attribute.
+For this requirement, you must take at least one course with the “china_comparative_asia” attribute.
 
 
 ## FLAC
-For this requirement, you must have at least one course taken with the “china_flac” attribute.
+For this requirement, you must take at least one course with the “china_flac” attribute.
 
 # Custom Attributes
 

@@ -61,7 +61,7 @@ For this requirement, you must take one of the following courses:
 
 
 ## Electives
-For this requirement, you must have at least two courses taken with the “bio_elective” attribute.
+For this requirement, you must take at least two courses with the “bio_elective” attribute.
 
 
 ## Chemistry

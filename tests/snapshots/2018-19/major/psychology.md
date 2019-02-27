@@ -34,7 +34,7 @@ For this requirement, you must take two of the following courses:
 
 
 ## Level III Capstone
-For this requirement, you must have at least two courses taken with the “psych_level_3” attribute.
+For this requirement, you must take at least two courses with the “psych_level_3” attribute.
 
 
 ## General Education
@@ -47,7 +47,7 @@ For this requirement, you must take one of the following courses:
 
 
 ## Electives
-For this requirement, you must have at least two courses taken with the “psych_elective” attribute.
+For this requirement, you must take at least two courses with the “psych_elective” attribute.
 
 # Custom Attributes
 

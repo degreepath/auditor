@@ -44,6 +44,6 @@ For this requirement, you must take one of the following courses:
 
 
 ## Z
-For this requirement, you must have at least four courses taken with the “WRI” general education attribute.
+For this requirement, you must take at least four courses with the “WRI” general education attribute.
 
 

@@ -4,15 +4,15 @@
 For this major, you must complete “Language”, “Seminar”, and “Electives”.
 
 ## Language
-For this requirement, you must have at least one course taken with either the asian_language_chinese or asian_language_japanese attribute.
+For this requirement, you must take at least one course with either the asian_language_chinese or asian_language_japanese attribute.
 
 
 ## Seminar
-For this requirement, you must have at least one course taken with the “asian_seminar” attribute.
+For this requirement, you must take at least one course with the “asian_seminar” attribute.
 
 
 ## Electives
-For this requirement, you must have at least six courses taken with the “asian_elective” attribute.
+For this requirement, you must take at least six courses with the “asian_elective” attribute.
 
 # Custom Attributes
 

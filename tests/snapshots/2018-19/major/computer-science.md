@@ -33,7 +33,7 @@ For this requirement, you must take one course from among CSCI 273, CSCI 284, or
 
 
 ## Electives
-For this requirement, you must have at least two courses taken with the “csci_elective” attribute.
+For this requirement, you must take at least two courses with the “csci_elective” attribute.
 
 
 ## Capstone

@@ -59,32 +59,32 @@ For this section, you must complete all of the following requirements:
 - “Studies in Physical Movement”
 
 #### First-Year Writing
-For this requirement, you must have at least one course taken with the “FYW” general education attribute.
+For this requirement, you must take at least one course with the “FYW” general education attribute.
 
 #### Writing in Context
-For this requirement, you must have at least four courses taken with the “WRI” general education attribute.
+For this requirement, you must take at least four courses with the “WRI” general education attribute.
 
 #### Foreign Language
 For this requirement, you must do one of the following:
 
-- have at least one course taken with the “FOL-C” general education attribute
-- have at least one course taken with the “FOL-F” general education attribute
-- have at least one course taken with the “FOL-G” general education attribute
-- have at least one course taken with the “FOL-K” general education attribute
-- have at least one course taken with the “FOL-J” general education attribute
-- have at least one course taken with the “FOL-L” general education attribute
-- have at least one course taken with the “FOL-N” general education attribute
-- have at least one course taken with the “FOL-R” general education attribute
-- have at least one course taken with the “FOL-S” general education attribute
+- take at least one course with the “FOL-C” general education attribute
+- take at least one course with the “FOL-F” general education attribute
+- take at least one course with the “FOL-G” general education attribute
+- take at least one course with the “FOL-K” general education attribute
+- take at least one course with the “FOL-J” general education attribute
+- take at least one course with the “FOL-L” general education attribute
+- take at least one course with the “FOL-N” general education attribute
+- take at least one course with the “FOL-R” general education attribute
+- take at least one course with the “FOL-S” general education attribute
 
 #### Oral Communication
-For this requirement, you must have at least one course taken with the “ORC” general education attribute.
+For this requirement, you must take at least one course with the “ORC” general education attribute.
 
 #### Abstract and Quantitative Reasoning
-For this requirement, you must have at least one course taken with the “AQR” general education attribute.
+For this requirement, you must take at least one course with the “AQR” general education attribute.
 
 #### Studies in Physical Movement
-For this requirement, you must have at least two distinct courses taken with the “SPM” general education attribute.
+For this requirement, you must take at least two distinct courses with the “SPM” general education attribute.
 
 ### Core
 For this section, you must complete all of the following requirements:
