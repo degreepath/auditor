@@ -1,3 +1,4 @@
+use crate::grade::{Grade, option_grade};
 use crate::student::Semester;
 use crate::traits::Util;
 use serde::Deserialize;
@@ -14,6 +15,8 @@ mod tests;
 #[serde(deny_unknown_fields)]
 pub struct Rule {
 	pub course: String,
+	#[serde(default, deserialize_with = "option_grade")]
+	pub grade: Option<Grade>,
 	pub section: Option<String>,
 	pub year: Option<u16>,
 	pub semester: Option<Semester>,

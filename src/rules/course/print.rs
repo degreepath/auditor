@@ -20,13 +20,26 @@ impl print::Print for Rule {
 			(None, None) => None,
 		};
 
-		match (self.lab, &annotations) {
-			(Some(lab), Some(ant)) if lab => {
-				annotations = Some(format!("Lab; {}", ant));
+		if let Some(lab) = self.lab {
+			if lab {
+				match &annotations {
+					Some(ann) => {
+						annotations = Some(format!("Lab; {}", ann));
+					}
+					None => {
+						annotations = Some("Lab".to_string());
+					}
+				}
 			}
-			(Some(lab), None) if lab => {
-				annotations = Some("Lab".to_string());
-			}
+		}
+
+		match (&self.grade, &annotations) {
+			(Some(grade), Some(ann)) => {
+				annotations = Some(format!("{}; {} or higher", ann, String::from(grade)))
+			},
+			(Some(grade), None) => {
+				annotations = Some(format!("{} or higher", String::from(grade)))
+			},
 			_ => (),
 		}
 

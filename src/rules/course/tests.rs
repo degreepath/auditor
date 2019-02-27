@@ -27,6 +27,7 @@ fn serialize_expanded() {
 
 	let expected_str = "---
 course: STAT 214
+grade: ~
 section: ~
 year: 2014
 semester: Summer Session 1
@@ -151,6 +152,7 @@ fn pretty_print() {
 		year: Some(2015),
 		lab: Some(true),
 		can_match_used: None,
+		grade: None,
 	};
 	let expected = "DEPT 111A (Lab; Fall 2015)";
 	assert_eq!(expected, input.print().unwrap());
