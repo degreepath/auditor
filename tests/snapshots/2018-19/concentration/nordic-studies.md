@@ -7,9 +7,7 @@ For this concentration, you must complete both the “Language” and “Electiv
 For this requirement, you must take one of the following courses:
 
 - NORW 232
-- NORW 260
-- NORW 344
-- NORW 353
+- NORW 253
 - NORW 371
 - NORW 372
 

@@ -1,0 +1,158 @@
+{
+  "name": "Norwegian",
+  "type": "major",
+  "degree": "Bachelor of Arts",
+  "institution": null,
+  "catalog": "2018-19",
+  "result": {
+    "count": "all",
+    "of": [
+      {
+        "requirement": "Language",
+        "optional": false
+      },
+      {
+        "requirement": "Culture & Writing",
+        "optional": false
+      },
+      {
+        "requirement": "History & Culture",
+        "optional": false
+      },
+      {
+        "requirement": "Upper-Level Elective",
+        "optional": false
+      }
+    ]
+  },
+  "requirements": [
+    {
+      "name": "Language",
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "NORW 111"
+          },
+          {
+            "course": "NORW 112"
+          },
+          {
+            "course": "NORW 231"
+          },
+          {
+            "course": "NORW 232"
+          }
+        ]
+      },
+      "contract": false,
+      "registrar_audited": false,
+      "save": [],
+      "requirements": []
+    },
+    {
+      "name": "Culture & Writing",
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "count": "all",
+        "of": [
+          {
+            "course": "NORW 253"
+          },
+          {
+            "course": "NORW 371"
+          },
+          {
+            "course": "NORW 372"
+          }
+        ]
+      },
+      "contract": false,
+      "registrar_audited": false,
+      "save": [],
+      "requirements": []
+    },
+    {
+      "name": "History & Culture",
+      "message": null,
+      "department_audited": false,
+      "result": {
+        "given": "courses",
+        "what": "courses",
+        "limit": null,
+        "where": {
+          "attribute": {
+            "Single": {
+              "EqualTo": {
+                "String": "norw_history_culture"
+              }
+            }
+          }
+        },
+        "do": {
+          "lhs": "Count",
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
+      },
+      "contract": false,
+      "registrar_audited": false,
+      "save": [],
+      "requirements": []
+    },
+    {
+      "name": "Upper-Level Elective",
+      "message": "One additional, chosen in consultation with the chair",
+      "department_audited": false,
+      "result": {
+        "count": "any",
+        "of": [
+          {
+            "course": "CATDOG 123"
+          }
+        ]
+      },
+      "contract": true,
+      "registrar_audited": false,
+      "save": [],
+      "requirements": []
+    }
+  ],
+  "attributes": {
+    "multicountable": [],
+    "courses": {
+      "HIST 222": [
+        "norw_history_culture"
+      ],
+      "NORW 130": [
+        "norw_history_culture"
+      ],
+      "NORW 140": [
+        "norw_history_culture"
+      ],
+      "NORW 244": [
+        "norw_history_culture"
+      ]
+    }
+  },
+  "limits": [
+    {
+      "where": {
+        "s/u": {
+          "Single": {
+            "EqualTo": {
+              "Bool": true
+            }
+          }
+        }
+      },
+      "at_most": 1
+    }
+  ],
+  "emphases": null
+}
