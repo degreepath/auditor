@@ -1,7 +1,7 @@
-use std::str::FromStr;
-use std::fmt;
 use crate::util::ParseError;
-use serde::{Deserialize, Serialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize};
+use std::fmt;
+use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Clone, Eq, Serialize, Deserialize, Hash, PartialOrd, Ord)]
 pub enum Grade {
