@@ -1,53 +1,28 @@
 ---
-created: "2019-02-27T18:11:59.439445Z"
+created: "2019-02-27T18:15:38.823638Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
 ---
-Rule {
-    given: TheseCourses {
-        courses: [
-            Value(
-                Rule {
-                    course: "ASIAN 110",
-                    grade: None,
-                    section: None,
-                    year: None,
-                    semester: None,
-                    lab: None,
-                    can_match_used: None
-                }
-            ),
-            Value(
-                Rule {
-                    course: "ASIAN 110",
-                    grade: None,
-                    section: None,
-                    year: None,
-                    semester: None,
-                    lab: None,
-                    can_match_used: None
-                }
-            )
-        ],
-        repeats: First,
-        what: Courses
-    },
-    limit: Some(
-        []
+{
+  "given": "these-courses",
+  "courses": [
+    Rule(
+      course: "ASIAN 110",
     ),
-    filter: Some(
-        {}
+    Rule(
+      course: "ASIAN 110",
     ),
-    action: Action {
-        lhs: Count,
-        op: Some(
-            GreaterThan
-        ),
-        rhs: Some(
-            Integer(
-                2
-            )
-        )
-    }
+  ],
+  "repeats": first,
+  "what": courses,
+  "limit": Some([
+  ]),
+  "where": Some({
+  }),
+  "do": Action(
+    lhs: Count,
+    op: Some(GreaterThan),
+    rhs: Some(Integer(2)),
+  ),
 }

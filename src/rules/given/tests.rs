@@ -4,7 +4,7 @@ use crate::filter;
 use crate::rules::{course, req_ref};
 use crate::traits::print::Print;
 use crate::value;
-use insta::{assert_snapshot_matches, assert_debug_snapshot_matches};
+use insta::{assert_ron_snapshot_matches, assert_snapshot_matches};
 use maplit::btreemap;
 
 #[test]
@@ -18,7 +18,7 @@ fn serialize_all_courses() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	assert_debug_snapshot_matches!("ser_all_courses", data);
+	assert_ron_snapshot_matches!("ser_all_courses", data);
 }
 
 #[test]
@@ -81,7 +81,7 @@ fn serialize_these_courses() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	assert_debug_snapshot_matches!("ser_these_courses_1", data);
+	assert_ron_snapshot_matches!("ser_these_courses_1", data);
 }
 
 #[test]
@@ -162,7 +162,7 @@ fn serialize_these_requirements() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	assert_debug_snapshot_matches!("ser_these_reqs", data);
+	assert_ron_snapshot_matches!("ser_these_reqs", data);
 }
 
 #[test]
@@ -230,7 +230,7 @@ fn serialize_areas() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	assert_debug_snapshot_matches!("ser_areas", data);
+	assert_ron_snapshot_matches!("ser_areas", data);
 }
 
 #[test]
@@ -283,7 +283,7 @@ fn serialize_save() {
 		action: "count > 2".parse().unwrap(),
 	};
 
-	assert_debug_snapshot_matches!("ser_save", data);
+	assert_ron_snapshot_matches!("ser_save", data);
 }
 
 #[test]

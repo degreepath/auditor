@@ -1,29 +1,20 @@
 ---
-created: "2019-02-27T18:11:59.439316Z"
+created: "2019-02-27T18:15:38.823081Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
 ---
-Rule {
-    given: NamedVariable {
-        save: "$my_var",
-        what: Courses
-    },
-    limit: Some(
-        []
-    ),
-    filter: Some(
-        {}
-    ),
-    action: Action {
-        lhs: Count,
-        op: Some(
-            GreaterThan
-        ),
-        rhs: Some(
-            Integer(
-                2
-            )
-        )
-    }
+{
+  "given": "save",
+  "save": "$my_var",
+  "what": courses,
+  "limit": Some([
+  ]),
+  "where": Some({
+  }),
+  "do": Action(
+    lhs: Count,
+    op: Some(GreaterThan),
+    rhs: Some(Integer(2)),
+  ),
 }

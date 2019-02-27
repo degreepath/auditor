@@ -1,38 +1,29 @@
 ---
-created: "2019-02-27T18:11:59.440747Z"
+created: "2019-02-27T18:15:38.824008Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
 ---
-Rule {
-    given: TheseRequirements {
-        requirements: [
-            Rule {
-                requirement: "A Name 1",
-                optional: false
-            },
-            Rule {
-                requirement: "A Name 2",
-                optional: true
-            }
-        ],
-        what: Courses
-    },
-    limit: Some(
-        []
+{
+  "given": "these-requirements",
+  "requirements": [
+    Rule(
+      requirement: "A Name 1",
+      optional: false,
     ),
-    filter: Some(
-        {}
+    Rule(
+      requirement: "A Name 2",
+      optional: true,
     ),
-    action: Action {
-        lhs: Count,
-        op: Some(
-            GreaterThan
-        ),
-        rhs: Some(
-            Integer(
-                2
-            )
-        )
-    }
+  ],
+  "what": courses,
+  "limit": Some([
+  ]),
+  "where": Some({
+  }),
+  "do": Action(
+    lhs: Count,
+    op: Some(GreaterThan),
+    rhs: Some(Integer(2)),
+  ),
 }
