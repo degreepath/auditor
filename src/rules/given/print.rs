@@ -96,7 +96,11 @@ impl Rule {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "terms" } else { "term" };
 
-				write!(&mut output, "have taken enough courses{} to span {} {}", filter, action, word)?;
+				write!(
+					&mut output,
+					"have taken enough courses{} to span {} {}",
+					filter, action, word
+				)?;
 			}
 		}
 
