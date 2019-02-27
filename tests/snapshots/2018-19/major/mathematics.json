@@ -509,6 +509,7 @@
             "both": [
               {
                 "course": "MATH 220",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -517,6 +518,7 @@
               },
               {
                 "course": "MATH 356",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -529,6 +531,7 @@
             "both": [
               {
                 "course": "MATH 220",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -537,6 +540,7 @@
               },
               {
                 "course": "MSCS 341",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -549,6 +553,7 @@
             "both": [
               {
                 "course": "MATH 224",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -557,6 +562,7 @@
               },
               {
                 "course": "MATH 348",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -569,6 +575,7 @@
             "both": [
               {
                 "course": "MATH 226",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -577,6 +584,7 @@
               },
               {
                 "course": "MATH 340",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -589,6 +597,7 @@
             "both": [
               {
                 "course": "MATH 230",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -597,6 +606,7 @@
               },
               {
                 "course": "MATH 330",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -609,6 +619,7 @@
             "both": [
               {
                 "course": "MATH 232",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -617,6 +628,7 @@
               },
               {
                 "course": "MATH 364",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -629,6 +641,7 @@
             "both": [
               {
                 "course": "MATH 244",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -637,6 +650,7 @@
               },
               {
                 "course": "MATH 344",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -649,6 +663,7 @@
             "both": [
               {
                 "course": "MATH 252",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -657,6 +672,7 @@
               },
               {
                 "course": "MATH 352",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -669,6 +685,7 @@
             "both": [
               {
                 "course": "MATH 262",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,
@@ -677,6 +694,7 @@
               },
               {
                 "course": "STAT 322",
+                "grade": null,
                 "section": null,
                 "year": null,
                 "semester": null,

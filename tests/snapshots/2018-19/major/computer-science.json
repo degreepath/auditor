@@ -142,6 +142,7 @@
               },
               {
                 "course": "CSCI 300",
+                "grade": null,
                 "section": null,
                 "year": 2000,
                 "semester": "Fall",

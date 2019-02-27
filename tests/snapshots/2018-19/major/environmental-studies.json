@@ -164,6 +164,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2014,
                     "semester": "Summer Session 2",
@@ -193,6 +194,7 @@
                   },
                   {
                     "course": "SOAN 297",
+                    "grade": null,
                     "section": null,
                     "year": 2015,
                     "semester": "Spring",
@@ -334,6 +336,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -348,6 +351,7 @@
                   },
                   {
                     "course": "ENVST 381",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -368,6 +372,7 @@
                   },
                   {
                     "course": "BIO 391",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -376,6 +381,7 @@
                   },
                   {
                     "course": "CHEM 391",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -384,6 +390,7 @@
                   },
                   {
                     "course": "ENVST 391",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -536,6 +543,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -544,6 +552,7 @@
                   },
                   {
                     "course": "ENVST 381",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -590,6 +599,7 @@
                   },
                   {
                     "course": "BIO 391",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -598,6 +608,7 @@
                   },
                   {
                     "course": "CHEM 391",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -626,6 +637,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -634,6 +646,7 @@
                   },
                   {
                     "course": "ENVST 381",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -654,6 +667,7 @@
                   },
                   {
                     "course": "NORW 224",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -823,6 +837,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -831,6 +846,7 @@
                   },
                   {
                     "course": "ENVST 381",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -839,6 +855,7 @@
                   },
                   {
                     "course": "ENVST 396",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -856,6 +873,7 @@
                   },
                   {
                     "course": "SOAN 297",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -977,6 +995,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -985,6 +1004,7 @@
                   },
                   {
                     "course": "ENVST 381",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1031,6 +1051,7 @@
                   },
                   {
                     "course": "BIO 391",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1039,6 +1060,7 @@
                   },
                   {
                     "course": "CHEM 391",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1067,6 +1089,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1075,6 +1098,7 @@
                   },
                   {
                     "course": "ENVST 381",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1127,6 +1151,7 @@
                   },
                   {
                     "course": "ENVST 281",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1135,6 +1160,7 @@
                   },
                   {
                     "course": "ENVST 381",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1155,6 +1181,7 @@
                   },
                   {
                     "course": "NORW 224",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -1175,6 +1202,7 @@
                   },
                   {
                     "course": "DEPT 301",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",

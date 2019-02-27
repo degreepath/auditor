@@ -190,6 +190,7 @@
                 "of": [
                   {
                     "course": "ART 236",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",
@@ -381,6 +382,7 @@
                 "of": [
                   {
                     "course": "ART 236",
+                    "grade": null,
                     "section": null,
                     "year": 2000,
                     "semester": "Fall",

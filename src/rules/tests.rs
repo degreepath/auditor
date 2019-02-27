@@ -72,6 +72,7 @@ fn serialize() {
 	let expected = r#"---
 - course: ASIAN 101
 - course: ASIAN 101
+  grade: ~
   section: ~
   year: 2014
   semester: Fall
@@ -85,6 +86,7 @@ fn serialize() {
 - both:
     - course: ASIAN 101
     - course: ASIAN 101
+      grade: ~
       section: ~
       year: 2014
       semester: Fall
@@ -93,6 +95,7 @@ fn serialize() {
 - either:
     - course: ASIAN 101
     - course: ASIAN 101
+      grade: ~
       section: ~
       year: 2014
       semester: Fall
