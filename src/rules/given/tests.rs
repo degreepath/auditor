@@ -513,7 +513,7 @@ fn deserialize_filter_graded_bool() {
 #[test]
 fn pretty_print_inline() {
 	let input: Rule = serde_yaml::from_str(&"{given: courses, what: courses, do: count >= 1}").unwrap();
-	let expected = "have at least one course";
+	let expected = "take at least one course";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -521,13 +521,13 @@ fn pretty_print_inline() {
 fn pretty_print_inline_filters() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {gereqs: FOL-C}, what: courses, do: count >= 1}").unwrap();
-	let expected = "have at least one course taken with the “FOL-C” general education attribute";
+	let expected = "take at least one course with the “FOL-C” general education attribute";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: {gereqs: SPM}, what: distinct-courses, do: count >= 2}")
 			.unwrap();
-	let expected = "have at least two distinct courses taken with the “SPM” general education attribute";
+	let expected = "take at least two distinct courses with the “SPM” general education attribute";
 	assert_eq!(expected, input.print().unwrap());
 }
 
@@ -671,12 +671,12 @@ fn pretty_print_inline_terms() {
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { gereqs: FOL-C }, what: terms, do: count >= 2}").unwrap();
 	let expected =
-		"have enough courses taken with the “FOL-C” general education attribute to span at least two terms";
+		"have taken enough courses with the “FOL-C” general education attribute to span at least two terms";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
 		serde_yaml::from_str(&"{given: courses, where: { semester: Interim }, what: terms, do: count >= 3}").unwrap();
-	let expected = "have enough courses taken during Interim semesters to span at least three terms";
+	let expected = "have taken enough courses during Interim semesters to span at least three terms";
 	assert_eq!(expected, input.print().unwrap());
 }
 

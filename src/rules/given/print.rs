@@ -79,12 +79,22 @@ impl Rule {
 			What::Departments => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "departments" } else { "department" };
+				let filter = if filter.is_empty() {
+					"".to_owned()
+				} else {
+					format!(" taken{}", filter)
+				};
 
 				write!(&mut output, "have enough courses{} to span {} {}", filter, action, word)?;
 			}
 			What::Grades => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
+				let filter = if filter.is_empty() {
+					"".to_owned()
+				} else {
+					format!(" taken{}", filter)
+				};
 
 				write!(
 					&mut output,
