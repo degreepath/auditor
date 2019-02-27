@@ -12,7 +12,7 @@ For this requirement, you must take at least one course with the “asian_semina
 
 
 ## Electives
-For this requirement, you must take at least six courses with the “asian_elective” attribute.
+For this requirement, you must take at least six courses with the “asian_elective” attribute at most 2 at the 100 level, at most 4 with the “asian_region_china” attribute, at most 4 with the “asian_region_japan” attribute, and at most 4 at not St. Olaf College, at either the 200 or 300 level.
 
 # Custom Attributes
 

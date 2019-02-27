@@ -37,7 +37,7 @@ For this requirement, you must take one of the following courses:
 
 
 ## Electives
-For this requirement, you must take at least four courses within the MUSIC department, at either the 200 or 300 level.
+For this requirement, you must take at least four courses within the MUSIC department, at either the 200 or 300 level at most 3 at the 200 level.
 
 
 ## Performance Studies

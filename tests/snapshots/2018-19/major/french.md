@@ -31,7 +31,7 @@ For this requirement, you must take two of the following courses:
 
 
 ## Electives
-For this requirement, you must take at least two courses with the “french_elective” attribute.
+For this requirement, you must take at least two courses with the “french_elective” attribute at most 1 outside of the FREN department.
 
 # Custom Attributes
 

@@ -34,7 +34,7 @@ For this requirement, you must take two of the following courses:
 
 
 ## Level III Capstone
-For this requirement, you must take at least two courses with the “psych_level_3” attribute.
+For this requirement, you must take at least two courses with the “psych_level_3” attribute at most 1 with either the PSYCH 396 or PSYCH 398 `course` attribute.
 
 
 ## General Education

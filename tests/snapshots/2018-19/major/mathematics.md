@@ -71,7 +71,7 @@ For this requirement, you must both take PHYS 375 and declare one “Physics” 
 
 
 ## Level III
-For this requirement, you must take at least two courses with the “math_level_3” attribute.
+For this requirement, you must take at least two courses with the “math_level_3” attribute at most 1 outside of the MATH department.
 
 
 ## Sequence

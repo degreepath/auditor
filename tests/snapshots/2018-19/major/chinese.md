@@ -47,7 +47,7 @@ For this section, you must do all of the following:
 For this requirement, you must take at least one course with the “china_focused_on_china” attribute.
 
 ### Comparative
-For this requirement, you must take at least one course with the “china_comparative_asia” attribute.
+For this requirement, you must take at least one course with the “china_comparative_asia” attribute at most 2 with the “china_asiancon” attribute and at most 1 with either the china_independent_study or china_seminar attribute.
 
 
 ## FLAC
