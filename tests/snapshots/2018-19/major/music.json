@@ -52,10 +52,22 @@
             "course": "MUSIC 141"
           },
           {
-            "course": "MUSIC 161"
+            "course": "MUSIC 161",
+            "grade": "Bminus",
+            "section": null,
+            "year": null,
+            "semester": null,
+            "lab": null,
+            "can_match_used": null
           },
           {
-            "course": "MUSIC 162"
+            "course": "MUSIC 162",
+            "grade": "Bminus",
+            "section": null,
+            "year": null,
+            "semester": null,
+            "lab": null,
+            "can_match_used": null
           },
           {
             "either": [

@@ -16,8 +16,8 @@ For this requirement, you must do all of the following:
 
 - take MUSIC 114
 - take MUSIC 141
-- take MUSIC 161
-- take MUSIC 162
+- take MUSIC 161 (B- or higher)
+- take MUSIC 162 (B- or higher)
 - take either MUSIC 212 or MUSIC 214
 
 
