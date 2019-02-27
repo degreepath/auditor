@@ -50,6 +50,21 @@ impl CourseInstance {
 	pub fn new(data: FilterableData) -> CourseInstance {
 		CourseInstance(data)
 	}
+
+	pub fn failed(&self) -> bool {
+		use crate::grade::Grade;
+
+		let grade = self
+			.get("grade")
+			.and_then(|g| g.as_string())
+			.and_then(|g| g.parse::<Grade>().ok());
+
+		if let Some(grade) = grade {
+			grade <= Grade::F
+		} else {
+			false
+		}
+	}
 }
 
 impl From<BTreeMap<String, DataValue>> for CourseInstance {

@@ -5,15 +5,16 @@ use crate::student::{overrides, StudentData};
 impl super::AreaOfStudy {
 	pub fn check(&self, input: &StudentData) -> AreaResult {
 		let mut data = input.clone();
+		let courses = input.transcript.to_vec();
 
 		// 0. remove any courses with a grade of "F"
+		let courses: Vec<_> = courses.into_iter().filter(|c| !c.failed()).collect();
 
 		// 1. apply global course limits, if given
 		if let Some(limits) = &self.limits {
-			let courses = input.transcript.to_vec();
-			let courses = apply_limits_to_courses(&limits, &courses);
+			let limited = apply_limits_to_courses(&limits, &courses);
 
-			data = data.update_transcript(&courses);
+			data = data.update_transcript(&limited);
 		}
 
 		let path: Vec<overrides::PathSegment> = vec![overrides::PathSegment::Root];
