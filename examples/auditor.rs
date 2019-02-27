@@ -17,7 +17,7 @@ fn main() {
 	let student_contents = fs::read_to_string(student_filename)
 		.unwrap_or_else(|_| panic!("Something went wrong reading the file `{}`", student_filename));
 
-	eprintln!("student file read");
+	eprintln!("student file read: {}", student_filename);
 
 	let student: StudentData = serde_yaml::from_str(&student_contents).unwrap();
 
@@ -29,7 +29,10 @@ fn main() {
 		.filter_map(|contents| serde_yaml::from_str::<AreaOfStudy>(&contents).ok())
 		.collect();
 
-	eprintln!("areas read and processed");
+	eprintln!(
+		"areas read and processed: {:?}",
+		area_contentses.iter().map(|a| a.area_name.clone()).collect::<Vec<_>>()
+	);
 
 	let loaded_areas: Vec<AreaOfStudy> = student
 		.areas
@@ -48,7 +51,7 @@ fn main() {
 		})
 		.collect();
 
-	eprintln!("areas located");
+	eprintln!("areas matched; beginning audit");
 
 	loaded_areas.par_iter().for_each(|area| {
 		println!("starting {}", area.area_name);
