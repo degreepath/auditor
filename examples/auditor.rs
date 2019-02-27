@@ -38,9 +38,9 @@ fn main() {
 		.areas
 		.par_iter()
 		.map(|descriptor| {
-			let name = descriptor.get("name").and_then(|v| v.to_string()).unwrap();
-			let kind = descriptor.get("type").and_then(|v| v.to_string()).unwrap();
-			let catalog = descriptor.get("catalog").and_then(|v| v.to_string()).unwrap();
+			let name = descriptor.get("name").and_then(|v| v.as_string()).unwrap();
+			let kind = descriptor.get("type").and_then(|v| v.as_string()).unwrap();
+			let catalog = descriptor.get("catalog").and_then(|v| v.as_string()).unwrap();
 
 			let area = area_contentses
 				.iter()
