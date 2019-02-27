@@ -1,0 +1,178 @@
+---
+created: "2019-02-27T17:36:11.687169Z"
+creator: insta@0.6.3
+source: src/rules/tests.rs
+expression: actual
+---
+[
+    Course(
+        Rule {
+            course: "ASIAN 101",
+            grade: None,
+            section: None,
+            year: None,
+            semester: None,
+            lab: None,
+            can_match_used: None
+        }
+    ),
+    Course(
+        Rule {
+            course: "ASIAN 101",
+            grade: None,
+            section: None,
+            year: None,
+            semester: None,
+            lab: None,
+            can_match_used: None
+        }
+    ),
+    Course(
+        Rule {
+            course: "ASIAN 102",
+            grade: None,
+            section: None,
+            year: Some(
+                2014
+            ),
+            semester: Some(
+                Fall
+            ),
+            lab: None,
+            can_match_used: None
+        }
+    ),
+    Requirement(
+        Rule {
+            requirement: "Name 1",
+            optional: false
+        }
+    ),
+    Requirement(
+        Rule {
+            requirement: "Name 2",
+            optional: true
+        }
+    ),
+    CountOf(
+        Rule {
+            count: Number(
+                1
+            ),
+            of: [
+                Course(
+                    Rule {
+                        course: "ASIAN 101",
+                        grade: None,
+                        section: None,
+                        year: None,
+                        semester: None,
+                        lab: None,
+                        can_match_used: None
+                    }
+                )
+            ]
+        }
+    ),
+    Both(
+        Rule {
+            both: (
+                Course(
+                    Rule {
+                        course: "ASIAN 101",
+                        grade: None,
+                        section: None,
+                        year: None,
+                        semester: None,
+                        lab: None,
+                        can_match_used: None
+                    }
+                ),
+                Course(
+                    Rule {
+                        course: "ASIAN 102",
+                        grade: None,
+                        section: None,
+                        year: Some(
+                            2014
+                        ),
+                        semester: Some(
+                            Fall
+                        ),
+                        lab: None,
+                        can_match_used: None
+                    }
+                )
+            )
+        }
+    ),
+    Either(
+        Rule {
+            either: (
+                Course(
+                    Rule {
+                        course: "ASIAN 101",
+                        grade: None,
+                        section: None,
+                        year: None,
+                        semester: None,
+                        lab: None,
+                        can_match_used: None
+                    }
+                ),
+                Course(
+                    Rule {
+                        course: "ASIAN 102",
+                        grade: None,
+                        section: None,
+                        year: Some(
+                            2014
+                        ),
+                        semester: Some(
+                            Fall
+                        ),
+                        lab: None,
+                        can_match_used: None
+                    }
+                )
+            )
+        }
+    ),
+    Given(
+        Rule {
+            given: AllCourses {
+                what: Courses
+            },
+            limit: None,
+            filter: None,
+            action: Action {
+                lhs: Count,
+                op: Some(
+                    LessThan
+                ),
+                rhs: Some(
+                    Integer(
+                        2
+                    )
+                )
+            }
+        }
+    ),
+    Do(
+        Rule {
+            action: LhsValueAction {
+                lhs: String(
+                    "a"
+                ),
+                op: Some(
+                    LessThan
+                ),
+                rhs: Some(
+                    String(
+                        "b"
+                    )
+                )
+            }
+        }
+    )
+]
