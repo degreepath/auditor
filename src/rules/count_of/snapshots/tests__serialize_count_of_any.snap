@@ -1,0 +1,8 @@
+---
+created: "2019-02-27T18:19:43.102148Z"
+creator: insta@0.6.3
+source: src/rules/count_of/tests.rs
+expression: data
+---
+count: any
+of: []

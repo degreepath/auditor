@@ -1,0 +1,10 @@
+---
+created: "2019-02-27T18:19:43.102078Z"
+creator: insta@0.6.3
+source: src/rules/count_of/tests.rs
+expression: actual
+---
+Rule {
+    count: Any,
+    of: []
+}
