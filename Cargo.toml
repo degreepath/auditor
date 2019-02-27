@@ -27,3 +27,7 @@ path = "examples/printer.rs"
 [[example]]
 name = "snapshot"
 path = "examples/snapshot.rs"
+
+[[example]]
+name = "auditor"
+path = "examples/auditor.rs"
