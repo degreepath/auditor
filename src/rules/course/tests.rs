@@ -1,6 +1,7 @@
 use super::*;
 use crate::student::Semester;
 use crate::traits::print::Print;
+use insta::assert_snapshot_matches;
 
 #[test]
 fn serialize() {
@@ -82,8 +83,7 @@ fn pretty_print() {
 		course: "DEPT 111".into(),
 		..Default::default()
 	};
-	let expected = "DEPT 111";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
@@ -91,8 +91,7 @@ fn pretty_print() {
 		year: Some(2015),
 		..Default::default()
 	};
-	let expected = "DEPT 111 (Fall 2015)";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111 (Fall 2015)");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
@@ -100,40 +99,35 @@ fn pretty_print() {
 		year: Some(2015),
 		..Default::default()
 	};
-	let expected = "DEPT 111 (Fall 2015)";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111 (Fall 2015)");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
 		semester: Some(Semester::Fall),
 		..Default::default()
 	};
-	let expected = "DEPT 111 (Fall)";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111 (Fall)");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
 		year: Some(2015),
 		..Default::default()
 	};
-	let expected = "DEPT 111 (2015-16)";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111 (2015-16)");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
 		section: Some("A".to_string()),
 		..Default::default()
 	};
-	let expected = "DEPT 111A";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111A");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
 		lab: Some(true),
 		..Default::default()
 	};
-	let expected = "DEPT 111 (Lab)";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111 (Lab)");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
@@ -142,8 +136,7 @@ fn pretty_print() {
 		lab: Some(true),
 		..Default::default()
 	};
-	let expected = "DEPT 111 (Lab; Fall 2015)";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111 (Lab; Fall 2015)");
 
 	let input = Rule {
 		course: "DEPT 111".into(),
@@ -154,6 +147,5 @@ fn pretty_print() {
 		can_match_used: None,
 		grade: None,
 	};
-	let expected = "DEPT 111A (Lab; Fall 2015)";
-	assert_eq!(expected, input.print().unwrap());
+	assert_snapshot_matches!(input.print().unwrap(), @"DEPT 111A (Lab; Fall 2015)");
 }
