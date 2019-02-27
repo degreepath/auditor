@@ -47,13 +47,23 @@ impl Rule {
 			Some(f) => format!(" {}", f.print()?),
 			None => "".to_string(),
 		};
+		let limits = if let Some(limits) = &self.limit {
+			let stringified = limits
+				.iter()
+				.map(|l| format!("at most {} {}", l.at_most, l.filter.print().unwrap()))
+				.collect::<Vec<_>>()
+				.oxford("and");
+			format!(" {}", stringified)
+		} else {
+			"".to_owned()
+		};
 
 		match &what {
 			What::Courses => {
 				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 
-				write!(&mut output, "take {} {}{}", action, word, filter)?;
+				write!(&mut output, "take {} {}{}{}", action, word, filter, limits)?;
 			}
 			What::DistinctCourses => {
 				let plur = self.action.should_pluralize();
