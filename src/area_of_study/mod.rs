@@ -38,6 +38,18 @@ pub enum AreaType {
 	Emphasis { degree: String, major: String },
 }
 
+impl std::fmt::Display for AreaType {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+		match &self {
+			AreaType::Degree => write!(f, "degree"),
+			AreaType::Major { .. } => write!(f, "major"),
+			AreaType::Minor { .. } => write!(f, "minor"),
+			AreaType::Concentration { .. } => write!(f, "concentration"),
+			AreaType::Emphasis { .. } => write!(f, "emphasis"),
+		}
+	}
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Emphases {
 	pub limits: Vec<Limiter>,
