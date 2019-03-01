@@ -31,7 +31,23 @@ For this requirement, you must take at least one course with the “engl_topic_g
 
 
 ## Electives
-For this requirement, you must take at least six courses with either the engl_elective, engl_topic_genre, engl_topic_crosscultural, engl_topic_literary_history, or engl_topic_crossdisciplinary attribute.
+Given the subset of courses from your transcript, limited to only courses taken with either the engl_elective, engl_topic_genre, engl_topic_crosscultural, engl_topic_literary_history, or engl_topic_crossdisciplinary attribute, as “electives”:
+
+| “electives” |
+| ----------- |
+| (todo: list matching courses here) |
+
+Given the subset named “electives”, limited it to only courses taken at the 300 level, as “level3-electives”:
+
+| “level3-electives” |
+| ------------------ |
+| (todo: list matching courses here) |
+
+For this requirement, you must do all of the following:
+
+- in the subset “electives”, there must be at least six courses
+- in the subset “level3-courses”, there must be at least two courses
+- in the subset “level3-courses”, there must be at least one course taken with either the engl_focus_literature or engl_focus_film attribute
 
 
 ## 1800s
