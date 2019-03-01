@@ -196,6 +196,29 @@
     }
   ],
   "attributes": null,
-  "limits": null,
+  "limits": [
+    {
+      "where": {
+        "credits": {
+          "Single": {
+            "EqualTo": {
+              "Float": [
+                1,
+                0
+              ]
+            }
+          }
+        },
+        "s/u": {
+          "Single": {
+            "EqualTo": {
+              "Bool": true
+            }
+          }
+        }
+      },
+      "at_most": 1
+    }
+  ],
   "emphases": null
 }
