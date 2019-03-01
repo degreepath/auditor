@@ -53,6 +53,8 @@ For this requirement, you must take at least two courses with the “psych_elect
 
 Courses | `psych_elective` | `psych_level_3`
 --- | :---: | :---:
+ID 271 2018-1 | ✅ | ❌
+ID 271B 2019-1 | ✅ | ❌
 PSYCH 220 | ✅ | ❌
 PSYCH 221 | ✅ | ❌
 PSYCH 222 | ✅ | ❌
@@ -80,6 +82,7 @@ PSYCH 375 | ✅ | ✅
 PSYCH 378 | ✅ | ✅
 PSYCH 390 | ✅ | ✅
 PSYCH 391 | ✅ | ✅
+PSYCH 394 | ✅ | ✅
 PSYCH 395 | ✅ | ✅
 PSYCH 396 | ✅ | ✅
 PSYCH 398 | ✅ | ✅

@@ -131,7 +131,27 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
+        "limit": [
+          {
+            "where": {
+              "course": {
+                "Or": [
+                  {
+                    "EqualTo": {
+                      "String": "PSYCH 396"
+                    }
+                  },
+                  {
+                    "EqualTo": {
+                      "String": "PSYCH 398"
+                    }
+                  }
+                ]
+              }
+            },
+            "at_most": 1
+          }
+        ],
         "where": {
           "attribute": {
             "Single": {
@@ -159,7 +179,7 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 1,
+        "count": "any",
         "of": [
           {
             "course": "STAT 110"
@@ -214,6 +234,12 @@
   "attributes": {
     "multicountable": [],
     "courses": {
+      "ID 271 2018-1": [
+        "psych_elective"
+      ],
+      "ID 271B 2019-1": [
+        "psych_elective"
+      ],
       "PSYCH 220": [
         "psych_elective"
       ],
@@ -306,6 +332,10 @@
         "psych_elective",
         "psych_level_3"
       ],
+      "PSYCH 394": [
+        "psych_elective",
+        "psych_level_3"
+      ],
       "PSYCH 395": [
         "psych_elective",
         "psych_level_3"
@@ -320,6 +350,26 @@
       ]
     }
   },
-  "limits": null,
+  "limits": [
+    {
+      "where": {
+        "course": {
+          "Single": {
+            "NotEqualTo": {
+              "String": "PSYCH 125"
+            }
+          }
+        },
+        "institution": {
+          "Single": {
+            "NotEqualTo": {
+              "String": "STO"
+            }
+          }
+        }
+      },
+      "at_most": 2
+    }
+  ],
   "emphases": null
 }
