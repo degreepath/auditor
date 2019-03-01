@@ -1,12 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Nursing” major from St. Olaf College.
 
 # Nursing
-For this major, you must complete all of the following requirements:
-
-- “Prerequisites”
-- “Requirements”
-- “Ethics”
-- “Recommended” (optional)
+For this major, you must complete “Prerequisites”, “Requirements”, and “Ethics”.
 
 ## Prerequisites
 > Note: These courses must be completed before beginning level III nursing courses.
@@ -29,9 +24,9 @@ For this requirement, you must do all of the following:
 
 
 ## Ethics
-> Note: Students should consult with their advisor to determine what courses meet this requirement from among the general education EIN courses.
+> Note: Nursing recommends taking the Biomedical Ethics (PHIL 250) course for this requirement
 
-For this requirement, you must take AMCON 101.
+For this requirement, you must take at least one course with the “EIN” general education attribute.
 
 
 ## Requirements
@@ -48,9 +43,5 @@ For this requirement, you must take all of the following courses:
 - NURS 318
 - NURS 319
 - NURS 399
-
-
-## Recommended
-For this requirement, you must take NURS 390.
 
 

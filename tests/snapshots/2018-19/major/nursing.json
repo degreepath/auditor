@@ -18,10 +18,6 @@
       {
         "requirement": "Ethics",
         "optional": false
-      },
-      {
-        "requirement": "Recommended",
-        "optional": true
       }
     ]
   },
@@ -91,15 +87,28 @@
     },
     {
       "name": "Ethics",
-      "message": "Students should consult with their advisor to determine what courses meet this requirement from among the general education EIN courses.",
+      "message": "Nursing recommends taking the Biomedical Ethics (PHIL 250) course for this requirement",
       "department_audited": false,
       "result": {
-        "count": "any",
-        "of": [
-          {
-            "course": "AMCON 101"
+        "given": "courses",
+        "what": "courses",
+        "limit": null,
+        "where": {
+          "gereqs": {
+            "Single": {
+              "EqualTo": {
+                "String": "EIN"
+              }
+            }
           }
-        ]
+        },
+        "do": {
+          "lhs": "Count",
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 1
+          }
+        }
       },
       "contract": false,
       "registrar_audited": false,
@@ -145,23 +154,6 @@
           },
           {
             "course": "NURS 399"
-          }
-        ]
-      },
-      "contract": false,
-      "registrar_audited": false,
-      "save": [],
-      "requirements": []
-    },
-    {
-      "name": "Recommended",
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "count": "all",
-        "of": [
-          {
-            "course": "NURS 390"
           }
         ]
       },
