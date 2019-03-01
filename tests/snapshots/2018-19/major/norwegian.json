@@ -107,17 +107,38 @@
     },
     {
       "name": "Upper-Level Elective",
-      "message": "One additional, chosen in consultation with the chair",
+      "message": null,
       "department_audited": false,
       "result": {
         "count": "any",
         "of": [
           {
-            "course": "CATDOG 123"
+            "course": "NORW 224"
+          },
+          {
+            "course": "NORW 240"
+          },
+          {
+            "course": "NORW 244"
+          },
+          {
+            "course": "NORW 246"
+          },
+          {
+            "course": "NORW 282"
+          },
+          {
+            "course": "NORW 296"
+          },
+          {
+            "course": "HIST 211"
+          },
+          {
+            "course": "HIST 222"
           }
         ]
       },
-      "contract": true,
+      "contract": false,
       "registrar_audited": false,
       "save": [],
       "requirements": []

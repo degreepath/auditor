@@ -26,11 +26,16 @@ For this requirement, you must take at least one course with the “norw_history
 
 
 ## Upper-Level Elective
-> Note: One additional, chosen in consultation with the chair
+For this requirement, you must take one of the following courses:
 
-This section is a Contract section. You must talk to the Department to fill out, file, and update the Contract.
-
-For this requirement, you must take CATDOG 123.
+- NORW 224
+- NORW 240
+- NORW 244
+- NORW 246
+- NORW 282
+- NORW 296
+- HIST 211
+- HIST 222
 
 # Custom Attributes
 
