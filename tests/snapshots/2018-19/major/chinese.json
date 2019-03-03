@@ -94,8 +94,8 @@
             "given": "save",
             "save": "Allowed Courses",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -108,16 +108,14 @@
             "given": "save",
             "save": "Allowed Courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "level": {
                 "Single": {
-                  "EqualTo": {
-                    "Integer": 300
-                  }
+                  "EqualTo": 300
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -147,16 +145,14 @@
           "what": "courses",
           "limit": [
             {
+              "at_most": 1,
               "where": {
                 "level": {
                   "Single": {
-                    "EqualTo": {
-                      "Integer": 100
-                    }
+                    "EqualTo": 100
                   }
                 }
-              },
-              "at_most": 1
+              }
             }
           ],
           "where": null,
@@ -171,16 +167,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "china_focused_on_china"
-                  }
+                  "EqualTo": "china_focused_on_china"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -201,48 +195,40 @@
           "result": {
             "given": "courses",
             "what": "courses",
+            "where": {
+              "attribute": {
+                "Single": {
+                  "EqualTo": "china_comparative_asia"
+                }
+              }
+            },
             "limit": [
               {
+                "at_most": 2,
                 "where": {
                   "attribute": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "china_asiancon"
-                      }
+                      "EqualTo": "china_asiancon"
                     }
                   }
-                },
-                "at_most": 2
+                }
               },
               {
+                "at_most": 1,
                 "where": {
                   "attribute": {
                     "Or": [
                       {
-                        "EqualTo": {
-                          "String": "china_independent_study"
-                        }
+                        "EqualTo": "china_independent_study"
                       },
                       {
-                        "EqualTo": {
-                          "String": "china_seminar"
-                        }
+                        "EqualTo": "china_seminar"
                       }
                     ]
                   }
-                },
-                "at_most": 1
-              }
-            ],
-            "where": {
-              "attribute": {
-                "Single": {
-                  "EqualTo": {
-                    "String": "china_comparative_asia"
-                  }
                 }
               }
-            },
+            ],
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -265,16 +251,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "china_flac"
-              }
+              "EqualTo": "china_flac"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

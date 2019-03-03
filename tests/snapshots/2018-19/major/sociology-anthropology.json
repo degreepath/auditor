@@ -189,21 +189,19 @@
         ],
         "repeats": "first",
         "what": "courses",
+        "where": null,
         "limit": [
           {
+            "at_most": 1,
             "where": {
-              "su": {
+              "graded": {
                 "Single": {
-                  "EqualTo": {
-                    "Bool": true
-                  }
+                  "EqualTo": "su"
                 }
               }
-            },
-            "at_most": 1
+            }
           }
         ],
-        "where": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

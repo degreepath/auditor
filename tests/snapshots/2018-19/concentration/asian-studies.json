@@ -16,29 +16,25 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": [
-          {
-            "where": {
-              "institution": {
-                "Single": {
-                  "NotEqualTo": {
-                    "String": "St. Olaf College"
-                  }
-                }
-              }
-            },
-            "at_most": 4
-          }
-        ],
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "asian_elective"
-              }
+              "EqualTo": "asian_elective"
             }
           }
         },
+        "limit": [
+          {
+            "at_most": 4,
+            "where": {
+              "institution": {
+                "Single": {
+                  "NotEqualTo": "St. Olaf College"
+                }
+              }
+            }
+          }
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

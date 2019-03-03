@@ -4,13 +4,13 @@
 For this major, you must complete “Language”, “Classics”, and “Ancient History”.
 
 ## Language
-Given the subset of courses from your transcript, limited to only courses taken with the “classics_latin” `attributes` attribute, as “Latin Courses”:
+Given the subset of courses from your transcript, limited to only courses taken with the “classics_latin” attribute, as “Latin Courses”:
 
 | “Latin Courses” |
 | --------------- |
 | (todo: list matching courses here) |
 
-Given the subset of courses from your transcript, limited to only courses taken with the “classics_greek” `attributes` attribute, as “Greek Courses”:
+Given the subset of courses from your transcript, limited to only courses taken with the “classics_greek” attribute, as “Greek Courses”:
 
 | “Greek Courses” |
 | --------------- |
@@ -48,7 +48,7 @@ For this requirement, you must take one of the following courses:
 ## Ancient History
 > Note: TODO find out what courses are considered "ancient history"
 
-For this requirement, you must take at least one course with the “classics_ancient_history” `attributes` attribute.
+For this requirement, you must take at least one course with the “classics_ancient_history” attribute.
 
 # Custom Attributes
 

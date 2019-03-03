@@ -56,16 +56,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_history"
-              }
+              "EqualTo": "ancient_history"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -86,16 +84,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_classics"
-              }
+              "EqualTo": "ancient_classics"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -116,16 +112,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_elective"
-              }
+              "EqualTo": "ancient_elective"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -146,16 +140,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_ir"
-              }
+              "EqualTo": "ancient_ir"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

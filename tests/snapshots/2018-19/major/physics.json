@@ -135,16 +135,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "physics_elective"
-              }
+              "EqualTo": "physics_elective"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

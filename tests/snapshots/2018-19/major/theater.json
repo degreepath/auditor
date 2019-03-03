@@ -120,8 +120,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -149,8 +149,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -177,8 +177,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -198,26 +198,22 @@
   "attributes": null,
   "limits": [
     {
+      "at_most": 1,
       "where": {
         "credits": {
           "Single": {
             "EqualTo": {
-              "Float": [
-                1,
-                0
-              ]
+              "value": 1.0,
+              "phantom": null
             }
           }
         },
-        "s/u": {
+        "graded": {
           "Single": {
-            "EqualTo": {
-              "Bool": true
-            }
+            "EqualTo": "su"
           }
         }
-      },
-      "at_most": 1
+      }
     }
   ],
   "emphases": null

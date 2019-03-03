@@ -92,16 +92,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "gereqs": {
             "Single": {
-              "EqualTo": {
-                "String": "EIN"
-              }
+              "EqualTo": "EIN"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

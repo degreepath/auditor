@@ -107,8 +107,8 @@
               }
             ],
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -130,16 +130,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "econ_level_2"
-                  }
+                  "EqualTo": "econ_level_2"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -160,16 +158,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "econ_level_3"
-                  }
+                  "EqualTo": "econ_level_3"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -258,19 +254,19 @@
   "emphases": {
     "limits": [
       {
+        "at_most": 0,
         "where": {
+          "graded": {
+            "Single": {
+              "EqualTo": "graded"
+            }
+          },
           "grade": {
             "Single": {
-              "LessThan": {
-                "Float": [
-                  2,
-                  0
-                ]
-              }
+              "LessThan": "C"
             }
           }
-        },
-        "at_most": 0
+        }
       }
     ],
     "choices": [

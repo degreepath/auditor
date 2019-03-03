@@ -131,36 +131,30 @@
       "result": {
         "given": "courses",
         "what": "courses",
+        "where": {
+          "attribute": {
+            "Single": {
+              "EqualTo": "psych_level_3"
+            }
+          }
+        },
         "limit": [
           {
+            "at_most": 1,
             "where": {
               "course": {
                 "Or": [
                   {
-                    "EqualTo": {
-                      "String": "PSYCH 396"
-                    }
+                    "EqualTo": "PSYCH 396"
                   },
                   {
-                    "EqualTo": {
-                      "String": "PSYCH 398"
-                    }
+                    "EqualTo": "PSYCH 398"
                   }
                 ]
               }
-            },
-            "at_most": 1
-          }
-        ],
-        "where": {
-          "attribute": {
-            "Single": {
-              "EqualTo": {
-                "String": "psych_level_3"
-              }
             }
           }
-        },
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -207,16 +201,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "psych_elective"
-              }
+              "EqualTo": "psych_elective"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -352,23 +344,19 @@
   },
   "limits": [
     {
+      "at_most": 2,
       "where": {
         "course": {
           "Single": {
-            "NotEqualTo": {
-              "String": "PSYCH 125"
-            }
+            "NotEqualTo": "PSYCH 125"
           }
         },
         "institution": {
           "Single": {
-            "NotEqualTo": {
-              "String": "STO"
-            }
+            "NotEqualTo": "STO"
           }
         }
-      },
-      "at_most": 2
+      }
     }
   ],
   "emphases": null

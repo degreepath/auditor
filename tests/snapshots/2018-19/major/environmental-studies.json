@@ -124,8 +124,8 @@
                   }
                 ],
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -400,40 +400,34 @@
                 ],
                 "repeats": "first",
                 "what": "courses",
+                "where": null,
                 "limit": [
                   {
+                    "at_most": 1,
                     "where": {
-                      "department": {
+                      "level": {
                         "Single": {
-                          "NotEqualTo": {
-                            "String": "ENVST"
-                          }
+                          "EqualTo": 200
                         }
                       },
-                      "level": {
+                      "subject": {
                         "Single": {
-                          "EqualTo": {
-                            "Integer": 200
-                          }
+                          "NotEqualTo": "ENVST"
                         }
                       }
-                    },
-                    "at_most": 1
+                    }
                   },
                   {
+                    "at_most": 2,
                     "where": {
                       "level": {
                         "Single": {
-                          "NotEqualTo": {
-                            "Integer": 300
-                          }
+                          "NotEqualTo": 300
                         }
                       }
-                    },
-                    "at_most": 2
+                    }
                   }
                 ],
-                "where": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -509,8 +503,8 @@
                   }
                 ],
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -961,8 +955,8 @@
                   }
                 ],
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1212,21 +1206,19 @@
                 ],
                 "repeats": "first",
                 "what": "courses",
+                "where": null,
                 "limit": [
                   {
+                    "at_most": 5,
                     "where": {
                       "level": {
                         "Single": {
-                          "EqualTo": {
-                            "Integer": 200
-                          }
+                          "EqualTo": 200
                         }
                       }
-                    },
-                    "at_most": 5
+                    }
                   }
                 ],
-                "where": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",

@@ -225,16 +225,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "bio_elective"
-              }
+              "EqualTo": "bio_elective"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

@@ -65,8 +65,8 @@
           "result": {
             "given": "courses",
             "what": "credits",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -87,16 +87,14 @@
           "result": {
             "given": "courses",
             "what": "credits",
-            "limit": null,
             "where": {
               "institution": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "St. Olaf College"
-                  }
+                  "EqualTo": "St. Olaf College"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -120,8 +118,8 @@
                 "given": "save",
                 "save": "Interim Courses",
                 "what": "credits",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Sum",
                   "op": "GreaterThanEqualTo",
@@ -134,8 +132,8 @@
                 "given": "save",
                 "save": "Interim Courses",
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -157,9 +155,7 @@
               "where": {
                 "semester": {
                   "Single": {
-                    "EqualTo": {
-                      "String": "Interim"
-                    }
+                    "EqualTo": "Interim"
                   }
                 }
               },
@@ -175,8 +171,8 @@
           "result": {
             "given": "courses",
             "what": "grades",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Average",
               "op": "GreaterThanEqualTo",
@@ -200,16 +196,14 @@
           "result": {
             "given": "courses",
             "what": "credits",
-            "limit": null,
             "where": {
               "level": {
                 "Single": {
-                  "GreaterThanEqualTo": {
-                    "Integer": 200
-                  }
+                  "GreaterThanEqualTo": 200
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -230,16 +224,14 @@
           "result": {
             "given": "courses",
             "what": "credits",
-            "limit": null,
             "where": {
               "graded": {
                 "Single": {
-                  "EqualTo": {
-                    "Bool": true
-                  }
+                  "EqualTo": "graded"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Sum",
               "op": "GreaterThanEqualTo",
@@ -260,13 +252,10 @@
           "result": {
             "given": "areas",
             "what": "areas",
-            "limit": null,
             "where": {
               "type": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "major"
-                  }
+                  "EqualTo": "major"
                 }
               }
             },
@@ -354,16 +343,14 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "FYW"
-                      }
+                      "EqualTo": "FYW"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -384,16 +371,14 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "WRI"
-                      }
+                      "EqualTo": "WRI"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -455,16 +440,14 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "ORC"
-                      }
+                      "EqualTo": "ORC"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -485,28 +468,22 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Or": [
                       {
-                        "EqualTo": {
-                          "String": "AQR"
-                        }
+                        "EqualTo": "AQR"
                       },
                       {
-                        "EqualTo": {
-                          "String": "SED"
-                        }
+                        "EqualTo": "SED"
                       },
                       {
-                        "EqualTo": {
-                          "String": "IST"
-                        }
+                        "EqualTo": "IST"
                       }
                     ]
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -527,16 +504,14 @@
               "result": {
                 "given": "courses",
                 "what": "distinct-courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "SPM"
-                      }
+                      "EqualTo": "SPM"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -588,23 +563,19 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Or": [
                       {
-                        "EqualTo": {
-                          "String": "HWC"
-                        }
+                        "EqualTo": "HWC"
                       },
                       {
-                        "EqualTo": {
-                          "String": "ALS-L"
-                        }
+                        "EqualTo": "ALS-L"
                       }
                     ]
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -625,23 +596,19 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Or": [
                       {
-                        "EqualTo": {
-                          "String": "MCD"
-                        }
+                        "EqualTo": "MCD"
                       },
                       {
-                        "EqualTo": {
-                          "String": "MCG"
-                        }
+                        "EqualTo": "MCG"
                       }
                     ]
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -666,8 +633,8 @@
                     "given": "save",
                     "save": "Courses with a BTS-B or BTS-T",
                     "what": "courses",
-                    "limit": null,
                     "where": null,
+                    "limit": null,
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -680,16 +647,14 @@
                     "given": "save",
                     "save": "Courses with a BTS-B or BTS-T",
                     "what": "courses",
-                    "limit": null,
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "EqualTo": {
-                            "String": "BTS-B"
-                          }
+                          "EqualTo": "BTS-B"
                         }
                       }
                     },
+                    "limit": null,
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -702,16 +667,14 @@
                     "given": "save",
                     "save": "Courses with a BTS-B or BTS-T",
                     "what": "courses",
-                    "limit": null,
                     "where": {
                       "gereqs": {
                         "Single": {
-                          "EqualTo": {
-                            "String": "BTS-T"
-                          }
+                          "EqualTo": "BTS-T"
                         }
                       }
                     },
+                    "limit": null,
                     "do": {
                       "lhs": "Count",
                       "op": "GreaterThanEqualTo",
@@ -734,14 +697,10 @@
                     "gereqs": {
                       "Or": [
                         {
-                          "EqualTo": {
-                            "String": "BTS-B"
-                          }
+                          "EqualTo": "BTS-B"
                         },
                         {
-                          "EqualTo": {
-                            "String": "BTS-T"
-                          }
+                          "EqualTo": "BTS-T"
                         }
                       ]
                     }
@@ -758,16 +717,14 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "HBS"
-                      }
+                      "EqualTo": "HBS"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -807,16 +764,14 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
                   "gereqs": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "EIN"
-                      }
+                      "EqualTo": "EIN"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",

@@ -35,16 +35,14 @@
           {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "gereqs": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "BTS-B"
-                  }
+                  "EqualTo": "BTS-B"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -56,16 +54,14 @@
           {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "gereqs": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "BTS-T"
-                  }
+                  "EqualTo": "BTS-T"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -162,8 +158,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

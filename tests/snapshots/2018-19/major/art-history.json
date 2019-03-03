@@ -61,16 +61,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "art_studio_art"
-              }
+              "EqualTo": "art_studio_art"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -132,8 +130,8 @@
               }
             ],
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -155,33 +153,25 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Or": [
                   {
-                    "EqualTo": {
-                      "String": "art_locale_asian"
-                    }
+                    "EqualTo": "art_locale_asian"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_african"
-                    }
+                    "EqualTo": "art_locale_african"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_indigenous_american"
-                    }
+                    "EqualTo": "art_locale_indigenous_american"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_near_eastern"
-                    }
+                    "EqualTo": "art_locale_near_eastern"
                   }
                 ]
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -202,23 +192,19 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Or": [
                   {
-                    "EqualTo": {
-                      "String": "art_locale_european"
-                    }
+                    "EqualTo": "art_locale_european"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_american"
-                    }
+                    "EqualTo": "art_locale_american"
                   }
                 ]
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -239,16 +225,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "art_period_pre1700"
-                  }
+                  "EqualTo": "art_period_pre1700"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -269,16 +253,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "art_period_post1700"
-                  }
+                  "EqualTo": "art_period_post1700"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

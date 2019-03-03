@@ -41,16 +41,14 @@
             "given": "save",
             "save": "Taken Electives",
             "what": "courses",
-            "limit": null,
             "where": {
               "gereqs": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "MCD"
-                  }
+                  "EqualTo": "MCD"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -63,16 +61,14 @@
             "given": "save",
             "save": "Taken Electives",
             "what": "courses",
-            "limit": null,
             "where": {
               "level": {
                 "Single": {
-                  "EqualTo": {
-                    "Integer": 300
-                  }
+                  "EqualTo": 300
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -85,8 +81,8 @@
             "given": "save",
             "save": "Taken Electives",
             "what": "departments",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -99,8 +95,8 @@
             "given": "save",
             "save": "Taken Electives",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -166,8 +162,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -194,8 +190,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -489,8 +485,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

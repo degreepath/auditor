@@ -64,16 +64,14 @@
           }
         ],
         "what": "courses",
-        "limit": null,
         "where": {
           "institution": {
             "Single": {
-              "EqualTo": {
-                "String": "St. Olaf College"
-              }
+              "EqualTo": "St. Olaf College"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -122,16 +120,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "math_transitions"
-              }
+              "EqualTo": "math_transitions"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -181,16 +177,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "math_perspective_a"
-                  }
+                  "EqualTo": "math_perspective_a"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -211,16 +205,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "math_perspective_c"
-                  }
+                  "EqualTo": "math_perspective_c"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -241,16 +233,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "math_perspective_d"
-                  }
+                  "EqualTo": "math_perspective_d"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -271,16 +261,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "math_perspective_m"
-                  }
+                  "EqualTo": "math_perspective_m"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -333,20 +321,15 @@
               {
                 "given": "areas",
                 "what": "areas",
-                "limit": null,
                 "where": {
                   "name": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "Chemistry"
-                      }
+                      "EqualTo": "Chemistry"
                     }
                   },
                   "type": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "major"
-                      }
+                      "EqualTo": "major"
                     }
                   }
                 },
@@ -377,20 +360,15 @@
               {
                 "given": "areas",
                 "what": "areas",
-                "limit": null,
                 "where": {
                   "name": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "Economics"
-                      }
+                      "EqualTo": "Economics"
                     }
                   },
                   "type": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "major"
-                      }
+                      "EqualTo": "major"
                     }
                   }
                 },
@@ -421,20 +399,15 @@
               {
                 "given": "areas",
                 "what": "areas",
-                "limit": null,
                 "where": {
                   "name": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "Physics"
-                      }
+                      "EqualTo": "Physics"
                     }
                   },
                   "type": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "major"
-                      }
+                      "EqualTo": "major"
                     }
                   }
                 },
@@ -462,29 +435,25 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": [
-          {
-            "where": {
-              "department": {
-                "Single": {
-                  "NotEqualTo": {
-                    "String": "MATH"
-                  }
-                }
-              }
-            },
-            "at_most": 1
-          }
-        ],
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "math_level_3"
-              }
+              "EqualTo": "math_level_3"
             }
           }
         },
+        "limit": [
+          {
+            "at_most": 1,
+            "where": {
+              "subject": {
+                "Single": {
+                  "NotEqualTo": "MATH"
+                }
+              }
+            }
+          }
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

@@ -82,16 +82,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "norw_history_culture"
-              }
+              "EqualTo": "norw_history_culture"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -163,16 +161,14 @@
   },
   "limits": [
     {
+      "at_most": 1,
       "where": {
-        "s/u": {
+        "graded": {
           "Single": {
-            "EqualTo": {
-              "Bool": true
-            }
+            "EqualTo": "su"
           }
         }
-      },
-      "at_most": 1
+      }
     }
   ],
   "emphases": null

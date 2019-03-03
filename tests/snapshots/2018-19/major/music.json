@@ -53,7 +53,7 @@
           },
           {
             "course": "MUSIC 161",
-            "grade": "Bminus",
+            "grade": "B-",
             "section": null,
             "year": null,
             "semester": null,
@@ -62,7 +62,7 @@
           },
           {
             "course": "MUSIC 162",
-            "grade": "Bminus",
+            "grade": "B-",
             "section": null,
             "year": null,
             "semester": null,
@@ -137,43 +137,35 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": [
-          {
-            "where": {
-              "level": {
-                "Single": {
-                  "EqualTo": {
-                    "Integer": 200
-                  }
-                }
-              }
-            },
-            "at_most": 3
-          }
-        ],
         "where": {
-          "department": {
-            "Single": {
-              "EqualTo": {
-                "String": "MUSIC"
-              }
-            }
-          },
           "level": {
             "Or": [
               {
-                "EqualTo": {
-                  "Integer": 200
-                }
+                "EqualTo": 200
               },
               {
-                "EqualTo": {
-                  "Integer": 300
-                }
+                "EqualTo": 300
               }
             ]
+          },
+          "subject": {
+            "Single": {
+              "EqualTo": "MUSIC"
+            }
           }
         },
+        "limit": [
+          {
+            "at_most": 3,
+            "where": {
+              "level": {
+                "Single": {
+                  "EqualTo": 200
+                }
+              }
+            }
+          }
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -313,8 +305,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -340,8 +332,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -362,23 +354,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 102
-                      }
+                      "NotEqualTo": 102
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -411,8 +399,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -438,8 +426,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -460,23 +448,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 104
-                      }
+                      "NotEqualTo": 104
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -509,8 +493,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -536,8 +520,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -558,23 +542,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 106
-                      }
+                      "NotEqualTo": 106
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -607,8 +587,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -634,8 +614,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -656,23 +636,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 109
-                      }
+                      "NotEqualTo": 109
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -705,8 +681,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -732,8 +708,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -754,23 +730,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 112
-                      }
+                      "NotEqualTo": 112
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -803,8 +775,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -830,8 +802,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -852,23 +824,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 114
-                      }
+                      "NotEqualTo": 114
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -901,8 +869,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -928,8 +896,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -950,23 +918,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 116
-                      }
+                      "NotEqualTo": 116
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -999,8 +963,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1026,8 +990,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1048,23 +1012,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 118
-                      }
+                      "NotEqualTo": 118
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1097,8 +1057,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1124,8 +1084,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1146,23 +1106,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 120
-                      }
+                      "NotEqualTo": 120
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1195,8 +1151,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1222,8 +1178,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1244,23 +1200,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 122
-                      }
+                      "NotEqualTo": 122
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1293,8 +1245,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1320,8 +1272,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1342,23 +1294,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 124
-                      }
+                      "NotEqualTo": 124
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1391,8 +1339,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1418,8 +1366,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1440,23 +1388,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 126
-                      }
+                      "NotEqualTo": 126
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1489,8 +1433,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1516,8 +1460,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1538,23 +1482,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 128
-                      }
+                      "NotEqualTo": 128
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1587,8 +1527,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1614,8 +1554,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1636,23 +1576,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 132
-                      }
+                      "NotEqualTo": 132
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1685,8 +1621,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1712,8 +1648,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1734,23 +1670,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 134
-                      }
+                      "NotEqualTo": 134
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1783,8 +1715,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1810,8 +1742,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1832,23 +1764,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 135
-                      }
+                      "NotEqualTo": 135
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1881,8 +1809,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -1908,8 +1836,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1930,23 +1858,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 136
-                      }
+                      "NotEqualTo": 136
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -1979,8 +1903,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2006,8 +1930,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2028,23 +1952,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 138
-                      }
+                      "NotEqualTo": 138
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2077,8 +1997,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2104,8 +2024,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2126,23 +2046,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 140
-                      }
+                      "NotEqualTo": 140
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2175,8 +2091,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2202,8 +2118,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2224,23 +2140,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 142
-                      }
+                      "NotEqualTo": 142
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2273,8 +2185,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2300,8 +2212,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2322,23 +2234,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 144
-                      }
+                      "NotEqualTo": 144
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2371,8 +2279,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2398,8 +2306,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2420,23 +2328,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 146
-                      }
+                      "NotEqualTo": 146
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2469,8 +2373,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2496,8 +2400,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2518,23 +2422,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 148
-                      }
+                      "NotEqualTo": 148
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2567,8 +2467,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2594,8 +2494,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2616,23 +2516,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 150
-                      }
+                      "NotEqualTo": 150
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2665,8 +2561,8 @@
               }
             ],
             "what": "terms",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -2692,8 +2588,8 @@
                 ],
                 "repeats": "all",
                 "what": "terms",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2714,23 +2610,19 @@
               "result": {
                 "given": "courses",
                 "what": "terms",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Single": {
-                      "EqualTo": {
-                        "String": "MUSPF"
-                      }
-                    }
-                  },
                   "number": {
                     "Single": {
-                      "NotEqualTo": {
-                        "Integer": 152
-                      }
+                      "NotEqualTo": 152
+                    }
+                  },
+                  "subject": {
+                    "Single": {
+                      "EqualTo": "MUSPF"
                     }
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -2755,16 +2647,14 @@
       "result": {
         "given": "courses",
         "what": "terms",
-        "limit": null,
         "where": {
-          "department": {
+          "subject": {
             "Single": {
-              "EqualTo": {
-                "String": "MUSEN"
-              }
+              "EqualTo": "MUSEN"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -2785,19 +2675,14 @@
       "result": {
         "given": "performances",
         "what": "performances",
-        "limit": null,
         "where": {
-          "performance": {
+          "name": {
             "Or": [
               {
-                "EqualTo": {
-                  "String": "Instrumental Student Recital"
-                }
+                "EqualTo": "Instrumental Student Recital"
               },
               {
-                "EqualTo": {
-                  "String": "Vocal Lab Choir Solo"
-                }
+                "EqualTo": "Vocal Lab Choir Solo"
               }
             ]
           }
@@ -2822,7 +2707,6 @@
       "result": {
         "given": "attendances",
         "what": "attendances",
-        "limit": null,
         "where": null,
         "do": {
           "lhs": "Count",
@@ -2905,8 +2789,8 @@
               ],
               "repeats": "all",
               "what": "terms",
-              "limit": null,
               "where": null,
+              "limit": null,
               "do": {
                 "lhs": "Count",
                 "op": "GreaterThanEqualTo",
@@ -2929,19 +2813,14 @@
                 {
                   "given": "performances",
                   "what": "performances",
-                  "limit": null,
                   "where": {
-                    "performance": {
+                    "name": {
                       "Or": [
                         {
-                          "EqualTo": {
-                            "String": "AAA"
-                          }
+                          "EqualTo": "AAA"
                         },
                         {
-                          "EqualTo": {
-                            "String": "BBB"
-                          }
+                          "EqualTo": "BBB"
                         }
                       ]
                     }
@@ -2957,33 +2836,24 @@
                 {
                   "given": "performances",
                   "what": "performances",
-                  "limit": null,
                   "where": {
-                    "performance": {
+                    "name": {
                       "Or": [
                         {
-                          "EqualTo": {
-                            "String": "AAA"
-                          }
+                          "EqualTo": "AAA"
                         },
                         {
-                          "EqualTo": {
-                            "String": "BBB"
-                          }
+                          "EqualTo": "BBB"
                         }
                       ]
                     },
                     "year": {
                       "Or": [
                         {
-                          "EqualTo": {
-                            "String": "$senior-year"
-                          }
+                          "EqualTo": "senior-year"
                         },
                         {
-                          "EqualTo": {
-                            "String": "$junior-year"
-                          }
+                          "EqualTo": "junior-year"
                         }
                       ]
                     }

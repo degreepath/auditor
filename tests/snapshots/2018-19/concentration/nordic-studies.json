@@ -51,41 +51,35 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": [
-          {
-            "where": {
-              "attribute": {
-                "Single": {
-                  "EqualTo": {
-                    "String": "nordic_focus_norway"
-                  }
-                }
-              }
-            },
-            "at_most": 3
-          },
-          {
-            "where": {
-              "department": {
-                "Single": {
-                  "EqualTo": {
-                    "String": "NORW"
-                  }
-                }
-              }
-            },
-            "at_most": 2
-          }
-        ],
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "nordic_elective"
-              }
+              "EqualTo": "nordic_elective"
             }
           }
         },
+        "limit": [
+          {
+            "at_most": 3,
+            "where": {
+              "attribute": {
+                "Single": {
+                  "EqualTo": "nordic_focus_norway"
+                }
+              }
+            }
+          },
+          {
+            "at_most": 2,
+            "where": {
+              "subject": {
+                "Single": {
+                  "EqualTo": "NORW"
+                }
+              }
+            }
+          }
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -156,16 +150,14 @@
   },
   "limits": [
     {
+      "at_most": 1,
       "where": {
-        "s/u": {
+        "graded": {
           "Single": {
-            "EqualTo": {
-              "Bool": true
-            }
+            "EqualTo": "su"
           }
         }
-      },
-      "at_most": 1
+      }
     }
   ],
   "emphases": null

@@ -73,8 +73,8 @@
           }
         ],
         "what": "courses",
-        "limit": null,
         "where": null,
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -105,16 +105,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "psci_topic_american"
-              }
+              "EqualTo": "psci_topic_american"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -135,16 +133,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "psci_topic_comparative"
-              }
+              "EqualTo": "psci_topic_comparative"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -165,16 +161,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "psci_topic_international"
-              }
+              "EqualTo": "psci_topic_international"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -195,16 +189,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "psci_topic_theory"
-              }
+              "EqualTo": "psci_topic_theory"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -225,16 +217,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "psci_level_3"
-              }
+              "EqualTo": "psci_level_3"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -276,16 +266,14 @@
           "result": {
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
-              "department": {
+              "subject": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "STAT"
-                  }
+                  "EqualTo": "STAT"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -326,35 +314,27 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Or": [
-                      {
-                        "EqualTo": {
-                          "String": "FREN"
-                        }
-                      },
-                      {
-                        "EqualTo": {
-                          "String": "GERM"
-                        }
-                      },
-                      {
-                        "EqualTo": {
-                          "String": "SPAN"
-                        }
-                      }
-                    ]
-                  },
                   "number": {
                     "Single": {
-                      "GreaterThanEqualTo": {
-                        "Integer": 232
-                      }
+                      "GreaterThanEqualTo": 232
                     }
+                  },
+                  "subject": {
+                    "Or": [
+                      {
+                        "EqualTo": "FREN"
+                      },
+                      {
+                        "EqualTo": "GERM"
+                      },
+                      {
+                        "EqualTo": "SPAN"
+                      }
+                    ]
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -375,50 +355,36 @@
               "result": {
                 "given": "courses",
                 "what": "courses",
-                "limit": null,
                 "where": {
-                  "department": {
-                    "Or": [
-                      {
-                        "EqualTo": {
-                          "String": "CHIN"
-                        }
-                      },
-                      {
-                        "EqualTo": {
-                          "String": "GREEK"
-                        }
-                      },
-                      {
-                        "EqualTo": {
-                          "String": "LATIN"
-                        }
-                      },
-                      {
-                        "EqualTo": {
-                          "String": "JAPAN"
-                        }
-                      },
-                      {
-                        "EqualTo": {
-                          "String": "NORW"
-                        }
-                      },
-                      {
-                        "EqualTo": {
-                          "String": "RUSSN"
-                        }
-                      }
-                    ]
-                  },
                   "number": {
                     "Single": {
-                      "GreaterThanEqualTo": {
-                        "Integer": 231
-                      }
+                      "GreaterThanEqualTo": 231
                     }
+                  },
+                  "subject": {
+                    "Or": [
+                      {
+                        "EqualTo": "CHIN"
+                      },
+                      {
+                        "EqualTo": "GREEK"
+                      },
+                      {
+                        "EqualTo": "LATIN"
+                      },
+                      {
+                        "EqualTo": "JAPAN"
+                      },
+                      {
+                        "EqualTo": "NORW"
+                      },
+                      {
+                        "EqualTo": "RUSSN"
+                      }
+                    ]
                   }
                 },
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",

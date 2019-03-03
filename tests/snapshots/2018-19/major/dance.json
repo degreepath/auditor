@@ -91,8 +91,8 @@
           }
         ],
         "what": "credits",
-        "limit": null,
         "where": null,
+        "limit": null,
         "do": {
           "lhs": "Sum",
           "op": "GreaterThanEqualTo",
@@ -278,23 +278,19 @@
         ],
         "repeats": "last",
         "what": "courses",
-        "limit": null,
         "where": {
           "semester": {
             "Single": {
-              "EqualTo": {
-                "String": "Fall"
-              }
+              "EqualTo": "Fall"
             }
           },
           "year": {
             "Single": {
-              "EqualTo": {
-                "String": "$senior-year"
-              }
+              "EqualTo": "senior-year"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

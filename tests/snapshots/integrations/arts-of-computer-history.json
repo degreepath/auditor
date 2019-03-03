@@ -38,8 +38,8 @@
           }
         ],
         "what": "credits",
-        "limit": null,
         "where": null,
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -83,8 +83,8 @@
               }
             ],
             "what": "credits",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -169,16 +169,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "gereqs": {
             "Single": {
-              "EqualTo": {
-                "String": "WRI"
-              }
+              "EqualTo": "WRI"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

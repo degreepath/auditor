@@ -108,29 +108,25 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": [
-          {
-            "where": {
-              "department": {
-                "Single": {
-                  "NotEqualTo": {
-                    "String": "FREN"
-                  }
-                }
-              }
-            },
-            "at_most": 1
-          }
-        ],
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "french_elective"
-              }
+              "EqualTo": "french_elective"
             }
           }
         },
+        "limit": [
+          {
+            "at_most": 1,
+            "where": {
+              "subject": {
+                "Single": {
+                  "NotEqualTo": "FREN"
+                }
+              }
+            }
+          }
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

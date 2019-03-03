@@ -35,8 +35,8 @@
                 "given": "save",
                 "save": "Latin Courses",
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -49,8 +49,8 @@
                 "given": "save",
                 "save": "Greek Courses",
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -67,8 +67,8 @@
                 "given": "save",
                 "save": "Greek Courses",
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -81,8 +81,8 @@
                 "given": "save",
                 "save": "Latin Courses",
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -104,11 +104,9 @@
           "what": "courses",
           "limit": null,
           "where": {
-            "attributes": {
+            "attribute": {
               "Single": {
-                "EqualTo": {
-                  "String": "classics_latin"
-                }
+                "EqualTo": "classics_latin"
               }
             }
           },
@@ -120,11 +118,9 @@
           "what": "courses",
           "limit": null,
           "where": {
-            "attributes": {
+            "attribute": {
               "Single": {
-                "EqualTo": {
-                  "String": "classics_greek"
-                }
+                "EqualTo": "classics_greek"
               }
             }
           },
@@ -184,16 +180,14 @@
       "result": {
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
-          "attributes": {
+          "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "classics_ancient_history"
-              }
+              "EqualTo": "classics_ancient_history"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
