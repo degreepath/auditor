@@ -329,7 +329,7 @@ fn pretty_print_multiple_values() {
 
 #[test]
 fn pretty_print_negated_value() {
-	let input = deserialize_test(&"{department: '! MATH'}");
-	let expected = "outside of the MATH department";
+	let input = deserialize_test(&"{subject: '! MATH'}");
+	let expected = "outside of the MATH subject code";
 	assert_eq!(expected, input.print().unwrap());
 }

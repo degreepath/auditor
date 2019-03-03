@@ -219,33 +219,33 @@ fn print_institution(value: &WrappedValue<String>) -> Result<Vec<String>, std::f
 	Ok(clauses)
 }
 
-fn print_subjects_alone(department: &WrappedValue<String>) -> print::Result {
-	Ok(match department {
-		WrappedValue::Single(TaggedValue::EqualTo(v)) => format!("within the {} department", v),
-		WrappedValue::Single(TaggedValue::NotEqualTo(v)) => format!("outside of the {} department", v),
-		WrappedValue::Single(_) => unimplemented!("filter:department, only implemented for = and !="),
+fn print_subjects_alone(subject: &WrappedValue<String>) -> print::Result {
+	Ok(match subject {
+		WrappedValue::Single(TaggedValue::EqualTo(v)) => format!("within the {} subject code", v),
+		WrappedValue::Single(TaggedValue::NotEqualTo(v)) => format!("outside of the {} subject code", v),
+		WrappedValue::Single(_) => unimplemented!("filter:subject, only implemented for = and !="),
 		WrappedValue::Or(v) => match v.len() {
-			2 => format!("within either of the {} departments", department.print()?),
-			_ => format!("within the {} department", department.print()?),
+			2 => format!("within either of the {} subject codes", subject.print()?),
+			_ => format!("within the {} subject code", subject.print()?),
 		},
 		WrappedValue::And(_) => unimplemented!("filter:dept, and-value"),
 	})
 }
 
-fn print_subjects_and_number(department: &WrappedValue<String>, number: &WrappedValue<u64>) -> print::Result {
-	Ok(match (department, number) {
+fn print_subjects_and_number(subject: &WrappedValue<String>, number: &WrappedValue<u64>) -> print::Result {
+	Ok(match (subject, number) {
 		(
-			WrappedValue::Single(TaggedValue::EqualTo(department)),
+			WrappedValue::Single(TaggedValue::EqualTo(subject)),
 			WrappedValue::Single(TaggedValue::EqualTo(number)),
-		) => format!("called {} {} [todo]", department, number),
+		) => format!("called {} {} [todo]", subject, number),
 		(
-			WrappedValue::Single(TaggedValue::EqualTo(department)),
+			WrappedValue::Single(TaggedValue::EqualTo(subject)),
 			WrappedValue::Single(TaggedValue::NotEqualTo(number)),
-		) => format!("other than {} {}", department, number),
+		) => format!("other than {} {}", subject, number),
 		(WrappedValue::Or(v), WrappedValue::Single(TaggedValue::GreaterThanEqualTo(n))) => match v.len() {
-			1 => format!("within the {} department past {}", department.print()?, n),
-			2 => format!("within either of the {} departments, past {}", department.print()?, n),
-			_ => format!("within any of the {} departments past {}", department.print()?, n),
+			1 => format!("within the {} subject code past {}", subject.print()?, n),
+			2 => format!("within either of the {} subject codes, past {}", subject.print()?, n),
+			_ => format!("within any of the {} subject codes past {}", subject.print()?, n),
 		},
 		_ => unimplemented!("filter:dept+num, certain modes"),
 	})
