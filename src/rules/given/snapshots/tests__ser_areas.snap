@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T03:16:53.867756Z"
+created: "2019-03-03T17:30:19.986351Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
@@ -8,9 +8,6 @@ expression: data
   "given": "areas",
   "what": areas,
   "where": Some(AreaClause(
-    type: "AreaClause",
-    name: None,
-    type: None,
   )),
   "do": Action(
     lhs: Count,
