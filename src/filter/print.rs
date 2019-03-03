@@ -92,6 +92,10 @@ impl print::Print for CourseClause {
 			clauses.extend(print_course(&course)?);
 		}
 
+		if let Some(level) = &self.level {
+			clauses.extend(print_level(&level)?);
+		}
+
 		if let Some(gereq) = &self.gereqs {
 			clauses.extend(print_gereqs(&gereq)?);
 		}
@@ -109,10 +113,6 @@ impl print::Print for CourseClause {
 			(None, None) => {}
 		}
 
-		if let Some(institution) = &self.institution {
-			clauses.extend(print_institution(&institution)?);
-		}
-
 		match (&self.subject, &self.number) {
 			(Some(subjects), Some(number)) => {
 				clauses.push(print_subjects_and_number(&subjects, &number)?);
@@ -124,12 +124,12 @@ impl print::Print for CourseClause {
 			(None, None) => (),
 		};
 
-		if let Some(level) = &self.level {
-			clauses.extend(print_level(&level)?);
-		}
-
 		if let Some(credits) = &self.credits {
 			clauses.extend(print_credits(&credits)?);
+		}
+
+		if let Some(institution) = &self.institution {
+			clauses.extend(print_institution(&institution)?);
 		}
 
 		match (&self.graded, &self.grade) {
@@ -236,7 +236,9 @@ fn print_institution(value: &WrappedValue<String>) -> Result<Vec<String>, std::f
 	let mut clauses = vec![];
 
 	match value {
-		WrappedValue::Single(v) => clauses.push(format!("at {}", v.print()?)),
+		WrappedValue::Single(TaggedValue::EqualTo(v)) => clauses.push(format!("at {}", v.print()?)),
+		WrappedValue::Single(TaggedValue::NotEqualTo(v)) => clauses.push(format!("not at {}", v.print()?)),
+		WrappedValue::Single(_) => unimplemented!("filter:institution, things other than ==/!="),
 		WrappedValue::Or(_) => {
 			clauses.push(format!("at either {}", value.print()?));
 		}
@@ -331,24 +333,24 @@ fn print_grade(
 			WrappedValue::Or(_) | WrappedValue::And(_) => {}
 			WrappedValue::Single(TaggedValue::EqualTo(value)) => match value {
 				GradeOption::Graded => match grade {
-					Some(grade) => clauses.push(format!("courses sucessfully completed with at least a {}", grade)),
-					None => clauses.push("as _graded_ courses".to_string()),
+					Some(grade) => clauses.push(format!("sucessfully completed with at least a {}", grade)),
+					None => clauses.push("_graded_".to_string()),
 				},
 				GradeOption::Audit => {
-					clauses.push("as _audited_ courses".to_string());
+					clauses.push("_audited_".to_string());
 				}
 				GradeOption::Pn => {
-					clauses.push("as courses taken p/n".to_string());
+					clauses.push("p/n".to_string());
 				}
 				GradeOption::Su => {
-					clauses.push("as courses taken s/u".to_string());
+					clauses.push("s/u".to_string());
 				}
-				GradeOption::NoGrade => clauses.push("as _not graded_ courses".to_string()),
+				GradeOption::NoGrade => clauses.push("_not graded_".to_string()),
 			},
 			WrappedValue::Single(_) => unimplemented!("printing \"graded\" with anything other than equal-to"),
 		},
 		None => match grade {
-			Some(grade) => clauses.push(format!("courses sucessfully completed with at least a {}", grade)),
+			Some(grade) => clauses.push(format!("sucessfully completed with at least a {}", grade)),
 			None => {}
 		},
 	}
