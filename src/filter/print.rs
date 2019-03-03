@@ -86,7 +86,11 @@ impl print::Print for AreaClause {
 
 impl print::Print for CourseClause {
 	fn print(&self) -> print::Result {
-		let mut clauses = vec![];
+		let mut clauses: Vec<String> = vec![];
+
+		if let Some(course) = &self.course {
+			clauses.extend(print_course(&course)?);
+		}
 
 		if let Some(gereq) = &self.gereqs {
 			clauses.extend(print_gereqs(&gereq)?);
@@ -148,6 +152,20 @@ impl print::Print for CourseClause {
 			_ => Ok(clauses.oxford("and")),
 		}
 	}
+}
+
+fn print_course(value: &WrappedValue<String>) -> Result<Vec<String>, std::fmt::Error> {
+	let mut clauses = vec![];
+
+	match value {
+		WrappedValue::Single(v) => clauses.push(format!("numbered “{}”", v.print()?)),
+		WrappedValue::Or(_) | WrappedValue::And(_) => {
+			// TODO: figure out how to quote these
+			clauses.push(format!("numbered {}", value.print()?));
+		}
+	};
+
+	Ok(clauses)
 }
 
 fn print_gereqs(value: &WrappedValue<String>) -> Result<Vec<String>, std::fmt::Error> {
