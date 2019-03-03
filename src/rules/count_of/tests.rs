@@ -96,15 +96,18 @@ fn pretty_print_inline() {
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
 	assert_snapshot_matches!(input.print().unwrap(), @"complete both the “A” and “B” requirements");
 
-	let s = "{count: all, of: [{type: requirement, name: A}, {type: requirement, name: B}, {type: requirement, name: C}]}";
+	let s =
+		"{count: all, of: [{type: requirement, name: A}, {type: requirement, name: B}, {type: requirement, name: C}]}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
 	assert_snapshot_matches!(input.print().unwrap(), @"complete “A”, “B”, and “C”");
 
-	let s = "{count: any, of: [{type: requirement, name: A}, {type: requirement, name: B}, {type: requirement, name: C}]}";
+	let s =
+		"{count: any, of: [{type: requirement, name: A}, {type: requirement, name: B}, {type: requirement, name: C}]}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
 	assert_snapshot_matches!(input.print().unwrap(), @"complete one requirement from among “A”, “B”, or “C”");
 
-	let s = "{count: 2, of: [{type: requirement, name: A}, {type: requirement, name: B}, {type: requirement, name: C}]}";
+	let s =
+		"{count: 2, of: [{type: requirement, name: A}, {type: requirement, name: B}, {type: requirement, name: C}]}";
 	let input: Rule = serde_yaml::from_str(&s).unwrap();
 	assert_snapshot_matches!(input.print().unwrap(), @"complete two requirements from among “A”, “B”, or “C”");
 }

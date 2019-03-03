@@ -58,8 +58,7 @@ both:
 #[test]
 fn pretty_print() {
 	let input: Rule =
-		serde_yaml::from_str(&"{both: [{type: requirement, name: A}, {type: requirement, name: B}]}")
-			.unwrap();
+		serde_yaml::from_str(&"{both: [{type: requirement, name: A}, {type: requirement, name: B}]}").unwrap();
 	let expected = "complete both the “A” and “B” requirements";
 	assert_eq!(expected, input.print().unwrap());
 
@@ -80,13 +79,13 @@ fn pretty_print() {
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-		serde_yaml::from_str(&"{both: [{type: requirement, name: A}, {type: both, both: [CS 251, CS 130]}]}")
-			.unwrap();
+		serde_yaml::from_str(&"{both: [{type: requirement, name: A}, {type: both, both: [CS 251, CS 130]}]}").unwrap();
 	let expected = "both complete the “A” requirement and take both CS 251 and CS 130";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule =
-		serde_yaml::from_str(&"{both: [{type: given, given: courses, what: courses, do: count >= 3}, CS 121]}").unwrap();
+		serde_yaml::from_str(&"{both: [{type: given, given: courses, what: courses, do: count >= 3}, CS 121]}")
+			.unwrap();
 	let expected = "both take at least three courses and take CS 121";
 	assert_eq!(expected, input.print().unwrap());
 

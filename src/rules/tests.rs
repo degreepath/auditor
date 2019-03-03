@@ -174,10 +174,7 @@ fn pretty_print() {
 "#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
-	let actual: Vec<String> = actual
-		.into_iter()
-		.filter_map(|r| r.print().ok())
-		.collect();
+	let actual: Vec<String> = actual.into_iter().filter_map(|r| r.print().ok()).collect();
 
 	assert_debug_snapshot_matches!("pretty_print_mix", actual);
 }
