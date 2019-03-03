@@ -21,18 +21,6 @@ impl TaggedValue<String> {
 	}
 }
 
-// impl<T> TaggedValue<T> {
-// 	pub fn eq_value(s: &DataValue) -> Self {
-// 		match s {
-// 			DataValue::String(s) => TaggedValue::EqualTo(SingleValue::String(s.clone())),
-// 			DataValue::Integer(s) => TaggedValue::EqualTo(SingleValue::Integer(*s)),
-// 			DataValue::Float(s) => TaggedValue::EqualTo(SingleValue::Float(*s)),
-// 			DataValue::Boolean(s) => TaggedValue::EqualTo(SingleValue::Bool(*s)),
-// 			_ => unimplemented!(),
-// 		}
-// 	}
-// }
-
 impl<T: FromStr> FromStr for TaggedValue<T> {
 	type Err = util::ParseError;
 
@@ -118,87 +106,3 @@ impl<T: fmt::Display> fmt::Display for TaggedValue<T> {
 		}
 	}
 }
-
-// impl<T> PartialEq<DataValue> for TaggedValue<T> {
-// 	fn eq(&self, rhs: &DataValue) -> bool {
-// 		match &self {
-// 			TaggedValue::EqualTo(value) => value == rhs,
-// 			_ => unimplemented!(),
-// 		}
-// 	}
-// }
-
-// impl<T> PartialEq<bool> for TaggedValue<T> {
-// 	fn eq(&self, rhs: &bool) -> bool {
-// 		match &self {
-// 			TaggedValue::EqualTo(value) => value == rhs,
-// 			_ => unimplemented!(),
-// 		}
-// 	}
-// }
-
-// impl<T> PartialEq<String> for TaggedValue<T> {
-// 	fn eq(&self, rhs: &String) -> bool {
-// 		match &self {
-// 			TaggedValue::EqualTo(value) => value == rhs,
-// 			_ => unimplemented!(),
-// 		}
-// 	}
-// }
-
-// impl<T> PartialEq<str> for TaggedValue<T> {
-// 	fn eq(&self, rhs: &str) -> bool {
-// 		match &self {
-// 			TaggedValue::EqualTo(value) => value == rhs,
-// 			_ => unimplemented!(),
-// 		}
-// 	}
-// }
-
-// impl<T> PartialEq<u64> for TaggedValue<T> {
-// 	fn eq(&self, rhs: &u64) -> bool {
-// 		match &self {
-// 			TaggedValue::EqualTo(value) => value == rhs,
-// 			_ => unimplemented!(),
-// 		}
-// 	}
-// }
-
-// impl<T> PartialEq<(u16, u16)> for TaggedValue<T> {
-// 	fn eq(&self, rhs: &(u16, u16)) -> bool {
-// 		match &self {
-// 			TaggedValue::EqualTo(value) => value == rhs,
-// 			_ => unimplemented!(),
-// 		}
-// 	}
-// }
-
-// impl<T> PartialEq<TaggedValue<T>> for bool {
-// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
-// 		rhs == self
-// 	}
-// }
-
-// impl<T> PartialEq<TaggedValue<T>> for String {
-// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
-// 		rhs == self
-// 	}
-// }
-
-// impl<T> PartialEq<TaggedValue<T>> for str {
-// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
-// 		rhs == self
-// 	}
-// }
-
-// impl<T> PartialEq<TaggedValue<T>> for u64 {
-// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
-// 		rhs == self
-// 	}
-// }
-
-// impl<T> PartialEq<TaggedValue<T>> for (u16, u16) {
-// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
-// 		rhs == self
-// 	}
-// }
