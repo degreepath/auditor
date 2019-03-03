@@ -32,7 +32,7 @@ fn process_area_file(entry: &globwalk::DirEntry) -> Result<FileInput> {
 	let kind = components[3].as_os_str().to_str().expect("valid utf-8");
 	let name = p.file_stem().unwrap().to_str().expect("valid utf-8");
 
-	eprintln!("current: {}, {}, {}", catalog, kind, name);
+	// eprintln!("current: {}, {}, {}", catalog, kind, name);
 	let snapshots_dir = PathBuf::from(format!("./snapshots/{}/{}/filename.out", catalog, kind));
 	fs::create_dir_all(&snapshots_dir)?;
 
@@ -42,7 +42,7 @@ fn process_area_file(entry: &globwalk::DirEntry) -> Result<FileInput> {
 fn process_test_file(entry: &globwalk::DirEntry) -> Result<FileInput> {
 	let name = entry.path().file_stem().unwrap().to_str().expect("valid utf-8");
 
-	eprintln!("current: integration, {}", name);
+	// eprintln!("current: integration, {}", name);
 	let snapshots_dir = PathBuf::from(format!("./snapshots/integrations/filename.out"));
 	fs::create_dir_all(&snapshots_dir)?;
 
@@ -65,12 +65,15 @@ fn run() -> Result<()> {
 
 	let input_files: Vec<_> = areas.chain(integration_tests).collect();
 
-	input_files
-		.into_par_iter()
-		.for_each(|input| match convert_file(&input) {
-			Ok(_) => (),
-			Err(err) => println!("error while processing {}: {}", input.0, err),
-		});
+	input_files.into_par_iter().for_each(|input| {
+		eprintln!("{} [start]", &input.0);
+		match convert_file(&input) {
+			Ok(_) => {
+				// eprintln!("{} [completed]", input.0)
+			},
+			Err(err) => eprintln!("{} [error]: {}", input.0, err),
+		}
+	});
 
 	Ok(())
 }
