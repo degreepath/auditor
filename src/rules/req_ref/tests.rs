@@ -1,14 +1,15 @@
 use super::*;
 use crate::traits::print::Print;
+use pretty_assertions::assert_eq;
 
 #[test]
 fn serialize() {
 	let data = Rule {
-		requirement: String::from("Name"),
+		name: String::from("Name"),
 		optional: false,
 	};
 	let expected = "---
-requirement: Name
+name: Name
 optional: false";
 
 	let actual = serde_yaml::to_string(&data).unwrap();
@@ -18,10 +19,10 @@ optional: false";
 #[test]
 fn deserialize() {
 	let data = "---
-requirement: Name
+name: Name
 optional: false";
 	let expected = Rule {
-		requirement: String::from("Name"),
+		name: String::from("Name"),
 		optional: false,
 	};
 
@@ -32,9 +33,9 @@ optional: false";
 #[test]
 fn deserialize_with_defaults() {
 	let data = "---
-requirement: Name";
+name: Name";
 	let expected = Rule {
-		requirement: String::from("Name"),
+		name: String::from("Name"),
 		optional: false,
 	};
 
@@ -45,14 +46,14 @@ requirement: Name";
 #[test]
 fn pretty_print() {
 	let input = Rule {
-		requirement: "Core".into(),
+		name: "Core".into(),
 		optional: false,
 	};
 	let expected = "“Core”";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input = Rule {
-		requirement: "Core".into(),
+		name: "Core".into(),
 		optional: true,
 	};
 	let expected = "“Core” (optional)";

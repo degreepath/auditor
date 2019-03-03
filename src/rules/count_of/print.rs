@@ -268,7 +268,7 @@ impl print::Print for Rule {
 			return self.to_both().print();
 		}
 
-		assert!(self.of.len() > 2);
+		assert!(self.is_optional() || self.of.len() > 2);
 
 		if self.is_any() {
 			if self.should_be_inline() {

@@ -1,4 +1,4 @@
-use crate::rules::{course, req_ref};
+use crate::rules::course;
 use crate::traits::Util;
 use crate::util;
 use crate::{action, filter, limit};
@@ -47,7 +47,7 @@ pub enum Given {
 		limit: Option<Vec<limit::Limiter>>,
 	},
 	TheseRequirements {
-		requirements: Vec<req_ref::Rule>,
+		requirements: Vec<String>,
 		what: GivenCoursesWhatOptions,
 		#[serde(rename = "where", default)]
 		filter: Option<filter::CourseClause>,
@@ -91,7 +91,7 @@ pub enum GivenForSaveBlock {
 		what: GivenCoursesWhatOptions,
 	},
 	TheseRequirements {
-		requirements: Vec<req_ref::Rule>,
+		requirements: Vec<String>,
 		what: GivenCoursesWhatOptions,
 	},
 	#[serde(rename = "save")]

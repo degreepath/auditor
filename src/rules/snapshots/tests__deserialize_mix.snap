@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T03:16:53.879261Z"
+created: "2019-03-03T22:38:28.542901Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: actual
@@ -33,7 +33,7 @@ expression: actual
     ),
     Requirement(
         Rule {
-            requirement: "Name",
+            name: "Name",
             optional: true
         }
     ),

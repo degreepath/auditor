@@ -6,7 +6,7 @@ impl print::Print for Rule {
 		use std::fmt::Write;
 		let mut output = String::new();
 
-		write!(&mut output, "“{}”", self.requirement)?;
+		write!(&mut output, "“{}”", self.name)?;
 
 		if self.optional {
 			write!(&mut output, " (optional)")?;

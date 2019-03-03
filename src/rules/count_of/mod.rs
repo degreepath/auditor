@@ -34,6 +34,13 @@ impl Rule {
 		}
 	}
 
+	fn is_optional(&self) -> bool {
+		match self.count {
+			Counter::Number(0) => true,
+			_ => false,
+		}
+	}
+
 	fn is_single(&self) -> bool {
 		self.of.len() == 1
 	}

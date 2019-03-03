@@ -10,7 +10,7 @@ impl super::Rule {
 #[allow(clippy::match_bool)]
 impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
-		match input.preceding_requirements.get(&self.requirement) {
+		match input.preceding_requirements.get(&self.name) {
 			Some(reference) => match reference.status {
 				RuleStatus::Pass => RuleResult {
 					detail: RuleResultDetails::Requirement(RequirementResult {}),

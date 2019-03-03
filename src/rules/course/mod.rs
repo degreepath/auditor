@@ -3,7 +3,6 @@ use crate::student::Semester;
 use crate::traits::Util;
 use serde::Deserialize;
 use std::str::FromStr;
-use void::Void;
 
 mod audit;
 mod print;
@@ -33,7 +32,7 @@ impl Util for Rule {
 impl FromStr for Rule {
 	// This implementation of `from_str` can never fail, so use the impossible
 	// `Void` type as the error type.
-	type Err = Void;
+	type Err = void::Void;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		Ok(Rule {

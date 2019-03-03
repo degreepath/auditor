@@ -10,7 +10,7 @@ mod tests;
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Hash)]
 #[serde(deny_unknown_fields)]
 pub struct Rule {
-	pub requirement: String,
+	pub name: String,
 	#[serde(default = "util::serde_false")]
 	pub optional: bool,
 }

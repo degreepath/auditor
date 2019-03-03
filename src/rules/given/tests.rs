@@ -1,7 +1,7 @@
 use super::Rule;
 use super::{CourseRule, Given, GivenAreasWhatOptions, GivenCoursesWhatOptions, RepeatMode};
 use crate::filter::{AreaClause, CourseClause};
-use crate::rules::{course, req_ref};
+use crate::rules::course;
 use crate::traits::print::Print;
 use crate::value;
 use insta::{assert_ron_snapshot_matches, assert_snapshot_matches};
@@ -149,16 +149,7 @@ do:
 fn serialize_these_requirements() {
 	let data = Rule {
 		given: Given::TheseRequirements {
-			requirements: vec![
-				req_ref::Rule {
-					requirement: "A Name 1".to_string(),
-					optional: false,
-				},
-				req_ref::Rule {
-					requirement: "A Name 2".to_string(),
-					optional: true,
-				},
-			],
+			requirements: vec!["A Name 1".to_string(), "A Name 2".to_string()],
 			what: GivenCoursesWhatOptions::Courses,
 			limit: Some(vec![]),
 			filter: Some(CourseClause::default()),
@@ -173,16 +164,7 @@ fn serialize_these_requirements() {
 fn deserialize_these_requirements() {
 	let expected = Rule {
 		given: Given::TheseRequirements {
-			requirements: vec![
-				req_ref::Rule {
-					requirement: "A Name 1".to_string(),
-					optional: false,
-				},
-				req_ref::Rule {
-					requirement: "A Name 2".to_string(),
-					optional: true,
-				},
-			],
+			requirements: vec!["A Name 1".to_string(), "A Name 2".to_string()],
 			what: GivenCoursesWhatOptions::Courses,
 			limit: Some(vec![]),
 			filter: Some(CourseClause::default()),
@@ -193,8 +175,8 @@ fn deserialize_these_requirements() {
 	let data = r#"---
 given: these-requirements
 requirements:
-  - requirement: A Name 1
-  - {requirement: A Name 2, optional: true}
+  - A Name 1
+  - A Name 2
 what: courses
 limit: []
 where: {}
@@ -207,8 +189,8 @@ do: count > 2"#;
 	let data = r#"---
 given: these-requirements
 requirements:
-  - requirement: A Name 1
-  - {requirement: A Name 2, optional: true}
+  - A Name 1
+  - A Name 2
 what: courses
 limit: []
 where: {}
@@ -599,7 +581,7 @@ fn pretty_print_inline_terms() {
 
 #[test]
 fn pretty_print_inline_given_requirements_what_courses() {
-	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], what: credits, do: sum >= 1}";
+	let s = "{given: these-requirements, requirements: [Core, Modern], what: credits, do: sum >= 1}";
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
@@ -607,7 +589,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 2. there must be at least one credit
 "###);
 
-	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}";
+	let s = "{given: these-requirements, requirements: [Core, Modern], where: { gereqs: FOL-C }, what: credits, do: sum >= 1}";
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
@@ -616,7 +598,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 3. there must be at least one credit
 "###);
 
-	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Interim }, what: credits, do: sum >= 3}";
+	let s = "{given: these-requirements, requirements: [Core, Modern], where: { semester: Interim }, what: credits, do: sum >= 3}";
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
@@ -625,7 +607,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 3. there must be at least three credits
 "###);
 
-	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { semester: Fall }, what: credits, do: sum >= 10}";
+	let s = "{given: these-requirements, requirements: [Core, Modern], where: { semester: Fall }, what: credits, do: sum >= 10}";
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
@@ -634,7 +616,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 3. there must be at least ten credits
 "###);
 
-	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: 'junior-year' }, what: credits, do: sum >= 1}";
+	let s = "{given: these-requirements, requirements: [Core, Modern], where: { year: 'junior-year' }, what: credits, do: sum >= 1}";
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @"have the following be true:
 
@@ -643,7 +625,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 3. there must be at least one credit
 ");
 
-	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}";
+	let s = "{given: these-requirements, requirements: [Core, Modern], where: { institution: St. Olaf College }, what: credits, do: sum >= 17}";
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 

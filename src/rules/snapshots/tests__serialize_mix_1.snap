@@ -1,41 +1,53 @@
 ---
-created: "2019-03-03T03:38:37.700319Z"
+created: "2019-03-03T22:35:54.760270Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: data
 ---
-- course: ASIAN 101
-- course: ASIAN 101
+- type: course
+  course: ASIAN 101
+- type: course
+  course: ASIAN 101
   grade: ~
   section: ~
   year: 2014
   semester: Fall
   lab: ~
   can_match_used: ~
-- requirement: Name
+- type: requirement
+  name: Name
   optional: true
-- count: 1
+- type: count-of
+  count: 1
   of:
-    - course: ASIAN 101
-- both:
-    - course: ASIAN 101
-    - course: ASIAN 101
+    - type: course
+      course: ASIAN 101
+- type: both
+  both:
+    - type: course
+      course: ASIAN 101
+    - type: course
+      course: ASIAN 101
       grade: ~
       section: ~
       year: 2014
       semester: Fall
       lab: ~
       can_match_used: ~
-- either:
-    - course: ASIAN 101
-    - course: ASIAN 101
+- type: either
+  either:
+    - type: course
+      course: ASIAN 101
+    - type: course
+      course: ASIAN 101
       grade: ~
       section: ~
       year: 2014
       semester: Fall
       lab: ~
       can_match_used: ~
-- given: courses
+- type: given
+  given: courses
   what: courses
   where: {}
   limit: []
@@ -44,7 +56,8 @@ expression: data
     op: LessThan
     rhs:
       Integer: 2
-- do:
+- type: do
+  do:
     lhs:
       String: a
     op: LessThan

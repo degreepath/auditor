@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T15:28:01.845025Z"
+created: "2019-03-03T18:43:52.336372Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
@@ -7,14 +7,8 @@ expression: data
 {
   "given": "these-requirements",
   "requirements": [
-    Rule(
-      requirement: "A Name 1",
-      optional: false,
-    ),
-    Rule(
-      requirement: "A Name 2",
-      optional: true,
-    ),
+    "A Name 1",
+    "A Name 2",
   ],
   "what": courses,
   "where": Some(CourseClause(

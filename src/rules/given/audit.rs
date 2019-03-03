@@ -4,7 +4,7 @@ use crate::filter::{match_area_against_filter, match_course_against_filter};
 use crate::filter::{AreaClause, CourseClause};
 use crate::limit::apply_limits_to_courses;
 use crate::limit::Limiter;
-use crate::rules::{req_ref, Rule as AnyRule};
+use crate::rules::Rule as AnyRule;
 use crate::student::AreaDescriptor;
 
 impl super::Rule {
@@ -192,13 +192,13 @@ impl super::Rule {
 		vec![]
 	}
 
-	fn in_requirements_out_courses(&self, input: &RuleInput, these_requirements: &[req_ref::Rule]) -> ReservedPairings {
+	fn in_requirements_out_courses(&self, input: &RuleInput, these_requirements: &[String]) -> ReservedPairings {
 		let collected: Vec<_> = these_requirements
 			.iter()
-			.filter_map(|req_ref| {
+			.filter_map(|req_name| {
 				input
 					.preceding_requirements
-					.get(&req_ref.requirement)
+					.get(req_name)
 					.map(|req| req.reservations.iter().collect::<Vec<_>>())
 			})
 			.flatten()

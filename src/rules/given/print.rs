@@ -5,7 +5,6 @@ use super::{
 use crate::action;
 use crate::filter::{AreaClause, AttendanceClause, CourseClause, PerformanceClause};
 use crate::limit::Limiter;
-use crate::rules::req_ref;
 use crate::traits::print::{self, Print};
 use crate::util::Oxford;
 
@@ -375,7 +374,7 @@ impl Rule {
 
 	fn print_given_these_requirements(
 		&self,
-		requirements: &[req_ref::Rule],
+		requirements: &[String],
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
 		_limit: &Option<Vec<Limiter>>,
@@ -385,13 +384,7 @@ impl Rule {
 
 		let mut output = String::new();
 
-		let requirements: Vec<String> = requirements
-			.iter()
-			.filter_map(|r| match r.print() {
-				Ok(p) => Some(p),
-				Err(_) => None,
-			})
-			.collect();
+		let requirements: Vec<String> = requirements.iter().map(|r| format!("“{}”", r)).collect();
 
 		writeln!(&mut output, "have the following be true:\n")?;
 		let mut index = 0;
