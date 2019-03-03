@@ -6,8 +6,9 @@ edition = "2018"
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
+decorum = {version = "0.1"}
 serde = { version = "1.0", features = ["derive"] }
-void = "1.0"
+void = {version = "1.0"}
 
 [dev-dependencies]
 globwalk = "0.6"
