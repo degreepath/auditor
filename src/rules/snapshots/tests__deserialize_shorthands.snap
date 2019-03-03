@@ -1,5 +1,5 @@
 ---
-created: "2019-02-27T17:36:11.687169Z"
+created: "2019-03-03T03:16:53.926106Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: actual
@@ -141,10 +141,10 @@ expression: actual
     Given(
         Rule {
             given: AllCourses {
-                what: Courses
+                what: Courses,
+                filter: None,
+                limit: None
             },
-            limit: None,
-            filter: None,
             action: Action {
                 lhs: Count,
                 op: Some(

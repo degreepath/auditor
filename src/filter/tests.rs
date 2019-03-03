@@ -1,6 +1,7 @@
 use super::{CourseClause};
 use crate::traits::print::Print;
 use crate::value::{SingleValue, TaggedValue, WrappedValue};
+use insta::assert_yaml_snapshot_matches;
 
 #[test]
 fn serialize_simple() {
@@ -9,14 +10,20 @@ fn serialize_simple() {
 		..CourseClause::default()
 	};
 
-	let expected = r#"---
+	assert_yaml_snapshot_matches!(data, @r###"attribute: ~
+course: ~
+credits: ~
+gereqs: ~
+graded: ~
+institution: ~
 level:
   Single:
-    EqualTo:
-      Integer: 100"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-	assert_eq!(actual, expected);
+    EqualTo: 100
+number: ~
+type: ~
+semester: ~
+subject: ~
+year: ~"###);
 }
 
 #[test]
@@ -26,32 +33,42 @@ fn serialize_or() {
 		..CourseClause::default()
 	};
 
-	let expected = r#"---
+	assert_yaml_snapshot_matches!(data, @r###"attribute: ~
+course: ~
+credits: ~
+gereqs: ~
+graded: ~
+institution: ~
 level:
   Or:
-    - EqualTo:
-        Integer: 100
-    - EqualTo:
-        Integer: 200"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-	assert_eq!(actual, expected);
+    - EqualTo: 100
+    - EqualTo: 200
+number: ~
+type: ~
+semester: ~
+subject: ~
+year: ~"###);
 
 	let data = CourseClause {
 		level: Some("< 100 | 200".parse::<WrappedValue<u64>>().unwrap()),
 		..CourseClause::default()
 	};
 
-	let expected = r#"---
+	assert_yaml_snapshot_matches!(data, @r###"attribute: ~
+course: ~
+credits: ~
+gereqs: ~
+graded: ~
+institution: ~
 level:
   Or:
-    - LessThan:
-        Integer: 100
-    - EqualTo:
-        Integer: 200"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-	assert_eq!(actual, expected);
+    - LessThan: 100
+    - EqualTo: 200
+number: ~
+type: ~
+semester: ~
+subject: ~
+year: ~"###);
 }
 
 mod value {
