@@ -1,12 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Japanese” major from St. Olaf College.
 
 # Japanese
-For this major, you must complete all of the following requirements:
-
-- “Core Language”
-- “Upper-Level Language”
-- “Language and Culture”
-- “FLAC” (optional)
+For this major, you must complete “Core Language”, “Upper-Level Language”, and “Language and Culture”.
 
 ## Core Language
 For this requirement, you must take all of the following courses:
@@ -48,10 +43,6 @@ For this requirement, you must take at least one course with the “japan_focuse
 
 ### Comparative
 For this requirement, you must take at least one course with the “japan_comparative_asia” attribute at most 2 with the “japan_asiancon” attribute and at most 1 with either the japan_independent_study or japan_seminar attribute.
-
-
-## FLAC
-For this requirement, you must take at least one course with the “japan_flac” attribute.
 
 # Custom Attributes
 

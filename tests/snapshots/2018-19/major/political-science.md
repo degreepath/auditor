@@ -10,7 +10,7 @@ For this major, you must both:
     - “International Relations”
     - “Political Theory”
     - “Level III”
-    - “Additional Courses” (optional)
+    - “Additional Courses”
 
 - and have the following be true:
     1. given the results of the following requirements
@@ -48,7 +48,7 @@ For this requirement, you must take at least two courses with the “psci_level_
 
 
 ## Additional Courses
-For this section, you must complete either the “Statistics” or “World Langauge” requirement.
+For this section, you must complete zero requirements from among “Statistics” or “World Langauge”.
 
 ### Statistics
 For this requirement, you must take at least one course within the STAT subject code.

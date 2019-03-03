@@ -5,63 +5,54 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "both",
     "both": [
       {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Major Seminar",
+            "type": "requirement",
+            "name": "Major Seminar",
             "optional": false
           },
           {
-            "requirement": "Level III",
+            "type": "requirement",
+            "name": "Level III",
             "optional": false
           },
           {
-            "requirement": "Non-Western World",
+            "type": "requirement",
+            "name": "Non-Western World",
             "optional": false
           },
           {
-            "requirement": "Europe & Russia",
+            "type": "requirement",
+            "name": "Europe & Russia",
             "optional": false
           },
           {
-            "requirement": "U.S.",
+            "type": "requirement",
+            "name": "U.S.",
             "optional": false
           },
           {
-            "requirement": "Pre-Modern Period",
+            "type": "requirement",
+            "name": "Pre-Modern Period",
             "optional": false
           }
         ]
       },
       {
+        "type": "given",
         "given": "these-requirements",
         "requirements": [
-          {
-            "requirement": "Major Seminar",
-            "optional": false
-          },
-          {
-            "requirement": "Level III",
-            "optional": false
-          },
-          {
-            "requirement": "Non-Western World",
-            "optional": false
-          },
-          {
-            "requirement": "Europe & Russia",
-            "optional": false
-          },
-          {
-            "requirement": "U.S.",
-            "optional": false
-          },
-          {
-            "requirement": "Pre-Modern Period",
-            "optional": false
-          }
+          "Major Seminar",
+          "Level III",
+          "Non-Western World",
+          "Europe & Russia",
+          "U.S.",
+          "Pre-Modern Period"
         ],
         "what": "courses",
         "where": null,
@@ -82,6 +73,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -110,6 +102,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -138,6 +131,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -166,6 +160,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -194,6 +189,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -222,6 +218,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {

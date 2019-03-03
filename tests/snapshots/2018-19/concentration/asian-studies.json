@@ -5,7 +5,8 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
-    "requirement": "Electives",
+    "type": "requirement",
+    "name": "Electives",
     "optional": false
   },
   "requirements": [
@@ -14,6 +15,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {

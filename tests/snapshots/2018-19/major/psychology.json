@@ -5,26 +5,32 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Foundation",
+        "type": "requirement",
+        "name": "Foundation",
         "optional": false
       },
       {
-        "requirement": "Content Core",
+        "type": "requirement",
+        "name": "Content Core",
         "optional": false
       },
       {
-        "requirement": "Level III Capstone",
+        "type": "requirement",
+        "name": "Level III Capstone",
         "optional": false
       },
       {
-        "requirement": "General Education",
+        "type": "requirement",
+        "name": "General Education",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -35,11 +41,14 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "both",
         "both": [
           {
+            "type": "course",
             "course": "PSYCH 125"
           },
           {
+            "type": "course",
             "course": "PSYCH 230"
           }
         ]
@@ -54,14 +63,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Natural Science",
+            "type": "requirement",
+            "name": "Natural Science",
             "optional": false
           },
           {
-            "requirement": "Social Science",
+            "type": "requirement",
+            "name": "Social Science",
             "optional": false
           }
         ]
@@ -75,18 +87,23 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": 2,
             "of": [
               {
+                "type": "course",
                 "course": "PSYCH 235"
               },
               {
+                "type": "course",
                 "course": "PSYCH 236"
               },
               {
+                "type": "course",
                 "course": "PSYCH 237"
               },
               {
+                "type": "course",
                 "course": "PSYCH 238"
               }
             ]
@@ -101,18 +118,23 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": 2,
             "of": [
               {
+                "type": "course",
                 "course": "PSYCH 241"
               },
               {
+                "type": "course",
                 "course": "PSYCH 244"
               },
               {
+                "type": "course",
                 "course": "PSYCH 247"
               },
               {
+                "type": "course",
                 "course": "PSYCH 249"
               }
             ]
@@ -129,6 +151,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -173,18 +196,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
+            "type": "course",
             "course": "STAT 110"
           },
           {
+            "type": "course",
             "course": "STAT 212"
           },
           {
+            "type": "course",
             "course": "STAT 214"
           },
           {
+            "type": "course",
             "course": "ECON 263"
           }
         ]
@@ -199,6 +227,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {

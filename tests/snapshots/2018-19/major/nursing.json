@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Prerequisites",
+        "type": "requirement",
+        "name": "Prerequisites",
         "optional": false
       },
       {
-        "requirement": "Requirements",
+        "type": "requirement",
+        "name": "Requirements",
         "optional": false
       },
       {
-        "requirement": "Ethics",
+        "type": "requirement",
+        "name": "Ethics",
         "optional": false
       }
     ]
@@ -27,53 +31,69 @@
       "message": "These courses must be completed before beginning level III nursing courses.",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "BIO 143"
           },
           {
+            "type": "course",
             "course": "BIO 243"
           },
           {
+            "type": "course",
             "course": "ID 210"
           },
           {
+            "type": "course",
             "course": "NURS 110"
           },
           {
+            "type": "course",
             "course": "PSYCH 125"
           },
           {
+            "type": "course",
             "course": "PSYCH 241"
           },
           {
+            "type": "count-of",
             "count": 1,
             "of": [
               {
+                "type": "course",
                 "course": "BIO 121"
               },
               {
+                "type": "course",
                 "course": "BIO 231"
               }
             ]
           },
           {
+            "type": "count-of",
             "count": 1,
             "of": [
               {
+                "type": "course",
                 "course": "SOAN 121"
               },
               {
+                "type": "course",
                 "course": "SOAN 128"
               },
               {
+                "type": "course",
                 "course": "SOAN 260"
               },
               {
+                "type": "course",
                 "course": "SOAN 264"
               },
               {
+                "type": "course",
                 "course": "SOAN 267"
               }
             ]
@@ -90,6 +110,7 @@
       "message": "Nursing recommends taking the Biomedical Ethics (PHIL 250) course for this requirement",
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -118,39 +139,51 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "NURS 211"
           },
           {
+            "type": "course",
             "course": "NURS 311"
           },
           {
+            "type": "course",
             "course": "NURS 312"
           },
           {
+            "type": "course",
             "course": "NURS 313"
           },
           {
+            "type": "course",
             "course": "NURS 314"
           },
           {
+            "type": "course",
             "course": "NURS 315"
           },
           {
+            "type": "course",
             "course": "NURS 316"
           },
           {
+            "type": "course",
             "course": "NURS 317"
           },
           {
+            "type": "course",
             "course": "NURS 318"
           },
           {
+            "type": "course",
             "course": "NURS 319"
           },
           {
+            "type": "course",
             "course": "NURS 399"
           }
         ]

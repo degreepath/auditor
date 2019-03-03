@@ -23,13 +23,10 @@ For this requirement, you must take either GERM 371 or GERM 372.
 
 
 ## Electives
-For this section, you must both:
+For this section, you must have the following be true:
 
-- complete one requirement from among “Language” (optional), “Interim In German” (optional), or “In Translation” (optional)
-
-- and have the following be true:
-    1. given the results of the “Langauge”, “Interim In German”, and “In Translation” requirements,
-    2. there must be at least three courses
+1. given the results of the “Langauge”, “Interim In German”, and “In Translation” requirements,
+2. there must be at least three courses
 
 ### Language
 For this requirement, you must take GERM 232.

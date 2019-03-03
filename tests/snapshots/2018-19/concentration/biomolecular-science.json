@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Core",
+        "type": "requirement",
+        "name": "Core",
         "optional": false
       },
       {
-        "requirement": "Experiential Learning",
+        "type": "requirement",
+        "name": "Experiential Learning",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -27,55 +31,71 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "BIO 150"
           },
           {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "count-of",
                 "count": "all",
                 "of": [
                   {
+                    "type": "course",
                     "course": "CHEM 125"
                   },
                   {
+                    "type": "course",
                     "course": "CHEM 126"
                   },
                   {
+                    "type": "course",
                     "course": "BIO 227"
                   }
                 ]
               },
               {
+                "type": "count-of",
                 "count": "all",
                 "of": [
                   {
+                    "type": "course",
                     "course": "CHEM 121"
                   },
                   {
+                    "type": "course",
                     "course": "CHEM 123"
                   },
                   {
+                    "type": "course",
                     "course": "CHEM 126"
                   },
                   {
+                    "type": "course",
                     "course": "BIO 227"
                   }
                 ]
               },
               {
+                "type": "count-of",
                 "count": "all",
                 "of": [
                   {
+                    "type": "course",
                     "course": "CH/BI 125"
                   },
                   {
+                    "type": "course",
                     "course": "CH/BI 126"
                   },
                   {
+                    "type": "course",
                     "course": "CH/BI 227"
                   }
                 ]
@@ -83,37 +103,48 @@
             ]
           },
           {
+            "type": "course",
             "course": "BIO 223"
           },
           {
+            "type": "course",
             "course": "BMOLS 201"
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "CHEM 247"
               },
               {
+                "type": "course",
                 "course": "CHEM 253"
               }
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "CHEM 248"
               },
               {
+                "type": "course",
                 "course": "CHEM 254"
               }
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "CHEM 379"
               },
               {
+                "type": "course",
                 "course": "CHEM 373"
               }
             ]
@@ -140,36 +171,47 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 2,
         "of": [
           {
+            "type": "course",
             "course": "BIO 315"
           },
           {
+            "type": "course",
             "course": "BIO 341"
           },
           {
+            "type": "course",
             "course": "BIO 364"
           },
           {
+            "type": "course",
             "course": "BIO 372"
           },
           {
+            "type": "course",
             "course": "BIO 382"
           },
           {
+            "type": "course",
             "course": "BIO 383"
           },
           {
+            "type": "course",
             "course": "CHEM 384"
           },
           {
+            "type": "course",
             "course": "CHEM 385"
           },
           {
+            "type": "course",
             "course": "CHEM 391"
           },
           {
+            "type": "course",
             "course": "CSCI 315"
           }
         ]

@@ -4,12 +4,14 @@ degree: Bachelor of Arts
 catalog: 2018-19
 
 result:
+  type: count-of
   count: all
   of:
-    - either: [CS 121, CS 125]
-    - requirement: History
-    - given: these-requirements
-      requirements: [{requirement: X}, {requirement: Y}, {requirement: Z}]
+    - {type: either, either: [CS 121, CS 125]}
+    - {type: requirement, name: History}
+    - type: given
+      given: these-requirements
+      requirements: [X, Y, Z]
       what: credits
       do: count >= 6
 
@@ -21,21 +23,24 @@ requirements:
       not learn from the past are doomed to repeat it."
 
     result:
+      type: count-of
       count: all
       of:
         - CS 251
         - CS 252
         - ART 103
         - ART 104
-        - requirement: A
-        - given: these-requirements
-          requirements: [{requirement: A}]
+        - {type: requirement, name: A}
+        - type: given
+          given: these-requirements
+          requirements: [A]
           what: credits
           do: count >= 1.5
 
     requirements:
       - name: A
         result:
+          type: count-of
           count: any
           of:
             - ART 231
@@ -47,6 +52,7 @@ requirements:
 
   - name: Y
     result:
+      type: count-of
       count: any
       of:
         - AMCON 101
@@ -56,6 +62,7 @@ requirements:
 
   - name: Z
     result:
+      type: given
       given: courses
       where: {gereqs: 'WRI'}
       what: courses

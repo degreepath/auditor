@@ -6,7 +6,7 @@ For this major, you must complete all of the following requirements:
 - “Core Language”
 - “Upper-Level Language”
 - “Language and Culture”
-- “FLAC” (optional)
+- “FLAC”
 
 ## Core Language
 For this requirement, you must take all of the following courses:
@@ -48,10 +48,6 @@ For this requirement, you must take at least one course with the “china_focuse
 
 ### Comparative
 For this requirement, you must take at least one course with the “china_comparative_asia” attribute at most 2 with the “china_asiancon” attribute and at most 1 with either the china_independent_study or china_seminar attribute.
-
-
-## FLAC
-For this requirement, you must take at least one course with the “china_flac” attribute.
 
 # Custom Attributes
 

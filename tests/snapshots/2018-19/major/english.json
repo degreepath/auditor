@@ -5,38 +5,47 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Literary Studies",
+        "type": "requirement",
+        "name": "Literary Studies",
         "optional": false
       },
       {
-        "requirement": "Cross-Cultural Studies",
+        "type": "requirement",
+        "name": "Cross-Cultural Studies",
         "optional": false
       },
       {
-        "requirement": "Literary History",
+        "type": "requirement",
+        "name": "Literary History",
         "optional": false
       },
       {
+        "type": "either",
         "either": [
           {
-            "requirement": "Cross-Disciplinary Studies",
+            "type": "requirement",
+            "name": "Cross-Disciplinary Studies",
             "optional": false
           },
           {
-            "requirement": "Genre Studies",
+            "type": "requirement",
+            "name": "Genre Studies",
             "optional": false
           }
         ]
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       },
       {
-        "requirement": "1800s",
+        "type": "requirement",
+        "name": "1800s",
         "optional": false
       }
     ]
@@ -47,6 +56,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "ENGL 185"
       },
       "contract": false,
@@ -59,6 +69,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -87,6 +98,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -115,6 +127,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -143,6 +156,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -171,9 +185,11 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "given",
             "given": "save",
             "save": "electives",
             "what": "courses",
@@ -188,6 +204,7 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "level3-courses",
             "what": "courses",
@@ -202,6 +219,7 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "level3-courses",
             "what": "courses",
@@ -282,8 +300,10 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "both",
         "both": [
           {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -303,6 +323,7 @@
             }
           },
           {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {

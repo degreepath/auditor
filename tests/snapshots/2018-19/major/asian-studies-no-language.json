@@ -5,14 +5,17 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Seminar",
+        "type": "requirement",
+        "name": "Seminar",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -23,6 +26,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -51,6 +55,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {

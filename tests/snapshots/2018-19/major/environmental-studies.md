@@ -1,7 +1,7 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Environmental Studies” major from St. Olaf College.
 
 # Environmental Studies
-For this major, you must take both Major and Areas of Emphasis.
+For this major, you must complete both the “Major” and “Areas of Emphasis” requirements.
 
 ## Major
 For this requirement, you must take ENVST 137, ENVST 237, and ENVST 399.
@@ -152,7 +152,7 @@ For this requirement, you must take one of the following courses:
 #### Economic Analysis
 > Note: The department strongly recommends taking ECON 121
 
-For this requirement, you must both take one of the following courses:
+For this requirement, you must both take ECON 242 and take one of the following courses:
 
 - ECON 121
 - ECON 110
@@ -165,7 +165,7 @@ For this requirement, you must both take one of the following courses:
 - ECON 117
 - ECON 118
 - ECON 119
-- ECON 120 and take ECON 242
+- ECON 120
 
 #### Environmental Political Policy and Institutions
 For this requirement, you must take one course from among ENVST 232, ES/PS 201, or ES/PS 276.

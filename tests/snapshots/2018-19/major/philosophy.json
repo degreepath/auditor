@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Core",
+        "type": "requirement",
+        "name": "Core",
         "optional": false
       },
       {
-        "requirement": "Level III Seminars",
+        "type": "requirement",
+        "name": "Level III Seminars",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -27,15 +31,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "PHIL 235"
           },
           {
+            "type": "course",
             "course": "PHIL 236"
           },
           {
+            "type": "course",
             "course": "PHIL 240"
           }
         ]
@@ -50,6 +58,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {
@@ -101,6 +110,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {

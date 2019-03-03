@@ -5,34 +5,42 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Core",
+        "type": "requirement",
+        "name": "Core",
         "optional": false
       },
       {
-        "requirement": "Musicology",
+        "type": "requirement",
+        "name": "Musicology",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       },
       {
-        "requirement": "Performance Studies",
+        "type": "requirement",
+        "name": "Performance Studies",
         "optional": false
       },
       {
-        "requirement": "Official Ensemble Participation",
+        "type": "requirement",
+        "name": "Official Ensemble Participation",
         "optional": false
       },
       {
-        "requirement": "Performances",
+        "type": "requirement",
+        "name": "Performances",
         "optional": false
       },
       {
-        "requirement": "Recital Attendance",
+        "type": "requirement",
+        "name": "Recital Attendance",
         "optional": false
       }
     ]
@@ -43,15 +51,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "MUSIC 114"
           },
           {
+            "type": "course",
             "course": "MUSIC 141"
           },
           {
+            "type": "course",
             "course": "MUSIC 161",
             "grade": "B-",
             "section": null,
@@ -61,6 +73,7 @@
             "can_match_used": null
           },
           {
+            "type": "course",
             "course": "MUSIC 162",
             "grade": "B-",
             "section": null,
@@ -70,11 +83,14 @@
             "can_match_used": null
           },
           {
+            "type": "either",
             "either": [
               {
+                "type": "course",
                 "course": "MUSIC 212"
               },
               {
+                "type": "course",
                 "course": "MUSIC 214"
               }
             ]
@@ -91,36 +107,47 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 1,
         "of": [
           {
+            "type": "course",
             "course": "MUSIC 340"
           },
           {
+            "type": "course",
             "course": "MUSIC 341"
           },
           {
+            "type": "course",
             "course": "MUSIC 342"
           },
           {
+            "type": "course",
             "course": "MUSIC 343"
           },
           {
+            "type": "course",
             "course": "MUSIC 344"
           },
           {
+            "type": "course",
             "course": "MUSIC 345"
           },
           {
+            "type": "course",
             "course": "MUSIC 346"
           },
           {
+            "type": "course",
             "course": "MUSIC 347"
           },
           {
+            "type": "course",
             "course": "MUSIC 348"
           },
           {
+            "type": "course",
             "course": "MUSIC 349"
           }
         ]
@@ -135,6 +162,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -184,102 +212,127 @@
       "message": "6 semesters; 4 in the same instrument/voice",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 1,
         "of": [
           {
-            "requirement": "Bassoon",
+            "type": "requirement",
+            "name": "Bassoon",
             "optional": false
           },
           {
-            "requirement": "Clarinet",
+            "type": "requirement",
+            "name": "Clarinet",
             "optional": false
           },
           {
-            "requirement": "Drumset",
+            "type": "requirement",
+            "name": "Drumset",
             "optional": false
           },
           {
-            "requirement": "Euphonium",
+            "type": "requirement",
+            "name": "Euphonium",
             "optional": false
           },
           {
-            "requirement": "Flute",
+            "type": "requirement",
+            "name": "Flute",
             "optional": false
           },
           {
-            "requirement": "French Horn",
+            "type": "requirement",
+            "name": "French Horn",
             "optional": false
           },
           {
-            "requirement": "Hardanger Fiddle",
+            "type": "requirement",
+            "name": "Hardanger Fiddle",
             "optional": false
           },
           {
-            "requirement": "Harp",
+            "type": "requirement",
+            "name": "Harp",
             "optional": false
           },
           {
-            "requirement": "Harpsichord",
+            "type": "requirement",
+            "name": "Harpsichord",
             "optional": false
           },
           {
-            "requirement": "Jazz Piano",
+            "type": "requirement",
+            "name": "Jazz Piano",
             "optional": false
           },
           {
-            "requirement": "Jazz Saxophone",
+            "type": "requirement",
+            "name": "Jazz Saxophone",
             "optional": false
           },
           {
-            "requirement": "Oboe",
+            "type": "requirement",
+            "name": "Oboe",
             "optional": false
           },
           {
-            "requirement": "Organ",
+            "type": "requirement",
+            "name": "Organ",
             "optional": false
           },
           {
-            "requirement": "Percussion",
+            "type": "requirement",
+            "name": "Percussion",
             "optional": false
           },
           {
-            "requirement": "Piano",
+            "type": "requirement",
+            "name": "Piano",
             "optional": false
           },
           {
-            "requirement": "Saxophone",
+            "type": "requirement",
+            "name": "Saxophone",
             "optional": false
           },
           {
-            "requirement": "String Bass",
+            "type": "requirement",
+            "name": "String Bass",
             "optional": false
           },
           {
-            "requirement": "Trombone",
+            "type": "requirement",
+            "name": "Trombone",
             "optional": false
           },
           {
-            "requirement": "Trumpet",
+            "type": "requirement",
+            "name": "Trumpet",
             "optional": false
           },
           {
-            "requirement": "Tuba",
+            "type": "requirement",
+            "name": "Tuba",
             "optional": false
           },
           {
-            "requirement": "Viola",
+            "type": "requirement",
+            "name": "Viola",
             "optional": false
           },
           {
-            "requirement": "Violin",
+            "type": "requirement",
+            "name": "Violin",
             "optional": false
           },
           {
-            "requirement": "Violoncello",
+            "type": "requirement",
+            "name": "Violoncello",
             "optional": false
           },
           {
-            "requirement": "Voice",
+            "type": "requirement",
+            "name": "Voice",
             "optional": false
           }
         ]
@@ -293,16 +346,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -324,6 +372,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -352,6 +401,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -387,16 +437,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -418,6 +463,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -446,6 +492,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -481,16 +528,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -512,6 +554,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -540,6 +583,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -575,16 +619,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -606,6 +645,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -634,6 +674,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -669,16 +710,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -700,6 +736,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -728,6 +765,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -763,16 +801,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -794,6 +827,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -822,6 +856,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -857,16 +892,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -888,6 +918,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -916,6 +947,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -951,16 +983,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -982,6 +1009,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1010,6 +1038,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1045,16 +1074,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1076,6 +1100,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1104,6 +1129,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1139,16 +1165,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1170,6 +1191,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1198,6 +1220,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1233,16 +1256,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1264,6 +1282,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1292,6 +1311,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1327,16 +1347,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1358,6 +1373,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1386,6 +1402,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1421,16 +1438,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1452,6 +1464,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1480,6 +1493,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1515,16 +1529,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1546,6 +1555,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1574,6 +1584,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1609,16 +1620,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1640,6 +1646,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1668,6 +1675,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1703,16 +1711,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1734,6 +1737,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1762,6 +1766,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1797,16 +1802,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1828,6 +1828,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1856,6 +1857,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1891,16 +1893,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -1922,6 +1919,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1950,6 +1948,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -1985,16 +1984,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -2016,6 +2010,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -2044,6 +2039,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -2079,16 +2075,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -2110,6 +2101,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -2138,6 +2130,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -2173,16 +2166,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -2204,6 +2192,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -2232,6 +2221,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -2267,16 +2257,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -2298,6 +2283,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -2326,6 +2312,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -2361,16 +2348,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -2392,6 +2374,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -2420,6 +2403,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -2455,16 +2439,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -2486,6 +2465,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -2514,6 +2494,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -2549,16 +2530,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Lessons",
-                "optional": false
-              },
-              {
-                "requirement": "Other Lessons",
-                "optional": false
-              }
+              "Lessons",
+              "Other Lessons"
             ],
             "what": "terms",
             "where": null,
@@ -2580,6 +2556,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -2608,6 +2585,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "terms",
                 "where": {
@@ -2645,6 +2623,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "terms",
         "where": {
@@ -2673,6 +2652,7 @@
       "message": "Two solo performances on a St. Olaf Student Recital.",
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "performances",
         "what": "performances",
         "where": {
@@ -2705,6 +2685,7 @@
       "message": "You must attend 10 recitals per semester on campus, with a minimum of 60 overall.",
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "attendances",
         "what": "attendances",
         "where": null,
@@ -2732,22 +2713,27 @@
         "message": null,
         "department_audited": false,
         "result": {
+          "type": "count-of",
           "count": "all",
           "of": [
             {
-              "requirement": "Courses",
+              "type": "requirement",
+              "name": "Courses",
               "optional": false
             },
             {
-              "requirement": "Lessons",
+              "type": "requirement",
+              "name": "Lessons",
               "optional": false
             },
             {
-              "requirement": "Performances",
+              "type": "requirement",
+              "name": "Performances",
               "optional": false
             },
             {
-              "requirement": "Portfolio",
+              "type": "requirement",
+              "name": "Portfolio",
               "optional": false
             }
           ]
@@ -2761,12 +2747,15 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": "all",
               "of": [
                 {
+                  "type": "course",
                   "course": "MUSIC 225"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 324"
                 }
               ]
@@ -2781,6 +2770,7 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "given",
               "given": "these-courses",
               "courses": [
                 {
@@ -2809,8 +2799,10 @@
             "message": "2 composition performances, at least 1 in junior or senior year",
             "department_audited": false,
             "result": {
+              "type": "both",
               "both": [
                 {
+                  "type": "given",
                   "given": "performances",
                   "what": "performances",
                   "where": {
@@ -2834,6 +2826,7 @@
                   }
                 },
                 {
+                  "type": "given",
                   "given": "performances",
                   "what": "performances",
                   "where": {
@@ -2890,18 +2883,22 @@
         "message": null,
         "department_audited": false,
         "result": {
+          "type": "count-of",
           "count": "all",
           "of": [
             {
-              "requirement": "Courses",
+              "type": "requirement",
+              "name": "Courses",
               "optional": false
             },
             {
-              "requirement": "More Courses",
+              "type": "requirement",
+              "name": "More Courses",
               "optional": false
             },
             {
-              "requirement": "Portfolio",
+              "type": "requirement",
+              "name": "Portfolio",
               "optional": false
             }
           ]
@@ -2915,36 +2912,47 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": 2,
               "of": [
                 {
+                  "type": "course",
                   "course": "MUSIC 340"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 341"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 342"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 343"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 344"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 345"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 346"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 347"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 348"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 349"
                 }
               ]
@@ -2959,45 +2967,59 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": 1,
               "of": [
                 {
+                  "type": "course",
                   "course": "MUSIC 312"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 313"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 314"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 340"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 341"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 342"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 343"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 344"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 345"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 346"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 347"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 348"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 349"
                 }
               ]
@@ -3024,14 +3046,17 @@
         "message": null,
         "department_audited": false,
         "result": {
+          "type": "count-of",
           "count": "all",
           "of": [
             {
-              "requirement": "Courses",
+              "type": "requirement",
+              "name": "Courses",
               "optional": false
             },
             {
-              "requirement": "Portfolio",
+              "type": "requirement",
+              "name": "Portfolio",
               "optional": false
             }
           ]
@@ -3045,15 +3070,19 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": "all",
               "of": [
                 {
+                  "type": "course",
                   "course": "MUSIC 312"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 313"
                 },
                 {
+                  "type": "course",
                   "course": "MUSIC 314"
                 }
               ]

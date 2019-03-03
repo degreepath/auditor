@@ -5,72 +5,61 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Research Methods",
+            "type": "requirement",
+            "name": "Research Methods",
             "optional": false
           },
           {
-            "requirement": "American Politics and Public Policy",
+            "type": "requirement",
+            "name": "American Politics and Public Policy",
             "optional": false
           },
           {
-            "requirement": "Comparative Politics",
+            "type": "requirement",
+            "name": "Comparative Politics",
             "optional": false
           },
           {
-            "requirement": "International Relations",
+            "type": "requirement",
+            "name": "International Relations",
             "optional": false
           },
           {
-            "requirement": "Political Theory",
+            "type": "requirement",
+            "name": "Political Theory",
             "optional": false
           },
           {
-            "requirement": "Level III",
+            "type": "requirement",
+            "name": "Level III",
             "optional": false
           },
           {
-            "requirement": "Additional Courses",
-            "optional": true
+            "type": "requirement",
+            "name": "Additional Courses",
+            "optional": false
           }
         ]
       },
       {
+        "type": "given",
         "given": "these-requirements",
         "requirements": [
-          {
-            "requirement": "Research Methods",
-            "optional": false
-          },
-          {
-            "requirement": "American Politics and Public Policy",
-            "optional": false
-          },
-          {
-            "requirement": "Comparative Politics",
-            "optional": false
-          },
-          {
-            "requirement": "International Relations",
-            "optional": false
-          },
-          {
-            "requirement": "Political Theory",
-            "optional": false
-          },
-          {
-            "requirement": "Level III",
-            "optional": false
-          },
-          {
-            "requirement": "Additional Courses",
-            "optional": false
-          }
+          "Research Methods",
+          "American Politics and Public Policy",
+          "Comparative Politics",
+          "International Relations",
+          "Political Theory",
+          "Level III",
+          "Additional Courses"
         ],
         "what": "courses",
         "where": null,
@@ -91,6 +80,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "PSCI 220"
       },
       "contract": false,
@@ -103,6 +93,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -131,6 +122,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -159,6 +151,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -187,6 +180,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -215,6 +209,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -243,14 +238,17 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": 1,
+        "type": "count-of",
+        "count": 0,
         "of": [
           {
-            "requirement": "Statistics",
+            "type": "requirement",
+            "name": "Statistics",
             "optional": false
           },
           {
-            "requirement": "World Langauge",
+            "type": "requirement",
+            "name": "World Langauge",
             "optional": false
           }
         ]
@@ -264,6 +262,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -292,13 +291,16 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "either",
             "either": [
               {
-                "requirement": "French, German, Spanish",
+                "type": "requirement",
+                "name": "French, German, Spanish",
                 "optional": false
               },
               {
-                "requirement": "Chinese, Greek, Latin, Japanese, Norwegian, Russian",
+                "type": "requirement",
+                "name": "Chinese, Greek, Latin, Japanese, Norwegian, Russian",
                 "optional": false
               }
             ]
@@ -312,6 +314,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "courses",
                 "where": {
@@ -353,6 +356,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "courses",
                 "what": "courses",
                 "where": {

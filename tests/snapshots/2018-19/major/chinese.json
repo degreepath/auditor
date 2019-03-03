@@ -5,23 +5,28 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Core Language",
+        "type": "requirement",
+        "name": "Core Language",
         "optional": false
       },
       {
-        "requirement": "Upper-Level Language",
+        "type": "requirement",
+        "name": "Upper-Level Language",
         "optional": false
       },
       {
-        "requirement": "Language and Culture",
+        "type": "requirement",
+        "name": "Language and Culture",
         "optional": false
       },
       {
-        "requirement": "FLAC",
-        "optional": true
+        "type": "requirement",
+        "name": "FLAC",
+        "optional": false
       }
     ]
   },
@@ -31,18 +36,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "CHIN 231"
           },
           {
+            "type": "course",
             "course": "CHIN 232"
           },
           {
+            "type": "course",
             "course": "CHIN 301"
           },
           {
+            "type": "course",
             "course": "CHIN 302"
           }
         ]
@@ -57,15 +67,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
+            "type": "course",
             "course": "CHIN 320"
           },
           {
+            "type": "course",
             "course": "CHIN 351"
           },
           {
+            "type": "course",
             "course": "CHIN 360"
           }
         ]
@@ -80,17 +94,21 @@
       "message": "The Asian Conversation sequence (ASIAN 210, ASIAN 215 or ASIAN 216, ASIAN 220) will count for no more than two courses.\nOne of these courses may be an Independent Study (capstone project) or the Asian Studies senior seminars (ASIAN 397 and ASIAN 399).\n",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "China-focused",
+            "type": "requirement",
+            "name": "China-focused",
             "optional": false
           },
           {
-            "requirement": "Comparative",
+            "type": "requirement",
+            "name": "Comparative",
             "optional": false
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Allowed Courses",
             "what": "courses",
@@ -105,6 +123,7 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Allowed Courses",
             "what": "courses",
@@ -133,14 +152,8 @@
           "name": "Allowed Courses",
           "given": "these-requirements",
           "requirements": [
-            {
-              "requirement": "China-focused",
-              "optional": false
-            },
-            {
-              "requirement": "Comparative",
-              "optional": false
-            }
+            "China-focused",
+            "Comparative"
           ],
           "what": "courses",
           "limit": [
@@ -165,6 +178,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -193,6 +207,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -243,34 +258,6 @@
           "requirements": []
         }
       ]
-    },
-    {
-      "name": "FLAC",
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "given": "courses",
-        "what": "courses",
-        "where": {
-          "attribute": {
-            "Single": {
-              "EqualTo": "china_flac"
-            }
-          }
-        },
-        "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
-          }
-        }
-      },
-      "contract": false,
-      "registrar_audited": false,
-      "save": [],
-      "requirements": []
     }
   ],
   "attributes": {

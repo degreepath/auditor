@@ -5,80 +5,38 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
-    "both": [
+    "type": "count-of",
+    "count": "all",
+    "of": [
       {
-        "count": "all",
-        "of": [
-          {
-            "requirement": "Basics",
-            "optional": false
-          },
-          {
-            "requirement": "Transitions",
-            "optional": false
-          },
-          {
-            "requirement": "Perspectives",
-            "optional": false
-          },
-          {
-            "requirement": "Interdisciplinary",
-            "optional": true
-          },
-          {
-            "requirement": "Sequence",
-            "optional": false
-          },
-          {
-            "requirement": "Level III",
-            "optional": false
-          }
-        ]
+        "type": "requirement",
+        "name": "Basics",
+        "optional": false
       },
       {
-        "given": "these-requirements",
-        "requirements": [
-          {
-            "requirement": "Basics",
-            "optional": false
-          },
-          {
-            "requirement": "Transitions",
-            "optional": false
-          },
-          {
-            "requirement": "Perspectives",
-            "optional": false
-          },
-          {
-            "requirement": "Interdisciplinary",
-            "optional": false
-          },
-          {
-            "requirement": "Sequence",
-            "optional": false
-          },
-          {
-            "requirement": "Level III",
-            "optional": false
-          }
-        ],
-        "what": "courses",
-        "where": {
-          "institution": {
-            "Single": {
-              "EqualTo": "St. Olaf College"
-            }
-          }
-        },
-        "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 6
-          }
-        }
+        "type": "requirement",
+        "name": "Transitions",
+        "optional": false
+      },
+      {
+        "type": "requirement",
+        "name": "Perspectives",
+        "optional": false
+      },
+      {
+        "type": "requirement",
+        "name": "Interdisciplinary",
+        "optional": false
+      },
+      {
+        "type": "requirement",
+        "name": "Sequence",
+        "optional": false
+      },
+      {
+        "type": "requirement",
+        "name": "Level III",
+        "optional": false
       }
     ]
   },
@@ -88,22 +46,28 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "MATH 120"
           },
           {
+            "type": "either",
             "either": [
               {
+                "type": "course",
                 "course": "MATH 126"
               },
               {
+                "type": "course",
                 "course": "MATH 128"
               }
             ]
           },
           {
+            "type": "course",
             "course": "MATH 220"
           }
         ]
@@ -118,6 +82,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -146,22 +111,27 @@
       "message": "One course from each of three of the four perspectives.",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 3,
         "of": [
           {
-            "requirement": "Axiomatic/Algebraic (A)",
+            "type": "requirement",
+            "name": "Axiomatic/Algebraic (A)",
             "optional": false
           },
           {
-            "requirement": "Continuous/Analytic (C)",
+            "type": "requirement",
+            "name": "Continuous/Analytic (C)",
             "optional": false
           },
           {
-            "requirement": "Discrete/Combinatorial (D)",
+            "type": "requirement",
+            "name": "Discrete/Combinatorial (D)",
             "optional": false
           },
           {
-            "requirement": "Modeling/Computation (M)",
+            "type": "requirement",
+            "name": "Modeling/Computation (M)",
             "optional": false
           }
         ]
@@ -175,6 +145,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -203,6 +174,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -231,6 +203,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -259,6 +232,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
             "where": {
@@ -289,18 +263,22 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "count": "any",
+        "type": "count-of",
+        "count": 0,
         "of": [
           {
-            "requirement": "Chemistry",
+            "type": "requirement",
+            "name": "Chemistry",
             "optional": false
           },
           {
-            "requirement": "Economics",
+            "type": "requirement",
+            "name": "Economics",
             "optional": false
           },
           {
-            "requirement": "Physics",
+            "type": "requirement",
+            "name": "Physics",
             "optional": false
           }
         ]
@@ -314,11 +292,14 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "CHEM 371"
               },
               {
+                "type": "given",
                 "given": "areas",
                 "what": "areas",
                 "where": {
@@ -353,11 +334,14 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "ECON 385"
               },
               {
+                "type": "given",
                 "given": "areas",
                 "what": "areas",
                 "where": {
@@ -392,11 +376,14 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "PHYS 375"
               },
               {
+                "type": "given",
                 "given": "areas",
                 "what": "areas",
                 "where": {
@@ -433,6 +420,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
         "where": {
@@ -472,11 +460,14 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 1,
         "of": [
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 220",
                 "grade": null,
                 "section": null,
@@ -486,6 +477,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MATH 356",
                 "grade": null,
                 "section": null,
@@ -497,8 +489,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 220",
                 "grade": null,
                 "section": null,
@@ -508,6 +502,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MSCS 341",
                 "grade": null,
                 "section": null,
@@ -519,8 +514,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 224",
                 "grade": null,
                 "section": null,
@@ -530,6 +527,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MATH 348",
                 "grade": null,
                 "section": null,
@@ -541,8 +539,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 226",
                 "grade": null,
                 "section": null,
@@ -552,6 +552,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MATH 340",
                 "grade": null,
                 "section": null,
@@ -563,8 +564,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 230",
                 "grade": null,
                 "section": null,
@@ -574,6 +577,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MATH 330",
                 "grade": null,
                 "section": null,
@@ -585,8 +589,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 232",
                 "grade": null,
                 "section": null,
@@ -596,6 +602,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MATH 364",
                 "grade": null,
                 "section": null,
@@ -607,8 +614,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 244",
                 "grade": null,
                 "section": null,
@@ -618,6 +627,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MATH 344",
                 "grade": null,
                 "section": null,
@@ -629,8 +639,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 252",
                 "grade": null,
                 "section": null,
@@ -640,6 +652,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "MATH 352",
                 "grade": null,
                 "section": null,
@@ -651,8 +664,10 @@
             ]
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "MATH 262",
                 "grade": null,
                 "section": null,
@@ -662,6 +677,7 @@
                 "can_match_used": true
               },
               {
+                "type": "course",
                 "course": "STAT 322",
                 "grade": null,
                 "section": null,

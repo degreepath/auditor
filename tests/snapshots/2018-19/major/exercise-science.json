@@ -5,14 +5,17 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Core",
+        "type": "requirement",
+        "name": "Core",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -23,30 +26,39 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "BIO 143"
           },
           {
+            "type": "course",
             "course": "BIO 243"
           },
           {
+            "type": "course",
             "course": "NURS 110"
           },
           {
+            "type": "course",
             "course": "ESTH 255"
           },
           {
+            "type": "course",
             "course": "ESTH 374"
           },
           {
+            "type": "course",
             "course": "ESTH 375"
           },
           {
+            "type": "course",
             "course": "ESTH 390"
           },
           {
+            "type": "course",
             "course": "PSYCH 125"
           }
         ]
@@ -61,39 +73,51 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 2,
         "of": [
           {
+            "type": "course",
             "course": "BIO 247"
           },
           {
+            "type": "course",
             "course": "ESTH 295"
           },
           {
+            "type": "course",
             "course": "ESTH 373"
           },
           {
+            "type": "course",
             "course": "ESTH 376"
           },
           {
+            "type": "course",
             "course": "NEURO 239"
           },
           {
+            "type": "course",
             "course": "PSYCH 241"
           },
           {
+            "type": "course",
             "course": "PSYCH 247"
           },
           {
+            "type": "count-of",
             "count": 1,
             "of": [
               {
+                "type": "course",
                 "course": "STAT 110"
               },
               {
+                "type": "course",
                 "course": "STAT 212"
               },
               {
+                "type": "course",
                 "course": "STAT 214"
               }
             ]

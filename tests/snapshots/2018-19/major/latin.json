@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Language",
+        "type": "requirement",
+        "name": "Language",
         "optional": false
       },
       {
-        "requirement": "Classics",
+        "type": "requirement",
+        "name": "Classics",
         "optional": false
       },
       {
-        "requirement": "Ancient Roman History",
+        "type": "requirement",
+        "name": "Ancient Roman History",
         "optional": false
       }
     ]
@@ -27,42 +31,55 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 7,
         "of": [
           {
+            "type": "course",
             "course": "LATIN 111"
           },
           {
+            "type": "course",
             "course": "LATIN 112"
           },
           {
+            "type": "course",
             "course": "LATIN 231"
           },
           {
+            "type": "course",
             "course": "LATIN 235"
           },
           {
+            "type": "course",
             "course": "LATIN 252"
           },
           {
+            "type": "course",
             "course": "LATIN 370"
           },
           {
+            "type": "course",
             "course": "LATIN 371"
           },
           {
+            "type": "course",
             "course": "LATIN 372"
           },
           {
+            "type": "course",
             "course": "LATIN 373"
           },
           {
+            "type": "course",
             "course": "LATIN 374"
           },
           {
+            "type": "course",
             "course": "LATIN 375"
           },
           {
+            "type": "course",
             "course": "LATIN 377"
           }
         ]
@@ -77,36 +94,47 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 1,
         "of": [
           {
+            "type": "course",
             "course": "CLASS 121"
           },
           {
+            "type": "course",
             "course": "CLASS 123"
           },
           {
+            "type": "course",
             "course": "CLASS 126"
           },
           {
+            "type": "course",
             "course": "CLASS 129"
           },
           {
+            "type": "course",
             "course": "CLASS 241"
           },
           {
+            "type": "course",
             "course": "CLASS 243"
           },
           {
+            "type": "course",
             "course": "CLASS 244"
           },
           {
+            "type": "course",
             "course": "CLASS 251"
           },
           {
+            "type": "course",
             "course": "CLASS 253"
           },
           {
+            "type": "course",
             "course": "CLASS 396"
           }
         ]
@@ -121,9 +149,11 @@
       "message": "TODO find out what courses are considered \"ancient roman history\"",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 1,
         "of": [
           {
+            "type": "course",
             "course": "CLASS 111"
           }
         ]

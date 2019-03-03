@@ -5,26 +5,32 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Introductory Sequence",
+        "type": "requirement",
+        "name": "Introductory Sequence",
         "optional": false
       },
       {
-        "requirement": "Upper-Level Core",
+        "type": "requirement",
+        "name": "Upper-Level Core",
         "optional": false
       },
       {
-        "requirement": "Physics",
+        "type": "requirement",
+        "name": "Physics",
         "optional": false
       },
       {
-        "requirement": "Mathematics",
+        "type": "requirement",
+        "name": "Mathematics",
         "optional": false
       },
       {
-        "requirement": "Seminars",
+        "type": "requirement",
+        "name": "Seminars",
         "optional": false
       }
     ]
@@ -35,18 +41,22 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
-            "requirement": "Option A",
+            "type": "requirement",
+            "name": "Option A",
             "optional": false
           },
           {
-            "requirement": "Option B",
+            "type": "requirement",
+            "name": "Option B",
             "optional": false
           },
           {
-            "requirement": "Option C",
+            "type": "requirement",
+            "name": "Option C",
             "optional": false
           }
         ]
@@ -60,15 +70,19 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
+                "type": "course",
                 "course": "CHEM 121"
               },
               {
+                "type": "course",
                 "course": "CHEM 123"
               },
               {
+                "type": "course",
                 "course": "CHEM 125"
               }
             ]
@@ -83,12 +97,15 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
+                "type": "course",
                 "course": "CHEM 125"
               },
               {
+                "type": "course",
                 "course": "CHEM 126"
               }
             ]
@@ -103,15 +120,19 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
+                "type": "course",
                 "course": "CH/BI 125"
               },
               {
+                "type": "course",
                 "course": "CH/BI 126"
               },
               {
+                "type": "course",
                 "course": "CH/BI 227"
               }
             ]
@@ -128,22 +149,27 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Organic",
+            "type": "requirement",
+            "name": "Organic",
             "optional": false
           },
           {
-            "requirement": "Analytical",
+            "type": "requirement",
+            "name": "Analytical",
             "optional": false
           },
           {
-            "requirement": "Physical",
+            "type": "requirement",
+            "name": "Physical",
             "optional": false
           },
           {
-            "requirement": "Elective",
+            "type": "requirement",
+            "name": "Elective",
             "optional": false
           }
         ]
@@ -157,18 +183,23 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
+                "type": "course",
                 "course": "CHEM 247"
               },
               {
+                "type": "course",
                 "course": "CHEM 253"
               },
               {
+                "type": "course",
                 "course": "CHEM 248"
               },
               {
+                "type": "course",
                 "course": "CHEM 254"
               }
             ]
@@ -183,12 +214,15 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
+                "type": "course",
                 "course": "CHEM 255"
               },
               {
+                "type": "course",
                 "course": "CHEM 256"
               }
             ]
@@ -203,12 +237,15 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
+                "type": "course",
                 "course": "CHEM 357"
               },
               {
+                "type": "course",
                 "course": "CHEM 371"
               }
             ]
@@ -223,30 +260,39 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "CHEM 252"
               },
               {
+                "type": "course",
                 "course": "CHEM 280"
               },
               {
+                "type": "course",
                 "course": "CHEM 379"
               },
               {
+                "type": "course",
                 "course": "CHEM 382"
               },
               {
+                "type": "course",
                 "course": "CHEM 384"
               },
               {
+                "type": "course",
                 "course": "CHEM 386"
               },
               {
+                "type": "course",
                 "course": "CHEM 388"
               },
               {
+                "type": "course",
                 "course": "CHEM 391"
               }
             ]
@@ -263,11 +309,14 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "either",
         "either": [
           {
+            "type": "course",
             "course": "PHYS 125"
           },
           {
+            "type": "course",
             "course": "PHYS 232"
           }
         ]
@@ -282,11 +331,14 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "either",
         "either": [
           {
+            "type": "course",
             "course": "MATH 126"
           },
           {
+            "type": "course",
             "course": "MATH 128"
           }
         ]

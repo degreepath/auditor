@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2015-16",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Introduction",
+        "type": "requirement",
+        "name": "Introduction",
         "optional": false
       },
       {
-        "requirement": "Additional Courses",
+        "type": "requirement",
+        "name": "Additional Courses",
         "optional": false
       },
       {
-        "requirement": "Advanced Topics",
+        "type": "requirement",
+        "name": "Advanced Topics",
         "optional": false
       }
     ]
@@ -27,6 +31,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "WMGST 121"
       },
       "contract": false,
@@ -39,6 +44,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "WMGST 399"
       },
       "contract": false,
@@ -51,29 +57,31 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Theory and Methods",
+            "type": "requirement",
+            "name": "Theory and Methods",
             "optional": false
           },
           {
-            "requirement": "Gender in Historical Context",
+            "type": "requirement",
+            "name": "Gender in Historical Context",
             "optional": false
           },
           {
-            "requirement": "Gender in Global/Comparative/Diverse Contexts",
+            "type": "requirement",
+            "name": "Gender in Global/Comparative/Diverse Contexts",
             "optional": false
           },
           {
-            "requirement": "Electives",
-            "optional": true
-          },
-          {
-            "requirement": "Lived Experiences",
+            "type": "requirement",
+            "name": "Lived Experiences",
             "optional": false
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Taken Elective Courses",
             "what": "courses",
@@ -88,6 +96,7 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Taken Elective Courses",
             "what": "courses",
@@ -116,26 +125,11 @@
           "name": "Taken Elective Courses",
           "given": "these-requirements",
           "requirements": [
-            {
-              "requirement": "Theory and Methods",
-              "optional": false
-            },
-            {
-              "requirement": "Women and Gender in Historical Context",
-              "optional": false
-            },
-            {
-              "requirement": "Women and Gender in Global/Comparative/Diverse Contexts",
-              "optional": false
-            },
-            {
-              "requirement": "Electives",
-              "optional": false
-            },
-            {
-              "requirement": "Lived Experiences",
-              "optional": false
-            }
+            "Theory and Methods",
+            "Women and Gender in Historical Context",
+            "Women and Gender in Global/Comparative/Diverse Contexts",
+            "Electives",
+            "Lived Experiences"
           ],
           "what": "courses",
           "limit": null,
@@ -149,36 +143,47 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "AMST 100"
               },
               {
+                "type": "course",
                 "course": "ART 277"
               },
               {
+                "type": "course",
                 "course": "ENGL 242"
               },
               {
+                "type": "course",
                 "course": "ENGL 264"
               },
               {
+                "type": "course",
                 "course": "ENGL 340"
               },
               {
+                "type": "course",
                 "course": "FAMST 242"
               },
               {
+                "type": "course",
                 "course": "FAMST 253"
               },
               {
+                "type": "course",
                 "course": "PHIL 245"
               },
               {
+                "type": "course",
                 "course": "PSYCH 390"
               },
               {
+                "type": "course",
                 "course": "PSYCH 396",
                 "grade": null,
                 "section": null,
@@ -188,18 +193,23 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "REL 209"
               },
               {
+                "type": "course",
                 "course": "REL 344"
               },
               {
+                "type": "course",
                 "course": "SOAN 235"
               },
               {
+                "type": "course",
                 "course": "SOAN 246"
               },
               {
+                "type": "course",
                 "course": "SOAN 260"
               }
             ]
@@ -214,9 +224,11 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "FREN 372",
                 "grade": null,
                 "section": null,
@@ -226,24 +238,31 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "HIST 121"
               },
               {
+                "type": "course",
                 "course": "HIST 191"
               },
               {
+                "type": "course",
                 "course": "HIST 224"
               },
               {
+                "type": "course",
                 "course": "HIST 231"
               },
               {
+                "type": "course",
                 "course": "HIST 237"
               },
               {
+                "type": "course",
                 "course": "HIST 239"
               },
               {
+                "type": "course",
                 "course": "HIST 320",
                 "grade": null,
                 "section": null,
@@ -253,30 +272,39 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "PHIL 245"
               },
               {
+                "type": "course",
                 "course": "PSYCH 223"
               },
               {
+                "type": "course",
                 "course": "PSYCH 241"
               },
               {
+                "type": "course",
                 "course": "REL 209"
               },
               {
+                "type": "course",
                 "course": "REL 264"
               },
               {
+                "type": "course",
                 "course": "SOAN 128"
               },
               {
+                "type": "course",
                 "course": "SOAN 235"
               },
               {
+                "type": "course",
                 "course": "SOAN 261"
               },
               {
+                "type": "course",
                 "course": "SPAN 250"
               }
             ]
@@ -291,15 +319,19 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "DANCE 246"
               },
               {
+                "type": "course",
                 "course": "ENGL 246"
               },
               {
+                "type": "course",
                 "course": "ENGL 340",
                 "grade": null,
                 "section": null,
@@ -309,6 +341,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "ENGL 340",
                 "grade": null,
                 "section": null,
@@ -318,6 +351,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "ENGL 340",
                 "grade": null,
                 "section": null,
@@ -327,6 +361,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "ENGL 340",
                 "grade": null,
                 "section": null,
@@ -336,6 +371,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "ENGL 340",
                 "grade": null,
                 "section": null,
@@ -345,6 +381,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "ENGL 340",
                 "grade": null,
                 "section": null,
@@ -354,6 +391,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "ENGL 340",
                 "grade": null,
                 "section": null,
@@ -363,18 +401,23 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "FAMST 253"
               },
               {
+                "type": "course",
                 "course": "HIST 115"
               },
               {
+                "type": "course",
                 "course": "HIST 122"
               },
               {
+                "type": "course",
                 "course": "HIST 182"
               },
               {
+                "type": "course",
                 "course": "HIST 189",
                 "grade": null,
                 "section": null,
@@ -384,6 +427,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "HIST 189",
                 "grade": null,
                 "section": null,
@@ -393,9 +437,11 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "HIST 272"
               },
               {
+                "type": "course",
                 "course": "HIST 320",
                 "grade": null,
                 "section": null,
@@ -405,6 +451,7 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "HIST 320",
                 "grade": null,
                 "section": null,
@@ -414,39 +461,16 @@
                 "can_match_used": null
               },
               {
+                "type": "course",
                 "course": "REL 209"
               },
               {
+                "type": "course",
                 "course": "REL 264"
               },
               {
+                "type": "course",
                 "course": "SOAN 246"
-              }
-            ]
-          },
-          "contract": false,
-          "registrar_audited": false,
-          "save": [],
-          "requirements": []
-        },
-        {
-          "name": "Electives",
-          "message": null,
-          "department_audited": false,
-          "result": {
-            "count": "any",
-            "of": [
-              {
-                "course": "BIO 124"
-              },
-              {
-                "course": "NORW 282"
-              },
-              {
-                "course": "NURS 386"
-              },
-              {
-                "course": "PSYCH 350"
               }
             ]
           },
