@@ -42,7 +42,10 @@ For this section, you must do all of the following:
 For this requirement, you must take at least one course with the “japan_focused_on_japan” attribute.
 
 ### Comparative
-For this requirement, you must take at least one course with the “japan_comparative_asia” attribute at most 2 with the “japan_asiancon” attribute and at most 1 with either the japan_independent_study or japan_seminar attribute.
+For this requirement, you must take at least one course with the “japan_comparative_asia” attribute, subject to the following restrictions:
+
+- At most 2 courses may be taken with the “japan_asiancon” attribute
+- At most 1 course may be taken with either the japan_independent_study or japan_seminar attribute
 
 # Custom Attributes
 

@@ -37,7 +37,9 @@ For this requirement, you must take one of the following courses:
 
 
 ## Electives
-For this requirement, you must take at least four courses within the MUSIC subject code, at either the 200 or 300 level at most 3 at the 200 level.
+For this requirement, you must take at least four courses at either the 200 or 300 level, within the MUSIC subject code, subject to the following restrictions:
+
+- At most 3 courses may be taken at the 200 level
 
 
 ## Performance Studies

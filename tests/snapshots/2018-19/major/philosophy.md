@@ -8,7 +8,9 @@ For this requirement, you must take PHIL 235, PHIL 236, and PHIL 240.
 
 
 ## Level III Seminars
-For this requirement, you must take at least three courses from among PHIL 371, PHIL 372, PHIL 373, PHIL 374, and PHIL 375.
+For this requirement, you must take at least three courses from among PHIL 371, PHIL 372, PHIL 373, PHIL 374, and PHIL 375, subject to the following restrictions:
+
+- At most 0 courses may be taken s/u
 
 
 ## Electives

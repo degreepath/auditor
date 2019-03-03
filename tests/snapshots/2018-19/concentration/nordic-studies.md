@@ -15,7 +15,10 @@ For this requirement, you must take one of the following courses:
 ## Electives
 > Note: Up to three courses from study abroad programs such as DIS, HECUA: The New Norway, and university direct-enroll programs may be counted toward the Nordic studies concentration
 
-For this requirement, you must take at least five courses with the “nordic_elective” attribute at most 3 with the “nordic_focus_norway” attribute and at most 2 within the NORW subject code.
+For this requirement, you must take at least five courses with the “nordic_elective” attribute, subject to the following restrictions:
+
+- At most 3 courses may be taken with the “nordic_focus_norway” attribute
+- At most 2 courses may be taken within the NORW subject code
 
 # Custom Attributes
 

@@ -66,4 +66,8 @@ For this requirement, you must take at least four courses from among the followi
 - SOAN 268
 - AS/SA 239
 
+These courses must fit within the following restrictions:
+
+- At most 1 course may be taken s/u
+
 

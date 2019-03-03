@@ -83,6 +83,11 @@ For this requirement, you must take at least three courses from among the follow
 - CHEM 391 (Fall 2000)
 - ENVST 391 (Fall 2000)
 
+These courses must fit within the following restrictions:
+
+- At most 1 course may be taken at the 200 level, outside of the ENVST subject code
+- At most 2 courses may be taken at the not 300 level
+
 ### Social Science
 For this section, you must do all of the following:
 
@@ -260,5 +265,9 @@ For this requirement, you must take at least six courses from among the followin
 - REL 278
 - ENVST 381
 - DEPT 301 (Fall 2000)
+
+These courses must fit within the following restrictions:
+
+- At most 5 courses may be taken at the 200 level
 
 

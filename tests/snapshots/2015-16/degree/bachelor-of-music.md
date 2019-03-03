@@ -39,7 +39,7 @@ For this requirement, you must maintain an average GPA at or above 2.00 from cou
 For this requirement, you must have enough courses taken at or above the 200 level to obtain at least 18 credits.
 
 ### Graded Courses
-For this requirement, you must have enough courses taken as _graded_ courses to obtain at least 24 credits.
+For this requirement, you must have enough courses taken _graded_ to obtain at least 24 credits.
 
 ### Major
 For this requirement, you must declare at least one major.
