@@ -5,7 +5,7 @@ use crate::rules::{course, req_ref};
 use crate::traits::print::Print;
 use crate::value;
 use insta::{assert_ron_snapshot_matches, assert_snapshot_matches};
-use pretty_assertions::{assert_eq, assert_ne};
+use pretty_assertions::assert_eq;
 use value::{
 	TaggedValue::{EqualTo, GreaterThanEqualTo},
 	WrappedValue::Single,

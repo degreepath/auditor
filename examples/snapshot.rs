@@ -70,7 +70,7 @@ fn run() -> Result<()> {
 		match convert_file(&input) {
 			Ok(_) => {
 				// eprintln!("{} [completed]", input.0)
-			},
+			}
 			Err(err) => eprintln!("{} [error]: {}", input.0, err),
 		}
 	});
