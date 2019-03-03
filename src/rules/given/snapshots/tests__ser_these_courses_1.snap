@@ -1,5 +1,5 @@
 ---
-created: "2019-02-27T18:15:38.823638Z"
+created: "2019-03-03T15:28:01.844503Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
@@ -16,10 +16,10 @@ expression: data
   ],
   "repeats": first,
   "what": courses,
+  "where": Some(CourseClause(
+  )),
   "limit": Some([
   ]),
-  "where": Some({
-  }),
   "do": Action(
     lhs: Count,
     op: Some(GreaterThan),

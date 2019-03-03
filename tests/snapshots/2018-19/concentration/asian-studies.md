@@ -4,7 +4,9 @@
 For this concentration, you must complete the “Electives” requirement.
 
 ## Electives
-For this requirement, you must take at least six courses with the “asian_elective” attribute.
+For this requirement, you must take at least six courses with the “asian_elective” attribute, subject to the following restrictions:
+
+- At most 4 courses may be taken not at St. Olaf College
 
 # Custom Attributes
 

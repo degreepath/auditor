@@ -25,7 +25,6 @@ For this section, you must do all of the following:
 - complete the “Theory and Methods” requirement
 - complete the “Gender in Historical Context” requirement
 - complete the “Gender in Global/Comparative/Diverse Contexts” requirement
-- complete the “Electives” (optional) requirement
 - complete the “Lived Experiences” requirement
 - in the subset “Taken Elective Courses”, there must be at least seven courses
 - in the subset “Taken Elective Courses”, there must be at least one course taken at the 300 level
@@ -94,14 +93,6 @@ For this requirement, you must take one of the following courses:
 - REL 209
 - REL 264
 - SOAN 246
-
-### Electives
-For this requirement, you must take one of the following courses:
-
-- BIO 124
-- NORW 282
-- NURS 386
-- PSYCH 350
 
 ### Lived Experiences
 > Note: The major says, "One course must focus on women's lived experiences."

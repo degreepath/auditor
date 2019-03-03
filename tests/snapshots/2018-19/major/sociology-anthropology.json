@@ -5,34 +5,42 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "History of Sociological Theory",
+        "type": "requirement",
+        "name": "History of Sociological Theory",
         "optional": false
       },
       {
-        "requirement": "Anthropological Theory",
+        "type": "requirement",
+        "name": "Anthropological Theory",
         "optional": false
       },
       {
-        "requirement": "Foundations of Social Science Research",
+        "type": "requirement",
+        "name": "Foundations of Social Science Research",
         "optional": false
       },
       {
-        "requirement": "Ethnographic Research Methods",
+        "type": "requirement",
+        "name": "Ethnographic Research Methods",
         "optional": false
       },
       {
-        "requirement": "Senior Seminar",
+        "type": "requirement",
+        "name": "Senior Seminar",
         "optional": false
       },
       {
-        "requirement": "Principles of Statistics",
+        "type": "requirement",
+        "name": "Principles of Statistics",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -43,6 +51,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "SOAN 291"
       },
       "contract": false,
@@ -55,6 +64,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "SOAN 292"
       },
       "contract": false,
@@ -67,6 +77,7 @@
       "message": "STAT 110 must be taken before SOAN 371.",
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "SOAN 371"
       },
       "contract": false,
@@ -79,6 +90,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "SOAN 373"
       },
       "contract": false,
@@ -91,6 +103,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "SOAN 399"
       },
       "contract": false,
@@ -103,6 +116,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "STAT 110"
       },
       "contract": false,
@@ -115,6 +129,7 @@
       "message": "Students are permitted to take one of the four elective courses, but not a core course, S/U.",
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {
@@ -189,21 +204,19 @@
         ],
         "repeats": "first",
         "what": "courses",
+        "where": null,
         "limit": [
           {
+            "at_most": 1,
             "where": {
-              "su": {
+              "graded": {
                 "Single": {
-                  "EqualTo": {
-                    "Bool": true
-                  }
+                  "EqualTo": "su"
                 }
               }
-            },
-            "at_most": 1
+            }
           }
         ],
-        "where": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

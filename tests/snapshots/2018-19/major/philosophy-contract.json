@@ -5,22 +5,27 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Core",
+        "type": "requirement",
+        "name": "Core",
         "optional": false
       },
       {
-        "requirement": "Level III Seminars",
+        "type": "requirement",
+        "name": "Level III Seminars",
         "optional": false
       },
       {
-        "requirement": "Complementary Courses",
+        "type": "requirement",
+        "name": "Complementary Courses",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -31,15 +36,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "PHIL 235"
           },
           {
+            "type": "course",
             "course": "PHIL 236"
           },
           {
+            "type": "course",
             "course": "PHIL 240"
           }
         ]
@@ -54,6 +63,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {
@@ -74,21 +84,19 @@
         ],
         "repeats": "first",
         "what": "courses",
+        "where": null,
         "limit": [
           {
+            "at_most": 0,
             "where": {
-              "s/u": {
+              "graded": {
                 "Single": {
-                  "EqualTo": {
-                    "Bool": true
-                  }
+                  "EqualTo": "su"
                 }
               }
-            },
-            "at_most": 0
+            }
           }
         ],
-        "where": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -107,6 +115,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {
@@ -196,8 +205,8 @@
         ],
         "repeats": "first",
         "what": "courses",
-        "limit": null,
         "where": null,
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

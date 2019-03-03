@@ -5,26 +5,32 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Intro",
+        "type": "requirement",
+        "name": "Intro",
         "optional": false
       },
       {
-        "requirement": "Methods",
+        "type": "requirement",
+        "name": "Methods",
         "optional": false
       },
       {
-        "requirement": "Studio Art",
+        "type": "requirement",
+        "name": "Studio Art",
         "optional": false
       },
       {
-        "requirement": "Distribution",
+        "type": "requirement",
+        "name": "Distribution",
         "optional": false
       },
       {
-        "requirement": "Lasting Legacy",
+        "type": "requirement",
+        "name": "Lasting Legacy",
         "optional": false
       }
     ]
@@ -35,6 +41,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "ART 153"
       },
       "contract": false,
@@ -47,6 +54,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "ART 350"
       },
       "contract": false,
@@ -59,18 +67,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "art_studio_art"
-              }
+              "EqualTo": "art_studio_art"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -89,51 +96,46 @@
       "message": "At least two courses must focus on Asian, African, Indigenous American, or Near Eastern/Islamic art; at least two courses must focus on American or European art; one course must cover art created before 1700 CE; one must cover art created after 1700 CE.",
       "department_audited": false,
       "result": {
+        "type": "both",
         "both": [
           {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
-                "requirement": "Asian, African, Indigenous American, or Near Eastern/Islamic Art",
+                "type": "requirement",
+                "name": "Asian, African, Indigenous American, or Near Eastern/Islamic Art",
                 "optional": false
               },
               {
-                "requirement": "European and American Art",
+                "type": "requirement",
+                "name": "European and American Art",
                 "optional": false
               },
               {
-                "requirement": "Art created before 1700 CE",
+                "type": "requirement",
+                "name": "Art created before 1700 CE",
                 "optional": false
               },
               {
-                "requirement": "Art created after 1700 CE",
+                "type": "requirement",
+                "name": "Art created after 1700 CE",
                 "optional": false
               }
             ]
           },
           {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Asian, African, Indigenous American, or Near Eastern/Islamic Art",
-                "optional": false
-              },
-              {
-                "requirement": "European and American Art",
-                "optional": false
-              },
-              {
-                "requirement": "Art created before 1700 CE",
-                "optional": false
-              },
-              {
-                "requirement": "Art created after 1700 CE",
-                "optional": false
-              }
+              "Asian, African, Indigenous American, or Near Eastern/Islamic Art",
+              "European and American Art",
+              "Art created before 1700 CE",
+              "Art created after 1700 CE"
             ],
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -153,35 +155,28 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Or": [
                   {
-                    "EqualTo": {
-                      "String": "art_locale_asian"
-                    }
+                    "EqualTo": "art_locale_asian"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_african"
-                    }
+                    "EqualTo": "art_locale_african"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_indigenous_american"
-                    }
+                    "EqualTo": "art_locale_indigenous_american"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_near_eastern"
-                    }
+                    "EqualTo": "art_locale_near_eastern"
                   }
                 ]
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -200,25 +195,22 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Or": [
                   {
-                    "EqualTo": {
-                      "String": "art_locale_european"
-                    }
+                    "EqualTo": "art_locale_european"
                   },
                   {
-                    "EqualTo": {
-                      "String": "art_locale_american"
-                    }
+                    "EqualTo": "art_locale_american"
                   }
                 ]
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -237,18 +229,17 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "art_period_pre1700"
-                  }
+                  "EqualTo": "art_period_pre1700"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -267,18 +258,17 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "art_period_post1700"
-                  }
+                  "EqualTo": "art_period_post1700"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

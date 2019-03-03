@@ -1,4 +1,4 @@
-use crate::rules::{course, req_ref};
+use crate::rules::course;
 use crate::traits::Util;
 use crate::util;
 use crate::{action, filter, limit};
@@ -13,10 +13,6 @@ mod tests;
 pub struct Rule {
 	#[serde(flatten)]
 	pub given: Given,
-	#[serde(default)]
-	pub limit: Option<Vec<limit::Limiter>>,
-	#[serde(rename = "where", default, deserialize_with = "filter::deserialize_with")]
-	pub filter: Option<filter::Clause>,
 	#[serde(rename = "do", deserialize_with = "util::string_or_struct_parseerror")]
 	pub action: action::Action,
 }
@@ -36,29 +32,51 @@ pub enum Given {
 	#[serde(rename = "courses")]
 	AllCourses {
 		what: GivenCoursesWhatOptions,
+		#[serde(rename = "where", default)]
+		filter: Option<filter::CourseClause>,
+		#[serde(default)]
+		limit: Option<Vec<limit::Limiter>>,
 	},
 	TheseCourses {
 		courses: Vec<CourseRule>,
 		repeats: RepeatMode,
 		what: GivenCoursesWhatOptions,
+		#[serde(rename = "where", default)]
+		filter: Option<filter::CourseClause>,
+		#[serde(default)]
+		limit: Option<Vec<limit::Limiter>>,
 	},
 	TheseRequirements {
-		requirements: Vec<req_ref::Rule>,
+		requirements: Vec<String>,
 		what: GivenCoursesWhatOptions,
+		#[serde(rename = "where", default)]
+		filter: Option<filter::CourseClause>,
+		#[serde(default)]
+		limit: Option<Vec<limit::Limiter>>,
 	},
 	Areas {
 		what: GivenAreasWhatOptions,
+		#[serde(rename = "where", default)]
+		filter: Option<filter::AreaClause>,
 	},
 	#[serde(rename = "save")]
 	NamedVariable {
 		save: String,
 		what: GivenCoursesWhatOptions,
+		#[serde(rename = "where", default)]
+		filter: Option<filter::CourseClause>,
+		#[serde(default)]
+		limit: Option<Vec<limit::Limiter>>,
 	},
 	Performances {
 		what: GivenPerformancesWhatOptions,
+		#[serde(rename = "where", default)]
+		filter: Option<filter::PerformanceClause>,
 	},
 	Attendances {
 		what: GivenAttendancesWhatOptions,
+		#[serde(rename = "where", default)]
+		filter: Option<filter::AttendanceClause>,
 	},
 }
 
@@ -73,7 +91,7 @@ pub enum GivenForSaveBlock {
 		what: GivenCoursesWhatOptions,
 	},
 	TheseRequirements {
-		requirements: Vec<req_ref::Rule>,
+		requirements: Vec<String>,
 		what: GivenCoursesWhatOptions,
 	},
 	#[serde(rename = "save")]

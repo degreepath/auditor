@@ -5,13 +5,18 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "course": "Major"
+        "type": "requirement",
+        "name": "Major",
+        "optional": false
       },
       {
-        "course": "Areas of Emphasis"
+        "type": "requirement",
+        "name": "Areas of Emphasis",
+        "optional": false
       }
     ]
   },
@@ -21,15 +26,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "ENVST 137"
           },
           {
+            "type": "course",
             "course": "ENVST 237"
           },
           {
+            "type": "course",
             "course": "ENVST 399"
           }
         ]
@@ -44,18 +53,22 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
-            "requirement": "Natural Science",
+            "type": "requirement",
+            "name": "Natural Science",
             "optional": false
           },
           {
-            "requirement": "Social Science",
+            "type": "requirement",
+            "name": "Social Science",
             "optional": false
           },
           {
-            "requirement": "Arts and Humanities",
+            "type": "requirement",
+            "name": "Arts and Humanities",
             "optional": false
           }
         ]
@@ -69,63 +82,53 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
-                "requirement": "Social Sciences for Natural Science",
+                "type": "requirement",
+                "name": "Social Sciences for Natural Science",
                 "optional": false
               },
               {
-                "requirement": "Arts and Humanities for Natural Science",
+                "type": "requirement",
+                "name": "Arts and Humanities for Natural Science",
                 "optional": false
               },
               {
-                "requirement": "Statistics, Modeling, and Mapping",
+                "type": "requirement",
+                "name": "Statistics, Modeling, and Mapping",
                 "optional": false
               },
               {
-                "requirement": "Intermediate Chemistry",
+                "type": "requirement",
+                "name": "Intermediate Chemistry",
                 "optional": false
               },
               {
-                "requirement": "Intermediate Ecology",
+                "type": "requirement",
+                "name": "Intermediate Ecology",
                 "optional": false
               },
               {
-                "requirement": "Environmental Science",
+                "type": "requirement",
+                "name": "Environmental Science",
                 "optional": false
               },
               {
+                "type": "given",
                 "given": "these-requirements",
                 "requirements": [
-                  {
-                    "requirement": "Social Sciences for Natural Science",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Arts and Humanities for Natural Science",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Statistics, Modeling, and Mapping",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Intermediate Chemistry",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Intermediate Ecology",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Environmental Science",
-                    "optional": false
-                  }
+                  "Social Sciences for Natural Science",
+                  "Arts and Humanities for Natural Science",
+                  "Statistics, Modeling, and Mapping",
+                  "Intermediate Chemistry",
+                  "Intermediate Ecology",
+                  "Environmental Science"
                 ],
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -145,24 +148,31 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ES/PS 201"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 232"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 235"
                   },
                   {
+                    "type": "course",
                     "course": "ES/PS 276"
                   },
                   {
+                    "type": "course",
                     "course": "AS/ES 277"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 281",
                     "grade": null,
                     "section": null,
@@ -172,27 +182,35 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 381"
                   },
                   {
+                    "type": "course",
                     "course": "ECON 242"
                   },
                   {
+                    "type": "course",
                     "course": "ID 234"
                   },
                   {
+                    "type": "course",
                     "course": "PSCI 221"
                   },
                   {
+                    "type": "course",
                     "course": "PSYCH 227"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 222"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 247"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 297",
                     "grade": null,
                     "section": null,
@@ -213,17 +231,22 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 202"
                   },
                   {
+                    "type": "either",
                     "either": [
                       {
+                        "type": "course",
                         "course": "PHIL 257"
                       },
                       {
+                        "type": "course",
                         "course": "REL 278"
                       }
                     ]
@@ -240,15 +263,19 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 255"
                   },
                   {
+                    "type": "course",
                     "course": "STAT 212"
                   },
                   {
+                    "type": "course",
                     "course": "STAT 272"
                   }
                 ]
@@ -263,24 +290,31 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "both",
                     "both": [
                       {
+                        "type": "course",
                         "course": "CHEM 248"
                       },
                       {
+                        "type": "course",
                         "course": "CHEM 254"
                       }
                     ]
                   },
                   {
+                    "type": "both",
                     "both": [
                       {
+                        "type": "course",
                         "course": "CHEM 255"
                       },
                       {
+                        "type": "course",
                         "course": "CHEM 256"
                       }
                     ]
@@ -297,12 +331,15 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "BIO 261"
                   },
                   {
+                    "type": "course",
                     "course": "BIO 226"
                   }
                 ]
@@ -317,6 +354,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -400,40 +438,34 @@
                 ],
                 "repeats": "first",
                 "what": "courses",
+                "where": null,
                 "limit": [
                   {
+                    "at_most": 1,
                     "where": {
-                      "department": {
+                      "level": {
                         "Single": {
-                          "NotEqualTo": {
-                            "String": "ENVST"
-                          }
+                          "EqualTo": 200
                         }
                       },
-                      "level": {
+                      "subject": {
                         "Single": {
-                          "EqualTo": {
-                            "Integer": 200
-                          }
+                          "NotEqualTo": "ENVST"
                         }
                       }
-                    },
-                    "at_most": 1
+                    }
                   },
                   {
+                    "at_most": 2,
                     "where": {
                       "level": {
                         "Single": {
-                          "NotEqualTo": {
-                            "Integer": 300
-                          }
+                          "NotEqualTo": 300
                         }
                       }
-                    },
-                    "at_most": 2
+                    }
                   }
                 ],
-                "where": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -454,63 +486,53 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
-                "requirement": "Natural Science for Social Sciences",
+                "type": "requirement",
+                "name": "Natural Science for Social Sciences",
                 "optional": false
               },
               {
-                "requirement": "Arts and Humanities for Social Sciences",
+                "type": "requirement",
+                "name": "Arts and Humanities for Social Sciences",
                 "optional": false
               },
               {
-                "requirement": "Methodological Analysis",
+                "type": "requirement",
+                "name": "Methodological Analysis",
                 "optional": false
               },
               {
-                "requirement": "Economic Analysis",
+                "type": "requirement",
+                "name": "Economic Analysis",
                 "optional": false
               },
               {
-                "requirement": "Environmental Political Policy and Institutions",
+                "type": "requirement",
+                "name": "Environmental Political Policy and Institutions",
                 "optional": false
               },
               {
-                "requirement": "Social Science Electives",
+                "type": "requirement",
+                "name": "Social Science Electives",
                 "optional": false
               },
               {
+                "type": "given",
                 "given": "these-requirements",
                 "requirements": [
-                  {
-                    "requirement": "Natural Science for Social Sciences",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Arts and Humanities for Social Sciences",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Methodological Analysis",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Economic Analysis",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Environmental Political Policy and Institutions",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Social Science Electives",
-                    "optional": false
-                  }
+                  "Natural Science for Social Sciences",
+                  "Arts and Humanities for Social Sciences",
+                  "Methodological Analysis",
+                  "Economic Analysis",
+                  "Environmental Political Policy and Institutions",
+                  "Social Science Electives"
                 ],
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -530,18 +552,23 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 123"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 245"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 255"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 281",
                     "grade": null,
                     "section": null,
@@ -551,6 +578,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 381",
                     "grade": null,
                     "section": null,
@@ -560,44 +588,57 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 226"
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 228"
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 286"
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 350"
                   },
                   {
+                    "type": "course",
                     "course": "BIO 224"
                   },
                   {
+                    "type": "either",
                     "either": [
                       {
+                        "type": "course",
                         "course": "BIO 226"
                       },
                       {
+                        "type": "course",
                         "course": "BIO 261"
                       }
                     ]
                   },
                   {
+                    "type": "course",
                     "course": "CHEM 124"
                   },
                   {
+                    "type": "both",
                     "both": [
                       {
+                        "type": "course",
                         "course": "CHEM 225"
                       },
                       {
+                        "type": "course",
                         "course": "CHEM 256"
                       }
                     ]
                   },
                   {
+                    "type": "course",
                     "course": "BIO 391",
                     "grade": null,
                     "section": null,
@@ -607,6 +648,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "CHEM 391",
                     "grade": null,
                     "section": null,
@@ -627,15 +669,19 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 202"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 270"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 281",
                     "grade": null,
                     "section": null,
@@ -645,6 +691,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 381",
                     "grade": null,
                     "section": null,
@@ -654,18 +701,23 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "FILM 230"
                   },
                   {
+                    "type": "course",
                     "course": "GERM 276"
                   },
                   {
+                    "type": "course",
                     "course": "HIST 245"
                   },
                   {
+                    "type": "course",
                     "course": "HIST 275"
                   },
                   {
+                    "type": "course",
                     "course": "NORW 224",
                     "grade": null,
                     "section": null,
@@ -675,16 +727,20 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "either",
                     "either": [
                       {
+                        "type": "course",
                         "course": "PHIL 257"
                       },
                       {
+                        "type": "course",
                         "course": "REL 278"
                       }
                     ]
                   },
                   {
+                    "type": "course",
                     "course": "ENGL 276"
                   }
                 ]
@@ -699,33 +755,43 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 255"
                   },
                   {
+                    "type": "course",
                     "course": "STAT 110"
                   },
                   {
+                    "type": "course",
                     "course": "STAT 212"
                   },
                   {
+                    "type": "course",
                     "course": "STAT 214"
                   },
                   {
+                    "type": "course",
                     "course": "STAT 272"
                   },
                   {
+                    "type": "course",
                     "course": "ECON 263"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 371"
                   },
                   {
+                    "type": "course",
                     "course": "PSYCH 230"
                   },
                   {
+                    "type": "course",
                     "course": "PSCI 220"
                   }
                 ]
@@ -740,51 +806,65 @@
               "message": "The department strongly recommends taking ECON 121",
               "department_audited": false,
               "result": {
-                "count": "all",
-                "of": [
+                "type": "both",
+                "both": [
                   {
+                    "type": "course",
+                    "course": "ECON 242"
+                  },
+                  {
+                    "type": "count-of",
                     "count": "any",
                     "of": [
                       {
+                        "type": "course",
                         "course": "ECON 121"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 110"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 111"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 112"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 113"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 114"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 115"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 116"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 117"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 118"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 119"
                       },
                       {
+                        "type": "course",
                         "course": "ECON 120"
                       }
                     ]
-                  },
-                  {
-                    "course": "ECON 242"
                   }
                 ]
               },
@@ -798,15 +878,19 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 232"
                   },
                   {
+                    "type": "course",
                     "course": "ES/PS 201"
                   },
                   {
+                    "type": "course",
                     "course": "ES/PS 276"
                   }
                 ]
@@ -821,21 +905,27 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 2,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ES/PS 201"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 232"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 235"
                   },
                   {
+                    "type": "course",
                     "course": "ES/PS 276"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 281",
                     "grade": null,
                     "section": null,
@@ -845,6 +935,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 381",
                     "grade": null,
                     "section": null,
@@ -854,6 +945,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 396",
                     "grade": null,
                     "section": null,
@@ -863,15 +955,19 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ECON 243"
                   },
                   {
+                    "type": "course",
                     "course": "PSYCH 227"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 247"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 297",
                     "grade": null,
                     "section": null,
@@ -881,15 +977,19 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "PSCI 221"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 222"
                   },
                   {
+                    "type": "course",
                     "course": "ID 234"
                   },
                   {
+                    "type": "course",
                     "course": "AS/ES 227"
                   }
                 ]
@@ -906,63 +1006,53 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "all",
             "of": [
               {
-                "requirement": "Natural Science for Social Sciences",
+                "type": "requirement",
+                "name": "Natural Science for Social Sciences",
                 "optional": false
               },
               {
-                "requirement": "Arts and Humanities for Social Sciences",
+                "type": "requirement",
+                "name": "Arts and Humanities for Social Sciences",
                 "optional": false
               },
               {
-                "requirement": "Methodological Analysis",
+                "type": "requirement",
+                "name": "Methodological Analysis",
                 "optional": false
               },
               {
-                "requirement": "Economic Analysis",
+                "type": "requirement",
+                "name": "Economic Analysis",
                 "optional": false
               },
               {
-                "requirement": "Environmental Political Policy and Institutions",
+                "type": "requirement",
+                "name": "Environmental Political Policy and Institutions",
                 "optional": false
               },
               {
-                "requirement": "Social Science Electives",
+                "type": "requirement",
+                "name": "Social Science Electives",
                 "optional": false
               },
               {
+                "type": "given",
                 "given": "these-requirements",
                 "requirements": [
-                  {
-                    "requirement": "Natural Science for Social Sciences",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Arts and Humanities for Social Sciences",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Methodological Analysis",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Economic Analysis",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Environmental Political Policy and Institutions",
-                    "optional": false
-                  },
-                  {
-                    "requirement": "Social Science Electives",
-                    "optional": false
-                  }
+                  "Natural Science for Social Sciences",
+                  "Arts and Humanities for Social Sciences",
+                  "Methodological Analysis",
+                  "Economic Analysis",
+                  "Environmental Political Policy and Institutions",
+                  "Social Science Electives"
                 ],
                 "what": "courses",
-                "limit": null,
                 "where": null,
+                "limit": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",
@@ -982,18 +1072,23 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 123"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 245"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 255"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 281",
                     "grade": null,
                     "section": null,
@@ -1003,6 +1098,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 381",
                     "grade": null,
                     "section": null,
@@ -1012,44 +1108,57 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 226"
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 228"
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 286"
                   },
                   {
+                    "type": "course",
                     "course": "BI/ES 350"
                   },
                   {
+                    "type": "course",
                     "course": "BIO 224"
                   },
                   {
+                    "type": "either",
                     "either": [
                       {
+                        "type": "course",
                         "course": "BIO 226"
                       },
                       {
+                        "type": "course",
                         "course": "BIO 261"
                       }
                     ]
                   },
                   {
+                    "type": "course",
                     "course": "CHEM 124"
                   },
                   {
+                    "type": "both",
                     "both": [
                       {
+                        "type": "course",
                         "course": "CHEM 225"
                       },
                       {
+                        "type": "course",
                         "course": "CHEM 256"
                       }
                     ]
                   },
                   {
+                    "type": "course",
                     "course": "BIO 391",
                     "grade": null,
                     "section": null,
@@ -1059,6 +1168,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "CHEM 391",
                     "grade": null,
                     "section": null,
@@ -1079,15 +1189,19 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "count-of",
                 "count": 1,
                 "of": [
                   {
+                    "type": "course",
                     "course": "ENVST 232"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 235"
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 281",
                     "grade": null,
                     "section": null,
@@ -1097,6 +1211,7 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ENVST 381",
                     "grade": null,
                     "section": null,
@@ -1106,27 +1221,35 @@
                     "can_match_used": null
                   },
                   {
+                    "type": "course",
                     "course": "ES/PS 201"
                   },
                   {
+                    "type": "course",
                     "course": "ES/PS 276"
                   },
                   {
+                    "type": "course",
                     "course": "ECON 242"
                   },
                   {
+                    "type": "course",
                     "course": "PSCI 221"
                   },
                   {
+                    "type": "course",
                     "course": "PSYCH 227"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 222"
                   },
                   {
+                    "type": "course",
                     "course": "SOAN 247"
                   },
                   {
+                    "type": "course",
                     "course": "AS/ES 277"
                   }
                 ]
@@ -1141,6 +1264,7 @@
               "message": null,
               "department_audited": false,
               "result": {
+                "type": "given",
                 "given": "these-courses",
                 "courses": [
                   {
@@ -1212,21 +1336,19 @@
                 ],
                 "repeats": "first",
                 "what": "courses",
+                "where": null,
                 "limit": [
                   {
+                    "at_most": 5,
                     "where": {
                       "level": {
                         "Single": {
-                          "EqualTo": {
-                            "Integer": 200
-                          }
+                          "EqualTo": 200
                         }
                       }
-                    },
-                    "at_most": 5
+                    }
                   }
                 ],
-                "where": null,
                 "do": {
                   "lhs": "Count",
                   "op": "GreaterThanEqualTo",

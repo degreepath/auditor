@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Part 1",
+        "type": "requirement",
+        "name": "Part 1",
         "optional": false
       },
       {
-        "requirement": "Part 2",
+        "type": "requirement",
+        "name": "Part 2",
         "optional": false
       },
       {
-        "requirement": "Practicum",
+        "type": "requirement",
+        "name": "Practicum",
         "optional": false
       }
     ]
@@ -27,34 +31,44 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "THEAT 130"
           },
           {
+            "type": "course",
             "course": "THEAT 140"
           },
           {
+            "type": "course",
             "course": "THEAT 180"
           },
           {
+            "type": "course",
             "course": "THEAT 232"
           },
           {
+            "type": "either",
             "either": [
               {
+                "type": "course",
                 "course": "THEAT 240"
               },
               {
+                "type": "course",
                 "course": "THEAT 250"
               }
             ]
           },
           {
+            "type": "course",
             "course": "THEAT 270"
           },
           {
+            "type": "course",
             "course": "THEAT 271"
           }
         ]
@@ -69,21 +83,27 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 2,
         "of": [
           {
+            "type": "course",
             "course": "THEAT 338"
           },
           {
+            "type": "course",
             "course": "THEAT 379"
           },
           {
+            "type": "course",
             "course": "THEAT 380"
           },
           {
+            "type": "course",
             "course": "THEAT 394"
           },
           {
+            "type": "course",
             "course": "THEAT 398"
           }
         ]
@@ -98,17 +118,21 @@
       "message": "All students must enroll in four practicum classes, of which at least one must be THEAT 233 and at least two must be THEAT 253; the fourth practicum class is then a choice of either 233 or 253.",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Acting",
+            "type": "requirement",
+            "name": "Acting",
             "optional": false
           },
           {
-            "requirement": "Tech",
+            "type": "requirement",
+            "name": "Tech",
             "optional": false
           },
           {
+            "type": "given",
             "given": "these-courses",
             "courses": [
               {
@@ -120,8 +144,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -141,6 +165,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-courses",
             "courses": [
               {
@@ -149,8 +174,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -169,6 +194,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-courses",
             "courses": [
               {
@@ -177,8 +203,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -198,26 +224,22 @@
   "attributes": null,
   "limits": [
     {
+      "at_most": 1,
       "where": {
         "credits": {
           "Single": {
             "EqualTo": {
-              "Float": [
-                1,
-                0
-              ]
+              "value": 1.0,
+              "phantom": null
             }
           }
         },
-        "s/u": {
+        "graded": {
           "Single": {
-            "EqualTo": {
-              "Bool": true
-            }
+            "EqualTo": "su"
           }
         }
-      },
-      "at_most": 1
+      }
     }
   ],
   "emphases": null

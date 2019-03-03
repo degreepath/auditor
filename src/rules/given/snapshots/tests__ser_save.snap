@@ -1,5 +1,5 @@
 ---
-created: "2019-02-27T18:15:38.823081Z"
+created: "2019-03-03T15:28:01.844160Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
@@ -8,10 +8,10 @@ expression: data
   "given": "save",
   "save": "$my_var",
   "what": courses,
+  "where": Some(CourseClause(
+  )),
   "limit": Some([
   ]),
-  "where": Some({
-  }),
   "do": Action(
     lhs: Count,
     op: Some(GreaterThan),

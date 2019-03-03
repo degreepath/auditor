@@ -6,13 +6,15 @@ edition = "2018"
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
+decorum = {version = "0.1"}
 serde = { version = "1.0", features = ["derive"] }
-void = "1.0"
+void = {version = "1.0"}
 
 [dev-dependencies]
 globwalk = "0.6"
 insta = "0.6"
 maplit = "1.0"
+pretty_assertions = "0.6"
 rayon = "1.0"
 serde_json = "1.0"
 serde_yaml = "0.8"

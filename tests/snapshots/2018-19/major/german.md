@@ -9,11 +9,15 @@ For this major, you must complete all of the following requirements:
 - “Electives”
 
 ## Level 250
-For this requirement, you must take at least two courses from among GERM 251, GERM 252, and GERM 253.
+For this requirement, you must take at least two courses from among GERM 251, GERM 252, and GERM 253, subject to the following restrictions:
+
+- At most 1 course may be taken not at St. Olaf College
 
 
 ## Level 270
-For this requirement, you must take at least two courses from among GERM 271, GERM 272, GERM 273, and GERM 276.
+For this requirement, you must take at least two courses from among GERM 271, GERM 272, GERM 273, and GERM 276, subject to the following restrictions:
+
+- At most 1 course may be taken not at St. Olaf College
 
 
 ## Level III
@@ -23,13 +27,10 @@ For this requirement, you must take either GERM 371 or GERM 372.
 
 
 ## Electives
-For this section, you must both:
+For this section, you must have the following be true:
 
-- complete one requirement from among “Language” (optional), “Interim In German” (optional), or “In Translation” (optional)
-
-- and have the following be true:
-    1. given the results of the “Langauge”, “Interim In German”, and “In Translation” requirements,
-    2. there must be at least three courses
+1. given the results of the “Langauge”, “Interim In German”, and “In Translation” requirements,
+2. there must be at least three courses
 
 ### Language
 For this requirement, you must take GERM 232.
@@ -60,5 +61,9 @@ For this requirement, you must take exactly one course from among the following:
 - REL 262
 - REL 303
 - REL 304
+
+These courses must fit within the following restrictions:
+
+- At most 1 course may be taken at St. Olaf College
 
 

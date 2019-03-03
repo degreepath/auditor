@@ -1,12 +1,13 @@
 use super::Limiter;
 use crate::filter;
 use crate::value::WrappedValue;
-use maplit::btreemap;
+use insta::assert_yaml_snapshot_matches;
 
 #[test]
 fn serialize_level100() {
-	let clause: filter::Clause = btreemap! {
-		"level".into() => "100".parse::<WrappedValue>().unwrap(),
+	let clause = filter::CourseClause {
+		level: Some("100".parse::<WrappedValue<u64>>().unwrap()),
+		..filter::CourseClause::default()
 	};
 
 	let data = Limiter {
@@ -14,23 +15,18 @@ fn serialize_level100() {
 		at_most: 2,
 	};
 
-	let expected = r#"---
+	assert_yaml_snapshot_matches!(data, @r###"at_most: 2
 where:
   level:
     Single:
-      EqualTo:
-        Integer: 100
-at_most: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+      EqualTo: 100"###);
 }
 
 #[test]
 fn serialize_not_math() {
-	let clause: filter::Clause = btreemap! {
-		"department".into() => "! MATH".parse::<WrappedValue>().unwrap(),
+	let clause = filter::CourseClause {
+		subject: Some("! MATH".parse::<WrappedValue<String>>().unwrap()),
+		..filter::CourseClause::default()
 	};
 
 	let data = Limiter {
@@ -38,23 +34,18 @@ fn serialize_not_math() {
 		at_most: 2,
 	};
 
-	let expected = r#"---
+	assert_yaml_snapshot_matches!(data, @r###"at_most: 2
 where:
-  department:
+  subject:
     Single:
-      NotEqualTo:
-        String: MATH
-at_most: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+      NotEqualTo: MATH"###);
 }
 
 #[test]
 fn deserialize_level100() {
-	let clause: filter::Clause = btreemap! {
-		"level".into() => "100".parse::<WrappedValue>().unwrap(),
+	let clause = filter::CourseClause {
+		level: Some("100".parse::<WrappedValue<u64>>().unwrap()),
+		..filter::CourseClause::default()
 	};
 
 	let expected = Limiter {
@@ -62,12 +53,11 @@ fn deserialize_level100() {
 		at_most: 2,
 	};
 
-	let data = r#"---
-where:
-  level: "100"
-at_most: 2"#;
-
+	let data = "{at_most: 2, where: {level: 100}}";
 	let actual: Limiter = serde_yaml::from_str(&data).unwrap();
+	assert_eq!(actual, expected);
 
+	let data = r#"{at_most: 2, where: {level: "100"}}"#;
+	let actual: Limiter = serde_yaml::from_str(&data).unwrap();
 	assert_eq!(actual, expected);
 }

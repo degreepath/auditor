@@ -3,7 +3,7 @@ use crate::rules::Rule;
 use crate::rules::{given, req_ref};
 use crate::save::SaveBlock;
 use crate::{filter, rules, value};
-use maplit::btreemap;
+use pretty_assertions::assert_eq;
 
 #[test]
 fn serialize() {
@@ -13,7 +13,7 @@ fn serialize() {
 		department_audited: false,
 		registrar_audited: false,
 		result: Some(Rule::Requirement(req_ref::Rule {
-			requirement: String::from("name"),
+			name: String::from("name"),
 			optional: false,
 		})),
 		contract: false,
@@ -26,7 +26,8 @@ name: a requirement
 message: ~
 department_audited: false
 result:
-  requirement: name
+  type: requirement
+  name: name
   optional: false
 contract: false
 registrar_audited: false
@@ -45,7 +46,8 @@ message: ~
 department_audited: false
 registrar_audited: false
 result:
-  requirement: name
+  type: requirement
+  name: name
   optional: false
 contract: false
 save: []
@@ -57,7 +59,7 @@ requirements: []";
 		department_audited: false,
 		registrar_audited: false,
 		result: Some(Rule::Requirement(req_ref::Rule {
-			requirement: String::from("name"),
+			name: String::from("name"),
 			optional: false,
 		})),
 		contract: false,
@@ -74,7 +76,7 @@ fn deserialize_with_defaults() {
 	let data = "---
 name: a requirement
 message: ~
-result: {requirement: name, optional: false}";
+result: {type: requirement, name: name, optional: false}";
 
 	let expected = Requirement {
 		name: String::from("a requirement"),
@@ -82,7 +84,7 @@ result: {requirement: name, optional: false}";
 		department_audited: false,
 		registrar_audited: false,
 		result: Some(Rule::Requirement(req_ref::Rule {
-			requirement: String::from("name"),
+			name: String::from("name"),
 			optional: false,
 		})),
 		contract: false,
@@ -125,12 +127,18 @@ save:
     what: courses
     name: Interim Courses
 result:
+  type: both
   both:
-    - {given: save, save: Interim Courses, what: credits, do: sum >= 3}
-    - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
+    - {type: given, given: save, save: Interim Courses, what: credits, do: sum >= 3}
+    - {type: given, given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
-	let expected_filter: filter::Clause = btreemap! {
-		"semester".into() => "Interim".parse::<value::WrappedValue>().unwrap(),
+	let expected_filter = filter::CourseClause {
+		semester: Some(
+			"Interim"
+				.parse::<value::WrappedValue<crate::student::Semester>>()
+				.unwrap(),
+		),
+		..filter::CourseClause::default()
 	};
 
 	let expected = Requirement {
@@ -144,18 +152,18 @@ result:
 					given: given::Given::NamedVariable {
 						save: "Interim Courses".to_string(),
 						what: given::GivenCoursesWhatOptions::Credits,
+						limit: None,
+						filter: None,
 					},
-					limit: None,
-					filter: None,
 					action: "sum >= 3".parse().unwrap(),
 				})),
 				Box::new(Rule::Given(given::Rule {
 					given: given::Given::NamedVariable {
 						save: "Interim Courses".to_string(),
 						what: given::GivenCoursesWhatOptions::Courses,
+						limit: None,
+						filter: None,
 					},
-					limit: None,
-					filter: None,
 					action: "count >= 3".parse().unwrap(),
 				})),
 			),

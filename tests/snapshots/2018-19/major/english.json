@@ -5,38 +5,47 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Literary Studies",
+        "type": "requirement",
+        "name": "Literary Studies",
         "optional": false
       },
       {
-        "requirement": "Cross-Cultural Studies",
+        "type": "requirement",
+        "name": "Cross-Cultural Studies",
         "optional": false
       },
       {
-        "requirement": "Literary History",
+        "type": "requirement",
+        "name": "Literary History",
         "optional": false
       },
       {
+        "type": "either",
         "either": [
           {
-            "requirement": "Cross-Disciplinary Studies",
+            "type": "requirement",
+            "name": "Cross-Disciplinary Studies",
             "optional": false
           },
           {
-            "requirement": "Genre Studies",
+            "type": "requirement",
+            "name": "Genre Studies",
             "optional": false
           }
         ]
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       },
       {
-        "requirement": "1800s",
+        "type": "requirement",
+        "name": "1800s",
         "optional": false
       }
     ]
@@ -47,6 +56,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "ENGL 185"
       },
       "contract": false,
@@ -59,18 +69,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "engl_topic_crosscultural"
-              }
+              "EqualTo": "engl_topic_crosscultural"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -89,18 +98,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "engl_topic_literary_history"
-              }
+              "EqualTo": "engl_topic_literary_history"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -119,18 +127,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "engl_topic_crossdisciplinary"
-              }
+              "EqualTo": "engl_topic_crossdisciplinary"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -149,18 +156,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "engl_topic_genre"
-              }
+              "EqualTo": "engl_topic_genre"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -179,14 +185,16 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "given",
             "given": "save",
             "save": "electives",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -196,11 +204,12 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "level3-courses",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -210,26 +219,23 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "level3-courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Or": [
                   {
-                    "EqualTo": {
-                      "String": "engl_focus_literature"
-                    }
+                    "EqualTo": "engl_focus_literature"
                   },
                   {
-                    "EqualTo": {
-                      "String": "engl_focus_film"
-                    }
+                    "EqualTo": "engl_focus_film"
                   }
                 ]
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -252,29 +258,19 @@
             "attribute": {
               "Or": [
                 {
-                  "EqualTo": {
-                    "String": "engl_elective"
-                  }
+                  "EqualTo": "engl_elective"
                 },
                 {
-                  "EqualTo": {
-                    "String": "engl_topic_genre"
-                  }
+                  "EqualTo": "engl_topic_genre"
                 },
                 {
-                  "EqualTo": {
-                    "String": "engl_topic_crosscultural"
-                  }
+                  "EqualTo": "engl_topic_crosscultural"
                 },
                 {
-                  "EqualTo": {
-                    "String": "engl_topic_literary_history"
-                  }
+                  "EqualTo": "engl_topic_literary_history"
                 },
                 {
-                  "EqualTo": {
-                    "String": "engl_topic_crossdisciplinary"
-                  }
+                  "EqualTo": "engl_topic_crossdisciplinary"
                 }
               ]
             }
@@ -290,9 +286,7 @@
           "where": {
             "level": {
               "Single": {
-                "EqualTo": {
-                  "Integer": 300
-                }
+                "EqualTo": 300
               }
             }
           },
@@ -306,20 +300,20 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "both",
         "both": [
           {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "engl_period_pre1800"
-                  }
+                  "EqualTo": "engl_period_pre1800"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -329,18 +323,17 @@
             }
           },
           {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "engl_period_post1800"
-                  }
+                  "EqualTo": "engl_period_post1800"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

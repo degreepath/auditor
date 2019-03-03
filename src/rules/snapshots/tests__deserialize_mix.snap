@@ -1,5 +1,5 @@
 ---
-created: "2019-02-27T17:34:12.151391Z"
+created: "2019-03-03T22:38:28.542901Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: actual
@@ -33,7 +33,7 @@ expression: actual
     ),
     Requirement(
         Rule {
-            requirement: "Name",
+            name: "Name",
             optional: true
         }
     ),
@@ -124,14 +124,28 @@ expression: actual
     Given(
         Rule {
             given: AllCourses {
-                what: Courses
+                what: Courses,
+                filter: Some(
+                    CourseClause {
+                        attribute: None,
+                        course: None,
+                        credits: None,
+                        gereqs: None,
+                        graded: None,
+                        grade: None,
+                        institution: None,
+                        level: None,
+                        number: None,
+                        type: None,
+                        semester: None,
+                        subject: None,
+                        year: None
+                    }
+                ),
+                limit: Some(
+                    []
+                )
             },
-            limit: Some(
-                []
-            ),
-            filter: Some(
-                {}
-            ),
             action: Action {
                 lhs: Count,
                 op: Some(

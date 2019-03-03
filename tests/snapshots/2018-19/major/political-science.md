@@ -10,7 +10,7 @@ For this major, you must both:
     - “International Relations”
     - “Political Theory”
     - “Level III”
-    - “Additional Courses” (optional)
+    - “Additional Courses”
 
 - and have the following be true:
     1. given the results of the following requirements
@@ -48,19 +48,19 @@ For this requirement, you must take at least two courses with the “psci_level_
 
 
 ## Additional Courses
-For this section, you must complete either the “Statistics” or “World Langauge” requirement.
+For this section, you must complete zero requirements from among “Statistics” or “World Langauge”.
 
 ### Statistics
-For this requirement, you must take at least one course within the STAT department.
+For this requirement, you must take at least one course within the STAT subject code.
 
 ### World Langauge
 For this section, you must complete either the “French, German, Spanish” or “Chinese, Greek, Latin, Japanese, Norwegian, Russian” requirement.
 
 #### French, German, Spanish
-For this requirement, you must take at least one course within any of the FREN, GERM, or SPAN departments past 232.
+For this requirement, you must take at least one course within any of the FREN, GERM, or SPAN subject codes past 232.
 
 #### Chinese, Greek, Latin, Japanese, Norwegian, Russian
-For this requirement, you must take at least one course within any of the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN departments past 231.
+For this requirement, you must take at least one course within any of the CHIN, GREEK, LATIN, JAPAN, NORW, or RUSSN subject codes past 231.
 
 # Custom Attributes
 

@@ -37,7 +37,9 @@ For this requirement, you must take one of the following courses:
 
 
 ## Electives
-For this requirement, you must take at least four courses within the MUSIC department, at either the 200 or 300 level.
+For this requirement, you must take at least four courses at either the 200 or 300 level, within the MUSIC subject code, subject to the following restrictions:
+
+- At most 3 courses may be taken at the 200 level
 
 
 ## Performance Studies
@@ -372,7 +374,7 @@ For this requirement, you must have taken enough courses other than MUSPF 152 to
 
 
 ## Official Ensemble Participation
-For this requirement, you must have taken enough courses within the MUSEN department to span at least four terms.
+For this requirement, you must have taken enough courses within the MUSEN subject code to span at least four terms.
 
 
 ## Performances

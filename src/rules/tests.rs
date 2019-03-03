@@ -2,7 +2,7 @@ use super::*;
 use crate::student::Semester;
 use crate::traits::print::Print;
 use insta::{assert_debug_snapshot_matches, assert_yaml_snapshot_matches};
-use std::collections::BTreeMap;
+use pretty_assertions::assert_eq;
 
 #[test]
 fn deserialize_simple_course_in_array() {
@@ -42,7 +42,7 @@ fn serialize() {
 		Rule::Course(course_a.clone()),
 		Rule::Course(course_b.clone()),
 		Rule::Requirement(req_ref::Rule {
-			requirement: "Name".to_string(),
+			name: "Name".to_string(),
 			optional: true,
 		}),
 		Rule::CountOf(count_of::Rule {
@@ -64,9 +64,9 @@ fn serialize() {
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses {
 				what: given::GivenCoursesWhatOptions::Courses,
+				filter: Some(crate::filter::CourseClause::default()),
+				limit: Some(vec![]),
 			},
-			filter: Some(BTreeMap::new()),
-			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
 		}),
 		Rule::Do(action_only::Rule {
@@ -84,37 +84,45 @@ fn serialize() {
 #[test]
 fn deserialize() {
 	let data = r#"---
-- course: ASIAN 101
-- course: ASIAN 101
+- {type: course, course: ASIAN 101}
+- type: course
+  course: ASIAN 101
   section: ~
   year: 2014
   semester: Fall
   lab: ~
-- requirement: Name
+- type: requirement
+  name: Name
   optional: true
-- count: 1
+- type: count-of
+  count: 1
   of:
-    - course: ASIAN 101
-- both:
-    - course: ASIAN 101
-    - course: ASIAN 101
+    - {type: course, course: ASIAN 101}
+- type: both
+  both:
+    - {type: course, course: ASIAN 101}
+    - type: course
+      course: ASIAN 101
       section: ~
       year: 2014
       semester: Fall
       lab: ~
-- either:
-    - course: ASIAN 101
-    - course: ASIAN 101
+- type: either
+  either:
+    - {type: course, course: ASIAN 101}
+    - type: course
+      course: ASIAN 101
       section: ~
       year: 2014
       semester: Fall
       lab: ~
-- given: courses
+- type: given
+  given: courses
   what: courses
   where: {}
   limit: []
   do: count < 2
-- do: {lhs: a, op: <, rhs: b}"#;
+- {type: do, do: {lhs: a, op: <, rhs: b}}"#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
 	assert_debug_snapshot_matches!("deserialize_mix", actual);
@@ -124,23 +132,27 @@ fn deserialize() {
 fn deserialize_shorthands() {
 	let data = r#"---
 - ASIAN 101
-- course: ASIAN 101
-- {course: ASIAN 102, year: 2014, semester: Fall}
-- requirement: Name 1
-- {requirement: Name 2, optional: true}
-- count: 1
+- {type: course, course: ASIAN 101}
+- {type: course, course: ASIAN 102, year: 2014, semester: Fall}
+- {type: requirement, name: Name 1}
+- {type: requirement, name: Name 2, optional: true}
+- type: count-of
+  count: 1
   of:
     - ASIAN 101
-- both:
+- type: both
+  both:
     - ASIAN 101
-    - {course: ASIAN 102, year: 2014, semester: Fall}
-- either:
+    - {type: course, course: ASIAN 102, year: 2014, semester: Fall}
+- type: either
+  either:
     - ASIAN 101
-    - {course: ASIAN 102, year: 2014, semester: Fall}
-- given: courses
+    - {type: course, course: ASIAN 102, year: 2014, semester: Fall}
+- type: given
+  given: courses
   what: courses
   do: count < 2
-- do: {lhs: a, op: <, rhs: b}"#;
+- {type: do, do: {lhs: a, op: <, rhs: b}}"#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
 	assert_debug_snapshot_matches!("deserialize_shorthands", actual);
@@ -150,25 +162,19 @@ fn deserialize_shorthands() {
 fn pretty_print() {
 	let data = r#"---
 - ASIAN 101
-- course: ASIAN 101
-- {course: ASIAN 102, year: 2014, semester: Fall}
-- requirement: Name 1
-- {requirement: Name 2, optional: true}
-- {count: 1, of: [ASIAN 101]}
-- {both: [ASIAN 101, {course: ASIAN 102, year: 2014, semester: Fall}]}
-- {either: [ASIAN 101, {course: ASIAN 102, year: 2014, semester: Fall}]}
-- {given: courses, what: courses, do: count < 2}
-- {do: {lhs: X, op: <, rhs: Y}}
+- {type: course, course: ASIAN 101}
+- {type: course, course: ASIAN 102, year: 2014, semester: Fall}
+- {type: requirement, name: Name 1}
+- {type: requirement, name: Name 2, optional: true}
+- {type: count-of, count: 1, of: [ASIAN 101]}
+- {type: both, both: [ASIAN 101, {type: course, course: ASIAN 102, year: 2014, semester: Fall}]}
+- {type: either, either: [ASIAN 101, {type: course, course: ASIAN 102, year: 2014, semester: Fall}]}
+- {type: given, given: courses, what: courses, do: count < 2}
+- {type: do, do: {lhs: X, op: <, rhs: Y}}
 "#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
-	let actual: Vec<String> = actual
-		.into_iter()
-		.filter_map(|r| match r.print() {
-			Ok(p) => Some(p),
-			Err(_) => None,
-		})
-		.collect();
+	let actual: Vec<String> = actual.into_iter().filter_map(|r| r.print().ok()).collect();
 
 	assert_debug_snapshot_matches!("pretty_print_mix", actual);
 }
@@ -179,13 +185,14 @@ fn dance_seminar() {
 		given: given::Given::NamedVariable {
 			save: "Senior Dance Seminars".to_string(),
 			what: given::GivenCoursesWhatOptions::Courses,
+			filter: None,
+			limit: None,
 		},
-		filter: None,
-		limit: None,
 		action: "count >= 1".parse().unwrap(),
 	});
 
 	let data = r#"---
+type: given
 given: save
 save: "Senior Dance Seminars"
 what: courses
@@ -196,6 +203,7 @@ do: count >= 1
 	assert_eq!(actual, expected);
 
 	let data = r#"---
+type: given
 given: save
 save: "Senior Dance Seminars"
 what: courses

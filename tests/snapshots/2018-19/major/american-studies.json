@@ -5,14 +5,17 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "American Culture",
+        "type": "requirement",
+        "name": "American Culture",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -23,6 +26,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "AMST 100"
       },
       "contract": false,
@@ -35,22 +39,22 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "given",
             "given": "save",
             "save": "Taken Electives",
             "what": "courses",
-            "limit": null,
             "where": {
               "gereqs": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "MCD"
-                  }
+                  "EqualTo": "MCD"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -60,19 +64,18 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Taken Electives",
             "what": "courses",
-            "limit": null,
             "where": {
               "level": {
                 "Single": {
-                  "EqualTo": {
-                    "Integer": 300
-                  }
+                  "EqualTo": 300
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -82,11 +85,12 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Taken Electives",
             "what": "departments",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -96,11 +100,12 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Taken Electives",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -118,18 +123,9 @@
           "name": "Taken Electives",
           "given": "these-requirements",
           "requirements": [
-            {
-              "requirement": "Topics",
-              "optional": false
-            },
-            {
-              "requirement": "Seminar",
-              "optional": false
-            },
-            {
-              "requirement": "Disciplinary",
-              "optional": false
-            }
+            "Topics",
+            "Seminar",
+            "Disciplinary"
           ],
           "what": "courses",
           "limit": null,
@@ -143,6 +139,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-courses",
             "courses": [
               {
@@ -166,8 +163,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -186,6 +183,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-courses",
             "courses": [
               {
@@ -194,8 +192,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -214,6 +212,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-courses",
             "courses": [
               {
@@ -489,8 +488,8 @@
             ],
             "repeats": "all",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",

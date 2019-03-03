@@ -5,22 +5,27 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Speaking and Writing",
+        "type": "requirement",
+        "name": "Speaking and Writing",
         "optional": false
       },
       {
-        "requirement": "The Francophone World",
+        "type": "requirement",
+        "name": "The Francophone World",
         "optional": false
       },
       {
-        "requirement": "Level III",
+        "type": "requirement",
+        "name": "Level III",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -31,15 +36,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 2,
         "of": [
           {
+            "type": "course",
             "course": "FREN 250"
           },
           {
+            "type": "course",
             "course": "FREN 251"
           },
           {
+            "type": "course",
             "course": "FREN 253"
           }
         ]
@@ -54,18 +63,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 2,
         "of": [
           {
+            "type": "course",
             "course": "FREN 271"
           },
           {
+            "type": "course",
             "course": "FREN 272"
           },
           {
+            "type": "course",
             "course": "FREN 273"
           },
           {
+            "type": "course",
             "course": "FREN 275"
           }
         ]
@@ -80,18 +94,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 2,
         "of": [
           {
+            "type": "course",
             "course": "FREN 372"
           },
           {
+            "type": "course",
             "course": "FREN 373"
           },
           {
+            "type": "course",
             "course": "FREN 397"
           },
           {
+            "type": "course",
             "course": "FREN 399"
           }
         ]
@@ -106,31 +125,28 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": [
-          {
-            "where": {
-              "department": {
-                "Single": {
-                  "NotEqualTo": {
-                    "String": "FREN"
-                  }
-                }
-              }
-            },
-            "at_most": 1
-          }
-        ],
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "french_elective"
-              }
+              "EqualTo": "french_elective"
             }
           }
         },
+        "limit": [
+          {
+            "at_most": 1,
+            "where": {
+              "subject": {
+                "Single": {
+                  "NotEqualTo": "FREN"
+                }
+              }
+            }
+          }
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

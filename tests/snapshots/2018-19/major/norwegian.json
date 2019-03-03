@@ -5,22 +5,27 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Language",
+        "type": "requirement",
+        "name": "Language",
         "optional": false
       },
       {
-        "requirement": "Culture & Writing",
+        "type": "requirement",
+        "name": "Culture & Writing",
         "optional": false
       },
       {
-        "requirement": "History & Culture",
+        "type": "requirement",
+        "name": "History & Culture",
         "optional": false
       },
       {
-        "requirement": "Upper-Level Elective",
+        "type": "requirement",
+        "name": "Upper-Level Elective",
         "optional": false
       }
     ]
@@ -31,18 +36,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "NORW 111"
           },
           {
+            "type": "course",
             "course": "NORW 112"
           },
           {
+            "type": "course",
             "course": "NORW 231"
           },
           {
+            "type": "course",
             "course": "NORW 232"
           }
         ]
@@ -57,15 +67,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "NORW 253"
           },
           {
+            "type": "course",
             "course": "NORW 371"
           },
           {
+            "type": "course",
             "course": "NORW 372"
           }
         ]
@@ -80,18 +94,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "norw_history_culture"
-              }
+              "EqualTo": "norw_history_culture"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -110,30 +123,39 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
+            "type": "course",
             "course": "NORW 224"
           },
           {
+            "type": "course",
             "course": "NORW 240"
           },
           {
+            "type": "course",
             "course": "NORW 244"
           },
           {
+            "type": "course",
             "course": "NORW 246"
           },
           {
+            "type": "course",
             "course": "NORW 282"
           },
           {
+            "type": "course",
             "course": "NORW 296"
           },
           {
+            "type": "course",
             "course": "HIST 211"
           },
           {
+            "type": "course",
             "course": "HIST 222"
           }
         ]
@@ -163,16 +185,14 @@
   },
   "limits": [
     {
+      "at_most": 1,
       "where": {
-        "s/u": {
+        "graded": {
           "Single": {
-            "EqualTo": {
-              "Bool": true
-            }
+            "EqualTo": "su"
           }
         }
-      },
-      "at_most": 1
+      }
     }
   ],
   "emphases": null

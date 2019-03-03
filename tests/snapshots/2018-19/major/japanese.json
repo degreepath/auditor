@@ -5,23 +5,23 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Core Language",
+        "type": "requirement",
+        "name": "Core Language",
         "optional": false
       },
       {
-        "requirement": "Upper-Level Language",
+        "type": "requirement",
+        "name": "Upper-Level Language",
         "optional": false
       },
       {
-        "requirement": "Language and Culture",
+        "type": "requirement",
+        "name": "Language and Culture",
         "optional": false
-      },
-      {
-        "requirement": "FLAC",
-        "optional": true
       }
     ]
   },
@@ -31,18 +31,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "JAPAN 231"
           },
           {
+            "type": "course",
             "course": "JAPAN 232"
           },
           {
+            "type": "course",
             "course": "JAPAN 301"
           },
           {
+            "type": "course",
             "course": "JAPAN 302"
           }
         ]
@@ -57,12 +62,15 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "JAPAN 320"
           },
           {
+            "type": "course",
             "course": "JAPAN 350"
           }
         ]
@@ -77,22 +85,26 @@
       "message": "The Asian Conversation sequence (ASIAN 210, ASIAN 215 or ASIAN 216, ASIAN 220) will count for no more than two courses.\nOne of these courses may be an Independent Study (capstone project) or the Asian Studies senior seminars (ASIAN 397 and ASIAN 399).\n",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Japan-focused",
+            "type": "requirement",
+            "name": "Japan-focused",
             "optional": false
           },
           {
-            "requirement": "Comparative",
+            "type": "requirement",
+            "name": "Comparative",
             "optional": false
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Allowed Courses",
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -102,19 +114,18 @@
             }
           },
           {
+            "type": "given",
             "given": "save",
             "save": "Allowed Courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "level": {
                 "Single": {
-                  "EqualTo": {
-                    "Integer": 300
-                  }
+                  "EqualTo": 300
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -132,28 +143,20 @@
           "name": "Allowed Courses",
           "given": "these-requirements",
           "requirements": [
-            {
-              "requirement": "Japan-focused",
-              "optional": false
-            },
-            {
-              "requirement": "Comparative",
-              "optional": false
-            }
+            "Japan-focused",
+            "Comparative"
           ],
           "what": "courses",
           "limit": [
             {
+              "at_most": 1,
               "where": {
                 "level": {
                   "Single": {
-                    "EqualTo": {
-                      "Integer": 100
-                    }
+                    "EqualTo": 100
                   }
                 }
-              },
-              "at_most": 1
+              }
             }
           ],
           "where": null,
@@ -166,18 +169,17 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "japan_focused_on_japan"
-                  }
+                  "EqualTo": "japan_focused_on_japan"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -196,50 +198,43 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
+            "where": {
+              "attribute": {
+                "Single": {
+                  "EqualTo": "japan_comparative_asia"
+                }
+              }
+            },
             "limit": [
               {
+                "at_most": 2,
                 "where": {
                   "attribute": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "japan_asiancon"
-                      }
+                      "EqualTo": "japan_asiancon"
                     }
                   }
-                },
-                "at_most": 2
+                }
               },
               {
+                "at_most": 1,
                 "where": {
                   "attribute": {
                     "Or": [
                       {
-                        "EqualTo": {
-                          "String": "japan_independent_study"
-                        }
+                        "EqualTo": "japan_independent_study"
                       },
                       {
-                        "EqualTo": {
-                          "String": "japan_seminar"
-                        }
+                        "EqualTo": "japan_seminar"
                       }
                     ]
                   }
-                },
-                "at_most": 1
-              }
-            ],
-            "where": {
-              "attribute": {
-                "Single": {
-                  "EqualTo": {
-                    "String": "japan_comparative_asia"
-                  }
                 }
               }
-            },
+            ],
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -254,36 +249,6 @@
           "requirements": []
         }
       ]
-    },
-    {
-      "name": "FLAC",
-      "message": null,
-      "department_audited": false,
-      "result": {
-        "given": "courses",
-        "what": "courses",
-        "limit": null,
-        "where": {
-          "attribute": {
-            "Single": {
-              "EqualTo": {
-                "String": "japan_flac"
-              }
-            }
-          }
-        },
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
-          }
-        }
-      },
-      "contract": false,
-      "registrar_audited": false,
-      "save": [],
-      "requirements": []
     }
   ],
   "attributes": {

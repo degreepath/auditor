@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Foundation",
+        "type": "requirement",
+        "name": "Foundation",
         "optional": false
       },
       {
-        "requirement": "Core",
+        "type": "requirement",
+        "name": "Core",
         "optional": false
       },
       {
-        "requirement": "Economic Analysis",
+        "type": "requirement",
+        "name": "Economic Analysis",
         "optional": false
       }
     ]
@@ -27,25 +31,33 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "ECON 261"
           },
           {
+            "type": "course",
             "course": "ECON 262"
           },
           {
+            "type": "either",
             "either": [
               {
+                "type": "course",
                 "course": "ECON 263"
               },
               {
+                "type": "both",
                 "both": [
                   {
+                    "type": "course",
                     "course": "STAT 272"
                   },
                   {
+                    "type": "course",
                     "course": "ECON 385"
                   }
                 ]
@@ -64,12 +76,15 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
+            "type": "course",
             "course": "MATH 120"
           },
           {
+            "type": "course",
             "course": "MATH 119"
           }
         ]
@@ -84,31 +99,29 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
-            "requirement": "Level II",
+            "type": "requirement",
+            "name": "Level II",
             "optional": false
           },
           {
-            "requirement": "Level III",
+            "type": "requirement",
+            "name": "Level III",
             "optional": false
           },
           {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "Level II",
-                "optional": false
-              },
-              {
-                "requirement": "Level III",
-                "optional": false
-              }
+              "Level II",
+              "Level III"
             ],
             "what": "courses",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -128,18 +141,17 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "econ_level_2"
-                  }
+                  "EqualTo": "econ_level_2"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -158,18 +170,17 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "courses",
             "what": "courses",
-            "limit": null,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "econ_level_3"
-                  }
+                  "EqualTo": "econ_level_3"
                 }
               }
             },
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -258,19 +269,19 @@
   "emphases": {
     "limits": [
       {
+        "at_most": 0,
         "where": {
+          "graded": {
+            "Single": {
+              "EqualTo": "graded"
+            }
+          },
           "grade": {
             "Single": {
-              "LessThan": {
-                "Float": [
-                  2,
-                  0
-                ]
-              }
+              "LessThan": "C"
             }
           }
-        },
-        "at_most": 0
+        }
       }
     ],
     "choices": [
@@ -279,13 +290,16 @@
         "message": null,
         "department_audited": false,
         "result": {
+          "type": "both",
           "both": [
             {
-              "requirement": "International Economics",
+              "type": "requirement",
+              "name": "International Economics",
               "optional": false
             },
             {
-              "requirement": "Electives",
+              "type": "requirement",
+              "name": "Electives",
               "optional": false
             }
           ]
@@ -299,6 +313,7 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "course",
               "course": "ECON 382"
             },
             "contract": false,
@@ -311,16 +326,20 @@
             "message": "You may also choose an course outside of Economics Department that relates to international topics.",
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": 2,
               "of": [
                 {
+                  "type": "course",
                   "course": "ECON 218"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 243"
                 },
                 {
-                  "requirement": "Non-Econ International Topics",
+                  "type": "requirement",
+                  "name": "Non-Econ International Topics",
                   "optional": false
                 }
               ]
@@ -348,13 +367,16 @@
         "message": null,
         "department_audited": false,
         "result": {
+          "type": "both",
           "both": [
             {
-              "requirement": "Public Policy",
+              "type": "requirement",
+              "name": "Public Policy",
               "optional": false
             },
             {
-              "requirement": "Electives",
+              "type": "requirement",
+              "name": "Electives",
               "optional": false
             }
           ]
@@ -368,6 +390,7 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "course",
               "course": "ECON 371"
             },
             "contract": false,
@@ -380,18 +403,23 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": 3,
               "of": [
                 {
+                  "type": "course",
                   "course": "ECON 242"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 245"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 249"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 385"
                 }
               ]
@@ -408,13 +436,16 @@
         "message": null,
         "department_audited": false,
         "result": {
+          "type": "both",
           "both": [
             {
-              "requirement": "Management",
+              "type": "requirement",
+              "name": "Management",
               "optional": false
             },
             {
-              "requirement": "Electives",
+              "type": "requirement",
+              "name": "Electives",
               "optional": false
             }
           ]
@@ -428,18 +459,23 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": "all",
               "of": [
                 {
+                  "type": "course",
                   "course": "MGMT 225"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 237"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 251"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 383"
                 }
               ]
@@ -454,22 +490,28 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": "any",
               "of": [
                 {
+                  "type": "course",
                   "course": "MGMT 250"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 252"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 256"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 281"
                 },
                 {
-                  "requirement": "Other MGMT Course",
+                  "type": "requirement",
+                  "name": "Other MGMT Course",
                   "optional": false
                 }
               ]
@@ -497,13 +539,16 @@
         "message": null,
         "department_audited": false,
         "result": {
+          "type": "both",
           "both": [
             {
-              "requirement": "Finance",
+              "type": "requirement",
+              "name": "Finance",
               "optional": false
             },
             {
-              "requirement": "Electives",
+              "type": "requirement",
+              "name": "Electives",
               "optional": false
             }
           ]
@@ -517,18 +562,23 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": "all",
               "of": [
                 {
+                  "type": "course",
                   "course": "MGMT 225"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 237"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 281"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 380"
                 }
               ]
@@ -543,34 +593,44 @@
             "message": null,
             "department_audited": false,
             "result": {
+              "type": "count-of",
               "count": "any",
               "of": [
                 {
+                  "type": "both",
                   "both": [
                     {
+                      "type": "course",
                       "course": "MGMT 250"
                     },
                     {
+                      "type": "course",
                       "course": "MGMT 251"
                     }
                   ]
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 252"
                 },
                 {
+                  "type": "course",
                   "course": "MGMT 256"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 371"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 374"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 382"
                 },
                 {
+                  "type": "course",
                   "course": "ECON 385"
                 }
               ]

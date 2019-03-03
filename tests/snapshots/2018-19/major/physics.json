@@ -5,26 +5,32 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Analytics",
+        "type": "requirement",
+        "name": "Analytics",
         "optional": false
       },
       {
-        "requirement": "Modern Physics",
+        "type": "requirement",
+        "name": "Modern Physics",
         "optional": false
       },
       {
-        "requirement": "Upper-Level",
+        "type": "requirement",
+        "name": "Upper-Level",
         "optional": false
       },
       {
-        "requirement": "Upper-Level Elective",
+        "type": "requirement",
+        "name": "Upper-Level Elective",
         "optional": false
       },
       {
-        "requirement": "Elective",
+        "type": "requirement",
+        "name": "Elective",
         "optional": false
       }
     ]
@@ -35,15 +41,19 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "PHYS 130"
           },
           {
+            "type": "course",
             "course": "PHYS 131"
           },
           {
+            "type": "course",
             "course": "PHYS 232"
           }
         ]
@@ -58,12 +68,15 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "PHYS 244"
           },
           {
+            "type": "course",
             "course": "PHYS 245"
           }
         ]
@@ -78,18 +91,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "PHYS 374"
           },
           {
+            "type": "course",
             "course": "PHYS 375"
           },
           {
+            "type": "course",
             "course": "PHYS 385"
           },
           {
+            "type": "course",
             "course": "PHYS 386"
           }
         ]
@@ -104,21 +122,27 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": 1,
         "of": [
           {
+            "type": "course",
             "course": "PHYS 360"
           },
           {
+            "type": "course",
             "course": "PHYS 362"
           },
           {
+            "type": "course",
             "course": "PHYS 376"
           },
           {
+            "type": "course",
             "course": "PHYS 379"
           },
           {
+            "type": "course",
             "course": "PHYS 390"
           }
         ]
@@ -133,18 +157,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "physics_elective"
-              }
+              "EqualTo": "physics_elective"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

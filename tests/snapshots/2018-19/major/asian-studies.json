@@ -5,18 +5,22 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Language",
+        "type": "requirement",
+        "name": "Language",
         "optional": false
       },
       {
-        "requirement": "Seminar",
+        "type": "requirement",
+        "name": "Seminar",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -27,25 +31,22 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Or": [
               {
-                "EqualTo": {
-                  "String": "asian_language_chinese"
-                }
+                "EqualTo": "asian_language_chinese"
               },
               {
-                "EqualTo": {
-                  "String": "asian_language_japanese"
-                }
+                "EqualTo": "asian_language_japanese"
               }
             ]
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -64,18 +65,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "asian_seminar"
-              }
+              "EqualTo": "asian_seminar"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -94,81 +94,68 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
+        "where": {
+          "attribute": {
+            "Single": {
+              "EqualTo": "asian_elective"
+            }
+          }
+        },
         "limit": [
           {
+            "at_most": 2,
             "where": {
               "level": {
                 "Single": {
-                  "EqualTo": {
-                    "Integer": 100
-                  }
+                  "EqualTo": 100
                 }
               }
-            },
-            "at_most": 2
+            }
           },
           {
+            "at_most": 4,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "asian_region_china"
-                  }
+                  "EqualTo": "asian_region_china"
                 }
               }
-            },
-            "at_most": 4
+            }
           },
           {
+            "at_most": 4,
             "where": {
               "attribute": {
                 "Single": {
-                  "EqualTo": {
-                    "String": "asian_region_japan"
-                  }
+                  "EqualTo": "asian_region_japan"
                 }
               }
-            },
-            "at_most": 4
+            }
           },
           {
+            "at_most": 4,
             "where": {
               "institution": {
                 "Single": {
-                  "NotEqualTo": {
-                    "String": "St. Olaf College"
-                  }
+                  "NotEqualTo": "St. Olaf College"
                 }
               },
               "level": {
                 "Or": [
                   {
-                    "EqualTo": {
-                      "Integer": 200
-                    }
+                    "EqualTo": 200
                   },
                   {
-                    "EqualTo": {
-                      "Integer": 300
-                    }
+                    "EqualTo": 300
                   }
                 ]
               }
-            },
-            "at_most": 4
-          }
-        ],
-        "where": {
-          "attribute": {
-            "Single": {
-              "EqualTo": {
-                "String": "asian_elective"
-              }
             }
           }
-        },
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

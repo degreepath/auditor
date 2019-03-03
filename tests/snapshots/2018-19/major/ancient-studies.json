@@ -5,26 +5,32 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Language",
+        "type": "requirement",
+        "name": "Language",
         "optional": false
       },
       {
-        "requirement": "Ancient History",
+        "type": "requirement",
+        "name": "Ancient History",
         "optional": false
       },
       {
-        "requirement": "Classics",
+        "type": "requirement",
+        "name": "Classics",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       },
       {
-        "requirement": "Independent Research",
+        "type": "requirement",
+        "name": "Independent Research",
         "optional": false
       }
     ]
@@ -35,11 +41,14 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "either",
         "either": [
           {
+            "type": "course",
             "course": "LATIN 252"
           },
           {
+            "type": "course",
             "course": "GREEK 253"
           }
         ]
@@ -54,18 +63,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_history"
-              }
+              "EqualTo": "ancient_history"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -84,18 +92,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_classics"
-              }
+              "EqualTo": "ancient_classics"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -114,18 +121,17 @@
       "message": "1 course in Greek may be used as an elective if the student satisfies the required language portion of the major with Latin courses. 1 course in Latin may be used as an elective if the student satisfies the required language portion of the major with Greek courses.",
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_elective"
-              }
+              "EqualTo": "ancient_elective"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -144,18 +150,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "ancient_ir"
-              }
+              "EqualTo": "ancient_ir"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

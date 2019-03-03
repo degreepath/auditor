@@ -5,22 +5,27 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Foundation",
+        "type": "requirement",
+        "name": "Foundation",
         "optional": false
       },
       {
-        "requirement": "Core",
+        "type": "requirement",
+        "name": "Core",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       },
       {
-        "requirement": "Capstone",
+        "type": "requirement",
+        "name": "Capstone",
         "optional": false
       }
     ]
@@ -31,41 +36,53 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "either",
             "either": [
               {
+                "type": "course",
                 "course": "CSCI 121"
               },
               {
+                "type": "course",
                 "course": "CSCI 125"
               }
             ]
           },
           {
+            "type": "course",
             "course": "CSCI 241"
           },
           {
+            "type": "both",
             "both": [
               {
+                "type": "course",
                 "course": "CSCI 251"
               },
               {
+                "type": "course",
                 "course": "CSCI 252"
               }
             ]
           },
           {
+            "type": "count-of",
             "count": 1,
             "of": [
               {
+                "type": "course",
                 "course": "MATH 232"
               },
               {
+                "type": "course",
                 "course": "MATH 252"
               },
               {
+                "type": "course",
                 "course": "MATH 244"
               }
             ]
@@ -82,20 +99,25 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "CS 253"
           },
           {
+            "type": "course",
             "course": "CS 263"
           },
           {
-            "requirement": "Languages",
+            "type": "requirement",
+            "name": "Languages",
             "optional": false
           },
           {
-            "requirement": "Systems",
+            "type": "requirement",
+            "name": "Systems",
             "optional": false
           }
         ]
@@ -109,15 +131,19 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "CSCI 276"
               },
               {
+                "type": "course",
                 "course": "CSCI 333"
               },
               {
+                "type": "course",
                 "course": "CSCI 336"
               }
             ]
@@ -132,15 +158,19 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "CSCI 273"
               },
               {
+                "type": "course",
                 "course": "CSCI 284"
               },
               {
+                "type": "course",
                 "course": "CSCI 300",
                 "grade": null,
                 "section": null,
@@ -163,18 +193,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "csci_elective"
-              }
+              "EqualTo": "csci_elective"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -193,6 +222,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "course",
         "course": "CSCI 390"
       },
       "contract": false,

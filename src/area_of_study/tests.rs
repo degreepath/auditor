@@ -10,14 +10,16 @@ degree: "Bachelor of Arts"
 catalog: 2015-16
 
 result:
+  type: count-of
   count: all
   of:
-    - requirement: Core
-    - requirement: Electives
+    - {type: requirement, name: Core}
+    - {type: requirement, name: Electives}
 
 requirements:
   - name: Core
     result:
+      type: count-of
       count: all
       of:
         - BIO 143
@@ -31,6 +33,7 @@ requirements:
 
   - name: Electives
     result:
+      type: count-of
       count: 2
       of:
         - ESTH 290
@@ -39,7 +42,7 @@ requirements:
         - NEURO 239
         - PSYCH 241
         - PSYCH 247
-        - {count: 1, of: [STAT 110, STAT 212, STAT 214]}
+        - {type: count-of, count: 1, of: [STAT 110, STAT 212, STAT 214]}
 "#;
 
 	let expected_struct = AreaOfStudy {
@@ -53,11 +56,11 @@ requirements:
 			count: count_of::Counter::All,
 			of: vec![
 				Rule::Requirement(req_ref::Rule {
-					requirement: "Core".to_string(),
+					name: "Core".to_string(),
 					optional: false,
 				}),
 				Rule::Requirement(req_ref::Rule {
-					requirement: "Electives".to_string(),
+					name: "Electives".to_string(),
 					optional: false,
 				}),
 			],

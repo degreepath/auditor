@@ -9,21 +9,76 @@ use serde::{Deserialize, Serialize};
 
 use crate::audit::RuleAudit;
 use crate::traits::{print, Util};
-use crate::util;
 
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-#[serde(untagged)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
+#[serde(tag = "type", rename_all = "kebab-case")]
 pub enum Rule {
-	Course(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),
+	Course(course::Rule),
 	Requirement(req_ref::Rule),
 	CountOf(count_of::Rule),
 	Both(both::Rule),
 	Either(either::Rule),
 	Given(given::Rule),
 	Do(action_only::Rule),
+}
+
+impl<'de> Deserialize<'de> for Rule {
+	fn deserialize<D>(deserializer: D) -> Result<Rule, D::Error>
+	where
+		D: serde::de::Deserializer<'de>,
+	{
+		string_or_rule(deserializer)
+	}
+}
+
+pub fn string_or_rule<'de, D>(deserializer: D) -> Result<Rule, D::Error>
+where
+	D: serde::de::Deserializer<'de>,
+{
+	use serde::de::{self, MapAccess, Visitor};
+	use std::fmt;
+	pub struct RuleVisitor;
+
+	impl<'de> Visitor<'de> for RuleVisitor {
+		type Value = Rule;
+
+		fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+			formatter.write_str("string or map")
+		}
+
+		fn visit_str<E>(self, value: &str) -> Result<Rule, E>
+		where
+			E: de::Error,
+		{
+			let course: course::Rule = value.parse().unwrap();
+			Ok(Rule::Course(course))
+		}
+
+		fn visit_map<M>(self, map: M) -> Result<Rule, M::Error>
+		where
+			M: MapAccess<'de>,
+		{
+			#[derive(Deserialize)]
+			#[serde(remote = "Rule")]
+			#[serde(tag = "type", rename_all = "kebab-case")]
+			enum RuleHelper {
+				Course(course::Rule),
+				Requirement(req_ref::Rule),
+				CountOf(count_of::Rule),
+				Both(both::Rule),
+				Either(either::Rule),
+				Given(given::Rule),
+				Do(action_only::Rule),
+			}
+
+			RuleHelper::deserialize(de::value::MapAccessDeserializer::new(map))
+		}
+	}
+
+	deserializer.deserialize_any(RuleVisitor {})
 }
 
 impl print::Print for Rule {

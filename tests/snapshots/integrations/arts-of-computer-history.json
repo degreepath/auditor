@@ -5,41 +5,38 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
+        "type": "either",
         "either": [
           {
+            "type": "course",
             "course": "CS 121"
           },
           {
+            "type": "course",
             "course": "CS 125"
           }
         ]
       },
       {
-        "requirement": "History",
+        "type": "requirement",
+        "name": "History",
         "optional": false
       },
       {
+        "type": "given",
         "given": "these-requirements",
         "requirements": [
-          {
-            "requirement": "X",
-            "optional": false
-          },
-          {
-            "requirement": "Y",
-            "optional": false
-          },
-          {
-            "requirement": "Z",
-            "optional": false
-          }
+          "X",
+          "Y",
+          "Z"
         ],
         "what": "credits",
-        "limit": null,
         "where": null,
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -56,35 +53,39 @@
       "message": "Designed to showcase ideas from the past, both good and bad, and to give you a mental framework about how to evaluate future ideas. \"Those who do not learn from the past are doomed to repeat it.\"",
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "CS 251"
           },
           {
+            "type": "course",
             "course": "CS 252"
           },
           {
+            "type": "course",
             "course": "ART 103"
           },
           {
+            "type": "course",
             "course": "ART 104"
           },
           {
-            "requirement": "A",
+            "type": "requirement",
+            "name": "A",
             "optional": false
           },
           {
+            "type": "given",
             "given": "these-requirements",
             "requirements": [
-              {
-                "requirement": "A",
-                "optional": false
-              }
+              "A"
             ],
             "what": "credits",
-            "limit": null,
             "where": null,
+            "limit": null,
             "do": {
               "lhs": "Count",
               "op": "GreaterThanEqualTo",
@@ -107,24 +108,31 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "ART 231"
               },
               {
+                "type": "course",
                 "course": "ART 241"
               },
               {
+                "type": "course",
                 "course": "HIST 105"
               },
               {
+                "type": "course",
                 "course": "HIST 206"
               },
               {
+                "type": "course",
                 "course": "CLASS 110"
               },
               {
+                "type": "course",
                 "course": "GCON 203"
               }
             ]
@@ -141,18 +149,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
+            "type": "course",
             "course": "AMCON 101"
           },
           {
+            "type": "course",
             "course": "GCON 101"
           },
           {
+            "type": "course",
             "course": "ENVST 150"
           },
           {
+            "type": "course",
             "course": "NURS 310"
           }
         ]
@@ -167,18 +180,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": null,
         "where": {
           "gereqs": {
             "Single": {
-              "EqualTo": {
-                "String": "WRI"
-              }
+              "EqualTo": "WRI"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

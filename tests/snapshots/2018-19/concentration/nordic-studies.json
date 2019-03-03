@@ -5,14 +5,17 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Language",
+        "type": "requirement",
+        "name": "Language",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -23,18 +26,23 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "any",
         "of": [
           {
+            "type": "course",
             "course": "NORW 232"
           },
           {
+            "type": "course",
             "course": "NORW 253"
           },
           {
+            "type": "course",
             "course": "NORW 371"
           },
           {
+            "type": "course",
             "course": "NORW 372"
           }
         ]
@@ -49,43 +57,38 @@
       "message": "Up to three courses from study abroad programs such as DIS, HECUA: The New Norway, and university direct-enroll programs may be counted toward the Nordic studies concentration\n",
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "courses",
         "what": "courses",
-        "limit": [
-          {
-            "where": {
-              "attribute": {
-                "Single": {
-                  "EqualTo": {
-                    "String": "nordic_focus_norway"
-                  }
-                }
-              }
-            },
-            "at_most": 3
-          },
-          {
-            "where": {
-              "department": {
-                "Single": {
-                  "EqualTo": {
-                    "String": "NORW"
-                  }
-                }
-              }
-            },
-            "at_most": 2
-          }
-        ],
         "where": {
           "attribute": {
             "Single": {
-              "EqualTo": {
-                "String": "nordic_elective"
-              }
+              "EqualTo": "nordic_elective"
             }
           }
         },
+        "limit": [
+          {
+            "at_most": 3,
+            "where": {
+              "attribute": {
+                "Single": {
+                  "EqualTo": "nordic_focus_norway"
+                }
+              }
+            }
+          },
+          {
+            "at_most": 2,
+            "where": {
+              "subject": {
+                "Single": {
+                  "EqualTo": "NORW"
+                }
+              }
+            }
+          }
+        ],
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -156,16 +159,14 @@
   },
   "limits": [
     {
+      "at_most": 1,
       "where": {
-        "s/u": {
+        "graded": {
           "Single": {
-            "EqualTo": {
-              "Bool": true
-            }
+            "EqualTo": "su"
           }
         }
-      },
-      "at_most": 1
+      }
     }
   ],
   "emphases": null

@@ -5,30 +5,37 @@
   "institution": null,
   "catalog": "2014-15",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Language-Intensive Courses (Theory)",
+        "type": "requirement",
+        "name": "Language-Intensive Courses (Theory)",
         "optional": false
       },
       {
-        "requirement": "Movement-Intensive Courses (Technique)",
+        "type": "requirement",
+        "name": "Movement-Intensive Courses (Technique)",
         "optional": false
       },
       {
-        "requirement": "Senior Dance Seminar",
+        "type": "requirement",
+        "name": "Senior Dance Seminar",
         "optional": false
       },
       {
-        "requirement": "Area of Speciality",
+        "type": "requirement",
+        "name": "Area of Speciality",
         "optional": false
       },
       {
-        "requirement": "Dance Companies",
+        "type": "requirement",
+        "name": "Dance Companies",
         "optional": false
       },
       {
-        "requirement": "Productions",
+        "type": "requirement",
+        "name": "Productions",
         "optional": false
       }
     ]
@@ -39,24 +46,31 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "count-of",
         "count": "all",
         "of": [
           {
+            "type": "course",
             "course": "DANCE 100"
           },
           {
+            "type": "course",
             "course": "DANCE 124"
           },
           {
+            "type": "course",
             "course": "DANCE 150"
           },
           {
+            "type": "course",
             "course": "DANCE 231"
           },
           {
+            "type": "course",
             "course": "DANCE 246"
           },
           {
+            "type": "course",
             "course": "DANCE 270"
           }
         ]
@@ -71,28 +85,17 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-requirements",
         "requirements": [
-          {
-            "requirement": "Ballet",
-            "optional": false
-          },
-          {
-            "requirement": "International and Social",
-            "optional": false
-          },
-          {
-            "requirement": "Modern",
-            "optional": false
-          },
-          {
-            "requirement": "Other Topics",
-            "optional": false
-          }
+          "Ballet",
+          "International and Social",
+          "Modern",
+          "Other Topics"
         ],
         "what": "credits",
-        "limit": null,
         "where": null,
+        "limit": null,
         "do": {
           "lhs": "Sum",
           "op": "GreaterThanEqualTo",
@@ -113,37 +116,48 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "DANCE 121"
               },
               {
+                "type": "either",
                 "either": [
                   {
+                    "type": "course",
                     "course": "DANCE 130"
                   },
                   {
+                    "type": "course",
                     "course": "DANCE 131"
                   }
                 ]
               },
               {
+                "type": "either",
                 "either": [
                   {
+                    "type": "course",
                     "course": "DANCE 220"
                   },
                   {
+                    "type": "course",
                     "course": "DANCE 221"
                   }
                 ]
               },
               {
+                "type": "either",
                 "either": [
                   {
+                    "type": "course",
                     "course": "DANCE 320"
                   },
                   {
+                    "type": "course",
                     "course": "DANCE 321"
                   }
                 ]
@@ -160,24 +174,31 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "DANCE 106"
               },
               {
+                "type": "course",
                 "course": "DANCE 108"
               },
               {
+                "type": "course",
                 "course": "DANCE 109"
               },
               {
+                "type": "course",
                 "course": "DANCE 206"
               },
               {
+                "type": "course",
                 "course": "DANCE 207"
               },
               {
+                "type": "course",
                 "course": "DANCE 209"
               }
             ]
@@ -192,37 +213,48 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "DANCE 111"
               },
               {
+                "type": "either",
                 "either": [
                   {
+                    "type": "course",
                     "course": "DANCE 210"
                   },
                   {
+                    "type": "course",
                     "course": "DANCE 211"
                   }
                 ]
               },
               {
+                "type": "either",
                 "either": [
                   {
+                    "type": "course",
                     "course": "DANCE 250"
                   },
                   {
+                    "type": "course",
                     "course": "DANCE 251"
                   }
                 ]
               },
               {
+                "type": "either",
                 "either": [
                   {
+                    "type": "course",
                     "course": "DANCE 310"
                   },
                   {
+                    "type": "course",
                     "course": "DANCE 311"
                   }
                 ]
@@ -239,21 +271,27 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "count-of",
             "count": "any",
             "of": [
               {
+                "type": "course",
                 "course": "DANCE 107"
               },
               {
+                "type": "course",
                 "course": "DANCE 112"
               },
               {
+                "type": "course",
                 "course": "DANCE 113"
               },
               {
+                "type": "course",
                 "course": "DANCE 141"
               },
               {
+                "type": "course",
                 "course": "DANCE 160"
               }
             ]
@@ -270,6 +308,7 @@
       "message": "Must be taken fall of senior year. Final projects may take the form of a research paper, performance, choreography, or blended project.",
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {
@@ -278,23 +317,19 @@
         ],
         "repeats": "last",
         "what": "courses",
-        "limit": null,
         "where": {
           "semester": {
             "Single": {
-              "EqualTo": {
-                "String": "Fall"
-              }
+              "EqualTo": "Fall"
             }
           },
           "year": {
             "Single": {
-              "EqualTo": {
-                "String": "$senior-year"
-              }
+              "EqualTo": "senior-year"
             }
           }
         },
+        "limit": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",

@@ -52,10 +52,7 @@ impl print::Print for SaveBlock {
 
 				let req_names = requirements
 					.iter()
-					.filter_map(|r| match r.print() {
-						Ok(p) => Some(p),
-						Err(_) => None,
-					})
+					.map(|r| format!("“{}”", r))
 					.collect::<Vec<String>>()
 					.oxford("and");
 

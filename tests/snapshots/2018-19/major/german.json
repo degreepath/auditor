@@ -5,22 +5,27 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
+    "type": "count-of",
     "count": "all",
     "of": [
       {
-        "requirement": "Speaking and Writing",
+        "type": "requirement",
+        "name": "Speaking and Writing",
         "optional": false
       },
       {
-        "requirement": "The Francophone World",
+        "type": "requirement",
+        "name": "The Francophone World",
         "optional": false
       },
       {
-        "requirement": "Level III",
+        "type": "requirement",
+        "name": "Level III",
         "optional": false
       },
       {
-        "requirement": "Electives",
+        "type": "requirement",
+        "name": "Electives",
         "optional": false
       }
     ]
@@ -31,6 +36,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {
@@ -45,21 +51,19 @@
         ],
         "repeats": "first",
         "what": "courses",
+        "where": null,
         "limit": [
           {
+            "at_most": 1,
             "where": {
               "institution": {
                 "Single": {
-                  "NotEqualTo": {
-                    "String": "St. Olaf College"
-                  }
+                  "NotEqualTo": "St. Olaf College"
                 }
               }
-            },
-            "at_most": 1
+            }
           }
         ],
-        "where": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -78,6 +82,7 @@
       "message": null,
       "department_audited": false,
       "result": {
+        "type": "given",
         "given": "these-courses",
         "courses": [
           {
@@ -95,21 +100,19 @@
         ],
         "repeats": "first",
         "what": "courses",
+        "where": null,
         "limit": [
           {
+            "at_most": 1,
             "where": {
               "institution": {
                 "Single": {
-                  "NotEqualTo": {
-                    "String": "St. Olaf College"
-                  }
+                  "NotEqualTo": "St. Olaf College"
                 }
               }
-            },
-            "at_most": 1
+            }
           }
         ],
-        "where": null,
         "do": {
           "lhs": "Count",
           "op": "GreaterThanEqualTo",
@@ -128,11 +131,14 @@
       "message": "This course will preferably be taken in the student's senior year.",
       "department_audited": false,
       "result": {
+        "type": "either",
         "either": [
           {
+            "type": "course",
             "course": "GERM 371"
           },
           {
+            "type": "course",
             "course": "GERM 372"
           }
         ]
@@ -147,52 +153,23 @@
       "message": null,
       "department_audited": false,
       "result": {
-        "both": [
-          {
-            "count": "any",
-            "of": [
-              {
-                "requirement": "Language",
-                "optional": true
-              },
-              {
-                "requirement": "Interim In German",
-                "optional": true
-              },
-              {
-                "requirement": "In Translation",
-                "optional": true
-              }
-            ]
-          },
-          {
-            "given": "these-requirements",
-            "requirements": [
-              {
-                "requirement": "Langauge",
-                "optional": false
-              },
-              {
-                "requirement": "Interim In German",
-                "optional": false
-              },
-              {
-                "requirement": "In Translation",
-                "optional": false
-              }
-            ],
-            "what": "courses",
-            "limit": null,
-            "where": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 3
-              }
-            }
+        "type": "given",
+        "given": "these-requirements",
+        "requirements": [
+          "Langauge",
+          "Interim In German",
+          "In Translation"
+        ],
+        "what": "courses",
+        "where": null,
+        "limit": null,
+        "do": {
+          "lhs": "Count",
+          "op": "GreaterThanEqualTo",
+          "rhs": {
+            "Integer": 3
           }
-        ]
+        }
       },
       "contract": false,
       "registrar_audited": false,
@@ -203,6 +180,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "course",
             "course": "GERM 232"
           },
           "contract": false,
@@ -225,6 +203,7 @@
           "message": null,
           "department_audited": false,
           "result": {
+            "type": "given",
             "given": "these-courses",
             "courses": [
               {
@@ -284,21 +263,19 @@
             ],
             "repeats": "first",
             "what": "courses",
+            "where": null,
             "limit": [
               {
+                "at_most": 1,
                 "where": {
                   "institution": {
                     "Single": {
-                      "EqualTo": {
-                        "String": "St. Olaf College"
-                      }
+                      "EqualTo": "St. Olaf College"
                     }
                   }
-                },
-                "at_most": 1
+                }
               }
             ],
-            "where": null,
             "do": {
               "lhs": "Count",
               "op": "EqualTo",

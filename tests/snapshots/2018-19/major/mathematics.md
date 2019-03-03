@@ -1,26 +1,14 @@
 > This is the set of requirements for the 2018-19 Bachelor of Arts “Mathematics” major from St. Olaf College.
 
 # Mathematics
-For this major, you must both:
+For this major, you must complete all of the following requirements:
 
-- complete all of the following requirements:
-    - “Basics”
-    - “Transitions”
-    - “Perspectives”
-    - “Interdisciplinary” (optional)
-    - “Sequence”
-    - “Level III”
-
-- and have the following be true:
-    1. given the results of the following requirements
-        - “Basics”
-        - “Transitions”
-        - “Perspectives”
-        - “Interdisciplinary”
-        - “Sequence”
-        - “Level III”
-    2. restricted to only courses taken at St. Olaf College,
-    3. there must be at least six courses
+- “Basics”
+- “Transitions”
+- “Perspectives”
+- “Interdisciplinary”
+- “Sequence”
+- “Level III”
 
 ## Basics
 For this requirement, you must do all of the following:
@@ -58,7 +46,7 @@ For this requirement, you must take at least one course with the “math_perspec
 
 
 ## Interdisciplinary
-For this section, you must complete one requirement from among “Chemistry”, “Economics”, or “Physics”.
+For this section, you must complete zero requirements from among “Chemistry”, “Economics”, or “Physics”.
 
 ### Chemistry
 For this requirement, you must both take CHEM 371 and declare one “Chemistry” major.
@@ -71,7 +59,9 @@ For this requirement, you must both take PHYS 375 and declare one “Physics” 
 
 
 ## Level III
-For this requirement, you must take at least two courses with the “math_level_3” attribute.
+For this requirement, you must take at least two courses with the “math_level_3” attribute, subject to the following restrictions:
+
+- At most 1 course may be taken outside of the MATH subject code
 
 
 ## Sequence

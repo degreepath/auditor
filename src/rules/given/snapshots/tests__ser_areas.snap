@@ -1,5 +1,5 @@
 ---
-created: "2019-02-27T18:15:38.822843Z"
+created: "2019-03-03T17:30:19.986351Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
@@ -7,10 +7,8 @@ expression: data
 {
   "given": "areas",
   "what": areas,
-  "limit": Some([
-  ]),
-  "where": Some({
-  }),
+  "where": Some(AreaClause(
+  )),
   "do": Action(
     lhs: Count,
     op: Some(GreaterThan),
