@@ -18,6 +18,26 @@ pub struct Term {
 	pub semester: Semester,
 }
 
+impl std::str::FromStr for Term {
+	type Err = crate::util::ParseError;
+
+	fn from_str(s: &str) -> Result<Self, Self::Err> {
+		use crate::util::ParseError;
+
+		let parts: Vec<&str> = s.split('-').collect();
+
+		match parts.as_slice() {
+			[year, semester] => {
+				match (year.parse::<u16>(), semester.parse::<Semester>()) {
+					(Ok(year), Ok(semester)) => Ok(Term {year, semester}),
+					_ => Err(ParseError::InvalidValue),
+				}
+			}
+			_ => Err(ParseError::InvalidValue),
+		}
+	}
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Semester {
 	Fall,

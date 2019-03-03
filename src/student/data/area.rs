@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AreaDescriptor {
-	name: String,
+	pub name: String,
 	#[serde(flatten)]
-	area_type: AreaType,
-	catalog: String,
+	pub area_type: AreaType,
+	pub catalog: String,
 }

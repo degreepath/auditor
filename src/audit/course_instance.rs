@@ -62,7 +62,7 @@ impl CourseInstance {
 	}
 
 	#[allow(dead_code)]
-	pub fn matches_filter(&self, filter: &CourseClause) -> MatchedParts {
+	pub fn matches_filter(&self, _filter: &CourseClause) -> MatchedParts {
 		let result: BTreeMap<String, MatchType<Val>> = BTreeMap::new();
 		// self
 		// .iter()

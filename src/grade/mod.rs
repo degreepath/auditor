@@ -5,16 +5,25 @@ use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Clone, Eq, Serialize, Deserialize, Hash, PartialOrd, Ord)]
 pub enum Grade {
+	#[serde(rename="A+")]
+	Aplus,
 	A,
+	#[serde(rename="A-")]
 	Aminus,
+	#[serde(rename="B+")]
 	Bplus,
 	B,
+	#[serde(rename="B-")]
 	Bminus,
+	#[serde(rename="C+")]
 	Cplus,
 	C,
+	#[serde(rename="C-")]
 	Cminus,
+	#[serde(rename="D+")]
 	Dplus,
 	D,
+	#[serde(rename="D-")]
 	Dminus,
 	F,
 }
@@ -24,6 +33,7 @@ impl Grade {
 		use Grade::*;
 
 		match &self {
+			Aplus => [4, 30],
 			A => [4, 00],
 			Aminus => [3, 70],
 			Bplus => [3, 30],
@@ -48,6 +58,7 @@ impl FromStr for Grade {
 		let s = s.trim();
 
 		match s {
+			"A+" => Ok(Aplus),
 			"A" => Ok(A),
 			"A-" => Ok(Aminus),
 			"B+" => Ok(Bplus),
@@ -76,6 +87,7 @@ impl From<&Grade> for String {
 	fn from(g: &Grade) -> Self {
 		use Grade::*;
 		match g {
+			Aplus => String::from("A+"),
 			A => String::from("A"),
 			Aminus => String::from("A-"),
 			Bplus => String::from("B+"),

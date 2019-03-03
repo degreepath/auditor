@@ -38,13 +38,13 @@ fn main() {
 		.areas
 		.par_iter()
 		.map(|descriptor| {
-			let name = descriptor.get("name").and_then(|v| v.as_string()).unwrap();
-			let kind = descriptor.get("type").and_then(|v| v.as_string()).unwrap();
-			let catalog = descriptor.get("catalog").and_then(|v| v.as_string()).unwrap();
+			let name = descriptor.name.clone();
+			let kind = descriptor.area_type.clone();
+			let catalog = descriptor.catalog.clone();
 
 			let area = area_contentses
 				.iter()
-				.find(|area| area.area_name == name && area.area_type.to_string() == kind && area.catalog == catalog)
+				.find(|area| area.area_name == name && area.area_type == kind && area.catalog == catalog)
 				.expect(&format!("an area matching {}, {}, {}", name, kind, catalog));
 
 			area.clone()

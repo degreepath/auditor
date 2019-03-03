@@ -1,7 +1,7 @@
 use super::{Term, Semester};
 use crate::grade::Grade;
 use decorum::R32;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de::Deserializer};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CourseInstance {
@@ -11,13 +11,23 @@ pub struct CourseInstance {
 	pub number: u64,
 	pub section: Option<String>,
 	pub grade: GradeOption,
+	#[serde(deserialize_with = "crate::util::string_or_struct_parseerror")]
 	pub term: Term,
+	#[serde(deserialize_with = "float_to_decorum")]
 	pub credits: R32,
 	#[serde(default)]
 	pub gereqs: Vec<String>,
 	#[serde(default)]
 	pub attributes: Vec<String>,
 	pub name: String,
+}
+
+pub fn float_to_decorum<'de, D>(deserializer: D) -> Result<R32, D::Error>
+where
+	D: Deserializer<'de>,
+{
+	let v = f32::deserialize(deserializer)?;
+	Ok(R32::from(v))
 }
 
 impl CourseInstance {
@@ -50,7 +60,7 @@ pub enum CourseType {
 
 /// If the `Option` here is `None`, then the course is in-progress
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[serde(rename = "kebab-case", tag = "mode")]
+#[serde(rename_all = "kebab-case", tag = "mode")]
 pub enum GradeOption {
 	Graded { grade: Option<Grade> },
 	Audit { passed: Option<bool> },

@@ -219,7 +219,7 @@ impl Rule {
 		mode: &RepeatMode,
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
-		limit: &Option<Vec<Limiter>>,
+		_limit: &Option<Vec<Limiter>>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
@@ -378,7 +378,7 @@ impl Rule {
 		requirements: &[req_ref::Rule],
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
-		limit: &Option<Vec<Limiter>>,
+		_limit: &Option<Vec<Limiter>>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
@@ -520,7 +520,7 @@ impl Rule {
 		save: &str,
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
-		limit: &Option<Vec<Limiter>>,
+		_limit: &Option<Vec<Limiter>>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
