@@ -1,12 +1,12 @@
 use super::Limiter;
 use crate::filter;
 use crate::value::WrappedValue;
-use maplit::btreemap;
 
 #[test]
 fn serialize_level100() {
-	let clause: filter::Clause = btreemap! {
-		"level".into() => "100".parse::<WrappedValue>().unwrap(),
+	let clause = filter::CourseClause {
+		level: Some("100".parse::<WrappedValue<u64>>().unwrap()),
+		..filter::CourseClause::default()
 	};
 
 	let data = Limiter {
@@ -29,8 +29,9 @@ at_most: 2"#;
 
 #[test]
 fn serialize_not_math() {
-	let clause: filter::Clause = btreemap! {
-		"department".into() => "! MATH".parse::<WrappedValue>().unwrap(),
+	let clause = filter::CourseClause {
+		subject: Some("! MATH".parse::<WrappedValue<String>>().unwrap()),
+		..filter::CourseClause::default()
 	};
 
 	let data = Limiter {
@@ -40,7 +41,7 @@ fn serialize_not_math() {
 
 	let expected = r#"---
 where:
-  department:
+  subject:
     Single:
       NotEqualTo:
         String: MATH
@@ -53,8 +54,9 @@ at_most: 2"#;
 
 #[test]
 fn deserialize_level100() {
-	let clause: filter::Clause = btreemap! {
-		"level".into() => "100".parse::<WrappedValue>().unwrap(),
+	let clause = filter::CourseClause {
+		level: Some("100".parse::<WrappedValue<u64>>().unwrap()),
+		..filter::CourseClause::default()
 	};
 
 	let expected = Limiter {
@@ -65,6 +67,15 @@ fn deserialize_level100() {
 	let data = r#"---
 where:
   level: "100"
+at_most: 2"#;
+
+	let actual: Limiter = serde_yaml::from_str(&data).unwrap();
+
+	assert_eq!(actual, expected);
+
+	let data = r#"---
+where:
+  level: 100
 at_most: 2"#;
 
 	let actual: Limiter = serde_yaml::from_str(&data).unwrap();

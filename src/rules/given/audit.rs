@@ -1,7 +1,9 @@
 use super::Given;
 use crate::audit::{ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails};
 use crate::filter::{match_area_against_filter, match_course_against_filter};
-use crate::limit::{apply_limits_to_areas, apply_limits_to_courses};
+use crate::filter::{AreaClause, CourseClause};
+use crate::limit::apply_limits_to_courses;
+use crate::limit::Limiter;
 use crate::rules::{req_ref, Rule as AnyRule};
 use crate::student::AreaDescriptor;
 
@@ -34,25 +36,38 @@ impl super::Rule {
 impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
 		match &self.given {
-			Given::AllCourses { .. } => {
+			Given::AllCourses { filter, limit, .. } => {
 				let data = self.in_all_courses(input);
-				self.check_for_courses(input, &data)
+				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::TheseCourses { courses, repeats, .. } => {
+			Given::TheseCourses {
+				courses,
+				repeats,
+				filter,
+				limit,
+				..
+			} => {
 				let data = self.in_these_courses(input, courses, repeats);
-				self.check_for_courses(input, &data)
+				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::TheseRequirements { requirements, .. } => {
+			Given::TheseRequirements {
+				requirements,
+				filter,
+				limit,
+				..
+			} => {
 				let data = self.in_requirements_out_courses(input, requirements);
-				self.check_for_courses(input, &data)
+				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::NamedVariable { save, .. } => {
+			Given::NamedVariable {
+				save, filter, limit, ..
+			} => {
 				let data = self.in_variable_out_courses(input, save);
-				self.check_for_courses(input, &data)
+				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::Areas { .. } => {
+			Given::Areas { filter, .. } => {
 				let data = self.in_areas(input);
-				self.check_for_areas(input, &data)
+				self.check_for_areas(input, &data, filter)
 			}
 			Given::Performances { .. } => unimplemented!("performances"),
 			Given::Attendances { .. } => unimplemented!("attendances"),
@@ -63,19 +78,19 @@ impl RuleAudit for super::Rule {
 use crate::audit::rule_result::{GivenOutput, GivenOutputType};
 
 impl super::Rule {
-	fn check_for_areas(&self, _input: &RuleInput, areas: &[AreaDescriptor]) -> RuleResult {
+	fn check_for_areas(&self, _input: &RuleInput, areas: &[AreaDescriptor], filter: &Option<AreaClause>) -> RuleResult {
 		let mut areas: Vec<_> = areas.to_vec();
 
-		if let Some(filter) = &self.filter {
+		if let Some(filter) = &filter {
 			areas = areas
 				.into_iter()
 				.filter(|area| match_area_against_filter(&area, &filter))
 				.collect();
 		}
 
-		if let Some(limits) = &self.limit {
-			areas = apply_limits_to_areas(&limits, &areas);
-		}
+		// if let Some(limits) = &limit {
+		// 	areas = apply_limits_to_areas(&limits, &areas);
+		// }
 
 		let status = self.action.compute_with_areas(&areas).status;
 
@@ -88,10 +103,16 @@ impl super::Rule {
 		}
 	}
 
-	fn check_for_courses(&self, _input: &RuleInput, courses: &ReservedPairings) -> RuleResult {
+	fn check_for_courses(
+		&self,
+		_input: &RuleInput,
+		courses: &ReservedPairings,
+		filter: &Option<CourseClause>,
+		limit: &Option<Vec<Limiter>>,
+	) -> RuleResult {
 		let mut courses: Vec<_> = courses.iter().cloned().collect();
 
-		if let Some(filter) = &self.filter {
+		if let Some(filter) = &filter {
 			courses = courses
 				.into_iter()
 				.filter_map(|(course, _)| match match_course_against_filter(&course, &filter) {
@@ -102,7 +123,7 @@ impl super::Rule {
 		}
 
 		let mut only_the_courses: Vec<_> = courses.iter().map(|(c, _)| c).cloned().collect();
-		if let Some(limits) = &self.limit {
+		if let Some(limits) = &limit {
 			only_the_courses = apply_limits_to_courses(&limits, &only_the_courses);
 		}
 
@@ -136,16 +157,16 @@ impl super::Rule {
 			RepeatMode::First => {
 				// sort by term; take the first occurrence of each course
 				let mut courses = courses;
-				courses.sort_unstable_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
-				courses.dedup_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
+				courses.sort_unstable_by_key(|c| (c.course.clone(), c.term.clone()));
+				courses.dedup_by_key(|c| (c.course.clone(), c.term.clone()));
 				courses
 			}
 			RepeatMode::Last => {
 				// sort by term; take the last occurrence of each course
 				let mut courses = courses;
-				courses.sort_unstable_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
+				courses.sort_unstable_by_key(|c| (c.course.clone(), c.term.clone()));
 				courses.reverse();
-				courses.dedup_by_key(|c| (c.get("course").cloned(), c.get("term").cloned()));
+				courses.dedup_by_key(|c| (c.course.clone(), c.term.clone()));
 				courses
 			}
 		};

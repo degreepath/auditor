@@ -28,7 +28,7 @@ pub struct AreaOfStudy {
 	pub emphases: Option<Emphases>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialOrd, Ord, PartialEq, Eq)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 #[serde(tag = "type", rename_all = "lowercase")]
 pub enum AreaType {
 	Degree,

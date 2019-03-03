@@ -3,9 +3,10 @@ use super::{
 	GivenPerformancesWhatOptions, RepeatMode, Rule,
 };
 use crate::action;
+use crate::filter::{AreaClause, AttendanceClause, CourseClause, PerformanceClause};
+use crate::limit::Limiter;
 use crate::rules::req_ref;
-use crate::traits::print;
-use crate::traits::print::Print;
+use crate::traits::print::{self, Print};
 use crate::util::Oxford;
 
 impl print::Print for Rule {
@@ -15,19 +16,29 @@ impl print::Print for Rule {
 		let mut output = String::new();
 
 		let rule = match &self.given {
-			Given::AllCourses { what } => self.print_given_all_courses(what)?,
+			Given::AllCourses { what, filter, limit } => self.print_given_all_courses(what, filter, limit)?,
 			Given::TheseCourses {
 				what,
 				courses,
 				repeats: mode,
-			} => self.print_given_these_courses(courses, mode, what)?,
-			Given::TheseRequirements { what, requirements } => {
-				self.print_given_these_requirements(requirements, what)?
-			}
-			Given::Areas { what } => self.print_given_areas(what)?,
-			Given::NamedVariable { save, what } => self.print_given_save(save, what)?,
-			Given::Performances { what } => self.print_given_performances(what)?,
-			Given::Attendances { what } => self.print_given_attendances(what)?,
+				filter,
+				limit,
+			} => self.print_given_these_courses(courses, mode, what, filter, limit)?,
+			Given::TheseRequirements {
+				what,
+				requirements,
+				filter,
+				limit,
+			} => self.print_given_these_requirements(requirements, what, filter, limit)?,
+			Given::NamedVariable {
+				save,
+				what,
+				filter,
+				limit,
+			} => self.print_given_save(save, what, filter, limit)?,
+			Given::Areas { what, filter } => self.print_given_areas(what, filter)?,
+			Given::Performances { what, filter } => self.print_given_performances(what, filter)?,
+			Given::Attendances { what, filter } => self.print_given_attendances(what, filter)?,
 		};
 
 		write!(&mut output, "{}", rule)?;
@@ -37,17 +48,22 @@ impl print::Print for Rule {
 }
 
 impl Rule {
-	fn print_given_all_courses(&self, what: &GivenCoursesWhatOptions) -> print::Result {
+	fn print_given_all_courses(
+		&self,
+		what: &GivenCoursesWhatOptions,
+		filter: &Option<CourseClause>,
+		limit: &Option<Vec<Limiter>>,
+	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 		let action = self.action.print()?;
-		let filter = match &self.filter {
+		let filter = match &filter {
 			Some(f) => format!(" {}", f.print()?),
 			None => "".to_string(),
 		};
-		let limits = if let Some(limits) = &self.limit {
+		let limits = if let Some(limits) = &limit {
 			let stringified = limits
 				.iter()
 				.map(|l| format!("at most {} {}", l.at_most, l.filter.print().unwrap()))
@@ -127,12 +143,12 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_areas(&self, what: &GivenAreasWhatOptions) -> print::Result {
+	fn print_given_areas(&self, what: &GivenAreasWhatOptions, filter: &Option<AreaClause>) -> print::Result {
 		use std::fmt::Write;
 		use GivenAreasWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &self.filter {
+		let filter = match &filter {
 			Some(f) => format!(" {}", f.print()?),
 			None => "".to_string(),
 		};
@@ -149,12 +165,16 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_performances(&self, what: &GivenPerformancesWhatOptions) -> print::Result {
+	fn print_given_performances(
+		&self,
+		what: &GivenPerformancesWhatOptions,
+		filter: &Option<PerformanceClause>,
+	) -> print::Result {
 		use std::fmt::Write;
 		use GivenPerformancesWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &self.filter {
+		let filter = match &filter {
 			Some(f) => format!(" {}", f.print()?),
 			None => "".to_string(),
 		};
@@ -169,12 +189,16 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_attendances(&self, what: &GivenAttendancesWhatOptions) -> print::Result {
+	fn print_given_attendances(
+		&self,
+		what: &GivenAttendancesWhatOptions,
+		filter: &Option<AttendanceClause>,
+	) -> print::Result {
 		use std::fmt::Write;
 		use GivenAttendancesWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &self.filter {
+		let filter = match &filter {
 			Some(f) => format!(" {}", f.print()?),
 			None => "".to_string(),
 		};
@@ -194,12 +218,14 @@ impl Rule {
 		courses: &[CourseRule],
 		mode: &RepeatMode,
 		what: &GivenCoursesWhatOptions,
+		filter: &Option<CourseClause>,
+		limit: &Option<Vec<Limiter>>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &self.filter {
+		let filter = match &filter {
 			Some(f) => Some(format!(" {}", f.print()?)),
 			None => None,
 		};
@@ -351,6 +377,8 @@ impl Rule {
 		&self,
 		requirements: &[req_ref::Rule],
 		what: &GivenCoursesWhatOptions,
+		filter: &Option<CourseClause>,
+		limit: &Option<Vec<Limiter>>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
@@ -394,7 +422,7 @@ impl Rule {
 			}
 		};
 
-		match &self.filter {
+		match &filter {
 			Some(f) => {
 				index += 1;
 				writeln!(
@@ -487,12 +515,18 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_save(&self, save: &str, what: &GivenCoursesWhatOptions) -> print::Result {
+	fn print_given_save(
+		&self,
+		save: &str,
+		what: &GivenCoursesWhatOptions,
+		filter: &Option<CourseClause>,
+		limit: &Option<Vec<Limiter>>,
+	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &self.filter {
+		let filter = match &filter {
 			Some(f) => format!(" taken {}", f.print()?),
 			None => "".to_string(),
 		};

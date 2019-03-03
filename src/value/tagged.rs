@@ -1,6 +1,4 @@
-use super::SingleValue;
 use crate::action::Operator;
-use crate::filterable_data::DataValue;
 use crate::traits::print;
 use crate::util;
 use serde::{Deserialize, Serialize};
@@ -8,45 +6,39 @@ use std::fmt;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord, Hash)]
-pub enum TaggedValue {
-	LessThan(SingleValue),
-	LessThanEqualTo(SingleValue),
-	EqualTo(SingleValue),
-	GreaterThan(SingleValue),
-	GreaterThanEqualTo(SingleValue),
-	NotEqualTo(SingleValue),
+pub enum TaggedValue<T> {
+	LessThan(T),
+	LessThanEqualTo(T),
+	EqualTo(T),
+	GreaterThan(T),
+	GreaterThanEqualTo(T),
+	NotEqualTo(T),
 }
 
-impl TaggedValue {
-	// TODO: remove this method
-	pub fn is_true(&self) -> bool {
-		match &self {
-			TaggedValue::EqualTo(v) => *v == true,
-			_ => false,
-		}
-	}
-
+impl TaggedValue<String> {
 	pub fn eq_string(s: &str) -> Self {
-		TaggedValue::EqualTo(SingleValue::String(s.to_string()))
-	}
-
-	pub fn eq_value(s: &DataValue) -> Self {
-		match s {
-			DataValue::String(s) => TaggedValue::EqualTo(SingleValue::String(s.clone())),
-			DataValue::Integer(s) => TaggedValue::EqualTo(SingleValue::Integer(*s)),
-			DataValue::Float(s) => TaggedValue::EqualTo(SingleValue::Float(*s)),
-			DataValue::Boolean(s) => TaggedValue::EqualTo(SingleValue::Bool(*s)),
-			_ => unimplemented!(),
-		}
+		TaggedValue::EqualTo(s.to_string())
 	}
 }
 
-impl FromStr for TaggedValue {
+// impl<T> TaggedValue<T> {
+// 	pub fn eq_value(s: &DataValue) -> Self {
+// 		match s {
+// 			DataValue::String(s) => TaggedValue::EqualTo(SingleValue::String(s.clone())),
+// 			DataValue::Integer(s) => TaggedValue::EqualTo(SingleValue::Integer(*s)),
+// 			DataValue::Float(s) => TaggedValue::EqualTo(SingleValue::Float(*s)),
+// 			DataValue::Boolean(s) => TaggedValue::EqualTo(SingleValue::Bool(*s)),
+// 			_ => unimplemented!(),
+// 		}
+// 	}
+// }
+
+impl<T: FromStr> FromStr for TaggedValue<T> {
 	type Err = util::ParseError;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		match s.get(0..1) {
-			Some("!") | Some("<") | Some(">") | Some("=") => {
+			Some("!") | Some("<") | Some(">") => {
 				let splitted: Vec<&str> = s.split_whitespace().collect();
 
 				let splitted = if let Some((first, rest)) = splitted.split_first() {
@@ -56,14 +48,12 @@ impl FromStr for TaggedValue {
 				};
 
 				match splitted.as_slice() {
-					[value] => {
-						let value = value.parse::<SingleValue>()?;
-
-						Ok(TaggedValue::EqualTo(value))
-					}
 					[op, value] => {
 						let op = op.parse::<Operator>()?;
-						let value = value.parse::<SingleValue>()?;
+						let value = match value.parse::<T>() {
+							Ok(v) => v,
+							Err(_) => return Err(util::ParseError::InvalidValue),
+						};
 
 						Ok(match op {
 							Operator::EqualTo => TaggedValue::EqualTo(value),
@@ -73,25 +63,37 @@ impl FromStr for TaggedValue {
 							Operator::GreaterThanEqualTo => TaggedValue::GreaterThanEqualTo(value),
 							Operator::NotEqualTo => TaggedValue::NotEqualTo(value),
 						})
-
-						// Ok(TaggedValue { op, value })
 					}
-					_ => {
+					[_] | _ => {
 						// println!("{:?}", splitted);
 						Err(util::ParseError::InvalidAction)
 					}
 				}
 			}
-			_ => {
-				let value = s.parse::<SingleValue>()?;
-
-				Ok(TaggedValue::EqualTo(value))
+			Some("=") | _ => {
+				if let Ok(v) = s.parse::<T>() {
+					Ok(TaggedValue::EqualTo(v))
+				} else {
+					Err(util::ParseError::InvalidAction)
+				}
 			}
 		}
 	}
 }
 
-impl print::Print for TaggedValue {
+impl print::Print for String {
+	fn print(&self) -> print::Result {
+		Ok(self.to_string())
+	}
+}
+
+impl print::Print for u64 {
+	fn print(&self) -> print::Result {
+		Ok(self.to_string())
+	}
+}
+
+impl<T: print::Print> print::Print for TaggedValue<T> {
 	fn print(&self) -> print::Result {
 		Ok(match &self {
 			TaggedValue::EqualTo(v) => v.print()?,
@@ -104,7 +106,7 @@ impl print::Print for TaggedValue {
 	}
 }
 
-impl fmt::Display for TaggedValue {
+impl<T: fmt::Display> fmt::Display for TaggedValue<T> {
 	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
 		match &self {
 			TaggedValue::LessThan(v) => write!(fmt, "< {}", v),
@@ -117,86 +119,86 @@ impl fmt::Display for TaggedValue {
 	}
 }
 
-impl PartialEq<DataValue> for TaggedValue {
-	fn eq(&self, rhs: &DataValue) -> bool {
-		match &self {
-			TaggedValue::EqualTo(value) => value == rhs,
-			_ => unimplemented!(),
-		}
-	}
-}
+// impl<T> PartialEq<DataValue> for TaggedValue<T> {
+// 	fn eq(&self, rhs: &DataValue) -> bool {
+// 		match &self {
+// 			TaggedValue::EqualTo(value) => value == rhs,
+// 			_ => unimplemented!(),
+// 		}
+// 	}
+// }
 
-impl PartialEq<bool> for TaggedValue {
-	fn eq(&self, rhs: &bool) -> bool {
-		match &self {
-			TaggedValue::EqualTo(value) => value == rhs,
-			_ => unimplemented!(),
-		}
-	}
-}
+// impl<T> PartialEq<bool> for TaggedValue<T> {
+// 	fn eq(&self, rhs: &bool) -> bool {
+// 		match &self {
+// 			TaggedValue::EqualTo(value) => value == rhs,
+// 			_ => unimplemented!(),
+// 		}
+// 	}
+// }
 
-impl PartialEq<String> for TaggedValue {
-	fn eq(&self, rhs: &String) -> bool {
-		match &self {
-			TaggedValue::EqualTo(value) => value == rhs,
-			_ => unimplemented!(),
-		}
-	}
-}
+// impl<T> PartialEq<String> for TaggedValue<T> {
+// 	fn eq(&self, rhs: &String) -> bool {
+// 		match &self {
+// 			TaggedValue::EqualTo(value) => value == rhs,
+// 			_ => unimplemented!(),
+// 		}
+// 	}
+// }
 
-impl PartialEq<str> for TaggedValue {
-	fn eq(&self, rhs: &str) -> bool {
-		match &self {
-			TaggedValue::EqualTo(value) => value == rhs,
-			_ => unimplemented!(),
-		}
-	}
-}
+// impl<T> PartialEq<str> for TaggedValue<T> {
+// 	fn eq(&self, rhs: &str) -> bool {
+// 		match &self {
+// 			TaggedValue::EqualTo(value) => value == rhs,
+// 			_ => unimplemented!(),
+// 		}
+// 	}
+// }
 
-impl PartialEq<u64> for TaggedValue {
-	fn eq(&self, rhs: &u64) -> bool {
-		match &self {
-			TaggedValue::EqualTo(value) => value == rhs,
-			_ => unimplemented!(),
-		}
-	}
-}
+// impl<T> PartialEq<u64> for TaggedValue<T> {
+// 	fn eq(&self, rhs: &u64) -> bool {
+// 		match &self {
+// 			TaggedValue::EqualTo(value) => value == rhs,
+// 			_ => unimplemented!(),
+// 		}
+// 	}
+// }
 
-impl PartialEq<(u16, u16)> for TaggedValue {
-	fn eq(&self, rhs: &(u16, u16)) -> bool {
-		match &self {
-			TaggedValue::EqualTo(value) => value == rhs,
-			_ => unimplemented!(),
-		}
-	}
-}
+// impl<T> PartialEq<(u16, u16)> for TaggedValue<T> {
+// 	fn eq(&self, rhs: &(u16, u16)) -> bool {
+// 		match &self {
+// 			TaggedValue::EqualTo(value) => value == rhs,
+// 			_ => unimplemented!(),
+// 		}
+// 	}
+// }
 
-impl PartialEq<TaggedValue> for bool {
-	fn eq(&self, rhs: &TaggedValue) -> bool {
-		rhs == self
-	}
-}
+// impl<T> PartialEq<TaggedValue<T>> for bool {
+// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
+// 		rhs == self
+// 	}
+// }
 
-impl PartialEq<TaggedValue> for String {
-	fn eq(&self, rhs: &TaggedValue) -> bool {
-		rhs == self
-	}
-}
+// impl<T> PartialEq<TaggedValue<T>> for String {
+// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
+// 		rhs == self
+// 	}
+// }
 
-impl PartialEq<TaggedValue> for str {
-	fn eq(&self, rhs: &TaggedValue) -> bool {
-		rhs == self
-	}
-}
+// impl<T> PartialEq<TaggedValue<T>> for str {
+// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
+// 		rhs == self
+// 	}
+// }
 
-impl PartialEq<TaggedValue> for u64 {
-	fn eq(&self, rhs: &TaggedValue) -> bool {
-		rhs == self
-	}
-}
+// impl<T> PartialEq<TaggedValue<T>> for u64 {
+// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
+// 		rhs == self
+// 	}
+// }
 
-impl PartialEq<TaggedValue> for (u16, u16) {
-	fn eq(&self, rhs: &TaggedValue) -> bool {
-		rhs == self
-	}
-}
+// impl<T> PartialEq<TaggedValue<T>> for (u16, u16) {
+// 	fn eq(&self, rhs: &TaggedValue<T>) -> bool {
+// 		rhs == self
+// 	}
+// }

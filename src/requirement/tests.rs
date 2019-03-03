@@ -3,7 +3,6 @@ use crate::rules::Rule;
 use crate::rules::{given, req_ref};
 use crate::save::SaveBlock;
 use crate::{filter, rules, value};
-use maplit::btreemap;
 
 #[test]
 fn serialize() {
@@ -129,8 +128,13 @@ result:
     - {given: save, save: Interim Courses, what: credits, do: sum >= 3}
     - {given: save, save: Interim Courses, what: courses, do: count >= 3}";
 
-	let expected_filter: filter::Clause = btreemap! {
-		"semester".into() => "Interim".parse::<value::WrappedValue>().unwrap(),
+	let expected_filter = filter::CourseClause {
+		semester: Some(
+			"Interim"
+				.parse::<value::WrappedValue<crate::student::Semester>>()
+				.unwrap(),
+		),
+		..filter::CourseClause::default()
 	};
 
 	let expected = Requirement {
@@ -144,18 +148,18 @@ result:
 					given: given::Given::NamedVariable {
 						save: "Interim Courses".to_string(),
 						what: given::GivenCoursesWhatOptions::Credits,
+						limit: None,
+						filter: None,
 					},
-					limit: None,
-					filter: None,
 					action: "sum >= 3".parse().unwrap(),
 				})),
 				Box::new(Rule::Given(given::Rule {
 					given: given::Given::NamedVariable {
 						save: "Interim Courses".to_string(),
 						what: given::GivenCoursesWhatOptions::Courses,
+						limit: None,
+						filter: None,
 					},
-					limit: None,
-					filter: None,
 					action: "count >= 3".parse().unwrap(),
 				})),
 			),

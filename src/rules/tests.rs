@@ -2,7 +2,6 @@ use super::*;
 use crate::student::Semester;
 use crate::traits::print::Print;
 use insta::{assert_debug_snapshot_matches, assert_yaml_snapshot_matches};
-use std::collections::BTreeMap;
 
 #[test]
 fn deserialize_simple_course_in_array() {
@@ -64,9 +63,9 @@ fn serialize() {
 		Rule::Given(given::Rule {
 			given: given::Given::AllCourses {
 				what: given::GivenCoursesWhatOptions::Courses,
+				filter: Some(crate::filter::CourseClause::default()),
+				limit: Some(vec![]),
 			},
-			filter: Some(BTreeMap::new()),
-			limit: Some(vec![]),
 			action: "count < 2".parse().unwrap(),
 		}),
 		Rule::Do(action_only::Rule {
@@ -179,9 +178,9 @@ fn dance_seminar() {
 		given: given::Given::NamedVariable {
 			save: "Senior Dance Seminars".to_string(),
 			what: given::GivenCoursesWhatOptions::Courses,
+			filter: None,
+			limit: None,
 		},
-		filter: None,
-		limit: None,
 		action: "count >= 1".parse().unwrap(),
 	});
 

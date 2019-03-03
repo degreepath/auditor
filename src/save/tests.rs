@@ -1,10 +1,9 @@
 use super::SaveBlock;
-use crate::filter;
+use crate::filter::CourseClause;
 use crate::rules::given::{GivenCoursesWhatOptions, GivenForSaveBlock as Given};
 use crate::rules::{course, given};
 use crate::traits::print::Print;
 use crate::value;
-use maplit::btreemap;
 
 #[test]
 fn deserialize() {
@@ -14,8 +13,9 @@ where: { semester: Interim }
 what: courses
 name: Interim Courses"#;
 
-	let filter: filter::Clause = btreemap! {
-		"semester".into() => "Interim".parse::<value::WrappedValue>().unwrap(),
+	let filter = CourseClause {
+		semester: Some("Interim".parse::<value::WrappedValue<crate::student::Semester>>().unwrap()),
+		..CourseClause::default()
 	};
 
 	let expected = SaveBlock {
@@ -39,13 +39,14 @@ fn deserialize_dance() {
 given: these-courses
 courses: [DANCE 399]
 repeats: last
-where: {year: $graduation-year, semester: Fall}
+where: {year: graduation-year, semester: Fall}
 what: courses
 name: "Senior Dance Seminars""#;
 
-	let filter: filter::Clause = btreemap! {
-		"year".into() => "$graduation-year".parse::<value::WrappedValue>().unwrap(),
-		"semester".into() => "Fall".parse::<value::WrappedValue>().unwrap(),
+	let filter = CourseClause {
+		year: Some("graduation-year".parse::<value::WrappedValue<crate::filter::ClassificationYear>>().unwrap()),
+		semester: Some("Fall".parse::<value::WrappedValue<crate::student::Semester>>().unwrap()),
+		..CourseClause::default()
 	};
 
 	let expected = SaveBlock {
@@ -113,7 +114,8 @@ fn pretty_print() {
 
 	let input = "{name: Interim, given: save, save: Before, where: {semester: Interim}, what: courses}";
 	let input: SaveBlock = serde_yaml::from_str(&input).unwrap();
-	let expected = "Given the subset named “Before”, limited it to only courses taken during Interim semesters, as “Interim”:
+	let expected =
+		"Given the subset named “Before”, limited it to only courses taken during Interim semesters, as “Interim”:
 
 | “Interim” |
 | --------- |

@@ -32,7 +32,7 @@ mod tests {
 	use super::super::Rule as CourseRule;
 	use crate::audit::{ReservedPairings, RuleAudit, RuleInput, Transcript};
 	use crate::student::{CourseInstance, StudentData};
-	use maplit::{btreemap, hashmap};
+	use maplit::{hashmap};
 
 	#[test]
 	fn basic() {
@@ -43,7 +43,7 @@ mod tests {
 
 		let input = RuleInput {
 			data: StudentData {
-				transcript: Transcript::new(&[CourseInstance::from(btreemap! { "course" => "AMCON 101" })]),
+				transcript: Transcript::new(&[CourseInstance::with_course("AMCON 101")]),
 				areas: vec![],
 				attendances: vec![],
 				organizations: vec![],

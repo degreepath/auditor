@@ -9,12 +9,6 @@ pub use value::DataValue;
 #[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq, Serialize, Deserialize, Hash)]
 pub struct FilterableData(BTreeMap<String, DataValue>);
 
-impl FilterableData {
-	pub fn new(map: BTreeMap<String, DataValue>) -> FilterableData {
-		FilterableData(map)
-	}
-}
-
 impl From<BTreeMap<String, DataValue>> for FilterableData {
 	fn from(map: BTreeMap<String, DataValue>) -> Self {
 		FilterableData(map)

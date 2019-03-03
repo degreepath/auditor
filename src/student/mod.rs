@@ -1,8 +1,10 @@
 use crate::audit::Transcript;
-use crate::filterable_data::{DataValue, FilterableData};
 use overrides::Override;
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+
+mod data;
+pub use data::{AreaDescriptor, AttendanceInstance, CourseInstance, OrganizationDescriptor, PerformanceInstance};
+pub use data::{CourseType, GradeOption, Semester};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct StudentData {
@@ -19,128 +21,6 @@ impl StudentData {
 		StudentData {
 			transcript: Transcript::new(courses),
 			..self
-		}
-	}
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct AreaDescriptor(FilterableData);
-
-impl std::ops::Deref for AreaDescriptor {
-	type Target = FilterableData;
-
-	fn deref(&self) -> &Self::Target {
-		&self.0
-	}
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct OrganizationDescriptor(FilterableData);
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct PerformanceInstance(FilterableData);
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct AttendanceInstance(FilterableData);
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct CourseInstance(FilterableData);
-
-impl CourseInstance {
-	pub fn new(data: FilterableData) -> CourseInstance {
-		CourseInstance(data)
-	}
-
-	pub fn failed(&self) -> bool {
-		use crate::grade::Grade;
-
-		let grade = self
-			.get("grade")
-			.and_then(|g| g.as_string())
-			.and_then(|g| g.parse::<Grade>().ok());
-
-		if let Some(grade) = grade {
-			grade <= Grade::F
-		} else {
-			false
-		}
-	}
-}
-
-impl From<BTreeMap<String, DataValue>> for CourseInstance {
-	fn from(map: BTreeMap<String, DataValue>) -> Self {
-		CourseInstance(FilterableData::from(map))
-	}
-}
-
-impl From<BTreeMap<&str, DataValue>> for CourseInstance {
-	fn from(map: BTreeMap<&str, DataValue>) -> Self {
-		CourseInstance(FilterableData::from(map))
-	}
-}
-
-impl From<BTreeMap<&str, &str>> for CourseInstance {
-	fn from(map: BTreeMap<&str, &str>) -> Self {
-		CourseInstance(FilterableData::from(map))
-	}
-}
-
-impl std::ops::Deref for CourseInstance {
-	type Target = FilterableData;
-
-	fn deref(&self) -> &Self::Target {
-		&self.0
-	}
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Term {
-	pub year: u16,
-	pub semester: Semester,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Semester {
-	Fall,
-	Interim,
-	Spring,
-	#[serde(rename = "Summer Session 1")]
-	Summer1,
-	#[serde(rename = "Summer Session 2")]
-	Summer2,
-	#[serde(rename = "Non-St. Olaf")]
-	NonStOlaf,
-}
-
-impl std::str::FromStr for Semester {
-	type Err = crate::util::ParseError;
-
-	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		use crate::util::ParseError;
-
-		match s.trim() {
-			"Fall" => Ok(Semester::Fall),
-			"Interim" => Ok(Semester::Interim),
-			"Spring" => Ok(Semester::Spring),
-			"Summer Session 1" => Ok(Semester::Summer1),
-			"Summer Session 2" => Ok(Semester::Summer2),
-			"Non-St. Olaf" => Ok(Semester::NonStOlaf),
-			_ => Err(ParseError::InvalidValue),
-		}
-	}
-}
-
-impl std::fmt::Display for Semester {
-	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		use Semester::*;
-
-		match &self {
-			Fall => write!(f, "Fall"),
-			Interim => write!(f, "Interim"),
-			Spring => write!(f, "Spring"),
-			Summer1 => write!(f, "Summer Session 1"),
-			Summer2 => write!(f, "Summer Session 2"),
-			NonStOlaf => write!(f, "Non-St. Olaf"),
 		}
 	}
 }
