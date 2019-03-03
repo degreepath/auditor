@@ -1,11 +1,15 @@
 use super::Rule;
 use super::{CourseRule, Given, GivenAreasWhatOptions, GivenCoursesWhatOptions, RepeatMode};
-use crate::filter::{CourseClause, AreaClause};
+use crate::filter::{AreaClause, CourseClause};
 use crate::rules::{course, req_ref};
 use crate::traits::print::Print;
 use crate::value;
 use insta::{assert_ron_snapshot_matches, assert_snapshot_matches};
-use value::{TaggedValue::{GreaterThanEqualTo, EqualTo}, WrappedValue::Single};
+use pretty_assertions::{assert_eq, assert_ne};
+use value::{
+	TaggedValue::{EqualTo, GreaterThanEqualTo},
+	WrappedValue::Single,
+};
 
 #[test]
 fn serialize_all_courses() {
@@ -416,11 +420,11 @@ fn deserialize_filter_level_gte() {
 }
 
 #[test]
-fn deserialize_filter_graded_bool() {
-	let data = r#"{where: {graded: {mode: pn, passed: true}, given: courses, what: courses, do: count > 1}"#;
+fn deserialize_filter_graded_pn() {
+	let data = r#"{where: {graded: pn}, given: courses, what: courses, do: count > 1}"#;
 
 	let expected = CourseClause {
-		graded: Some(Single(EqualTo(crate::student::GradeOption::Pn {passed: Some(true)}))),
+		graded: Some(Single(EqualTo(crate::filter::GradeOption::Pn))),
 		..CourseClause::default()
 	};
 	let expected = Rule {
@@ -432,6 +436,35 @@ fn deserialize_filter_graded_bool() {
 		action: "count > 1".parse().unwrap(),
 	};
 
+	let actual: Rule = serde_yaml::from_str(&data).unwrap();
+	assert_eq!(actual, expected);
+}
+
+#[test]
+fn deserialize_filter_graded_graded() {
+	use crate::value::{TaggedValue, WrappedValue};
+
+	let expected = CourseClause {
+		graded: Some(Single(EqualTo(crate::filter::GradeOption::Graded))),
+		grade: Some(WrappedValue::Single(TaggedValue::GreaterThanEqualTo(
+			crate::grade::Grade::C,
+		))),
+		..CourseClause::default()
+	};
+	let expected = Rule {
+		given: Given::AllCourses {
+			what: GivenCoursesWhatOptions::Courses,
+			limit: None,
+			filter: Some(expected),
+		},
+		action: "count > 1".parse().unwrap(),
+	};
+
+	let data = r#"{where: {graded: graded, grade: '>= 2.0'}, given: courses, what: courses, do: count > 1}"#;
+	let actual: Rule = serde_yaml::from_str(&data).unwrap();
+	assert_eq!(actual, expected);
+
+	let data = r#"{where: {graded: graded, grade: '>= C'}, given: courses, what: courses, do: count > 1}"#;
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
 	assert_eq!(actual, expected);
 }
@@ -518,9 +551,9 @@ fn pretty_print_inline_credits() {
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during a Fall or Interim semester to obtain at least ten credits");
 
-	let s = "{given: courses, where: {year: '2012'}, what: credits, do: sum >= 3}";
+	let s = "{given: courses, where: {year: 'junior-year'}, what: credits, do: sum >= 3}";
 	let input = parse_rule(&s);
-	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during the 2012-13 academic year to obtain at least three credits");
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during your junior year to obtain at least three credits");
 
 	let s = "{given: courses, where: {institution: St. Olaf College}, what: credits, do: sum >= 17}";
 	let input = parse_rule(&s);
@@ -537,9 +570,9 @@ fn pretty_print_inline_departments() {
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken during Interim semesters to span at least one department");
 
-	let s = "{given: courses, where: { department: '! MATH' }, what: departments, do: count >= 2}";
+	let s = "{given: courses, where: {subject: '! MATH'}, what: departments, do: count >= 2}";
 	let input = parse_rule(&s);
-	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken outside of the MATH department to span at least two departments");
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken outside of the MATH subject code to span at least two departments");
 }
 
 #[test]
@@ -601,12 +634,12 @@ fn pretty_print_inline_given_requirements_what_courses() {
 3. there must be at least ten credits
 "###);
 
-	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: '2012' }, what: credits, do: sum >= 1}";
+	let s = "{given: these-requirements, requirements: [{requirement: Core}, {requirement: Modern}], where: { year: 'junior-year' }, what: credits, do: sum >= 1}";
 	let input = parse_rule(&s);
 	assert_snapshot_matches!(input.print().unwrap(), @"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
-2. restricted to only courses taken during the 2012-13 academic year,
+2. restricted to only courses taken during your junior year,
 3. there must be at least one credit
 ");
 

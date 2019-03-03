@@ -26,7 +26,7 @@ impl<T: FromStr> FromStr for TaggedValue<T> {
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		match s.get(0..1) {
-			Some("!") | Some("<") | Some(">") => {
+			Some("!") | Some("<") | Some(">") | Some("=") => {
 				let splitted: Vec<&str> = s.split_whitespace().collect();
 
 				let splitted = if let Some((first, rest)) = splitted.split_first() {
@@ -58,7 +58,7 @@ impl<T: FromStr> FromStr for TaggedValue<T> {
 					}
 				}
 			}
-			Some("=") | _ => {
+			_ => {
 				if let Ok(v) = s.parse::<T>() {
 					Ok(TaggedValue::EqualTo(v))
 				} else {
@@ -70,6 +70,12 @@ impl<T: FromStr> FromStr for TaggedValue<T> {
 }
 
 impl print::Print for String {
+	fn print(&self) -> print::Result {
+		Ok(self.to_string())
+	}
+}
+
+impl print::Print for decorum::R32 {
 	fn print(&self) -> print::Result {
 		Ok(self.to_string())
 	}

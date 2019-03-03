@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T03:16:53.869572Z"
+created: "2019-03-03T15:28:01.845025Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
@@ -18,18 +18,6 @@ expression: data
   ],
   "what": courses,
   "where": Some(CourseClause(
-    attribute: None,
-    course: None,
-    credits: None,
-    gereqs: None,
-    graded: None,
-    institution: None,
-    level: None,
-    number: None,
-    type: None,
-    semester: None,
-    subject: None,
-    year: None,
   )),
   "limit": Some([
   ]),

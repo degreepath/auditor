@@ -1,7 +1,7 @@
-use super::{Term, Semester};
+use super::{Semester, Term};
 use crate::grade::Grade;
 use decorum::R32;
-use serde::{Deserialize, Serialize, de::Deserializer};
+use serde::{de::Deserializer, Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CourseInstance {
@@ -39,7 +39,10 @@ impl CourseInstance {
 			number: 0,
 			section: None,
 			grade: GradeOption::NoGrade,
-			term: Term {year: 2000, semester: Semester::Fall},
+			term: Term {
+				year: 2000,
+				semester: Semester::Fall,
+			},
 			credits: R32::from(0.0),
 			gereqs: vec![],
 			attributes: vec![],
@@ -60,13 +63,94 @@ pub enum CourseType {
 
 /// If the `Option` here is `None`, then the course is in-progress
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[serde(rename_all = "kebab-case", tag = "mode")]
+#[serde(rename_all = "kebab-case", tag = "graded")]
 pub enum GradeOption {
-	Graded { grade: Option<Grade> },
-	Audit { passed: Option<bool> },
-	Pn { passed: Option<bool> },
-	Su { passed: Option<bool> },
+	Graded {
+		#[serde(default, skip_serializing_if = "Option::is_none")]
+		grade: Option<Grade>,
+	},
+	Audit {
+		#[serde(default, skip_serializing_if = "Option::is_none")]
+		passed: Option<bool>,
+	},
+	Pn {
+		#[serde(default, skip_serializing_if = "Option::is_none")]
+		passed: Option<bool>,
+	},
+	Su {
+		#[serde(default, skip_serializing_if = "Option::is_none")]
+		passed: Option<bool>,
+	},
 	NoGrade,
+}
+
+#[cfg(test)]
+mod tests {
+	use super::{Grade, GradeOption};
+	use insta::assert_yaml_snapshot_matches;
+
+	#[test]
+	fn serialize_graded_none() {
+		assert_yaml_snapshot_matches!(GradeOption::Graded {grade: None}, @r###"graded: graded"###);
+	}
+
+	#[test]
+	fn serialize_graded_some() {
+		assert_yaml_snapshot_matches!(GradeOption::Graded {grade: Some(Grade::A)}, @r###"graded: graded
+grade: A"###);
+	}
+
+	#[test]
+	fn serialize_audit_none() {
+		assert_yaml_snapshot_matches!(GradeOption::Audit {passed: None}, @r###"graded: audit"###);
+	}
+
+	#[test]
+	fn serialize_audit_some() {
+		assert_yaml_snapshot_matches!(GradeOption::Audit {passed: Some(true)}, @r###"graded: audit
+passed: true"###);
+	}
+
+	#[test]
+	fn serialize_pn_none() {
+		assert_yaml_snapshot_matches!(GradeOption::Pn {passed: None}, @r###"graded: pn"###);
+	}
+
+	#[test]
+	fn serialize_pn_some() {
+		assert_yaml_snapshot_matches!(GradeOption::Pn {passed: Some(true)}, @r###"graded: pn
+passed: true"###);
+	}
+
+	#[test]
+	fn deserialize_pn_some() {
+		let s = "{graded: pn, passed: true}";
+		let actual: GradeOption = serde_yaml::from_str(&s).unwrap();
+		assert_eq!(actual, GradeOption::Pn { passed: Some(true) });
+	}
+
+	#[test]
+	fn deserialize_pn_none() {
+		let s = "{graded: pn}";
+		let actual: GradeOption = serde_yaml::from_str(&s).unwrap();
+		assert_eq!(actual, GradeOption::Pn { passed: None });
+	}
+
+	#[test]
+	fn serialize_su_none() {
+		assert_yaml_snapshot_matches!(GradeOption::Su {passed: None}, @r###"graded: su"###);
+	}
+
+	#[test]
+	fn serialize_su_some() {
+		assert_yaml_snapshot_matches!(GradeOption::Su {passed: Some(true)}, @r###"graded: su
+passed: true"###);
+	}
+
+	#[test]
+	fn serialize_nograde_none() {
+		assert_yaml_snapshot_matches!(GradeOption::NoGrade, @"graded: no-grade");
+	}
 }
 
 impl CourseInstance {

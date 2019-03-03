@@ -1,4 +1,4 @@
-use super::{CourseClause};
+use super::CourseClause;
 use crate::traits::print::Print;
 use crate::value::{SingleValue, TaggedValue, WrappedValue};
 use insta::assert_yaml_snapshot_matches;
@@ -10,20 +10,9 @@ fn serialize_simple() {
 		..CourseClause::default()
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"attribute: ~
-course: ~
-credits: ~
-gereqs: ~
-graded: ~
-institution: ~
-level:
+	assert_yaml_snapshot_matches!(data, @r###"level:
   Single:
-    EqualTo: 100
-number: ~
-type: ~
-semester: ~
-subject: ~
-year: ~"###);
+    EqualTo: 100"###);
 }
 
 #[test]
@@ -33,42 +22,20 @@ fn serialize_or() {
 		..CourseClause::default()
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"attribute: ~
-course: ~
-credits: ~
-gereqs: ~
-graded: ~
-institution: ~
-level:
+	assert_yaml_snapshot_matches!(data, @r###"level:
   Or:
     - EqualTo: 100
-    - EqualTo: 200
-number: ~
-type: ~
-semester: ~
-subject: ~
-year: ~"###);
+    - EqualTo: 200"###);
 
 	let data = CourseClause {
 		level: Some("< 100 | 200".parse::<WrappedValue<u64>>().unwrap()),
 		..CourseClause::default()
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"attribute: ~
-course: ~
-credits: ~
-gereqs: ~
-graded: ~
-institution: ~
-level:
+	assert_yaml_snapshot_matches!(data, @r###"level:
   Or:
     - LessThan: 100
-    - EqualTo: 200
-number: ~
-type: ~
-semester: ~
-subject: ~
-year: ~"###);
+    - EqualTo: 200"###);
 }
 
 mod value {
@@ -286,28 +253,28 @@ fn pretty_print_single_values() {
 	let expected = "during Fall semesters";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input = deserialize_test(&"{year: '2012'}");
-	let expected = "during the 2012-13 academic year";
+	let input = deserialize_test(&"{year: 'senior-year'}");
+	let expected = "during your senior year";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input = deserialize_test(&"{institution: 'St. Olaf College'}");
 	let expected = "at St. Olaf College";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input = deserialize_test(&"{department: MATH}");
-	let expected = "within the MATH department";
+	let input = deserialize_test(&"{subject: MATH}");
+	let expected = "within the MATH subject code";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input = deserialize_test(&"{credits: '1.0'}");
-	let expected = "with the “1.00” `credits` attribute";
+	let input = deserialize_test(&"{credits: 1.00}");
+	let expected = "worth 1.00 credits";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input = deserialize_test(&"{credits: '1.5'}");
-	let expected = "with the “1.50” `credits` attribute";
+	let expected = "worth 1.50 credits";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input = deserialize_test(&"{credits: '1.75'}");
-	let expected = "with the “1.75” `credits` attribute";
+	let expected = "worth 1.75 credits";
 	assert_eq!(expected, input.print().unwrap());
 }
 

@@ -14,7 +14,11 @@ what: courses
 name: Interim Courses"#;
 
 	let filter = CourseClause {
-		semester: Some("Interim".parse::<value::WrappedValue<crate::student::Semester>>().unwrap()),
+		semester: Some(
+			"Interim"
+				.parse::<value::WrappedValue<crate::student::Semester>>()
+				.unwrap(),
+		),
 		..CourseClause::default()
 	};
 
@@ -44,7 +48,11 @@ what: courses
 name: "Senior Dance Seminars""#;
 
 	let filter = CourseClause {
-		year: Some("graduation-year".parse::<value::WrappedValue<crate::filter::ClassificationYear>>().unwrap()),
+		year: Some(
+			"graduation-year"
+				.parse::<value::WrappedValue<crate::filter::ClassificationYear>>()
+				.unwrap(),
+		),
 		semester: Some("Fall".parse::<value::WrappedValue<crate::student::Semester>>().unwrap()),
 		..CourseClause::default()
 	};

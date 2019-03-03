@@ -132,6 +132,7 @@ expression: actual
                         credits: None,
                         gereqs: None,
                         graded: None,
+                        grade: None,
                         institution: None,
                         level: None,
                         number: None,

@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T03:16:53.929766Z"
+created: "2019-03-03T03:38:37.700319Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: data
@@ -37,19 +37,7 @@ expression: data
       can_match_used: ~
 - given: courses
   what: courses
-  where:
-    attribute: ~
-    course: ~
-    credits: ~
-    gereqs: ~
-    graded: ~
-    institution: ~
-    level: ~
-    number: ~
-    type: ~
-    semester: ~
-    subject: ~
-    year: ~
+  where: {}
   limit: []
   do:
     lhs: Count

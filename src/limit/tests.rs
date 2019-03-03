@@ -1,6 +1,7 @@
 use super::Limiter;
 use crate::filter;
 use crate::value::WrappedValue;
+use insta::assert_yaml_snapshot_matches;
 
 #[test]
 fn serialize_level100() {
@@ -14,17 +15,11 @@ fn serialize_level100() {
 		at_most: 2,
 	};
 
-	let expected = r#"---
+	assert_yaml_snapshot_matches!(data, @r###"at_most: 2
 where:
   level:
     Single:
-      EqualTo:
-        Integer: 100
-at_most: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+      EqualTo: 100"###);
 }
 
 #[test]
@@ -39,17 +34,11 @@ fn serialize_not_math() {
 		at_most: 2,
 	};
 
-	let expected = r#"---
+	assert_yaml_snapshot_matches!(data, @r###"at_most: 2
 where:
   subject:
     Single:
-      NotEqualTo:
-        String: MATH
-at_most: 2"#;
-
-	let actual = serde_yaml::to_string(&data).unwrap();
-
-	assert_eq!(actual, expected);
+      NotEqualTo: MATH"###);
 }
 
 #[test]
@@ -64,21 +53,11 @@ fn deserialize_level100() {
 		at_most: 2,
 	};
 
-	let data = r#"---
-where:
-  level: "100"
-at_most: 2"#;
-
+	let data = "{at_most: 2, where: {level: 100}}";
 	let actual: Limiter = serde_yaml::from_str(&data).unwrap();
-
 	assert_eq!(actual, expected);
 
-	let data = r#"---
-where:
-  level: 100
-at_most: 2"#;
-
+	let data = r#"{at_most: 2, where: {level: "100"}}"#;
 	let actual: Limiter = serde_yaml::from_str(&data).unwrap();
-
 	assert_eq!(actual, expected);
 }

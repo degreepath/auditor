@@ -32,7 +32,7 @@ mod tests {
 	use super::super::Rule as CourseRule;
 	use crate::audit::{ReservedPairings, RuleAudit, RuleInput, Transcript};
 	use crate::student::{CourseInstance, StudentData};
-	use maplit::{hashmap};
+	use maplit::hashmap;
 
 	#[test]
 	fn basic() {

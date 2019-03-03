@@ -27,12 +27,10 @@ impl std::str::FromStr for Term {
 		let parts: Vec<&str> = s.split('-').collect();
 
 		match parts.as_slice() {
-			[year, semester] => {
-				match (year.parse::<u16>(), semester.parse::<Semester>()) {
-					(Ok(year), Ok(semester)) => Ok(Term {year, semester}),
-					_ => Err(ParseError::InvalidValue),
-				}
-			}
+			[year, semester] => match (year.parse::<u16>(), semester.parse::<Semester>()) {
+				(Ok(year), Ok(semester)) => Ok(Term { year, semester }),
+				_ => Err(ParseError::InvalidValue),
+			},
 			_ => Err(ParseError::InvalidValue),
 		}
 	}

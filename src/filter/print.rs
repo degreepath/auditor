@@ -1,5 +1,7 @@
 use super::{AreaClause, AreaType, AttendanceClause, ClassificationYear, CourseClause, PerformanceClause};
-use crate::student::{GradeOption, Semester};
+use crate::filter::GradeOption;
+use crate::grade::Grade;
+use crate::student::Semester;
 use crate::traits::print;
 use crate::traits::print::Print;
 use crate::util::Oxford;
@@ -122,8 +124,15 @@ impl print::Print for CourseClause {
 			clauses.extend(print_level(&level)?);
 		}
 
-		if let Some(graded) = &self.graded {
-			clauses.extend(print_graded(&graded)?);
+		if let Some(credits) = &self.credits {
+			clauses.extend(print_credits(&credits)?);
+		}
+
+		match (&self.graded, &self.grade) {
+			(Some(graded), Some(grade)) => clauses.extend(print_grade(Some(&graded), Some(&grade))?),
+			(Some(graded), None) => clauses.extend(print_grade(Some(&graded), None)?),
+			(None, Some(grade)) => clauses.extend(print_grade(None, Some(&grade))?),
+			(None, None) => {}
 		}
 
 		if let Some(value) = &self.attribute {
@@ -234,10 +243,9 @@ fn print_subjects_alone(subject: &WrappedValue<String>) -> print::Result {
 
 fn print_subjects_and_number(subject: &WrappedValue<String>, number: &WrappedValue<u64>) -> print::Result {
 	Ok(match (subject, number) {
-		(
-			WrappedValue::Single(TaggedValue::EqualTo(subject)),
-			WrappedValue::Single(TaggedValue::EqualTo(number)),
-		) => format!("called {} {} [todo]", subject, number),
+		(WrappedValue::Single(TaggedValue::EqualTo(subject)), WrappedValue::Single(TaggedValue::EqualTo(number))) => {
+			format!("called {} {} [todo]", subject, number)
+		}
 		(
 			WrappedValue::Single(TaggedValue::EqualTo(subject)),
 			WrappedValue::Single(TaggedValue::NotEqualTo(number)),
@@ -276,37 +284,55 @@ fn print_level(value: &WrappedValue<u64>) -> Result<Vec<String>, std::fmt::Error
 	Ok(clauses)
 }
 
-fn print_graded(value: &WrappedValue<GradeOption>) -> Result<Vec<String>, std::fmt::Error> {
+fn print_credits(value: &WrappedValue<decorum::R32>) -> Result<Vec<String>, std::fmt::Error> {
 	let mut clauses = vec![];
 
 	match value {
-		WrappedValue::Or(_) | WrappedValue::And(_) => {}
-		WrappedValue::Single(TaggedValue::EqualTo(value)) => match value {
-			GradeOption::Graded { grade } => match grade {
-				Some(grade) => clauses.push(format!("sucessfully courses completed with at least a {}", grade)),
-				None => clauses.push("as _graded_ courses".to_string()),
-			},
-			GradeOption::Audit { passed } => match passed {
-				Some(true) => clauses.push("as _sucessfully audited_ courses".to_string()),
-				Some(false) => clauses.push("as _unsucessfully audited_ courses".to_string()),
-				None => clauses.push("as _audited_ courses".to_string()),
-			},
-			GradeOption::Pn { passed } => {
-				match passed {
-					Some(true) => clauses.push("as _sucessful_ courses taken p/n".to_string()),
-					Some(false) => clauses.push("as _unsucessful_ courses taken p/n".to_string()),
-					None => clauses.push("as courses taken p/n".to_string()),
+		WrappedValue::Single(TaggedValue::GreaterThanEqualTo(v)) => {
+			clauses.push(format!("worth at least {:>0.2} credits", v))
+		}
+		WrappedValue::Single(TaggedValue::EqualTo(v)) => clauses.push(format!("worth {:>0.2} credits", v)),
+		WrappedValue::Single(_) => unimplemented!("filter:credits, certain modes"),
+		WrappedValue::Or(_) => {
+			clauses.push(format!("worth either {} credits", value.print()?));
+		}
+		WrappedValue::And(_) => unimplemented!("filter:credits, and-value"),
+	}
+
+	Ok(clauses)
+}
+
+fn print_grade(
+	value: Option<&WrappedValue<GradeOption>>,
+	grade: Option<&WrappedValue<Grade>>,
+) -> Result<Vec<String>, std::fmt::Error> {
+	let mut clauses = vec![];
+
+	match value {
+		Some(value) => match value {
+			WrappedValue::Or(_) | WrappedValue::And(_) => {}
+			WrappedValue::Single(TaggedValue::EqualTo(value)) => match value {
+				GradeOption::Graded => match grade {
+					Some(grade) => clauses.push(format!("courses sucessfully completed with at least a {}", grade)),
+					None => clauses.push("as _graded_ courses".to_string()),
+				},
+				GradeOption::Audit => {
+					clauses.push("as _audited_ courses".to_string());
 				}
-				clauses.push("as _p/n_ courses".to_string())
-			}
-			GradeOption::Su { passed } => match passed {
-				Some(true) => clauses.push("as _sucessful_ courses taken s/u".to_string()),
-				Some(false) => clauses.push("as _unsucessful_ courses taken s/u".to_string()),
-				None => clauses.push("as courses taken s/u".to_string()),
+				GradeOption::Pn => {
+					clauses.push("as courses taken p/n".to_string());
+				}
+				GradeOption::Su => {
+					clauses.push("as courses taken s/u".to_string());
+				}
+				GradeOption::NoGrade => clauses.push("as _not graded_ courses".to_string()),
 			},
-			GradeOption::NoGrade => clauses.push("as _not graded_ courses".to_string()),
+			WrappedValue::Single(_) => unimplemented!("printing \"graded\" with anything other than equal-to"),
 		},
-		WrappedValue::Single(_) => unimplemented!("printing \"graded\" with anything other than equal-to"),
+		None => match grade {
+			Some(grade) => clauses.push(format!("courses sucessfully completed with at least a {}", grade)),
+			None => {}
+		},
 	}
 
 	Ok(clauses)
