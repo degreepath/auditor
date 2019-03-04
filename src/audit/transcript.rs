@@ -34,7 +34,7 @@ impl Transcript {
 				return None;
 			}
 
-			if m.any() {
+			if m.any_match() {
 				return Some((c.clone(), m));
 			}
 

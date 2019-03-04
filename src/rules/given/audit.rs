@@ -182,7 +182,7 @@ impl super::Rule {
 		// the listed "allowed" courses
 		let courses: Vec<_> = courses
 			.into_iter()
-			.filter(|course| allowed_courses.iter().any(|rule| course.matches_rule(rule).any()))
+			.filter(|course| allowed_courses.iter().any(|rule| course.matches_rule(rule).any_match()))
 			.collect();
 
 		ReservedPairings::from_courses(&courses)

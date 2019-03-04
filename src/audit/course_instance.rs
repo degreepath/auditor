@@ -1,94 +1,86 @@
 use super::course_match::{MatchType, MatchedParts};
 use crate::filter::CourseClause;
-use crate::filterable_data::DataValue as Val;
 use crate::rules::course::Rule as CourseRule;
-use crate::student::CourseInstance;
-use std::collections::BTreeMap;
+use crate::student::{CourseInstance, CourseType, GradeOption};
 
 impl CourseInstance {
-	pub fn matches_rule(&self, filter: &CourseRule) -> MatchedParts {
-		let mut result: BTreeMap<String, MatchType<Val>> = BTreeMap::new();
+	pub fn matches_rule(&self, rule: &CourseRule) -> MatchedParts {
+		let mut result = MatchedParts::default();
 
-		if self.course == filter.course {
-			result.insert("course".to_owned(), MatchType::Match(self.course.clone().into()));
+		if self.course == rule.course {
+			result = MatchedParts {
+				course: MatchType::Match(self.course.clone()),
+				..result
+			};
 		}
 
-		// .filter_map(|(k{ey, value)| match key.as_ref() {
-		// 	"course" => Some((
-		// 		key.clone(),
-		// 		if value == &filter.course {
-		// 			MatchType::Match(value.clone())
-		// 		} else {
-		// 			MatchType::Fail
-		// 		},
-		// 	)),
-		// 	"section" => Some((
-		// 		key.clone(),
-		// 		match &filter.section {
-		// 			Some(section) if value == section => MatchType::Match(value.clone()),
-		// 			Some(_) => MatchType::Fail,
-		// 			None => MatchType::Skip,
-		// 		},
-		// 	)),
-		// 	"year" => Some((
-		// 		key.clone(),
-		// 		match &filter.year {
-		// 			Some(year) if value == year => MatchType::Match(value.clone()),
-		// 			Some(_) => MatchType::Fail,
-		// 			None => MatchType::Skip,
-		// 		},
-		// 	)),
-		// 	"semester" => Some((
-		// 		key.clone(),
-		// 		match &filter.semester {
-		// 			Some(semester) if *value == semester.to_string() => MatchType::Match(value.clone()),
-		// 			Some(_) => MatchType::Fail,
-		// 			None => MatchType::Skip,
-		// 		},
-		// 	)),
-		// 	"type" => Some((
-		// 		key.clone(),
-		// 		match &filter.lab {
-		// 			Some(only_labs) if value == "Lab" && *only_labs == true => MatchType::Match(value.clone()),
-		// 			Some(_) => MatchType::Fail,
-		// 			None => MatchType::Skip,
-		// 		},
-		// 	)),
-		// 	_ => None,
-		// })
-		// .collect();}
+		match (&self.section, &rule.section) {
+			(Some(s_section), Some(r_section)) if s_section == r_section => {
+				result = MatchedParts {
+					section: MatchType::Match(s_section.clone()),
+					..result
+				};
+			}
+			_ => {}
+		};
 
-		MatchedParts::new(&result)
+		if let Some(r_year) = &rule.year {
+			if self.term.year == *r_year {
+				result = MatchedParts {
+					year: MatchType::Match(self.term.year.clone()),
+					..result
+				};
+			}
+		}
+
+		if let Some(r_semester) = &rule.semester {
+			if self.term.semester == *r_semester {
+				result = MatchedParts {
+					semester: MatchType::Match(self.term.semester.clone()),
+					..result
+				};
+			}
+		}
+
+		if let Some(r_lab) = &rule.lab {
+			if *r_lab && self.r#type == CourseType::Lab {
+				result = MatchedParts {
+					r#type: MatchType::Match(CourseType::Lab),
+					..result
+				};
+			}
+		}
+
+		if let Some(r_grade) = &rule.grade {
+			match &self.grade {
+				GradeOption::Graded { grade: Some(s_grade) } => {
+					if *s_grade >= *r_grade {
+						result = MatchedParts {
+							grade: MatchType::Match(s_grade.clone()),
+							..result
+						};
+					}
+				}
+				_ => {}
+			}
+		}
+
+		result
 	}
 
 	#[allow(dead_code)]
-	pub fn matches_filter(&self, _filter: &CourseClause) -> MatchedParts {
-		let result: BTreeMap<String, MatchType<Val>> = BTreeMap::new();
-		// self
-		// .iter()
-		// .map(|(key, value)| {
-		// 	(
-		// 		key.clone(),
-		// 		match filter.get(key) {
-		// 			Some(other_val) => match &value {
-		// 				Val::String(_) | Val::Integer(_) | Val::Float(_) | Val::Boolean(_) => {
-		// 					if value == other_val {
-		// 						MatchType::Match(value.clone())
-		// 					} else {
-		// 						MatchType::Fail
-		// 					}
-		// 				}
-		// 				// Val::Vec(slice) => MatchType::Match(Val::Vec(other_val.compare_to_slice(slice))),
-		// 				Val::Vec(_) => unimplemented!("'vec' filterable values"),
-		// 				Val::Map(_) => unimplemented!("'map' filterable values"),
-		// 				Val::DateTime(_) => unimplemented!("'datetime' filterable values"),
-		// 			},
-		// 			None => MatchType::Skip,
-		// 		},
-		// 	)
-		// })
-		// .collect();
+	pub fn matches_filter(&self, filter: &CourseClause) -> MatchedParts {
+		let mut result = MatchedParts::default();
 
-		MatchedParts::new(&result)
+		if let Some(f_course) = &filter.course {
+			if &self.course == f_course {
+				result = MatchedParts {
+					course: MatchType::Match(self.course.clone()),
+					..result
+				};
+			}
+		}
+
+		result
 	}
 }

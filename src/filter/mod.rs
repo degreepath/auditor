@@ -302,5 +302,5 @@ pub fn match_area_against_filter(_area: &AreaDescriptor, _filter: &AreaClause) -
 }
 
 pub fn match_course_against_filter(_course: &CourseInstance, _filter: &CourseClause) -> Option<MatchedParts> {
-	Some(MatchedParts::blank())
+	Some(MatchedParts::default())
 }

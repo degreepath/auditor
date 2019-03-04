@@ -63,7 +63,7 @@ pub enum CourseType {
 
 /// If the `Option` here is `None`, then the course is in-progress
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[serde(rename_all = "kebab-case", tag = "graded")]
+#[serde(rename_all = "kebab-case", tag = "mode")]
 pub enum GradeOption {
 	Graded {
 		#[serde(default, skip_serializing_if = "Option::is_none")]
@@ -170,6 +170,16 @@ impl CourseInstance {
 					false
 				}
 			}
+			// TODO: ask around to find out what a NoGrade gradeopt actually means
+			GradeOption::NoGrade => false,
+		}
+	}
+
+	#[allow(dead_code)]
+	pub fn in_progress(&self) -> bool {
+		match &self.grade {
+			GradeOption::Graded { grade } => grade.is_none(),
+			GradeOption::Audit { passed } | GradeOption::Pn { passed } | GradeOption::Su { passed } => passed.is_none(),
 			// TODO: ask around to find out what a NoGrade gradeopt actually means
 			GradeOption::NoGrade => false,
 		}

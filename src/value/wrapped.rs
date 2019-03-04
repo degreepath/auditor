@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum WrappedValue<T> {
 	Single(TaggedValue<T>),
 	Or(Vec<TaggedValue<T>>),
@@ -84,5 +84,21 @@ impl<T: fmt::Display> fmt::Display for WrappedValue<T> {
 		};
 
 		fmt.write_str(&desc)
+	}
+}
+
+impl PartialEq<String> for WrappedValue<String> {
+	fn eq(&self, rhs: &String) -> bool {
+		match &self {
+			WrappedValue::Single(value) => value == rhs,
+			WrappedValue::Or(values) => values.iter().any(|v| v == rhs),
+			WrappedValue::And(values) => values.iter().all(|v| v == rhs),
+		}
+	}
+}
+
+impl PartialEq<WrappedValue<String>> for String {
+	fn eq(&self, other: &WrappedValue<String>) -> bool {
+		other == self
 	}
 }

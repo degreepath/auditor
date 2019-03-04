@@ -17,7 +17,7 @@ impl ReservedPairings {
 	}
 
 	pub fn from_courses(input: &[CourseInstance]) -> ReservedPairings {
-		ReservedPairings(input.iter().map(|c| (c.clone(), MatchedParts::blank())).collect())
+		ReservedPairings(input.iter().map(|c| (c.clone(), MatchedParts::default())).collect())
 	}
 
 	pub fn add(&mut self, r: &Reservation) {

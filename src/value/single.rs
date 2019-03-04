@@ -1,4 +1,3 @@
-use crate::filterable_data::DataValue;
 use crate::traits::print;
 use crate::util;
 use serde::{Deserialize, Serialize};
@@ -84,26 +83,6 @@ impl FromStr for SingleValue {
 		}
 
 		Ok(SingleValue::from(s))
-	}
-}
-
-impl PartialEq<DataValue> for SingleValue {
-	fn eq(&self, rhs: &DataValue) -> bool {
-		match (&self, rhs) {
-			(SingleValue::Bool(lhs), DataValue::Boolean(rhs)) => lhs == rhs,
-			(SingleValue::Bool(_), _) => false,
-			(_, DataValue::Boolean(_)) => false,
-			(SingleValue::String(lhs), DataValue::String(rhs)) => lhs == rhs,
-			(SingleValue::String(_), _) => false,
-			(_, DataValue::String(_)) => false,
-			(SingleValue::Integer(lhs), DataValue::Integer(rhs)) => lhs == rhs,
-			(SingleValue::Integer(_), _) => false,
-			(_, DataValue::Integer(_)) => false,
-			(SingleValue::Float(lhs), DataValue::Float(rhs)) => lhs == rhs,
-			(SingleValue::Float(_), _) => false,
-			// (_, DataValue::Float(_)) => false,
-			// (_, _) => unimplemented!("this combination of DataValue and SingleValue is unimplemented"),
-		}
 	}
 }
 

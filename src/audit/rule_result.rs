@@ -16,7 +16,6 @@ pub enum RuleResultDetails {
 	CountOf(Vec<Option<RuleResult>>),
 	Both((Box<RuleResult>, Box<RuleResult>)),
 	Either((Option<Box<RuleResult>>, Option<Box<RuleResult>>)),
-	/// The "None" variant here represents Given rules with no `what` line
 	Given(GivenOutputType),
 	Do,
 }

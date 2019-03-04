@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum TaggedValue<T> {
 	LessThan(T),
 	LessThanEqualTo(T),
@@ -110,5 +110,21 @@ impl<T: fmt::Display> fmt::Display for TaggedValue<T> {
 			TaggedValue::GreaterThanEqualTo(v) => write!(fmt, ">= {}", v),
 			TaggedValue::NotEqualTo(v) => write!(fmt, "! {}", v),
 		}
+	}
+}
+
+impl PartialEq<String> for TaggedValue<String> {
+	fn eq(&self, rhs: &String) -> bool {
+		match &self {
+			TaggedValue::EqualTo(value) => value == rhs,
+			TaggedValue::NotEqualTo(value) => value != rhs,
+			_ => unimplemented!(),
+		}
+	}
+}
+
+impl PartialEq<TaggedValue<String>> for String {
+	fn eq(&self, other: &TaggedValue<String>) -> bool {
+		other == self
 	}
 }
