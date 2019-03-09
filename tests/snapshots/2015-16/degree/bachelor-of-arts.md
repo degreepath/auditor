@@ -29,7 +29,7 @@ Given the subset of courses from your transcript, limited to only courses taken 
 
 For this requirement, you must do both of the following:
 
-- in the subset “Interim Courses”, there must be enough courses to obtain at least three credits
+- in the subset “Interim Courses”, there must be enough courses to obtain at least 3.00 credits
 - in the subset “Interim Courses”, there must be at least three courses
 
 ### Grade Point Average

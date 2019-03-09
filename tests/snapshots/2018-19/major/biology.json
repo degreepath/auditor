@@ -5,33 +5,70 @@
   "institution": null,
   "catalog": "2018-19",
   "result": {
-    "type": "count-of",
-    "count": "all",
-    "of": [
+    "type": "both",
+    "both": [
       {
-        "type": "requirement",
-        "name": "Foundation",
-        "optional": false
+        "type": "count-of",
+        "count": "all",
+        "of": [
+          {
+            "type": "requirement",
+            "name": "Foundation",
+            "optional": false
+          },
+          {
+            "type": "requirement",
+            "name": "Core",
+            "optional": false
+          },
+          {
+            "type": "requirement",
+            "name": "Level III",
+            "optional": false
+          },
+          {
+            "type": "requirement",
+            "name": "Electives",
+            "optional": false
+          },
+          {
+            "type": "requirement",
+            "name": "Chemistry",
+            "optional": false
+          }
+        ]
       },
       {
-        "type": "requirement",
-        "name": "Core",
-        "optional": false
-      },
-      {
-        "type": "requirement",
-        "name": "Level III",
-        "optional": false
-      },
-      {
-        "type": "requirement",
-        "name": "Electives",
-        "optional": false
-      },
-      {
-        "type": "requirement",
-        "name": "Chemistry",
-        "optional": false
+        "type": "given",
+        "given": "these-requirements",
+        "requirements": [
+          "Foundation",
+          "Core",
+          "Level III",
+          "Electives",
+          "Chemistry"
+        ],
+        "what": "courses",
+        "where": {
+          "grade": {
+            "Single": {
+              "GreaterThanEqualTo": "C"
+            }
+          },
+          "level": {
+            "Single": {
+              "GreaterThanEqualTo": 200
+            }
+          }
+        },
+        "limit": null,
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 4
+            }
+          }
+        }
       }
     ]
   },
@@ -135,6 +172,10 @@
             "of": [
               {
                 "type": "course",
+                "course": "BIO 224"
+              },
+              {
+                "type": "course",
                 "course": "BIO 242"
               },
               {
@@ -160,10 +201,6 @@
               {
                 "type": "course",
                 "course": "BIO 275"
-              },
-              {
-                "type": "course",
-                "course": "BIO 226"
               }
             ]
           },
@@ -182,11 +219,11 @@
             "of": [
               {
                 "type": "course",
-                "course": "BIO 261"
+                "course": "BIO 226"
               },
               {
                 "type": "course",
-                "course": "BIO 226"
+                "course": "BIO 261"
               }
             ]
           },
@@ -276,11 +313,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 2
+            }
           }
         }
       },
@@ -382,6 +419,9 @@
         "bio_elective"
       ],
       "BIO 150": [
+        "bio_elective"
+      ],
+      "BIO 224": [
         "bio_elective"
       ],
       "BIO 226": [

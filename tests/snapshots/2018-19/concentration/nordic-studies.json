@@ -89,11 +89,11 @@
             }
           }
         ],
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 5
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 5
+            }
           }
         }
       },

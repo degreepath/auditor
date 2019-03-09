@@ -121,11 +121,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 1
+            }
           }
         }
       },

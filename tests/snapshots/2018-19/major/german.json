@@ -10,12 +10,12 @@
     "of": [
       {
         "type": "requirement",
-        "name": "Speaking and Writing",
+        "name": "Level 250",
         "optional": false
       },
       {
         "type": "requirement",
-        "name": "The Francophone World",
+        "name": "Level 270",
         "optional": false
       },
       {
@@ -64,11 +64,11 @@
             }
           }
         ],
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 2
+            }
           }
         }
       },
@@ -113,11 +113,11 @@
             }
           }
         ],
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 2
+            }
           }
         }
       },
@@ -163,11 +163,11 @@
         "what": "courses",
         "where": null,
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 3
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 3
+            }
           }
         }
       },
@@ -276,11 +276,11 @@
                 }
               }
             ],
-            "do": {
-              "lhs": "Count",
-              "op": "EqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "EqualTo": 1
+                }
               }
             }
           },

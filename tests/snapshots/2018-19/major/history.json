@@ -57,11 +57,11 @@
         "what": "courses",
         "where": null,
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 9
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 9
+            }
           }
         }
       }
@@ -84,11 +84,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 1
+            }
           }
         }
       },
@@ -113,11 +113,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 1
+            }
           }
         }
       },
@@ -142,11 +142,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 1
+            }
           }
         }
       },
@@ -171,11 +171,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 2
+            }
           }
         }
       },
@@ -200,11 +200,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 1
+            }
           }
         }
       },
@@ -229,11 +229,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 3
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 3
+            }
           }
         }
       },
