@@ -37,11 +37,11 @@
         "what": "credits",
         "where": null,
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 6
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 6
+            }
           }
         }
       }
@@ -86,14 +86,14 @@
             "what": "credits",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Float": [
-                  1,
-                  50
-                ]
+            "action": {
+              "sum": {
+                "Single": {
+                  "GreaterThanEqualTo": {
+                    "value": 1.5,
+                    "phantom": null
+                  }
+                }
               }
             }
           }
@@ -191,11 +191,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 4
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 4
+            }
           }
         }
       },

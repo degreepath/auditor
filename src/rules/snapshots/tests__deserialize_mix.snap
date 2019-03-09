@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T22:38:28.542901Z"
+created: "2019-03-09T20:36:53.758391Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: actual
@@ -122,41 +122,37 @@ expression: actual
         }
     ),
     Given(
-        Rule {
-            given: AllCourses {
-                what: Courses,
-                filter: Some(
-                    CourseClause {
-                        attribute: None,
-                        course: None,
-                        credits: None,
-                        gereqs: None,
-                        graded: None,
-                        grade: None,
-                        institution: None,
-                        level: None,
-                        number: None,
-                        type: None,
-                        semester: None,
-                        subject: None,
-                        year: None
-                    }
-                ),
-                limit: Some(
-                    []
-                )
-            },
-            action: Action {
-                lhs: Count,
-                op: Some(
-                    LessThan
-                ),
-                rhs: Some(
-                    Integer(
-                        2
+        AllCourses {
+            what: Courses,
+            filter: Some(
+                CourseClause {
+                    attribute: None,
+                    course: None,
+                    credits: None,
+                    gereqs: None,
+                    graded: None,
+                    grade: None,
+                    institution: None,
+                    level: None,
+                    number: None,
+                    type: None,
+                    semester: None,
+                    subject: None,
+                    year: None
+                }
+            ),
+            limit: Some(
+                []
+            ),
+            action: Some(
+                Count(
+                    Single(
+                        LessThan(
+                            2
+                        )
                     )
                 )
-            }
+            )
         }
     ),
     Do(

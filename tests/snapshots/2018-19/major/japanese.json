@@ -105,11 +105,11 @@
             "what": "courses",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 4
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 4
+                }
               }
             }
           },
@@ -126,11 +126,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           }
@@ -147,6 +147,7 @@
             "Comparative"
           ],
           "what": "courses",
+          "action": null,
           "limit": [
             {
               "at_most": 1,
@@ -159,8 +160,7 @@
               }
             }
           ],
-          "where": null,
-          "do": null
+          "where": null
         }
       ],
       "requirements": [
@@ -180,11 +180,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -235,11 +235,11 @@
                 }
               }
             ],
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },

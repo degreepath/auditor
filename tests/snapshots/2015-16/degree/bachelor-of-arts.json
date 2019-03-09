@@ -79,11 +79,14 @@
             "what": "credits",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Sum",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 35
+            "action": {
+              "sum": {
+                "Single": {
+                  "GreaterThanEqualTo": {
+                    "value": 35.0,
+                    "phantom": null
+                  }
+                }
               }
             }
           },
@@ -108,11 +111,14 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Sum",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 17
+            "action": {
+              "sum": {
+                "Single": {
+                  "GreaterThanEqualTo": {
+                    "value": 17.0,
+                    "phantom": null
+                  }
+                }
               }
             }
           },
@@ -135,11 +141,14 @@
                 "what": "credits",
                 "where": null,
                 "limit": null,
-                "do": {
-                  "lhs": "Sum",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 3
+                "action": {
+                  "sum": {
+                    "Single": {
+                      "GreaterThanEqualTo": {
+                        "value": 3.0,
+                        "phantom": null
+                      }
+                    }
                   }
                 }
               },
@@ -150,11 +159,11 @@
                 "what": "courses",
                 "where": null,
                 "limit": null,
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 3
+                "action": {
+                  "count": {
+                    "Single": {
+                      "GreaterThanEqualTo": 3
+                    }
                   }
                 }
               }
@@ -167,6 +176,7 @@
               "name": "Interim Courses",
               "given": "courses",
               "what": "courses",
+              "action": null,
               "limit": null,
               "where": {
                 "semester": {
@@ -174,8 +184,7 @@
                     "EqualTo": "Interim"
                   }
                 }
-              },
-              "do": null
+              }
             }
           ],
           "requirements": []
@@ -190,14 +199,14 @@
             "what": "grades",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Average",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Float": [
-                  2,
-                  0
-                ]
+            "action": {
+              "average": {
+                "Single": {
+                  "GreaterThanEqualTo": {
+                    "value": 2.0,
+                    "phantom": null
+                  }
+                }
               }
             }
           },
@@ -222,11 +231,14 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Sum",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 18
+            "action": {
+              "sum": {
+                "Single": {
+                  "GreaterThanEqualTo": {
+                    "value": 18.0,
+                    "phantom": null
+                  }
+                }
               }
             }
           },
@@ -251,11 +263,14 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Sum",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 24
+            "action": {
+              "sum": {
+                "Single": {
+                  "GreaterThanEqualTo": {
+                    "value": 24.0,
+                    "phantom": null
+                  }
+                }
               }
             }
           },
@@ -279,11 +294,11 @@
                 }
               }
             },
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -383,11 +398,11 @@
                   }
                 },
                 "limit": null,
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 1
+                "action": {
+                  "count": {
+                    "Single": {
+                      "GreaterThanEqualTo": 1
+                    }
                   }
                 }
               },
@@ -412,11 +427,11 @@
                   }
                 },
                 "limit": null,
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 4
+                "action": {
+                  "count": {
+                    "Single": {
+                      "GreaterThanEqualTo": 4
+                    }
                   }
                 }
               },
@@ -445,11 +460,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -465,11 +480,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -485,11 +500,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -505,11 +520,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -525,11 +540,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -545,11 +560,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -565,11 +580,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -585,11 +600,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -605,11 +620,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   }
@@ -636,11 +651,11 @@
                   }
                 },
                 "limit": null,
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 1
+                "action": {
+                  "count": {
+                    "Single": {
+                      "GreaterThanEqualTo": 1
+                    }
                   }
                 }
               },
@@ -665,11 +680,11 @@
                   }
                 },
                 "limit": null,
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 1
+                "action": {
+                  "count": {
+                    "Single": {
+                      "GreaterThanEqualTo": 1
+                    }
                   }
                 }
               },
@@ -694,11 +709,11 @@
                   }
                 },
                 "limit": null,
-                "do": {
-                  "lhs": "Count",
-                  "op": "GreaterThanEqualTo",
-                  "rhs": {
-                    "Integer": 2
+                "action": {
+                  "count": {
+                    "Single": {
+                      "GreaterThanEqualTo": 2
+                    }
                   }
                 }
               },
@@ -767,11 +782,11 @@
                     "what": "courses",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -788,11 +803,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   }
@@ -805,6 +820,7 @@
                   "name": "Courses with an HWC",
                   "given": "courses",
                   "what": "courses",
+                  "action": null,
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -812,8 +828,7 @@
                         "EqualTo": "HWC"
                       }
                     }
-                  },
-                  "do": null
+                  }
                 }
               ],
               "requirements": []
@@ -833,11 +848,11 @@
                     "what": "courses",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -845,14 +860,14 @@
                     "type": "given",
                     "given": "save",
                     "save": "Courses with an MCD or MCG",
-                    "what": "departments",
+                    "what": "subjects",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -869,11 +884,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -890,11 +905,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   }
@@ -907,6 +922,7 @@
                   "name": "Courses with an MCD or MCG",
                   "given": "courses",
                   "what": "courses",
+                  "action": null,
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -919,8 +935,7 @@
                         }
                       ]
                     }
-                  },
-                  "do": null
+                  }
                 }
               ],
               "requirements": []
@@ -940,11 +955,11 @@
                     "what": "courses",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -961,11 +976,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -982,11 +997,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   }
@@ -999,6 +1014,7 @@
                   "name": "Courses with an ALS-A or ALS-L",
                   "given": "courses",
                   "what": "courses",
+                  "action": null,
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1011,8 +1027,7 @@
                         }
                       ]
                     }
-                  },
-                  "do": null
+                  }
                 }
               ],
               "requirements": []
@@ -1032,11 +1047,11 @@
                     "what": "courses",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -1053,11 +1068,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -1074,11 +1089,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   }
@@ -1091,6 +1106,7 @@
                   "name": "Courses with a BTS-B or BTS-T",
                   "given": "courses",
                   "what": "courses",
+                  "action": null,
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1103,8 +1119,7 @@
                         }
                       ]
                     }
-                  },
-                  "do": null
+                  }
                 }
               ],
               "requirements": []
@@ -1124,11 +1139,11 @@
                     "what": "courses",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -1136,14 +1151,14 @@
                     "type": "given",
                     "given": "save",
                     "save": "Courses with an SED or IST",
-                    "what": "departments",
+                    "what": "subjects",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -1160,11 +1175,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -1181,11 +1196,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   }
@@ -1198,6 +1213,7 @@
                   "name": "Courses with an SED or IST",
                   "given": "courses",
                   "what": "courses",
+                  "action": null,
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1210,8 +1226,7 @@
                         }
                       ]
                     }
-                  },
-                  "do": null
+                  }
                 }
               ],
               "requirements": []
@@ -1231,11 +1246,11 @@
                     "what": "courses",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -1243,14 +1258,14 @@
                     "type": "given",
                     "given": "save",
                     "save": "Courses with an HBS",
-                    "what": "departments",
+                    "what": "subjects",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 2
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 2
+                        }
                       }
                     }
                   },
@@ -1267,11 +1282,11 @@
                       }
                     },
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   }
@@ -1284,6 +1299,7 @@
                   "name": "Courses with an HBS",
                   "given": "courses",
                   "what": "courses",
+                  "action": null,
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1291,8 +1307,7 @@
                         "EqualTo": "HBS"
                       }
                     }
-                  },
-                  "do": null
+                  }
                 }
               ],
               "requirements": []
@@ -1333,11 +1348,11 @@
                     "what": "courses",
                     "where": null,
                     "limit": null,
-                    "do": {
-                      "lhs": "Count",
-                      "op": "GreaterThanEqualTo",
-                      "rhs": {
-                        "Integer": 1
+                    "action": {
+                      "count": {
+                        "Single": {
+                          "GreaterThanEqualTo": 1
+                        }
                       }
                     }
                   },
@@ -1362,6 +1377,7 @@
                   "name": "first BTS-T course",
                   "given": "courses",
                   "what": "terms",
+                  "action": "minimum",
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1369,17 +1385,13 @@
                         "EqualTo": "BTS-T"
                       }
                     }
-                  },
-                  "do": {
-                    "lhs": "Minimum",
-                    "op": null,
-                    "rhs": null
                   }
                 },
                 {
                   "name": "EIN courses",
                   "given": "courses",
                   "what": "courses",
+                  "action": null,
                   "limit": null,
                   "where": {
                     "gereqs": {
@@ -1387,21 +1399,16 @@
                         "EqualTo": "EIN"
                       }
                     }
-                  },
-                  "do": null
+                  }
                 },
                 {
                   "name": "last EIN course",
                   "given": "save",
                   "save": "EIN courses",
                   "what": "terms",
+                  "action": "maximum",
                   "limit": null,
-                  "where": null,
-                  "do": {
-                    "lhs": "Maximum",
-                    "op": null,
-                    "rhs": null
-                  }
+                  "where": null
                 }
               ],
               "requirements": []

@@ -88,20 +88,21 @@ fn pretty_print() {
 	let expected = "either complete the “A” requirement or take either CS 251 or CS 130";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: Rule =
-		serde_yaml::from_str(&"{either: [{type: given, given: courses, what: courses, do: count >= 3}, CS 121]}")
-			.unwrap();
+	let input: Rule = serde_yaml::from_str(
+		&"{either: [{type: given, given: courses, what: courses, action: {count: '>= 3'}}, CS 121]}",
+	)
+	.unwrap();
 	let expected = "either take at least three courses or take CS 121";
 	assert_eq!(expected, input.print().unwrap());
 
 	let input: Rule = serde_yaml::from_str(
-		&"{either: [{type: given, given: courses, what: courses, do: count >= 3}, {type: requirement, name: A}]}",
+		&"{either: [{type: given, given: courses, what: courses, action: {count: '>= 3'}}, {type: requirement, name: A}]}",
 	)
 	.unwrap();
 	let expected = "either take at least three courses or complete the “A” requirement";
 	assert_eq!(expected, input.print().unwrap());
 
-	let input: Rule = serde_yaml::from_str(&"{either: [{type: given, given: courses, what: courses, do: count >= 3}, {type: given, given: these-courses, courses: [THEAT 233], repeats: all, what: courses, do: count >= 4}]}").unwrap();
+	let input: Rule = serde_yaml::from_str(&"{either: [{type: given, given: courses, what: courses, action: {count: '>= 3'}}, {type: given, given: these-courses, courses: [THEAT 233], repeats: all, what: courses, action: {count: '>= 4'}}]}").unwrap();
 	let expected = "either:
 
 - take at least three courses

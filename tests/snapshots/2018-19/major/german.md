@@ -3,8 +3,8 @@
 # German
 For this major, you must complete all of the following requirements:
 
-- “Speaking and Writing”
-- “The Francophone World”
+- “Level 250”
+- “Level 270”
 - “Level III”
 - “Electives”
 

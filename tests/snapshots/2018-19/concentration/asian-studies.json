@@ -37,11 +37,11 @@
             }
           }
         ],
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 6
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 6
+            }
           }
         }
       },

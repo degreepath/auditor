@@ -15,9 +15,34 @@ pub enum TaggedValue<T> {
 	NotEqualTo(T),
 }
 
+impl<T> TaggedValue<T> {
+	pub fn into_inner(&self) -> &T {
+		use TaggedValue::*;
+		match &self {
+			LessThan(v) | LessThanEqualTo(v) | EqualTo(v) | GreaterThan(v) | GreaterThanEqualTo(v) | NotEqualTo(v) => v,
+		}
+	}
+}
+
 impl TaggedValue<String> {
 	pub fn eq_string(s: &str) -> Self {
 		TaggedValue::EqualTo(s.to_string())
+	}
+}
+
+impl crate::util::Pluralizable for TaggedValue<u64> {
+	fn should_pluralize(&self) -> bool {
+		if *self.into_inner() == 1 {
+			false
+		} else {
+			true
+		}
+	}
+}
+
+impl crate::util::Pluralizable for TaggedValue<decorum::R32> {
+	fn should_pluralize(&self) -> bool {
+		true
 	}
 }
 
@@ -77,13 +102,30 @@ impl print::Print for String {
 
 impl print::Print for decorum::R32 {
 	fn print(&self) -> print::Result {
-		Ok(self.to_string())
+		if (decorum::R32::from(0.0) < *self) && (*self < decorum::R32::from(10.0)) {
+			Ok(format!("{:>0.2}", self))
+		} else {
+			Ok(format!("{}", self))
+		}
 	}
 }
 
 impl print::Print for u64 {
 	fn print(&self) -> print::Result {
-		Ok(self.to_string())
+		Ok(match &self {
+			0 => "zero".to_string(),
+			1 => "one".to_string(),
+			2 => "two".to_string(),
+			3 => "three".to_string(),
+			4 => "four".to_string(),
+			5 => "five".to_string(),
+			6 => "six".to_string(),
+			7 => "seven".to_string(),
+			8 => "eight".to_string(),
+			9 => "nine".to_string(),
+			10 => "ten".to_string(),
+			_ => self.to_string(),
+		})
 	}
 }
 

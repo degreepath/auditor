@@ -217,11 +217,11 @@
             }
           }
         ],
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 4
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 4
+            }
           }
         }
       },

@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T22:35:54.760270Z"
+created: "2019-03-09T20:36:53.758085Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: data
@@ -51,11 +51,10 @@ expression: data
   what: courses
   where: {}
   limit: []
-  do:
-    lhs: Count
-    op: LessThan
-    rhs:
-      Integer: 2
+  action:
+    count:
+      Single:
+        LessThan: 2
 - type: do
   do:
     lhs:

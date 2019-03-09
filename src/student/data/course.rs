@@ -124,14 +124,14 @@ passed: true"###);
 
 	#[test]
 	fn deserialize_pn_some() {
-		let s = "{graded: pn, passed: true}";
+		let s = "{mode: pn, passed: true}";
 		let actual: GradeOption = serde_yaml::from_str(&s).unwrap();
 		assert_eq!(actual, GradeOption::Pn { passed: Some(true) });
 	}
 
 	#[test]
 	fn deserialize_pn_none() {
-		let s = "{graded: pn}";
+		let s = "{mode: pn}";
 		let actual: GradeOption = serde_yaml::from_str(&s).unwrap();
 		assert_eq!(actual, GradeOption::Pn { passed: None });
 	}

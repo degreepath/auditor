@@ -204,11 +204,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 2
+            }
           }
         }
       },

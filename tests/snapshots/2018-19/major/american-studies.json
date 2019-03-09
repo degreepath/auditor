@@ -55,11 +55,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 2
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 2
+                }
               }
             }
           },
@@ -76,11 +76,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 2
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 2
+                }
               }
             }
           },
@@ -88,14 +88,14 @@
             "type": "given",
             "given": "save",
             "save": "Taken Electives",
-            "what": "departments",
+            "what": "subjects",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 3
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 3
+                }
               }
             }
           },
@@ -106,11 +106,11 @@
             "what": "courses",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 6
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 6
+                }
               }
             }
           }
@@ -128,9 +128,9 @@
             "Disciplinary"
           ],
           "what": "courses",
+          "action": null,
           "limit": null,
-          "where": null,
-          "do": null
+          "where": null
         }
       ],
       "requirements": [
@@ -165,11 +165,11 @@
             "what": "courses",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -194,11 +194,11 @@
             "what": "courses",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -490,11 +490,11 @@
             "what": "courses",
             "where": null,
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },

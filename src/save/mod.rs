@@ -1,5 +1,6 @@
+use crate::filter;
+use crate::limit;
 use crate::rules::given::GivenForSaveBlock;
-use crate::{action, filter, limit};
 use serde::{Deserialize, Serialize};
 
 mod print;
@@ -16,6 +17,4 @@ pub struct SaveBlock {
 	pub limit: Option<Vec<limit::Limiter>>,
 	#[serde(rename = "where", default)]
 	pub filter: Option<filter::CourseClause>,
-	#[serde(rename = "do", default, deserialize_with = "action::option_action")]
-	pub action: Option<action::Action>,
 }

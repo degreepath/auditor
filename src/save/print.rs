@@ -47,7 +47,11 @@ impl print::Print for SaveBlock {
 					writeln!(&mut output, "| {} | (todo: fill out if match) |", c)?;
 				}
 			}
-			Given::TheseRequirements { requirements, .. } => {
+			Given::TheseRequirements {
+				requirements,
+				what: _,
+				action,
+			} => {
 				use crate::util::Oxford;
 
 				let req_names = requirements
@@ -77,9 +81,12 @@ impl print::Print for SaveBlock {
 
 				writeln!(&mut output)?;
 
-				if let Some(_action) = &self.action {
-					// todo: describe what the save's action is doing
-					writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+				match &action {
+					Some(_action) => {
+						// todo: describe what the save's action is doing
+						writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+					}
+					_ => {}
 				}
 
 				if self.limit.is_some() {

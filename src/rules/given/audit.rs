@@ -1,4 +1,4 @@
-use super::Given;
+use super::Rule;
 use crate::audit::{ReservedPairings, RuleAudit, RuleInput, RuleResult, RuleResultDetails};
 use crate::filter::{match_area_against_filter, match_course_against_filter};
 use crate::filter::{AreaClause, CourseClause};
@@ -35,12 +35,12 @@ impl super::Rule {
 /// 5. apply the action to the output vector
 impl RuleAudit for super::Rule {
 	fn check(&self, input: &RuleInput) -> RuleResult {
-		match &self.given {
-			Given::AllCourses { filter, limit, .. } => {
+		match &self {
+			Rule::AllCourses { filter, limit, .. } => {
 				let data = self.in_all_courses(input);
 				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::TheseCourses {
+			Rule::TheseCourses {
 				courses,
 				repeats,
 				filter,
@@ -50,7 +50,7 @@ impl RuleAudit for super::Rule {
 				let data = self.in_these_courses(input, courses, repeats);
 				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::TheseRequirements {
+			Rule::TheseRequirements {
 				requirements,
 				filter,
 				limit,
@@ -59,18 +59,18 @@ impl RuleAudit for super::Rule {
 				let data = self.in_requirements_out_courses(input, requirements);
 				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::NamedVariable {
+			Rule::NamedVariable {
 				save, filter, limit, ..
 			} => {
 				let data = self.in_variable_out_courses(input, save);
 				self.check_for_courses(input, &data, filter, limit)
 			}
-			Given::Areas { filter, .. } => {
+			Rule::Areas { filter, .. } => {
 				let data = self.in_areas(input);
 				self.check_for_areas(input, &data, filter)
 			}
-			Given::Performances { .. } => unimplemented!("performances"),
-			Given::Attendances { .. } => unimplemented!("attendances"),
+			Rule::Performances { .. } => unimplemented!("performances"),
+			Rule::Attendances { .. } => unimplemented!("attendances"),
 		}
 	}
 }

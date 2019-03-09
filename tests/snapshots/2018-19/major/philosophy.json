@@ -92,11 +92,11 @@
             }
           }
         ],
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 3
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 3
+            }
           }
         }
       },
@@ -205,11 +205,11 @@
         "what": "courses",
         "where": null,
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 3
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 3
+            }
           }
         }
       },

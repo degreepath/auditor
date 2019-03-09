@@ -1,12 +1,29 @@
 use super::{
-	CourseRule, Given, GivenAreasWhatOptions, GivenAttendancesWhatOptions, GivenCoursesWhatOptions,
+	AnyAction, CourseRule, GivenAreasWhatOptions, GivenAttendancesWhatOptions, GivenCoursesWhatOptions,
 	GivenPerformancesWhatOptions, RepeatMode, Rule,
 };
-use crate::action;
 use crate::filter::{AreaClause, AttendanceClause, CourseClause, PerformanceClause};
 use crate::limit::Limiter;
 use crate::traits::print::{self, Print};
 use crate::util::Oxford;
+use crate::util::Pluralizable;
+use crate::value::{TaggedValue, WrappedValue};
+
+trait PrintableOptionalAction {
+	fn print_prefixed(&self, prefix: &str) -> print::Result;
+}
+
+impl<T> PrintableOptionalAction for Option<T>
+where
+	T: Print,
+{
+	fn print_prefixed(&self, prefix: &str) -> print::Result {
+		match &self {
+			Some(f) => Ok(format!("{}{}", prefix, f.print()?)),
+			None => Ok("".to_string()),
+		}
+	}
+}
 
 impl print::Print for Rule {
 	fn print(&self) -> print::Result {
@@ -14,30 +31,38 @@ impl print::Print for Rule {
 
 		let mut output = String::new();
 
-		let rule = match &self.given {
-			Given::AllCourses { what, filter, limit } => self.print_given_all_courses(what, filter, limit)?,
-			Given::TheseCourses {
+		let rule = match &self {
+			Rule::AllCourses {
+				what,
+				filter,
+				limit,
+				action,
+			} => self.print_given_all_courses(what, filter, limit, action)?,
+			Rule::TheseCourses {
 				what,
 				courses,
 				repeats: mode,
 				filter,
 				limit,
-			} => self.print_given_these_courses(courses, mode, what, filter, limit)?,
-			Given::TheseRequirements {
+				action,
+			} => self.print_given_these_courses(courses, mode, what, filter, limit, action)?,
+			Rule::TheseRequirements {
 				what,
 				requirements,
 				filter,
 				limit,
-			} => self.print_given_these_requirements(requirements, what, filter, limit)?,
-			Given::NamedVariable {
+				action,
+			} => self.print_given_these_requirements(requirements, what, filter, limit, action)?,
+			Rule::NamedVariable {
 				save,
 				what,
 				filter,
 				limit,
-			} => self.print_given_save(save, what, filter, limit)?,
-			Given::Areas { what, filter } => self.print_given_areas(what, filter)?,
-			Given::Performances { what, filter } => self.print_given_performances(what, filter)?,
-			Given::Attendances { what, filter } => self.print_given_attendances(what, filter)?,
+				action,
+			} => self.print_given_save(save, what, filter, limit, action)?,
+			Rule::Areas { what, filter, action } => self.print_given_areas(what, filter, action)?,
+			Rule::Performances { what, filter, action } => self.print_given_performances(what, filter, action)?,
+			Rule::Attendances { what, filter, action } => self.print_given_attendances(what, filter, action)?,
 		};
 
 		write!(&mut output, "{}", rule)?;
@@ -99,33 +124,29 @@ impl Rule {
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
 		limit: &Option<Vec<Limiter>>,
+		action: &Option<AnyAction>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
-		let action = self.action.print()?;
 		let limits = self.print_limits(limit);
-		let filter = match &filter {
-			Some(f) => format!(" {}", f.print()?),
-			None => "".to_string(),
-		};
+		let filter = &filter.print_prefixed(" ")?;
+		let plur = action.should_pluralize();
+		let action = action.print()?;
 
 		match &what {
 			What::Courses => {
-				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 
 				write!(&mut output, "take {} {}{}{}", action, word, filter, limits)?;
 			}
 			What::DistinctCourses => {
-				let plur = self.action.should_pluralize();
 				let word = if plur { "distinct courses" } else { "course" };
 
 				write!(&mut output, "take {} {}{}{}", action, word, filter, limits)?;
 			}
 			What::Credits => {
-				let plur = self.action.should_pluralize();
 				let word = if plur { "credits" } else { "credit" };
 				let filter = if filter.is_empty() {
 					"".to_owned()
@@ -139,8 +160,7 @@ impl Rule {
 					filter, action, word, limits
 				)?;
 			}
-			What::Departments => {
-				let plur = self.action.should_pluralize();
+			What::Subjects => {
 				let word = if plur { "departments" } else { "department" };
 				let filter = if filter.is_empty() {
 					"".to_owned()
@@ -155,7 +175,6 @@ impl Rule {
 				)?;
 			}
 			What::Grades => {
-				let plur = self.action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 				let filter = if filter.is_empty() {
 					"".to_owned()
@@ -170,7 +189,6 @@ impl Rule {
 				)?;
 			}
 			What::Terms => {
-				let plur = self.action.should_pluralize();
 				let word = if plur { "terms" } else { "term" };
 
 				write!(
@@ -184,20 +202,22 @@ impl Rule {
 		Ok(output)
 	}
 
-	fn print_given_areas(&self, what: &GivenAreasWhatOptions, filter: &Option<AreaClause>) -> print::Result {
+	fn print_given_areas(
+		&self,
+		what: &GivenAreasWhatOptions,
+		filter: &Option<AreaClause>,
+		action: &Option<AnyAction>,
+	) -> print::Result {
 		use std::fmt::Write;
 		use GivenAreasWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &filter {
-			Some(f) => format!(" {}", f.print()?),
-			None => "".to_string(),
-		};
+		let filter = &filter.print_prefixed(" ")?;
 
 		match &what {
 			What::Areas => {
 				// TODO: find a better way to special-case "exactly one" major
-				let action = self.action.print()?;
+				let action = action.print()?;
 				let action = action.replace("exactly ", "");
 				write!(&mut output, "declare {}{}", action, filter)?;
 			}
@@ -210,19 +230,17 @@ impl Rule {
 		&self,
 		what: &GivenPerformancesWhatOptions,
 		filter: &Option<PerformanceClause>,
+		action: &Option<AnyAction>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenPerformancesWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &filter {
-			Some(f) => format!(" {}", f.print()?),
-			None => "".to_string(),
-		};
+		let filter = &filter.print_prefixed(" ")?;
 
 		match &what {
 			What::Performances => {
-				let action = self.action.print()?;
+				let action = action.print()?;
 				write!(&mut output, "perform {} recitals{}", action, filter)?;
 			}
 		}
@@ -234,19 +252,17 @@ impl Rule {
 		&self,
 		what: &GivenAttendancesWhatOptions,
 		filter: &Option<AttendanceClause>,
+		action: &Option<AnyAction>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenAttendancesWhatOptions as What;
 
 		let mut output = String::new();
-		let filter = match &filter {
-			Some(f) => format!(" {}", f.print()?),
-			None => "".to_string(),
-		};
+		let filter = &filter.print_prefixed(" ")?;
 
 		match &what {
 			What::Attendances => {
-				let action = self.action.print()?;
+				let action = action.print()?;
 				write!(&mut output, "attend {}{} recitals", action, filter)?;
 			}
 		}
@@ -261,16 +277,13 @@ impl Rule {
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
 		limit: &Option<Vec<Limiter>>,
+		action: &Option<AnyAction>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 		let limits = self.print_limits(&limit);
-		let filter = match &filter {
-			Some(f) => Some(format!(" {}", f.print()?)),
-			None => None,
-		};
 
 		let courses: Vec<String> = courses.iter().map(|r| r.print().unwrap()).collect();
 
@@ -281,12 +294,8 @@ impl Rule {
 						// TODO: expose last vs. first in output somehow?
 						write!(&mut output, "take {}{}", courses.oxford("and"), limits)?;
 					}
-					2 => match (&self.action.lhs, &self.action.op, &self.action.rhs) {
-						(
-							action::Command::Count,
-							Some(action::Operator::GreaterThanEqualTo),
-							Some(action::Value::Integer(n)),
-						) => match n {
+					2 => match &action {
+						Some(AnyAction::Count(WrappedValue::Single(TaggedValue::GreaterThanEqualTo(n)))) => match n {
 							1 => {
 								write!(&mut output, "take either {} or {}{}", courses[0], courses[1], limits)?;
 							}
@@ -299,12 +308,12 @@ impl Rule {
 					},
 					3...5 => {
 						// TODO: expose last vs. first in output somehow?
-						let plur = self.action.should_pluralize();
+						let plur = action.should_pluralize();
 						let word = if plur { "courses" } else { "course" };
 						write!(
 							&mut output,
 							"take {} {} from among {}{}",
-							self.action.print()?,
+							action.print()?,
 							word,
 							courses.oxford("and"),
 							limits
@@ -312,7 +321,7 @@ impl Rule {
 					}
 					_ => {
 						// TODO: expose last vs. first in output somehow?
-						let plur = self.action.should_pluralize();
+						let plur = action.should_pluralize();
 						let word = if plur { "courses" } else { "course" };
 
 						let as_list: Vec<_> = courses.iter().map(|l| format!("- {}", l)).collect();
@@ -320,7 +329,7 @@ impl Rule {
 						write!(
 							&mut output,
 							"take {} {} from among the following:\n\n{}",
-							self.action.print()?,
+							action.print()?,
 							word,
 							as_list.join("\n")
 						)?;
@@ -333,47 +342,45 @@ impl Rule {
 			}
 			(RepeatMode::All, What::Courses) => {
 				// TODO: special-case "once" and "twice"
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "times" } else { "time" };
 
-				match (&self.action.lhs, &self.action.op, &self.action.rhs) {
-					(
-						action::Command::Count,
-						Some(action::Operator::GreaterThanEqualTo),
-						Some(action::Value::Integer(1)),
-					) => match courses.len() {
-						1...5 => {
-							write!(
-								&mut output,
-								"take {} {} {}{}",
-								courses.oxford("or"),
-								self.action.print()?,
-								word,
-								limits
-							)?;
-						}
-						_ => {
-							let as_list: Vec<_> = courses.iter().map(|l| format!("- {}", l)).collect();
+				match &action {
+					Some(AnyAction::Count(WrappedValue::Single(TaggedValue::GreaterThanEqualTo(1)))) => {
+						match courses.len() {
+							1...5 => {
+								write!(
+									&mut output,
+									"take {} {} {}{}",
+									courses.oxford("or"),
+									action.print()?,
+									word,
+									limits
+								)?;
+							}
+							_ => {
+								let as_list: Vec<_> = courses.iter().map(|l| format!("- {}", l)).collect();
 
-							write!(
-								&mut output,
-								"take {} of the following courses:\n\n{}",
-								self.action.print()?,
-								as_list.join("\n"),
-							)?;
+								write!(
+									&mut output,
+									"take {} of the following courses:\n\n{}",
+									action.print()?,
+									as_list.join("\n"),
+								)?;
 
-							if !limits.is_empty() {
-								write!(&mut output, "\n\n{}", self.print_limits_as_block(&limit))?;
+								if !limits.is_empty() {
+									write!(&mut output, "\n\n{}", self.print_limits_as_block(&limit))?;
+								}
 							}
 						}
-					},
+					}
 					_ => match courses.len() {
 						1 => {
 							write!(
 								&mut output,
 								"take {} {} {}{}",
 								courses.oxford("and"),
-								self.action.print()?,
+								action.print()?,
 								word,
 								limits
 							)?;
@@ -383,7 +390,7 @@ impl Rule {
 								&mut output,
 								"take a combination of {} {} {}{}",
 								courses.oxford("and"),
-								self.action.print()?,
+								action.print()?,
 								word,
 								limits,
 							)?;
@@ -393,28 +400,28 @@ impl Rule {
 			}
 			(RepeatMode::All, What::Credits) => {
 				// TODO: special-case "once" and "twice"
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "credits" } else { "credit" };
 
 				write!(
 					&mut output,
 					"take {} enough times to yield {} {}{}",
 					courses.oxford("and"),
-					self.action.print()?,
+					action.print()?,
 					word,
 					limits
 				)?;
 			}
 			(RepeatMode::All, What::Terms) => {
 				// TODO: special-case "once" and "twice"
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "terms" } else { "term" };
 
 				write!(
 					&mut output,
 					"take {} enough times to span {} {}{}",
 					courses.oxford("and"),
-					self.action.print()?,
+					action.print()?,
 					word,
 					limits
 				)?;
@@ -422,8 +429,9 @@ impl Rule {
 			_ => unimplemented!("certain modes of given:these-courses"),
 		}
 
-		if let Some(f) = filter {
-			write!(&mut output, "{}", f)?;
+		let filter = &filter.print_prefixed(" ")?;
+		if !filter.is_empty() {
+			write!(&mut output, "{}", filter)?;
 		}
 
 		Ok(output)
@@ -435,6 +443,7 @@ impl Rule {
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
 		limit: &Option<Vec<Limiter>>,
+		action: &Option<AnyAction>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
@@ -500,21 +509,22 @@ impl Rule {
 		};
 
 		index += 1;
-		let pluralize = self.action.should_pluralize();
 
 		match &what {
 			What::Courses => {
+				let pluralize = action.should_pluralize();
 				let word = if pluralize { "courses" } else { "course" };
 
 				writeln!(
 					&mut output,
 					"{index}. there must be {action} {word}",
 					index = index,
-					action = self.action.print()?,
+					action = action.print()?,
 					word = word,
 				)?;
 			}
 			What::DistinctCourses => {
+				let pluralize = action.should_pluralize();
 				let word = if pluralize {
 					"distinct courses"
 				} else {
@@ -525,22 +535,24 @@ impl Rule {
 					&mut output,
 					"{index}. there must be {action} {word}",
 					index = index,
-					action = self.action.print()?,
+					action = action.print()?,
 					word = word,
 				)?;
 			}
 			What::Credits => {
+				let pluralize = action.should_pluralize();
 				let word = if pluralize { "credits" } else { "credit" };
 
 				writeln!(
 					&mut output,
 					"{index}. there must be {action} {word}",
 					index = index,
-					action = self.action.print()?,
+					action = action.print()?,
 					word = word,
 				)?;
 			}
-			What::Departments => {
+			What::Subjects => {
+				let pluralize = action.should_pluralize();
 				let word = if pluralize {
 					"distinct departments"
 				} else {
@@ -551,7 +563,7 @@ impl Rule {
 					&mut output,
 					"{index}. there must be {action} {word}",
 					index = index,
-					action = self.action.print()?,
+					action = action.print()?,
 					word = word,
 				)?;
 			}
@@ -560,17 +572,18 @@ impl Rule {
 					&mut output,
 					"{index}. there must be an average GPA {action}",
 					index = index,
-					action = self.action.print()?,
+					action = action.print()?,
 				)?;
 			}
 			What::Terms => {
+				let pluralize = action.should_pluralize();
 				let word = if pluralize { "terms" } else { "term" };
 
 				writeln!(
 					&mut output,
 					"{index}. there must be courses in {action} {word}",
 					index = index,
-					action = self.action.print()?,
+					action = action.print()?,
 					word = word,
 				)?;
 			}
@@ -585,48 +598,46 @@ impl Rule {
 		what: &GivenCoursesWhatOptions,
 		filter: &Option<CourseClause>,
 		limit: &Option<Vec<Limiter>>,
+		action: &Option<AnyAction>,
 	) -> print::Result {
 		use std::fmt::Write;
 		use GivenCoursesWhatOptions as What;
 
 		let mut output = String::new();
 		let limits = self.print_limits(limit);
-		let filter = match &filter {
-			Some(f) => format!(" taken {}", f.print()?),
-			None => "".to_string(),
-		};
+		let filter = filter.print_prefixed(" taken ")?;
 
 		match &what {
 			What::Courses => {
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 
 				write!(&mut output, "in the subset “{}”, ", save)?;
 				write!(
 					&mut output,
 					"there must be {} {}{}{}",
-					self.action.print()?,
+					action.print()?,
 					word,
 					filter,
 					limits
 				)?;
 			}
 			What::DistinctCourses => {
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "distinct courses" } else { "course" };
 
 				write!(&mut output, "in the subset “{}”, ", save)?;
 				write!(
 					&mut output,
 					"there must be {} {}{}{}",
-					self.action.print()?,
+					action.print()?,
 					word,
 					filter,
 					limits
 				)?;
 			}
 			What::Credits => {
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "credits" } else { "credit" };
 
 				write!(&mut output, "in the subset “{}”, ", save)?;
@@ -634,13 +645,13 @@ impl Rule {
 					&mut output,
 					"there must be enough courses{} to obtain {} {}{}",
 					filter,
-					self.action.print()?,
+					action.print()?,
 					word,
 					limits
 				)?;
 			}
-			What::Departments => {
-				let plur = self.action.should_pluralize();
+			What::Subjects => {
+				let plur = action.should_pluralize();
 				let word = if plur { "departments" } else { "department" };
 
 				write!(&mut output, "in the subset “{}”, ", save)?;
@@ -648,27 +659,27 @@ impl Rule {
 					&mut output,
 					"there must be enough courses{} to span {} {}{}",
 					filter,
-					self.action.print()?,
+					action.print()?,
 					word,
 					limits
 				)?;
 			}
 			What::Grades => {
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "courses" } else { "course" };
 
 				write!(&mut output, "courses from the subset “{}” ", save)?;
 				write!(
 					&mut output,
 					"must maintain an average GPA {} from {}{}{}",
-					self.action.print()?,
+					action.print()?,
 					word,
 					filter,
 					limits
 				)?;
 			}
 			What::Terms => {
-				let plur = self.action.should_pluralize();
+				let plur = action.should_pluralize();
 				let word = if plur { "terms" } else { "term" };
 
 				write!(&mut output, "in the subset “{}”, ", save)?;
@@ -676,7 +687,7 @@ impl Rule {
 					&mut output,
 					"there must be enough courses{} to span {} {}{}",
 					filter,
-					self.action.print()?,
+					action.print()?,
 					word,
 					limits
 				)?;

@@ -93,11 +93,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 2
+            }
           }
         }
       },
@@ -156,11 +156,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -185,11 +185,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -214,11 +214,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -243,11 +243,11 @@
               }
             },
             "limit": null,
-            "do": {
-              "lhs": "Count",
-              "op": "GreaterThanEqualTo",
-              "rhs": {
-                "Integer": 1
+            "action": {
+              "count": {
+                "Single": {
+                  "GreaterThanEqualTo": 1
+                }
               }
             }
           },
@@ -314,11 +314,11 @@
                     }
                   }
                 },
-                "do": {
-                  "lhs": "Count",
-                  "op": "EqualTo",
-                  "rhs": {
-                    "Integer": 1
+                "action": {
+                  "count": {
+                    "Single": {
+                      "EqualTo": 1
+                    }
                   }
                 }
               }
@@ -356,11 +356,11 @@
                     }
                   }
                 },
-                "do": {
-                  "lhs": "Count",
-                  "op": "EqualTo",
-                  "rhs": {
-                    "Integer": 1
+                "action": {
+                  "count": {
+                    "Single": {
+                      "EqualTo": 1
+                    }
                   }
                 }
               }
@@ -398,11 +398,11 @@
                     }
                   }
                 },
-                "do": {
-                  "lhs": "Count",
-                  "op": "EqualTo",
-                  "rhs": {
-                    "Integer": 1
+                "action": {
+                  "count": {
+                    "Single": {
+                      "EqualTo": 1
+                    }
                   }
                 }
               }
@@ -442,11 +442,11 @@
             }
           }
         ],
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 2
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 2
+            }
           }
         }
       },

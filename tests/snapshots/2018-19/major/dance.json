@@ -96,14 +96,14 @@
         "what": "credits",
         "where": null,
         "limit": null,
-        "do": {
-          "lhs": "Sum",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Float": [
-              1,
-              50
-            ]
+        "action": {
+          "sum": {
+            "Single": {
+              "GreaterThanEqualTo": {
+                "value": 1.5,
+                "phantom": null
+              }
+            }
           }
         }
       },
@@ -330,11 +330,11 @@
           }
         },
         "limit": null,
-        "do": {
-          "lhs": "Count",
-          "op": "GreaterThanEqualTo",
-          "rhs": {
-            "Integer": 1
+        "action": {
+          "count": {
+            "Single": {
+              "GreaterThanEqualTo": 1
+            }
           }
         }
       },
