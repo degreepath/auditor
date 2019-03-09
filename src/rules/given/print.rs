@@ -605,7 +605,7 @@ impl Rule {
 
 		let mut output = String::new();
 		let limits = self.print_limits(limit);
-		let filter = filter.print_prefixed(" taken")?;
+		let filter = filter.print_prefixed(" taken ")?;
 
 		match &what {
 			What::Courses => {

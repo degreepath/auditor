@@ -195,6 +195,7 @@ mod printable {
 				Average(WrappedValue::Single(TaggedValue::GreaterThanEqualTo(v))) => {
 					write!(&mut output, "at or above {}", v.print()?)?
 				}
+				Count(WrappedValue::Single(TaggedValue::EqualTo(v))) => write!(&mut output, "exactly {}", v.print()?)?,
 				Count(v) => write!(&mut output, "{}", v.print()?)?,
 				Sum(v) => write!(&mut output, "{}", v.print()?)?,
 				Average(v) => write!(&mut output, "{}", v.print()?)?,
