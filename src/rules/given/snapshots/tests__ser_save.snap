@@ -1,20 +1,17 @@
 ---
-created: "2019-03-03T15:28:01.844160Z"
+created: "2019-03-09T18:53:39.287757Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
 ---
-{
-  "given": "save",
-  "save": "$my_var",
-  "what": courses,
-  "where": Some(CourseClause(
+Rule(
+  given: "save",
+  save: "$my_var",
+  what: courses({
+    "count": Single(GreaterThan(2)),
+  }),
+  where: Some(CourseClause(
   )),
-  "limit": Some([
+  limit: Some([
   ]),
-  "do": Action(
-    lhs: Count,
-    op: Some(GreaterThan),
-    rhs: Some(Integer(2)),
-  ),
-}
+)

@@ -15,9 +15,38 @@ pub enum TaggedValue<T> {
 	NotEqualTo(T),
 }
 
+impl<T> TaggedValue<T> {
+	pub fn into_inner(&self) -> &T {
+		use TaggedValue::*;
+		match &self {
+			LessThan(v) | LessThanEqualTo(v) | EqualTo(v) | GreaterThan(v) | GreaterThanEqualTo(v) | NotEqualTo(v) => v,
+		}
+	}
+}
+
 impl TaggedValue<String> {
 	pub fn eq_string(s: &str) -> Self {
 		TaggedValue::EqualTo(s.to_string())
+	}
+}
+
+impl crate::util::Pluralizable for TaggedValue<u64> {
+	fn should_pluralize(&self) -> bool {
+		if *self.into_inner() == 1 {
+			false
+		} else {
+			true
+		}
+	}
+}
+
+impl crate::util::Pluralizable for TaggedValue<decorum::R32> {
+	fn should_pluralize(&self) -> bool {
+		if *self.into_inner() == decorum::R32::from(1.0f32) {
+			false
+		} else {
+			true
+		}
 	}
 }
 

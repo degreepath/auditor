@@ -297,6 +297,7 @@ pub struct AttendanceClause {
 #[serde(deny_unknown_fields)]
 pub struct OrganizationClause {}
 
+#[allow(dead_code)]
 pub fn match_area_against_filter(_area: &AreaDescriptor, _filter: &AreaClause) -> bool {
 	true
 }

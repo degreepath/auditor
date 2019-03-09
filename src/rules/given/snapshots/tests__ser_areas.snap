@@ -1,17 +1,14 @@
 ---
-created: "2019-03-03T17:30:19.986351Z"
+created: "2019-03-09T18:53:39.287040Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
 ---
-{
-  "given": "areas",
-  "what": areas,
-  "where": Some(AreaClause(
+Rule(
+  given: "areas",
+  what: areas({
+    "count": Single(GreaterThan(2)),
+  }),
+  where: Some(AreaClause(
   )),
-  "do": Action(
-    lhs: Count,
-    op: Some(GreaterThan),
-    rhs: Some(Integer(2)),
-  ),
-}
+)

@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T22:35:54.760270Z"
+created: "2019-03-09T18:53:39.296181Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: data
@@ -48,14 +48,13 @@ expression: data
       can_match_used: ~
 - type: given
   given: courses
-  what: courses
+  what:
+    courses:
+      count:
+        Single:
+          LessThan: 2
   where: {}
   limit: []
-  do:
-    lhs: Count
-    op: LessThan
-    rhs:
-      Integer: 2
 - type: do
   do:
     lhs:

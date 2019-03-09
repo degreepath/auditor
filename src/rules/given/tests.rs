@@ -1,5 +1,5 @@
 use super::Rule;
-use super::{CourseRule, Given, GivenAreasWhatOptions, GivenCoursesWhatOptions, RepeatMode};
+use super::{CountOnlyAction, CourseRule, GivenAreasWhatOptions, GivenCoursesWhatOptions, RepeatMode};
 use crate::filter::{AreaClause, CourseClause};
 use crate::rules::course;
 use crate::traits::print::Print;
@@ -7,19 +7,18 @@ use crate::value;
 use insta::{assert_ron_snapshot_matches, assert_snapshot_matches};
 use pretty_assertions::assert_eq;
 use value::{
-	TaggedValue::{EqualTo, GreaterThanEqualTo},
+	TaggedValue::{EqualTo, GreaterThan, GreaterThanEqualTo},
 	WrappedValue::Single,
 };
 
 #[test]
 fn serialize_all_courses() {
-	let data = Rule {
-		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let data = Rule::AllCourses {
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	assert_ron_snapshot_matches!("ser_all_courses", data);
@@ -27,13 +26,12 @@ fn serialize_all_courses() {
 
 #[test]
 fn deserialize_all_courses() {
-	let expected = Rule {
-		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let expected = Rule::AllCourses {
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	let data = r#"---
@@ -41,7 +39,7 @@ given: courses
 what: courses
 limit: []
 where: {}
-do: count > 2"#;
+count: '> 2'"#;
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
 
@@ -65,24 +63,23 @@ do:
 
 #[test]
 fn serialize_these_courses() {
-	let data = Rule {
-		given: Given::TheseCourses {
-			courses: vec![
-				CourseRule::Value(course::Rule {
-					course: "ASIAN 110".to_string(),
-					..Default::default()
-				}),
-				CourseRule::Value(course::Rule {
-					course: "ASIAN 110".to_string(),
-					..Default::default()
-				}),
-			],
-			repeats: RepeatMode::First,
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let data = Rule::TheseCourses {
+		courses: vec![
+			CourseRule::Value(course::Rule {
+				course: "ASIAN 110".to_string(),
+				..Default::default()
+			}),
+			CourseRule::Value(course::Rule {
+				course: "ASIAN 110".to_string(),
+				..Default::default()
+			}),
+		],
+		repeats: RepeatMode::First,
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	assert_ron_snapshot_matches!("ser_these_courses_1", data);
@@ -90,24 +87,23 @@ fn serialize_these_courses() {
 
 #[test]
 fn deserialize_these_courses() {
-	let expected = Rule {
-		given: Given::TheseCourses {
-			courses: vec![
-				CourseRule::Value(course::Rule {
-					course: "ASIAN 110".to_string(),
-					..Default::default()
-				}),
-				CourseRule::Value(course::Rule {
-					course: "ASIAN 110".to_string(),
-					..Default::default()
-				}),
-			],
-			repeats: RepeatMode::First,
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let expected = Rule::TheseCourses {
+		courses: vec![
+			CourseRule::Value(course::Rule {
+				course: "ASIAN 110".to_string(),
+				..Default::default()
+			}),
+			CourseRule::Value(course::Rule {
+				course: "ASIAN 110".to_string(),
+				..Default::default()
+			}),
+		],
+		repeats: RepeatMode::First,
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	let data = r#"---
@@ -147,14 +143,13 @@ do:
 
 #[test]
 fn serialize_these_requirements() {
-	let data = Rule {
-		given: Given::TheseRequirements {
-			requirements: vec!["A Name 1".to_string(), "A Name 2".to_string()],
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let data = Rule::TheseRequirements {
+		requirements: vec!["A Name 1".to_string(), "A Name 2".to_string()],
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	assert_ron_snapshot_matches!("ser_these_reqs", data);
@@ -162,14 +157,13 @@ fn serialize_these_requirements() {
 
 #[test]
 fn deserialize_these_requirements() {
-	let expected = Rule {
-		given: Given::TheseRequirements {
-			requirements: vec!["A Name 1".to_string(), "A Name 2".to_string()],
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let expected = Rule::TheseRequirements {
+		requirements: vec!["A Name 1".to_string(), "A Name 2".to_string()],
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	let data = r#"---
@@ -207,12 +201,11 @@ do:
 
 #[test]
 fn serialize_areas() {
-	let data = Rule {
-		given: Given::Areas {
-			what: GivenAreasWhatOptions::Areas,
-			filter: Some(AreaClause::default()),
+	let data = Rule::Areas {
+		what: GivenAreasWhatOptions::Areas {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		filter: Some(AreaClause::default()),
 	};
 
 	assert_ron_snapshot_matches!("ser_areas", data);
@@ -220,12 +213,11 @@ fn serialize_areas() {
 
 #[test]
 fn deserialize_areas() {
-	let expected = Rule {
-		given: Given::Areas {
-			what: GivenAreasWhatOptions::Areas,
-			filter: Some(AreaClause::default()),
+	let expected = Rule::Areas {
+		what: GivenAreasWhatOptions::Areas {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		filter: Some(AreaClause::default()),
 	};
 
 	let data = r#"---
@@ -257,14 +249,13 @@ do:
 
 #[test]
 fn serialize_save() {
-	let data = Rule {
-		given: Given::NamedVariable {
-			save: String::from("$my_var"),
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let data = Rule::NamedVariable {
+		save: String::from("$my_var"),
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	assert_ron_snapshot_matches!("ser_save", data);
@@ -272,14 +263,13 @@ fn serialize_save() {
 
 #[test]
 fn deserialize_save() {
-	let expected = Rule {
-		given: Given::NamedVariable {
-			save: String::from("$my_var"),
-			what: GivenCoursesWhatOptions::Courses,
-			limit: Some(vec![]),
-			filter: Some(CourseClause::default()),
+	let expected = Rule::NamedVariable {
+		save: String::from("$my_var"),
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(2)))),
 		},
-		action: "count > 2".parse().unwrap(),
+		limit: Some(vec![]),
+		filter: Some(CourseClause::default()),
 	};
 
 	let data = r#"---
@@ -319,14 +309,13 @@ save: $interim_courses
 what: courses
 do: count >= 3"#;
 
-	let expected = Rule {
-		given: Given::NamedVariable {
-			save: String::from("$interim_courses"),
-			what: GivenCoursesWhatOptions::Courses,
-			limit: None,
-			filter: None,
+	let expected = Rule::NamedVariable {
+		save: String::from("$interim_courses"),
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThanEqualTo(3)))),
 		},
-		action: "count >= 3".parse().unwrap(),
+		limit: None,
+		filter: None,
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -342,13 +331,12 @@ fn deserialize_filter_gereqs_single() {
 		gereqs: Some(Single(EqualTo("FYW".to_string()))),
 		..CourseClause::default()
 	};
-	let expected = Rule {
-		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
-			limit: None,
-			filter: Some(expected),
+	let expected = Rule::AllCourses {
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(1)))),
 		},
-		action: "count > 1".parse().unwrap(),
+		limit: None,
+		filter: Some(expected),
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -367,13 +355,12 @@ fn deserialize_filter_gereqs_or() {
 		])),
 		..CourseClause::default()
 	};
-	let expected = Rule {
-		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
-			limit: None,
-			filter: Some(expected),
+	let expected = Rule::AllCourses {
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(1)))),
 		},
-		action: "count > 1".parse().unwrap(),
+		limit: None,
+		filter: Some(expected),
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -388,13 +375,12 @@ fn deserialize_filter_level_gte() {
 		level: Some(Single(GreaterThanEqualTo(200))),
 		..CourseClause::default()
 	};
-	let expected = Rule {
-		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
-			limit: None,
-			filter: Some(expected),
+	let expected = Rule::AllCourses {
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(1)))),
 		},
-		action: "count > 1".parse().unwrap(),
+		limit: None,
+		filter: Some(expected),
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -409,13 +395,12 @@ fn deserialize_filter_graded_pn() {
 		graded: Some(Single(EqualTo(crate::filter::GradeOption::Pn))),
 		..CourseClause::default()
 	};
-	let expected = Rule {
-		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
-			limit: None,
-			filter: Some(expected),
+	let expected = Rule::AllCourses {
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(1)))),
 		},
-		action: "count > 1".parse().unwrap(),
+		limit: None,
+		filter: Some(expected),
 	};
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();
@@ -433,13 +418,12 @@ fn deserialize_filter_graded_graded() {
 		))),
 		..CourseClause::default()
 	};
-	let expected = Rule {
-		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
-			limit: None,
-			filter: Some(expected),
+	let expected = Rule::AllCourses {
+		what: GivenCoursesWhatOptions::Courses {
+			action: Some(CountOnlyAction::Count(Single(GreaterThan(1)))),
 		},
-		action: "count > 1".parse().unwrap(),
+		limit: None,
+		filter: Some(expected),
 	};
 
 	let data = r#"{where: {graded: graded, grade: '>= 2.0'}, given: courses, what: courses, do: count > 1}"#;

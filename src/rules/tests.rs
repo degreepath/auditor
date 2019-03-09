@@ -61,13 +61,14 @@ fn serialize() {
 				Box::new(Rule::Course(course_b.clone())),
 			),
 		}),
-		Rule::Given(given::Rule {
-			given: given::Given::AllCourses {
-				what: given::GivenCoursesWhatOptions::Courses,
-				filter: Some(crate::filter::CourseClause::default()),
-				limit: Some(vec![]),
+		Rule::Given(given::Rule::AllCourses {
+			what: given::GivenCoursesWhatOptions::Courses {
+				action: Some(given::CountOnlyAction::Count(crate::value::WrappedValue::Single(
+					crate::value::TaggedValue::LessThan(2),
+				))),
 			},
-			action: "count < 2".parse().unwrap(),
+			filter: Some(crate::filter::CourseClause::default()),
+			limit: Some(vec![]),
 		}),
 		Rule::Do(action_only::Rule {
 			action: crate::action::LhsValueAction {
@@ -181,14 +182,15 @@ fn pretty_print() {
 
 #[test]
 fn dance_seminar() {
-	let expected = Rule::Given(given::Rule {
-		given: given::Given::NamedVariable {
-			save: "Senior Dance Seminars".to_string(),
-			what: given::GivenCoursesWhatOptions::Courses,
-			filter: None,
-			limit: None,
+	let expected = Rule::Given(given::Rule::NamedVariable {
+		save: "Senior Dance Seminars".to_string(),
+		what: given::GivenCoursesWhatOptions::Courses {
+			action: Some(given::CountOnlyAction::Count(crate::value::WrappedValue::Single(
+				crate::value::TaggedValue::GreaterThanEqualTo(1),
+			))),
 		},
-		action: "count >= 1".parse().unwrap(),
+		filter: None,
+		limit: None,
 	});
 
 	let data = r#"---

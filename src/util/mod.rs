@@ -25,3 +25,9 @@ pub fn result_to_option<T, E>(r: Result<T, E>) -> Option<T> {
 		Err(_) => None,
 	}
 }
+
+pub trait Pluralizable {
+	fn should_pluralize(&self) -> bool {
+		false
+	}
+}

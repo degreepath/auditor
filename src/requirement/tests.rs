@@ -124,13 +124,13 @@ name: a requirement
 save:
   - given: courses
     where: {semester: Interim}
-    what: courses
+    what: {courses: ~}
     name: Interim Courses
 result:
   type: both
   both:
-    - {type: given, given: save, save: Interim Courses, what: credits, do: sum >= 3}
-    - {type: given, given: save, save: Interim Courses, what: courses, do: count >= 3}";
+    - {type: given, given: save, save: Interim Courses, what: {credits: {sum: '>= 3'}}}
+    - {type: given, given: save, save: Interim Courses, what: {courses: {count: '>= 3'}}}";
 
 	let expected_filter = filter::CourseClause {
 		semester: Some(
@@ -148,23 +148,25 @@ result:
 		registrar_audited: false,
 		result: Some(Rule::Both(rules::both::Rule {
 			both: (
-				Box::new(Rule::Given(given::Rule {
-					given: given::Given::NamedVariable {
-						save: "Interim Courses".to_string(),
-						what: given::GivenCoursesWhatOptions::Credits,
-						limit: None,
-						filter: None,
+				Box::new(Rule::Given(given::Rule::NamedVariable {
+					save: "Interim Courses".to_string(),
+					what: given::GivenCoursesWhatOptions::Credits {
+						action: Some(given::AnyAction::Sum(value::WrappedValue::Single(
+							value::TaggedValue::GreaterThanEqualTo(decorum::R32::from(3.0)),
+						))),
 					},
-					action: "sum >= 3".parse().unwrap(),
+					limit: None,
+					filter: None,
 				})),
-				Box::new(Rule::Given(given::Rule {
-					given: given::Given::NamedVariable {
-						save: "Interim Courses".to_string(),
-						what: given::GivenCoursesWhatOptions::Courses,
-						limit: None,
-						filter: None,
+				Box::new(Rule::Given(given::Rule::NamedVariable {
+					save: "Interim Courses".to_string(),
+					what: given::GivenCoursesWhatOptions::Courses {
+						action: Some(given::CountOnlyAction::Count(value::WrappedValue::Single(
+							value::TaggedValue::GreaterThanEqualTo(3),
+						))),
 					},
-					action: "count >= 3".parse().unwrap(),
+					limit: None,
+					filter: None,
 				})),
 			),
 		})),
@@ -172,11 +174,10 @@ result:
 		save: vec![SaveBlock {
 			name: "Interim Courses".to_string(),
 			given: given::GivenForSaveBlock::AllCourses {
-				what: given::GivenCoursesWhatOptions::Courses,
+				what: given::GivenCoursesWhatOptions::Courses { action: None },
 			},
 			limit: None,
 			filter: Some(expected_filter),
-			action: None,
 		}],
 		requirements: vec![],
 	};

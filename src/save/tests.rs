@@ -25,11 +25,10 @@ name: Interim Courses"#;
 	let expected = SaveBlock {
 		name: "Interim Courses".to_string(),
 		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses,
+			what: GivenCoursesWhatOptions::Courses { action: None },
 		},
 		limit: None,
 		filter: Some(filter),
-		action: None,
 	};
 
 	let actual: SaveBlock = serde_yaml::from_str(&data).unwrap();
@@ -65,11 +64,10 @@ name: "Senior Dance Seminars""#;
 				..Default::default()
 			})],
 			repeats: given::RepeatMode::Last,
-			what: GivenCoursesWhatOptions::Courses,
+			what: GivenCoursesWhatOptions::Courses { action: None },
 		},
 		limit: None,
 		filter: Some(filter),
-		action: None,
 	};
 
 	let actual: SaveBlock = serde_yaml::from_str(&data).unwrap();

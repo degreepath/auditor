@@ -1,5 +1,5 @@
 use super::SaveBlock;
-use crate::rules::given::GivenForSaveBlock as Given;
+use crate::rules::given::{GivenCoursesWhatOptions, GivenForSaveBlock as Given};
 use crate::traits::print;
 
 impl print::Print for SaveBlock {
@@ -47,7 +47,7 @@ impl print::Print for SaveBlock {
 					writeln!(&mut output, "| {} | (todo: fill out if match) |", c)?;
 				}
 			}
-			Given::TheseRequirements { requirements, .. } => {
+			Given::TheseRequirements { requirements, what } => {
 				use crate::util::Oxford;
 
 				let req_names = requirements
@@ -77,9 +77,43 @@ impl print::Print for SaveBlock {
 
 				writeln!(&mut output)?;
 
-				if let Some(_action) = &self.action {
-					// todo: describe what the save's action is doing
-					writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+				match &what {
+					GivenCoursesWhatOptions::Courses { action } => {
+						if let Some(_action) = action {
+							// todo: describe what the save's action is doing
+							writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+						}
+					}
+					GivenCoursesWhatOptions::DistinctCourses { action } => {
+						if let Some(_action) = action {
+							// todo: describe what the save's action is doing
+							writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+						}
+					}
+					GivenCoursesWhatOptions::Credits { action } => {
+						if let Some(_action) = action {
+							// todo: describe what the save's action is doing
+							writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+						}
+					}
+					GivenCoursesWhatOptions::Subjects { action } => {
+						if let Some(_action) = action {
+							// todo: describe what the save's action is doing
+							writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+						}
+					}
+					GivenCoursesWhatOptions::Terms { action } => {
+						if let Some(_action) = action {
+							// todo: describe what the save's action is doing
+							writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+						}
+					}
+					GivenCoursesWhatOptions::Grades { action } => {
+						if let Some(_action) = action {
+							// todo: describe what the save's action is doing
+							writeln!(&mut output, "> todo: describe what the save's action is doing")?;
+						}
+					}
 				}
 
 				if self.limit.is_some() {

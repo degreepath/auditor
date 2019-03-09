@@ -12,6 +12,24 @@ pub enum WrappedValue<T> {
 	And(Vec<TaggedValue<T>>),
 }
 
+impl crate::util::Pluralizable for WrappedValue<u64> {
+	fn should_pluralize(&self) -> bool {
+		match &self {
+			WrappedValue::Single(v) => v.should_pluralize(),
+			_ => false,
+		}
+	}
+}
+
+impl crate::util::Pluralizable for WrappedValue<decorum::R32> {
+	fn should_pluralize(&self) -> bool {
+		match &self {
+			WrappedValue::Single(v) => v.should_pluralize(),
+			_ => false,
+		}
+	}
+}
+
 impl WrappedValue<String> {
 	pub fn new(s: &str) -> Self {
 		WrappedValue::Single(TaggedValue::EqualTo(s.to_string()))
