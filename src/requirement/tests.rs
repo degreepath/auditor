@@ -124,20 +124,18 @@ name: a requirement
 save:
   - given: courses
     where: {semester: Interim}
-    what: {courses: ~}
+    what: courses
     name: Interim Courses
 result:
   type: both
   both:
-    - {type: given, given: save, save: Interim Courses, what: {credits: {sum: '>= 3'}}}
-    - {type: given, given: save, save: Interim Courses, what: {courses: {count: '>= 3'}}}";
+    - {type: given, given: save, save: Interim Courses, what: credits, action: {sum: '>= 3'}}
+    - {type: given, given: save, save: Interim Courses, what: courses, action: {count: '>= 3'}}";
+
+	let interim = "Interim".parse::<value::WrappedValue<crate::student::Semester>>().ok();
 
 	let expected_filter = filter::CourseClause {
-		semester: Some(
-			"Interim"
-				.parse::<value::WrappedValue<crate::student::Semester>>()
-				.unwrap(),
-		),
+		semester: interim,
 		..filter::CourseClause::default()
 	};
 
@@ -150,21 +148,19 @@ result:
 			both: (
 				Box::new(Rule::Given(given::Rule::NamedVariable {
 					save: "Interim Courses".to_string(),
-					what: given::GivenCoursesWhatOptions::Credits {
-						action: Some(given::AnyAction::Sum(value::WrappedValue::Single(
-							value::TaggedValue::GreaterThanEqualTo(decorum::R32::from(3.0)),
-						))),
-					},
+					what: given::GivenCoursesWhatOptions::Credits,
+					action: Some(given::AnyAction::Sum(value::WrappedValue::Single(
+						value::TaggedValue::GreaterThanEqualTo(decorum::R32::from(3.0)),
+					))),
 					limit: None,
 					filter: None,
 				})),
 				Box::new(Rule::Given(given::Rule::NamedVariable {
 					save: "Interim Courses".to_string(),
-					what: given::GivenCoursesWhatOptions::Courses {
-						action: Some(given::CountOnlyAction::Count(value::WrappedValue::Single(
-							value::TaggedValue::GreaterThanEqualTo(3),
-						))),
-					},
+					what: given::GivenCoursesWhatOptions::Courses,
+					action: Some(given::AnyAction::Count(value::WrappedValue::Single(
+						value::TaggedValue::GreaterThanEqualTo(3),
+					))),
 					limit: None,
 					filter: None,
 				})),
@@ -174,7 +170,8 @@ result:
 		save: vec![SaveBlock {
 			name: "Interim Courses".to_string(),
 			given: given::GivenForSaveBlock::AllCourses {
-				what: given::GivenCoursesWhatOptions::Courses { action: None },
+				what: given::GivenCoursesWhatOptions::Courses,
+				action: None,
 			},
 			limit: None,
 			filter: Some(expected_filter),

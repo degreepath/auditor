@@ -1,5 +1,5 @@
 ---
-created: "2019-03-03T22:40:23.983907Z"
+created: "2019-03-09T20:36:53.758019Z"
 creator: insta@0.6.3
 source: src/rules/tests.rs
 expression: actual
@@ -139,23 +139,19 @@ expression: actual
         }
     ),
     Given(
-        Rule {
-            given: AllCourses {
-                what: Courses,
-                filter: None,
-                limit: None
-            },
-            action: Action {
-                lhs: Count,
-                op: Some(
-                    LessThan
-                ),
-                rhs: Some(
-                    Integer(
-                        2
+        AllCourses {
+            what: Courses,
+            filter: None,
+            limit: None,
+            action: Some(
+                Count(
+                    Single(
+                        LessThan(
+                            2
+                        )
                     )
                 )
-            }
+            )
         }
     ),
     Do(

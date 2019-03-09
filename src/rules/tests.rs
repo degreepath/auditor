@@ -62,11 +62,10 @@ fn serialize() {
 			),
 		}),
 		Rule::Given(given::Rule::AllCourses {
-			what: given::GivenCoursesWhatOptions::Courses {
-				action: Some(given::CountOnlyAction::Count(crate::value::WrappedValue::Single(
-					crate::value::TaggedValue::LessThan(2),
-				))),
-			},
+			what: given::GivenCoursesWhatOptions::Courses,
+			action: Some(given::AnyAction::Count(crate::value::WrappedValue::Single(
+				crate::value::TaggedValue::LessThan(2),
+			))),
 			filter: Some(crate::filter::CourseClause::default()),
 			limit: Some(vec![]),
 		}),
@@ -122,7 +121,7 @@ fn deserialize() {
   what: courses
   where: {}
   limit: []
-  do: count < 2
+  action: {count: '< 2'}
 - {type: do, do: {lhs: a, op: <, rhs: b}}"#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
@@ -152,7 +151,7 @@ fn deserialize_shorthands() {
 - type: given
   given: courses
   what: courses
-  do: count < 2
+  action: {count: '< 2'}
 - {type: do, do: {lhs: a, op: <, rhs: b}}"#;
 
 	let actual: Vec<Rule> = serde_yaml::from_str(&data).unwrap();
@@ -170,7 +169,7 @@ fn pretty_print() {
 - {type: count-of, count: 1, of: [ASIAN 101]}
 - {type: both, both: [ASIAN 101, {type: course, course: ASIAN 102, year: 2014, semester: Fall}]}
 - {type: either, either: [ASIAN 101, {type: course, course: ASIAN 102, year: 2014, semester: Fall}]}
-- {type: given, given: courses, what: courses, do: count < 2}
+- {type: given, given: courses, what: courses, action: {count: '< 2'}}
 - {type: do, do: {lhs: X, op: <, rhs: Y}}
 "#;
 
@@ -184,11 +183,10 @@ fn pretty_print() {
 fn dance_seminar() {
 	let expected = Rule::Given(given::Rule::NamedVariable {
 		save: "Senior Dance Seminars".to_string(),
-		what: given::GivenCoursesWhatOptions::Courses {
-			action: Some(given::CountOnlyAction::Count(crate::value::WrappedValue::Single(
-				crate::value::TaggedValue::GreaterThanEqualTo(1),
-			))),
-		},
+		what: given::GivenCoursesWhatOptions::Courses,
+		action: Some(given::AnyAction::Count(crate::value::WrappedValue::Single(
+			crate::value::TaggedValue::GreaterThanEqualTo(1),
+		))),
 		filter: None,
 		limit: None,
 	});
@@ -198,22 +196,7 @@ type: given
 given: save
 save: "Senior Dance Seminars"
 what: courses
-do: count >= 1
-"#;
-
-	let actual: Rule = serde_yaml::from_str(&data).unwrap();
-	assert_eq!(actual, expected);
-
-	let data = r#"---
-type: given
-given: save
-save: "Senior Dance Seminars"
-what: courses
-do:
-  lhs: Count
-  op: GreaterThanEqualTo
-  rhs:
-    Integer: 1
+action: {count: '>= 1'}
 "#;
 
 	let actual: Rule = serde_yaml::from_str(&data).unwrap();

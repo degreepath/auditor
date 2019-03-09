@@ -25,7 +25,8 @@ name: Interim Courses"#;
 	let expected = SaveBlock {
 		name: "Interim Courses".to_string(),
 		given: Given::AllCourses {
-			what: GivenCoursesWhatOptions::Courses { action: None },
+			what: GivenCoursesWhatOptions::Courses,
+			action: None,
 		},
 		limit: None,
 		filter: Some(filter),
@@ -64,7 +65,8 @@ name: "Senior Dance Seminars""#;
 				..Default::default()
 			})],
 			repeats: given::RepeatMode::Last,
-			what: GivenCoursesWhatOptions::Courses { action: None },
+			what: GivenCoursesWhatOptions::Courses,
+			action: None,
 		},
 		limit: None,
 		filter: Some(filter),

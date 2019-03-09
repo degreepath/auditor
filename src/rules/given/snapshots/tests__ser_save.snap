@@ -1,5 +1,5 @@
 ---
-created: "2019-03-09T18:53:39.287757Z"
+created: "2019-03-09T20:36:53.747551Z"
 creator: insta@0.6.3
 source: src/rules/given/tests.rs
 expression: data
@@ -7,11 +7,10 @@ expression: data
 Rule(
   given: "save",
   save: "$my_var",
-  what: courses({
-    "count": Single(GreaterThan(2)),
-  }),
+  what: courses,
   where: Some(CourseClause(
   )),
   limit: Some([
   ]),
+  action: Some(count(Single(GreaterThan(2)))),
 )
