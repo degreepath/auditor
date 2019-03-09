@@ -13,7 +13,7 @@ result:
       given: these-requirements
       requirements: [X, Y, Z]
       what: credits
-      do: count >= 6
+      action: { count: '>= 6' }
 
 requirements:
   - name: History
@@ -35,7 +35,7 @@ requirements:
           given: these-requirements
           requirements: [A]
           what: credits
-          do: count >= 1.5
+          action: { sum: '>= 1.5' }
 
     requirements:
       - name: A
@@ -66,4 +66,4 @@ requirements:
       given: courses
       where: {gereqs: 'WRI'}
       what: courses
-      do: count >= 4
+      action: { count: '>= 4' }
