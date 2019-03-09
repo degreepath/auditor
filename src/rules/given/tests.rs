@@ -405,7 +405,7 @@ fn pretty_print_inline_repeats() {
 fn pretty_print_inline_credits() {
 	let s = "{given: courses, where: {gereqs: FOL-C}, what: credits, action: {sum: '>= 1'}}";
 	let input = parse_rule(&s);
-	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken with the “FOL-C” general education attribute to obtain at least 1.00 credit");
+	assert_snapshot_matches!(input.print().unwrap(), @"have enough courses taken with the “FOL-C” general education attribute to obtain at least 1.00 credits");
 
 	let s = "{given: courses, where: {semester: Interim}, what: credits, action: {sum: '>= 3'}}";
 	let input = parse_rule(&s);
@@ -472,7 +472,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 	assert_snapshot_matches!(input.print().unwrap(), @r###"have the following be true:
 
 1. given the results of the “Core” and “Modern” requirements,
-2. there must be at least 1.00 credit
+2. there must be at least 1.00 credits
 "###);
 
 	let s = "{given: these-requirements, requirements: [Core, Modern], where: { gereqs: FOL-C }, what: credits, action: {sum: '>= 1'}}";
@@ -481,7 +481,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 
 1. given the results of the “Core” and “Modern” requirements,
 2. restricted to only courses taken with the “FOL-C” general education attribute,
-3. there must be at least 1.00 credit
+3. there must be at least 1.00 credits
 "###);
 
 	let s = "{given: these-requirements, requirements: [Core, Modern], where: { semester: Interim }, what: credits, action: {sum: '>= 3'}}";
@@ -508,7 +508,7 @@ fn pretty_print_inline_given_requirements_what_courses() {
 
 1. given the results of the “Core” and “Modern” requirements,
 2. restricted to only courses taken during your junior year,
-3. there must be at least 1.00 credit
+3. there must be at least 1.00 credits
 ");
 
 	let s = "{given: these-requirements, requirements: [Core, Modern], where: { institution: St. Olaf College }, what: credits, action: {sum: '>= 17'}}";

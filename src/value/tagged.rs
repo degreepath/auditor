@@ -42,11 +42,7 @@ impl crate::util::Pluralizable for TaggedValue<u64> {
 
 impl crate::util::Pluralizable for TaggedValue<decorum::R32> {
 	fn should_pluralize(&self) -> bool {
-		if *self.into_inner() == decorum::R32::from(1.0f32) {
-			false
-		} else {
-			true
-		}
+		true
 	}
 }
 
