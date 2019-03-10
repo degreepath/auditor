@@ -49,6 +49,13 @@ impl CourseInstance {
 			name: "".to_string(),
 		}
 	}
+
+	pub fn attach_attributes(&self, attributes: &[String]) -> CourseInstance {
+		CourseInstance {
+			attributes: attributes.iter().cloned().collect(),
+			..self.clone()
+		}
+	}
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

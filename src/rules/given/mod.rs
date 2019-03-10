@@ -12,7 +12,7 @@ mod print;
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone)]
 #[serde(tag = "given", rename_all = "kebab-case")]
 pub enum Rule {
 	#[serde(rename = "courses")]
@@ -89,7 +89,7 @@ impl Util for Rule {
 	}
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone)]
 #[serde(tag = "given", rename_all = "kebab-case")]
 pub enum GivenForSaveBlock {
 	#[serde(rename = "courses")]
@@ -122,7 +122,7 @@ pub enum GivenForSaveBlock {
 
 use util::string_or_struct_parseerror as parse;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "kebab-case")]
 pub enum GivenCoursesWhatOptions {
 	Courses,
@@ -217,7 +217,7 @@ mod printable {
 	}
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone)]
 #[serde(untagged)]
 pub enum CourseRule {
 	Value(#[serde(deserialize_with = "util::string_or_struct")] course::Rule),

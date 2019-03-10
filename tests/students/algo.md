@@ -154,8 +154,6 @@ multicountable: Vec[
 		MatchableCourse(Key::Course("ASIAN 130")),
 		MatchableCourse(Key::Attribute("asian_elective")),
 		MatchableCourse(Key::Attribute("asian_other")),
-		MatchableCourse(Key::Subject("ASIAN")),
-		MatchableCourse(Key::Number(130)),
 	])
 ]
 matched: HashMap{

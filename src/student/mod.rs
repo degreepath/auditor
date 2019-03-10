@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 mod data;
 pub use data::{AreaDescriptor, AttendanceInstance, CourseInstance, OrganizationDescriptor, PerformanceInstance};
-pub use data::{CourseType, GradeOption, Semester};
+pub use data::{CourseType, GradeOption, Semester, Term};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct StudentData {

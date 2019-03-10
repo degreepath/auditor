@@ -18,6 +18,14 @@ pub struct Rule {
 }
 
 impl Rule {
+	pub fn count_as_int(&self) -> u64 {
+		match self.count {
+			Counter::All => self.of.len() as u64,
+			Counter::Any => 1,
+			Counter::Number(n) => n,
+		}
+	}
+
 	fn is_all(&self) -> bool {
 		match self.count {
 			Counter::All => true,
