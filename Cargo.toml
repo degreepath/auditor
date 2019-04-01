@@ -11,8 +11,8 @@ serde = { version = "1.0", features = ["derive"] }
 void = {version = "1.0"}
 
 [dev-dependencies]
-globwalk = "0.6"
-insta = "0.6"
+globwalk = "0.7"
+insta = "0.7"
 maplit = "1.0"
 pretty_assertions = "0.6"
 rayon = "1.0"
