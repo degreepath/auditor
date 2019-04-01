@@ -18,7 +18,8 @@ fn serialize() {
 		),
 	};
 
-	assert_yaml_snapshot_matches!(input, @r###"both:
+	assert_yaml_snapshot_matches!(input, @r###"---
+both:
   - type: requirement
     name: Name
     optional: false

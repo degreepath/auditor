@@ -10,7 +10,8 @@ fn serialize_simple() {
 		..CourseClause::default()
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"level:
+	assert_yaml_snapshot_matches!(data, @r###"---
+level:
   Single:
     EqualTo: 100"###);
 }
@@ -22,7 +23,8 @@ fn serialize_or() {
 		..CourseClause::default()
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"level:
+	assert_yaml_snapshot_matches!(data, @r###"---
+level:
   Or:
     - EqualTo: 100
     - EqualTo: 200"###);
@@ -32,7 +34,8 @@ fn serialize_or() {
 		..CourseClause::default()
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"level:
+	assert_yaml_snapshot_matches!(data, @r###"---
+level:
   Or:
     - LessThan: 100
     - EqualTo: 200"###);

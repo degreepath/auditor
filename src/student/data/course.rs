@@ -98,34 +98,40 @@ mod tests {
 
 	#[test]
 	fn serialize_graded_none() {
-		assert_yaml_snapshot_matches!(GradeOption::Graded {grade: None}, @"mode: graded");
+		assert_yaml_snapshot_matches!(GradeOption::Graded {grade: None}, @r###"---
+mode: graded"###);
 	}
 
 	#[test]
 	fn serialize_graded_some() {
-		assert_yaml_snapshot_matches!(GradeOption::Graded {grade: Some(Grade::A)}, @r###"mode: graded
+		assert_yaml_snapshot_matches!(GradeOption::Graded {grade: Some(Grade::A)}, @r###"---
+mode: graded
 grade: A"###);
 	}
 
 	#[test]
 	fn serialize_audit_none() {
-		assert_yaml_snapshot_matches!(GradeOption::Audit {passed: None}, @"mode: audit");
+		assert_yaml_snapshot_matches!(GradeOption::Audit {passed: None}, @r###"---
+mode: audit"###);
 	}
 
 	#[test]
 	fn serialize_audit_some() {
-		assert_yaml_snapshot_matches!(GradeOption::Audit {passed: Some(true)}, @r###"mode: audit
+		assert_yaml_snapshot_matches!(GradeOption::Audit {passed: Some(true)}, @r###"---
+mode: audit
 passed: true"###);
 	}
 
 	#[test]
 	fn serialize_pn_none() {
-		assert_yaml_snapshot_matches!(GradeOption::Pn {passed: None}, @"mode: pn");
+		assert_yaml_snapshot_matches!(GradeOption::Pn {passed: None}, @r###"---
+mode: pn"###);
 	}
 
 	#[test]
 	fn serialize_pn_some() {
-		assert_yaml_snapshot_matches!(GradeOption::Pn {passed: Some(true)}, @r###"mode: pn
+		assert_yaml_snapshot_matches!(GradeOption::Pn {passed: Some(true)}, @r###"---
+mode: pn
 passed: true"###);
 	}
 
@@ -145,18 +151,21 @@ passed: true"###);
 
 	#[test]
 	fn serialize_su_none() {
-		assert_yaml_snapshot_matches!(GradeOption::Su {passed: None}, @"mode: su");
+		assert_yaml_snapshot_matches!(GradeOption::Su {passed: None}, @r###"---
+mode: su"###);
 	}
 
 	#[test]
 	fn serialize_su_some() {
-		assert_yaml_snapshot_matches!(GradeOption::Su {passed: Some(true)}, @r###"mode: su
+		assert_yaml_snapshot_matches!(GradeOption::Su {passed: Some(true)}, @r###"---
+mode: su
 passed: true"###);
 	}
 
 	#[test]
 	fn serialize_nograde_none() {
-		assert_yaml_snapshot_matches!(GradeOption::NoGrade, @"mode: no-grade");
+		assert_yaml_snapshot_matches!(GradeOption::NoGrade, @r###"---
+mode: no-grade"###);
 	}
 }
 

@@ -15,7 +15,8 @@ fn serialize_level100() {
 		at_most: 2,
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"at_most: 2
+	assert_yaml_snapshot_matches!(data, @r###"---
+at_most: 2
 where:
   level:
     Single:
@@ -34,7 +35,8 @@ fn serialize_not_math() {
 		at_most: 2,
 	};
 
-	assert_yaml_snapshot_matches!(data, @r###"at_most: 2
+	assert_yaml_snapshot_matches!(data, @r###"---
+at_most: 2
 where:
   subject:
     Single:
