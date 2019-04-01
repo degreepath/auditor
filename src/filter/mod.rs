@@ -1,6 +1,5 @@
-use crate::audit::course_match::MatchedParts;
 use crate::grade::Grade;
-use crate::student::{AreaDescriptor, CourseInstance, CourseType, Semester};
+use crate::student::{CourseType, Semester};
 use crate::value::WrappedValue as Value;
 use decorum::R32;
 use serde::{Deserialize, Serialize};
@@ -296,12 +295,3 @@ pub struct AttendanceClause {
 #[derive(Debug, Serialize, Deserialize, Hash, Clone, PartialEq, Eq, Ord, PartialOrd, Default)]
 #[serde(deny_unknown_fields)]
 pub struct OrganizationClause {}
-
-#[allow(dead_code)]
-pub fn match_area_against_filter(_area: &AreaDescriptor, _filter: &AreaClause) -> bool {
-	true
-}
-
-pub fn match_course_against_filter(_course: &CourseInstance, _filter: &CourseClause) -> Option<MatchedParts> {
-	Some(MatchedParts::default())
-}

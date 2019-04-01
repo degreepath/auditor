@@ -3,7 +3,6 @@ use crate::save::SaveBlock;
 use crate::util;
 use serde::{Deserialize, Serialize};
 
-pub mod audit;
 mod print;
 #[cfg(test)]
 mod tests;

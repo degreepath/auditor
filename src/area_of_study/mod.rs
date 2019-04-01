@@ -4,7 +4,6 @@ use crate::rules::Rule;
 use serde::{Deserialize, Serialize};
 
 mod attributes;
-mod audit;
 mod print;
 #[cfg(test)]
 mod tests;

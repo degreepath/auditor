@@ -4,7 +4,6 @@ use crate::rules::given::GivenForSaveBlock;
 use serde::{Deserialize, Serialize};
 
 mod print;
-
 #[cfg(test)]
 mod tests;
 

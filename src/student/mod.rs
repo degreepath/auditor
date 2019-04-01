@@ -1,10 +1,18 @@
-use crate::audit::Transcript;
 use overrides::Override;
 use serde::{Deserialize, Serialize};
 
 mod data;
 pub use data::{AreaDescriptor, AttendanceInstance, CourseInstance, OrganizationDescriptor, PerformanceInstance};
 pub use data::{CourseType, GradeOption, Semester, Term};
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Transcript(Vec<CourseInstance>);
+
+impl From<&[CourseInstance]> for Transcript {
+	fn from(courses: &[CourseInstance]) -> Self {
+		Transcript(courses.to_vec())
+	}
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct StudentData {
@@ -19,7 +27,7 @@ pub struct StudentData {
 impl StudentData {
 	pub fn update_transcript(self, courses: &[CourseInstance]) -> StudentData {
 		StudentData {
-			transcript: Transcript::new(courses),
+			transcript: Transcript::from(courses),
 			..self
 		}
 	}

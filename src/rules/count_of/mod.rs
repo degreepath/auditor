@@ -2,7 +2,6 @@ use crate::rules::Rule as AnyRule;
 use crate::traits::Util;
 use serde::{Deserialize, Serialize};
 
-mod audit;
 mod counter;
 mod print;
 #[cfg(test)]

@@ -4,7 +4,6 @@ use crate::traits::Util;
 use serde::Deserialize;
 use std::str::FromStr;
 
-mod audit;
 mod print;
 mod serialize;
 #[cfg(test)]
