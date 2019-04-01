@@ -55,9 +55,9 @@ fn main() {
 
 	loaded_areas.par_iter().for_each(|area| {
 		println!("starting {}", area.area_name);
-		let result = area.check(&student);
+		// let result = area.check(&student);
 		println!("completed {}", area.area_name);
-		println!("{:#?}", result);
+		// println!("{:#?}", result);
 	});
 
 	eprintln!("audit complete");
