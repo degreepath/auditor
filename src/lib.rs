@@ -11,6 +11,7 @@ mod limit;
 pub mod requirement;
 mod rules;
 mod save;
+mod solve;
 pub mod student;
 mod traits;
 mod util;

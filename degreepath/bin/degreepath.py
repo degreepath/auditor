@@ -1,0 +1,1 @@
+from degreepath import AreaOfStudy
