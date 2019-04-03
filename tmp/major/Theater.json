@@ -1,0 +1,279 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Theater",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Part 1",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 7,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 130"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 140"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 180"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 232"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.EitherRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "THEAT 240"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "THEAT 250"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 270"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 271"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Part 2",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 2,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 338"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 379"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 380"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 394"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "THEAT 398"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "All students must enroll in four practicum classes, of which at least one must be THEAT 233 and at least two must be THEAT 253; the fourth practicum class is then a choice of either 233 or 253.",
+            "name": "Practicum",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Acting",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 1",
+                            "courses": [
+                                "THEAT 233"
+                            ],
+                            "given": "these-courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Tech",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 2",
+                            "courses": [
+                                "THEAT 253"
+                            ],
+                            "given": "these-courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 3,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Acting"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Tech"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.GivenRule",
+                                "action": "count >= 4",
+                                "courses": [
+                                    "THEAT 233",
+                                    "THEAT 253"
+                                ],
+                                "given": "these-courses",
+                                "limit": null,
+                                "output": "courses",
+                                "requirements": null,
+                                "save": null,
+                                "saves": null,
+                                "where": null
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 3,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Part 1"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Part 2"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Practicum"
+                    }
+                }
+            ]
+        }
+    }
+}

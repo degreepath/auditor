@@ -1,0 +1,735 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Mathematics",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Basics",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 3,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MATH 120"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.EitherRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 126"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 128"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MATH 220"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Transitions",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "math_transitions",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "One course from each of three of the four perspectives.",
+            "name": "Perspectives",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Axiomatic/Algebraic (A)",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 1",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": "math_perspective_a",
+                                "institution": null
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Continuous/Analytic (C)",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 1",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": "math_perspective_c",
+                                "institution": null
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Discrete/Combinatorial (D)",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 1",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": "math_perspective_d",
+                                "institution": null
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Modeling/Computation (M)",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 1",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": "math_perspective_m",
+                                "institution": null
+                            }
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 3,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Axiomatic/Algebraic (A)"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Continuous/Analytic (C)"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Discrete/Combinatorial (D)"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Modeling/Computation (M)"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Interdisciplinary",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Chemistry",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.BothRule",
+                            "a": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CourseRule",
+                                    "course": "CHEM 371"
+                                }
+                            },
+                            "b": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count = 1",
+                                    "courses": null,
+                                    "given": "areas",
+                                    "limit": null,
+                                    "output": "areas",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Economics",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.BothRule",
+                            "a": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CourseRule",
+                                    "course": "ECON 385"
+                                }
+                            },
+                            "b": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count = 1",
+                                    "courses": null,
+                                    "given": "areas",
+                                    "limit": null,
+                                    "output": "areas",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Physics",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.BothRule",
+                            "a": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CourseRule",
+                                    "course": "PHYS 375"
+                                }
+                            },
+                            "b": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count = 1",
+                                    "courses": null,
+                                    "given": "areas",
+                                    "limit": null,
+                                    "output": "areas",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 0,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Chemistry"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Economics"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Physics"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Level III",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": [
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 1,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null
+                            }
+                        }
+                    ],
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "math_level_3",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Sequence",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 220"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 356"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 220"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MSCS 341"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 224"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 348"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 226"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 340"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 230"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 330"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 232"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 364"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 244"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 344"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 252"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 352"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MATH 262"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "STAT 322"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.BothRule",
+            "a": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 6,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Basics"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Transitions"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Perspectives"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Interdisciplinary"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Sequence"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Level III"
+                            }
+                        }
+                    ]
+                }
+            },
+            "b": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 6",
+                    "courses": null,
+                    "given": "these-requirements",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": [
+                        "Basics",
+                        "Transitions",
+                        "Perspectives",
+                        "Interdisciplinary",
+                        "Sequence",
+                        "Level III"
+                    ],
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": null,
+                        "institution": null
+                    }
+                }
+            }
+        }
+    }
+}

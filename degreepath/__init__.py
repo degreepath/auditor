@@ -1,3 +1,3 @@
 __version__ = "0.1.0"
 
-from .load.load import load
+from .degreepath import load

@@ -1,0 +1,1149 @@
+{
+    "catalog": "2015-16",
+    "degree": null,
+    "kind": "degree",
+    "name": "Bachelor of Arts",
+    "requirements": [
+        {
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Degree Requirements",
+            "requirements": [
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Courses",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "action": "sum >= 35",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "credits",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Residency",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "action": "sum >= 17",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "credits",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "attribute": null
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Interim",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "a": {
+                                "rule": {
+                                    "action": "sum >= 3",
+                                    "courses": null,
+                                    "given": "save",
+                                    "limit": null,
+                                    "output": "credits",
+                                    "requirements": null,
+                                    "save": "Interim Courses",
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "b": {
+                                "rule": {
+                                    "action": "count >= 3",
+                                    "courses": null,
+                                    "given": "save",
+                                    "limit": null,
+                                    "output": "courses",
+                                    "requirements": null,
+                                    "save": "Interim Courses",
+                                    "saves": null,
+                                    "where": null
+                                }
+                            }
+                        }
+                    },
+                    "save": [
+                        {
+                            "courses": null,
+                            "given": "courses",
+                            "name": "Interim Courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null
+                        }
+                    ]
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Grade Point Average",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "action": "average >= 2.0",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "grades",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Course Level",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "action": "sum >= 18",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "credits",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "attribute": null
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Graded Courses",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "action": "sum >= 24",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "credits",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "attribute": null
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Major",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "action": "count >= 1",
+                            "courses": null,
+                            "given": "areas",
+                            "limit": null,
+                            "output": "areas",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "attribute": null
+                            }
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "rule": {
+                    "count": 7,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "rule": {
+                                "requirement": "Courses"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Residency"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Interim"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Grade Point Average"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Course Level"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Graded Courses"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Major"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "General Education",
+            "requirements": [
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Foundation",
+                    "requirements": [
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "First-Year Writing",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "action": "count >= 1",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "attribute": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Writing in Context",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "action": "count >= 4",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "attribute": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Foreign Language",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "courses",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": null,
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Oral Communication",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "action": "count >= 1",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "attribute": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Abstract and Quantitative Reasoning",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "action": "count >= 1",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "attribute": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Studies in Physical Movement",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "distinct-courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "attribute": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "rule": {
+                            "count": 6,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "rule": {
+                                        "requirement": "First-Year Writing"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Writing in Context"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Foreign Language"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Oral Communication"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Abstract and Quantitative Reasoning"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Studies in Physical Movement"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Core",
+                    "requirements": [
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": "One course must be taught by a St. Olaf professor.",
+                            "name": "Historical Studies in Western Culture",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "a": {
+                                        "rule": {
+                                            "action": "count >= 2",
+                                            "courses": null,
+                                            "given": "save",
+                                            "limit": null,
+                                            "output": "courses",
+                                            "requirements": null,
+                                            "save": "Courses with an HWC",
+                                            "saves": null,
+                                            "where": null
+                                        }
+                                    },
+                                    "b": {
+                                        "rule": {
+                                            "action": "count >= 1",
+                                            "courses": null,
+                                            "given": "save",
+                                            "limit": null,
+                                            "output": "courses",
+                                            "requirements": null,
+                                            "save": "Courses with an HWC",
+                                            "saves": null,
+                                            "where": {
+                                                "attribute": null
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "save": [
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "Courses with an HWC",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                }
+                            ]
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Multicultural Studies",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "count": 4,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an MCD or MCG",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "departments",
+                                                "requirements": null,
+                                                "save": "Courses with an MCD or MCG",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an MCD or MCG",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an MCD or MCG",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": [
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "Courses with an MCD or MCG",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                }
+                            ]
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Artistic and Literary Studies",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "count": 3,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an ALS-A or ALS-L",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an ALS-A or ALS-L",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an ALS-A or ALS-L",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": [
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "Courses with an ALS-A or ALS-L",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                }
+                            ]
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Biblical and Theological Studies",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "count": 3,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with a BTS-B or BTS-T",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with a BTS-B or BTS-T",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with a BTS-B or BTS-T",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": [
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "Courses with a BTS-B or BTS-T",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                }
+                            ]
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Studies in Natural Science",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "count": 4,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an SED or IST",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "departments",
+                                                "requirements": null,
+                                                "save": "Courses with an SED or IST",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an SED or IST",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an SED or IST",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": [
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "Courses with an SED or IST",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                }
+                            ]
+                        },
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Studies in Human Behavior and Society",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "count": 3,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an HBS",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 2",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "departments",
+                                                "requirements": null,
+                                                "save": "Courses with an HBS",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "Courses with an HBS",
+                                                "saves": null,
+                                                "where": {
+                                                    "attribute": null
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": [
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "Courses with an HBS",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                }
+                            ]
+                        }
+                    ],
+                    "result": {
+                        "rule": {
+                            "count": 6,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "rule": {
+                                        "requirement": "Historical Studies in Western Culture"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Multicultural Studies"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Artistic and Literary Studies"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Biblical and Theological Studies"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Studies in Natural Science"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "requirement": "Studies in Human Behavior and Society"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Integrative",
+                    "requirements": [
+                        {
+                            "audited_by": null,
+                            "contract": false,
+                            "message": "To complete any EIN course, you must have either completed the BTS-T requirement or have obtained permission of the EIN instructor beforehand.",
+                            "name": "Ethical Issues and Normative Perspectives",
+                            "requirements": null,
+                            "result": {
+                                "rule": {
+                                    "count": 2,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "rule": {
+                                                "action": "count >= 1",
+                                                "courses": null,
+                                                "given": "save",
+                                                "limit": null,
+                                                "output": "courses",
+                                                "requirements": null,
+                                                "save": "EIN courses",
+                                                "saves": null,
+                                                "where": null
+                                            }
+                                        },
+                                        {
+                                            "rule": {
+                                                "do": {
+                                                    "lhs": "first BTS-T course",
+                                                    "op": "<",
+                                                    "rhs": "last EIN course"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": [
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "first BTS-T course",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                },
+                                {
+                                    "courses": null,
+                                    "given": "courses",
+                                    "name": "EIN courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null
+                                },
+                                {
+                                    "courses": null,
+                                    "given": "save",
+                                    "name": "last EIN course",
+                                    "requirements": null,
+                                    "save": "EIN courses",
+                                    "saves": null
+                                }
+                            ]
+                        }
+                    ],
+                    "result": {
+                        "rule": {
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "rule": {
+                                        "requirement": "Ethical Issues and Normative Perspectives"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "rule": {
+                    "count": 3,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "rule": {
+                                "requirement": "Foundation"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Core"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Integrative"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "rule": {
+            "count": 2,
+            "greedy": false,
+            "of": [
+                {
+                    "rule": {
+                        "requirement": "Degree Requirements"
+                    }
+                },
+                {
+                    "rule": {
+                        "requirement": "General Education"
+                    }
+                }
+            ]
+        }
+    }
+}

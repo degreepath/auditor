@@ -1,0 +1,219 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "French",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Speaking and Writing",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 2,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 250"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 251"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 253"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "The Francophone World",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 2,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 271"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 272"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 273"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 275"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Level III",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 2,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 372"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 373"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 397"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "FREN 399"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": [
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 1,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null
+                            }
+                        }
+                    ],
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "french_elective",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 4,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Speaking and Writing"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "The Francophone World"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Level III"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                }
+            ]
+        }
+    }
+}

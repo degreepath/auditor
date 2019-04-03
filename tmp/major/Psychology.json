@@ -1,0 +1,324 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Psychology",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Foundation",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.BothRule",
+                    "a": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CourseRule",
+                            "course": "PSYCH 125"
+                        }
+                    },
+                    "b": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CourseRule",
+                            "course": "PSYCH 230"
+                        }
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Content Core",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Natural Science",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 2,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 235"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 236"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 237"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 238"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Social Science",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 2,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 241"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 244"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 247"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "PSYCH 249"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 2,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Natural Science"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Social Science"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Level III Capstone",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": [
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 1,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null
+                            }
+                        }
+                    ],
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "psych_level_3",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "General Education",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "STAT 110"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "STAT 212"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "STAT 214"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ECON 263"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "psych_elective",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 5,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Foundation"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Content Core"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Level III Capstone"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "General Education"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,127 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "concentration",
+    "name": "Nordic Studies",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Language",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "NORW 232"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "NORW 253"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "NORW 371"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "NORW 372"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "Up to three courses from study abroad programs such as DIS, HECUA: The New Norway, and university direct-enroll programs may be counted toward the Nordic studies concentration\n",
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 5",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": [
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 3,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": "nordic_focus_norway",
+                                "institution": null
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 2,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null
+                            }
+                        }
+                    ],
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "nordic_elective",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 2,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Language"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                }
+            ]
+        }
+    }
+}

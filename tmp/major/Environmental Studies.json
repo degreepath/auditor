@@ -1,0 +1,1660 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Environmental Studies",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Major",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 3,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ENVST 137"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ENVST 237"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ENVST 399"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Areas of Emphasis",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Natural Science",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Social Sciences for Natural Science",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 201"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 232"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 235"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 276"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "AS/ES 277"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 281"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 381"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ECON 242"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ID 234"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSCI 221"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSYCH 227"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 222"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 247"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 297"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Arts and Humanities for Natural Science",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 202"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.EitherRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "PHIL 257"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "REL 278"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Statistics, Modeling, and Mapping",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 255"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "STAT 212"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "STAT 272"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Intermediate Chemistry",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.BothRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 248"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 254"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.BothRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 255"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 256"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Intermediate Ecology",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BIO 261"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BIO 226"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Environmental Science",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 3",
+                                    "courses": [
+                                        "ENVST 123",
+                                        "BI/ES 226",
+                                        "BI/ES 228",
+                                        "ENVST 245",
+                                        "ENVST 255",
+                                        {
+                                            "course": "ENVST 281",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        },
+                                        "BI/ES 286",
+                                        "BI/ES 250",
+                                        {
+                                            "course": "ENVST 381",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        },
+                                        "ENVST 397",
+                                        "BIO 224",
+                                        "BI/ES 350",
+                                        "BIO 371",
+                                        {
+                                            "course": "BIO 391",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        },
+                                        {
+                                            "course": "CHEM 391",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        },
+                                        {
+                                            "course": "ENVST 391",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        }
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": [
+                                        {
+                                            "py/object": "__main__.Limit",
+                                            "at_most": 1,
+                                            "where": {
+                                                "py/object": "__main__.Filter",
+                                                "attribute": null,
+                                                "institution": null
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Limit",
+                                            "at_most": 2,
+                                            "where": {
+                                                "py/object": "__main__.Filter",
+                                                "attribute": null,
+                                                "institution": null
+                                            }
+                                        }
+                                    ],
+                                    "output": "courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 7,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Social Sciences for Natural Science"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Arts and Humanities for Natural Science"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Statistics, Modeling, and Mapping"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Intermediate Chemistry"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Intermediate Ecology"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Environmental Science"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.GivenRule",
+                                        "action": "count >= 9",
+                                        "courses": null,
+                                        "given": "these-requirements",
+                                        "limit": null,
+                                        "output": "courses",
+                                        "requirements": [
+                                            "Social Sciences for Natural Science",
+                                            "Arts and Humanities for Natural Science",
+                                            "Statistics, Modeling, and Mapping",
+                                            "Intermediate Chemistry",
+                                            "Intermediate Ecology",
+                                            "Environmental Science"
+                                        ],
+                                        "save": null,
+                                        "saves": null,
+                                        "where": null
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Social Science",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Natural Science for Social Sciences",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 123"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 245"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 255"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 281"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 381"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 226"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 228"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 286"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 350"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BIO 224"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.EitherRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "BIO 226"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "BIO 261"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "CHEM 124"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.BothRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 225"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 256"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BIO 391"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "CHEM 391"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Arts and Humanities for Social Sciences",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 202"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 270"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 281"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 381"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "FILM 230"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "GERM 276"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "HIST 245"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "HIST 275"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "NORW 224"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.EitherRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "PHIL 257"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "REL 278"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENGL 276"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Methodological Analysis",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 255"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "STAT 110"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "STAT 212"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "STAT 214"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "STAT 272"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ECON 263"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 371"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSYCH 230"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSCI 220"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": "The department strongly recommends taking ECON 121",
+                            "name": "Economic Analysis",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 2,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CountRule",
+                                                "count": 1,
+                                                "greedy": false,
+                                                "of": [
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 121"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 110"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 111"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 112"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 113"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 114"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 115"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 116"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 117"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 118"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 119"
+                                                        }
+                                                    },
+                                                    {
+                                                        "py/object": "__main__.Rule",
+                                                        "rule": {
+                                                            "py/object": "__main__.CourseRule",
+                                                            "course": "ECON 120"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ECON 242"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Environmental Political Policy and Institutions",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 232"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 201"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 276"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Social Science Electives",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 2,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 201"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 232"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 235"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 276"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 281"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 381"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 396"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ECON 243"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSYCH 227"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 247"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 297"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSCI 221"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 222"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ID 234"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "AS/ES 227"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 7,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Natural Science for Social Sciences"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Arts and Humanities for Social Sciences"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Methodological Analysis"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Economic Analysis"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Environmental Political Policy and Institutions"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Social Science Electives"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.GivenRule",
+                                        "action": "count >= 9",
+                                        "courses": null,
+                                        "given": "these-requirements",
+                                        "limit": null,
+                                        "output": "courses",
+                                        "requirements": [
+                                            "Natural Science for Social Sciences",
+                                            "Arts and Humanities for Social Sciences",
+                                            "Methodological Analysis",
+                                            "Economic Analysis",
+                                            "Environmental Political Policy and Institutions",
+                                            "Social Science Electives"
+                                        ],
+                                        "save": null,
+                                        "saves": null,
+                                        "where": null
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Arts and Humanities",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Natural Science for Arts and the Humanities",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 123"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 245"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 255"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 281"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 381"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 226"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 228"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 286"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BI/ES 350"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BIO 224"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.EitherRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "BIO 226"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "BIO 261"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "CHEM 124"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.BothRule",
+                                                "a": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 225"
+                                                    }
+                                                },
+                                                "b": {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 256"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "BIO 391"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "CHEM 391"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Social Sciences for Arts and the Humanities",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 232"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 235"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 281"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ENVST 381"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 201"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ES/PS 276"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ECON 242"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSCI 221"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "PSYCH 227"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 222"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "SOAN 247"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "AS/ES 277"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Courses for Arts and the Humanities",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 6",
+                                    "courses": [
+                                        "ENVST 202",
+                                        "ENVST 270",
+                                        {
+                                            "course": "ENVST 281",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        },
+                                        {
+                                            "course": "ENVST 381",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        },
+                                        "FILM 230",
+                                        "GERM 276",
+                                        "HIST 245",
+                                        "HIST 275",
+                                        {
+                                            "course": "NORW 224",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        },
+                                        "PHIL 257",
+                                        "ENGL 276",
+                                        "REL 278",
+                                        "ENVST 381",
+                                        {
+                                            "course": "DEPT 301",
+                                            "semester": "Fall",
+                                            "year": 2000
+                                        }
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": [
+                                        {
+                                            "py/object": "__main__.Limit",
+                                            "at_most": 5,
+                                            "where": {
+                                                "py/object": "__main__.Filter",
+                                                "attribute": null,
+                                                "institution": null
+                                            }
+                                        }
+                                    ],
+                                    "output": "courses",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 4,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Natural Science for Arts and the Humanities"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Social Sciences for Arts and the Humanities"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Courses for Arts and the Humanities"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.GivenRule",
+                                        "action": "count >= 9",
+                                        "courses": null,
+                                        "given": "these-requirements",
+                                        "limit": null,
+                                        "output": "courses",
+                                        "requirements": [
+                                            "Natural Science for Arts and the Humanities",
+                                            "Social Sciences for Arts and the Humanities",
+                                            "Courses for Arts and the Humanities"
+                                        ],
+                                        "save": null,
+                                        "saves": null,
+                                        "where": null
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Natural Science"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Social Science"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Arts and Humanities"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 2,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Major"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Areas of Emphasis"
+                    }
+                }
+            ]
+        }
+    }
+}

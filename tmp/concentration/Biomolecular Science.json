@@ -1,0 +1,349 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "concentration",
+    "name": "Biomolecular Science",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Core",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 7,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 150"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CountRule",
+                                "count": 1,
+                                "greedy": false,
+                                "of": [
+                                    {
+                                        "py/object": "__main__.Rule",
+                                        "rule": {
+                                            "py/object": "__main__.CountRule",
+                                            "count": 3,
+                                            "greedy": false,
+                                            "of": [
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 125"
+                                                    }
+                                                },
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 126"
+                                                    }
+                                                },
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "BIO 227"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "py/object": "__main__.Rule",
+                                        "rule": {
+                                            "py/object": "__main__.CountRule",
+                                            "count": 4,
+                                            "greedy": false,
+                                            "of": [
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 121"
+                                                    }
+                                                },
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 123"
+                                                    }
+                                                },
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CHEM 126"
+                                                    }
+                                                },
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "BIO 227"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "py/object": "__main__.Rule",
+                                        "rule": {
+                                            "py/object": "__main__.CountRule",
+                                            "count": 3,
+                                            "greedy": false,
+                                            "of": [
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CH/BI 125"
+                                                    }
+                                                },
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CH/BI 126"
+                                                    }
+                                                },
+                                                {
+                                                    "py/object": "__main__.Rule",
+                                                    "rule": {
+                                                        "py/object": "__main__.CourseRule",
+                                                        "course": "CH/BI 227"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 223"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BMOLS 201"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CHEM 247"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CHEM 253"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CHEM 248"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CHEM 254"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CHEM 379"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CHEM 373"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": "department",
+            "contract": false,
+            "message": "Participation in an experimentally based research experience or employment that takes biomolecular sciences beyond the traditional classroom is required of each concentrator. This can occur either on- or off-campus. This activity must be pre-approved by the Biomolecular Science Committee and be supported after the fact by a letter from a supervisor.",
+            "name": "Experiential Learning",
+            "requirements": null,
+            "result": null,
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 2,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 315"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 341"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 364"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 372"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 382"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "BIO 383"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "CHEM 384"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "CHEM 385"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "CHEM 391"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "CSCI 315"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 3,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Core"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Experiential Learning"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                }
+            ]
+        }
+    }
+}

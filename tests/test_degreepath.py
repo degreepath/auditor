@@ -1,4 +1,6 @@
 from degreepath import __version__, load
+import pytest
+import io
 
 
 def test_version():
@@ -6,9 +8,8 @@ def test_version():
 
 
 def test_load():
-    import io
-
-    test_data = io.StringIO("""
+    test_data = io.StringIO(
+        """
         name: foo
         catalog: 2018-19
         type: major
@@ -22,11 +23,48 @@ def test_load():
         requirements:
             - name: Foo
               result:
-                count: 3
+                count: 2
                 of:
                     - CSCI 121
-    """)
+                    - CSCI 125
+                    - requirement: FooBar
+              requirements:
+                - name: FooBar
+                  result:
+                    both:
+                        - CSCI 121
+                        - CSCI 251
+    """
+    )
 
-    print(load(test_data))
+    area = load(test_data)
+    area.validate()
 
-    raise TabError
+
+def test_invalid():
+    with pytest.raises(Exception):
+        test_data = io.StringIO(
+            """
+            name: foo
+            catalog: 2018-19
+            type: major
+            degree: Bachelor of Arts
+
+            result:
+                count: 1
+                of:
+                    - requirement: Foo
+
+            requirements:
+                - name: Foo
+                  result:
+                    count: 2
+                    of:
+                        - CSCI 121
+                        - CSCI 125
+                        - requirement: FooBar
+        """
+        )
+
+        area = load(test_data)
+        area.validate()

@@ -1,0 +1,316 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Computer Science",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Foundation",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 4,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.EitherRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 121"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 125"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "CSCI 241"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 251"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 252"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CountRule",
+                                "count": 1,
+                                "greedy": false,
+                                "of": [
+                                    {
+                                        "py/object": "__main__.Rule",
+                                        "rule": {
+                                            "py/object": "__main__.CourseRule",
+                                            "course": "MATH 232"
+                                        }
+                                    },
+                                    {
+                                        "py/object": "__main__.Rule",
+                                        "rule": {
+                                            "py/object": "__main__.CourseRule",
+                                            "course": "MATH 252"
+                                        }
+                                    },
+                                    {
+                                        "py/object": "__main__.Rule",
+                                        "rule": {
+                                            "py/object": "__main__.CourseRule",
+                                            "course": "MATH 244"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Core",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Languages",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 276"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 333"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 336"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Systems",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 273"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 284"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "CSCI 300"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 4,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "CSCI 253"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "CSCI 263"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Languages"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Systems"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "csci_elective",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Capstone",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CourseRule",
+                    "course": "CSCI 390"
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 4,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Foundation"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Core"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Capstone"
+                    }
+                }
+            ]
+        }
+    }
+}

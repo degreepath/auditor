@@ -1,0 +1,500 @@
+{
+    "catalog": "2015-16",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Women's and Gender Studies",
+    "requirements": [
+        {
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Introduction",
+            "requirements": null,
+            "result": {
+                "rule": {
+                    "course": "WMGST 121"
+                }
+            },
+            "save": null
+        },
+        {
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Advanced Topics",
+            "requirements": null,
+            "result": {
+                "rule": {
+                    "course": "WMGST 399"
+                }
+            },
+            "save": null
+        },
+        {
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Additional Courses",
+            "requirements": [
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Theory and Methods",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "rule": {
+                                        "course": "AMST 100"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ART 277"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 242"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 264"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "FAMST 242"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "FAMST 253"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "PHIL 245"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "PSYCH 390"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "PSYCH 396"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "REL 209"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "REL 344"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SOAN 235"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SOAN 246"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SOAN 260"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Gender in Historical Context",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "rule": {
+                                        "course": "FREN 372"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 121"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 191"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 224"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 231"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 237"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 239"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 320"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "PHIL 245"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "PSYCH 223"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "PSYCH 241"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "REL 209"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "REL 264"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SOAN 128"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SOAN 235"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SOAN 261"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SPAN 250"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Gender in Global/Comparative/Diverse Contexts",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "rule": {
+                                        "course": "DANCE 246"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 246"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "ENGL 340"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "FAMST 253"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 115"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 122"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 182"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 189"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 189"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 272"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 320"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "HIST 320"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "REL 209"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "REL 264"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "SOAN 246"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Electives",
+                    "requirements": null,
+                    "result": {
+                        "rule": {
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "rule": {
+                                        "course": "BIO 124"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "NORW 282"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "NURS 386"
+                                    }
+                                },
+                                {
+                                    "rule": {
+                                        "course": "PSYCH 350"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "audited_by": null,
+                    "contract": true,
+                    "message": "The major says, \"One course must focus on women's lived experiences.\"",
+                    "name": "Lived Experiences",
+                    "requirements": null,
+                    "result": null,
+                    "save": null
+                }
+            ],
+            "result": {
+                "rule": {
+                    "count": 7,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "rule": {
+                                "requirement": "Theory and Methods"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Gender in Historical Context"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Gender in Global/Comparative/Diverse Contexts"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Electives"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "requirement": "Lived Experiences"
+                            }
+                        },
+                        {
+                            "rule": {
+                                "action": "count >= 7",
+                                "courses": null,
+                                "given": "save",
+                                "limit": null,
+                                "output": "courses",
+                                "requirements": null,
+                                "save": "Taken Elective Courses",
+                                "saves": null,
+                                "where": null
+                            }
+                        },
+                        {
+                            "rule": {
+                                "action": "count >= 1",
+                                "courses": null,
+                                "given": "save",
+                                "limit": null,
+                                "output": "courses",
+                                "requirements": null,
+                                "save": "Taken Elective Courses",
+                                "saves": null,
+                                "where": {
+                                    "attribute": null
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": [
+                {
+                    "courses": null,
+                    "given": "these-requirements",
+                    "name": "Taken Elective Courses",
+                    "requirements": [
+                        "Theory and Methods",
+                        "Gender in Historical Context",
+                        "Gender in Global/Comparative/Diverse Contexts",
+                        "Electives",
+                        "Lived Experiences"
+                    ],
+                    "save": null,
+                    "saves": null
+                }
+            ]
+        }
+    ],
+    "result": {
+        "rule": {
+            "count": 3,
+            "greedy": false,
+            "of": [
+                {
+                    "rule": {
+                        "requirement": "Introduction"
+                    }
+                },
+                {
+                    "rule": {
+                        "requirement": "Additional Courses"
+                    }
+                },
+                {
+                    "rule": {
+                        "requirement": "Advanced Topics"
+                    }
+                }
+            ]
+        }
+    }
+}

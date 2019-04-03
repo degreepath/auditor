@@ -1,0 +1,473 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Ancient Studies",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Language",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.EitherRule",
+                    "a": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 252"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 370"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 371"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 372"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 373"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 374"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 375"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "LATIN 377"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "b": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "GREEK 253"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "GREEK 370"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "GREEK 372"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "GREEK 373"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "GREEK 374"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "GREEK 375"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Ancient History",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "ancient_history",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Classics",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": null,
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "1 course in Greek may be used as an elective if the student satisfies the required language portion of the major with Latin courses. 1 course in Latin may be used as an elective if the student satisfies the required language portion of the major with Greek courses.",
+            "name": "Electives",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Took Greek",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 4",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": "ancient_elective | ancient_elective_if_greek_lang",
+                                "institution": null
+                            }
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Took Latin",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 4",
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": "ancient_elective | ancient_elective_if_latin_lang",
+                                "institution": null
+                            }
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Took Greek"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CountRule",
+                                        "count": 1,
+                                        "greedy": false,
+                                        "of": [
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "GREEK 253"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "GREEK 370"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "GREEK 372"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "GREEK 373"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "GREEK 374"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "GREEK 375"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.BothRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Took Latin"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CountRule",
+                                        "count": 1,
+                                        "greedy": false,
+                                        "of": [
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 252"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 370"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 371"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 372"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 373"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 374"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 375"
+                                                }
+                                            },
+                                            {
+                                                "py/object": "__main__.Rule",
+                                                "rule": {
+                                                    "py/object": "__main__.CourseRule",
+                                                    "course": "LATIN 377"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": "department",
+            "contract": false,
+            "message": "Any Independent Research course.",
+            "name": "Independent Research",
+            "requirements": null,
+            "result": null,
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 5,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Language"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Ancient History"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Classics"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Independent Research"
+                    }
+                }
+            ]
+        }
+    }
+}

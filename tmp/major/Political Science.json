@@ -1,0 +1,349 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Political Science",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Research Methods",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CourseRule",
+                    "course": "PSCI 220"
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "American Politics and Public Policy",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "psci_topic_american",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Comparative Politics",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "psci_topic_comparative",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "International Relations",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "psci_topic_international",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Political Theory",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "psci_topic_theory",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Level III",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "psci_level_3",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 0,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.GivenRule",
+                                "action": "count = 1",
+                                "courses": null,
+                                "given": "these-saves",
+                                "limit": null,
+                                "output": "courses",
+                                "requirements": null,
+                                "save": null,
+                                "saves": [
+                                    "Within PSCI"
+                                ],
+                                "where": null
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.GivenRule",
+                                "action": "count = 1",
+                                "courses": null,
+                                "given": "these-saves",
+                                "limit": null,
+                                "output": "courses",
+                                "requirements": null,
+                                "save": null,
+                                "saves": [
+                                    "Statistics",
+                                    "French / German / Spanish",
+                                    "Chinese / Greek / Latin / Japanese / Norwegian / Russian"
+                                ],
+                                "where": null
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": [
+                {
+                    "py/object": "__main__.SaveRule",
+                    "courses": null,
+                    "given": "courses",
+                    "name": "Within PSCI",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null
+                },
+                {
+                    "py/object": "__main__.SaveRule",
+                    "courses": null,
+                    "given": "courses",
+                    "name": "Statistics",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null
+                },
+                {
+                    "py/object": "__main__.SaveRule",
+                    "courses": null,
+                    "given": "courses",
+                    "name": "French / German / Spanish",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null
+                },
+                {
+                    "py/object": "__main__.SaveRule",
+                    "courses": null,
+                    "given": "courses",
+                    "name": "Chinese / Greek / Latin / Japanese / Norwegian / Russian",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null
+                }
+            ]
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 2,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.CountRule",
+                        "count": 7,
+                        "greedy": false,
+                        "of": [
+                            {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.ReferenceRule",
+                                    "requirement": "Research Methods"
+                                }
+                            },
+                            {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.ReferenceRule",
+                                    "requirement": "American Politics and Public Policy"
+                                }
+                            },
+                            {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.ReferenceRule",
+                                    "requirement": "Comparative Politics"
+                                }
+                            },
+                            {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.ReferenceRule",
+                                    "requirement": "International Relations"
+                                }
+                            },
+                            {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.ReferenceRule",
+                                    "requirement": "Political Theory"
+                                }
+                            },
+                            {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.ReferenceRule",
+                                    "requirement": "Level III"
+                                }
+                            },
+                            {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.ReferenceRule",
+                                    "requirement": "Electives"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.GivenRule",
+                        "action": "count >= 9",
+                        "courses": null,
+                        "given": "these-requirements",
+                        "limit": null,
+                        "output": "courses",
+                        "requirements": [
+                            "Research Methods",
+                            "American Politics and Public Policy",
+                            "Comparative Politics",
+                            "International Relations",
+                            "Political Theory",
+                            "Level III",
+                            "Electives"
+                        ],
+                        "save": null,
+                        "saves": null,
+                        "where": null
+                    }
+                }
+            ]
+        }
+    }
+}

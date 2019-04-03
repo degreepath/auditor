@@ -1,0 +1,709 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Studio Art",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Foundations",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 3,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.EitherRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "ART 102"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "ART 106"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ART 103"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ART 104"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Areas",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "2D Media",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Drawing",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 225"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 232"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 233"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Painting",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 221"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 222"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Printmaking",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 226"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 227"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Graphic Design",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 236"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Drawing"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Painting"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Printmaking"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Graphic Design"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "3D Media",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Ceramics",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 207"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 234"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Sculpture",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 223"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 224"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Ceramics"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Sculpture"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "New Media",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Photography",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 205"
+                                            }
+                                        },
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 238"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Interactive Image",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 228"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Digital Video",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 229"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Performance",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 240"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Graphic Design",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.CountRule",
+                                    "count": 1,
+                                    "greedy": false,
+                                    "of": [
+                                        {
+                                            "py/object": "__main__.Rule",
+                                            "rule": {
+                                                "py/object": "__main__.CourseRule",
+                                                "course": "ART 236"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Photography"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Interactive Image"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Digital Video"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Performance"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Graphic Design"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 3,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "2D Media"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "3D Media"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "New Media"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": "department",
+            "contract": false,
+            "message": "Majors must participate in two juried shows. To fulfill the the requirements of the studio art major, you must either enter the student juried show in spring semester twice, or enter our student juried show once and one other non-class related exhibition on or off campus.",
+            "name": "Juried Show",
+            "requirements": null,
+            "result": null,
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Senior Studies in Studio Art",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CourseRule",
+                    "course": "ART 343"
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "art_elective",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "The department strongly recommends that you take ART 252 or 253 as one of your art history courses.",
+            "name": "Art History",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 1",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": "art_history",
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 6,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Foundations"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Juried Show"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Senior Studies in Studio Art"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Areas"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Art History"
+                    }
+                }
+            ]
+        }
+    }
+}

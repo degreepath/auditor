@@ -1,0 +1,2580 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "Music",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Core",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 5,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 114"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 141"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 161"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 162"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.EitherRule",
+                                "a": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MUSIC 212"
+                                    }
+                                },
+                                "b": {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.CourseRule",
+                                        "course": "MUSIC 214"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Musicology",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 340"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 341"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 342"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 343"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 344"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 345"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 346"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 347"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 348"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "MUSIC 349"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 4",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": [
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 3,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null
+                            }
+                        }
+                    ],
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": null,
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "6 semesters; 4 in the same instrument/voice",
+            "name": "Performance Studies",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Bassoon",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 102"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Clarinet",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 104"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Coll Keyboard Perfor",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 106"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Drumset",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 109"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Euphonium",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 112"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Flute",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 114"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "French Horn",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 116"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Hardanger Fiddle",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 118"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Harp",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 120"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Harpsichord",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 122"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Jazz Piano",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 124"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Oboe",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 126"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Organ",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 128"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Percussion",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 132"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Piano",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 134"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Jazz Saxophone",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 135"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Saxophone",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 136"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "String Bass",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 138"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Trombone",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 140"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Trumpet",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 142"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Tuba",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 144"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Viola",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 146"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Violin",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 148"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Violoncello",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 150"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Voice",
+                    "requirements": [
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 4",
+                                    "courses": [
+                                        "MUSPF 152"
+                                    ],
+                                    "given": "these-courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": null
+                                }
+                            },
+                            "save": null
+                        },
+                        {
+                            "py/object": "__main__.Requirement",
+                            "audited_by": null,
+                            "contract": false,
+                            "message": null,
+                            "name": "Other Lessons",
+                            "requirements": null,
+                            "result": {
+                                "py/object": "__main__.Rule",
+                                "rule": {
+                                    "py/object": "__main__.GivenRule",
+                                    "action": "count >= 2",
+                                    "courses": null,
+                                    "given": "courses",
+                                    "limit": null,
+                                    "output": "terms",
+                                    "requirements": null,
+                                    "save": null,
+                                    "saves": null,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": null
+                                    }
+                                }
+                            },
+                            "save": null
+                        }
+                    ],
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 6",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "terms",
+                            "requirements": [
+                                "Lessons",
+                                "Other Lessons"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "greedy": false,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Bassoon"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Clarinet"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Drumset"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Euphonium"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Flute"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "French Horn"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Hardanger Fiddle"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Harp"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Harpsichord"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Jazz Piano"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Jazz Saxophone"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Oboe"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Organ"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Percussion"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Piano"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Saxophone"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "String Bass"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Trombone"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Trumpet"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Tuba"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Viola"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Violin"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Violoncello"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
+                                "requirement": "Voice"
+                            }
+                        }
+                    ]
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Official Ensemble Participation",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 4",
+                    "courses": null,
+                    "given": "courses",
+                    "limit": null,
+                    "output": "terms",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": null,
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "Two solo performances on a St. Olaf Student Recital.",
+            "name": "Performances",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": null,
+                    "given": "performances",
+                    "limit": null,
+                    "output": "performances",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": {
+                        "py/object": "__main__.Filter",
+                        "attribute": null,
+                        "institution": null
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "You must attend 10 recitals per semester on campus, with a minimum of 60 overall.",
+            "name": "Recital Attendance",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 60",
+                    "courses": null,
+                    "given": "attendances",
+                    "limit": null,
+                    "output": "attendances",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": null
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 7,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Core"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Musicology"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Performance Studies"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Official Ensemble Participation"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Performances"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Recital Attendance"
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,298 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
+    "degree": "Bachelor of Arts",
+    "kind": "major",
+    "name": "German",
+    "requirements": [
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Level 250",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": [
+                        "GERM 251",
+                        "GERM 252",
+                        "GERM 253"
+                    ],
+                    "given": "these-courses",
+                    "limit": [
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 1,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": "! St. Olaf College"
+                            }
+                        }
+                    ],
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": null
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Level 270",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.GivenRule",
+                    "action": "count >= 2",
+                    "courses": [
+                        "GERM 271",
+                        "GERM 272",
+                        "GERM 273",
+                        "GERM 276"
+                    ],
+                    "given": "these-courses",
+                    "limit": [
+                        {
+                            "py/object": "__main__.Limit",
+                            "at_most": 1,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": "! St. Olaf College"
+                            }
+                        }
+                    ],
+                    "output": "courses",
+                    "requirements": null,
+                    "save": null,
+                    "saves": null,
+                    "where": null
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": "This course will preferably be taken in the student's senior year.",
+            "name": "Level III",
+            "requirements": null,
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.EitherRule",
+                    "a": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CourseRule",
+                            "course": "GERM 371"
+                        }
+                    },
+                    "b": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CourseRule",
+                            "course": "GERM 372"
+                        }
+                    }
+                }
+            },
+            "save": null
+        },
+        {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "Electives",
+            "requirements": [
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "Language",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CourseRule",
+                            "course": "GERM 232"
+                        }
+                    },
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": "registrar",
+                    "contract": false,
+                    "message": "You may count one German Interim abroad towards this requirement.",
+                    "name": "Interim In German",
+                    "requirements": null,
+                    "result": null,
+                    "save": null
+                },
+                {
+                    "py/object": "__main__.Requirement",
+                    "audited_by": null,
+                    "contract": false,
+                    "message": null,
+                    "name": "In Translation",
+                    "requirements": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count = 1",
+                            "courses": [
+                                "GERM 147",
+                                "GERM 249",
+                                "GERM 263",
+                                "ART 252",
+                                "ART 271",
+                                "HIST 224",
+                                "MUSIC 342",
+                                "MUSIC 343",
+                                "PHIL 260",
+                                "PHIL 261",
+                                "PHIL 374",
+                                "PSCI 283",
+                                "PSCI 285",
+                                "REL 213",
+                                "REL 214",
+                                "REL 262",
+                                "REL 303",
+                                "REL 304"
+                            ],
+                            "given": "these-courses",
+                            "limit": [
+                                {
+                                    "py/object": "__main__.Limit",
+                                    "at_most": 1,
+                                    "where": {
+                                        "py/object": "__main__.Filter",
+                                        "attribute": null,
+                                        "institution": "St. Olaf College"
+                                    }
+                                }
+                            ],
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    },
+                    "save": null
+                }
+            ],
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.BothRule",
+                    "a": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CountRule",
+                            "count": 1,
+                            "greedy": false,
+                            "of": [
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Language"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "Interim In German"
+                                    }
+                                },
+                                {
+                                    "py/object": "__main__.Rule",
+                                    "rule": {
+                                        "py/object": "__main__.ReferenceRule",
+                                        "requirement": "In Translation"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "b": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": "count >= 3",
+                            "courses": null,
+                            "given": "these-requirements",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": [
+                                "Language",
+                                "Interim In German",
+                                "In Translation"
+                            ],
+                            "save": null,
+                            "saves": null,
+                            "where": null
+                        }
+                    }
+                }
+            },
+            "save": null
+        }
+    ],
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 4,
+            "greedy": false,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Level 250"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Level 270"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Level III"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Electives"
+                    }
+                }
+            ]
+        }
+    }
+}
