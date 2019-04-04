@@ -6,11 +6,11 @@ import re
 import json
 import jsonpickle
 import itertools
+import debug
 
 
-GivenInput = (
-    str
-)  # Union['these-requirements', 'courses', 'these-courses', 'these-saves', 'save']
+GivenInput = str
+# Union['these-requirements', 'courses', 'these-courses', 'these-saves', 'save']
 
 
 @dataclass(frozen=True)
@@ -93,13 +93,13 @@ class ActionRule:
     def validate(self):
         pass
 
-    def solutions(self):
+    def solutions(self, *, ctx: RequirementContext):
         yield ActionSolution(result=None)
 
 
 @dataclass(frozen=True)
 class ActionSolution:
-    result: bool
+    result: Optional[bool]
 
 
 @dataclass(frozen=True)
@@ -121,7 +121,7 @@ class BothRule:
         self.a.validate(ctx=ctx)
         self.b.validate(ctx=ctx)
 
-    def solutions(self):
+    def solutions(self, *, ctx: RequirementContext):
         yield BothSolution(a=self.a, b=self.b)
 
 
@@ -133,7 +133,7 @@ class BothSolution:
 
 @dataclass(frozen=True)
 class CountRule:
-    count: Union[int, str]
+    count: int
     of: List[Rule]
     greedy: bool = False
 
@@ -163,9 +163,9 @@ class CountRule:
         for rule in self.of:
             rule.validate(ctx=ctx)
 
-    def solutions(self):
+    def solutions(self, *, ctx: RequirementContext):
         for combo in itertools.combinations(self.of, self.count):
-            iterable = [rule.solutions() for rule in combo]
+            iterable = [rule.solutions(ctx=ctx) for rule in combo]
             for moar_combo in itertools.product(*iterable):
                 yield CountSolution(items=moar_combo)
 
@@ -227,7 +227,7 @@ class EitherRule:
         self.a.validate(ctx=ctx)
         self.b.validate(ctx=ctx)
 
-    def solutions(self):
+    def solutions(self, *, ctx: RequirementContext):
         yield EitherSolution(choice=self.a)
         yield EitherSolution(choice=self.b)
 
@@ -417,12 +417,12 @@ class ReferenceRule:
                 f"expected a requirement named '{self.requirement}', but did not find one [options: {reqs}]"
             )
 
+        print(ctx.child_requirements[self.requirement])
+
         ctx.child_requirements[self.requirement].validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext):
-        named = ctx.child_requirements
-
-        # TODO: return things here
+        yield from ctx.child_requirements[self.requirement].solutions(ctx=ctx)
 
 
 RuleTypeUnion = Union[
@@ -473,6 +473,24 @@ class Rule:
             self.rule.validate(ctx=ctx)
         elif isinstance(self.rule, ReferenceRule):
             self.rule.validate(ctx=ctx)
+        else:
+            raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
+
+    def solutions(self, *, ctx: RequirementContext):
+        if isinstance(self.rule, CourseRule):
+            yield from self.rule.solutions()
+        elif isinstance(self.rule, ActionRule):
+            yield from self.rule.solutions(ctx=ctx)
+        elif isinstance(self.rule, GivenRule):
+            yield from self.rule.solutions(ctx=ctx)
+        elif isinstance(self.rule, CountRule):
+            yield from self.rule.solutions(ctx=ctx)
+        elif isinstance(self.rule, BothRule):
+            yield from self.rule.solutions(ctx=ctx)
+        elif isinstance(self.rule, EitherRule):
+            yield from self.rule.solutions(ctx=ctx)
+        elif isinstance(self.rule, ReferenceRule):
+            yield from self.rule.solutions(ctx=ctx)
         else:
             raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
 
@@ -564,6 +582,18 @@ class Requirement:
         if self.result is not None:
             self.result.validate(ctx=new_ctx)
 
+    def solutions(self, *, ctx: RequirementContext):
+        if not self.result:
+            return
+
+        new_ctx = RequirementContext(
+            transcript=ctx.transcript,
+            saves={s.name: s for s in self.save or []},
+            child_requirements={r.name: r for r in self.requirements or []},
+        )
+
+        yield from self.result.solutions(ctx=new_ctx)
+
 
 @dataclass(frozen=True)
 class AreaOfStudy:
@@ -614,6 +644,15 @@ class AreaOfStudy:
 
         self.result.validate(ctx=ctx)
 
+    def solutions(self):
+        ctx = RequirementContext(
+            transcript=[],
+            saves={},
+            child_requirements={r.name: r for r in self.requirements},
+        )
+
+        return self.result.solutions(ctx=ctx)
+
 
 def load(stream: TextIO) -> AreaOfStudy:
     import yaml
@@ -631,15 +670,24 @@ if __name__ == "__main__":
     def main():
         """Audits a student against their areas of study."""
 
-        for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
+        # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
+        for file in glob.iglob(
+            "./gobbldygook-area-data/2018-19/major/computer-science.yaml"
+        ):
             print(f"processing {file}")
             with open(file, "r", encoding="utf-8") as infile:
                 area = load(infile)
+
             area.validate()
 
             outname = f'tmp/{area.kind}/{area.name.replace("/", "_")}.json'
             with open(outname, "w", encoding="utf-8") as outfile:
                 jsonpickle.set_encoder_options("json", sort_keys=False, indent=4)
                 outfile.write(jsonpickle.encode(area, unpicklable=True))
+
+            for i, solution in enumerate(area.solutions()):
+                if i > 5:
+                    break
+                print(solution)
 
     main()
