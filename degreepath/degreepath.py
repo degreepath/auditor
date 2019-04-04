@@ -6,7 +6,7 @@ import re
 import json
 import jsonpickle
 import itertools
-import debug
+import logging
 
 
 GivenInput = str
@@ -94,6 +94,7 @@ class ActionRule:
         pass
 
     def solutions(self, *, ctx: RequirementContext):
+        logging.debug('ActionRule#solutions')
         yield ActionSolution(result=None)
 
 
@@ -122,6 +123,7 @@ class BothRule:
         self.b.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext):
+        logging.debug(f'BothRule#solutions for {self.a} && {self.b}')
         yield BothSolution(a=self.a, b=self.b)
 
 
@@ -167,6 +169,7 @@ class CountRule:
         for combo in itertools.combinations(self.of, self.count):
             iterable = [rule.solutions(ctx=ctx) for rule in combo]
             for moar_combo in itertools.product(*iterable):
+                logging.debug(f'CountRule#solutions of {moar_combo}')
                 yield CountSolution(items=moar_combo)
 
 
@@ -198,6 +201,7 @@ class CourseRule:
         ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
     def solutions(self):
+        logging.debug(f'CourseRule#solutions for "{self.course}"')
         yield CourseSolution(course=self.course)
 
 
@@ -228,6 +232,7 @@ class EitherRule:
         self.b.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext):
+        logging.debug(f'EitherRule#solutions for either {self.a} || {self.b}')
         yield EitherSolution(choice=self.a)
         yield EitherSolution(choice=self.b)
 
@@ -369,6 +374,7 @@ class GivenRule:
             raise NameError(f"unknown 'given' type {self.given}")
 
     def solutions(self, *, ctx: RequirementContext):
+        logging.debug('GivenRule#solutions')
         # TODO: fill out the output parameter
         yield GivenSolution(output=[], action="count", amount=6, operator="gte")
 
@@ -417,11 +423,10 @@ class ReferenceRule:
                 f"expected a requirement named '{self.requirement}', but did not find one [options: {reqs}]"
             )
 
-        print(ctx.child_requirements[self.requirement])
-
         ctx.child_requirements[self.requirement].validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext):
+        logging.debug(f'ReferenceRule#solutions for "{self.requirement}"')
         yield from ctx.child_requirements[self.requirement].solutions(ctx=ctx)
 
 
@@ -477,6 +482,7 @@ class Rule:
             raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
 
     def solutions(self, *, ctx: RequirementContext):
+        logging.debug('Rule#solutions')
         if isinstance(self.rule, CourseRule):
             yield from self.rule.solutions()
         elif isinstance(self.rule, ActionRule):
@@ -583,6 +589,8 @@ class Requirement:
             self.result.validate(ctx=new_ctx)
 
     def solutions(self, *, ctx: RequirementContext):
+        logging.debug(f'Requirement#solutions "{self.name}"')
+
         if not self.result:
             return
 
@@ -645,6 +653,8 @@ class AreaOfStudy:
         self.result.validate(ctx=ctx)
 
     def solutions(self):
+        logging.debug('AreaOfStudy#solutions')
+
         ctx = RequirementContext(
             transcript=[],
             saves={},
@@ -670,6 +680,8 @@ if __name__ == "__main__":
     def main():
         """Audits a student against their areas of study."""
 
+        logging.getLogger().setLevel(logging.DEBUG)
+
         # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
         for file in glob.iglob(
             "./gobbldygook-area-data/2018-19/major/computer-science.yaml"
@@ -688,6 +700,7 @@ if __name__ == "__main__":
             for i, solution in enumerate(area.solutions()):
                 if i > 5:
                     break
+                print()
                 print(solution)
 
     main()
