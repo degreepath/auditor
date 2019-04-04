@@ -1,433 +1,253 @@
 {
-    "catalog": "2015-16",
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "2018-19",
     "degree": "Bachelor of Arts",
     "kind": "major",
     "name": "Women's and Gender Studies",
     "requirements": [
         {
+            "py/object": "__main__.Requirement",
             "audited_by": null,
             "contract": false,
             "message": null,
             "name": "Introduction",
             "requirements": null,
             "result": {
+                "py/object": "__main__.Rule",
                 "rule": {
+                    "py/object": "__main__.CourseRule",
                     "course": "WMGST 121"
                 }
             },
             "save": null
         },
         {
+            "py/object": "__main__.Requirement",
             "audited_by": null,
             "contract": false,
             "message": null,
             "name": "Advanced Topics",
             "requirements": null,
             "result": {
+                "py/object": "__main__.Rule",
                 "rule": {
+                    "py/object": "__main__.CourseRule",
                     "course": "WMGST 399"
                 }
             },
             "save": null
         },
         {
+            "py/object": "__main__.Requirement",
             "audited_by": null,
             "contract": false,
             "message": null,
             "name": "Additional Courses",
             "requirements": [
                 {
+                    "py/object": "__main__.Requirement",
                     "audited_by": null,
                     "contract": false,
                     "message": null,
                     "name": "Theory and Methods",
                     "requirements": null,
                     "result": {
+                        "py/object": "__main__.Rule",
                         "rule": {
-                            "count": 1,
-                            "greedy": false,
-                            "of": [
-                                {
-                                    "rule": {
-                                        "course": "AMST 100"
-                                    }
+                            "py/object": "__main__.GivenRule",
+                            "action": {
+                                "py/object": "__main__.GivenAction",
+                                "lhs": "count",
+                                "op": {
+                                    "py/reduce": [
+                                        {
+                                            "py/type": "__main__.Operator"
+                                        },
+                                        {
+                                            "py/tuple": [
+                                                ">="
+                                            ]
+                                        },
+                                        null,
+                                        null,
+                                        null
+                                    ]
                                 },
-                                {
-                                    "rule": {
-                                        "course": "ART 277"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 242"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 264"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "FAMST 242"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "FAMST 253"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "PHIL 245"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "PSYCH 390"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "PSYCH 396"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "REL 209"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "REL 344"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SOAN 235"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SOAN 246"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SOAN 260"
-                                    }
-                                }
-                            ]
+                                "rhs": "1"
+                            },
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null,
+                                "subject": null
+                            }
                         }
                     },
                     "save": null
                 },
                 {
+                    "py/object": "__main__.Requirement",
                     "audited_by": null,
                     "contract": false,
                     "message": null,
                     "name": "Gender in Historical Context",
                     "requirements": null,
                     "result": {
+                        "py/object": "__main__.Rule",
                         "rule": {
-                            "count": 1,
-                            "greedy": false,
-                            "of": [
-                                {
-                                    "rule": {
-                                        "course": "FREN 372"
-                                    }
+                            "py/object": "__main__.GivenRule",
+                            "action": {
+                                "py/object": "__main__.GivenAction",
+                                "lhs": "count",
+                                "op": {
+                                    "py/id": 14
                                 },
-                                {
-                                    "rule": {
-                                        "course": "HIST 121"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 191"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 224"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 231"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 237"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 239"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 320"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "PHIL 245"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "PSYCH 223"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "PSYCH 241"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "REL 209"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "REL 264"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SOAN 128"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SOAN 235"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SOAN 261"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SPAN 250"
-                                    }
-                                }
-                            ]
+                                "rhs": "1"
+                            },
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null,
+                                "subject": null
+                            }
                         }
                     },
                     "save": null
                 },
                 {
+                    "py/object": "__main__.Requirement",
                     "audited_by": null,
                     "contract": false,
                     "message": null,
                     "name": "Gender in Global/Comparative/Diverse Contexts",
                     "requirements": null,
                     "result": {
+                        "py/object": "__main__.Rule",
                         "rule": {
-                            "count": 1,
-                            "greedy": false,
-                            "of": [
-                                {
-                                    "rule": {
-                                        "course": "DANCE 246"
-                                    }
+                            "py/object": "__main__.GivenRule",
+                            "action": {
+                                "py/object": "__main__.GivenAction",
+                                "lhs": "count",
+                                "op": {
+                                    "py/id": 14
                                 },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 246"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "ENGL 340"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "FAMST 253"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 115"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 122"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 182"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 189"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 189"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 272"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 320"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "HIST 320"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "REL 209"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "REL 264"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "SOAN 246"
-                                    }
-                                }
-                            ]
+                                "rhs": "1"
+                            },
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null,
+                                "subject": null
+                            }
                         }
                     },
                     "save": null
                 },
                 {
+                    "py/object": "__main__.Requirement",
                     "audited_by": null,
                     "contract": false,
                     "message": null,
-                    "name": "Electives",
-                    "requirements": null,
-                    "result": {
-                        "rule": {
-                            "count": 1,
-                            "greedy": false,
-                            "of": [
-                                {
-                                    "rule": {
-                                        "course": "BIO 124"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "NORW 282"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "NURS 386"
-                                    }
-                                },
-                                {
-                                    "rule": {
-                                        "course": "PSYCH 350"
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "save": null
-                },
-                {
-                    "audited_by": null,
-                    "contract": true,
-                    "message": "The major says, \"One course must focus on women's lived experiences.\"",
                     "name": "Lived Experiences",
                     "requirements": null,
-                    "result": null,
+                    "result": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.GivenRule",
+                            "action": {
+                                "py/object": "__main__.GivenAction",
+                                "lhs": "count",
+                                "op": {
+                                    "py/id": 14
+                                },
+                                "rhs": "1"
+                            },
+                            "courses": null,
+                            "given": "courses",
+                            "limit": null,
+                            "output": "courses",
+                            "requirements": null,
+                            "save": null,
+                            "saves": null,
+                            "where": {
+                                "py/object": "__main__.Filter",
+                                "attribute": null,
+                                "institution": null,
+                                "subject": null
+                            }
+                        }
+                    },
                     "save": null
                 }
             ],
             "result": {
+                "py/object": "__main__.Rule",
                 "rule": {
-                    "count": 7,
+                    "py/object": "__main__.CountRule",
+                    "count": 6,
                     "greedy": false,
                     "of": [
                         {
+                            "py/object": "__main__.Rule",
                             "rule": {
+                                "py/object": "__main__.ReferenceRule",
                                 "requirement": "Theory and Methods"
                             }
                         },
                         {
+                            "py/object": "__main__.Rule",
                             "rule": {
+                                "py/object": "__main__.ReferenceRule",
                                 "requirement": "Gender in Historical Context"
                             }
                         },
                         {
+                            "py/object": "__main__.Rule",
                             "rule": {
+                                "py/object": "__main__.ReferenceRule",
                                 "requirement": "Gender in Global/Comparative/Diverse Contexts"
                             }
                         },
                         {
+                            "py/object": "__main__.Rule",
                             "rule": {
-                                "requirement": "Electives"
-                            }
-                        },
-                        {
-                            "rule": {
+                                "py/object": "__main__.ReferenceRule",
                                 "requirement": "Lived Experiences"
                             }
                         },
                         {
+                            "py/object": "__main__.Rule",
                             "rule": {
-                                "action": "count >= 7",
+                                "py/object": "__main__.GivenRule",
+                                "action": {
+                                    "py/object": "__main__.GivenAction",
+                                    "lhs": "count",
+                                    "op": {
+                                        "py/id": 14
+                                    },
+                                    "rhs": "7"
+                                },
                                 "courses": null,
                                 "given": "save",
                                 "limit": null,
@@ -439,8 +259,17 @@
                             }
                         },
                         {
+                            "py/object": "__main__.Rule",
                             "rule": {
-                                "action": "count >= 1",
+                                "py/object": "__main__.GivenRule",
+                                "action": {
+                                    "py/object": "__main__.GivenAction",
+                                    "lhs": "count",
+                                    "op": {
+                                        "py/id": 14
+                                    },
+                                    "rhs": "1"
+                                },
                                 "courses": null,
                                 "given": "save",
                                 "limit": null,
@@ -449,7 +278,10 @@
                                 "save": "Taken Elective Courses",
                                 "saves": null,
                                 "where": {
-                                    "attribute": null
+                                    "py/object": "__main__.Filter",
+                                    "attribute": null,
+                                    "institution": null,
+                                    "subject": null
                                 }
                             }
                         }
@@ -458,16 +290,11 @@
             },
             "save": [
                 {
+                    "py/object": "__main__.SaveRule",
                     "courses": null,
-                    "given": "these-requirements",
+                    "given": "courses",
                     "name": "Taken Elective Courses",
-                    "requirements": [
-                        "Theory and Methods",
-                        "Gender in Historical Context",
-                        "Gender in Global/Comparative/Diverse Contexts",
-                        "Electives",
-                        "Lived Experiences"
-                    ],
+                    "requirements": null,
                     "save": null,
                     "saves": null
                 }
@@ -475,23 +302,31 @@
         }
     ],
     "result": {
+        "py/object": "__main__.Rule",
         "rule": {
+            "py/object": "__main__.CountRule",
             "count": 3,
             "greedy": false,
             "of": [
                 {
+                    "py/object": "__main__.Rule",
                     "rule": {
+                        "py/object": "__main__.ReferenceRule",
                         "requirement": "Introduction"
                     }
                 },
                 {
+                    "py/object": "__main__.Rule",
                     "rule": {
-                        "requirement": "Additional Courses"
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Advanced Topics"
                     }
                 },
                 {
+                    "py/object": "__main__.Rule",
                     "rule": {
-                        "requirement": "Advanced Topics"
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "Additional Courses"
                     }
                 }
             ]

@@ -7,6 +7,8 @@ import json
 import jsonpickle
 import itertools
 import logging
+import yaml
+import shlex
 
 
 GivenInput = str
@@ -94,7 +96,7 @@ class ActionRule:
         pass
 
     def solutions(self, *, ctx: RequirementContext):
-        logging.debug('ActionRule#solutions')
+        logging.debug("ActionRule#solutions")
         yield ActionSolution(result=None)
 
 
@@ -107,6 +109,9 @@ class ActionSolution:
 class BothRule:
     a: Rule
     b: Rule
+
+    def __repr__(self):
+        return f"(both-rule '{self.a} '{self.b})"
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -123,14 +128,20 @@ class BothRule:
         self.b.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext):
-        logging.debug(f'BothRule#solutions for {self.a} && {self.b}')
-        yield BothSolution(a=self.a, b=self.b)
+        logging.debug(f"BothRule#solutions for {self.a} && {self.b}")
+        for a, b in itertools.product(
+            self.a.solutions(ctx=ctx), self.b.solutions(ctx=ctx)
+        ):
+            yield BothSolution(a=a, b=b)
 
 
 @dataclass(frozen=True)
 class BothSolution:
-    a: Solution
-    b: Solution
+    a: Rule
+    b: Rule
+
+    def __repr__(self):
+        return f"[both '{self.a} '{self.b}]"
 
 
 @dataclass(frozen=True)
@@ -138,6 +149,9 @@ class CountRule:
     count: int
     of: List[Rule]
     greedy: bool = False
+
+    def __repr__(self):
+        return f"(count-rule '{self.count} {self.of})"
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -169,18 +183,24 @@ class CountRule:
         for combo in itertools.combinations(self.of, self.count):
             iterable = [rule.solutions(ctx=ctx) for rule in combo]
             for moar_combo in itertools.product(*iterable):
-                logging.debug(f'CountRule#solutions of {moar_combo}')
-                yield CountSolution(items=moar_combo)
+                logging.debug(f"CountRule#solutions of {moar_combo}")
+                yield CountSolution(items=list(moar_combo))
 
 
 @dataclass(frozen=True)
 class CountSolution:
     items: List[Solution]
 
+    def __repr__(self):
+        return f"[count '{len(self.items)} {self.items}]"
+
 
 @dataclass(frozen=True)
 class CourseRule:
     course: str
+
+    def __repr__(self):
+        return f"(course-rule '{self.course})"
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -209,11 +229,17 @@ class CourseRule:
 class CourseSolution:
     course: str
 
+    def __repr__(self):
+        return f"[c '{self.course}]"
+
 
 @dataclass(frozen=True)
 class EitherRule:
     a: Rule
     b: Rule
+
+    def __repr__(self):
+        return f"(either-rule '{self.a} '{self.b})"
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -232,27 +258,54 @@ class EitherRule:
         self.b.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext):
-        logging.debug(f'EitherRule#solutions for either {self.a} || {self.b}')
-        yield EitherSolution(choice=self.a)
-        yield EitherSolution(choice=self.b)
+        logging.debug(f"EitherRule#solutions for either {self.a} || {self.b}")
+
+        for sol in self.a.solutions(ctx=ctx):
+            yield EitherSolution(choice=sol, index="a")
+        for sol in self.a.solutions(ctx=ctx):
+            yield EitherSolution(choice=sol, index="b")
 
 
 @dataclass(frozen=True)
 class EitherSolution:
     choice: Solution
+    index: str
+
+    def __repr__(self):
+        return f"[either '{self.index} {self.choice}]"
 
 
 @dataclass(frozen=True)
 class Filter:
     attribute: Optional[str]
     institution: Optional[str]
+    subject: Optional[str]
 
     @staticmethod
     def load(data: Dict) -> Filter:
         return Filter(
             attribute=data.get("attribute", None),
             institution=data.get("institution", None),
+            subject=data.get("subject", None),
         )
+
+    def apply(self, c: CourseInstance):
+        if self.subject is not None:
+            if self.subject not in c.subject:
+                return False
+
+        if self.attribute is not None:
+            if self.attribute not in (c.attributes or []):
+                return False
+
+        if self.institution is not None:
+            # if self.institution != c.institution
+            return False
+
+        return True
+
+    def filter(self, courses: List[CourseInstance]) -> List[CourseInstance]:
+        return [c for c in courses if self.apply(c)]
 
 
 @dataclass(frozen=True)
@@ -265,12 +318,31 @@ class Limit:
         return Limit(at_most=data["at_most"], where=Filter.load(data["where"]))
 
 
+class Operator(Enum):
+    LessThan = "<"
+    LessThanOrEqualTo = "<="
+    GreaterThen = ">"
+    GreaterThanOrEqualTo = ">="
+    EqualTo = "="
+    NotEqualTo = "!="
+
+
+@dataclass(frozen=True)
+class GivenAction:
+    lhs: Union[str, int, SaveRule]
+    op: Operator
+    rhs: Union[str, int]
+
+    def __repr__(self):
+        return f"GivenAction(lhs={self.lhs}, op={self.op.name}, rhs={self.rhs})"
+
+
 @dataclass(frozen=True)
 class GivenRule:
     given: str
-
     output: str
-    action: str
+
+    action: GivenAction
 
     limit: Optional[Limit] = None
     where: Optional[Filter] = None
@@ -296,10 +368,15 @@ class GivenRule:
         if limit is not None:
             limit = [Limit.load(l) for l in limit]
 
+        actionstr = shlex.split(data["do"])
+        action = GivenAction(
+            lhs=actionstr[0], op=Operator(actionstr[1]), rhs=actionstr[2]
+        )
+
         return GivenRule(
             given=data["given"],
             output=data["what"],
-            action=data["do"],
+            action=action,
             limit=limit,
             where=where,
             requirements=data.get("requirements", None),
@@ -374,17 +451,23 @@ class GivenRule:
             raise NameError(f"unknown 'given' type {self.given}")
 
     def solutions(self, *, ctx: RequirementContext):
-        logging.debug('GivenRule#solutions')
-        # TODO: fill out the output parameter
-        yield GivenSolution(output=[], action="count", amount=6, operator="gte")
+        logging.debug("GivenRule#solutions")
+
+        filtered = (
+            self.where.filter(ctx.transcript)
+            if self.where is not None
+            else ctx.transcript
+        )
+
+        for combo in itertools.combinations(filtered, int(self.action.rhs)):
+            # TODO: fill out the output parameter
+            yield GivenSolution(output=list(combo), action=self.action)
 
 
 @dataclass(frozen=True)
 class GivenSolution:
     output: List[Union[CourseInstance, Term, Grade, Semester]]
-    action: str
-    amount: int
-    operator: str  # Union["gte", "gt", "eq"]
+    action: GivenAction
 
 
 @dataclass(frozen=True)
@@ -439,6 +522,9 @@ RuleTypeUnion = Union[
 class Rule:
     rule: RuleTypeUnion
 
+    def __repr__(self):
+        return f"[rule {self.rule}]"
+
     @staticmethod
     def load(data: Union[Dict, str]) -> Rule:
         if isinstance(data, str):
@@ -482,7 +568,7 @@ class Rule:
             raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
 
     def solutions(self, *, ctx: RequirementContext):
-        logging.debug('Rule#solutions')
+        logging.debug("Rule#solutions")
         if isinstance(self.rule, CourseRule):
             yield from self.rule.solutions()
         elif isinstance(self.rule, ActionRule):
@@ -516,6 +602,16 @@ class RequirementContext:
 @dataclass(frozen=True)
 class CourseInstance:
     course: str
+    subject: List[str]
+    attributes: Optional[List[str]] = None
+
+    @staticmethod
+    def from_dict(**kwargs):
+        return CourseInstance(
+            course=kwargs["course"],
+            subject=kwargs["subject"],
+            attributes=kwargs.get("attributes", None),
+        )
 
 
 @dataclass(frozen=True)
@@ -652,11 +748,11 @@ class AreaOfStudy:
 
         self.result.validate(ctx=ctx)
 
-    def solutions(self):
-        logging.debug('AreaOfStudy#solutions')
+    def solutions(self, *, transcript: List[CourseInstance]):
+        logging.debug("AreaOfStudy#solutions")
 
         ctx = RequirementContext(
-            transcript=[],
+            transcript=transcript,
             saves={},
             child_requirements={r.name: r for r in self.requirements},
         )
@@ -665,27 +761,43 @@ class AreaOfStudy:
 
 
 def load(stream: TextIO) -> AreaOfStudy:
-    import yaml
-
     data = yaml.load(stream=stream, Loader=yaml.SafeLoader)
 
     return AreaOfStudy.load(data)
 
 
+def take(iterable, n):
+    for i, item in enumerate(iterable):
+        yield item
+        if i + 1 >= n:
+            break
+
+
 if __name__ == "__main__":
     # import click
     import glob
+    import time
+    import coloredlogs
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logformat = "%(levelname)s %(message)s"
+    coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
 
     # @click.command()
     def main():
         """Audits a student against their areas of study."""
 
-        logging.getLogger().setLevel(logging.DEBUG)
+        with open("./student.yaml", "r", encoding="utf-8") as infile:
+            data = yaml.load(stream=infile, Loader=yaml.SafeLoader)
+            transcript = [CourseInstance.from_dict(**row) for row in data['courses']]
 
         # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
-        for file in glob.iglob(
-            "./gobbldygook-area-data/2018-19/major/computer-science.yaml"
-        ):
+        for file in [
+            # "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
+            # "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
+            "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml",
+        ]:
             print(f"processing {file}")
             with open(file, "r", encoding="utf-8") as infile:
                 area = load(infile)
@@ -697,10 +809,22 @@ if __name__ == "__main__":
                 jsonpickle.set_encoder_options("json", sort_keys=False, indent=4)
                 outfile.write(jsonpickle.encode(area, unpicklable=True))
 
-            for i, solution in enumerate(area.solutions()):
-                if i > 5:
-                    break
-                print()
-                print(solution)
+            # for solution in take(area.solutions(), 5):
+            #     logging.info(jsonpickle.dumps(solution))
+            #     logging.info(solution)
+
+            start = time.perf_counter()
+
+            counter = 0
+            for s in area.solutions(transcript=transcript):
+                counter += 1
+
+                if counter % 1_000 == 0:
+                    print(f"... {counter}")
+
+            print(f"{counter} possible combinations")
+            end = time.perf_counter()
+            print(f"time: {end - start}")
+            print()
 
     main()

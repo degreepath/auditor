@@ -241,7 +241,26 @@
                 "py/object": "__main__.Rule",
                 "rule": {
                     "py/object": "__main__.GivenRule",
-                    "action": "count >= 2",
+                    "action": {
+                        "py/object": "__main__.GivenAction",
+                        "lhs": "count",
+                        "op": {
+                            "py/reduce": [
+                                {
+                                    "py/type": "__main__.Operator"
+                                },
+                                {
+                                    "py/tuple": [
+                                        ">="
+                                    ]
+                                },
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        "rhs": "2"
+                    },
                     "courses": null,
                     "given": "courses",
                     "limit": null,
@@ -252,7 +271,8 @@
                     "where": {
                         "py/object": "__main__.Filter",
                         "attribute": "csci_elective",
-                        "institution": null
+                        "institution": null,
+                        "subject": null
                     }
                 }
             },

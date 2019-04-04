@@ -16,7 +16,26 @@
                 "py/object": "__main__.Rule",
                 "rule": {
                     "py/object": "__main__.GivenRule",
-                    "action": "count >= 1",
+                    "action": {
+                        "py/object": "__main__.GivenAction",
+                        "lhs": "count",
+                        "op": {
+                            "py/reduce": [
+                                {
+                                    "py/type": "__main__.Operator"
+                                },
+                                {
+                                    "py/tuple": [
+                                        ">="
+                                    ]
+                                },
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        "rhs": "1"
+                    },
                     "courses": null,
                     "given": "courses",
                     "limit": null,
@@ -26,8 +45,9 @@
                     "saves": null,
                     "where": {
                         "py/object": "__main__.Filter",
-                        "attribute": "asian_language_chinese | asian_language_japanese",
-                        "institution": null
+                        "attribute": "asian_language_japanese",
+                        "institution": null,
+                        "subject": null
                     }
                 }
             },
@@ -44,7 +64,14 @@
                 "py/object": "__main__.Rule",
                 "rule": {
                     "py/object": "__main__.GivenRule",
-                    "action": "count >= 1",
+                    "action": {
+                        "py/object": "__main__.GivenAction",
+                        "lhs": "count",
+                        "op": {
+                            "py/id": 6
+                        },
+                        "rhs": "1"
+                    },
                     "courses": null,
                     "given": "courses",
                     "limit": null,
@@ -55,7 +82,8 @@
                     "where": {
                         "py/object": "__main__.Filter",
                         "attribute": "asian_seminar",
-                        "institution": null
+                        "institution": null,
+                        "subject": null
                     }
                 }
             },
@@ -72,7 +100,14 @@
                 "py/object": "__main__.Rule",
                 "rule": {
                     "py/object": "__main__.GivenRule",
-                    "action": "count >= 6",
+                    "action": {
+                        "py/object": "__main__.GivenAction",
+                        "lhs": "count",
+                        "op": {
+                            "py/id": 6
+                        },
+                        "rhs": "6"
+                    },
                     "courses": null,
                     "given": "courses",
                     "limit": [
@@ -82,7 +117,8 @@
                             "where": {
                                 "py/object": "__main__.Filter",
                                 "attribute": null,
-                                "institution": null
+                                "institution": null,
+                                "subject": null
                             }
                         },
                         {
@@ -91,7 +127,8 @@
                             "where": {
                                 "py/object": "__main__.Filter",
                                 "attribute": "asian_region_china",
-                                "institution": null
+                                "institution": null,
+                                "subject": null
                             }
                         },
                         {
@@ -100,7 +137,8 @@
                             "where": {
                                 "py/object": "__main__.Filter",
                                 "attribute": "asian_region_japan",
-                                "institution": null
+                                "institution": null,
+                                "subject": null
                             }
                         },
                         {
@@ -109,7 +147,8 @@
                             "where": {
                                 "py/object": "__main__.Filter",
                                 "attribute": null,
-                                "institution": "! St. Olaf College"
+                                "institution": "! St. Olaf College",
+                                "subject": null
                             }
                         }
                     ],
@@ -120,7 +159,8 @@
                     "where": {
                         "py/object": "__main__.Filter",
                         "attribute": "asian_elective",
-                        "institution": null
+                        "institution": null,
+                        "subject": null
                     }
                 }
             },
