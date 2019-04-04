@@ -1,16 +1,16 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Union, List, Optional, TextIO
+from typing import Dict, Union, List, Optional, TextIO, Any
 import re
 import json
 import jsonpickle
+import itertools
 
 
-class GivenInput(Enum):
-    TheseRequirements = 0
-    TheseCourses = 1
-    TheseSaves = 2
+GivenInput = (
+    str
+)  # Union['these-requirements', 'courses', 'these-courses', 'these-saves', 'save']
 
 
 @dataclass(frozen=True)
@@ -34,41 +34,37 @@ class SaveRule:
             name=data["name"],
         )
 
-    def validate(
-        self,
-        requirements: Optional[List] = None,
-        saves: Optional[List[SaveRule]] = None,
-    ):
+    def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.given, str)
 
-        dbg = f"(when validating self={repr(self)}, saves={repr(saves)}, reqs={repr(requirements)})"
+        dbg = f"(when validating self={repr(self)}, saves={repr(ctx.saves)}, reqs={repr(ctx.child_requirements)})"
 
         if self.given == "these-requirements":
+            if not self.requirements:
+                raise ValueError("expected self.requirements to be a list")
             for name in self.requirements:
                 assert isinstance(name, str), f"expected {name} to be a string"
-                named = {r.name: r for r in requirements}
-                found = [r for r in requirements if r.name == name]
                 assert (
-                    name in named
-                ), f"expected to find '{name}' once, but found it {len(found)} times {dbg}"
+                    name in ctx.child_requirements
+                ), f"expected to find '{name}' once, but could not find it {dbg}"
 
         elif self.given == "these-saves":
+            if not self.saves:
+                raise ValueError("expected self.saves to be a list")
             for name in self.saves:
                 assert isinstance(name, str), f"expected {name} to be a string"
-                named = {s.name: s for s in saves}
-                found = [s for s in saves if s.name == name]
                 assert (
-                    name in named
-                ), f"expected to find '{name}' once, but found it {len(found)} times {dbg}"
+                    name in ctx.saves
+                ), f"expected to find '{name}' once, but could not find it {dbg}"
 
         elif self.given == "save":
-            named = {s.name: s for s in saves}
-            found = [s for s in saves if s.name == self.save]
             assert (
-                self.save in named
-            ), f"expected to find '{self.save}' once, but found it {len(found)} times {dbg}"
+                self.save in ctx.saves
+            ), f"expected to find '{self.save}' once, but could not find it {dbg}"
 
         elif self.given == "these-courses":
+            if not self.courses:
+                raise ValueError("expected self.courses")
             assert len(self.courses) >= 1
 
         elif self.given == "courses":
@@ -97,6 +93,14 @@ class ActionRule:
     def validate(self):
         pass
 
+    def solutions(self):
+        yield ActionSolution(result=None)
+
+
+@dataclass(frozen=True)
+class ActionSolution:
+    result: bool
+
 
 @dataclass(frozen=True)
 class BothRule:
@@ -113,25 +117,23 @@ class BothRule:
     def load(data: Dict) -> BothRule:
         return BothRule(a=Rule.load(data["both"][0]), b=Rule.load(data["both"][1]))
 
-    def validate(
-        self,
-        *,
-        requirements: Optional[List[Requirement]] = None,
-        saves: Optional[List[SaveRule]] = None,
-    ):
-        if requirements is None:
-            requirements = []
+    def validate(self, *, ctx: RequirementContext):
+        self.a.validate(ctx=ctx)
+        self.b.validate(ctx=ctx)
 
-        if saves is None:
-            saves = []
+    def solutions(self):
+        yield BothSolution(a=self.a, b=self.b)
 
-        self.a.validate(requirements=requirements, saves=saves)
-        self.b.validate(requirements=requirements, saves=saves)
+
+@dataclass(frozen=True)
+class BothSolution:
+    a: Solution
+    b: Solution
 
 
 @dataclass(frozen=True)
 class CountRule:
-    count: Union[int, "all", "any"]
+    count: Union[int, str]
     of: List[Rule]
     greedy: bool = False
 
@@ -153,24 +155,24 @@ class CountRule:
 
         return CountRule(count=count, of=of)
 
-    def validate(
-        self,
-        *,
-        requirements: Optional[List[Requirement]] = None,
-        saves: Optional[List[SaveRule]] = None,
-    ):
-        if requirements is None:
-            requirements = []
-
-        if saves is None:
-            saves = []
-
+    def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
         assert self.count >= 0
         assert self.count <= len(self.of)
 
         for rule in self.of:
-            rule.validate(requirements=requirements, saves=saves)
+            rule.validate(ctx=ctx)
+
+    def solutions(self):
+        for combo in itertools.combinations(self.of, self.count):
+            iterable = [rule.solutions() for rule in combo]
+            for moar_combo in itertools.product(*iterable):
+                yield CountSolution(items=moar_combo)
+
+
+@dataclass(frozen=True)
+class CountSolution:
+    items: List[Solution]
 
 
 @dataclass(frozen=True)
@@ -195,6 +197,14 @@ class CourseRule:
             method_a or method_b or method_c
         ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
+    def solutions(self):
+        yield CourseSolution(course=self.course)
+
+
+@dataclass(frozen=True)
+class CourseSolution:
+    course: str
+
 
 @dataclass(frozen=True)
 class EitherRule:
@@ -213,20 +223,18 @@ class EitherRule:
             a=Rule.load(data["either"][0]), b=Rule.load(data["either"][1])
         )
 
-    def validate(
-        self,
-        *,
-        requirements: Optional[List[Requirement]] = None,
-        saves: Optional[List[SaveRule]] = None,
-    ):
-        if requirements is None:
-            requirements = []
+    def validate(self, *, ctx: RequirementContext):
+        self.a.validate(ctx=ctx)
+        self.b.validate(ctx=ctx)
 
-        if saves is None:
-            saves = []
+    def solutions(self):
+        yield EitherSolution(choice=self.a)
+        yield EitherSolution(choice=self.b)
 
-        self.a.validate(requirements=requirements, saves=saves)
-        self.b.validate(requirements=requirements, saves=saves)
+
+@dataclass(frozen=True)
+class EitherSolution:
+    choice: Solution
 
 
 @dataclass(frozen=True)
@@ -248,7 +256,7 @@ class Limit:
     where: Filter
 
     @staticmethod
-    def load(data: Dict) -> Filter:
+    def load(data: Dict) -> Limit:
         return Limit(at_most=data["at_most"], where=Filter.load(data["where"]))
 
 
@@ -295,41 +303,46 @@ class GivenRule:
             courses=data.get("courses", None),
         )
 
-    def validate(
-        self,
-        requirements: Optional[List[Requirement]] = None,
-        saves: Optional[List[SaveRule]] = None,
-    ):
+    def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.given, str)
+
+        saves = ctx.saves
+        requirements = ctx.child_requirements
 
         dbg = f"(when validating self={repr(self)}, saves={repr(saves)}, reqs={repr(requirements)})"
 
         if self.given == "these-requirements":
+            if not self.requirements or not requirements:
+                raise ValueError(
+                    "expected self.requirements and args.requirements to be lists"
+                )
             for name in self.requirements:
                 assert isinstance(name, str), f"expected {name} to be a string"
-                named = {r.name: r for r in requirements}
-                found = [r for r in requirements if r.name == name]
                 assert (
-                    name in named
-                ), f"expected to find '{name}' once, but found it {len(found)} times {dbg}"
+                    name in ctx.child_requirements
+                ), f"expected to find '{name}' once, but could not find it {dbg}"
+            return
 
         elif self.given == "these-saves":
+            if not self.saves or not saves:
+                raise ValueError("expected self.saves and args.saves to be lists")
             for name in self.saves:
                 assert isinstance(name, str), f"expected {name} to be a string"
-                named = {s.name: s for s in saves}
-                found = [s for s in saves if s.name == name]
                 assert (
-                    name in named
-                ), f"expected to find '{name}' once, but found it {len(found)} times {dbg}"
+                    name in ctx.saves
+                ), f"expected to find '{name}' once, but could not find it {dbg}"
+            return
 
         elif self.given == "save":
-            named = {s.name: s for s in saves}
-            found = [s for s in saves if s.name == self.save]
+            if not saves:
+                raise ValueError("expected args.saves to be a list")
             assert (
-                self.save in named
-            ), f"expected to find '{self.save}' once, but found it {len(found)} times {dbg}"
+                self.save in ctx.saves
+            ), f"expected to find '{self.save}' once, but could not find it {dbg}"
 
         elif self.given == "these-courses":
+            if not self.courses:
+                raise ValueError("expected self.courses")
             assert len(self.courses) >= 1
 
         elif self.given == "courses":
@@ -355,6 +368,33 @@ class GivenRule:
         else:
             raise NameError(f"unknown 'given' type {self.given}")
 
+    def solutions(self, *, ctx: RequirementContext):
+        # TODO: fill out the output parameter
+        yield GivenSolution(output=[], action="count", amount=6, operator="gte")
+
+
+@dataclass(frozen=True)
+class GivenSolution:
+    output: List[Union[CourseInstance, Term, Grade, Semester]]
+    action: str
+    amount: int
+    operator: str  # Union["gte", "gt", "eq"]
+
+
+@dataclass(frozen=True)
+class Term:
+    pass
+
+
+@dataclass(frozen=True)
+class Grade:
+    pass
+
+
+@dataclass(frozen=True)
+class Semester:
+    pass
+
 
 @dataclass(frozen=True)
 class ReferenceRule:
@@ -370,17 +410,19 @@ class ReferenceRule:
     def load(data: Dict) -> ReferenceRule:
         return ReferenceRule(requirement=data["requirement"])
 
-    def validate(self, *, requirements: Optional[List[Requirement]] = None):
-        if requirements is None:
-            requirements = []
-
-        named = {r.name: r for r in requirements}
-        if self.requirement not in named:
-            r = self.requirement
-            reqs = ", ".join([repr(x) for x in requirements])
+    def validate(self, *, ctx: RequirementContext):
+        if self.requirement not in ctx.child_requirements:
+            reqs = ", ".join(ctx.child_requirements.keys())
             raise AssertionError(
-                f"expected a requirement named '{r}', but did not find one [options: {reqs}]"
+                f"expected a requirement named '{self.requirement}', but did not find one [options: {reqs}]"
             )
+
+        ctx.child_requirements[self.requirement].validate(ctx=ctx)
+
+    def solutions(self, *, ctx: RequirementContext):
+        named = ctx.child_requirements
+
+        # TODO: return things here
 
 
 RuleTypeUnion = Union[
@@ -416,34 +458,40 @@ class Rule:
             f"expected Course, Given, Count, Both, Either, or Do; found none of those ({dbg})"
         )
 
-    def validate(
-        self,
-        *,
-        requirements: Optional[List[Requirement]] = None,
-        saves: Optional[List[SaveRule]] = None,
-    ):
-        if requirements is None:
-            requirements = []
-
-        if saves is None:
-            saves = []
-
+    def validate(self, *, ctx: RequirementContext):
         if isinstance(self.rule, CourseRule):
             self.rule.validate()
         elif isinstance(self.rule, ActionRule):
             self.rule.validate()
         elif isinstance(self.rule, GivenRule):
-            self.rule.validate(requirements=requirements, saves=saves)
+            self.rule.validate(ctx=ctx)
         elif isinstance(self.rule, CountRule):
-            self.rule.validate(requirements=requirements, saves=saves)
+            self.rule.validate(ctx=ctx)
         elif isinstance(self.rule, BothRule):
-            self.rule.validate(requirements=requirements, saves=saves)
+            self.rule.validate(ctx=ctx)
         elif isinstance(self.rule, EitherRule):
-            self.rule.validate(requirements=requirements, saves=saves)
+            self.rule.validate(ctx=ctx)
         elif isinstance(self.rule, ReferenceRule):
-            self.rule.validate(requirements=requirements)
+            self.rule.validate(ctx=ctx)
         else:
             raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
+
+
+@dataclass(frozen=True)
+class Solution:
+    rule: RuleTypeUnion
+
+
+@dataclass(frozen=True)
+class RequirementContext:
+    transcript: List[CourseInstance]
+    saves: Dict[str, SaveRule]
+    child_requirements: Dict[str, Requirement]
+
+
+@dataclass(frozen=True)
+class CourseInstance:
+    course: str
 
 
 @dataclass(frozen=True)
@@ -453,11 +501,11 @@ class Requirement:
     result: Optional[Rule] = None
     save: Optional[List[SaveRule]] = None
     requirements: Optional[List[Requirement]] = None
-    audited_by: Union[None, "registrar", "department"] = None
+    audited_by: Union[None, str] = None
     contract: bool = False
 
     @staticmethod
-    def load(data: Dict) -> Requirement:
+    def load(data: Dict[str, Any]) -> Requirement:
         children = data.get("requirements", None)
         if children is not None:
             children = [Requirement.load(r) for r in children]
@@ -486,7 +534,7 @@ class Requirement:
             audited_by=audited_by,
         )
 
-    def validate(self):
+    def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.name, str)
         assert self.name.strip() != ""
 
@@ -494,18 +542,27 @@ class Requirement:
             assert isinstance(self.message, str)
             assert self.message.strip() != ""
 
+        children = {r.name: r for r in self.requirements or []}
+
         if self.save is not None:
-            validated_saves = []
+            validated_saves: List[SaveRule] = []
             for save in self.save:
-                save.validate(requirements=self.requirements, saves=validated_saves)
+                new_ctx = RequirementContext(
+                    transcript=ctx.transcript,
+                    saves={s.name: s for s in validated_saves},
+                    child_requirements=children,
+                )
+                save.validate(ctx=new_ctx)
                 validated_saves.append(save)
 
-        if self.result is not None:
-            self.result.validate(requirements=self.requirements, saves=self.save)
+        new_ctx = RequirementContext(
+            transcript=ctx.transcript,
+            saves={s.name: s for s in self.save or []},
+            child_requirements=children,
+        )
 
-        if self.requirements is not None:
-            for req in self.requirements:
-                req.validate()
+        if self.result is not None:
+            self.result.validate(ctx=new_ctx)
 
 
 @dataclass(frozen=True)
@@ -549,10 +606,13 @@ class AreaOfStudy:
             assert self.degree.strip() != ""
             assert self.degree in ["Bachelor of Arts", "Bachelor of Music"]
 
-        self.result.validate(requirements=self.requirements)
+        ctx = RequirementContext(
+            transcript=[],
+            saves={},
+            child_requirements={r.name: r for r in self.requirements},
+        )
 
-        for req in self.requirements:
-            req.validate()
+        self.result.validate(ctx=ctx)
 
 
 def load(stream: TextIO) -> AreaOfStudy:
@@ -564,12 +624,10 @@ def load(stream: TextIO) -> AreaOfStudy:
 
 
 if __name__ == "__main__":
-    import click
+    # import click
     import glob
 
-    @click.command()
-    # @click.argument("student_file", type=click.File(mode="r", encoding="utf-8"))
-    # @click.argument("file", type=click.File(mode="r", encoding="utf-8"))
+    # @click.command()
     def main():
         """Audits a student against their areas of study."""
 
