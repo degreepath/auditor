@@ -45,7 +45,7 @@
                     "saves": null,
                     "where": {
                         "py/object": "__main__.Filter",
-                        "attribute": "asian_language_japanese",
+                        "attribute": "asian_language_japanese | asian_language_chinese",
                         "institution": null,
                         "level": null,
                         "subject": null
@@ -64,28 +64,20 @@
             "result": {
                 "py/object": "__main__.Rule",
                 "rule": {
-                    "py/object": "__main__.GivenRule",
-                    "action": {
-                        "py/object": "__main__.GivenAction",
-                        "lhs": "count",
-                        "op": {
-                            "py/id": 6
-                        },
-                        "rhs": "1"
+                    "py/object": "__main__.EitherRule",
+                    "a": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CourseRule",
+                            "course": "ASIAN 397"
+                        }
                     },
-                    "courses": null,
-                    "given": "courses",
-                    "limit": null,
-                    "output": "courses",
-                    "requirements": null,
-                    "save": null,
-                    "saves": null,
-                    "where": {
-                        "py/object": "__main__.Filter",
-                        "attribute": "asian_seminar",
-                        "institution": null,
-                        "level": null,
-                        "subject": null
+                    "b": {
+                        "py/object": "__main__.Rule",
+                        "rule": {
+                            "py/object": "__main__.CourseRule",
+                            "course": "ASIAN 399"
+                        }
                     }
                 }
             },
