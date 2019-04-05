@@ -272,6 +272,7 @@
                         "py/object": "__main__.Filter",
                         "attribute": "csci_elective",
                         "institution": null,
+                        "level": null,
                         "subject": null
                     }
                 }

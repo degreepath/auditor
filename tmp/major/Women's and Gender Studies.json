@@ -84,8 +84,9 @@
                             "saves": null,
                             "where": {
                                 "py/object": "__main__.Filter",
-                                "attribute": null,
+                                "attribute": "wmgst_theory",
                                 "institution": null,
+                                "level": null,
                                 "subject": null
                             }
                         }
@@ -120,8 +121,9 @@
                             "saves": null,
                             "where": {
                                 "py/object": "__main__.Filter",
-                                "attribute": null,
+                                "attribute": "wmgst_historical",
                                 "institution": null,
+                                "level": null,
                                 "subject": null
                             }
                         }
@@ -156,8 +158,9 @@
                             "saves": null,
                             "where": {
                                 "py/object": "__main__.Filter",
-                                "attribute": null,
+                                "attribute": "wmgst_diverse",
                                 "institution": null,
+                                "level": null,
                                 "subject": null
                             }
                         }
@@ -192,8 +195,9 @@
                             "saves": null,
                             "where": {
                                 "py/object": "__main__.Filter",
-                                "attribute": null,
+                                "attribute": "wmgst_lived",
                                 "institution": null,
+                                "level": null,
                                 "subject": null
                             }
                         }
@@ -281,6 +285,7 @@
                                     "py/object": "__main__.Filter",
                                     "attribute": null,
                                     "institution": null,
+                                    "level": "300",
                                     "subject": null
                                 }
                             }
@@ -291,12 +296,25 @@
             "save": [
                 {
                     "py/object": "__main__.SaveRule",
-                    "courses": null,
-                    "given": "courses",
-                    "name": "Taken Elective Courses",
-                    "requirements": null,
-                    "save": null,
-                    "saves": null
+                    "innards": {
+                        "py/object": "__main__.GivenRule",
+                        "action": null,
+                        "courses": null,
+                        "given": "courses",
+                        "limit": null,
+                        "output": "courses",
+                        "requirements": null,
+                        "save": null,
+                        "saves": null,
+                        "where": {
+                            "py/object": "__main__.Filter",
+                            "attribute": "wmgst_elective",
+                            "institution": null,
+                            "level": null,
+                            "subject": null
+                        }
+                    },
+                    "name": "Taken Elective Courses"
                 }
             ]
         }

@@ -47,6 +47,7 @@
                         "py/object": "__main__.Filter",
                         "attribute": "asian_language_japanese",
                         "institution": null,
+                        "level": null,
                         "subject": null
                     }
                 }
@@ -83,6 +84,7 @@
                         "py/object": "__main__.Filter",
                         "attribute": "asian_seminar",
                         "institution": null,
+                        "level": null,
                         "subject": null
                     }
                 }
@@ -118,6 +120,7 @@
                                 "py/object": "__main__.Filter",
                                 "attribute": null,
                                 "institution": null,
+                                "level": "100",
                                 "subject": null
                             }
                         },
@@ -128,6 +131,7 @@
                                 "py/object": "__main__.Filter",
                                 "attribute": "asian_region_china",
                                 "institution": null,
+                                "level": null,
                                 "subject": null
                             }
                         },
@@ -138,6 +142,7 @@
                                 "py/object": "__main__.Filter",
                                 "attribute": "asian_region_japan",
                                 "institution": null,
+                                "level": null,
                                 "subject": null
                             }
                         },
@@ -148,6 +153,7 @@
                                 "py/object": "__main__.Filter",
                                 "attribute": null,
                                 "institution": "! St. Olaf College",
+                                "level": "200 | 300",
                                 "subject": null
                             }
                         }
@@ -160,6 +166,7 @@
                         "py/object": "__main__.Filter",
                         "attribute": "asian_elective",
                         "institution": null,
+                        "level": null,
                         "subject": null
                     }
                 }

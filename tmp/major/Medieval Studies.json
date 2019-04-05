@@ -98,7 +98,26 @@
                 "py/object": "__main__.Rule",
                 "rule": {
                     "py/object": "__main__.GivenRule",
-                    "action": "count >= 1",
+                    "action": {
+                        "py/object": "__main__.GivenAction",
+                        "lhs": "count",
+                        "op": {
+                            "py/reduce": [
+                                {
+                                    "py/type": "__main__.Operator"
+                                },
+                                {
+                                    "py/tuple": [
+                                        ">="
+                                    ]
+                                },
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        "rhs": "1"
+                    },
                     "courses": null,
                     "given": "courses",
                     "limit": null,
@@ -109,7 +128,9 @@
                     "where": {
                         "py/object": "__main__.Filter",
                         "attribute": "medieval_history",
-                        "institution": null
+                        "institution": null,
+                        "level": null,
+                        "subject": null
                     }
                 }
             },
@@ -126,7 +147,14 @@
                 "py/object": "__main__.Rule",
                 "rule": {
                     "py/object": "__main__.GivenRule",
-                    "action": "count >= 1",
+                    "action": {
+                        "py/object": "__main__.GivenAction",
+                        "lhs": "count",
+                        "op": {
+                            "py/id": 28
+                        },
+                        "rhs": "1"
+                    },
                     "courses": null,
                     "given": "courses",
                     "limit": null,
@@ -137,7 +165,9 @@
                     "where": {
                         "py/object": "__main__.Filter",
                         "attribute": "medieval_literature",
-                        "institution": null
+                        "institution": null,
+                        "level": null,
+                        "subject": null
                     }
                 }
             },
@@ -154,7 +184,14 @@
                 "py/object": "__main__.Rule",
                 "rule": {
                     "py/object": "__main__.GivenRule",
-                    "action": "count >= 4",
+                    "action": {
+                        "py/object": "__main__.GivenAction",
+                        "lhs": "count",
+                        "op": {
+                            "py/id": 28
+                        },
+                        "rhs": "4"
+                    },
                     "courses": null,
                     "given": "courses",
                     "limit": null,
@@ -165,7 +202,9 @@
                     "where": {
                         "py/object": "__main__.Filter",
                         "attribute": "medieval_elective",
-                        "institution": null
+                        "institution": null,
+                        "level": null,
+                        "subject": null
                     }
                 }
             },
