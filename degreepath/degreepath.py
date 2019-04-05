@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Union, List, Optional, TextIO, Any, Sequence
+from typing import Dict, Union, List, Optional, TextIO, Any, Sequence, Iterator
 import re
 import json
 import jsonpickle
@@ -439,29 +439,31 @@ class GivenRule:
         else:
             raise KeyError(f'unknown "given" type "{self.given}"')
 
-    def solutions_when_given_courses(self, *, ctx: RequirementContext, path: List[str]):
+    def solutions_when_given_courses(
+        self, *, ctx: RequirementContext, path: List[str]
+    ) -> Iterator[GivenSolution]:
         filtered = (
             self.where.filter(ctx.transcript)
             if self.where is not None
             else ctx.transcript
         )
 
-        print(filtered)
+        logging.warning(filtered)
 
         if self.action is None:
             yield GivenSolution(output=filtered, action=None)
             return
 
-        combos = itertools.combinations(filtered, int(self.action.rhs))
-        for i, combo in enumerate(combos):
-            logging.debug(
-                f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
-            )
-            yield GivenSolution(output=list(combo), action=self.action)
+        for bound in range(int(self.action.rhs), len(filtered)):
+            for i, combo in enumerate(itertools.combinations(filtered, bound)):
+                logging.debug(
+                    f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
+                )
+                yield GivenSolution(output=list(combo), action=self.action)
 
     def solutions_when_given_these_courses(
         self, *, ctx: RequirementContext, path: List[str]
-    ):
+    ) -> Iterator[GivenSolution]:
         if not self.courses:
             raise ValueError(
                 "when given:these-courses, the `courses:` key must not be empty"
@@ -474,16 +476,16 @@ class GivenRule:
         if self.action is None:
             return GivenSolution(output=filtered, action=None)
 
-        combos = itertools.combinations(filtered, int(self.action.rhs))
-        for i, combo in enumerate(combos):
-            logging.debug(
-                f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
-            )
-            yield GivenSolution(output=list(combo), action=self.action)
+        for bound in range(int(self.action.rhs), len(filtered)):
+            for i, combo in enumerate(itertools.combinations(filtered, bound)):
+                logging.debug(
+                    f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
+                )
+                yield GivenSolution(output=list(combo), action=self.action)
 
     def solutions_when_given_saves(
         self, *, ctx: RequirementContext, path: List[str], saves: List[str]
-    ):
+    ) -> Iterator[GivenSolution]:
         if not saves:
             raise ValueError(
                 "when given:these-saves/save, the `saves:/save:` key must not be empty"
@@ -500,12 +502,13 @@ class GivenRule:
             if self.action is None:
                 yield solution
             else:
-                combos = itertools.combinations(solution.output, int(self.action.rhs))
-                for i, combo in enumerate(combos):
-                    logging.debug(
-                        f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
-                    )
-                    yield GivenSolution(output=list(combo), action=self.action)
+                for bound in range(int(self.action.rhs), len(solution.output)):
+                    combos = itertools.combinations(solution.output, bound)
+                    for i, combo in enumerate(combos):
+                        logging.debug(
+                            f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
+                        )
+                        yield GivenSolution(output=list(combo), action=self.action)
 
 
 @dataclass(frozen=True)
@@ -522,7 +525,9 @@ class SaveRule:
 
         self.innards.validate(ctx=ctx)
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
+    def solutions(
+        self, *, ctx: RequirementContext, path: List[str]
+    ) -> Iterator[GivenSolution]:
         logging.debug("inside a saverule")
         yield from self.innards.solutions(
             ctx=ctx, path=[*path, f'.save["{self.name}"]']
@@ -863,9 +868,9 @@ if __name__ == "__main__":
     import coloredlogs
 
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logformat = "%(levelname)s %(message)s"
-    coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+    coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
     # @click.command()
     def main():
@@ -877,9 +882,9 @@ if __name__ == "__main__":
 
         # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
         for file in [
-        #     "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
-        #     "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
-            "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
+            # "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
+            "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
+            # "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
         ]:
             print(f"processing {file}")
             with open(file, "r", encoding="utf-8") as infile:
