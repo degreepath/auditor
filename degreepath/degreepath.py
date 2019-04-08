@@ -927,7 +927,7 @@ if __name__ == "__main__":
 
             outname = f'./tmp/{area.kind}/{area.name.replace("/", "_")}.json'
             with open(outname, "w", encoding="utf-8") as outfile:
-                jsonpickle.set_encoder_options("json", sort_keys=False, indent=4)
+                jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
                 outfile.write(jsonpickle.encode(area, unpicklable=True))
 
             start = time.perf_counter()
