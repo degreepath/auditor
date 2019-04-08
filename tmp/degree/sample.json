@@ -1,0 +1,96 @@
+{
+    "py/object": "__main__.AreaOfStudy",
+    "catalog": "0000-01",
+    "degree": null,
+    "kind": "degree",
+    "name": "sample",
+    "requirements": {
+        "A": {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "A",
+            "requirements": {},
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 1,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ABCD 101"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ABCD 102"
+                            }
+                        }
+                    ]
+                }
+            },
+            "saves": {}
+        },
+        "B": {
+            "py/object": "__main__.Requirement",
+            "audited_by": null,
+            "contract": false,
+            "message": null,
+            "name": "B",
+            "requirements": {},
+            "result": {
+                "py/object": "__main__.Rule",
+                "rule": {
+                    "py/object": "__main__.CountRule",
+                    "count": 2,
+                    "of": [
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ABCD 101"
+                            }
+                        },
+                        {
+                            "py/object": "__main__.Rule",
+                            "rule": {
+                                "py/object": "__main__.CourseRule",
+                                "course": "ABCD 103"
+                            }
+                        }
+                    ]
+                }
+            },
+            "saves": {}
+        }
+    },
+    "result": {
+        "py/object": "__main__.Rule",
+        "rule": {
+            "py/object": "__main__.CountRule",
+            "count": 2,
+            "of": [
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "A"
+                    }
+                },
+                {
+                    "py/object": "__main__.Rule",
+                    "rule": {
+                        "py/object": "__main__.ReferenceRule",
+                        "requirement": "B"
+                    }
+                }
+            ]
+        }
+    }
+}
