@@ -224,7 +224,7 @@
                         "children": [
                             {
                                 "expected": "csci_elective",
-                                "key": "attribute",
+                                "key": "attributes",
                                 "operator": {
                                     "py/reduce": [
                                         {
