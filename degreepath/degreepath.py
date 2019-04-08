@@ -405,10 +405,22 @@ class FromInput:
             mode = "saves"
             saves = data["saves"]
             itemtype = None
+        elif "save" in data:
+            mode = "saves"
+            saves = [data["save"]]
+            itemtype = None
         elif "requirements" in data:
             mode = "requirements"
             requirements = data["requirements"]
             itemtype = None
+        elif "requirement" in data:
+            mode = "requirements"
+            requirements = [data["requirement"]]
+            itemtype = None
+        else:
+            raise KeyError(
+                f"expected student, saves, or requirements; got {list(data.keys())}"
+            )
 
         return FromInput(
             mode=mode, itemtype=itemtype, requirements=requirements, saves=saves
