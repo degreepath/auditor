@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Union, List, Optional, TextIO, Any, Sequence, Iterator
 import re
@@ -92,19 +92,30 @@ class CountRule:
     def can_load(data: Dict) -> bool:
         if "count" in data and "of" in data:
             return True
+        if "all" in data:
+            return True
+        if "any" in data:
+            return True
         return False
 
     @staticmethod
     def load(data: Dict) -> CountRule:
-        of = [Rule.load(r) for r in data["of"]]
-        if data["count"] == "all":
-            count = len(data["of"])
-        elif data["count"] == "any":
+        if "all" in data:
+            of = data["all"]
+            count = len(of)
+        elif "any" in data:
+            of = data["any"]
             count = 1
         else:
-            count = data["count"]
+            of = data["of"]
+            if data["count"] == "all":
+                count = len(of)
+            elif data["count"] == "any":
+                count = 1
+            else:
+                count = int(data["count"])
 
-        return CountRule(count=count, of=of)
+        return CountRule(count=count, of=[Rule.load(r) for r in of])
 
     def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
@@ -115,16 +126,19 @@ class CountRule:
             rule.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
+        path = [*path, f".of({self.count}/{len(self.of)})"]
+        logging.debug(f"{path}\n\tneed {self.count} of {len(self.of)} items")
         for combo in itertools.combinations(self.of, self.count):
             iterable = [
                 rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
                 for i, rule in enumerate(combo)
             ]
+
             for i, moar_combo in enumerate(itertools.product(*iterable)):
                 logging.debug(
                     f"{[*path, f'product branch #{i}']} CountRule: {moar_combo}"
                 )
-                yield CountSolution(items=list(moar_combo))
+                yield Solution.ok(CountRule(count=self.count, of=list(moar_combo)))
 
 
 @dataclass(frozen=True)
@@ -160,9 +174,24 @@ class CourseRule:
             method_a or method_b or method_c
         ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, path: List[str]):
-        logging.debug(f'{[*path, f"$c->{self.course}"]}')
-        yield CourseSolution(course=self.course)
+    def solutions(self, *, ctx: RequirementContext, claims: Claims, path: List[str]):
+        logging.debug(f'{path}\n\treference to course "{self.course}"')
+
+        path = [*path, f"$c->{self.course}"]
+        if not ctx.has_course(self.course):
+            logging.debug(f'{path}\n\tcourse "{self.course}" does not exist in the transcript')
+            return Solution.fail(self)
+
+        claim = ctx.make_claim(course=self.course, key=path, value={'course': self.course})
+
+        if claim.failed():
+            logging.debug(f'{path}\n\tcourse "{self.course}" exists, but has already been claimed by {claim.conflict.path}')
+            return Solution.fail(self)
+
+        logging.debug(f'{path}\n\tcourse "{self.course}" exists, and has not been claimed')
+        claim.commit()
+
+        yield Solution.ok(self)
 
 
 @dataclass(frozen=True)
@@ -198,7 +227,7 @@ class EitherRule:
         self.b.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        logging.debug(f"{path} EitherRule#solutions for either {self.a} || {self.b}")
+        logging.debug(f"{path}\n\tEitherRule#solutions for either {self.a} || {self.b}")
 
         for sol in self.a.solutions(ctx=ctx, path=[*path, "$either->a"]):
             yield EitherSolution(choice=sol, index="a")
@@ -579,7 +608,12 @@ class ReferenceRule:
         ctx.child_requirements[self.requirement].validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        logging.debug(f'{path} ReferenceRule for "{self.requirement}"')
+        logging.debug(f'{path}\n\treference to requirement "{self.requirement}"')
+
+        requirement = ctx.child_requirements[self.requirement]
+
+        logging.debug(f'{path}\n\tfound requirement "{self.requirement}"')
+
         yield from ctx.child_requirements[self.requirement].solutions(
             ctx=ctx, path=[*path, f"$ref->{self.requirement}"]
         )
@@ -640,7 +674,6 @@ class Rule:
             raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        # logging.debug(f"{path} Rule#solutions")
         if isinstance(self.rule, CourseRule):
             yield from self.rule.solutions(path=path)
         elif isinstance(self.rule, ActionRule):
@@ -694,26 +727,28 @@ class CourseInstance:
 @dataclass(frozen=True)
 class Requirement:
     name: str
+    saves: Dict[str, SaveRule]
+    requirements: Dict[str, Requirement]
     message: Optional[str] = None
     result: Optional[Rule] = None
-    save: Optional[List[SaveRule]] = None
-    requirements: Optional[List[Requirement]] = None
-    audited_by: Union[None, str] = None
+    audited_by: Optional[str] = None
     contract: bool = False
 
     @staticmethod
-    def load(data: Dict[str, Any]) -> Requirement:
-        children = data.get("requirements", None)
-        if children is not None:
-            children = [Requirement.load(r) for r in children]
+    def load(name: str, data: Dict[str, Any]) -> Requirement:
+        children = {
+            name: Requirement.load(name, r)
+            for name, r in data.get("requirements", {}).items()
+        }
 
         result = data.get("result", None)
         if result is not None:
             result = Rule.load(result)
 
-        save = data.get("save", None)
-        if save is not None:
-            save = [SaveRule.load(s) for s in save]
+        saves = {
+            name: SaveRule.load(name, s)
+            for name, s in data.get("saves", {}).items()
+        }
 
         audited_by = None
         if data.get("department_audited", False):
@@ -722,11 +757,11 @@ class Requirement:
             audited_by = "registrar"
 
         return Requirement(
-            name=data["name"],
+            name=name,
             message=data.get("message", None),
             requirements=children,
             result=result,
-            save=save,
+            saves=saves,
             contract=data.get("contract", False),
             audited_by=audited_by,
         )
@@ -739,22 +774,21 @@ class Requirement:
             assert isinstance(self.message, str)
             assert self.message.strip() != ""
 
-        children = {r.name: r for r in self.requirements or []}
+        children = self.requirements
 
-        if self.save is not None:
-            validated_saves: List[SaveRule] = []
-            for save in self.save:
-                new_ctx = RequirementContext(
-                    transcript=ctx.transcript,
-                    saves={s.name: s for s in validated_saves},
-                    child_requirements=children,
-                )
-                save.validate(ctx=new_ctx)
-                validated_saves.append(save)
+        validated_saves: Dict[str, SaveRule] = {}
+        for save in self.saves:
+            new_ctx = RequirementContext(
+                transcript=ctx.transcript,
+                saves={name: s for name, s in validated_saves.items()},
+                child_requirements=children,
+            )
+            save.validate(ctx=new_ctx)
+            validated_saves[save.name] = save
 
         new_ctx = RequirementContext(
             transcript=ctx.transcript,
-            saves={s.name: s for s in self.save or []},
+            saves={name: s for name, s in self.saves or {}},
             child_requirements=children,
         )
 
@@ -762,20 +796,33 @@ class Requirement:
             self.result.validate(ctx=new_ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        logging.debug(f'{path} "{self.name}"')
+        path = [*path, f"$req->{self.name}"]
+
+        header = f'{path}\n\trequirement "{self.name}"'
+
+        logging.debug(f'{header} has not been evaluated')
+        # TODO: implement caching
+
+        if not self.message:
+            logging.debug(f'{header} has no message')
+
+        if not self.audited_by:
+            logging.debug(f'{header} is not audited')
 
         if not self.result:
+            logging.debug(f'{header} does not have a result')
             return
+        else:
+            logging.debug(f'{header} has a result')
 
         new_ctx = RequirementContext(
             transcript=ctx.transcript,
-            saves={s.name: s for s in self.save or []},
+            saves={s.name: s for s in self.saves},
             child_requirements={r.name: r for r in self.requirements or []},
         )
 
-        yield from self.result.solutions(
-            ctx=new_ctx, path=[*path, f"$req->{self.name}"]
-        )
+        path = [*path, ".result"]
+        yield from self.result.solutions(ctx=new_ctx, path=path)
 
 
 @dataclass(frozen=True)
@@ -788,11 +835,14 @@ class AreaOfStudy:
     catalog: str
 
     result: Rule
-    requirements: List[Requirement]
+    requirements: Dict[str, Requirement]
 
     @staticmethod
     def load(data: Dict) -> AreaOfStudy:
-        requirements = [Requirement.load(r) for r in data["requirements"]]
+        requirements = {
+            name: Requirement.load(name, r)
+            for name, r in data["requirements"].items()
+        }
         result = Rule.load(data["result"])
 
         return AreaOfStudy(
@@ -822,21 +872,23 @@ class AreaOfStudy:
         ctx = RequirementContext(
             transcript=[],
             saves={},
-            child_requirements={r.name: r for r in self.requirements},
+            child_requirements=self.requirements,
         )
 
         self.result.validate(ctx=ctx)
 
     def solutions(self, *, transcript: List[CourseInstance]):
-        logging.debug("AreaOfStudy#solutions")
+        path = ["$root"]
+        logging.debug(f"{path}\n\tevaluating area.result")
 
         ctx = RequirementContext(
             transcript=transcript,
             saves={},
-            child_requirements={r.name: r for r in self.requirements},
+            child_requirements={name: r for name, r in self.requirements.items()},
         )
 
-        return self.result.solutions(ctx=ctx, path=["$root"])
+        path = [*path, ".result"]
+        return self.result.solutions(ctx=ctx, path=path)
 
 
 def load(stream: TextIO) -> AreaOfStudy:
@@ -868,9 +920,9 @@ if __name__ == "__main__":
     import coloredlogs
 
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logformat = "%(levelname)s %(message)s"
-    coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
+    coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
 
     # @click.command()
     def main():
@@ -883,8 +935,9 @@ if __name__ == "__main__":
         # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
         for file in [
             # "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
-            "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
+            # "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
             # "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
+            "./sample-simple-area.yaml"
         ]:
             print(f"processing {file}")
             with open(file, "r", encoding="utf-8") as infile:
@@ -892,16 +945,15 @@ if __name__ == "__main__":
 
             area.validate()
 
-            outname = f'tmp/{area.kind}/{area.name.replace("/", "_")}.json'
+            outname = f'./tmp/{area.kind}/{area.name.replace("/", "_")}.json'
             with open(outname, "w", encoding="utf-8") as outfile:
                 jsonpickle.set_encoder_options("json", sort_keys=False, indent=4)
                 outfile.write(jsonpickle.encode(area, unpicklable=True))
 
-            # for solution in take(area.solutions(), 5):
-            #     logging.info(jsonpickle.dumps(solution))
-            #     logging.info(solution)
-
             start = time.perf_counter()
+
+            for sol in area.solutions(transcript=transcript):
+                print(sol)
 
             the_count = count(area.solutions(transcript=transcript), print_every=1_000)
 
