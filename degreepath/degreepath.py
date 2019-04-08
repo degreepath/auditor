@@ -14,20 +14,21 @@ import sys
 
 @dataclass(frozen=True)
 class ActionRule:
-    do: str
+    assertion: str
 
     @staticmethod
     def can_load(data: Dict) -> bool:
-        if "do" in data:
+        if "assert" in data:
             return True
         return False
 
     @staticmethod
     def load(data: Dict) -> ActionRule:
-        return ActionRule(do=data["do"])
+        return ActionRule(assertion=data["assert"])
 
     def validate(self):
-        pass
+        ...
+        # TODO: check for input items here
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         logging.debug(f"{path} ActionRule#solutions")
@@ -40,50 +41,9 @@ class ActionSolution:
 
 
 @dataclass(frozen=True)
-class BothRule:
-    a: Rule
-    b: Rule
-
-    def __repr__(self):
-        return f"(both-rule '{self.a} '{self.b})"
-
-    @staticmethod
-    def can_load(data: Dict) -> bool:
-        if "both" in data:
-            return True
-        return False
-
-    @staticmethod
-    def load(data: Dict) -> BothRule:
-        return BothRule(a=Rule.load(data["both"][0]), b=Rule.load(data["both"][1]))
-
-    def validate(self, *, ctx: RequirementContext):
-        self.a.validate(ctx=ctx)
-        self.b.validate(ctx=ctx)
-
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        logging.debug(f"{path} BothRule#solutions for {self.a} && {self.b}")
-        for a, b in itertools.product(
-            self.a.solutions(ctx=ctx, path=[*path, "$both"]),
-            self.b.solutions(ctx=ctx, path=[*path, "$both"]),
-        ):
-            yield BothSolution(a=a, b=b)
-
-
-@dataclass(frozen=True)
-class BothSolution:
-    a: Rule
-    b: Rule
-
-    def __repr__(self):
-        return f"[both '{self.a} '{self.b}]"
-
-
-@dataclass(frozen=True)
 class CountRule:
     count: int
     of: List[Rule]
-    greedy: bool = False
 
     def __repr__(self):
         return f"(count-rule '{self.count} {self.of})"
@@ -96,6 +56,10 @@ class CountRule:
             return True
         if "any" in data:
             return True
+        if "both" in data:
+            return True
+        if "either" in data:
+            return True
         return False
 
     @staticmethod
@@ -106,6 +70,16 @@ class CountRule:
         elif "any" in data:
             of = data["any"]
             count = 1
+        elif "both" in data:
+            of = data["both"]
+            count = 2
+            if len(of) != 2:
+                raise Exception(f"expected two items in both; found {len(of)} items")
+        elif "either" in data:
+            of = data["either"]
+            count = 1
+            if len(of) != 2:
+                raise Exception(f"expected two items in both; found {len(of)} items")
         else:
             of = data["of"]
             if data["count"] == "all":
@@ -128,17 +102,17 @@ class CountRule:
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         path = [*path, f".of({self.count}/{len(self.of)})"]
         logging.debug(f"{path}\n\tneed {self.count} of {len(self.of)} items")
+
         for combo in itertools.combinations(self.of, self.count):
-            iterable = [
+            with_solutions = [
                 rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
                 for i, rule in enumerate(combo)
             ]
 
-            for i, moar_combo in enumerate(itertools.product(*iterable)):
-                logging.debug(
-                    f"{[*path, f'product branch #{i}']} CountRule: {moar_combo}"
-                )
-                yield Solution.ok(CountRule(count=self.count, of=list(moar_combo)))
+            for i, ruleset in enumerate(itertools.product(*with_solutions)):
+                msg = f"{[*path, f'product branch #{i}']} CountRule: {ruleset}"
+                logging.debug(msg)
+                yield CountSolution(items=list(ruleset))
 
 
 @dataclass(frozen=True)
@@ -147,6 +121,9 @@ class CountSolution:
 
     def __repr__(self):
         return f"[count '{len(self.items)} {self.items}]"
+
+    def audit(self):
+        ...
 
 
 @dataclass(frozen=True)
@@ -174,24 +151,10 @@ class CourseRule:
             method_a or method_b or method_c
         ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, ctx: RequirementContext, claims: Claims, path: List[str]):
+    def solutions(self, *, path: List[str]):
         logging.debug(f'{path}\n\treference to course "{self.course}"')
 
-        path = [*path, f"$c->{self.course}"]
-        if not ctx.has_course(self.course):
-            logging.debug(f'{path}\n\tcourse "{self.course}" does not exist in the transcript')
-            return Solution.fail(self)
-
-        claim = ctx.make_claim(course=self.course, key=path, value={'course': self.course})
-
-        if claim.failed():
-            logging.debug(f'{path}\n\tcourse "{self.course}" exists, but has already been claimed by {claim.conflict.path}')
-            return Solution.fail(self)
-
-        logging.debug(f'{path}\n\tcourse "{self.course}" exists, and has not been claimed')
-        claim.commit()
-
-        yield Solution.ok(self)
+        yield CourseSolution(course=self.course)
 
 
 @dataclass(frozen=True)
@@ -201,47 +164,28 @@ class CourseSolution:
     def __repr__(self):
         return f"[c '{self.course}]"
 
+    def audit(self):
+        path = [*path, f"$c->{self.course}"]
+        if not ctx.has_course(self.course):
+            logging.debug(
+                f'{path}\n\tcourse "{self.course}" does not exist in the transcript'
+            )
+            return Solution.fail(self)
 
-@dataclass(frozen=True)
-class EitherRule:
-    a: Rule
-    b: Rule
-
-    def __repr__(self):
-        return f"(either-rule '{self.a} '{self.b})"
-
-    @staticmethod
-    def can_load(data: Dict) -> bool:
-        if "either" in data:
-            return True
-        return False
-
-    @staticmethod
-    def load(data: Dict) -> EitherRule:
-        return EitherRule(
-            a=Rule.load(data["either"][0]), b=Rule.load(data["either"][1])
+        claim = ctx.make_claim(
+            course=self.course, key=path, value={"course": self.course}
         )
 
-    def validate(self, *, ctx: RequirementContext):
-        self.a.validate(ctx=ctx)
-        self.b.validate(ctx=ctx)
+        if claim.failed():
+            logging.debug(
+                f'{path}\n\tcourse "{self.course}" exists, but has already been claimed by {claim.conflict.path}'
+            )
+            return Solution.fail(self)
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        logging.debug(f"{path}\n\tEitherRule#solutions for either {self.a} || {self.b}")
-
-        for sol in self.a.solutions(ctx=ctx, path=[*path, "$either->a"]):
-            yield EitherSolution(choice=sol, index="a")
-        for sol in self.a.solutions(ctx=ctx, path=[*path, "$either->b"]):
-            yield EitherSolution(choice=sol, index="b")
-
-
-@dataclass(frozen=True)
-class EitherSolution:
-    choice: Solution
-    index: str
-
-    def __repr__(self):
-        return f"[either '{self.index} {self.choice}]"
+        logging.debug(
+            f'{path}\n\tcourse "{self.course}" exists, and has not been claimed'
+        )
+        claim.commit()
 
 
 @dataclass(frozen=True)
@@ -322,8 +266,8 @@ class Operator(Enum):
 
 
 @dataclass(frozen=True)
-class GivenAction:
-    lhs: Union[str, int, GivenRule]
+class FromAssertion:
+    lhs: Union[str, int, FromRule]
     op: Operator
     rhs: Union[str, int]
 
@@ -332,11 +276,11 @@ class GivenAction:
 
 
 @dataclass(frozen=True)
-class GivenRule:
+class FromRule:
     given: str
     output: str
 
-    action: Optional[GivenAction]
+    action: Optional[FromAssertion]
 
     limit: Optional[Limit] = None
     where: Optional[Filter] = None
@@ -344,7 +288,6 @@ class GivenRule:
     requirements: Optional[List[str]] = None
     saves: Optional[List[str]] = None
     courses: Optional[List[str]] = None
-    save: Optional[str] = None
 
     def __repr__(self):
         return f"(given '{self.given} -> '{self.output} 'limits {self.limit or []} 'filter {self.where} 'action {self.action})"
@@ -356,7 +299,7 @@ class GivenRule:
         return False
 
     @staticmethod
-    def load(data: Dict) -> GivenRule:
+    def load(data: Dict) -> FromRule:
         where = data.get("where", None)
         if where is not None:
             where = Filter.load(where)
@@ -368,18 +311,17 @@ class GivenRule:
         action = None
         if "do" in data:
             actionstr = shlex.split(data["do"])
-            action = GivenAction(
+            action = FromAssertion(
                 lhs=actionstr[0], op=Operator(actionstr[1]), rhs=actionstr[2]
             )
 
-        return GivenRule(
+        return FromRule(
             given=data["given"],
             output=data["what"],
             action=action,
             limit=limit,
             where=where,
             requirements=data.get("requirements", None),
-            save=data.get("save", None),
             saves=data.get("saves", None),
             courses=data.get("courses", None),
         )
@@ -411,13 +353,6 @@ class GivenRule:
                 assert (
                     name in ctx.saves
                 ), f"expected to find '{name}' once, but could not find it {dbg}"
-
-        elif self.given == "save":
-            if not saves:
-                raise ValueError("expected args.saves to be a list")
-            assert (
-                self.save in ctx.saves
-            ), f"expected to find '{self.save}' once, but could not find it {dbg}"
 
         elif self.given == "these-courses":
             if not self.courses:
@@ -460,11 +395,6 @@ class GivenRule:
             yield from self.solutions_when_given_saves(
                 ctx=ctx, path=path, saves=self.saves
             )
-        elif self.given == "save":
-            assert self.save is not None
-            yield from self.solutions_when_given_saves(
-                ctx=ctx, path=path, saves=[self.save]
-            )
         else:
             raise KeyError(f'unknown "given" type "{self.given}"')
 
@@ -486,7 +416,7 @@ class GivenRule:
         for bound in range(int(self.action.rhs), len(filtered)):
             for i, combo in enumerate(itertools.combinations(filtered, bound)):
                 logging.debug(
-                    f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
+                    f"{[*path, f'combo branch #{i}']} FromRule {[str(c) for c in combo]}"
                 )
                 yield GivenSolution(output=list(combo), action=self.action)
 
@@ -508,7 +438,7 @@ class GivenRule:
         for bound in range(int(self.action.rhs), len(filtered)):
             for i, combo in enumerate(itertools.combinations(filtered, bound)):
                 logging.debug(
-                    f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
+                    f"{[*path, f'combo branch #{i}']} FromRule {[str(c) for c in combo]}"
                 )
                 yield GivenSolution(output=list(combo), action=self.action)
 
@@ -535,19 +465,19 @@ class GivenRule:
                     combos = itertools.combinations(solution.output, bound)
                     for i, combo in enumerate(combos):
                         logging.debug(
-                            f"{[*path, f'combo branch #{i}']} GivenRule {[str(c) for c in combo]}"
+                            f"{[*path, f'combo branch #{i}']} FromRule {[str(c) for c in combo]}"
                         )
                         yield GivenSolution(output=list(combo), action=self.action)
 
 
 @dataclass(frozen=True)
 class SaveRule:
-    innards: GivenRule
+    innards: FromRule
     name: str
 
     @staticmethod
-    def load(data: Dict) -> SaveRule:
-        return SaveRule(innards=GivenRule.load(data), name=data["name"])
+    def load(name: str, data: Dict) -> SaveRule:
+        return SaveRule(innards=FromRule.load(data), name=name)
 
     def validate(self, *, ctx: RequirementContext):
         assert self.name.strip() != ""
@@ -566,7 +496,7 @@ class SaveRule:
 @dataclass(frozen=True)
 class GivenSolution:
     output: Sequence[Union[CourseInstance, Term, Grade, Semester]]
-    action: Optional[GivenAction]
+    action: Optional[FromAssertion]
 
 
 @dataclass(frozen=True)
@@ -614,14 +544,12 @@ class ReferenceRule:
 
         logging.debug(f'{path}\n\tfound requirement "{self.requirement}"')
 
-        yield from ctx.child_requirements[self.requirement].solutions(
+        yield from requirement.solutions(
             ctx=ctx, path=[*path, f"$ref->{self.requirement}"]
         )
 
 
-RuleTypeUnion = Union[
-    CourseRule, CountRule, EitherRule, BothRule, GivenRule, ActionRule, ReferenceRule
-]
+RuleTypeUnion = Union[CourseRule, CountRule, FromRule, ActionRule, ReferenceRule]
 
 
 @dataclass(frozen=True)
@@ -637,14 +565,10 @@ class Rule:
             return Rule(rule=CourseRule(course=data))
         elif CourseRule.can_load(data):
             return Rule(rule=CourseRule.load(data))
-        elif GivenRule.can_load(data):
-            return Rule(rule=GivenRule.load(data))
+        elif FromRule.can_load(data):
+            return Rule(rule=FromRule.load(data))
         elif CountRule.can_load(data):
             return Rule(rule=CountRule.load(data))
-        elif BothRule.can_load(data):
-            return Rule(rule=BothRule.load(data))
-        elif EitherRule.can_load(data):
-            return Rule(rule=EitherRule.load(data))
         elif ReferenceRule.can_load(data):
             return Rule(rule=ReferenceRule.load(data))
         elif ActionRule.can_load(data):
@@ -660,13 +584,9 @@ class Rule:
             self.rule.validate()
         elif isinstance(self.rule, ActionRule):
             self.rule.validate()
-        elif isinstance(self.rule, GivenRule):
+        elif isinstance(self.rule, FromRule):
             self.rule.validate(ctx=ctx)
         elif isinstance(self.rule, CountRule):
-            self.rule.validate(ctx=ctx)
-        elif isinstance(self.rule, BothRule):
-            self.rule.validate(ctx=ctx)
-        elif isinstance(self.rule, EitherRule):
             self.rule.validate(ctx=ctx)
         elif isinstance(self.rule, ReferenceRule):
             self.rule.validate(ctx=ctx)
@@ -678,13 +598,9 @@ class Rule:
             yield from self.rule.solutions(path=path)
         elif isinstance(self.rule, ActionRule):
             yield from self.rule.solutions(ctx=ctx, path=path)
-        elif isinstance(self.rule, GivenRule):
+        elif isinstance(self.rule, FromRule):
             yield from self.rule.solutions(ctx=ctx, path=path)
         elif isinstance(self.rule, CountRule):
-            yield from self.rule.solutions(ctx=ctx, path=path)
-        elif isinstance(self.rule, BothRule):
-            yield from self.rule.solutions(ctx=ctx, path=path)
-        elif isinstance(self.rule, EitherRule):
             yield from self.rule.solutions(ctx=ctx, path=path)
         elif isinstance(self.rule, ReferenceRule):
             yield from self.rule.solutions(ctx=ctx, path=path)
@@ -746,8 +662,7 @@ class Requirement:
             result = Rule.load(result)
 
         saves = {
-            name: SaveRule.load(name, s)
-            for name, s in data.get("saves", {}).items()
+            name: SaveRule.load(name, s) for name, s in data.get("saves", {}).items()
         }
 
         audited_by = None
@@ -777,7 +692,7 @@ class Requirement:
         children = self.requirements
 
         validated_saves: Dict[str, SaveRule] = {}
-        for save in self.saves:
+        for save in self.saves.values():
             new_ctx = RequirementContext(
                 transcript=ctx.transcript,
                 saves={name: s for name, s in validated_saves.items()},
@@ -788,7 +703,7 @@ class Requirement:
 
         new_ctx = RequirementContext(
             transcript=ctx.transcript,
-            saves={name: s for name, s in self.saves or {}},
+            saves={name: s for name, s in self.saves.items() or {}},
             child_requirements=children,
         )
 
@@ -800,25 +715,25 @@ class Requirement:
 
         header = f'{path}\n\trequirement "{self.name}"'
 
-        logging.debug(f'{header} has not been evaluated')
+        logging.debug(f"{header} has not been evaluated")
         # TODO: implement caching
 
         if not self.message:
-            logging.debug(f'{header} has no message')
+            logging.debug(f"{header} has no message")
 
         if not self.audited_by:
-            logging.debug(f'{header} is not audited')
+            logging.debug(f"{header} is not audited")
 
         if not self.result:
-            logging.debug(f'{header} does not have a result')
+            logging.debug(f"{header} does not have a result")
             return
         else:
-            logging.debug(f'{header} has a result')
+            logging.debug(f"{header} has a result")
 
         new_ctx = RequirementContext(
             transcript=ctx.transcript,
-            saves={s.name: s for s in self.saves},
-            child_requirements={r.name: r for r in self.requirements or []},
+            saves={s.name: s for s in self.saves.values()},
+            child_requirements={r.name: r for r in self.requirements.values()},
         )
 
         path = [*path, ".result"]
@@ -840,8 +755,7 @@ class AreaOfStudy:
     @staticmethod
     def load(data: Dict) -> AreaOfStudy:
         requirements = {
-            name: Requirement.load(name, r)
-            for name, r in data["requirements"].items()
+            name: Requirement.load(name, r) for name, r in data["requirements"].items()
         }
         result = Rule.load(data["result"])
 
@@ -870,9 +784,7 @@ class AreaOfStudy:
             assert self.degree in ["Bachelor of Arts", "Bachelor of Music"]
 
         ctx = RequirementContext(
-            transcript=[],
-            saves={},
-            child_requirements=self.requirements,
+            transcript=[], saves={}, child_requirements=self.requirements
         )
 
         self.result.validate(ctx=ctx)
