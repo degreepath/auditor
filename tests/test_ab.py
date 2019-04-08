@@ -55,146 +55,26 @@ def test_sample():
     output = list(area.solutions(transcript=transcript))
 
     expected = [
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 112")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 114")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 115")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 112"), c("CSCI 113")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 112"), c("CSCI 114")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 112"), c("CSCI 115")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 113"), c("CSCI 114")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 113"), c("CSCI 115")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 111")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 114"), c("CSCI 115")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 112")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 114")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 115")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 112"), c("CSCI 113")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 112"), c("CSCI 114")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 112"), c("CSCI 115")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 113"), c("CSCI 114")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 113"), c("CSCI 115")]),
-            ]
-        ),
-        CountSolution(
-            items=[
-                CountSolution(items=[c("CSCI 112")]),
-                CountSolution(items=[c("CSCI 111"), c("CSCI 113")]),
-                CountSolution(items=[c("CSCI 114"), c("CSCI 115")]),
-            ]
-        ),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 112")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 114")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 115")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 112"), c("CSCI 113")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 112"), c("CSCI 114")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 112"), c("CSCI 115")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 113"), c("CSCI 114")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 113"), c("CSCI 115")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 111")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 114"), c("CSCI 115")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 112")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 114")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 115")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 112"), c("CSCI 113")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 112"), c("CSCI 114")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 112"), c("CSCI 115")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 113"), c("CSCI 114")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 113"), c("CSCI 115")]))]),
+        CountSolution(items=[RequirementSolution(solution=CountSolution(items=[c("CSCI 112")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 111"), c("CSCI 113")])), RequirementSolution(solution=CountSolution(items=[c("CSCI 114"), c("CSCI 115")]))]),
     ]
 
-    assert output == expected
+    assert expected == output

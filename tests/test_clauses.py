@@ -3,9 +3,8 @@ import pytest
 import io
 
 
-def test_clauses():
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+def test_clauses(caplog):
+    caplog.set_level(logging.DEBUG)
 
     x = SingleClause.load({"attributes": {"$eq": "csci_elective"}})
     expected_single = SingleClause(
