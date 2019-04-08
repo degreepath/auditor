@@ -45,9 +45,6 @@ class CountRule:
     count: int
     of: List[Rule]
 
-    def __repr__(self):
-        return f"(count-rule '{self.count} {self.of})"
-
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "count" in data and "of" in data:
@@ -110,7 +107,7 @@ class CountRule:
             ]
 
             for i, ruleset in enumerate(itertools.product(*with_solutions)):
-                msg = f"{[*path, f'product branch #{i}']} CountRule: {ruleset}"
+                msg = f"{[*path, f'product branch #{i}']}\n\tCountRule: {ruleset}"
                 logging.debug(msg)
                 yield CountSolution(items=list(ruleset))
 
@@ -119,9 +116,6 @@ class CountRule:
 class CountSolution:
     items: List[Solution]
 
-    def __repr__(self):
-        return f"[count '{len(self.items)} {self.items}]"
-
     def audit(self):
         ...
 
@@ -129,9 +123,6 @@ class CountSolution:
 @dataclass(frozen=True)
 class CourseRule:
     course: str
-
-    def __repr__(self):
-        return f"(course-rule '{self.course})"
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -161,9 +152,6 @@ class CourseRule:
 class CourseSolution:
     course: str
 
-    def __repr__(self):
-        return f"[c '{self.course}]"
-
     def audit(self):
         path = [*path, f"$c->{self.course}"]
         if not ctx.has_course(self.course):
@@ -189,152 +177,229 @@ class CourseSolution:
 
 
 @dataclass(frozen=True)
-class Filter:
-    attribute: Optional[str]
-    institution: Optional[str]
-    subject: Optional[str]
-    level: Optional[str]
-
-    def __repr__(self):
-        def contents():
-            if self.attribute is not None:
-                yield ("attribute", self.attribute)
-            if self.institution is not None:
-                yield ("institution", self.institution)
-            if self.subject is not None:
-                yield ("subject", self.subject)
-            if self.level is not None:
-                yield ("level", self.level)
-
-        body = dict(contents())
-
-        return repr(body)
+class AndClause:
+    children: Sequence[Clause]
 
     @staticmethod
-    def load(data: Dict) -> Filter:
-        allowed = ["attribute", "institution", "subject", "level"]
-        if set(data.keys()).difference(allowed):
-            print(data)
-            raise KeyError(f"unknown keys {set(data.keys()).difference(allowed)}")
-        return Filter(
-            attribute=data.get("attribute", None),
-            institution=data.get("institution", None),
-            subject=data.get("subject", None),
-            level=data.get("level", None),
-        )
+    def load(data: List[Dict]) -> Clause:
+        clauses = []
+        for clause in data:
+            clauses.append(SingleClause.load(clause))
+        return AndClause(children=clauses)
 
-    def apply(self, c: CourseInstance):
-        if self.subject is not None:
-            if self.subject not in c.subject:
-                return False
+    def __iter__(self):
+        yield from self.children
 
-        if self.attribute is not None:
-            if self.attribute not in (c.attributes or []):
-                return False
 
-        if self.institution is not None:
-            # if self.institution != c.institution
-            return False
+@dataclass(frozen=True)
+class OrClause:
+    children: Sequence[Clause]
 
-        if self.level is not None:
-            if int(self.level) / 100 != int(c.course.split(" ")[1]) / 100:
-                return False
+    @staticmethod
+    def load(data: Dict) -> Clause:
+        clauses = []
+        for clause in data:
+            clauses.append(SingleClause.load(clause))
+        return OrClause(children=clauses)
 
-        return True
+    def __iter__(self):
+        yield from self.children
 
-    def filter(self, courses: List[CourseInstance]) -> List[CourseInstance]:
-        return [c for c in courses if self.apply(c)]
+
+@dataclass(frozen=True)
+class SingleClause:
+    key: str
+    expected: Any
+    operator: Operator
+
+    @staticmethod
+    def load(data: Dict) -> Clause:
+        if "$and" in data:
+            return AndClause.load(data["$and"])
+        elif "$or" in data:
+            return OrClause.load(data["$or"])
+
+        clauses = []
+        for key, value in data.items():
+            assert len(value.keys()) == 1
+            op = list(value.keys())[0]
+
+            operator = Operator(op)
+            expected_value = value[op]
+
+            clause = SingleClause(key=key, expected=expected_value, operator=operator)
+
+            clauses.append(clause)
+
+        return AndClause(children=clauses)
+
+    def compare(self, to_value: Any) -> bool:
+        if self.operator == Operator.EqualTo:
+            return self.expected == to_value
+        elif self.operator == Operator.GreaterThanOrEqualTo:
+            return self.expected >= to_value
+        elif self.operator == Operator.GreaterThan:
+            return self.expected > to_value
+        elif self.operator == Operator.LessThan:
+            return self.expected < to_value
+        elif self.operator == Operator.LessThanOrEqualTo:
+            return self.expected <= to_value
+        raise TypeError(f"unknown comparison function {self.operator}")
+
+
+Clause = Union[AndClause, OrClause, SingleClause]
 
 
 @dataclass(frozen=True)
 class Limit:
     at_most: int
-    where: Filter
+    where: Clause
 
     @staticmethod
     def load(data: Dict) -> Limit:
-        return Limit(at_most=data["at_most"], where=Filter.load(data["where"]))
+        return Limit(at_most=data["at_most"], where=SingleClause.load(data["where"]))
 
 
 class Operator(Enum):
-    LessThan = "<"
-    LessThanOrEqualTo = "<="
-    GreaterThen = ">"
-    GreaterThanOrEqualTo = ">="
-    EqualTo = "="
-    NotEqualTo = "!="
+    LessThan = "$lt"
+    LessThanOrEqualTo = "$lte"
+    GreaterThan = "$gt"
+    GreaterThanOrEqualTo = "$gte"
+    EqualTo = "$eq"
 
 
 @dataclass(frozen=True)
 class FromAssertion:
-    lhs: Union[str, int, FromRule]
-    op: Operator
-    rhs: Union[str, int]
-
-    def __repr__(self):
-        return f"(action {self.lhs} {self.op.value} {self.rhs})"
-
-
-@dataclass(frozen=True)
-class FromRule:
-    given: str
-    output: str
-
-    action: Optional[FromAssertion]
-
-    limit: Optional[Limit] = None
-    where: Optional[Filter] = None
-
-    requirements: Optional[List[str]] = None
-    saves: Optional[List[str]] = None
-    courses: Optional[List[str]] = None
-
-    def __repr__(self):
-        return f"(given '{self.given} -> '{self.output} 'limits {self.limit or []} 'filter {self.where} 'action {self.action})"
+    command: str
+    source: str
+    operator: Operator
+    compare_to: Union[str, int, float]
 
     @staticmethod
-    def can_load(data: Dict) -> bool:
-        if "given" in data:
-            return True
-        return False
+    def load(data: Dict) -> FromAssertion:
+        keys = list(data.keys())
 
-    @staticmethod
-    def load(data: Dict) -> FromRule:
-        where = data.get("where", None)
-        if where is not None:
-            where = Filter.load(where)
+        assert (len(keys)) == 1
 
-        limit = data.get("limit", None)
-        if limit is not None:
-            limit = [Limit.load(l) for l in limit]
+        rex = re.compile(r"(count|sum|minimum|maximum|stored)\((.*)\)")
 
-        action = None
-        if "do" in data:
-            actionstr = shlex.split(data["do"])
-            action = FromAssertion(
-                lhs=actionstr[0], op=Operator(actionstr[1]), rhs=actionstr[2]
-            )
+        k = keys[0]
 
-        return FromRule(
-            given=data["given"],
-            output=data["what"],
-            action=action,
-            limit=limit,
-            where=where,
-            requirements=data.get("requirements", None),
-            saves=data.get("saves", None),
-            courses=data.get("courses", None),
+        m = rex.match(k)
+        if not m:
+            raise KeyError(f'expected "{k}" to match {rex}')
+
+        val = data[k]
+
+        assert len(val.keys()) == 1
+
+        op = list(val.keys())[0]
+
+        groups = m.groups()
+
+        command = groups[0]
+        source = groups[1]
+        operator = Operator(op)
+        compare_to = val[op]
+
+        return FromAssertion(
+            command=command, source=source, operator=operator, compare_to=compare_to
         )
 
     def validate(self, *, ctx: RequirementContext):
-        assert isinstance(self.given, str)
+        assert self.command in [
+            "count",
+            "sum",
+            "minimum",
+            "maximum",
+            "stored",
+        ], f"{self.command}"
+
+        if self.command == "count":
+            assert self.source in [
+                "courses",
+                "areas",
+                "performances",
+                "terms",
+                "semesters",
+            ]
+        elif self.command == "sum":
+            assert self.source in ["grades", "credits"]
+        elif self.command == "minimum" or self.command == "maximum":
+            assert self.source in ["terms", "semesters", "grades", "credits"]
+        elif self.command == "stored":
+            # TODO: assert that the stored lookup exists
+            pass
+
+    def range(self, *, items: List):
+        compare_to: Any = self.compare_to
+
+        if type(compare_to) not in [int, float]:
+            raise TypeError(
+                f"compare_to must be numeric to be used in range(); was {repr(compare_to)} ({type(compare_to)}"
+            )
+
+        if self.operator == Operator.LessThanOrEqualTo:
+            hi = compare_to
+            lo = len(items)
+
+        elif self.operator == Operator.LessThan:
+            hi = compare_to - 1
+            lo = len(items)
+
+        elif self.operator == Operator.GreaterThan:
+            hi = len(items)
+            lo = compare_to + 1
+
+        elif self.operator == Operator.GreaterThanOrEqualTo:
+            hi = len(items)
+            lo = compare_to
+
+        elif self.operator == Operator.EqualTo:
+            hi = compare_to + 1
+            lo = compare_to
+
+        return range(lo, hi)
+
+
+@dataclass(frozen=True)
+class FromInput:
+    mode: str
+    itemtype: str
+    requirements: List[str]
+    saves: List[str]
+
+    @staticmethod
+    def load(data: Dict) -> FromInput:
+        saves: List[str] = []
+        requirements: List[str] = []
+
+        if "student" in data:
+            mode = "student"
+            itemtype = data["student"]
+        elif "saves" in data:
+            mode = "saves"
+            saves = data["saves"]
+            itemtype = None
+        elif "requirements" in data:
+            mode = "requirements"
+            requirements = data["requirements"]
+            itemtype = None
+
+        return FromInput(
+            mode=mode, itemtype=itemtype, requirements=requirements, saves=saves
+        )
+
+    def validate(self, *, ctx: RequirementContext):
+        assert isinstance(self.mode, str)
 
         saves = ctx.saves
         requirements = ctx.child_requirements
 
         dbg = f"(when validating self={repr(self)}, saves={repr(saves)}, reqs={repr(requirements)})"
 
-        if self.given == "these-requirements":
+        if self.mode == "requirements":
+            # TODO: assert that the result type of all mentioned requirements is the same
             if not self.requirements or not requirements:
                 raise ValueError(
                     "expected self.requirements and args.requirements to be lists"
@@ -345,7 +410,8 @@ class FromRule:
                     name in ctx.child_requirements
                 ), f"expected to find '{name}' once, but could not find it {dbg}"
 
-        elif self.given == "these-saves":
+        elif self.mode == "saves":
+            # TODO: assert that the result type of all mentioned saves is the same
             if not self.saves or not saves:
                 raise ValueError("expected self.saves and args.saves to be lists")
             for name in self.saves:
@@ -354,120 +420,97 @@ class FromRule:
                     name in ctx.saves
                 ), f"expected to find '{name}' once, but could not find it {dbg}"
 
-        elif self.given == "these-courses":
-            if not self.courses:
-                raise ValueError("expected self.courses")
-            assert len(self.courses) >= 1
-
-        elif self.given == "courses":
-            assert self.requirements is None
-            assert self.saves is None
-            assert self.courses is None
-
-        elif self.given == "performances":
-            assert self.requirements is None
-            assert self.saves is None
-            assert self.courses is None
-
-        elif self.given == "attendances":
-            assert self.requirements is None
-            assert self.saves is None
-            assert self.courses is None
-
-        elif self.given == "areas":
-            assert self.requirements is None
-            assert self.saves is None
-            assert self.courses is None
+        elif self.mode == "student":
+            assert self.itemtype in ["courses", "performances", "areas"]
 
         else:
-            raise NameError(f"unknown 'given' type {self.given}")
+            raise NameError(f"unknown 'from' type {self.mode}")
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        path = [*path, f"$given->{repr(self)}"]
-        logging.debug(f"{path}")
 
-        if self.given == "courses":
-            yield from self.solutions_when_given_courses(ctx=ctx, path=path)
-        elif self.given == "these-courses":
-            yield from self.solutions_when_given_these_courses(ctx=ctx, path=path)
-        elif self.given == "these-saves":
-            assert self.saves is not None
-            yield from self.solutions_when_given_saves(
-                ctx=ctx, path=path, saves=self.saves
-            )
-        else:
-            raise KeyError(f'unknown "given" type "{self.given}"')
+@dataclass(frozen=True)
+class FromRule:
+    source: FromInput
+    action: Optional[FromAssertion]
+    limit: Optional[Limit]
+    where: Optional[Clause]
 
-    def solutions_when_given_courses(
-        self, *, ctx: RequirementContext, path: List[str]
-    ) -> Iterator[GivenSolution]:
-        filtered = (
-            self.where.filter(ctx.transcript)
-            if self.where is not None
-            else ctx.transcript
+    @staticmethod
+    def can_load(data: Dict) -> bool:
+        if "from" in data:
+            return True
+        return False
+
+    @staticmethod
+    def load(data: Dict) -> FromRule:
+        where = data.get("where", None)
+        if where is not None:
+            where = SingleClause.load(where)
+
+        limit = data.get("limit", None)
+        if limit is not None:
+            limit = [Limit.load(l) for l in limit]
+
+        action = None
+        if "assert" in data:
+            action = FromAssertion.load(data=data["assert"])
+
+        return FromRule(
+            source=FromInput.load(data["from"]), action=action, limit=limit, where=where
         )
 
-        logging.warning(filtered)
+    def validate(self, *, ctx: RequirementContext):
+        self.source.validate(ctx=ctx)
+        if self.action:
+            self.action.validate(ctx=ctx)
 
-        if self.action is None:
-            yield GivenSolution(output=filtered, action=None)
-            return
+    def solutions(self, *, ctx: RequirementContext, path: List[str]):
+        path = [*path, f"$from->{repr(self)}"]
+        logging.debug(f"{path}")
 
-        for bound in range(int(self.action.rhs), len(filtered)):
-            for i, combo in enumerate(itertools.combinations(filtered, bound)):
-                logging.debug(
-                    f"{[*path, f'combo branch #{i}']} FromRule {[str(c) for c in combo]}"
-                )
-                yield GivenSolution(output=list(combo), action=self.action)
+        if self.source.mode == "student":
+            if self.source.itemtype == "courses":
+                data = ctx.transcript
 
-    def solutions_when_given_these_courses(
-        self, *, ctx: RequirementContext, path: List[str]
-    ) -> Iterator[GivenSolution]:
-        if not self.courses:
-            raise ValueError(
-                "when given:these-courses, the `courses:` key must not be empty"
-            )
+                if self.where is not None:
+                    data = [c for c in data if c.apply_clause(self.where)]
 
-        filtered = [c for c in ctx.transcript if c.course in self.courses]
+                assert self.action is not None
 
-        filtered = self.where.filter(filtered) if self.where is not None else filtered
-
-        if self.action is None:
-            return GivenSolution(output=filtered, action=None)
-
-        for bound in range(int(self.action.rhs), len(filtered)):
-            for i, combo in enumerate(itertools.combinations(filtered, bound)):
-                logging.debug(
-                    f"{[*path, f'combo branch #{i}']} FromRule {[str(c) for c in combo]}"
-                )
-                yield GivenSolution(output=list(combo), action=self.action)
-
-    def solutions_when_given_saves(
-        self, *, ctx: RequirementContext, path: List[str], saves: List[str]
-    ) -> Iterator[GivenSolution]:
-        if not saves:
-            raise ValueError(
-                "when given:these-saves/save, the `saves:/save:` key must not be empty"
-            )
-        logging.debug(f"solutions_when_given_saves {saves}")
-
-        single_save = saves[0]
-
-        the_save = ctx.saves[single_save]
-
-        for solution in the_save.solutions(ctx=ctx, path=[*path, ">>save"]):
-            logging.debug(solution)
-
-            if self.action is None:
-                yield solution
+                for n in self.action.range(items=data):
+                    for combo in itertools.combinations(data, n):
+                        yield GivenSolution(output=combo, action=self.action)
             else:
-                for bound in range(int(self.action.rhs), len(solution.output)):
-                    combos = itertools.combinations(solution.output, bound)
-                    for i, combo in enumerate(combos):
-                        logging.debug(
-                            f"{[*path, f'combo branch #{i}']} FromRule {[str(c) for c in combo]}"
-                        )
-                        yield GivenSolution(output=list(combo), action=self.action)
+                raise KeyError(f"{self.source.itemtype} not yet implemented")
+
+        elif self.source.mode == "saves":
+            saves = [
+                ctx.saves[s].solutions(ctx=ctx, path=path) for s in self.source.saves
+            ]
+
+            for p in itertools.product(*saves):
+                data = [x for y in p for x in y]  # flatten it
+
+                if self.where is not None:
+                    data = [c for c in data if c.apply_clause(self.where)]
+
+                yield GivenSolution(output=data, action=self.action)
+
+        elif self.source.mode == "requirements":
+            reqs = [
+                ctx.child_requirements[s].solutions(ctx=ctx, path=path)
+                for s in self.source.requirements
+            ]
+
+            for p in itertools.product(*reqs):
+                data = [x for y in p for x in y]  # flatten it
+
+                if self.where is not None:
+                    data = [c for c in data if c.apply_clause(self.where)]
+
+                yield GivenSolution(output=data, action=self.action)
+
+        else:
+            raise KeyError(f'unknown "from" type "{self.source.mode}"')
 
 
 @dataclass(frozen=True)
@@ -556,9 +599,6 @@ RuleTypeUnion = Union[CourseRule, CountRule, FromRule, ActionRule, ReferenceRule
 class Rule:
     rule: RuleTypeUnion
 
-    def __repr__(self):
-        return f"[rule {self.rule}]"
-
     @staticmethod
     def load(data: Union[Dict, str]) -> Rule:
         if isinstance(data, str):
@@ -624,20 +664,37 @@ class RequirementContext:
 
 @dataclass(frozen=True)
 class CourseInstance:
-    course: str
-    subject: List[str]
-    attributes: Optional[List[str]] = None
+    data: Dict[str, Any]
 
     @staticmethod
     def from_dict(**kwargs):
-        return CourseInstance(
-            course=kwargs["course"],
-            subject=kwargs["subject"],
-            attributes=kwargs.get("attributes", None),
-        )
+        data = {
+            "course": kwargs["course"],
+            "subject": [kwargs["course"].split(" ")[0]],
+            "number": int(kwargs["course"].split(" ")[1]),
+            "level": int(kwargs["course"].split(" ")[1]) / 100 * 100,
+            "attributes": kwargs.get("attributes", []),
+        }
+        return CourseInstance(data=data)
+
+    def update(self, **kwargs):
+        return CourseInstance(data={**self.data, **kwargs})
+
+    def course(self):
+        return self.data['course']
 
     def __str__(self):
         return f"{self.course}"
+
+    def apply_clause(self, clause: Clause) -> bool:
+        if isinstance(clause, AndClause):
+            return all(self.apply_clause(subclause) for subclause in clause)
+        elif isinstance(clause, OrClause):
+            return any(self.apply_clause(subclause) for subclause in clause)
+        elif isinstance(clause, SingleClause):
+            if clause.key in self.data:
+                return clause.compare(self.data[clause.key])
+        return False
 
 
 @dataclass(frozen=True)
@@ -752,6 +809,8 @@ class AreaOfStudy:
     result: Rule
     requirements: Dict[str, Requirement]
 
+    attributes: Dict
+
     @staticmethod
     def load(data: Dict) -> AreaOfStudy:
         requirements = {
@@ -766,6 +825,7 @@ class AreaOfStudy:
             kind=data["type"],
             requirements=requirements,
             result=result,
+            attributes=data.get("attributes", {}),
         )
 
     def validate(self):
@@ -830,6 +890,7 @@ if __name__ == "__main__":
     import glob
     import time
     import coloredlogs
+    import pprint
 
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -846,16 +907,23 @@ if __name__ == "__main__":
 
         # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
         for file in [
-            # "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
+            "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
             # "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
             # "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
-            "./sample-simple-area.yaml"
+            # "./sample-simple-area.yaml"
         ]:
             print(f"processing {file}")
             with open(file, "r", encoding="utf-8") as infile:
                 area = load(infile)
 
             area.validate()
+
+            this_transcript = [
+                c.update(attributes=area.attributes["courses"].get(c.course(), []))
+                for c in transcript
+            ]
+
+            # pprint.pprint(this_transcript)
 
             outname = f'./tmp/{area.kind}/{area.name.replace("/", "_")}.json'
             with open(outname, "w", encoding="utf-8") as outfile:
@@ -864,12 +932,12 @@ if __name__ == "__main__":
 
             start = time.perf_counter()
 
-            for sol in area.solutions(transcript=transcript):
-                print(sol)
+            for sol in area.solutions(transcript=this_transcript):
+                pprint.pprint(sol)
 
-            the_count = count(area.solutions(transcript=transcript), print_every=1_000)
+            # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
 
-            print(f"{the_count} possible combinations")
+            # print(f"{the_count} possible solutions")
             end = time.perf_counter()
             print(f"time: {end - start}")
             print()
