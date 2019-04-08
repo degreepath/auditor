@@ -100,16 +100,32 @@ class CountRule:
         path = [*path, f".of({self.count}/{len(self.of)})"]
         logging.debug(f"{path}\n\tneed {self.count} of {len(self.of)} items")
 
+        did_iter = False
+
         for combo in itertools.combinations(self.of, self.count):
+            did_iter = True
+            if path == ['$root', '.result', '.of(4/4)']:
+                logging.critical(f'root input {combo}')
+
             with_solutions = [
                 rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
                 for i, rule in enumerate(combo)
             ]
 
             for i, ruleset in enumerate(itertools.product(*with_solutions)):
-                msg = f"{[*path, f'product branch #{i}']}\n\tCountRule: {ruleset}"
-                logging.debug(msg)
+                msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
+                if path == ['$root', '.result', '.of(4/4)']:
+                    logging.critical(msg)
+                else:
+                    logging.warning(msg)
                 yield CountSolution(items=list(ruleset))
+
+            if path == ['$root', '.result', '.of(4/4)']:
+                logging.critical("completed root result")
+
+        if not did_iter:
+            # be sure that we always yield something
+            yield CountSolution(items=[])
 
 
 @dataclass(frozen=True)
@@ -234,16 +250,23 @@ class SingleClause:
         return AndClause(children=clauses)
 
     def compare(self, to_value: Any) -> bool:
-        if self.operator == Operator.EqualTo:
+        logging.debug(f'Clause.compare {self}, to: {to_value}')
+
+        if isinstance(to_value, list):
+            logging.debug(f'Entering recursive comparison as to_value was a list')
+            return any(self.compare(v) for v in to_value)
+
+        if self.operator == Operator.LessThan:
+            return self.expected < to_value
+        elif self.operator == Operator.LessThanOrEqualTo:
+            return self.expected <= to_value
+        elif self.operator == Operator.EqualTo:
             return self.expected == to_value
         elif self.operator == Operator.GreaterThanOrEqualTo:
             return self.expected >= to_value
         elif self.operator == Operator.GreaterThan:
             return self.expected > to_value
-        elif self.operator == Operator.LessThan:
-            return self.expected < to_value
-        elif self.operator == Operator.LessThanOrEqualTo:
-            return self.expected <= to_value
+
         raise TypeError(f"unknown comparison function {self.operator}")
 
 
@@ -266,6 +289,9 @@ class Operator(Enum):
     GreaterThan = "$gt"
     GreaterThanOrEqualTo = "$gte"
     EqualTo = "$eq"
+
+    def __repr__(self):
+        return str(self)
 
 
 @dataclass(frozen=True)
@@ -358,6 +384,9 @@ class FromAssertion:
         elif self.operator == Operator.EqualTo:
             hi = compare_to + 1
             lo = compare_to
+
+        if hi <= lo:
+            logging.warning(f'expected hi={hi} > lo={lo}')
 
         return range(lo, hi)
 
@@ -464,21 +493,28 @@ class FromRule:
             self.action.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        path = [*path, f"$from->{repr(self)}"]
+        path = [*path, f".from"]
         logging.debug(f"{path}")
+
+        did_iter = False
 
         if self.source.mode == "student":
             if self.source.itemtype == "courses":
                 data = ctx.transcript
 
+                logging.critical(f'before: {data}')
                 if self.where is not None:
                     data = [c for c in data if c.apply_clause(self.where)]
+
+                logging.critical(f'after: {data}')
+                logging.critical(f'clause: {self.where}')
 
                 assert self.action is not None
 
                 for n in self.action.range(items=data):
+                    did_iter = True
                     for combo in itertools.combinations(data, n):
-                        yield GivenSolution(output=combo, action=self.action)
+                        yield FromSolution(output=combo, action=self.action)
             else:
                 raise KeyError(f"{self.source.itemtype} not yet implemented")
 
@@ -488,12 +524,13 @@ class FromRule:
             ]
 
             for p in itertools.product(*saves):
+                did_iter = True
                 data = [x for y in p for x in y]  # flatten it
 
                 if self.where is not None:
                     data = [c for c in data if c.apply_clause(self.where)]
 
-                yield GivenSolution(output=data, action=self.action)
+                yield FromSolution(output=data, action=self.action)
 
         elif self.source.mode == "requirements":
             reqs = [
@@ -502,15 +539,20 @@ class FromRule:
             ]
 
             for p in itertools.product(*reqs):
+                did_iter = True
                 data = [x for y in p for x in y]  # flatten it
 
                 if self.where is not None:
                     data = [c for c in data if c.apply_clause(self.where)]
 
-                yield GivenSolution(output=data, action=self.action)
+                yield FromSolution(output=data, action=self.action)
 
         else:
             raise KeyError(f'unknown "from" type "{self.source.mode}"')
+
+        if not did_iter:
+            # be sure we always yield something
+            yield FromSolution(output=[], action=self.action)
 
 
 @dataclass(frozen=True)
@@ -529,15 +571,14 @@ class SaveRule:
 
     def solutions(
         self, *, ctx: RequirementContext, path: List[str]
-    ) -> Iterator[GivenSolution]:
-        logging.debug("inside a saverule")
-        yield from self.innards.solutions(
-            ctx=ctx, path=[*path, f'.save["{self.name}"]']
-        )
+    ) -> Iterator[FromSolution]:
+        path = [*path, f'.save["{self.name}"]']
+        logging.debug(f"{path} inside a saverule")
+        yield from self.innards.solutions(ctx=ctx, path=path)
 
 
 @dataclass(frozen=True)
-class GivenSolution:
+class FromSolution:
     output: Sequence[Union[CourseInstance, Term, Grade, Semester]]
     action: Optional[FromAssertion]
 
@@ -600,10 +641,8 @@ class Rule:
     rule: RuleTypeUnion
 
     @staticmethod
-    def load(data: Union[Dict, str]) -> Rule:
-        if isinstance(data, str):
-            return Rule(rule=CourseRule(course=data))
-        elif CourseRule.can_load(data):
+    def load(data: Dict) -> Rule:
+        if CourseRule.can_load(data):
             return Rule(rule=CourseRule.load(data))
         elif FromRule.can_load(data):
             return Rule(rule=FromRule.load(data))
@@ -649,6 +688,8 @@ class Rule:
                 f"panic! unknown type of rule was constructed {self.rule} (at {path})"
             )
 
+        logging.debug(f"{path}\n\tall solutions found for {self.rule}")
+
 
 @dataclass(frozen=True)
 class Solution:
@@ -667,12 +708,16 @@ class CourseInstance:
     data: Dict[str, Any]
 
     @staticmethod
-    def from_dict(**kwargs):
+    def from_s(course: str) -> CourseInstance:
+        return CourseInstance.from_dict(course=course)
+
+    @staticmethod
+    def from_dict(**kwargs) -> CourseInstance:
         data = {
             "course": kwargs["course"],
             "subject": [kwargs["course"].split(" ")[0]],
             "number": int(kwargs["course"].split(" ")[1]),
-            "level": int(kwargs["course"].split(" ")[1]) / 100 * 100,
+            "level": int(kwargs["course"].split(" ")[1]) // 100 * 100,
             "attributes": kwargs.get("attributes", []),
         }
         return CourseInstance(data=data)
@@ -681,20 +726,26 @@ class CourseInstance:
         return CourseInstance(data={**self.data, **kwargs})
 
     def course(self):
-        return self.data['course']
+        return self.data["course"]
 
     def __str__(self):
-        return f"{self.course}"
+        return f"{self.course()}"
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
+            logging.debug(f'and-clause')
             return all(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, OrClause):
+            logging.debug(f'or-clause')
             return any(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, SingleClause):
             if clause.key in self.data:
+                logging.debug(f'single-clause, key "{clause.key}" exists')
                 return clause.compare(self.data[clause.key])
-        return False
+            logging.debug(f'single-clause, key "{clause.key}" not found in {list(self.data.keys())}')
+            return False
+
+        raise TypeError(f'expected a clause; found {type(clause)}')
 
 
 @dataclass(frozen=True)
@@ -859,8 +910,10 @@ class AreaOfStudy:
             child_requirements={name: r for name, r in self.requirements.items()},
         )
 
-        path = [*path, ".result"]
-        return self.result.solutions(ctx=ctx, path=path)
+        new_path = [*path, ".result"]
+        yield from self.result.solutions(ctx=ctx, path=new_path)
+
+        logging.debug(f"{path}\n\tall solutions generated")
 
 
 def load(stream: TextIO) -> AreaOfStudy:
@@ -932,12 +985,14 @@ if __name__ == "__main__":
 
             start = time.perf_counter()
 
+            the_count = 0
             for sol in area.solutions(transcript=this_transcript):
-                pprint.pprint(sol)
+                the_count += 1
+                # pprint.pprint(sol)
 
             # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
 
-            # print(f"{the_count} possible solutions")
+            print(f"{the_count} possible solutions")
             end = time.perf_counter()
             print(f"time: {end - start}")
             print()
