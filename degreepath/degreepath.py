@@ -380,7 +380,7 @@ class FromAssertion:
             lo = compare_to
 
         if hi <= lo:
-            logging.warning(f"expected hi={hi} > lo={lo}")
+            logging.info(f"expected hi={hi} > lo={lo}")
 
         return range(lo, hi)
 
@@ -468,6 +468,7 @@ class FromRule:
     action: Optional[FromAssertion]
     limit: Optional[Limit]
     where: Optional[Clause]
+    store: Optional[str]
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -490,74 +491,83 @@ class FromRule:
             action = FromAssertion.load(data=data["assert"])
 
         return FromRule(
-            source=FromInput.load(data["from"]), action=action, limit=limit, where=where
+            source=FromInput.load(data["from"]),
+            action=action,
+            limit=limit,
+            where=where,
+            store=data.get("store", None),
         )
 
     def validate(self, *, ctx: RequirementContext):
         self.source.validate(ctx=ctx)
         if self.action:
             self.action.validate(ctx=ctx)
+        if self.store is not None:
+            assert self.store in ("courses",)
+
+    def solutions_when_student(self, *, ctx, path):
+        if self.source.itemtype == "courses":
+            data = ctx.transcript
+        else:
+            raise KeyError(f"{self.source.itemtype} not yet implemented")
+
+        yield data
+
+    def solutions_when_saves(self, *, ctx, path):
+        saves = [ctx.saves[s].solutions(ctx=ctx, path=path) for s in self.source.saves]
+
+        for p in itertools.product(*saves):
+            data = [item for save_result in p for item in save_result.stored()]
+            yield data
+
+    def solutions_when_reqs(self, *, ctx, path):
+        reqs = [
+            ctx.child_requirements[s].solutions(ctx=ctx, path=path)
+            for s in self.source.requirements
+        ]
+
+        for p in itertools.product(*reqs):
+            data = [item for req_result in p for item in req_result.matched()]
+            yield data
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         path = [*path, f".from"]
         logging.debug(f"{path}")
 
-        did_iter = False
-
         if self.source.mode == "student":
-            if self.source.itemtype == "courses":
-                data = ctx.transcript
-
-                logging.critical(f"before: {data}")
-                if self.where is not None:
-                    data = [c for c in data if c.apply_clause(self.where)]
-
-                logging.critical(f"after: {data}")
-                logging.critical(f"clause: {self.where}")
-
-                assert self.action is not None
-
-                for n in self.action.range(items=data):
-                    did_iter = True
-                    for combo in itertools.combinations(data, n):
-                        yield FromSolution(output=combo, action=self.action)
-            else:
-                raise KeyError(f"{self.source.itemtype} not yet implemented")
-
+            iterable = self.solutions_when_student(ctx=ctx, path=path)
         elif self.source.mode == "saves":
-            saves = [
-                ctx.saves[s].solutions(ctx=ctx, path=path) for s in self.source.saves
-            ]
-
-            for p in itertools.product(*saves):
-                did_iter = True
-                data = [x for y in p for x in y]  # flatten it
-
-                if self.where is not None:
-                    data = [c for c in data if c.apply_clause(self.where)]
-
-                yield FromSolution(output=data, action=self.action)
-
+            iterable = self.solutions_when_saves(ctx=ctx, path=path)
         elif self.source.mode == "requirements":
-            reqs = [
-                ctx.child_requirements[s].solutions(ctx=ctx, path=path)
-                for s in self.source.requirements
-            ]
-
-            for p in itertools.product(*reqs):
-                did_iter = True
-                data = [x for y in p for x in y]  # flatten it
-
-                if self.where is not None:
-                    data = [c for c in data if c.apply_clause(self.where)]
-
-                yield FromSolution(output=data, action=self.action)
-
+            iterable = self.solutions_when_reqs(ctx=ctx, path=path)
         else:
             raise KeyError(f'unknown "from" type "{self.source.mode}"')
 
+        did_iter = False
+        for data in iterable:
+            if self.where is not None:
+                logging.debug(f"fromrule/filter/clause: {self.where}")
+                logging.debug(f"fromrule/filter/before: {data}")
+                data = [c for c in data if c.apply_clause(self.where)]
+                logging.debug(f"fromrule/filter/after: {data}")
+
+            if self.store == "courses":
+                logging.debug("storing courses")
+                yield FromSolution(output=data, action=None)
+                return
+            elif self.store:
+                raise Exception("not implemented yet")
+
+            assert self.action is not None
+
+            for n in self.action.range(items=data):
+                did_iter = True
+                for combo in itertools.combinations(data, n):
+                    yield FromSolution(output=combo, action=self.action)
+
         if not did_iter:
             # be sure we always yield something
+            logging.info("did not yield anything; yielding empty collection")
             yield FromSolution(output=[], action=self.action)
 
 
@@ -587,6 +597,9 @@ class SaveRule:
 class FromSolution:
     output: Sequence[Union[CourseInstance, Term, Grade, Semester]]
     action: Optional[FromAssertion]
+
+    def stored(self):
+        return self.output
 
 
 @dataclass(frozen=True)
@@ -679,6 +692,8 @@ class Rule:
             raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
+        logging.debug(f"{path} finding solutions for {self.rule}")
+
         if isinstance(self.rule, CourseRule):
             yield from self.rule.solutions(path=path)
         elif isinstance(self.rule, ActionRule):
@@ -694,7 +709,7 @@ class Rule:
                 f"panic! unknown type of rule was constructed {self.rule} (at {path})"
             )
 
-        logging.debug(f"{path}\n\tall solutions found for {self.rule}")
+        logging.debug(f"{path} all solutions found for {self.rule}")
 
 
 @dataclass(frozen=True)
@@ -853,7 +868,16 @@ class Requirement:
         )
 
         path = [*path, ".result"]
-        yield from self.result.solutions(ctx=new_ctx, path=path)
+        for sol in self.result.solutions(ctx=new_ctx, path=path):
+            yield RequirementSolution(solution=sol)
+
+
+@dataclass(frozen=True)
+class RequirementSolution:
+    solution: Any
+
+    def matched(self):
+        return self.solution
 
 
 @dataclass(frozen=True)
@@ -968,9 +992,9 @@ if __name__ == "__main__":
 
         # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
         for file in [
-            "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
+            # "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
             # "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
-            # "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
+            "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
             # "./sample-simple-area.yaml"
         ]:
             print(f"processing {file}")
