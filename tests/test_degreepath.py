@@ -329,5 +329,3 @@ def test_saves(caplog):
     ]
 
     assert expected == solutions
-
-    assert False == True
