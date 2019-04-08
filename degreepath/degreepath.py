@@ -114,7 +114,6 @@ class CountRule:
                 msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
                 yield CountSolution(items=list(ruleset))
 
-
         if not did_iter:
             # be sure that we always yield something
             yield CountSolution(items=[])
@@ -242,10 +241,10 @@ class SingleClause:
         return AndClause(children=clauses)
 
     def compare(self, to_value: Any) -> bool:
-        logging.debug(f'Clause.compare {self}, to: {to_value}')
+        logging.debug(f"Clause.compare {self}, to: {to_value}")
 
         if isinstance(to_value, list):
-            logging.debug(f'Entering recursive comparison as to_value was a list')
+            logging.debug(f"Entering recursive comparison as to_value was a list")
             return any(self.compare(v) for v in to_value)
 
         if self.operator == Operator.LessThan:
@@ -381,7 +380,7 @@ class FromAssertion:
             lo = compare_to
 
         if hi <= lo:
-            logging.warning(f'expected hi={hi} > lo={lo}')
+            logging.warning(f"expected hi={hi} > lo={lo}")
 
         return range(lo, hi)
 
@@ -509,12 +508,12 @@ class FromRule:
             if self.source.itemtype == "courses":
                 data = ctx.transcript
 
-                logging.critical(f'before: {data}')
+                logging.critical(f"before: {data}")
                 if self.where is not None:
                     data = [c for c in data if c.apply_clause(self.where)]
 
-                logging.critical(f'after: {data}')
-                logging.critical(f'clause: {self.where}')
+                logging.critical(f"after: {data}")
+                logging.critical(f"clause: {self.where}")
 
                 assert self.action is not None
 
@@ -740,19 +739,21 @@ class CourseInstance:
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
-            logging.debug(f'and-clause')
+            logging.debug(f"and-clause")
             return all(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, OrClause):
-            logging.debug(f'or-clause')
+            logging.debug(f"or-clause")
             return any(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, SingleClause):
             if clause.key in self.data:
                 logging.debug(f'single-clause, key "{clause.key}" exists')
                 return clause.compare(self.data[clause.key])
-            logging.debug(f'single-clause, key "{clause.key}" not found in {list(self.data.keys())}')
+            logging.debug(
+                f'single-clause, key "{clause.key}" not found in {list(self.data.keys())}'
+            )
             return False
 
-        raise TypeError(f'expected a clause; found {type(clause)}')
+        raise TypeError(f"expected a clause; found {type(clause)}")
 
 
 @dataclass(frozen=True)
