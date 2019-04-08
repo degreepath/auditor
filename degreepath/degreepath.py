@@ -104,8 +104,6 @@ class CountRule:
 
         for combo in itertools.combinations(self.of, self.count):
             did_iter = True
-            if path == ['$root', '.result', '.of(4/4)']:
-                logging.critical(f'root input {combo}')
 
             with_solutions = [
                 rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
@@ -114,14 +112,8 @@ class CountRule:
 
             for i, ruleset in enumerate(itertools.product(*with_solutions)):
                 msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
-                if path == ['$root', '.result', '.of(4/4)']:
-                    logging.critical(msg)
-                else:
-                    logging.warning(msg)
                 yield CountSolution(items=list(ruleset))
 
-            if path == ['$root', '.result', '.of(4/4)']:
-                logging.critical("completed root result")
 
         if not did_iter:
             # be sure that we always yield something
@@ -262,6 +254,8 @@ class SingleClause:
             return self.expected <= to_value
         elif self.operator == Operator.EqualTo:
             return self.expected == to_value
+        elif self.operator == Operator.NotEqualTo:
+            return self.expected != to_value
         elif self.operator == Operator.GreaterThanOrEqualTo:
             return self.expected >= to_value
         elif self.operator == Operator.GreaterThan:
@@ -289,6 +283,7 @@ class Operator(Enum):
     GreaterThan = "$gt"
     GreaterThanOrEqualTo = "$gte"
     EqualTo = "$eq"
+    NotEqualTo = "$neq"
 
     def __repr__(self):
         return str(self)
@@ -985,12 +980,12 @@ if __name__ == "__main__":
 
             start = time.perf_counter()
 
-            the_count = 0
-            for sol in area.solutions(transcript=this_transcript):
-                the_count += 1
-                # pprint.pprint(sol)
+            # the_count = 0
+            # for sol in area.solutions(transcript=this_transcript):
+            #     the_count += 1
+            #     # pprint.pprint(sol)
 
-            # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
+            the_count = count(area.solutions(transcript=transcript), print_every=1_000)
 
             print(f"{the_count} possible solutions")
             end = time.perf_counter()
