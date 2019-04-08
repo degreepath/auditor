@@ -1,0 +1,21 @@
+name: sample
+type: degree
+catalog: 0000-01
+
+result:
+  all:
+    - requirement: A
+    - requirement: B
+
+requirements:
+  A:
+    result:
+      either:
+        - course: ABCD 101
+        - course: ABCD 102
+
+  B:
+    result:
+      both:
+        - course: ABCD 101
+        - course: ABCD 103
