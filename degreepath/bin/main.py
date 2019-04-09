@@ -2,32 +2,62 @@ import logging
 import glob
 import time
 import json
+import pprint
 
-# import click
+import click
 import coloredlogs
 import yaml
 import jsonpickle
 
-from degreepath import CourseInstance, load_area
+from degreepath import CourseInstance, AreaOfStudy
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 logformat = "%(levelname)s %(message)s"
 coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
 
-# @click.command()
-def main():
+
+def load_area(stream):
+    data = yaml.load(stream=stream, Loader=yaml.SafeLoader)
+
+    return AreaOfStudy.load(data)
+
+
+def take(iterable, n):
+    for i, item in enumerate(iterable):
+        yield item
+        if i + 1 >= n:
+            break
+
+
+def count(iterable, print_every=None):
+    counter = 0
+    for item in iterable:
+        counter += 1
+        if print_every is not None and counter % print_every == 0:
+            print(f"... {counter}")
+    return counter
+
+
+@click.command()
+@click.argument('student_file', type=click.Path(exists=True))
+def main(student_file):
     """Audits a student against their areas of study."""
 
-    with open("./student.yaml", "r", encoding="utf-8") as infile:
-        data = yaml.load(stream=infile, Loader=yaml.SafeLoader)
-        transcript = [CourseInstance.from_dict(**row) for row in data["courses"]]
+    with open(student_file, "r", encoding="utf-8") as infile:
+        data = json.load(infile)
+
+    print(data)
+    transcript = [CourseInstance.from_dict(**row) for row in data["courses"]]
+    for c in transcript:
+        pprint.pprint(c)
+    return
 
     # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
     for file in [
         # "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
         # "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
-        "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
+        # "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
         # "./sample-simple-area.yaml"
     ]:
         print(f"processing {file}")
@@ -52,7 +82,8 @@ def main():
         the_count = 0
         for sol in area.solutions(transcript=this_transcript):
             the_count += 1
-            print(json.dumps(sol.to_dict(), indent=4))
+            print(sol)
+            print(yaml.dump(sol.to_dict(), indent=4))
             print()
 
         # the_count = count(area.solutions(transcript=transcript), print_every=1_000)

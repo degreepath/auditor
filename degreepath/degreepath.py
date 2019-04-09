@@ -1,15 +1,12 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, Union, List, Optional, TextIO, Any, Sequence, Iterator
+from typing import Dict, Union, List, Optional, Any, Sequence, Iterator
 import re
-import json
-import jsonpickle
 import itertools
 import logging
-import yaml
-import shlex
-import sys
+import decimal
+import copy
 
 
 @dataclass(frozen=True)
@@ -26,11 +23,11 @@ class ActionRule:
     def load(data: Dict) -> ActionRule:
         return ActionRule(assertion=data["assert"])
 
-    def validate(self):
+    def validate(self, *, ctx: RequirementContext):
         ...
         # TODO: check for input items here
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
+    def solutions(self, *, ctx: RequirementContext, path: List):
         logging.debug(f"{path} ActionRule#solutions")
         yield ActionSolution(result=None)
 
@@ -93,7 +90,7 @@ class CountRule:
             else:
                 count = int(data["count"])
 
-        return CountRule(count=count, of=[Rule.load(r) for r in of])
+        return CountRule(count=count, of=[load_rule(r) for r in of])
 
     def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
@@ -103,7 +100,7 @@ class CountRule:
         for rule in self.of:
             rule.validate(ctx=ctx)
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
+    def solutions(self, *, ctx: RequirementContext, path: List):
         path = [*path, f".of({self.count}/{len(self.of)})"]
         logging.debug(f"{path}\n\tneed {self.count} of {len(self.of)} items")
 
@@ -130,7 +127,7 @@ class CountRule:
 
 @dataclass(frozen=True)
 class CountSolution:
-    items: List[Solution]
+    items: List[Any]
     rule: CountRule
 
     def to_dict(self):
@@ -161,7 +158,7 @@ class CourseRule:
     def load(data: Dict) -> CourseRule:
         return CourseRule(course=data["course"])
 
-    def validate(self):
+    def validate(self, *, ctx: RequirementContext):
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
         method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
         method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
@@ -169,7 +166,7 @@ class CourseRule:
             method_a or method_b or method_c
         ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, path: List[str]):
+    def solutions(self, *, ctx: RequirementContext, path: List):
         logging.debug(f'{path}\n\treference to course "{self.course}"')
 
         yield CourseSolution(course=self.course, rule=self)
@@ -486,8 +483,8 @@ class FromInput:
     def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.mode, str)
 
-        saves = ctx.saves
-        requirements = ctx.child_requirements
+        saves = ctx.save_rules
+        requirements = ctx.requirements
 
         dbg = f"(when validating self={repr(self)}, saves={repr(saves)}, reqs={repr(requirements)})"
 
@@ -500,7 +497,7 @@ class FromInput:
             for name in self.requirements:
                 assert isinstance(name, str), f"expected {name} to be a string"
                 assert (
-                    name in ctx.child_requirements
+                    name in ctx.requirements
                 ), f"expected to find '{name}' once, but could not find it {dbg}"
 
         elif self.mode == "saves":
@@ -510,7 +507,7 @@ class FromInput:
             for name in self.saves:
                 assert isinstance(name, str), f"expected {name} to be a string"
                 assert (
-                    name in ctx.saves
+                    name in ctx.save_rules
                 ), f"expected to find '{name}' once, but could not find it {dbg}"
 
         elif self.mode == "student":
@@ -572,7 +569,7 @@ class FromRule:
         if self.store is not None:
             assert self.store in ("courses",)
 
-    def solutions_when_student(self, *, ctx, path):
+    def solutions_when_student(self, *, ctx: RequirementContext, path):
         if self.source.itemtype == "courses":
             data = ctx.transcript
         else:
@@ -580,16 +577,18 @@ class FromRule:
 
         yield data
 
-    def solutions_when_saves(self, *, ctx, path):
-        saves = [ctx.saves[s].solutions(ctx=ctx, path=path) for s in self.source.saves]
+    def solutions_when_saves(self, *, ctx: RequirementContext, path):
+        saves = [
+            ctx.save_rules[s].solutions(ctx=ctx, path=path) for s in self.source.saves
+        ]
 
         for p in itertools.product(*saves):
             data = [item for save_result in p for item in save_result.stored()]
             yield data
 
-    def solutions_when_reqs(self, *, ctx, path):
+    def solutions_when_reqs(self, *, ctx: RequirementContext, path):
         reqs = [
-            ctx.child_requirements[s].solutions(ctx=ctx, path=path)
+            ctx.requirements[s].solutions(ctx=ctx, path=path)
             for s in self.source.requirements
         ]
 
@@ -665,7 +664,7 @@ class SaveRule:
 
 @dataclass(frozen=True)
 class FromSolution:
-    output: Sequence[Union[CourseInstance, Term, Grade, Semester]]
+    output: Sequence[Union[CourseInstance, Term, decimal.Decimal, int]]
     rule: FromRule
 
     def to_dict(self):
@@ -681,26 +680,51 @@ class FromSolution:
 
 @dataclass(frozen=True)
 class Term:
-    pass
+    term: int
+
+    def year(self):
+        return int(str(self.term)[0:4])
+
+    def semester(self):
+        return int(str(self.term)[5])
 
     def to_dict(self):
         return {"type": "term"}
 
 
-@dataclass(frozen=True)
-class Grade:
-    pass
+def grade_from_str(s: str) -> decimal.Decimal:
+    grades = {
+        'A+': '4.30',
+        'A': '4.00',
+        'A-': '3.70',
+        'B+': '3.30',
+        'B': '3.00',
+        'B-': '2.70',
+        'C+': '2.30',
+        'C': '2.00',
+        'C-': '1.70',
+        'D+': '1.30',
+        'D': '1.00',
+        'D-': '0.70',
+        'F': '0.00',
+    }
 
-    def to_dict(self):
-        return {"type": "grade"}
+    return decimal.Decimal(grades.get(s, '0.00'))
 
 
-@dataclass(frozen=True)
-class Semester:
-    pass
+def expand_subjects(subjects: List[str]):
+    shorthands = {
+        'PS': 'PSCI',
+        'ES': 'ENVST',
+        "AS": "ASIAN",
+        "RE": "REL",
+        'BI': 'BIO',
+        'CH': "CHEM",
+    }
 
-    def to_dict(self):
-        return {"type": "semester"}
+    for subject in subjects:
+        for code in subject.split('/'):
+            yield shorthands.get(code, code)
 
 
 @dataclass(frozen=True)
@@ -721,18 +745,18 @@ class ReferenceRule:
         return ReferenceRule(requirement=data["requirement"])
 
     def validate(self, *, ctx: RequirementContext):
-        if self.requirement not in ctx.child_requirements:
-            reqs = ", ".join(ctx.child_requirements.keys())
+        if self.requirement not in ctx.requirements:
+            reqs = ", ".join(ctx.requirements.keys())
             raise AssertionError(
                 f"expected a requirement named '{self.requirement}', but did not find one [options: {reqs}]"
             )
 
-        ctx.child_requirements[self.requirement].validate(ctx=ctx)
+        ctx.requirements[self.requirement].validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         logging.debug(f'{path}\n\treference to requirement "{self.requirement}"')
 
-        requirement = ctx.child_requirements[self.requirement]
+        requirement = ctx.requirements[self.requirement]
 
         logging.debug(f'{path}\n\tfound requirement "{self.requirement}"')
 
@@ -741,108 +765,125 @@ class ReferenceRule:
         )
 
 
-RuleTypeUnion = Union[CourseRule, CountRule, FromRule, ActionRule, ReferenceRule]
+Rule = Union[CourseRule, CountRule, FromRule, ActionRule, ReferenceRule]
 
 
-@dataclass(frozen=True)
-class Rule:
-    rule: RuleTypeUnion
+def load_rule(data: Dict) -> Rule:
+    if CourseRule.can_load(data):
+        return CourseRule.load(data)
+    elif FromRule.can_load(data):
+        return FromRule.load(data)
+    elif CountRule.can_load(data):
+        return CountRule.load(data)
+    elif ReferenceRule.can_load(data):
+        return ReferenceRule.load(data)
+    elif ActionRule.can_load(data):
+        return ActionRule.load(data)
 
-    def to_dict(self):
-        return self.rule.to_dict()
-
-    @staticmethod
-    def load(data: Dict) -> Rule:
-        if CourseRule.can_load(data):
-            return Rule(rule=CourseRule.load(data))
-        elif FromRule.can_load(data):
-            return Rule(rule=FromRule.load(data))
-        elif CountRule.can_load(data):
-            return Rule(rule=CountRule.load(data))
-        elif ReferenceRule.can_load(data):
-            return Rule(rule=ReferenceRule.load(data))
-        elif ActionRule.can_load(data):
-            return Rule(rule=ActionRule.load(data))
-
-        dbg = json.dumps(data)
-        raise ValueError(
-            f"expected Course, Given, Count, Both, Either, or Do; found none of those ({dbg})"
-        )
-
-    def validate(self, *, ctx: RequirementContext):
-        if isinstance(self.rule, CourseRule):
-            self.rule.validate()
-        elif isinstance(self.rule, ActionRule):
-            self.rule.validate()
-        elif isinstance(self.rule, FromRule):
-            self.rule.validate(ctx=ctx)
-        elif isinstance(self.rule, CountRule):
-            self.rule.validate(ctx=ctx)
-        elif isinstance(self.rule, ReferenceRule):
-            self.rule.validate(ctx=ctx)
-        else:
-            raise ValueError(f"panic! unknown type of rule was constructed {self.rule}")
-
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        logging.debug(f"{path} finding solutions for {self.rule}")
-
-        if isinstance(self.rule, CourseRule):
-            yield from self.rule.solutions(path=path)
-        elif isinstance(self.rule, ActionRule):
-            yield from self.rule.solutions(ctx=ctx, path=path)
-        elif isinstance(self.rule, FromRule):
-            yield from self.rule.solutions(ctx=ctx, path=path)
-        elif isinstance(self.rule, CountRule):
-            yield from self.rule.solutions(ctx=ctx, path=path)
-        elif isinstance(self.rule, ReferenceRule):
-            yield from self.rule.solutions(ctx=ctx, path=path)
-        else:
-            raise ValueError(
-                f"panic! unknown type of rule was constructed {self.rule} (at {path})"
-            )
-
-        logging.debug(f"{path} all solutions found for {self.rule}")
+    raise ValueError(
+        f"expected Course, Given, Count, Both, Either, or Do; found none of those ({data})"
+    )
 
 
-@dataclass(frozen=True)
-class Solution:
-    rule: RuleTypeUnion
-
-
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class RequirementContext:
-    transcript: List[CourseInstance]
-    saves: Dict[str, SaveRule]
-    child_requirements: Dict[str, Requirement]
+    transcript: List[CourseInstance] = field(default_factory=list)
+    save_rules: Dict[str, SaveRule] = field(default_factory=dict)
+    requirements: Dict[str, Requirement] = field(default_factory=dict)
+    requirement_results: Dict[str, RequirementSolution] = field(default_factory=dict)
+
+    def record_save(self, save_stuff):
+        ...
+
+    def record_requirement(self, req_stuff):
+        ...
+
+
+class CourseStatus(Enum):
+    Ok = 0
+    InProgress = 1
+    DidNotComplete = 2
+    Repeated = 3
 
 
 @dataclass(frozen=True)
 class CourseInstance:
-    data: Dict[str, Any]
+    credits: decimal.Decimal
+    subject: List[str]
+    number: int
+    section: Optional[str]
+
+    transcript_code: str
+    clbid: int
+    gereqs: List[str]
+    term: Term
+
+    is_lab: bool
+    is_flac: bool
+    is_ace: bool
+
+    name: str
+    grade: decimal.Decimal
+
+    gradeopt: str
+    level: int
+    attributes: List[str]
+
+    status: CourseStatus
 
     def to_dict(self):
-        return {"type": "course", "data": self.data}
+        return {**self.__dict__, "type": "course"}
 
     @staticmethod
-    def from_s(course: str) -> CourseInstance:
-        return CourseInstance.from_dict(course=course)
+    def from_dict(*, grade, transcript_code=None, graded, credits, subjects=None, course, number=None, attributes=None, name, section, clbid, gereqs, term, lab, is_repeat, incomplete, semester, year) -> CourseInstance:
+        status = CourseStatus.Ok
 
-    @staticmethod
-    def from_dict(**kwargs) -> CourseInstance:
-        data = {
-            "course": kwargs["course"],
-            "subject": [kwargs["course"].split(" ")[0]],
-            "number": int(kwargs["course"].split(" ")[1]),
-            "level": int(kwargs["course"].split(" ")[1]) // 100 * 100,
-            "attributes": kwargs.get("attributes", []),
-        }
-        return CourseInstance(data=data)
+        if grade == 'IP':
+            status = CourseStatus.InProgress
 
-    def update(self, **kwargs):
-        return CourseInstance(data={**self.data, **kwargs})
+        if transcript_code == '':
+            transcript_code = None
+
+        if transcript_code == 'R':
+            status = CourseStatus.Repeated
+
+        # TODO: handle did-not-complete courses
+
+        clbid = int(clbid)
+        term = Term(term)
+
+        gradeopt = graded
+
+        is_lab = lab
+        is_flac = False
+        is_ace = False
+
+        grade = grade_from_str(grade)
+
+        credits = decimal.Decimal(credits).quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_DOWN)
+
+        subject = subjects if subjects is not None else [course.split(" ")[0]]
+        subject = list(expand_subjects(subject))
+        # we want to keep the original shorthand course identity for matching purposes
+
+        number = number if number is not None else int(course.split(" ")[1])
+
+        section = section if section != '' else None
+
+        level = number // 100 * 100
+
+        attributes = attributes if attributes is not None else []
+
+        return CourseInstance(
+            status=status, credits=credits, subject=subject, number=number,
+            section=section, transcript_code=transcript_code, clbid=clbid,
+            gereqs=gereqs, term=term, is_lab=is_lab, name=name, grade=grade,
+            gradeopt=gradeopt, level=level, attributes=attributes,
+            is_flac=is_flac, is_ace=is_ace,
+        )
 
     def course(self):
-        return self.data["course"]
+        return f"{self.subject.join('/')} {self.number}"
 
     def __str__(self):
         return f"{self.course()}"
@@ -855,11 +896,11 @@ class CourseInstance:
             logging.debug(f"or-clause")
             return any(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, SingleClause):
-            if clause.key in self.data:
+            if clause.key in self.__dict__:
                 logging.debug(f'single-clause, key "{clause.key}" exists')
-                return clause.compare(self.data[clause.key])
+                return clause.compare(self.__dict__[clause.key])
             logging.debug(
-                f'single-clause, key "{clause.key}" not found in {list(self.data.keys())}'
+                f'single-clause, key "{clause.key}" not found in {list(self.__dict__.keys())}'
             )
             return False
 
@@ -898,7 +939,7 @@ class Requirement:
 
         result = data.get("result", None)
         if result is not None:
-            result = Rule.load(result)
+            result = load_rule(result)
 
         saves = {
             name: SaveRule.load(name, s) for name, s in data.get("saves", {}).items()
@@ -934,22 +975,24 @@ class Requirement:
         for save in self.saves.values():
             new_ctx = RequirementContext(
                 transcript=ctx.transcript,
-                saves={name: s for name, s in validated_saves.items()},
-                child_requirements=children,
+                save_rules={name: s for name, s in validated_saves.items()},
+                requirements=children,
             )
             save.validate(ctx=new_ctx)
             validated_saves[save.name] = save
 
         new_ctx = RequirementContext(
             transcript=ctx.transcript,
-            saves={name: s for name, s in self.saves.items() or {}},
-            child_requirements=children,
+            save_rules={name: s for name, s in self.saves.items() or {}},
+            requirements=children,
         )
 
         if self.result is not None:
             self.result.validate(ctx=new_ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
+        ctx = copy.deepcopy(ctx)
+
         path = [*path, f"$req->{self.name}"]
 
         header = f'{path}\n\trequirement "{self.name}"'
@@ -971,8 +1014,8 @@ class Requirement:
 
         new_ctx = RequirementContext(
             transcript=ctx.transcript,
-            saves={s.name: s for s in self.saves.values()},
-            child_requirements={r.name: r for r in self.requirements.values()},
+            save_rules={s.name: s for s in self.saves.values()},
+            requirements={r.name: r for r in self.requirements.values()},
         )
 
         path = [*path, ".result"]
@@ -1029,7 +1072,7 @@ class AreaOfStudy:
         requirements = {
             name: Requirement.load(name, r) for name, r in data["requirements"].items()
         }
-        result = Rule.load(data["result"])
+        result = load_rule(data["result"])
 
         return AreaOfStudy(
             name=data["name"],
@@ -1057,7 +1100,7 @@ class AreaOfStudy:
             assert self.degree in ["Bachelor of Arts", "Bachelor of Music"]
 
         ctx = RequirementContext(
-            transcript=[], saves={}, child_requirements=self.requirements
+            transcript=[], save_rules={}, requirements=self.requirements
         )
 
         self.result.validate(ctx=ctx)
@@ -1068,8 +1111,8 @@ class AreaOfStudy:
 
         ctx = RequirementContext(
             transcript=transcript,
-            saves={},
-            child_requirements={name: r for name, r in self.requirements.items()},
+            save_rules={},
+            requirements={name: r for name, r in self.requirements.items()},
         )
 
         new_path = [*path, ".result"]
@@ -1085,7 +1128,11 @@ class AreaSolution:
     area: AreaOfStudy
 
     def to_dict(self):
-        return {**self.area.to_dict(), **self.solution.to_dict(), "type": "area"}
+        return {
+            **self.area.to_dict(),
+            "type": "area",
+            "result": self.solution.to_dict(),
+        }
 
     def audit(self, *, transcript: List[CourseInstance]):
         path = ["$root"]
@@ -1093,32 +1140,8 @@ class AreaSolution:
 
         ctx = RequirementContext(
             transcript=transcript,
-            saves={},
-            child_requirements={name: r for name, r in self.area.requirements.items()},
+            save_rules={},
+            requirements={name: r for name, r in self.area.requirements.items()},
         )
 
         new_path = [*path, ".result"]
-        # for sol in self.result.solutions(ctx=ctx, path=new_path):
-        #     yield AreaSolution(solution=sol)
-
-
-def load_area(stream: TextIO) -> AreaOfStudy:
-    data = yaml.load(stream=stream, Loader=yaml.SafeLoader)
-
-    return AreaOfStudy.load(data)
-
-
-def take(iterable, n):
-    for i, item in enumerate(iterable):
-        yield item
-        if i + 1 >= n:
-            break
-
-
-def count(iterable, print_every=None):
-    counter = 0
-    for item in iterable:
-        counter += 1
-        if print_every is not None and counter % print_every == 0:
-            print(f"... {counter}")
-    return counter
