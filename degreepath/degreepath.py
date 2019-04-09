@@ -866,7 +866,8 @@ class CourseInstance:
         subject = list(expand_subjects(subject))
         # we want to keep the original shorthand course identity for matching purposes
 
-        number = number if number is not None else int(course.split(" ")[1])
+        number = number if number is not None else course.split(" ")[1]
+        number = int(number)
 
         section = section if section != '' else None
 
@@ -881,6 +882,12 @@ class CourseInstance:
             gradeopt=gradeopt, level=level, attributes=attributes,
             is_flac=is_flac, is_ace=is_ace,
         )
+
+    def attach_attrs(self, attributes=None):
+        if attributes is None:
+            attributes = []
+
+        return dataclass.replace(self, attributes=attributes)
 
     def course(self):
         return f"{self.subject.join('/')} {self.number}"
