@@ -45,6 +45,13 @@ class CountRule:
     count: int
     of: List[Rule]
 
+    def to_dict(self):
+        return {
+            "type": "count",
+            "count": self.count,
+            "of": [item.to_dict() for item in self.of],
+        }
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "count" in data and "of" in data:
@@ -102,6 +109,8 @@ class CountRule:
 
         did_iter = False
 
+        # TODO: greedy mode?
+
         for combo in itertools.combinations(self.of, self.count):
             did_iter = True
 
@@ -112,16 +121,24 @@ class CountRule:
 
             for i, ruleset in enumerate(itertools.product(*with_solutions)):
                 msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
-                yield CountSolution(items=list(ruleset))
+                yield CountSolution(items=list(ruleset), rule=self)
 
         if not did_iter:
             # be sure that we always yield something
-            yield CountSolution(items=[])
+            yield CountSolution(items=[], rule=self)
 
 
 @dataclass(frozen=True)
 class CountSolution:
     items: List[Solution]
+    rule: CountRule
+
+    def to_dict(self):
+        return {
+            **self.rule.to_dict(),
+            "type": "count",
+            "of": [item.to_dict() for item in self.items],
+        }
 
     def audit(self):
         ...
@@ -130,6 +147,9 @@ class CountSolution:
 @dataclass(frozen=True)
 class CourseRule:
     course: str
+
+    def to_dict(self):
+        return {"type": "course", "course": self.course}
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -152,12 +172,16 @@ class CourseRule:
     def solutions(self, *, path: List[str]):
         logging.debug(f'{path}\n\treference to course "{self.course}"')
 
-        yield CourseSolution(course=self.course)
+        yield CourseSolution(course=self.course, rule=self)
 
 
 @dataclass(frozen=True)
 class CourseSolution:
     course: str
+    rule: CourseRule
+
+    def to_dict(self):
+        return {**self.rule.to_dict(), "type": "course", "course": self.course}
 
     def audit(self):
         path = [*path, f"$c->{self.course}"]
@@ -187,6 +211,9 @@ class CourseSolution:
 class AndClause:
     children: Sequence[Clause]
 
+    def to_dict(self):
+        return {"type": "and-clause", "children": [c.to_dict() for c in self.children]}
+
     @staticmethod
     def load(data: List[Dict]) -> Clause:
         clauses = []
@@ -201,6 +228,9 @@ class AndClause:
 @dataclass(frozen=True)
 class OrClause:
     children: Sequence[Clause]
+
+    def to_dict(self):
+        return {"type": "or-clause", "children": [c.to_dict() for c in self.children]}
 
     @staticmethod
     def load(data: Dict) -> Clause:
@@ -218,6 +248,13 @@ class SingleClause:
     key: str
     expected: Any
     operator: Operator
+
+    def to_dict(self):
+        return {
+            "type": "single-clause",
+            "expected": self.expected,
+            "operator": self.operator.name,
+        }
 
     @staticmethod
     def load(data: Dict) -> Clause:
@@ -271,6 +308,9 @@ class Limit:
     at_most: int
     where: Clause
 
+    def to_dict(self):
+        return {"type": "limit", "at_most": self.at_most, "where": self.where.to_dict()}
+
     @staticmethod
     def load(data: Dict) -> Limit:
         return Limit(at_most=data["at_most"], where=SingleClause.load(data["where"]))
@@ -294,6 +334,15 @@ class FromAssertion:
     source: str
     operator: Operator
     compare_to: Union[str, int, float]
+
+    def to_dict(self):
+        return {
+            "type": "from-assertion",
+            "command": self.command,
+            "source": self.source,
+            "operator": self.operator.name,
+            "compare_to": self.compare_to,
+        }
 
     @staticmethod
     def load(data: Dict) -> FromAssertion:
@@ -392,6 +441,15 @@ class FromInput:
     requirements: List[str]
     saves: List[str]
 
+    def to_dict(self):
+        return {
+            "type": "from-input",
+            "mode": self.mode,
+            "itemtype": self.itemtype,
+            "requirements": self.requirements,
+            "saves": self.saves,
+        }
+
     @staticmethod
     def load(data: Dict) -> FromInput:
         saves: List[str] = []
@@ -469,6 +527,15 @@ class FromRule:
     limit: Optional[Limit]
     where: Optional[Clause]
     store: Optional[str]
+
+    def to_dict(self):
+        return {
+            "type": "from",
+            "source": self.source.to_dict(),
+            "action": self.action.to_dict() if self.action else None,
+            "where": self.where.to_dict() if self.where else None,
+            "store": self.store,
+        }
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -553,7 +620,7 @@ class FromRule:
 
             if self.store == "courses":
                 logging.debug("storing courses")
-                yield FromSolution(output=data, action=None)
+                yield FromSolution(output=data, rule=self)
                 return
             elif self.store:
                 raise Exception("not implemented yet")
@@ -563,18 +630,21 @@ class FromRule:
             for n in self.action.range(items=data):
                 did_iter = True
                 for combo in itertools.combinations(data, n):
-                    yield FromSolution(output=combo, action=self.action)
+                    yield FromSolution(output=combo, rule=self)
 
         if not did_iter:
             # be sure we always yield something
             logging.info("did not yield anything; yielding empty collection")
-            yield FromSolution(output=[], action=self.action)
+            yield FromSolution(output=[], rule=self)
 
 
 @dataclass(frozen=True)
 class SaveRule:
     innards: FromRule
     name: str
+
+    def to_dict(self):
+        return {**self.innards.to_dict(), "type": "save", "name": self.name}
 
     @staticmethod
     def load(name: str, data: Dict) -> SaveRule:
@@ -596,7 +666,14 @@ class SaveRule:
 @dataclass(frozen=True)
 class FromSolution:
     output: Sequence[Union[CourseInstance, Term, Grade, Semester]]
-    action: Optional[FromAssertion]
+    rule: FromRule
+
+    def to_dict(self):
+        return {
+            **self.rule.to_dict(),
+            "type": "from",
+            "output": [x.to_dict() for x in self.output],
+        }
 
     def stored(self):
         return self.output
@@ -606,20 +683,32 @@ class FromSolution:
 class Term:
     pass
 
+    def to_dict(self):
+        return {"type": "term"}
+
 
 @dataclass(frozen=True)
 class Grade:
     pass
+
+    def to_dict(self):
+        return {"type": "grade"}
 
 
 @dataclass(frozen=True)
 class Semester:
     pass
 
+    def to_dict(self):
+        return {"type": "semester"}
+
 
 @dataclass(frozen=True)
 class ReferenceRule:
     requirement: str
+
+    def to_dict(self):
+        return {"type": "reference", "name": self.requirement}
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -658,6 +747,9 @@ RuleTypeUnion = Union[CourseRule, CountRule, FromRule, ActionRule, ReferenceRule
 @dataclass(frozen=True)
 class Rule:
     rule: RuleTypeUnion
+
+    def to_dict(self):
+        return self.rule.to_dict()
 
     @staticmethod
     def load(data: Dict) -> Rule:
@@ -728,6 +820,9 @@ class RequirementContext:
 class CourseInstance:
     data: Dict[str, Any]
 
+    def to_dict(self):
+        return {"type": "course", "data": self.data}
+
     @staticmethod
     def from_s(course: str) -> CourseInstance:
         return CourseInstance.from_dict(course=course)
@@ -780,6 +875,19 @@ class Requirement:
     result: Optional[Rule] = None
     audited_by: Optional[str] = None
     contract: bool = False
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "saves": {name: s.to_dict() for name, s in self.saves.items()},
+            "requirements": {
+                name: r.to_dict() for name, r in self.requirements.items()
+            },
+            "message": self.message,
+            "result": self.result.to_dict(),
+            "audited_by": self.audited_by,
+            "contract": self.contract,
+        }
 
     @staticmethod
     def load(name: str, data: Dict[str, Any]) -> Requirement:
@@ -869,15 +977,24 @@ class Requirement:
 
         path = [*path, ".result"]
         for sol in self.result.solutions(ctx=new_ctx, path=path):
-            yield RequirementSolution(solution=sol)
+            yield RequirementSolution(solution=sol, requirement=self)
 
 
 @dataclass(frozen=True)
 class RequirementSolution:
     solution: Any
+    requirement: Requirement
 
     def matched(self):
         return self.solution
+
+    def to_dict(self):
+        limited_req = {
+            k: v
+            for k, v in self.requirement.to_dict().items()
+            if k not in ["requirements"]
+        }
+        return {**limited_req, "type": "requirement", "result": self.solution.to_dict()}
 
 
 @dataclass(frozen=True)
@@ -893,6 +1010,19 @@ class AreaOfStudy:
     requirements: Dict[str, Requirement]
 
     attributes: Dict
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "type": self.kind,
+            "degree": self.degree,
+            "catalog": self.catalog,
+            "result": self.result.to_dict(),
+            "requirements": {
+                name: r.to_dict() for name, r in self.requirements.items()
+            },
+            "attributes": self.attributes,
+        }
 
     @staticmethod
     def load(data: Dict) -> AreaOfStudy:
@@ -943,9 +1073,33 @@ class AreaOfStudy:
         )
 
         new_path = [*path, ".result"]
-        yield from self.result.solutions(ctx=ctx, path=new_path)
+        for sol in self.result.solutions(ctx=ctx, path=new_path):
+            yield AreaSolution(solution=sol, area=self)
 
         logging.debug(f"{path}\n\tall solutions generated")
+
+
+@dataclass(frozen=True)
+class AreaSolution:
+    solution: Any
+    area: AreaOfStudy
+
+    def to_dict(self):
+        return {**self.area.to_dict(), **self.solution.to_dict(), "type": "area"}
+
+    def audit(self, *, transcript: List[CourseInstance]):
+        path = ["$root"]
+        logging.debug(f"{path}\n\tauditing area.result")
+
+        ctx = RequirementContext(
+            transcript=transcript,
+            saves={},
+            child_requirements={name: r for name, r in self.area.requirements.items()},
+        )
+
+        new_path = [*path, ".result"]
+        # for sol in self.result.solutions(ctx=ctx, path=new_path):
+        #     yield AreaSolution(solution=sol)
 
 
 def load(stream: TextIO) -> AreaOfStudy:
@@ -1017,12 +1171,13 @@ if __name__ == "__main__":
 
             start = time.perf_counter()
 
-            # the_count = 0
-            # for sol in area.solutions(transcript=this_transcript):
-            #     the_count += 1
-            #     # pprint.pprint(sol)
+            the_count = 0
+            for sol in area.solutions(transcript=this_transcript):
+                the_count += 1
+                print(json.dumps(sol.to_dict(), indent=4))
+                print()
 
-            the_count = count(area.solutions(transcript=transcript), print_every=1_000)
+            # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
 
             print(f"{the_count} possible solutions")
             end = time.perf_counter()
