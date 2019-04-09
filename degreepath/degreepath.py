@@ -1077,7 +1077,7 @@ class AreaOfStudy:
     @staticmethod
     def load(data: Dict) -> AreaOfStudy:
         requirements = {
-            name: Requirement.load(name, r) for name, r in data["requirements"].items()
+            name: Requirement.load(name, r) for name, r in data.get("requirements", {}).items()
         }
         result = load_rule(data["result"])
 
