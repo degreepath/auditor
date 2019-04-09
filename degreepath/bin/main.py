@@ -40,58 +40,57 @@ def count(iterable, print_every=None):
 
 
 @click.command()
-@click.argument('student_file', type=click.Path(exists=True))
+@click.argument('student_file', nargs=-1, type=click.Path(exists=True))
 def main(student_file):
     """Audits a student against their areas of study."""
 
-    with open(student_file, "r", encoding="utf-8") as infile:
-        data = json.load(infile)
+    area_files = []
+    for f in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
+        with open(f, "r", encoding="utf-8") as infile:
+            area_files.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
 
-    print(data)
-    transcript = [CourseInstance.from_dict(**row) for row in data["courses"]]
-    for c in transcript:
-        pprint.pprint(c)
-    return
 
-    # for file in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
-    for file in [
-        # "./gobbldygook-area-data/2018-19/major/computer-science.yaml",
-        # "./gobbldygook-area-data/2018-19/major/asian-studies.yaml",
-        # "./gobbldygook-area-data/2018-19/major/womens-and-gender-studies.yaml"
-        # "./sample-simple-area.yaml"
-    ]:
-        print(f"processing {file}")
+    for file in student_file:
+        print(f"auditing {file}")
+
         with open(file, "r", encoding="utf-8") as infile:
-            area = load_area(infile)
+            data = json.load(infile)
 
-        area.validate()
+        transcript = [CourseInstance.from_dict(**row) for row in data["courses"]]
 
-        this_transcript = [
-            c.update(attributes=area.attributes["courses"].get(c.course(), []))
-            for c in transcript
-        ]
+        areas = [m for m in data['majors'] if m == 'Exercise Science']
 
+        for area_name in areas:
+            area = AreaOfStudy.load(next(a for a in area_files if a['type'] == 'major' and a['name'] == area_name))
 
-        outname = f'./tmp/{area.kind}/{area.name.replace("/", "_")}.json'
-        with open(outname, "w", encoding="utf-8") as outfile:
-            jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
-            outfile.write(jsonpickle.encode(area, unpicklable=True))
+            area.validate()
 
-        start = time.perf_counter()
+            this_transcript = []
+            for c in transcript:
+                if area.attributes.get('courses', None):
+                    c = c.attach_attrs(attributes=area.attributes["courses"].get(c.course(), []))
+                this_transcript.append(c)
 
-        the_count = 0
-        for sol in area.solutions(transcript=this_transcript):
-            the_count += 1
-            print(sol)
-            print(yaml.dump(sol.to_dict(), indent=4))
+            outname = f'./tmp/{area.kind}/{data["stnum"]}.{area.name.replace("/", "_")}.json'
+            with open(outname, "w", encoding="utf-8") as outfile:
+                jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
+                outfile.write(jsonpickle.encode(area, unpicklable=True))
+
+            start = time.perf_counter()
+
+            the_count = 0
+            for sol in area.solutions(transcript=this_transcript):
+                the_count += 1
+                print(sol)
+                print(yaml.dump(sol.to_dict(), indent=4))
+                print()
+
+            # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
+
+            print(f"{the_count} possible solutions")
+            end = time.perf_counter()
+            print(f"time: {end - start}")
             print()
-
-        # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
-
-        print(f"{the_count} possible solutions")
-        end = time.perf_counter()
-        print(f"time: {end - start}")
-        print()
 
 if __name__ == "__main__":
 
