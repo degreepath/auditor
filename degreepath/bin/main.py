@@ -47,11 +47,10 @@ def count(iterable, print_every=None):
 def main(student_file):
     """Audits a student against their areas of study."""
 
-
     # target = 'Exercise Science'
     # file_glob = glob.iglob("./gobbldygook-area-data/2015-16/*/exercise-science.yaml")
 
-     target = 'Social Work'
+    target = 'Social Work'
     file_glob = glob.iglob("./gobbldygook-area-data/2018-19/*/swrk.yaml")
 
     students = []
