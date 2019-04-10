@@ -83,18 +83,18 @@ class CountRule:
 
         assert lo < hi
 
-        # for n in range(lo, hi):
-        for combo in itertools.combinations(self.of, lo):
-            did_iter = True
+        for n in range(lo, hi):
+            for combo in itertools.combinations(self.of, lo):
+                did_iter = True
 
-            with_solutions = [
-                rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
-                for i, rule in enumerate(combo)
-            ]
+                with_solutions = [
+                    rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
+                    for i, rule in enumerate(combo)
+                ]
 
-            for i, ruleset in enumerate(itertools.product(*with_solutions)):
-                msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
-                yield CountSolution(items=list(ruleset), choices=self.of, rule=self)
+                for i, ruleset in enumerate(itertools.product(*with_solutions)):
+                    msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
+                    yield CountSolution(items=list(ruleset), choices=self.of, rule=self)
 
         if not did_iter:
             # be sure that we always yield something
