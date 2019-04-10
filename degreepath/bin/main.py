@@ -12,9 +12,9 @@ import jsonpickle
 from degreepath import CourseInstance, AreaOfStudy
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 logformat = "%(levelname)s %(message)s"
-coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
 
 def load_area(stream):
@@ -45,7 +45,7 @@ def main(student_file):
     """Audits a student against their areas of study."""
 
     area_files = []
-    for f in glob.iglob("./gobbldygook-area-data/2018-19/*/*.yaml"):
+    for f in glob.iglob("./gobbldygook-area-data/2018-19/*/exercise-science.yaml"):
         with open(f, "r", encoding="utf-8") as infile:
             area_files.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
 
@@ -81,9 +81,9 @@ def main(student_file):
             the_count = 0
             for sol in area.solutions(transcript=this_transcript):
                 the_count += 1
-                print(sol)
-                print(yaml.dump(sol.to_dict(), indent=4))
-                print()
+                # print(sol)
+                # print(yaml.dump(sol.to_dict(), indent=4))
+                # print()
 
             # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
 
