@@ -108,17 +108,23 @@ class CountRule:
 
         # TODO: greedy mode?
 
-        for combo in itertools.combinations(self.of, self.count):
-            did_iter = True
+        lo = self.count
+        hi = len(self.of) + 1
 
-            with_solutions = [
-                rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
-                for i, rule in enumerate(combo)
-            ]
+        assert lo < hi
 
-            for i, ruleset in enumerate(itertools.product(*with_solutions)):
-                msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
-                yield CountSolution(items=list(ruleset), rule=self)
+        for n in range(lo, hi):
+            for combo in itertools.combinations(self.of, n):
+                did_iter = True
+
+                with_solutions = [
+                    rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
+                    for i, rule in enumerate(combo)
+                ]
+
+                for i, ruleset in enumerate(itertools.product(*with_solutions)):
+                    msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
+                    yield CountSolution(items=list(ruleset), rule=self)
 
         if not did_iter:
             # be sure that we always yield something
