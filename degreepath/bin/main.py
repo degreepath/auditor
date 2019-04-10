@@ -5,6 +5,7 @@ import json
 import sys
 import pprint
 import decimal
+import collections
 
 import click
 import coloredlogs
@@ -47,26 +48,32 @@ def main(student_file):
     """Audits a student against their areas of study."""
 
 
-    student_files = []
+    # target = 'Exercise Science'
+    # file_glob = glob.iglob("./gobbldygook-area-data/2015-16/*/exercise-science.yaml")
+
+     target = 'Social Work'
+    file_glob = glob.iglob("./gobbldygook-area-data/2018-19/*/swrk.yaml")
+
+    students = []
     for file in student_file:
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
 
-        if 'Exercise Science' in data['majors']:
-            student_files.append(file)
+        if target in data['majors']:
+            students.append(data)
 
 
     area_files = []
-    for f in glob.iglob("./gobbldygook-area-data/2015-16/*/exercise-science.yaml"):
+    for f in file_glob:
         with open(f, "r", encoding="utf-8") as infile:
             area_files.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
 
 
-    for i, file in enumerate(student_files):
-        with open(file, "r", encoding="utf-8") as infile:
-            data = json.load(infile)
+    # print(area_files)
 
-        print(f"auditing {file}", file=sys.stderr)
+
+    for i, data in enumerate(students):
+        print(f"auditing {data['stnum']}", file=sys.stderr)
 
         transcript = []
         for row in data["courses"]:
@@ -75,7 +82,7 @@ def main(student_file):
             except:
                 continue
 
-        areas = [m for m in data['majors'] if m == 'Exercise Science']
+        areas = [m for m in data['majors'] if m == target]
 
         for area_name in areas:
             area = AreaOfStudy.load(next(a for a in area_files if a['type'] == 'major' and a['name'] == area_name))
@@ -103,17 +110,17 @@ def main(student_file):
 
             iter_start = time.perf_counter()
             for sol in area.solutions(transcript=this_transcript):
-                iter_end = time.perf_counter()
-                times.append(iter_end - iter_start)
-                iter_start = time.perf_counter()
-
                 the_count += 1
 
                 if the_count % 500 == 0:
                     printed_count = True
-                    print(f"... {the_count}", file=sys.stderr)
+                    print(f"... {the_count:,}", file=sys.stderr)
 
                 result = sol.audit(transcript=this_transcript)
+
+                iter_end = time.perf_counter()
+                times.append(iter_end - iter_start)
+                iter_start = time.perf_counter()
 
                 if best_sol is None:
                     best_sol = result
@@ -133,20 +140,23 @@ def main(student_file):
 
             with open(f'./output/{"ok" if best_sol.ok() else "fail"}/{data["name"]}.txt', 'w') as outfile:
                 outfile.write(output)
-            # print(output)
+            print(output)
 
         if i < len(student_file):
-            print()
             print()
 
 
 def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     times = [decimal.Decimal(t) for t in iterations]
+    # chunked_times = [t.quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_UP) for t in times]
+    # counter = collections.Counter(chunked_times)
     avg_iter_time = (sum(times) / len(times)).quantize(decimal.Decimal('0.00001'), rounding=decimal.ROUND_UP)
+
+    # print(counter)
 
     endl = '\n'
 
-    yield f"[{stnum}] {name}'s \"{area.name}\" {area.kind}"
+    yield f"[#{stnum}] {name}'s \"{area.name}\" {area.kind}"
 
     if result.ok():
         yield f" audit was successful."
@@ -155,7 +165,7 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
 
     yield endl
 
-    yield f"{count:n} attempts in {elapsed}s (avg {avg_iter_time}s per attempt)"
+    yield f"{count:,} attempts in {elapsed}s (avg {avg_iter_time}s per attempt)"
     yield endl
 
     dictver = result.to_dict()
@@ -173,6 +183,8 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     yield endl
 
     yield endl.join(print_result(dictver))
+
+    yield endl
 
 
 def print_result(rule, indent=0):
