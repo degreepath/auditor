@@ -11,7 +11,7 @@ import coloredlogs
 import yaml
 import jsonpickle
 
-from degreepath.esth import CourseInstance, AreaOfStudy
+from degreepath.esth import CourseInstance, AreaOfStudy, CourseStatus
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -47,12 +47,13 @@ def main(student_file):
     """Audits a student against their areas of study."""
 
 
+    student_files = []
     for file in student_file:
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
 
-        if 'Exercise Science' not in data['majors']:
-            continue
+        if 'Exercise Science' in data['majors']:
+            student_files.append(file)
 
 
     area_files = []
@@ -61,12 +62,9 @@ def main(student_file):
             area_files.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
 
 
-    for file in student_file:
+    for i, file in enumerate(student_files):
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
-
-        if 'Exercise Science' not in data['majors']:
-            continue
 
         print(f"auditing {file}", file=sys.stderr)
 
@@ -97,67 +95,131 @@ def main(student_file):
 
             start = time.perf_counter()
 
+            printed_count = False
             best_sol = None
             the_count = 0
+
+            times = []
+
+            iter_start = time.perf_counter()
             for sol in area.solutions(transcript=this_transcript):
+                iter_end = time.perf_counter()
+                times.append(iter_end - iter_start)
+                iter_start = time.perf_counter()
+
                 the_count += 1
 
                 if the_count % 500 == 0:
+                    printed_count = True
                     print(f"... {the_count}", file=sys.stderr)
 
                 result = sol.audit(transcript=this_transcript)
 
-                # print(json.dumps(result.to_dict()))
-
                 if best_sol is None:
                     best_sol = result
 
-                # print(result.rank(), best_sol.rank())
-
                 if result.rank() > best_sol.rank():
-                    # print('found better')
                     best_sol = result
 
                 if result.ok():
                     break
 
-            # the_count = count(area.solutions(transcript=transcript), print_every=1_000)
-
-            output = ""
-
-            output += f"{the_count} attempted solutions"
-
-            if best_sol.ok():
-                ok = True
-                output += f"\n{data['name']}'s \"{area.name}\" {area.kind} audit was successful."
-            else:
-                ok = False
-                output += f"\n{data['name']}'s \"{area.name}\" {area.kind} audit failed."
-
-            dictver = best_sol.to_dict()
-
-            # print(f"The best solution we found was:")
-            # print(json.dumps(dictver))
-
-            output += '\nResults:\n'
-
-            output += '\n'.join(print_result(dictver))
+            print()
 
             end = time.perf_counter()
-            output += f"\ntime: {decimal.Decimal(end - start).quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_UP)}s"
+            elapsed = decimal.Decimal(end - start).quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_UP)
 
-            with open(f'./output/{"ok" if ok else "fail"}/{data["stnum"]}.txt', 'w') as outfile:
+            output = ''.join(summarize(name=data['name'], stnum=data['stnum'], area=area, result=best_sol, count=the_count, elapsed=elapsed, iterations=times))
+
+            with open(f'./output/{"ok" if best_sol.ok() else "fail"}/{data["name"]}.txt', 'w') as outfile:
                 outfile.write(output)
+            # print(output)
+
+        if i < len(student_file):
+            print()
+            print()
+
+
+def summarize(*, name, stnum, area, result, count, elapsed, iterations):
+    times = [decimal.Decimal(t) for t in iterations]
+    avg_iter_time = (sum(times) / len(times)).quantize(decimal.Decimal('0.00001'), rounding=decimal.ROUND_UP)
+
+    endl = '\n'
+
+    yield f"[{stnum}] {name}'s \"{area.name}\" {area.kind}"
+
+    if result.ok():
+        yield f" audit was successful."
+    else:
+        yield f" audit failed."
+
+    yield endl
+
+    yield f"{count:n} attempts in {elapsed}s (avg {avg_iter_time}s per attempt)"
+    yield endl
+
+    dictver = result.to_dict()
+
+    # print(f"The best solution we found was:")
+    # print(json.dumps(dictver))
+
+    yield endl
+
+    yield 'Results'
+    yield endl
+    yield '======='
+
+    yield endl
+    yield endl
+
+    yield endl.join(print_result(dictver))
 
 
 def print_result(rule, indent=0):
     prefix = ' ' * indent
     if 'course' in rule:
-        yield f"{prefix}{rule['course']}: {'ok' if rule['ok'] else 'missing'}"
+        if rule['ok']:
+            if rule['status'] == CourseStatus.Ok:
+                status = '✅ ok'
+            elif rule['status'] == CourseStatus.DidNotComplete:
+                status = '⛔️ incomplete'
+            elif rule['status'] == CourseStatus.InProgress:
+                status = '✅ in-progress'
+            elif rule['status'] == CourseStatus.Repeated:
+                status = '✅ repeat'
+            elif rule['status'] == CourseStatus.NotTaken:
+                status = '❌ not taken'
+        else:
+            status = '❌ not taken'
+
+        yield f"{prefix}{rule['course']}: {status}"
     else:
-        yield f"{prefix}{len(rule['items'])} of:"
+        if rule['ok']:
+            emoji = '✅'
+        else:
+            emoji = '⚠️'
+
+        if len(rule['choices']) == 2 and len(rule['items']) == 1:
+            descr = 'either of'
+        elif len(rule['choices']) == 2 and len(rule['items']) == 2:
+            descr = 'both of'
+        elif len(rule['choices']) == len(rule['items']):
+            descr = 'all of'
+        elif len(rule['items']) == 1:
+            descr = 'any of'
+        else:
+            descr = f"{len(rule['items'])} of {len(rule['choices'])}"
+
+        yield f"{prefix}{descr}: {emoji}"
+
         for r in rule['items']:
             yield from print_result(r, indent=indent+2)
+
+        passed_courses = set(c['course'] for c in rule['items'] if 'course' in c)
+        other_courses = sorted(set(c['course'] for c in rule['choices'] if 'course' in c).difference(passed_courses))
+
+        for c in other_courses:
+            yield f"{' ' * (indent + 2)}{c}: skipped"
 
 if __name__ == "__main__":
 

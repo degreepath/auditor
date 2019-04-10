@@ -83,27 +83,28 @@ class CountRule:
 
         assert lo < hi
 
-        for n in range(lo, hi):
-            for combo in itertools.combinations(self.of, n):
-                did_iter = True
+        # for n in range(lo, hi):
+        for combo in itertools.combinations(self.of, lo):
+            did_iter = True
 
-                with_solutions = [
-                    rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
-                    for i, rule in enumerate(combo)
-                ]
+            with_solutions = [
+                rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
+                for i, rule in enumerate(combo)
+            ]
 
-                for i, ruleset in enumerate(itertools.product(*with_solutions)):
-                    msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
-                    yield CountSolution(items=list(ruleset), rule=self)
+            for i, ruleset in enumerate(itertools.product(*with_solutions)):
+                msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
+                yield CountSolution(items=list(ruleset), choices=self.of, rule=self)
 
         if not did_iter:
             # be sure that we always yield something
-            yield CountSolution(items=[], rule=self)
+            yield CountSolution(items=[], choices=self.of, rule=self)
 
 
 @dataclass(frozen=True)
 class CountSolution:
     items: List[Any]
+    choices: List[Any]
     rule: CountRule
 
     def to_dict(self):
@@ -142,31 +143,33 @@ class CountSolution:
 
         assert best_combo
 
-        return CountResult(items=best_combo)
+        return CountResult(items=best_combo, choices=self.choices)
 
 
 
 @dataclass(frozen=True)
 class CountResult:
     items: List
+    choices: List
 
     def to_dict(self):
-        return {'ok': self.ok(), 'rank': self.rank(), 'items': [x.to_dict() for x in self.items]}
+        return {'ok': self.ok(), 'rank': self.rank(), 'items': [x.to_dict() for x in self.items], 'choices': [x.to_dict() for x in self.choices]}
 
     def ok(self) -> bool:
         return all(r.ok() for r in self.items)
 
     def rank(self):
-        return sum(r.rank() for r in self.items) / len(self.items)
+        return sum(r.rank() for r in self.items)
 
 
 @dataclass(frozen=True)
 class CourseResult:
     course: str
+    status: CourseStatus
     success: bool
 
     def to_dict(self):
-        return {'ok': self.ok(), 'rank': self.rank(), 'course': self.course}
+        return {'ok': self.ok(), 'rank': self.rank(), 'course': self.course, 'status': self.status}
 
     def ok(self) -> bool:
         return self.success
@@ -219,13 +222,15 @@ class CourseSolution:
         return {**self.rule.to_dict(), "type": "course", "course": self.course}
 
     def audit(self, *, ctx):
-        if not ctx.has_course(self.course):
-            logging.debug(
-                f'course "{self.course}" does not exist in the transcript'
-            )
-            return CourseResult(course=self.course, success=False)
+        found_course = ctx.find_course(self.course)
 
-        return CourseResult(course=self.course, success=True)
+        if found_course:
+            return CourseResult(course=self.course, status=found_course.status, success=True)
+
+        logging.debug(
+            f'course "{self.course}" does not exist in the transcript'
+        )
+        return CourseResult(course=self.course, status=CourseStatus.NotTaken, success=False)
 
 
 @dataclass(frozen=True)
@@ -295,8 +300,15 @@ def load_rule(data: Dict) -> Rule:
 class RequirementContext:
     transcript: List[CourseInstance] = field(default_factory=list)
 
-    def has_course(self, c: str) -> bool:
-        return any(course.course() == c for course in self.transcript)
+    def find_course(self, c: str) -> Optional[CourseInstance]:
+        try:
+            return next(
+                course
+                for course in self.transcript
+                if course.status != CourseStatus.DidNotComplete and course.course() == c
+            )
+        except StopIteration:
+            return None
 
 
 class CourseStatus(Enum):
@@ -304,6 +316,7 @@ class CourseStatus(Enum):
     InProgress = 1
     DidNotComplete = 2
     Repeated = 3
+    NotTaken = 4
 
 
 @dataclass(frozen=True)
@@ -346,6 +359,9 @@ class CourseInstance:
 
         if transcript_code == 'R':
             status = CourseStatus.Repeated
+
+        if incomplete:
+            status = CourseStatus.DidNotComplete
 
         # TODO: handle did-not-complete courses
 
