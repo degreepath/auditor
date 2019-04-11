@@ -39,4 +39,6 @@ class CountSolution:
             r.audit(ctx=ctx, path=[*path, f"idx={i}"]) for i, r in enumerate(self.of)
         )
 
-        return CountResult(of=results, ignored=self.ignored, size=self.size, count=self.count)
+        return CountResult(
+            of=results, ignored=self.ignored, size=self.size, count=self.count
+        )

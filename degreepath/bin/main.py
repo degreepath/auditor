@@ -145,7 +145,7 @@ def main(student_file):
 
             subdir = "ok" if best_sol.ok() else "fail"
             filename = f'{data["stnum"]} {data["name"]}.txt'
-            with open(f'./output/{subdir}/{filename}', "w") as outfile:
+            with open(f"./output/{subdir}/{filename}", "w") as outfile:
                 outfile.write(output)
             print(output)
 
@@ -198,7 +198,7 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
 
 def print_result(rule, indent=0):
     prefix = " " * indent
-    if rule.get('type', None) == "course":
+    if rule.get("type", None) == "course":
         if rule.get("ok", None):
             if rule["status"] == CourseStatus.Ok.name:
                 status = "✅ [ ok]"
@@ -215,7 +215,7 @@ def print_result(rule, indent=0):
 
         yield f"{prefix}{status} {rule['course']}"
     else:
-        if 'ok' in rule:
+        if "ok" in rule:
             if rule["ok"]:
                 emoji = "✅"
             else:

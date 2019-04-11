@@ -119,8 +119,12 @@ class CountRule:
                 for i, solutionset in enumerate(itertools.product(*solutions)):
                     logger.debug(f"{path} combo={combo_i}: iteration={i}")
                     solset = list(solutionset)
-                    yield CountSolution(of=solset, ignored=other_children, count=self.count, size=size)
+                    yield CountSolution(
+                        of=solset, ignored=other_children, count=self.count, size=size
+                    )
 
         if not did_iter:
             # ensure that we always yield something
-            yield CountSolution(of=[], ignored=all_children, rule=self, count=self.count, size=size)
+            yield CountSolution(
+                of=[], ignored=all_children, rule=self, count=self.count, size=size
+            )
