@@ -89,7 +89,7 @@ class CountRule:
         assert lo < hi
 
         for n in range(lo, hi):
-            for combo in itertools.combinations(self.of, lo):
+            for combo in itertools.combinations(self.of, n):
                 did_iter = True
 
                 with_solutions = [
