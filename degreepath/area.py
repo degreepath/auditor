@@ -7,6 +7,8 @@ from .rule import Rule, load_rule
 from .data import CourseInstance
 from .requirement import RequirementContext
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class AreaOfStudy:
@@ -65,15 +67,16 @@ class AreaOfStudy:
 
     def solutions(self, *, transcript: List[CourseInstance]):
         path = ["$root"]
-        logging.debug(f"{path}\n\tevaluating area.result")
+        logger.debug(f"{path} evaluating area.result")
 
         ctx = RequirementContext(transcript=transcript)
 
         new_path = [*path, ".result"]
         for sol in self.result.solutions(ctx=ctx, path=new_path):
+            logger.info(f"generated new area solution: {sol}")
             yield AreaSolution(solution=sol, area=self)
 
-        logging.debug(f"{path}\n\tall solutions generated")
+        logger.debug(f"{path} all solutions generated")
 
 
 @dataclass(frozen=True)
@@ -90,13 +93,13 @@ class AreaSolution:
 
     def audit(self, *, transcript: List[CourseInstance]):
         path = ["$root"]
-        logging.debug(f"{path}\n\tauditing area.result")
+        logger.debug(f"{path} auditing area.result")
 
         ctx = RequirementContext(transcript=transcript)
 
         new_path = [*path, ".result"]
 
-        return self.solution.audit(ctx=ctx)
+        return self.solution.audit(ctx=ctx, path=new_path)
 
 
 # @dataclass(frozen=True)
@@ -167,7 +170,7 @@ class AreaSolution:
 
 #     def solutions(self, *, transcript: List[CourseInstance]):
 #         path = ["$root"]
-#         logging.debug(f"{path}\n\tevaluating area.result")
+#         logging.debug(f"{path} evaluating area.result")
 
 #         ctx = RequirementContext(
 #             transcript=transcript,
@@ -179,7 +182,7 @@ class AreaSolution:
 #         for sol in self.result.solutions(ctx=ctx, path=new_path):
 #             yield AreaSolution(solution=sol, area=self)
 
-#         logging.debug(f"{path}\n\tall solutions generated")
+#         logging.debug(f"{path} all solutions generated")
 
 
 # @dataclass(frozen=True)
@@ -196,7 +199,7 @@ class AreaSolution:
 
 #     def audit(self, *, transcript: List[CourseInstance]):
 #         path = ["$root"]
-#         logging.debug(f"{path}\n\tauditing area.result")
+#         logging.debug(f"{path} auditing area.result")
 
 #         ctx = RequirementContext(
 #             transcript=transcript,

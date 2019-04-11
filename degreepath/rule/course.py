@@ -8,6 +8,8 @@ import logging
 from ..requirement import RequirementContext
 from ..solution import CourseSolution
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class CourseRule:
@@ -30,11 +32,12 @@ class CourseRule:
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
         method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
         method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
+
         assert (
             method_a or method_b or method_c
         ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
     def solutions(self, *, ctx: RequirementContext, path: List):
-        logging.debug(f'{path} reference to course "{self.course}"')
+        logger.debug(f'{path} reference to course "{self.course}"')
 
         yield CourseSolution(course=self.course, rule=self)

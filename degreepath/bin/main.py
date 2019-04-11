@@ -15,9 +15,9 @@ import jsonpickle
 from degreepath import CourseInstance, AreaOfStudy, CourseStatus
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-logformat = "%(levelname)s %(message)s"
-coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
+# logger.setLevel(logging.DEBUG)
+# logformat = "%(levelname)s %(name)s: %(message)s"
+# coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
 
 
 def load_area(stream):
@@ -105,7 +105,7 @@ def main(student_file):
             for sol in area.solutions(transcript=this_transcript):
                 the_count += 1
 
-                if the_count % 500 == 0:
+                if the_count % 1_000 == 0:
                     printed_count = True
                     print(f"... {the_count:,}", file=sys.stderr)
 
@@ -144,7 +144,8 @@ def main(student_file):
             )
 
             subdir = "ok" if best_sol.ok() else "fail"
-            with open(f'./output/{subdir}/{data["name"]}.txt', "w") as outfile:
+            filename = f'{data["stnum"]} {data["name"]}.txt'
+            with open(f'./output/{subdir}/{filename}', "w") as outfile:
                 outfile.write(output)
             print(output)
 
@@ -197,50 +198,54 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
 
 def print_result(rule, indent=0):
     prefix = " " * indent
-    if "course" in rule:
-        if rule["ok"]:
-            if rule["status"] == CourseStatus.Ok:
-                status = "✅ ok"
-            elif rule["status"] == CourseStatus.DidNotComplete:
-                status = "⛔️ incomplete"
-            elif rule["status"] == CourseStatus.InProgress:
-                status = "✅ in-progress"
-            elif rule["status"] == CourseStatus.Repeated:
-                status = "✅ repeat"
-            elif rule["status"] == CourseStatus.NotTaken:
-                status = "❌ not taken"
+    if rule.get('type', None) == "course":
+        if rule.get("ok", None):
+            if rule["status"] == CourseStatus.Ok.name:
+                status = "✅ [ ok]"
+            elif rule["status"] == CourseStatus.DidNotComplete.name:
+                status = "⛔️ [dnf]"
+            elif rule["status"] == CourseStatus.InProgress.name:
+                status = "✅ [ ip]"
+            elif rule["status"] == CourseStatus.Repeated.name:
+                status = "✅ [rep]"
+            elif rule["status"] == CourseStatus.NotTaken.name:
+                status = "🌀      "
         else:
-            status = "❌ not taken"
+            status = "🌀      "
 
-        yield f"{prefix}{rule['course']}: {status}"
+        yield f"{prefix}{status} {rule['course']}"
     else:
-        if rule["ok"]:
-            emoji = "✅"
+        if 'ok' in rule:
+            if rule["ok"]:
+                emoji = "✅"
+            else:
+                emoji = "⚠️ "
         else:
-            emoji = "⚠️"
+            emoji = "🌀"
 
-        if len(rule["choices"]) == 2 and len(rule["items"]) == 1:
-            descr = "either of"
-        elif len(rule["choices"]) == 2 and len(rule["items"]) == 2:
-            descr = "both of"
-        elif len(rule["choices"]) == len(rule["items"]):
-            descr = "all of"
-        elif len(rule["items"]) == 1:
-            descr = "any of"
+        if rule["count"] == 1 and rule["size"] == 2:
+            descr = f"either of (these {rule['size']})"
+        elif rule["count"] == 2 and rule["size"] == 2:
+            descr = f"both of (these {rule['size']})"
+        elif rule["count"] == rule["size"]:
+            descr = f"all of (these {rule['size']})"
+        elif rule["count"] == 1:
+            descr = f"any of (these {rule['size']})"
         else:
-            descr = f"{len(rule['items'])} of {len(rule['choices'])}"
+            descr = f"{rule['count']} of {rule['size']}"
 
-        yield f"{prefix}{descr}: {emoji}"
+        yield f"{prefix}{emoji} {descr}"
 
-        for r in rule["items"]:
-            yield from print_result(r, indent=indent + 2)
+        for r in rule["of"]:
+            yield from print_result(r, indent=indent + 4)
 
-        passed_courses = set(c["course"] for c in rule["items"] if "course" in c)
-        available_courses = set(c["course"] for c in rule["choices"] if "course" in c)
-        other_courses = sorted(available_courses.difference(passed_courses))
+        # passed_courses = set(c["course"] for c in rule["items"] if "course" in c)
+        # available_courses = set(c["course"] for c in rule["choices"] if "course" in c)
+        # other_courses = sorted(available_courses.difference(passed_courses))
 
-        for c in other_courses:
-            yield f"{' ' * (indent + 2)}{c}: skipped"
+        for x in rule["ignored"]:
+            yield from print_result(x, indent=indent + 4)
+            # yield f"{' ' * (indent + 2)}{c}: skipped"
 
 
 if __name__ == "__main__":

@@ -12,10 +12,11 @@ class CourseResult:
 
     def to_dict(self):
         return {
+            "type": "course",
             "ok": self.ok(),
             "rank": self.rank(),
             "course": self.course,
-            "status": self.status,
+            "status": self.status.name,
         }
 
     def ok(self) -> bool:

@@ -5,55 +5,38 @@ import itertools
 import logging
 
 if TYPE_CHECKING:
-    from ..rule import CountRule
+    from ..rule import CountRule, Rule
     from ..result import Result
     from ..requirement import RequirementContext
+    from . import Solution
 
 from ..result import CountResult
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
 class CountSolution:
-    items: List[Any]
-    choices: List[Any]
-    rule: CountRule
+    of: Tuple[Solution]
+    ignored: Tuple[Rule]
+    count: int
+    size: int
 
     def to_dict(self):
         return {
             **self.rule.to_dict(),
             "type": "count",
-            "of": [item.to_dict() for item in self.items],
+            "of": [item.to_dict() for item in self.of],
+            "ignored": [item.to_dict() for item in self.ignored],
+            "count": self.count,
+            "size": self.size,
         }
 
-    def audit(self, *, ctx) -> Result:
-        lo = self.rule.count
-        hi = len(self.items) + 1
+    def audit(self, *, ctx: RequirementContext, path: List) -> Result:
+        path = [*path, f".of"]
 
-        assert lo < hi
+        results = tuple(
+            r.audit(ctx=ctx, path=[*path, f"idx={i}"]) for i, r in enumerate(self.of)
+        )
 
-        best_combo = None
-        best_combo_passed_count = None
-
-        for n in range(lo, hi):
-            logging.debug(f"CountSolution lo={lo}, hi={hi}, n={n}")
-
-            for combo in itertools.combinations(self.items, n):
-                results = [r.audit(ctx=ctx) for r in combo]
-                passed_count = sum(1 for r in results if r.ok())
-
-                if best_combo is None:
-                    best_combo = results
-                    best_combo_passed_count = passed_count
-
-                if passed_count > best_combo_passed_count:
-                    best_combo = results
-                    best_combo_passed_count = passed_count
-
-                if passed_count == len(results):
-                    best_combo = results
-                    best_combo_passed_count = passed_count
-                    break
-
-        assert best_combo
-
-        return CountResult(items=best_combo, choices=self.choices)
+        return CountResult(of=results, ignored=self.ignored, size=self.size, count=self.count)

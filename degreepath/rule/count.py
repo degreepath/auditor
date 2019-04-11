@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional, TYPE_CHECKING
+from typing import Dict, Union, Tuple, List, Optional, TYPE_CHECKING
 import re
 import itertools
 import logging
@@ -11,17 +11,21 @@ from ..solution import CountSolution
 if TYPE_CHECKING:
     from . import Rule
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class CountRule:
     count: int
-    of: List[Rule]
+    of: Tuple[Rule]
 
     def to_dict(self):
         return {
             "type": "count",
             "count": self.count,
-            "of": [item.to_dict() for item in self.of],
+            "size": len(self.of),
+            "of": tuple(item.to_dict() for item in self.of),
+            "ignored": tuple(),
         }
 
     @staticmethod
@@ -67,7 +71,7 @@ class CountRule:
             else:
                 count = int(data["count"])
 
-        return CountRule(count=count, of=[load_rule(r) for r in of])
+        return CountRule(count=count, of=tuple(load_rule(r) for r in of))
 
     def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
@@ -78,8 +82,8 @@ class CountRule:
             rule.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List):
-        path = [*path, f".of({self.count}/{len(self.of)})"]
-        logging.debug(f"{path}\n\tneed {self.count} of {len(self.of)} items")
+        path = [*path, f".of"]
+        logger.debug(f"{path}")
 
         did_iter = False
 
@@ -88,19 +92,35 @@ class CountRule:
 
         assert lo < hi
 
+        size = len(self.of)
+
+        # print(self.of)
+        all_children = set(self.of)
+
         for r in range(lo, hi):
-            for combo in itertools.combinations(self.of, r):
+            logger.debug(f"{path} {lo}..<{hi}, r={r}")
+            for combo_i, combo in enumerate(itertools.combinations(self.of, r)):
+                selected_children = set(combo)
+
+                other_children = all_children.difference(selected_children)
+                # print(all_children)
+                # print(selected_children)
+                # print(other_children)
+                # print()
+
+                logger.debug(f"{path} combo={combo_i}: generating product(*solutions)")
                 did_iter = True
 
-                with_solutions = [
-                    rule.solutions(ctx=ctx, path=[*path, f"$of[{i}]"])
+                solutions = [
+                    rule.solutions(ctx=ctx, path=[*path, f"idx={i}"])
                     for i, rule in enumerate(combo)
                 ]
 
-                for i, ruleset in enumerate(itertools.product(*with_solutions)):
-                    msg = f"{[*path, f'$of/product#{i}']}\n\t{ruleset}"
-                    yield CountSolution(items=list(ruleset), choices=self.of, rule=self)
+                for i, solutionset in enumerate(itertools.product(*solutions)):
+                    logger.debug(f"{path} combo={combo_i}: iteration={i}")
+                    solset = list(solutionset)
+                    yield CountSolution(of=solset, ignored=other_children, count=self.count, size=size)
 
         if not did_iter:
-            # be sure that we always yield something
-            yield CountSolution(items=[], choices=self.of, rule=self)
+            # ensure that we always yield something
+            yield CountSolution(of=[], ignored=all_children, rule=self, count=self.count, size=size)
