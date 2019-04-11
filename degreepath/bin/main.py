@@ -12,7 +12,7 @@ import coloredlogs
 import yaml
 import jsonpickle
 
-from degreepath.esth import CourseInstance, AreaOfStudy, CourseStatus
+from degreepath import CourseInstance, AreaOfStudy, CourseStatus
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

@@ -23,4 +23,3 @@ class CourseResult:
 
     def rank(self):
         return 1 if self.ok() else 0
-

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 @dataclass(frozen=True)
 class CountResult:
     items: List[Result]
-    choices: List[Solution] # rule???
+    choices: List[Solution]  # rule???
 
     def to_dict(self):
         return {

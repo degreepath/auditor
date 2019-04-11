@@ -35,7 +35,7 @@ class CountSolution:
         best_combo_passed_count = None
 
         for n in range(lo, hi):
-            logging.debug(f'CountSolution lo={lo}, hi={hi}, n={n}')
+            logging.debug(f"CountSolution lo={lo}, hi={hi}, n={n}")
 
             for combo in itertools.combinations(self.items, n):
                 results = [r.audit(ctx=ctx) for r in combo]

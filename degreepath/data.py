@@ -3,8 +3,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
 import decimal
+import logging
 
 from .lib import grade_from_str, expand_subjects
+from .clause import Clause, SingleClause, AndClause, OrClause
 
 
 @dataclass(frozen=True)
@@ -154,3 +156,19 @@ class CourseInstance:
 
     def __str__(self):
         return f"{self.course()}"
+
+    def apply_clause(self, clause: Clause) -> bool:
+        if isinstance(clause, AndClause):
+            return all(self.apply_clause(subclause) for subclause in clause)
+        elif isinstance(clause, OrClause):
+            return any(self.apply_clause(subclause) for subclause in clause)
+        elif isinstance(clause, SingleClause):
+            if clause.key in self.__dict__:
+                logging.debug(f'single-clause, key "{clause.key}" exists')
+                return clause.compare(self.__dict__[clause.key])
+            logging.debug(
+                f'single-clause, key "{clause.key}" not found in {list(self.__dict__.keys())}'
+            )
+            return False
+
+        raise TypeError(f"expected a clause; found {type(clause)}")

@@ -33,3 +33,26 @@ class CourseSolution:
         return CourseResult(
             course=self.course, status=CourseStatus.NotTaken, success=False
         )
+
+    # def audit(self):
+    #     path = [*path, f"$c->{self.course}"]
+    #     if not ctx.has_course(self.course):
+    #         logging.debug(
+    #             f'{path}\n\tcourse "{self.course}" does not exist in the transcript'
+    #         )
+    #         return Solution.fail(self)
+    #
+    #     claim = ctx.make_claim(
+    #         course=self.course, key=path, value={"course": self.course}
+    #     )
+    #
+    #     if claim.failed():
+    #         logging.debug(
+    #             f'{path}\n\tcourse "{self.course}" exists, but has already been claimed by {claim.conflict.path}'
+    #         )
+    #         return Solution.fail(self)
+    #
+    #     logging.debug(
+    #         f'{path}\n\tcourse "{self.course}" exists, and has not been claimed'
+    #     )
+    #     claim.commit()

@@ -8,9 +8,6 @@ import logging
 from ..requirement import RequirementContext
 from ..solution import CourseSolution
 
-if TYPE_CHECKING:
-    from . import Rule
-
 
 @dataclass(frozen=True)
 class CourseRule:
