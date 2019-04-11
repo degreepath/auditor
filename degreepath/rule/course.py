@@ -6,7 +6,7 @@ import itertools
 import logging
 
 from ..requirement import RequirementContext
-from ..solution import CountSolution, CourseSolution
+from ..solution import CourseSolution
 
 if TYPE_CHECKING:
     from . import Rule

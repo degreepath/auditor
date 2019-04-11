@@ -5,12 +5,11 @@ import itertools
 import logging
 
 if TYPE_CHECKING:
-    from ..rule import CountRule, CourseRule
+    from ..rule import CountRule
     from ..result import Result
     from ..requirement import RequirementContext
 
-from ..result import CountResult, CourseResult
-from ..data import CourseStatus
+from ..result import CountResult
 
 
 @dataclass(frozen=True)
