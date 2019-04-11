@@ -146,14 +146,18 @@ class CountSolution:
         return CountResult(items=best_combo, choices=self.choices)
 
 
-
 @dataclass(frozen=True)
 class CountResult:
     items: List
     choices: List
 
     def to_dict(self):
-        return {'ok': self.ok(), 'rank': self.rank(), 'items': [x.to_dict() for x in self.items], 'choices': [x.to_dict() for x in self.choices]}
+        return {
+            "ok": self.ok(),
+            "rank": self.rank(),
+            "items": [x.to_dict() for x in self.items],
+            "choices": [x.to_dict() for x in self.choices],
+        }
 
     def ok(self) -> bool:
         return all(r.ok() for r in self.items)
@@ -169,7 +173,12 @@ class CourseResult:
     success: bool
 
     def to_dict(self):
-        return {'ok': self.ok(), 'rank': self.rank(), 'course': self.course, 'status': self.status}
+        return {
+            "ok": self.ok(),
+            "rank": self.rank(),
+            "course": self.course,
+            "status": self.status,
+        }
 
     def ok(self) -> bool:
         return self.success
@@ -179,7 +188,6 @@ class CourseResult:
 
 
 Result = Union[CountResult, CourseResult]
-
 
 
 @dataclass(frozen=True)
@@ -225,12 +233,14 @@ class CourseSolution:
         found_course = ctx.find_course(self.course)
 
         if found_course:
-            return CourseResult(course=self.course, status=found_course.status, success=True)
+            return CourseResult(
+                course=self.course, status=found_course.status, success=True
+            )
 
-        logging.debug(
-            f'course "{self.course}" does not exist in the transcript'
+        logging.debug(f'course "{self.course}" does not exist in the transcript')
+        return CourseResult(
+            course=self.course, status=CourseStatus.NotTaken, success=False
         )
-        return CourseResult(course=self.course, status=CourseStatus.NotTaken, success=False)
 
 
 @dataclass(frozen=True)
@@ -249,36 +259,36 @@ class Term:
 
 def grade_from_str(s: str) -> decimal.Decimal:
     grades = {
-        'A+': '4.30',
-        'A': '4.00',
-        'A-': '3.70',
-        'B+': '3.30',
-        'B': '3.00',
-        'B-': '2.70',
-        'C+': '2.30',
-        'C': '2.00',
-        'C-': '1.70',
-        'D+': '1.30',
-        'D': '1.00',
-        'D-': '0.70',
-        'F': '0.00',
+        "A+": "4.30",
+        "A": "4.00",
+        "A-": "3.70",
+        "B+": "3.30",
+        "B": "3.00",
+        "B-": "2.70",
+        "C+": "2.30",
+        "C": "2.00",
+        "C-": "1.70",
+        "D+": "1.30",
+        "D": "1.00",
+        "D-": "0.70",
+        "F": "0.00",
     }
 
-    return decimal.Decimal(grades.get(s, '0.00'))
+    return decimal.Decimal(grades.get(s, "0.00"))
 
 
 def expand_subjects(subjects: List[str]):
     shorthands = {
-        'PS': 'PSCI',
-        'ES': 'ENVST',
         "AS": "ASIAN",
+        "BI": "BIO",
+        "CH": "CHEM",
+        "ES": "ENVST",
+        "PS": "PSCI",
         "RE": "REL",
-        'BI': 'BIO',
-        'CH': "CHEM",
     }
 
     for subject in subjects:
-        for code in subject.split('/'):
+        for code in subject.split("/"):
             yield shorthands.get(code, code)
 
 
@@ -348,16 +358,36 @@ class CourseInstance:
         return {**self.__dict__, "type": "course"}
 
     @staticmethod
-    def from_dict(*, grade, transcript_code=None, graded, credits, subjects=None, course, number=None, attributes=None, name, section, clbid, gereqs, term, lab, is_repeat, incomplete, semester, year) -> CourseInstance:
+    def from_dict(
+        *,
+        grade,
+        transcript_code=None,
+        graded,
+        credits,
+        subjects=None,
+        course,
+        number=None,
+        attributes=None,
+        name,
+        section,
+        clbid,
+        gereqs,
+        term,
+        lab,
+        is_repeat,
+        incomplete,
+        semester,
+        year,
+    ) -> CourseInstance:
         status = CourseStatus.Ok
 
-        if grade == 'IP':
+        if grade == "IP":
             status = CourseStatus.InProgress
 
-        if transcript_code == '':
+        if transcript_code == "":
             transcript_code = None
 
-        if transcript_code == 'R':
+        if transcript_code == "R":
             status = CourseStatus.Repeated
 
         if incomplete:
@@ -376,7 +406,9 @@ class CourseInstance:
 
         grade = grade_from_str(grade)
 
-        credits = decimal.Decimal(credits).quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_DOWN)
+        credits = decimal.Decimal(credits).quantize(
+            decimal.Decimal("0.01"), rounding=decimal.ROUND_DOWN
+        )
 
         subject = subjects if subjects is not None else [course.split(" ")[0]]
         subject = list(expand_subjects(subject))
@@ -385,18 +417,30 @@ class CourseInstance:
         number = number if number is not None else course.split(" ")[1]
         number = int(number)
 
-        section = section if section != '' else None
+        section = section if section != "" else None
 
         level = number // 100 * 100
 
         attributes = attributes if attributes is not None else []
 
         return CourseInstance(
-            status=status, credits=credits, subject=subject, number=number,
-            section=section, transcript_code=transcript_code, clbid=clbid,
-            gereqs=gereqs, term=term, is_lab=is_lab, name=name, grade=grade,
-            gradeopt=gradeopt, level=level, attributes=attributes,
-            is_flac=is_flac, is_ace=is_ace,
+            status=status,
+            credits=credits,
+            subject=subject,
+            number=number,
+            section=section,
+            transcript_code=transcript_code,
+            clbid=clbid,
+            gereqs=gereqs,
+            term=term,
+            is_lab=is_lab,
+            name=name,
+            grade=grade,
+            gradeopt=gradeopt,
+            level=level,
+            attributes=attributes,
+            is_flac=is_flac,
+            is_ace=is_ace,
         )
 
     def attach_attrs(self, attributes=None):
@@ -463,9 +507,7 @@ class AreaOfStudy:
             assert self.degree.strip() != ""
             assert self.degree in ["Bachelor of Arts", "Bachelor of Music"]
 
-        ctx = RequirementContext(
-            transcript=[],
-        )
+        ctx = RequirementContext(transcript=[])
 
         self.result.validate(ctx=ctx)
 
@@ -473,9 +515,7 @@ class AreaOfStudy:
         path = ["$root"]
         logging.debug(f"{path}\n\tevaluating area.result")
 
-        ctx = RequirementContext(
-            transcript=transcript,
-        )
+        ctx = RequirementContext(transcript=transcript)
 
         new_path = [*path, ".result"]
         for sol in self.result.solutions(ctx=ctx, path=new_path):
@@ -500,9 +540,7 @@ class AreaSolution:
         path = ["$root"]
         logging.debug(f"{path}\n\tauditing area.result")
 
-        ctx = RequirementContext(
-            transcript=transcript,
-        )
+        ctx = RequirementContext(transcript=transcript)
 
         new_path = [*path, ".result"]
 

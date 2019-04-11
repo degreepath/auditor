@@ -700,36 +700,36 @@ class Term:
 
 def grade_from_str(s: str) -> decimal.Decimal:
     grades = {
-        'A+': '4.30',
-        'A': '4.00',
-        'A-': '3.70',
-        'B+': '3.30',
-        'B': '3.00',
-        'B-': '2.70',
-        'C+': '2.30',
-        'C': '2.00',
-        'C-': '1.70',
-        'D+': '1.30',
-        'D': '1.00',
-        'D-': '0.70',
-        'F': '0.00',
+        "A+": "4.30",
+        "A": "4.00",
+        "A-": "3.70",
+        "B+": "3.30",
+        "B": "3.00",
+        "B-": "2.70",
+        "C+": "2.30",
+        "C": "2.00",
+        "C-": "1.70",
+        "D+": "1.30",
+        "D": "1.00",
+        "D-": "0.70",
+        "F": "0.00",
     }
 
-    return decimal.Decimal(grades.get(s, '0.00'))
+    return decimal.Decimal(grades.get(s, "0.00"))
 
 
 def expand_subjects(subjects: List[str]):
     shorthands = {
-        'PS': 'PSCI',
-        'ES': 'ENVST',
+        "PS": "PSCI",
+        "ES": "ENVST",
         "AS": "ASIAN",
         "RE": "REL",
-        'BI': 'BIO',
-        'CH': "CHEM",
+        "BI": "BIO",
+        "CH": "CHEM",
     }
 
     for subject in subjects:
-        for code in subject.split('/'):
+        for code in subject.split("/"):
             yield shorthands.get(code, code)
 
 
@@ -841,16 +841,36 @@ class CourseInstance:
         return {**self.__dict__, "type": "course"}
 
     @staticmethod
-    def from_dict(*, grade, transcript_code=None, graded, credits, subjects=None, course, number=None, attributes=None, name, section, clbid, gereqs, term, lab, is_repeat, incomplete, semester, year) -> CourseInstance:
+    def from_dict(
+        *,
+        grade,
+        transcript_code=None,
+        graded,
+        credits,
+        subjects=None,
+        course,
+        number=None,
+        attributes=None,
+        name,
+        section,
+        clbid,
+        gereqs,
+        term,
+        lab,
+        is_repeat,
+        incomplete,
+        semester,
+        year,
+    ) -> CourseInstance:
         status = CourseStatus.Ok
 
-        if grade == 'IP':
+        if grade == "IP":
             status = CourseStatus.InProgress
 
-        if transcript_code == '':
+        if transcript_code == "":
             transcript_code = None
 
-        if transcript_code == 'R':
+        if transcript_code == "R":
             status = CourseStatus.Repeated
 
         # TODO: handle did-not-complete courses
@@ -866,7 +886,9 @@ class CourseInstance:
 
         grade = grade_from_str(grade)
 
-        credits = decimal.Decimal(credits).quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_DOWN)
+        credits = decimal.Decimal(credits).quantize(
+            decimal.Decimal("0.01"), rounding=decimal.ROUND_DOWN
+        )
 
         subject = subjects if subjects is not None else [course.split(" ")[0]]
         subject = list(expand_subjects(subject))
@@ -875,18 +897,30 @@ class CourseInstance:
         number = number if number is not None else course.split(" ")[1]
         number = int(number)
 
-        section = section if section != '' else None
+        section = section if section != "" else None
 
         level = number // 100 * 100
 
         attributes = attributes if attributes is not None else []
 
         return CourseInstance(
-            status=status, credits=credits, subject=subject, number=number,
-            section=section, transcript_code=transcript_code, clbid=clbid,
-            gereqs=gereqs, term=term, is_lab=is_lab, name=name, grade=grade,
-            gradeopt=gradeopt, level=level, attributes=attributes,
-            is_flac=is_flac, is_ace=is_ace,
+            status=status,
+            credits=credits,
+            subject=subject,
+            number=number,
+            section=section,
+            transcript_code=transcript_code,
+            clbid=clbid,
+            gereqs=gereqs,
+            term=term,
+            is_lab=is_lab,
+            name=name,
+            grade=grade,
+            gradeopt=gradeopt,
+            level=level,
+            attributes=attributes,
+            is_flac=is_flac,
+            is_ace=is_ace,
         )
 
     def attach_attrs(self, attributes=None):
@@ -1083,7 +1117,8 @@ class AreaOfStudy:
     @staticmethod
     def load(data: Dict) -> AreaOfStudy:
         requirements = {
-            name: Requirement.load(name, r) for name, r in data.get("requirements", {}).items()
+            name: Requirement.load(name, r)
+            for name, r in data.get("requirements", {}).items()
         }
         result = load_rule(data["result"])
 
