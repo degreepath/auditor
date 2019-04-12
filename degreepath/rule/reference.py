@@ -38,6 +38,9 @@ class ReferenceRule:
 
         ctx.requirements[self.requirement].validate(ctx=ctx)
 
+    def estimate(self, *, ctx: RequirementContext):
+        return ctx.requirements[self.requirement].estimate(ctx=ctx)
+
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         requirement = ctx.requirements[self.requirement]
         # print(requirement)

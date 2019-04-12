@@ -91,7 +91,10 @@ class AreaOfStudy:
         logger.debug(f"{path} all solutions generated")
 
     def estimate(self, *, transcript: List[CourseInstance]):
-        ctx = RequirementContext(transcript=transcript)
+        ctx = RequirementContext(
+            transcript=transcript,
+            requirements={name: r for name, r in self.requirements.items()},
+        )
 
         return self.result.estimate(ctx=ctx)
 

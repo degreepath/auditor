@@ -170,6 +170,15 @@ class Requirement:
         for sol in self.result.solutions(ctx=new_ctx, path=path):
             yield RequirementSolution(solution=sol, name=self.name)
 
+    def estimate(self, *, ctx: RequirementContext):
+        new_ctx = RequirementContext(
+            transcript=ctx.transcript,
+            save_rules={s.name: s for s in self.saves.values()},
+            requirements={r.name: r for r in self.requirements.values()},
+        )
+
+        return self.result.estimate(ctx=new_ctx)
+
 
 @dataclass(frozen=True)
 class RequirementSolution:

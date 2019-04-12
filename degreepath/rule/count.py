@@ -4,6 +4,7 @@ from typing import Dict, Union, Tuple, List, Optional, TYPE_CHECKING
 import re
 import itertools
 import logging
+from functools import reduce
 
 from ..solution import CountSolution
 from .course import CourseRule
@@ -151,17 +152,17 @@ class CountRule:
                 of=(), ignored=tuple(all_children), count=self.count, size=size
             )
 
-    # def estimate(self, *, ctx: RequirementContext):
-    #     lo = self.count
-    #     hi = len(self.of) + 1
+    def estimate(self, *, ctx: RequirementContext):
+        lo = self.count
+        hi = len(self.of) + 1
 
-    #     count = 0
+        estimates = [rule.estimate(ctx=ctx) for rule in self.of]
+        indices = [n for n, _ in enumerate(self.of)]
 
-    #     for r in range(lo, hi):
-    #         for combo in itertools.combinations(self.of, r):
-    #             estimates = [rule.estimate(ctx=ctx) for rule in combo]
+        count = 0
+        for r in range(lo, hi):
+            for combo in itertools.combinations(indices, r):
+                inner = (estimates[i] for i in combo)
+                count += reduce(lambda x, y: x * y, inner)
 
-    #             # for group in itertools.product(estimates):
-    #             count += sum(estimates)
-
-    #     return count
+        return count

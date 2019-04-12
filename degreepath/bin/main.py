@@ -23,9 +23,10 @@ logformat = "%(levelname)s %(name)s: %(message)s"
 @click.option("--print-every", "-e", default=1_000)
 @click.option("--loglevel", "-l", default="warn")
 @click.option("--record/--no-record", default=True)
+@click.option("--estimate", default=None, is_flag=True)
 @click.option("--print/--no-print", "stream", default=True)
 @click.argument("student_file", nargs=-1, type=click.Path(exists=True))
-def main(*, student_file, print_every, loglevel, record, stream):
+def main(*, student_file, print_every, loglevel, record, stream, estimate):
     """Audits a student against their areas of study."""
 
     should_record = record
@@ -63,7 +64,7 @@ def main(*, student_file, print_every, loglevel, record, stream):
             area_files.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
 
     for i, data in enumerate(students):
-        print(f"auditing {data['stnum']}", file=sys.stderr)
+        print(f"auditing #{data['stnum']}", file=sys.stderr)
 
         transcript = []
         for row in data["courses"]:
@@ -97,6 +98,12 @@ def main(*, student_file, print_every, loglevel, record, stream):
             times = []
 
             iter_start = time.perf_counter()
+
+            print(f"estimate: {area.estimate(transcript=this_transcript):,} possible combinations")
+
+            if estimate:
+                continue
+
             for sol in area.solutions(transcript=this_transcript):
                 total_count += 1
 
