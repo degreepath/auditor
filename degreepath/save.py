@@ -1,11 +1,12 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Iterator, TYPE_CHECKING
 import logging
 
 from .rule import FromRule
-from .requirement import RequirementContext
 
 if TYPE_CHECKING:
+    from .requirement import RequirementContext
     from .solution import FromSolution
 
 

@@ -5,8 +5,10 @@ import re
 import itertools
 import logging
 
-from ..requirement import RequirementContext
 from ..solution import CourseSolution
+
+if TYPE_CHECKING:
+    from ..requirement import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -41,3 +43,6 @@ class CourseRule:
         logger.debug(f'{path} reference to course "{self.course}"')
 
         yield CourseSolution(course=self.course, rule=self)
+
+    def estimate(self, *, ctx: RequirementContext):
+        return 1

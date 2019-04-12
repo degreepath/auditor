@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Union, List, Optional, Any, TYPE_CHECKING
+from typing import Union, List, Optional, Any, Tuple, TYPE_CHECKING
 import itertools
 import logging
 
@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class CountSolution:
-    of: Tuple[Solution]
-    ignored: Tuple[Rule]
+    of: Tuple[Solution, ...]
+    ignored: Tuple[Rule, ...]
     count: int
     size: int
 

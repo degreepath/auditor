@@ -5,8 +5,11 @@ import re
 import itertools
 import logging
 
-from ..requirement import RequirementContext
+from ..requirement import RequirementState
 from ..solution import CourseSolution
+
+if TYPE_CHECKING:
+    from ..requirement import RequirementContext
 
 
 @dataclass(frozen=True)
@@ -36,12 +39,16 @@ class ReferenceRule:
         ctx.requirements[self.requirement].validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        logging.debug(f'{path}\n\treference to requirement "{self.requirement}"')
-
         requirement = ctx.requirements[self.requirement]
+        print(requirement)
 
-        logging.debug(f'{path}\n\tfound requirement "{self.requirement}"')
-
-        yield from requirement.solutions(
-            ctx=ctx, path=[*path, f"$ref->{self.requirement}"]
+        state = ctx.requirement_cache.setdefault(
+            requirement,
+            RequirementState(iterable=requirement.solutions(ctx=ctx, path=path))
         )
+
+        print(state.vals)
+
+        for x in state:
+            logging.warning(f"{path} {x}")
+            yield x

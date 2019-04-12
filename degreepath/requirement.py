@@ -1,13 +1,25 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, Any, Dict, Iterable, TYPE_CHECKING
+import copy
+import logging
+import itertools
+
+from frozendict import frozendict
 
 from .data import CourseInstance, CourseStatus
+from .save import SaveRule
+
+if TYPE_CHECKING:
+    from .rule import Rule
 
 
 @dataclass(frozen=False)
 class RequirementContext:
     transcript: List[CourseInstance] = field(default_factory=list)
+    requirements: Dict[str, Requirement] = field(default_factory=dict)
+    save_rules: Dict[str, SaveRule] = field(default_factory=dict)
+    requirement_cache: Dict[Requirement, RequirementState] = field(default_factory=dict)
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
         try:
@@ -20,25 +32,34 @@ class RequirementContext:
             return None
 
 
-# @dataclass(frozen=False)
-# class RequirementContext:
-#     transcript: List[CourseInstance] = field(default_factory=list)
-#     save_rules: Dict[str, SaveRule] = field(default_factory=dict)
-#     requirements: Dict[str, Requirement] = field(default_factory=dict)
-#     requirement_results: Dict[str, RequirementSolution] = field(default_factory=dict)
+class RequirementState(object):
+    def __init__(self, iterable):
+        self.iterable = iterable
+        self.iter = iter(iterable)
+        self.done = False
+        self.vals = []
 
-#     def record_save(self, save_stuff):
-#         ...
+    def __iter__(self):
+        if self.done:
+            return iter(self.vals)
 
-#     def record_requirement(self, req_stuff):
-#         ...
+        # chain vals so far & then gen the rest
+        return itertools.chain(self.vals, self._gen_iter())
+
+    def _gen_iter(self):
+        # gen new vals, appending as it goes
+        for new_val in self.iter:
+            self.vals.append(new_val)
+            yield new_val
+
+        self.done = True
 
 
 @dataclass(frozen=True)
 class Requirement:
     name: str
-    saves: Dict[str, SaveRule]
-    requirements: Dict[str, Requirement]
+    saves: Any #frozendict[str, SaveRule]
+    requirements: Any #frozendict[str, Requirement]
     message: Optional[str] = None
     result: Optional[Rule] = None
     audited_by: Optional[str] = None
@@ -59,18 +80,20 @@ class Requirement:
 
     @staticmethod
     def load(name: str, data: Dict[str, Any]) -> Requirement:
-        children = {
+        from .rule import load_rule
+
+        children = frozendict({
             name: Requirement.load(name, r)
             for name, r in data.get("requirements", {}).items()
-        }
+        })
 
         result = data.get("result", None)
         if result is not None:
             result = load_rule(result)
 
-        saves = {
+        saves = frozendict({
             name: SaveRule.load(name, s) for name, s in data.get("saves", {}).items()
-        }
+        })
 
         audited_by = None
         if data.get("department_audited", False):
@@ -118,7 +141,7 @@ class Requirement:
             self.result.validate(ctx=new_ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        ctx = copy.deepcopy(ctx)
+        # ctx = copy.deepcopy(ctx)
 
         path = [*path, f"$req->{self.name}"]
 
@@ -147,21 +170,49 @@ class Requirement:
 
         path = [*path, ".result"]
         for sol in self.result.solutions(ctx=new_ctx, path=path):
-            yield RequirementSolution(solution=sol, requirement=self)
+            yield RequirementSolution(solution=sol, name=self.name)
 
 
 @dataclass(frozen=True)
 class RequirementSolution:
     solution: Any
-    requirement: Requirement
+    name: str
+    # requirement: Requirement
 
     def matched(self):
         return self.solution
 
     def to_dict(self):
-        limited_req = {
-            k: v
-            for k, v in self.requirement.to_dict().items()
-            if k not in ["requirements"]
+        # limited_req = {
+        #     k: v
+        #     for k, v in self.requirement.to_dict().items()
+        #     if k not in ["requirements"]
+        # }
+        # return {**limited_req, "type": "requirement", "result": self.solution.to_dict()}
+        return {"type": "requirement", "result": self.solution.to_dict()}
+
+    def audit(self, *, ctx: RequirementContext, path: List) -> Result:
+        result = self.solution.audit(ctx=ctx, path=path)
+
+        return RequirementResult(result=result, name=self.name)
+
+
+@dataclass(frozen=True)
+class RequirementResult:
+    result: Result
+    name: str
+
+    def to_dict(self):
+        return {
+            "type": "requirement",
+            "result": self.result.to_dict(),
+            "name": self.name,
+            "ok": self.ok(),
+            "rank": self.rank(),
         }
-        return {**limited_req, "type": "requirement", "result": self.solution.to_dict()}
+
+    def ok(self) -> bool:
+        return self.result.ok()
+
+    def rank(self):
+        return self.result.rank()

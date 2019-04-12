@@ -75,6 +75,14 @@ version = "3.0.10"
 
 [[package]]
 category = "main"
+description = "An immutable dictionary"
+name = "frozendict"
+optional = false
+python-versions = "*"
+version = "1.2"
+
+[[package]]
+category = "main"
 description = "Human friendly output for text interfaces using Python"
 name = "humanfriendly"
 optional = false
@@ -256,7 +264,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "16.4.3"
 
 [metadata]
-content-hash = "d65c143dc453645cd9e2f4e370924691a6173f5a44dd4803b235fe2f9954d7e1"
+content-hash = "b08b678ff3766086d95a0a6554808c8b4222bc2e3c4eed6896dd515a3935c466"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -268,6 +276,7 @@ click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
 coloredlogs = ["34fad2e342d5a559c31b6c889e8d14f97cb62c47d9a2ae7b5ed14ea10a79eff8", "b869a2dda3fa88154b9dd850e27828d8755bfab5a838a1c97fbc850c6e377c36"]
 filelock = ["b8d5ca5ca1c815e1574aee746650ea7301de63d87935b3463d26368b76e31633", "d610c1bb404daf85976d7a82eb2ada120f04671007266b708606565dd03b5be6"]
+frozendict = ["774179f22db2ef8a106e9c38d4d1f8503864603db08de2e33be5b778230f6e45"]
 humanfriendly = ["23057b10ad6f782e7bc3a20e3cb6768ab919f619bbdc0dd75691121bbde5591d", "33ee8ceb63f1db61cce8b5c800c531e1a61023ac5488ccde2ba574a85be00a85"]
 jsonpickle = ["0231d6f7ebc4723169310141352d9c9b7bbbd6f3be110cf634575d2bf2af91f0", "625098cc8e5854b8c23b587aec33bc8e33e0e597636bfaca76152249c78fe5c1"]
 more-itertools = ["2112d2ca570bb7c3e53ea1a35cd5df42bb0fd10c45f0fb97178679c3c03d64c7", "c3e4748ba1aad8dba30a4886b0b1a2004f9a863837b8654e7059eebf727afa5a"]

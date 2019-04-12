@@ -12,13 +12,14 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class CountResult:
-    of: Tuple[Result]
-    ignored: Tuple[Rule]
+    of: Tuple[Result, ...]
+    ignored: Tuple[Rule, ...]
     count: int
     size: int
 
     def to_dict(self):
         return {
+            "type": "count",
             "ok": self.ok(),
             "rank": self.rank(),
             "of": [x.to_dict() for x in self.of],

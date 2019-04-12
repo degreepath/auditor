@@ -5,12 +5,14 @@ import re
 import itertools
 import logging
 
-from ...requirement import RequirementContext
 from .source import FromInput
 from .assertion import Assertion
 from ...limit import Limit
 from ...clause import Clause, SingleClause
 from ...solution import FromSolution
+
+if TYPE_CHECKING:
+    from ...requirement import RequirementContext
 
 
 @dataclass(frozen=True)

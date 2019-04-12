@@ -5,7 +5,8 @@ import re
 import itertools
 import logging
 
-from ...requirement import RequirementContext
+if TYPE_CHECKING:
+    from ...requirement import RequirementContext
 
 
 @dataclass(frozen=True)

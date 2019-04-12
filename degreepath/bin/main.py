@@ -15,9 +15,9 @@ import jsonpickle
 from degreepath import CourseInstance, AreaOfStudy, CourseStatus
 
 logger = logging.getLogger()
-# logger.setLevel(logging.DEBUG)
-# logformat = "%(levelname)s %(name)s: %(message)s"
-# coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+logger.setLevel(logging.INFO)
+logformat = "%(levelname)s %(name)s: %(message)s"
+coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
 
 def load_area(stream):
@@ -131,6 +131,14 @@ def main(student_file):
                 decimal.Decimal("0.01"), rounding=decimal.ROUND_UP
             )
 
+            if not times:
+                print('no audits completed')
+                continue
+
+            # estimate = area.estimate(transcript=this_transcript)
+            # print(f"estimated total count: {estimate:,}")
+            # print()
+
             output = "".join(
                 summarize(
                     name=data["name"],
@@ -157,6 +165,7 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     times = [decimal.Decimal(t) for t in iterations]
     # chunked_times = [t.quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_UP) for t in times]
     # counter = collections.Counter(chunked_times)
+
     avg_iter_time = (sum(times) / len(times)).quantize(
         decimal.Decimal("0.00001"), rounding=decimal.ROUND_UP
     )
@@ -214,7 +223,7 @@ def print_result(rule, indent=0):
             status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
-    else:
+    elif rule.get("type", None) == "count":
         if "ok" in rule:
             if rule["ok"]:
                 emoji = "✅"
@@ -234,6 +243,10 @@ def print_result(rule, indent=0):
         else:
             descr = f"{rule['count']} of {rule['size']}"
 
+        if "ok" in rule:
+            ok_count = len([x for x in rule["of"] if "ok" in x and x["ok"]])
+            descr += f" (ok: {ok_count}; need: {rule['count']})"
+
         yield f"{prefix}{emoji} {descr}"
 
         for r in rule["of"]:
@@ -246,6 +259,19 @@ def print_result(rule, indent=0):
         for x in rule["ignored"]:
             yield from print_result(x, indent=indent + 4)
             # yield f"{' ' * (indent + 2)}{c}: skipped"
+    elif rule.get('type', None) == 'requirement':
+        if "ok" in rule:
+            if rule["ok"]:
+                emoji = "✅"
+            else:
+                emoji = "⚠️ "
+        else:
+            emoji = "🌀"
+        # yield json.dumps(rule, indent=2)
+        yield f"{prefix}{emoji} Requirement({rule['name']})"
+        yield from print_result(rule['result'], indent=indent + 4)
+    else:
+        yield json.dumps(rule, indent=2)
 
 
 if __name__ == "__main__":
