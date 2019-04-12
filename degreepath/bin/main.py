@@ -6,63 +6,59 @@ import sys
 import pprint
 import decimal
 import collections
+from pathlib import Path
 
 import click
 import coloredlogs
 import yaml
 import jsonpickle
+import pendulum
 
 from degreepath import CourseInstance, AreaOfStudy, CourseStatus
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 logformat = "%(levelname)s %(name)s: %(message)s"
-coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
-
-
-def load_area(stream):
-    data = yaml.load(stream=stream, Loader=yaml.SafeLoader)
-
-    return AreaOfStudy.load(data)
-
-
-def take(iterable, n):
-    for i, item in enumerate(iterable):
-        yield item
-        if i + 1 >= n:
-            break
-
-
-def count(iterable, print_every=None):
-    counter = 0
-    for item in iterable:
-        counter += 1
-        if print_every is not None and counter % print_every == 0:
-            print(f"... {counter}")
-    return counter
-
 
 @click.command()
+@click.option("--print-every", "-e", default=1_000)
+@click.option("--loglevel", "-l", default="warn")
+@click.option("--record/--no-record", default=True)
+@click.option("--print/--no-print", "stream", default=True)
 @click.argument("student_file", nargs=-1, type=click.Path(exists=True))
-def main(student_file):
+def main(*, student_file, print_every, loglevel, record, stream):
     """Audits a student against their areas of study."""
 
-    target = "Exercise Science"
-    file_glob = glob.iglob("./gobbldygook-area-data/2015-16/*/exercise-science.yaml")
+    should_record = record
+    should_print = stream
 
-    # target = "Social Work"
-    # file_glob = glob.iglob("./gobbldygook-area-data/2018-19/*/swrk.yaml")
+    if loglevel == "warn":
+        logger.setLevel(logging.WARNING)
+        coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
+    elif loglevel == "debug":
+        logger.setLevel(logging.DEBUG)
+        coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+    elif loglevel == "info":
+        logger.setLevel(logging.INFO)
+        coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
+
+    allowed = set(["Exercise Science", "Latin", "Social Work"])
+
+    files = [
+        "./gobbldygook-area-data/2015-16/major/exercise-science.yaml",
+        "./gobbldygook-area-data/2018-19/major/latin.yaml",
+        "./gobbldygook-area-data/2018-19/major/swrk.yaml",
+    ]
 
     students = []
     for file in student_file:
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
 
-        if target in data["majors"]:
+        if set(data["majors"]).intersection(allowed):
             students.append(data)
 
     area_files = []
-    for f in file_glob:
+    for f in files:
         with open(f, "r", encoding="utf-8") as infile:
             area_files.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
 
@@ -76,7 +72,7 @@ def main(student_file):
             except:
                 continue
 
-        areas = [m for m in data["majors"] if m == target]
+        areas = set(data["majors"]).intersection(allowed)
 
         for area_name in areas:
             area_defs = [
@@ -95,19 +91,17 @@ def main(student_file):
 
             start = time.perf_counter()
 
-            printed_count = False
             best_sol = None
-            the_count = 0
+            total_count = 0
 
             times = []
 
             iter_start = time.perf_counter()
             for sol in area.solutions(transcript=this_transcript):
-                the_count += 1
+                total_count += 1
 
-                if the_count % 1_000 == 0:
-                    printed_count = True
-                    print(f"... {the_count:,}", file=sys.stderr)
+                if total_count % print_every == 0:
+                    print(f"... {total_count:,}", file=sys.stderr)
 
                 result = sol.audit(transcript=this_transcript)
 
@@ -124,16 +118,15 @@ def main(student_file):
                 if result.ok():
                     break
 
-            print()
-
-            end = time.perf_counter()
-            elapsed = decimal.Decimal(end - start).quantize(
-                decimal.Decimal("0.01"), rounding=decimal.ROUND_UP
-            )
-
             if not times:
                 print('no audits completed')
                 continue
+
+            if should_print:
+                print()
+
+            end = time.perf_counter()
+            elapsed = pendulum.duration(seconds=end - start).in_words()
 
             # estimate = area.estimate(transcript=this_transcript)
             # print(f"estimated total count: {estimate:,}")
@@ -145,32 +138,58 @@ def main(student_file):
                     stnum=data["stnum"],
                     area=area,
                     result=best_sol,
-                    count=the_count,
+                    count=total_count,
                     elapsed=elapsed,
                     iterations=times,
                 )
             )
 
-            subdir = "ok" if best_sol.ok() else "fail"
-            filename = f'{data["stnum"]} {data["name"]}.txt'
-            with open(f"./output/{subdir}/{filename}", "w") as outfile:
-                outfile.write(output)
-            print(output)
+            if should_record:
+                filename = f'{data["stnum"]} {data["name"]}.txt'
 
-        if i < len(student_file):
+                outdir = Path("./output")
+                areadir = area.name.replace("/", "_")
+                datestring = pendulum.now().format('MM MMMM DD')
+                areadir = f"{areadir} - {datestring}"
+
+                ok_path = outdir / areadir / "ok"
+                ok_path.mkdir(parents=True, exist_ok=True)
+
+                fail_path = outdir / areadir / "fail"
+                fail_path.mkdir(parents=True, exist_ok=True)
+
+                ok = best_sol.ok()
+
+                container = ok_path if ok else fail_path
+                otherpath = (ok_path if container == ok_path else fail_path) / filename
+
+                if otherpath.exists():
+                    otherpath.unlink()
+
+                outpath = container / filename
+
+                with outpath.open("w") as outfile:
+                    outfile.write(output)
+
+            if should_print:
+                print(output)
+
+        if i < len(student_file) and should_print:
             print()
 
 
 def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     times = [decimal.Decimal(t) for t in iterations]
-    # chunked_times = [t.quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_UP) for t in times]
+
+    # chunked_times = [
+    #     t.quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_UP) for t in times
+    # ]
     # counter = collections.Counter(chunked_times)
+    # print(counter)
 
     avg_iter_time = (sum(times) / len(times)).quantize(
         decimal.Decimal("0.00001"), rounding=decimal.ROUND_UP
     )
-
-    # print(counter)
 
     endl = "\n"
 
@@ -181,9 +200,11 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     else:
         yield f" audit failed."
 
+    yield f" (rank {result.rank()})"
+
     yield endl
 
-    yield f"{count:,} attempts in {elapsed}s (avg {avg_iter_time}s per attempt)"
+    yield f"{count:,} attempts in {elapsed} (avg {avg_iter_time}s per attempt)"
     yield endl
 
     dictver = result.to_dict()
@@ -223,7 +244,9 @@ def print_result(rule, indent=0):
             status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
+
     elif rule.get("type", None) == "count":
+        # print(rule)
         if "ok" in rule:
             if rule["ok"]:
                 emoji = "✅"
@@ -252,14 +275,10 @@ def print_result(rule, indent=0):
         for r in rule["of"]:
             yield from print_result(r, indent=indent + 4)
 
-        # passed_courses = set(c["course"] for c in rule["items"] if "course" in c)
-        # available_courses = set(c["course"] for c in rule["choices"] if "course" in c)
-        # other_courses = sorted(available_courses.difference(passed_courses))
-
         for x in rule["ignored"]:
             yield from print_result(x, indent=indent + 4)
-            # yield f"{' ' * (indent + 2)}{c}: skipped"
-    elif rule.get('type', None) == 'requirement':
+
+    elif rule.get("type", None) == "requirement":
         if "ok" in rule:
             if rule["ok"]:
                 emoji = "✅"
@@ -267,9 +286,10 @@ def print_result(rule, indent=0):
                 emoji = "⚠️ "
         else:
             emoji = "🌀"
-        # yield json.dumps(rule, indent=2)
+
         yield f"{prefix}{emoji} Requirement({rule['name']})"
-        yield from print_result(rule['result'], indent=indent + 4)
+        yield from print_result(rule["result"], indent=indent + 4)
+
     else:
         yield json.dumps(rule, indent=2)
 
