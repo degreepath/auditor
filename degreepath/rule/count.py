@@ -6,6 +6,7 @@ import itertools
 import logging
 
 from ..solution import CountSolution
+from .course import CourseRule
 
 if TYPE_CHECKING:
     from ..requirement import RequirementContext
@@ -90,15 +91,19 @@ class CountRule:
         lo = self.count
         hi = len(self.of) + 1
 
+        potentials = [r for r in self.of if (not isinstance(r, CourseRule)) or ctx.find_course(r.course)]
+        pot_hi = len(potentials) + 1
+
+        # hi = max(min(hi, pot_hi), lo + 1)
+
         assert lo < hi
 
         size = len(self.of)
 
-        # print(self.of)
         all_children = set(self.of)
 
         for r in range(lo, hi):
-            logger.debug(f"{path} {lo}..<{hi}, r={r}")
+            logger.warning(f"{path} {lo}..<{hi}, r={r}, max={len(potentials)}")
             for combo_i, combo in enumerate(itertools.combinations(self.of, r)):
                 selected_children = set(combo)
 
@@ -113,10 +118,31 @@ class CountRule:
                 ]
 
                 for i, solutionset in enumerate(itertools.product(*solutions)):
+                    if len(path) == 3:
+                        solset = tuple(solutionset)
+                        # flat = [x for s in solutionset for x in ]
+                        y = CountSolution(
+                            of=solset,
+                            ignored=tuple(other_children),
+                            count=self.count,
+                            size=size,
+                        )
+                        flat = [x for x in y.flatten()]
+                        rank = y.audit(ctx=ctx, path=[]).rank()
+
+                        needle = set(['LATIN 111', 'LATIN 112', 'LATIN 231', 'LATIN 235', 'LATIN 252', 'LATIN 374', 'LATIN 375'])
+                        # if needle.issubset(set(flat)):
+                        if rank >= 12:
+                            print(rank, flat)
+
+
                     logger.debug(f"{path} combo={combo_i}: iteration={i}")
                     solset = tuple(solutionset)
                     yield CountSolution(
-                        of=solset, ignored=tuple(other_children), count=self.count, size=size
+                        of=solset,
+                        ignored=tuple(other_children),
+                        count=self.count,
+                        size=size,
                     )
 
         if not did_iter:

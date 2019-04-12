@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Optional, Any, Dict, Iterable, TYPE_CHECKING
-import copy
 import logging
 import itertools
 
@@ -58,8 +57,8 @@ class RequirementState(object):
 @dataclass(frozen=True)
 class Requirement:
     name: str
-    saves: Any #frozendict[str, SaveRule]
-    requirements: Any #frozendict[str, Requirement]
+    saves: Any  # frozendict[str, SaveRule]
+    requirements: Any  # frozendict[str, Requirement]
     message: Optional[str] = None
     result: Optional[Rule] = None
     audited_by: Optional[str] = None
@@ -82,18 +81,20 @@ class Requirement:
     def load(name: str, data: Dict[str, Any]) -> Requirement:
         from .rule import load_rule
 
-        children = frozendict({
-            name: Requirement.load(name, r)
-            for name, r in data.get("requirements", {}).items()
-        })
+        children = frozendict(
+            {
+                name: Requirement.load(name, r)
+                for name, r in data.get("requirements", {}).items()
+            }
+        )
 
         result = data.get("result", None)
         if result is not None:
             result = load_rule(result)
 
-        saves = frozendict({
-            name: SaveRule.load(name, s) for name, s in data.get("saves", {}).items()
-        })
+        saves = frozendict(
+            {name: SaveRule.load(name, s) for name, s in data.get("saves", {}).items()}
+        )
 
         audited_by = None
         if data.get("department_audited", False):
@@ -141,14 +142,11 @@ class Requirement:
             self.result.validate(ctx=new_ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        # ctx = copy.deepcopy(ctx)
-
         path = [*path, f"$req->{self.name}"]
 
         header = f'{path}\n\trequirement "{self.name}"'
 
         logging.debug(f"{header} has not been evaluated")
-        # TODO: implement caching
 
         if not self.message:
             logging.debug(f"{header} has no message")
@@ -184,6 +182,9 @@ class RequirementSolution:
     def to_dict(self):
         return {"type": "requirement", "solution": self.solution.to_dict()}
 
+    def flatten(self):
+        return self.solution.flatten()
+
     def audit(self, *, ctx: RequirementContext, path: List) -> RequirementResult:
         result = self.solution.audit(ctx=ctx, path=path)
 
@@ -208,4 +209,5 @@ class RequirementResult:
         return self.result.ok()
 
     def rank(self):
-        return self.result.rank()
+        boost = 1 if self.ok() else 0
+        return self.result.rank() + boost

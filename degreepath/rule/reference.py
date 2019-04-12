@@ -40,15 +40,15 @@ class ReferenceRule:
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         requirement = ctx.requirements[self.requirement]
-        print(requirement)
+        # print(requirement)
 
         state = ctx.requirement_cache.setdefault(
             requirement,
-            RequirementState(iterable=requirement.solutions(ctx=ctx, path=path))
+            RequirementState(iterable=requirement.solutions(ctx=ctx, path=path)),
         )
 
-        print(state.vals)
+        # print(state.vals)
 
         for x in state:
-            logging.warning(f"{path} {x}")
+            # logging.warning(f"{path} {x}")
             yield x

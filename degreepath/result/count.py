@@ -29,7 +29,7 @@ class CountResult:
         }
 
     def ok(self) -> bool:
-        return all(r.ok() for r in self.of)
+        return sum(1 if r.ok() else 0 for r in self.of) >= self.count
 
     def rank(self):
         return sum(r.rank() for r in self.of)

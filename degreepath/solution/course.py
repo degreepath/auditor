@@ -26,6 +26,9 @@ class CourseSolution:
     def to_dict(self):
         return {**self.rule.to_dict(), "type": "course", "course": self.course}
 
+    def flatten(self):
+        return [self.course]
+
     def audit(self, *, ctx: RequirementContext, path: List) -> Result:
         found_course = ctx.find_course(self.course)
 

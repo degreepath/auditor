@@ -32,6 +32,9 @@ class CountSolution:
             "size": self.size,
         }
 
+    def flatten(self):
+        return (x for s in self.of for x in s.flatten())
+
     def audit(self, *, ctx: RequirementContext, path: List) -> Result:
         path = [*path, f".of"]
 
