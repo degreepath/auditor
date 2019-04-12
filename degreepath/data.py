@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+import dataclasses
 from enum import Enum
 from typing import List, Optional
 import decimal
@@ -9,7 +9,7 @@ from .lib import grade_from_str, expand_subjects
 from .clause import Clause, SingleClause, AndClause, OrClause
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class Term:
     term: int
 
@@ -31,7 +31,7 @@ class CourseStatus(Enum):
     NotTaken = 4
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class CourseInstance:
     credits: decimal.Decimal
     subject: List[str]
@@ -149,7 +149,7 @@ class CourseInstance:
         if attributes is None:
             attributes = []
 
-        return dataclass.replace(self, attributes=attributes)
+        return dataclasses.replace(self, attributes=attributes)
 
     def course(self):
         return f"{'/'.join(self.subject)} {self.number}"
