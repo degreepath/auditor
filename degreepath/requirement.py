@@ -177,21 +177,14 @@ class Requirement:
 class RequirementSolution:
     solution: Any
     name: str
-    # requirement: Requirement
 
     def matched(self):
         return self.solution
 
     def to_dict(self):
-        # limited_req = {
-        #     k: v
-        #     for k, v in self.requirement.to_dict().items()
-        #     if k not in ["requirements"]
-        # }
-        # return {**limited_req, "type": "requirement", "result": self.solution.to_dict()}
-        return {"type": "requirement", "result": self.solution.to_dict()}
+        return {"type": "requirement", "solution": self.solution.to_dict()}
 
-    def audit(self, *, ctx: RequirementContext, path: List) -> Result:
+    def audit(self, *, ctx: RequirementContext, path: List) -> RequirementResult:
         result = self.solution.audit(ctx=ctx, path=path)
 
         return RequirementResult(result=result, name=self.name)
@@ -199,7 +192,7 @@ class RequirementSolution:
 
 @dataclass(frozen=True)
 class RequirementResult:
-    result: Result
+    result: RequirementResult
     name: str
 
     def to_dict(self):
