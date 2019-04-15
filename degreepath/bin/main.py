@@ -15,9 +15,16 @@ import jsonpickle
 import pendulum
 
 from degreepath import CourseInstance, AreaOfStudy, CourseStatus
+from degreepath.ms import pretty_ms
 
 logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s: %(message)s"
+
+def take(iter, n=5):
+    for i, item in enumerate(iter):
+        if i < n:
+            yield item
+
 
 @click.command()
 @click.option("--print-every", "-e", default=1_000)
@@ -112,10 +119,6 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
 
                 result = sol.audit(transcript=this_transcript)
 
-                iter_end = time.perf_counter()
-                times.append(iter_end - iter_start)
-                iter_start = time.perf_counter()
-
                 if best_sol is None:
                     best_sol = result
 
@@ -123,7 +126,13 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
                     best_sol = result
 
                 if result.ok():
+                    iter_end = time.perf_counter()
+                    times.append(iter_end - iter_start)
                     break
+
+                iter_end = time.perf_counter()
+                times.append(iter_end - iter_start)
+                iter_start = time.perf_counter()
 
             if not times:
                 print('no audits completed')
@@ -133,7 +142,7 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
                 print()
 
             end = time.perf_counter()
-            elapsed = pendulum.duration(seconds=end - start).in_words()
+            elapsed = pretty_ms((end - start) * 1000)
 
             # estimate = area.estimate(transcript=this_transcript)
             # print(f"estimated total count: {estimate:,}")
@@ -194,9 +203,8 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     # counter = collections.Counter(chunked_times)
     # print(counter)
 
-    avg_iter_time = (sum(times) / len(times)).quantize(
-        decimal.Decimal("0.00001"), rounding=decimal.ROUND_UP
-    )
+    avg_iter_s = sum(times) / len(times)
+    avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     endl = "\n"
 
@@ -211,7 +219,7 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
 
     yield endl
 
-    yield f"{count:,} attempts in {elapsed} (avg {avg_iter_time}s per attempt)"
+    yield f"{count:,} attempts in {elapsed} (avg {avg_iter_time} per attempt)"
     yield endl
 
     dictver = result.to_dict()
