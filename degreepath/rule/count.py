@@ -1,17 +1,17 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Union, Tuple, List, Optional, TYPE_CHECKING
+from typing import Dict, List, Tuple, Optional, TYPE_CHECKING
 import re
 import itertools
 import logging
 from functools import reduce
 
-from ..solution import CountSolution
-from .course import CourseRule
-
 if TYPE_CHECKING:
     from ..requirement import RequirementContext
     from . import Rule
+
+from ..solution import CountSolution
+from .course import CourseRule
 
 logger = logging.getLogger(__name__)
 
@@ -19,16 +19,30 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class CountRule:
     count: int
-    of: Tuple[Rule, ...]
+    items: Tuple[Rule, ...]
 
     def to_dict(self):
         return {
             "type": "count",
+            "state": self.state(),
             "count": self.count,
-            "size": len(self.of),
-            "of": tuple(item.to_dict() for item in self.of),
-            "ignored": tuple(),
+            "items": [item.to_dict() for item in self.items],
+            "ok": self.ok(),
+            "status": "skip",
+            "claims": self.claims(),
         }
+
+    def state(self):
+        return "rule"
+
+    def claims(self):
+        return []
+
+    def rank(self):
+        return 0
+
+    def ok(self):
+        return False
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -49,38 +63,38 @@ class CountRule:
         from . import load_rule
 
         if "all" in data:
-            of = data["all"]
-            count = len(of)
+            items = data["all"]
+            count = len(items)
         elif "any" in data:
-            of = data["any"]
+            items = data["any"]
             count = 1
         elif "both" in data:
-            of = data["both"]
+            items = data["both"]
             count = 2
-            if len(of) != 2:
-                raise Exception(f"expected two items in both; found {len(of)} items")
+            if len(items) != 2:
+                raise Exception(f"expected two items in both; found {len(items)} items")
         elif "either" in data:
-            of = data["either"]
+            items = data["either"]
             count = 1
-            if len(of) != 2:
-                raise Exception(f"expected two items in both; found {len(of)} items")
+            if len(items) != 2:
+                raise Exception(f"expected two items in both; found {len(items)} items")
         else:
-            of = data["of"]
+            items = data["of"]
             if data["count"] == "all":
-                count = len(of)
+                count = len(items)
             elif data["count"] == "any":
                 count = 1
             else:
                 count = int(data["count"])
 
-        return CountRule(count=count, of=tuple(load_rule(r) for r in of))
+        return CountRule(count=count, items=tuple(load_rule(r) for r in items))
 
     def validate(self, *, ctx: RequirementContext):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
         assert self.count >= 0
-        assert self.count <= len(self.of)
+        assert self.count <= len(self.items)
 
-        for rule in self.of:
+        for rule in self.items:
             rule.validate(ctx=ctx)
 
     def solutions(self, *, ctx: RequirementContext, path: List):
@@ -90,74 +104,97 @@ class CountRule:
         did_iter = False
 
         lo = self.count
-        hi = len(self.of) + 1
+        hi = len(self.items) + 1
 
-        potentials = [r for r in self.of if (not isinstance(r, CourseRule)) or ctx.find_course(r.course)]
+        potentials = [
+            r
+            for r in self.items
+            if (not isinstance(r, CourseRule)) or ctx.find_course(r.course)
+        ]
         pot_hi = len(potentials) + 1
-
-        # hi = max(min(hi, pot_hi), lo + 1)
 
         assert lo < hi
 
-        size = len(self.of)
+        size = len(self.items)
 
-        all_children = set(self.of)
+        all_children = set(self.items)
+
+        item_indices = {r: self.items.index(r) for r in self.items}
 
         for r in range(lo, hi):
-            logger.warning(f"{path} {lo}..<{hi}, r={r}, max={len(potentials)}")
-            for combo_i, combo in enumerate(itertools.combinations(self.of, r)):
+            logger.debug(f"{path} {lo}..<{hi}, r={r}, max={len(potentials)}")
+
+            for combo_i, combo in enumerate(itertools.combinations(self.items, r)):
                 selected_children = set(combo)
 
-                other_children = all_children.difference(selected_children)
+                other_children = sorted(list(all_children.difference(selected_children)), key=lambda r: item_indices[r])
+
+                selected_original_indices = {}
+                last_missing_idx = 0
+                for idx, item in enumerate(self.items):
+                    if item not in other_children:
+                        selected_original_indices[item] = idx
 
                 logger.debug(f"{path} combo={combo_i}: generating product(*solutions)")
                 did_iter = True
 
-                solutions = [
-                    rule.solutions(ctx=ctx, path=[*path, f"idx={i}"])
-                    for i, rule in enumerate(combo)
-                ]
+                solutions = [rule.solutions(ctx=ctx, path=path) for rule in combo]
 
-                for i, solutionset in enumerate(itertools.product(*solutions)):
-                    if len(path) == 3:
-                        solset = tuple(solutionset)
-                        # flat = [x for s in solutionset for x in ]
-                        y = CountSolution(
-                            of=solset,
-                            ignored=tuple(other_children),
-                            count=self.count,
-                            size=size,
-                        )
-                        flat = [x for x in y.flatten()]
-                        rank = y.audit(ctx=ctx, path=[]).rank()
+                print('combo', combo)
 
-                        needle = set(['LATIN 111', 'LATIN 112', 'LATIN 231', 'LATIN 235', 'LATIN 252', 'LATIN 374', 'LATIN 375'])
-                        # if needle.issubset(set(flat)):
-                        if rank >= 12:
-                            print(rank, flat)
+                for solutionset in itertools.product(*solutions):
 
+                    print('solset', solutionset)
 
-                    logger.debug(f"{path} combo={combo_i}: iteration={i}")
-                    solset = tuple(solutionset)
-                    yield CountSolution(
-                        of=solset,
-                        ignored=tuple(other_children),
-                        count=self.count,
-                        size=size,
+                    # todo: clean up this block
+                    req_ident_map: Dict[int, int] = {}
+                    do_not_yield = False
+
+                    cleaned = []
+
+                    for rulesol in solutionset:
+                        if isinstance(rulesol, tuple):
+                            req_ident, req_idx = rulesol[0]
+
+                            req_ident_map.setdefault(req_ident, req_idx)
+
+                            if req_ident_map[req_ident] != req_idx:
+                                do_not_yield = True
+                                break
+
+                            solution = rulesol[1]
+                        else:
+                            solution = rulesol
+
+                        cleaned.append(solution)
+
+                    if do_not_yield:
+                        continue
+                    # end clean-up-this-block
+
+                    solset = cleaned + other_children
+
+                    ordered_solset = sorted(
+                        solset,
+                        key=lambda r: item_indices[r]
+                                      if r in item_indices
+                                      else selected_original_indices[r]
                     )
+
+                    tuple_solset = tuple(ordered_solset)
+
+                    yield CountSolution.from_rule(self, items=tuple_solset)
 
         if not did_iter:
             # ensure that we always yield something
-            yield CountSolution(
-                of=(), ignored=tuple(all_children), count=self.count, size=size
-            )
+            yield CountSolution.from_rule(self, items=self.items)
 
     def estimate(self, *, ctx: RequirementContext):
         lo = self.count
-        hi = len(self.of) + 1
+        hi = len(self.items) + 1
 
-        estimates = [rule.estimate(ctx=ctx) for rule in self.of]
-        indices = [n for n, _ in enumerate(self.of)]
+        estimates = [rule.estimate(ctx=ctx) for rule in self.items]
+        indices = [n for n, _ in enumerate(self.items)]
 
         count = 0
         for r in range(lo, hi):

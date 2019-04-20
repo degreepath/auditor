@@ -5,5 +5,4 @@ from .count import CountSolution
 from .action import ActionSolution
 from .given import FromSolution
 
-
-Solution = Union[CourseSolution, CountSolution, ActionSolution]
+Solution = Union[CourseSolution, CountSolution]

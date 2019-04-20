@@ -16,9 +16,34 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class CourseRule:
     course: str
+    hidden: bool
+    grade: Optional[str]
+    allow_claimed: bool
 
     def to_dict(self):
-        return {"type": "course", "course": self.course}
+        return {
+            "type": "course",
+            "state": self.state(),
+            "course": self.course,
+            "hidden": self.hidden,
+            "grade": self.grade,
+            "allow_claimed": self.allow_claimed,
+            "status": "skip",
+            "ok": self.ok(),
+            "rank": self.rank(),
+        }
+
+    def state(self):
+        return "rule"
+
+    def claims(self):
+        return []
+
+    def rank(self):
+        return 0
+
+    def ok(self):
+        return False
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -28,7 +53,12 @@ class CourseRule:
 
     @staticmethod
     def load(data: Dict) -> CourseRule:
-        return CourseRule(course=data["course"])
+        return CourseRule(
+            course=data["course"],
+            hidden=data.get("hidden", False),
+            grade=data.get("grade", None),
+            allow_claimed=data.get("including claimed", False),
+        )
 
     def validate(self, *, ctx: RequirementContext):
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)

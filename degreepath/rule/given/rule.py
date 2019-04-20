@@ -81,7 +81,7 @@ class FromRule:
         ]
 
         for p in itertools.product(*saves):
-            data = [item for save_result in p for item in save_result.stored()]
+            data = set(item for save_result in p for item in save_result.stored())
             yield data
 
     def solutions_when_reqs(self, *, ctx: RequirementContext, path):
@@ -91,7 +91,7 @@ class FromRule:
         ]
 
         for p in itertools.product(*reqs):
-            data = [item for req_result in p for item in req_result.matched()]
+            data = set(item for req_result in p for item in req_result.matched())
             yield data
 
     def solutions(self, *, ctx: RequirementContext, path: List[str]):

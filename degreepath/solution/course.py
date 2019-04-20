@@ -24,7 +24,26 @@ class CourseSolution:
         return self.course
 
     def to_dict(self):
-        return {**self.rule.to_dict(), "type": "course", "course": self.course}
+        return {
+            **self.rule.to_dict(),
+            "state": self.state(),
+            "status": "pending",
+            "ok": self.ok(),
+            "rank": self.rank(),
+            "claims": self.claims(),
+        }
+
+    def state(self):
+        return "solution"
+
+    def claims(self):
+        return []
+
+    def rank(self):
+        return 0
+
+    def ok(self):
+        return False
 
     def flatten(self):
         return [self.course]
@@ -33,14 +52,11 @@ class CourseSolution:
         found_course = ctx.find_course(self.course)
 
         if found_course:
-            return CourseResult(
-                course=self.course, status=found_course.status, success=True
-            )
+            claimed = [found_course]
+            return CourseResult(course=self.course, rule=self.rule, claimed=claimed)
 
         logger.debug(f"{path} course '{self.course}' does not exist in the transcript")
-        return CourseResult(
-            course=self.course, status=CourseStatus.NotTaken, success=False
-        )
+        return CourseResult(course=self.course, rule=self.rule, claimed=[])
 
     # def audit(self):
     #     path = [*path, f"$c->{self.course}"]

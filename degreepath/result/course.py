@@ -1,26 +1,37 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from typing import List, TYPE_CHECKING
 
-from ..data import CourseStatus
+from ..data import CourseStatus, CourseInstance
+
+if TYPE_CHECKING:
+    from ..rule import CourseRule
 
 
 @dataclass(frozen=True)
 class CourseResult:
     course: str
-    status: CourseStatus
-    success: bool
+    rule: CourseRule
+    claimed: List[CourseInstance]
 
     def to_dict(self):
         return {
-            "type": "course",
+            **self.rule.to_dict(),
+            "state": self.state(),
+            "status": "pass" if self.ok() else "skip",
             "ok": self.ok(),
             "rank": self.rank(),
-            "course": self.course,
-            "status": self.status.name,
+            "claims": [c.to_dict() for c in self.claims()],
         }
 
+    def claims(self):
+        return self.claimed
+
+    def state(self):
+        return "result"
+
     def ok(self) -> bool:
-        return self.success
+        return len(self.claimed) >= 1
 
     def rank(self):
         return 1 if self.ok() else 0

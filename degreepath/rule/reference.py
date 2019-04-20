@@ -5,7 +5,7 @@ import re
 import itertools
 import logging
 
-from ..requirement import RequirementState
+from ..requirement import RequirementState, RequirementSolution
 from ..solution import CourseSolution
 
 if TYPE_CHECKING:
@@ -14,10 +14,29 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class ReferenceRule:
-    requirement: str
+    name: str
 
     def to_dict(self):
-        return {"type": "reference", "name": self.requirement}
+        return {
+            "type": "reference",
+            "name": self.name,
+            "status": "skip",
+            "state": self.state(),
+            "ok": self.ok(),
+            "rank": self.rank(),
+        }
+
+    def state(self):
+        return "rule"
+
+    def claims(self):
+        return []
+
+    def rank(self):
+        return 0
+
+    def ok(self):
+        return False
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -27,31 +46,44 @@ class ReferenceRule:
 
     @staticmethod
     def load(data: Dict) -> ReferenceRule:
-        return ReferenceRule(requirement=data["requirement"])
+        return ReferenceRule(name=data["requirement"])
 
     def validate(self, *, ctx: RequirementContext):
-        if self.requirement not in ctx.requirements:
+        if self.name not in ctx.requirements:
             reqs = ", ".join(ctx.requirements.keys())
             raise AssertionError(
-                f"expected a requirement named '{self.requirement}', but did not find one [options: {reqs}]"
+                f"expected a requirement named '{self.name}', but did not find one [options: {reqs}]"
             )
 
-        ctx.requirements[self.requirement].validate(ctx=ctx)
+        ctx.requirements[self.name].validate(ctx=ctx)
 
-    def estimate(self, *, ctx: RequirementContext):
-        return ctx.requirements[self.requirement].estimate(ctx=ctx)
+    def _init(self, *, ctx, path):
+        requirement = ctx.requirements[self.name]
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
-        requirement = ctx.requirements[self.requirement]
         # print(requirement)
 
-        state = ctx.requirement_cache.setdefault(
-            requirement,
-            RequirementState(iterable=requirement.solutions(ctx=ctx, path=path)),
-        )
+        state = ctx.requirement_cache.get(requirement, None)
 
-        # print(state.vals)
+        if state is None:
+            state = RequirementState(iterable=requirement.solutions(ctx=ctx, path=path))
+            ctx.requirement_cache[requirement] = state
 
-        for x in state:
-            # logging.warning(f"{path} {x}")
-            yield x
+        return state
+
+    def estimate(self, *, ctx: RequirementContext):
+        return 0
+
+        requirement = ctx.requirements[self.name]
+
+        state = self._init(ctx=ctx, path=[])
+
+        return state.estimate(ctx=ctx)
+
+    def solutions(self, *, ctx: RequirementContext, path: List[str]):
+        requirement = ctx.requirements[self.name]
+
+        state = self._init(ctx=ctx, path=path)
+        # ident = hash(requirement.name)
+        # ident = requirement.name
+
+        yield from state.iter_solutions()

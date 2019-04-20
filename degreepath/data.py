@@ -17,10 +17,10 @@ class Term:
         return int(str(self.term)[0:4])
 
     def semester(self):
-        return int(str(self.term)[5])
+        return int(str(self.term)[4])
 
     def to_dict(self):
-        return {"type": "term"}
+        return {"type": "term", "year": self.year(), "semester": self.semester()}
 
 
 class CourseStatus(Enum):
@@ -57,7 +57,14 @@ class CourseInstance:
     status: CourseStatus
 
     def to_dict(self):
-        return {**self.__dict__, "type": "course"}
+        return {
+            **self.__dict__,
+            "credits": str(self.credits),
+            "grade": str(self.grade),
+            "term": self.term.to_dict(),
+            "status": self.status.name,
+            "type": "course",
+        }
 
     @staticmethod
     def from_dict(
@@ -155,7 +162,7 @@ class CourseInstance:
         return f"{'/'.join(self.subject)} {self.number}"
 
     def __str__(self):
-        return f"{self.course()}"
+        return f"!!course {self.course()}"
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):

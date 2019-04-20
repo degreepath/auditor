@@ -20,6 +20,7 @@ from degreepath.ms import pretty_ms
 logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s: %(message)s"
 
+
 def take(iter, n=5):
     for i, item in enumerate(iter):
         if i < n:
@@ -106,7 +107,9 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
 
             iter_start = time.perf_counter()
 
-            print(f"estimate: {area.estimate(transcript=this_transcript):,} possible combinations")
+            print(
+                f"estimate: {area.estimate(transcript=this_transcript):,} possible combinations"
+            )
 
             if estimate:
                 continue
@@ -135,7 +138,7 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
                 iter_start = time.perf_counter()
 
             if not times:
-                print('no audits completed')
+                print("no audits completed")
                 continue
 
             if should_print:
@@ -143,10 +146,6 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
 
             end = time.perf_counter()
             elapsed = pretty_ms((end - start) * 1000)
-
-            # estimate = area.estimate(transcript=this_transcript)
-            # print(f"estimated total count: {estimate:,}")
-            # print()
 
             output = "".join(
                 summarize(
@@ -165,7 +164,7 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
 
                 outdir = Path("./output")
                 areadir = area.name.replace("/", "_")
-                datestring = pendulum.now().format('MM MMMM DD')
+                datestring = pendulum.now().format("MM MMMM DD")
                 areadir = f"{areadir} - {datestring}"
 
                 ok_path = outdir / areadir / "ok"
@@ -222,6 +221,9 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     yield f"{count:,} attempts in {elapsed} (avg {avg_iter_time} per attempt)"
     yield endl
 
+    # print(result)
+    # import yaml
+    # print(yaml.dump(result))
     dictver = result.to_dict()
 
     # print(f"The best solution we found was:")
@@ -241,73 +243,75 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     yield endl
 
 
+import pprint
+
 def print_result(rule, indent=0):
     prefix = " " * indent
-    if rule.get("type", None) == "course":
-        if rule.get("ok", None):
-            if rule["status"] == CourseStatus.Ok.name:
+
+    # print(json.dumps(rule, indent=2))
+
+    rule_type = rule["type"]
+
+    if rule_type == "course":
+        if rule["ok"]:
+            course = rule["claims"][0]
+
+            if course['status'] == CourseStatus.Ok.name:
                 status = "✅ [ ok]"
-            elif rule["status"] == CourseStatus.DidNotComplete.name:
+            elif course['status'] == CourseStatus.DidNotComplete.name:
                 status = "⛔️ [dnf]"
-            elif rule["status"] == CourseStatus.InProgress.name:
+            elif course['status'] == CourseStatus.InProgress.name:
                 status = "✅ [ ip]"
-            elif rule["status"] == CourseStatus.Repeated.name:
+            elif course['status'] == CourseStatus.Repeated.name:
                 status = "✅ [rep]"
-            elif rule["status"] == CourseStatus.NotTaken.name:
+            elif course['status'] == CourseStatus.NotTaken.name:
                 status = "🌀      "
         else:
             status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
 
-    elif rule.get("type", None) == "count":
-        # print(rule)
-        if "ok" in rule:
-            if rule["ok"]:
-                emoji = "✅"
-            else:
-                emoji = "⚠️ "
-        else:
+    elif rule_type == "count":
+        if rule["status"] == "pass":
+            emoji = "✅"
+        elif rule["status"] == "skip":
             emoji = "🌀"
-
-        if rule["count"] == 1 and rule["size"] == 2:
-            descr = f"either of (these {rule['size']})"
-        elif rule["count"] == 2 and rule["size"] == 2:
-            descr = f"both of (these {rule['size']})"
-        elif rule["count"] == rule["size"]:
-            descr = f"all of (these {rule['size']})"
-        elif rule["count"] == 1:
-            descr = f"any of (these {rule['size']})"
         else:
-            descr = f"{rule['count']} of {rule['size']}"
+            emoji = "⚠️"
 
-        if "ok" in rule:
-            ok_count = len([x for x in rule["of"] if "ok" in x and x["ok"]])
-            descr += f" (ok: {ok_count}; need: {rule['count']})"
+        size = len(rule["items"])
+        if rule["count"] == 1 and size == 2:
+            descr = f"either of (these {size})"
+        elif rule["count"] == 2 and size == 2:
+            descr = f"both of (these {size})"
+        elif rule["count"] == size:
+            descr = f"all of (these {size})"
+        elif rule["count"] == 1:
+            descr = f"any of (these {size})"
+        else:
+            descr = f"{rule['count']} of {size}"
+
+        ok_count = len([r for r in rule["items"] if r["ok"]])
+        descr += f" (ok: {ok_count}; need: {rule['count']})"
 
         yield f"{prefix}{emoji} {descr}"
 
-        for r in rule["of"]:
+        for r in rule["items"]:
             yield from print_result(r, indent=indent + 4)
 
-        for x in rule["ignored"]:
-            yield from print_result(x, indent=indent + 4)
-
-    elif rule.get("type", None) == "requirement":
-        if "ok" in rule:
-            if rule["ok"]:
-                emoji = "✅"
-            else:
-                emoji = "⚠️ "
-        else:
+    elif rule_type == "requirement":
+        if rule["status"] == "pass":
+            emoji = "✅"
+        elif rule["status"] == "skip":
             emoji = "🌀"
+        else:
+            emoji = "⚠️"
 
         yield f"{prefix}{emoji} Requirement({rule['name']})"
         yield from print_result(rule["result"], indent=indent + 4)
 
     else:
         yield json.dumps(rule, indent=2)
-
 
 if __name__ == "__main__":
     main()

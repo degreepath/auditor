@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import List, Optional, Any, Dict, Iterable, TYPE_CHECKING
+from typing import List, Optional, Tuple, Any, Dict, Iterable, TYPE_CHECKING
 import logging
 import itertools
 
@@ -10,7 +10,9 @@ from .data import CourseInstance, CourseStatus
 from .save import SaveRule
 
 if TYPE_CHECKING:
+    from .solution import Solution
     from .rule import Rule
+    from .result import Result
 
 
 @dataclass(frozen=False)
@@ -33,12 +35,12 @@ class RequirementContext:
 
 class RequirementState(object):
     def __init__(self, iterable):
-        self.iterable = iterable
+        # self.iterable = iterable
         self.iter = iter(iterable)
         self.done = False
         self.vals = []
 
-    def __iter__(self):
+    def iter_solutions(self):
         if self.done:
             return iter(self.vals)
 
@@ -156,6 +158,7 @@ class Requirement:
 
         if not self.result:
             logging.debug(f"{header} does not have a result")
+            yield RequirementSolution.from_requirement(self, solution=None, inputs=[])
             return
         else:
             logging.debug(f"{header} has a result")
@@ -167,8 +170,13 @@ class Requirement:
         )
 
         path = [*path, ".result"]
-        for sol in self.result.solutions(ctx=new_ctx, path=path):
-            yield RequirementSolution(solution=sol, name=self.name)
+
+        ident = self.name
+
+        for i, solution in enumerate(self.result.solutions(ctx=new_ctx, path=path)):
+            yield RequirementSolution.from_requirement(
+                self, inputs=[(ident, i)], solution=solution
+            )
 
     def estimate(self, *, ctx: RequirementContext):
         new_ctx = RequirementContext(
@@ -182,41 +190,131 @@ class Requirement:
 
 @dataclass(frozen=True)
 class RequirementSolution:
-    solution: Any
     name: str
+    saves: Any  # frozendict[str, SaveRule]
+    requirements: Any  # frozendict[str, Requirement]
+    result: Optional[Solution]
+    inputs: List[Tuple[str, int]]
+    message: Optional[str] = None
+    audited_by: Optional[str] = None
+    contract: bool = False
+
+    @staticmethod
+    def from_requirement(
+        req: Requirement, *, solution: Optional[Solution], inputs: List[Tuple[str, int]]
+    ):
+        return RequirementSolution(
+            inputs=inputs,
+            result=solution,
+            name=req.name,
+            saves=req.saves,
+            requirements=req.requirements,
+            message=req.message,
+            audited_by=req.audited_by,
+            contract=req.contract,
+        )
 
     def matched(self):
         return self.solution
 
     def to_dict(self):
-        return {"type": "requirement", "solution": self.solution.to_dict()}
+        return {
+            "type": "requirement",
+            "name": self.name,
+            "saves": {name: s.to_dict() for name, s in self.saves.items()},
+            "requirements": {
+                name: r.to_dict() for name, r in self.requirements.items()
+            },
+            "message": self.message,
+            "result": self.result.to_dict(),
+            "audited_by": self.audited_by,
+            "contract": self.contract,
+            "state": self.state(),
+            "status": "pending",
+            "ok": self.ok(),
+            "rank": self.rank(),
+            "claims": self.claims(),
+        }
+
+    def state(self):
+        return self.result.state()
+
+    def claims(self):
+        return self.result.claims()
+
+    def ok(self):
+        return self.result.ok()
 
     def flatten(self):
         return self.solution.flatten()
 
     def audit(self, *, ctx: RequirementContext, path: List) -> RequirementResult:
-        result = self.solution.audit(ctx=ctx, path=path)
+        if not self.result:
+            # TODO: return something better
+            return RequirementResult.from_solution(self, result=None)
 
-        return RequirementResult(result=result, name=self.name)
+        result = self.result.audit(ctx=ctx, path=path)
+
+        return RequirementResult.from_solution(self, result=result)
 
 
 @dataclass(frozen=True)
 class RequirementResult:
-    result: RequirementResult
     name: str
+    saves: Any  # frozendict[str, SaveRule]
+    requirements: Any  # frozendict[str, Requirement]
+    inputs: List[Tuple[str, int]]
+    message: Optional[str] = None
+    result: Optional[Result] = None
+    audited_by: Optional[str] = None
+    contract: bool = False
+
+    @staticmethod
+    def from_solution(sol: RequirementSolution, *, result: Optional[Result]):
+        return RequirementResult(
+            name=sol.name,
+            saves=sol.saves,
+            requirements=sol.requirements,
+            inputs=sol.inputs,
+            message=sol.message,
+            audited_by=sol.audited_by,
+            contract=sol.contract,
+            result=result,
+        )
 
     def to_dict(self):
         return {
             "type": "requirement",
-            "result": self.result.to_dict(),
             "name": self.name,
+            "saves": {name: s.to_dict() for name, s in self.saves.items()},
+            "requirements": {
+                name: r.to_dict() for name, r in self.requirements.items()
+            },
+            "message": self.message,
+            "result": self.result.to_dict(),
+            "audited_by": self.audited_by,
+            "contract": self.contract,
+            "state": self.state(),
+            "status": "pass" if self.ok() else "problem",
             "ok": self.ok(),
             "rank": self.rank(),
+            "claims": [c.to_dict() for c in self.claims()],
         }
 
+    def state(self):
+        return self.result.state()
+
+    def claims(self):
+        return self.result.claims()
+
     def ok(self) -> bool:
+        if not self.result:
+            return False
         return self.result.ok()
 
     def rank(self):
+        if not self.result:
+            return 0
+
         boost = 1 if self.ok() else 0
         return self.result.rank() + boost

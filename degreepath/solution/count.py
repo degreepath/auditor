@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Union, List, Optional, Any, Tuple, TYPE_CHECKING
+from typing import Union, List, Tuple, TYPE_CHECKING
 import itertools
 import logging
 
@@ -17,31 +17,50 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class CountSolution:
-    of: Tuple[Solution, ...]
-    ignored: Tuple[Rule, ...]
     count: int
-    size: int
+    items: Tuple[Union[Solution, Rule]]
 
     def to_dict(self):
         return {
-            **self.rule.to_dict(),
             "type": "count",
-            "of": [item.to_dict() for item in self.of],
-            "ignored": [item.to_dict() for item in self.ignored],
+            "state": self.state(),
             "count": self.count,
-            "size": self.size,
+            "items": [item.to_dict() for item in self.items],
+            "status": "pending",
+            "ok": self.ok(),
+            "rank": self.rank(),
+            "claims": [item for item in self.claims()],
         }
 
+    def state(self):
+        return "solution"
+
+    def claims(self):
+        return []
+
+    def rank(self):
+        return 0
+
+    def ok(self):
+        return False
+
+    @staticmethod
+    def from_rule(rule: CountRule, *, items) -> CountSolution:
+        return CountSolution(count=rule.count, items=items)
+
     def flatten(self):
-        return (x for s in self.of for x in s.flatten())
+        return (x for s in self.items for x in s.flatten())
 
     def audit(self, *, ctx: RequirementContext, path: List) -> Result:
         path = [*path, f".of"]
 
         results = tuple(
-            r.audit(ctx=ctx, path=[*path, f"idx={i}"]) for i, r in enumerate(self.of)
+            r.audit(ctx=ctx, path=[*path, i])
+            if r.state() == "solution"
+            else r
+            for i, r in enumerate(self.items)
         )
 
-        return CountResult(
-            of=results, ignored=self.ignored, size=self.size, count=self.count
-        )
+        # print(self.items)
+
+        return CountResult(count=self.count, items=results)
