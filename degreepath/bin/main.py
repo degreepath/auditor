@@ -10,9 +10,9 @@ from pathlib import Path
 
 import click
 import coloredlogs
-import yaml
 import jsonpickle
 import pendulum
+import yaml
 
 from degreepath import CourseInstance, AreaOfStudy, CourseStatus
 from degreepath.ms import pretty_ms
@@ -31,10 +31,13 @@ def take(iter, n=5):
 @click.option("--print-every", "-e", default=1_000)
 @click.option("--loglevel", "-l", default="warn")
 @click.option("--record/--no-record", default=True)
-@click.option("--estimate", default=None, is_flag=True)
+# @click.option("--estimate", default=None, is_flag=True)
 @click.option("--print/--no-print", "stream", default=True)
+@click.option(
+    "--area", "area_files", envvar="AREAS", multiple=True, type=click.Path(exists=True)
+)
 @click.argument("student_file", nargs=-1, type=click.Path(exists=True))
-def main(*, student_file, print_every, loglevel, record, stream, estimate):
+def main(*, student_file, print_every, loglevel, record, stream, workers, area_files):
     """Audits a student against their areas of study."""
 
     should_record = record
@@ -50,147 +53,161 @@ def main(*, student_file, print_every, loglevel, record, stream, estimate):
         logger.setLevel(logging.INFO)
         coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
-    allowed = set(["Exercise Science", "Latin", "Social Work"])
-
-    files = [
-        "./gobbldygook-area-data/2015-16/major/exercise-science.yaml",
-        "./gobbldygook-area-data/2018-19/major/latin.yaml",
-        "./gobbldygook-area-data/2018-19/major/swrk.yaml",
-    ]
+    areas = []
+    allowed = collections.defaultdict(set)
+    for f in area_files:
+        with open(f, "r", encoding="utf-8") as infile:
+            a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
+        areas.append(a)
+        allowed[a["type"]].add(a["name"])
 
     students = []
     for file in student_file:
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
 
-        if set(data["majors"]).intersection(allowed):
+        if set(data["majors"]).intersection(allowed["major"]):
+            students.append(data)
+        if set(data["concentrations"]).intersection(allowed["concentration"]):
             students.append(data)
 
-    area_files = []
-    for f in files:
-        with open(f, "r", encoding="utf-8") as infile:
-            area_files.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
+    run(
+        students=students,
+        areas=areas,
+        allowed=allowed,
+        print_every=print_every,
+        should_record=should_record,
+        should_print=should_print,
+        workers=workers,
+    )
 
-    for i, data in enumerate(students):
-        print(f"auditing #{data['stnum']}", file=sys.stderr)
 
+def run(*, students, areas, allowed, print_every, should_record, should_print, workers):
+    for i, student in enumerate(students):
         transcript = []
-        for row in data["courses"]:
+        for row in student["courses"]:
             try:
                 transcript.append(CourseInstance.from_dict(**row))
             except:
                 continue
 
-        areas = set(data["majors"]).intersection(allowed)
+        major_names = set(student["majors"])
+        allowed_major_names = major_names.intersection(allowed["major"])
 
-        for area_name in areas:
-            area_defs = [
-                a for a in area_files if a["type"] == "major" and a["name"] == area_name
-            ]
-            area = AreaOfStudy.load(area_defs[0])
+        conc_names = set(student["concentrations"])
+        allowed_conc_names = conc_names.intersection(allowed["concentration"])
 
-            area.validate()
+        allowed_area_names = allowed_major_names.union(allowed_conc_names)
 
-            this_transcript = []
-            for c in transcript:
-                if area.attributes.get("courses", None):
-                    attributes = area.attributes["courses"].get(c.course(), [])
-                    c = c.attach_attrs(attributes=attributes)
-                this_transcript.append(c)
+        for area_name in allowed_area_names:
+            area_def = next(a for a in areas if a["name"] == area_name)
 
-            start = time.perf_counter()
-
-            best_sol = None
-            total_count = 0
-
-            times = []
-
-            iter_start = time.perf_counter()
-
-            print(
-                f"estimate: {area.estimate(transcript=this_transcript):,} possible combinations"
+            audit(
+                area_def=area_def,
+                transcript=transcript,
+                student=student,
+                print_every=print_every,
+                should_print=should_print,
+                should_record=should_record,
             )
 
-            if estimate:
-                continue
 
-            for sol in area.solutions(transcript=this_transcript):
-                total_count += 1
+def audit(*, area_def, transcript, student, print_every, should_print, should_record):
+    print(f"auditing #{student['stnum']}", file=sys.stderr)
 
-                if total_count % print_every == 0:
-                    print(f"... {total_count:,}", file=sys.stderr)
+    area = AreaOfStudy.load(area_def)
 
-                result = sol.audit(transcript=this_transcript)
+    area.validate()
 
-                if best_sol is None:
-                    best_sol = result
+    this_transcript = []
+    for c in transcript:
+        attributes = area.attributes.get("courses", {}).get(c.course(), [])
+        c = c.attach_attrs(attributes=attributes)
+        this_transcript.append(c)
 
-                if result.rank() > best_sol.rank():
-                    best_sol = result
+    start = time.perf_counter()
 
-                if result.ok():
-                    iter_end = time.perf_counter()
-                    times.append(iter_end - iter_start)
-                    break
+    best_sol = None
+    total_count = 0
 
-                iter_end = time.perf_counter()
-                times.append(iter_end - iter_start)
-                iter_start = time.perf_counter()
+    times = []
 
-            if not times:
-                print("no audits completed")
-                continue
+    iter_start = time.perf_counter()
 
-            if should_print:
-                print()
+    for sol in area.solutions(transcript=this_transcript):
+        total_count += 1
 
-            end = time.perf_counter()
-            elapsed = pretty_ms((end - start) * 1000)
+        if total_count % print_every == 0:
+            print(f"... {total_count:,}", file=sys.stderr)
 
-            output = "".join(
-                summarize(
-                    name=data["name"],
-                    stnum=data["stnum"],
-                    area=area,
-                    result=best_sol,
-                    count=total_count,
-                    elapsed=elapsed,
-                    iterations=times,
-                )
-            )
+        result = sol.audit(transcript=this_transcript)
 
-            if should_record:
-                filename = f'{data["stnum"]} {data["name"]}.txt'
+        if best_sol is None:
+            best_sol = result
 
-                outdir = Path("./output")
-                areadir = area.name.replace("/", "_")
-                datestring = pendulum.now().format("MM MMMM DD")
-                areadir = f"{areadir} - {datestring}"
+        if result.rank() > best_sol.rank():
+            best_sol = result
 
-                ok_path = outdir / areadir / "ok"
-                ok_path.mkdir(parents=True, exist_ok=True)
+        if result.ok():
+            iter_end = time.perf_counter()
+            times.append(iter_end - iter_start)
+            break
 
-                fail_path = outdir / areadir / "fail"
-                fail_path.mkdir(parents=True, exist_ok=True)
+        iter_end = time.perf_counter()
+        times.append(iter_end - iter_start)
+        iter_start = time.perf_counter()
 
-                ok = best_sol.ok()
+    if not times:
+        print("no audits completed")
+        return
 
-                container = ok_path if ok else fail_path
-                otherpath = (ok_path if container == ok_path else fail_path) / filename
+    if should_print:
+        print()
 
-                if otherpath.exists():
-                    otherpath.unlink()
+    end = time.perf_counter()
+    elapsed = pretty_ms((end - start) * 1000)
 
-                outpath = container / filename
+    output = "".join(
+        summarize(
+            name=student["name"],
+            stnum=student["stnum"],
+            area=area,
+            result=best_sol,
+            count=total_count,
+            elapsed=elapsed,
+            iterations=times,
+        )
+    )
 
-                with outpath.open("w") as outfile:
-                    outfile.write(output)
+    if should_record:
+        filename = f'{student["stnum"]} {student["name"]}.txt'
 
-            if should_print:
-                print(output)
+        outdir = Path("./output")
+        areadir = area.name.replace("/", "_")
+        datestring = pendulum.now().format("MM MMMM DD")
+        areadir = f"{areadir} - {datestring}"
 
-        if i < len(student_file) and should_print:
-            print()
+        ok_path = outdir / areadir / "ok"
+        ok_path.mkdir(parents=True, exist_ok=True)
+
+        fail_path = outdir / areadir / "fail"
+        fail_path.mkdir(parents=True, exist_ok=True)
+
+        ok = best_sol.ok()
+
+        container = ok_path if ok else fail_path
+        otherpath = (ok_path if container == ok_path else fail_path) / filename
+
+        if otherpath.exists():
+            otherpath.unlink()
+
+        outpath = container / filename
+
+        with outpath.open("w") as outfile:
+            outfile.write(output)
+
+    if should_print:
+        print(output)
 
 
 def summarize(*, name, stnum, area, result, count, elapsed, iterations):
@@ -245,6 +262,7 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
 
 import pprint
 
+
 def print_result(rule, indent=0):
     prefix = " " * indent
 
@@ -256,15 +274,15 @@ def print_result(rule, indent=0):
         if rule["ok"]:
             course = rule["claims"][0]
 
-            if course['status'] == CourseStatus.Ok.name:
+            if course["status"] == CourseStatus.Ok.name:
                 status = "✅ [ ok]"
-            elif course['status'] == CourseStatus.DidNotComplete.name:
+            elif course["status"] == CourseStatus.DidNotComplete.name:
                 status = "⛔️ [dnf]"
-            elif course['status'] == CourseStatus.InProgress.name:
+            elif course["status"] == CourseStatus.InProgress.name:
                 status = "✅ [ ip]"
-            elif course['status'] == CourseStatus.Repeated.name:
+            elif course["status"] == CourseStatus.Repeated.name:
                 status = "✅ [rep]"
-            elif course['status'] == CourseStatus.NotTaken.name:
+            elif course["status"] == CourseStatus.NotTaken.name:
                 status = "🌀      "
         else:
             status = "🌀      "
@@ -312,6 +330,7 @@ def print_result(rule, indent=0):
 
     else:
         yield json.dumps(rule, indent=2)
+
 
 if __name__ == "__main__":
     main()
