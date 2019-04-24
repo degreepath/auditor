@@ -55,9 +55,7 @@ class CountSolution:
         path = [*path, f".of"]
 
         results = tuple(
-            r.audit(ctx=ctx, path=[*path, i])
-            if r.state() == "solution"
-            else r
+            r.audit(ctx=ctx, path=[*path, i]) if r.state() == "solution" else r
             for i, r in enumerate(self.items)
         )
 

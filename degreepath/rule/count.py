@@ -127,7 +127,10 @@ class CountRule:
             for combo_i, combo in enumerate(itertools.combinations(self.items, r)):
                 selected_children = set(combo)
 
-                other_children = sorted(list(all_children.difference(selected_children)), key=lambda r: item_indices[r])
+                other_children = sorted(
+                    list(all_children.difference(selected_children)),
+                    key=lambda r: item_indices[r],
+                )
 
                 selected_original_indices = {}
                 last_missing_idx = 0
@@ -140,11 +143,11 @@ class CountRule:
 
                 solutions = [rule.solutions(ctx=ctx, path=path) for rule in combo]
 
-                print('combo', combo)
+                # print("combo", combo)
 
                 for solutionset in itertools.product(*solutions):
 
-                    print('solset', solutionset)
+                    # print("solset", solutionset)
 
                     # todo: clean up this block
                     req_ident_map: Dict[int, int] = {}
@@ -174,14 +177,14 @@ class CountRule:
 
                     solset = cleaned + other_children
 
-                    ordered_solset = sorted(
-                        solset,
-                        key=lambda r: item_indices[r]
-                                      if r in item_indices
-                                      else selected_original_indices[r]
-                    )
+                    # ordered_solset = sorted(
+                    #     solset,
+                    #     key=lambda r: item_indices[r]
+                    #     # if r in item_indices
+                    #     # else selected_original_indices[r],
+                    # )
 
-                    tuple_solset = tuple(ordered_solset)
+                    tuple_solset = tuple(solset)
 
                     yield CountSolution.from_rule(self, items=tuple_solset)
 
