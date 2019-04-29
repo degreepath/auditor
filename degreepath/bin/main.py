@@ -37,7 +37,7 @@ def take(iter, n=5):
     "--area", "area_files", envvar="AREAS", multiple=True, type=click.Path(exists=True)
 )
 @click.argument("student_file", nargs=-1, type=click.Path(exists=True))
-def main(*, student_file, print_every, loglevel, record, stream, workers, area_files):
+def main(*, student_file, print_every, loglevel, record, stream, area_files):
     """Audits a student against their areas of study."""
 
     should_record = record
@@ -78,11 +78,10 @@ def main(*, student_file, print_every, loglevel, record, stream, workers, area_f
         print_every=print_every,
         should_record=should_record,
         should_print=should_print,
-        workers=workers,
     )
 
 
-def run(*, students, areas, allowed, print_every, should_record, should_print, workers):
+def run(*, students, areas, allowed, print_every, should_record, should_print):
     for i, student in enumerate(students):
         transcript = []
         for row in student["courses"]:
