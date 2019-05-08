@@ -43,13 +43,13 @@ def main(*, student_file, print_every, loglevel, record, stream, area_files):
     should_record = record
     should_print = stream
 
-    if loglevel == "warn":
+    if loglevel.lower() == "warn":
         logger.setLevel(logging.WARNING)
         coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
-    elif loglevel == "debug":
+    elif loglevel.lower() == "debug":
         logger.setLevel(logging.DEBUG)
         coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
-    elif loglevel == "info":
+    elif loglevel.lower() == "info":
         logger.setLevel(logging.INFO)
         coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
@@ -267,6 +267,10 @@ def print_result(rule, indent=0):
 
     # print(json.dumps(rule, indent=2))
 
+    if rule is None:
+        yield f"{prefix}???"
+        return
+
     rule_type = rule["type"]
 
     if rule_type == "course":
@@ -325,6 +329,9 @@ def print_result(rule, indent=0):
             emoji = "⚠️"
 
         yield f"{prefix}{emoji} Requirement({rule['name']})"
+        if rule["audited_by"] is not None:
+            yield f"{prefix}    Audited by: {rule['audited_by']}; assuming success"
+            return
         yield from print_result(rule["result"], indent=indent + 4)
 
     else:

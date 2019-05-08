@@ -101,6 +101,8 @@ class Requirement:
         audited_by = None
         if data.get("department_audited", False):
             audited_by = "department"
+        if data.get("department-audited", False):
+            audited_by = "department"
         elif data.get("registrar_audited", False):
             audited_by = "registrar"
 
@@ -215,7 +217,7 @@ class RequirementSolution:
         )
 
     def matched(self):
-        return self.solution
+        return self.result
 
     def to_dict(self):
         return {
@@ -226,7 +228,7 @@ class RequirementSolution:
                 name: r.to_dict() for name, r in self.requirements.items()
             },
             "message": self.message,
-            "result": self.result.to_dict(),
+            "result": self.result.to_dict() if self.result else None,
             "audited_by": self.audited_by,
             "contract": self.contract,
             "state": self.state(),
@@ -237,16 +239,20 @@ class RequirementSolution:
         }
 
     def state(self):
+        if self.audited_by:
+            return "solution"
         return self.result.state()
 
     def claims(self):
+        if self.audited_by:
+            return []
         return self.result.claims()
 
     def ok(self):
         return self.result.ok()
 
     def flatten(self):
-        return self.solution.flatten()
+        return self.result.flatten()
 
     def audit(self, *, ctx: RequirementContext, path: List) -> RequirementResult:
         if not self.result:
@@ -291,7 +297,7 @@ class RequirementResult:
                 name: r.to_dict() for name, r in self.requirements.items()
             },
             "message": self.message,
-            "result": self.result.to_dict(),
+            "result": self.result.to_dict() if self.result else None,
             "audited_by": self.audited_by,
             "contract": self.contract,
             "state": self.state(),
@@ -302,12 +308,19 @@ class RequirementResult:
         }
 
     def state(self):
+        if self.audited_by:
+            return "result"
         return self.result.state()
 
     def claims(self):
+        if self.audited_by:
+            return []
         return self.result.claims()
 
     def ok(self) -> bool:
+        # TODO: remove this once exceptions are in place
+        if self.audited_by:
+            return True
         if not self.result:
             return False
         return self.result.ok()
