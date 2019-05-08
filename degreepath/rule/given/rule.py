@@ -21,7 +21,6 @@ class FromRule:
     action: Optional[Assertion]
     limit: Optional[Limit]
     where: Optional[Clause]
-    store: Optional[str]
 
     def to_dict(self):
         return {
@@ -29,7 +28,6 @@ class FromRule:
             "source": self.source.to_dict(),
             "action": self.action.to_dict() if self.action else None,
             "where": self.where.to_dict() if self.where else None,
-            "store": self.store,
         }
 
     @staticmethod
@@ -53,19 +51,13 @@ class FromRule:
             action = Assertion.load(data=data["assert"])
 
         return FromRule(
-            source=FromInput.load(data["from"]),
-            action=action,
-            limit=limit,
-            where=where,
-            store=data.get("store", None),
+            source=FromInput.load(data["from"]), action=action, limit=limit, where=where
         )
 
     def validate(self, *, ctx: RequirementContext):
         self.source.validate(ctx=ctx)
         if self.action:
             self.action.validate(ctx=ctx)
-        if self.store is not None:
-            assert self.store in ("courses",)
 
     def solutions_when_student(self, *, ctx: RequirementContext, path):
         if self.source.itemtype == "courses":
@@ -114,13 +106,6 @@ class FromRule:
                 logging.debug(f"fromrule/filter/before: {data}")
                 data = [c for c in data if c.apply_clause(self.where)]
                 logging.debug(f"fromrule/filter/after: {data}")
-
-            if self.store == "courses":
-                logging.debug("storing courses")
-                yield FromSolution(output=data, rule=self)
-                return
-            elif self.store:
-                raise Exception("not implemented yet")
 
             assert self.action is not None
 
