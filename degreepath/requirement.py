@@ -27,7 +27,8 @@ class RequirementContext:
             return next(
                 course
                 for course in self.transcript
-                if course.status != CourseStatus.DidNotComplete and course.course() == c
+                if course.status != CourseStatus.DidNotComplete
+                and (course.course() == c or course.course_shorthand() == c)
             )
         except StopIteration:
             return None

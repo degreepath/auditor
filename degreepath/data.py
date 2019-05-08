@@ -56,6 +56,9 @@ class CourseInstance:
 
     status: CourseStatus
 
+    identity: str
+    shorthand: str
+
     def to_dict(self):
         return {
             **self.__dict__,
@@ -132,6 +135,9 @@ class CourseInstance:
 
         attributes = attributes if attributes is not None else []
 
+        course_identity = f"{'/'.join(subject)} {number}"
+        course_identity_short = f"{'/'.join(subjects)} {number}"
+
         return CourseInstance(
             status=status,
             credits=credits,
@@ -150,6 +156,8 @@ class CourseInstance:
             attributes=attributes,
             is_flac=is_flac,
             is_ace=is_ace,
+            identity=course_identity,
+            shorthand=course_identity_short,
         )
 
     def attach_attrs(self, attributes=None):
@@ -159,7 +167,10 @@ class CourseInstance:
         return dataclasses.replace(self, attributes=attributes)
 
     def course(self):
-        return f"{'/'.join(self.subject)} {self.number}"
+        return self.identity
+
+    def course_shorthand(self):
+        return self.shorthand
 
     def __str__(self):
         return f"!!course {self.course()}"
