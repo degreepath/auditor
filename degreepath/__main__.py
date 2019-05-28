@@ -14,8 +14,8 @@ import jsonpickle
 import pendulum
 import yaml
 
-from degreepath import CourseInstance, AreaOfStudy, CourseStatus
-from degreepath.ms import pretty_ms
+from . import CourseInstance, AreaOfStudy, CourseStatus
+from .ms import pretty_ms
 
 logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s: %(message)s"
