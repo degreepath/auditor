@@ -1,5 +1,22 @@
-# gobbldygook-area-auditor
-The new evaluator for Gobbldygook's Hanson Format v2
+# Degreepath, the automated degree auditor
+
+> Gobbldygook lives!
+
+Degreepath is a tool to perform automated, comprehensive, and fast degree audits.
+
+**Automated**: (eventually) A web interface, for reviewing the status of a cohort of students and for running reports
+
+**Comprehensive**: Just checking degree audits? Nah. How about running graduation, general education, major, and concentration/minor audits, all at once?
+
+**Fast**: (eventually) And of course, this only makes sense to run if it's faster than doing the checks by hand. Luckily, computers are fast, and the can do lots of things at once!
+
+---
+
+Requires Python 3.7+. Dependency management handled by [Poetry](https://github.com/sdispater/poetry).
+
+```
+python3 -m degreepath --help
+```
 
 ```
 Copyright (C) 2019  Hawken MacKay Rives
