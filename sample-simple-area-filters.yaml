@@ -25,5 +25,5 @@ requirements:
   C:
     result:
       from: {student: courses}
-      where: {subject: {$eq: EFG}}
+      where: {subjects: {$eq: EFG}}
       assert: {count(courses): {$gte: 1}}
