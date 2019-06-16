@@ -135,8 +135,15 @@ class CourseInstance:
 
         attributes = attributes if attributes is not None else []
 
-        course_identity = f"{'/'.join(subject)} {number}"
-        course_identity_short = f"{'/'.join(subjects)} {number}"
+        if is_lab:
+            course_identity = f"{'/'.join(subject)} {number}.L"
+            course_identity_short = f"{'/'.join(subjects)} {number}.L"
+        elif is_flac:
+            course_identity = f"{'/'.join(subject)} {number}.F"
+            course_identity_short = f"{'/'.join(subjects)} {number}.F"
+        else:
+            course_identity = f"{'/'.join(subject)} {number}"
+            course_identity_short = f"{'/'.join(subjects)} {number}"
 
         return CourseInstance(
             status=status,
