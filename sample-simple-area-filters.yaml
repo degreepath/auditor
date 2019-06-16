@@ -7,6 +7,7 @@ result:
   all:
     - requirement: A
     - requirement: B
+    - requirement: C
 
 requirements:
   A:
@@ -20,3 +21,9 @@ requirements:
       both:
         - course: ABCD 101
         - course: ABCD 103
+
+  C:
+    result:
+      from: {student: courses}
+      where: {subject: {$eq: EFG}}
+      assert: {count(courses): {$gte: 1}}
