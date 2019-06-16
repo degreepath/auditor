@@ -87,7 +87,9 @@ def run(*, students, areas, allowed, print_every, should_record, should_print):
         for row in student["courses"]:
             try:
                 transcript.append(CourseInstance.from_dict(**row))
-            except:
+            except Exception as err:
+                # print(err)
+                raise err
                 continue
 
         major_names = set(student["majors"])
