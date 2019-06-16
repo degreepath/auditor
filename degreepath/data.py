@@ -1,7 +1,7 @@
 from __future__ import annotations
 import dataclasses
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import decimal
 import logging
 
@@ -34,13 +34,13 @@ class CourseStatus(Enum):
 @dataclasses.dataclass(frozen=True)
 class CourseInstance:
     credits: decimal.Decimal
-    subject: List[str]
+    subject: Tuple[str, ...]
     number: int
     section: Optional[str]
 
     transcript_code: str
     clbid: str
-    gereqs: List[str]
+    gereqs: Tuple[str, ...]
     term: Term
 
     is_lab: bool
@@ -52,7 +52,7 @@ class CourseInstance:
 
     gradeopt: str
     level: int
-    attributes: List[str]
+    attributes: Tuple[str, ...]
 
     status: CourseStatus
 
@@ -125,8 +125,8 @@ class CourseInstance:
             decimal.Decimal("0.01"), rounding=decimal.ROUND_DOWN
         )
 
-        subject = subjects if subjects is not None else [course.split(" ")[0]]
-        subject = list(expand_subjects(subject))
+        subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
+        subject = tuple(expand_subjects(subject))
         # we want to keep the original shorthand course identity for matching purposes
 
         number = number if number is not None else course.split(" ")[1]
@@ -136,7 +136,8 @@ class CourseInstance:
 
         level = number // 100 * 100
 
-        attributes = attributes if attributes is not None else []
+        attributes = tuple(attributes) if attributes is not None else tuple()
+        gereqs = tuple(gereqs) if gereqs is not None else tuple()
 
         if is_lab:
             course_identity = f"{'/'.join(subject)} {number}.L"
@@ -172,9 +173,9 @@ class CourseInstance:
 
     def attach_attrs(self, attributes=None):
         if attributes is None:
-            attributes = []
+            attributes = tuple()
 
-        return dataclasses.replace(self, attributes=attributes)
+        return dataclasses.replace(self, attributes=tuple(attributes))
 
     def course(self):
         return self.identity
