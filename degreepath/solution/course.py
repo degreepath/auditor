@@ -69,7 +69,7 @@ class CourseSolution:
             return CourseResult(course=self.course, rule=self.rule, claimed=[])
 
         claim = ctx.make_claim(
-            course=matched_course, key=path, value={"course": self.course}
+            course=matched_course, crsid=matched_course.shorthand, path=path, clause=self.rule
         )
 
         if claim.failed():

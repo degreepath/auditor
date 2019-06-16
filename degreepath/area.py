@@ -1,11 +1,12 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any, Tuple, Union
 import logging
 
-from .rule import Rule, load_rule
+from .rule import Rule, load_rule, CourseRule
 from .data import CourseInstance
 from .limit import Limit
+from .clause import SingleClause, Clause
 from .requirement import RequirementContext, Requirement
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,7 @@ class AreaOfStudy:
     requirements: Dict[str, Requirement]
 
     attributes: Dict
+    multicountable: List[List[Union[CourseRule, Clause]]]
 
     def to_dict(self):
         return {
@@ -46,8 +48,23 @@ class AreaOfStudy:
             name: Requirement.load(name, r)
             for name, r in data.get("requirements", {}).items()
         }
+
         result = load_rule(data["result"])
-        limit = tuple(Limit.load(l) for l in data.get('limit', []))
+        limit = tuple(Limit.load(l) for l in data.get("limit", []))
+
+        attributes = data.get("attributes", dict())
+        multicountable = []
+        for ruleset in attributes.get("multicountable", []):
+            clause = []
+            for clause in ruleset:
+                if "course" in clause:
+                    item = CourseRule.load(clause)
+                elif "attributes" in clause:
+                    item = SingleClause.load(clause)
+                else:
+                    raise Exception(f"invalid multicountable {clause}")
+                clause.append(item)
+            multicountable.append(clause)
 
         return AreaOfStudy(
             name=data["name"],
@@ -56,7 +73,8 @@ class AreaOfStudy:
             kind=data["type"],
             requirements=requirements,
             result=result,
-            attributes=data.get("attributes", {}),
+            attributes=attributes,
+            multicountable=multicountable,
             limit=limit,
         )
 
@@ -91,6 +109,7 @@ class AreaOfStudy:
         ctx = RequirementContext(
             transcript=transcript,
             requirements={name: r for name, r in self.requirements.items()},
+            multicountable=self.multicountable,
         )
 
         new_path = [*path, ".result"]
@@ -104,6 +123,7 @@ class AreaOfStudy:
         ctx = RequirementContext(
             transcript=transcript,
             requirements={name: r for name, r in self.requirements.items()},
+            multicountable=self.multicountable,
         )
 
         return self.result.estimate(ctx=ctx)

@@ -65,11 +65,14 @@ class FromSolution:
     def audit_when_student(self, ctx: RequirementContext, path: List) -> Result:
         if self.rule.action.apply(len(self.output)):
             for course in self.output:
+                if self.rule.where is None:
+                    raise Exception('where should not be none here; otherwise this given-rule has nothing to do')
+
                 claim = ctx.make_claim(
-                    course=course, key=path, value=self.rule.action.to_dict()
+                    crsid=course.shorthand, course=course, path=path, clause=self.rule.where
                 )
 
-                if claim.failed:
+                if claim.failed():
                     logger.debug(
                         f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}'
                     )
