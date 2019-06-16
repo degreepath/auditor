@@ -108,6 +108,10 @@ class SingleClause:
         logging.debug(f"Clause.compare {self}, to: {to_value}")
 
         if isinstance(to_value, tuple) or isinstance(to_value, list):
+            if len(to_value) is 0:
+                logging.debug(f"Skipping comparison as to_value was empty")
+                return False
+            
             logging.debug(f"Entering recursive comparison as to_value was a list")
             return any(self.compare(v) for v in to_value)
 

@@ -48,16 +48,6 @@ class CourseSolution:
     def flatten(self):
         return [self.course]
 
-    # def audit(self, *, ctx: RequirementContext, path: List) -> Result:
-    #     found_course = ctx.find_course(self.course)
-
-    #     if found_course:
-    #         claimed = [found_course]
-    #         return CourseResult(course=self.course, rule=self.rule, claimed=claimed)
-
-    #     logger.debug(f"{path} course '{self.course}' does not exist in the transcript")
-    #     return CourseResult(course=self.course, rule=self.rule, claimed=[])
-
     def audit(self, *, ctx: RequirementContext, path: List):
         path = [*path, f"$c->{self.course}"]
 

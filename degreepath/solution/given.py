@@ -1,17 +1,16 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Union, List, Optional, Any, TYPE_CHECKING, Sequence
-import itertools
+from typing import Union, List, TYPE_CHECKING, Sequence
 import logging
 import decimal
+
+from ..result import FromResult
+from ..data import CourseInstance, Term
 
 if TYPE_CHECKING:
     from ..rule import FromRule
     from ..result import Result
     from ..requirement import RequirementContext
-
-from ..result import FromResult
-from ..data import CourseInstance, Term
 
 logger = logging.getLogger(__name__)
 
@@ -64,25 +63,40 @@ class FromSolution:
 
     def audit_when_student(self, ctx: RequirementContext, path: List) -> Result:
         if self.rule.action.apply(len(self.output)):
+            successful_claims = []
+            failed_claims = []
             for course in self.output:
                 if self.rule.where is None:
-                    raise Exception('where should not be none here; otherwise this given-rule has nothing to do')
+                    raise Exception(
+                        "where should not be none here; otherwise this given-rule has nothing to do"
+                    )
 
                 claim = ctx.make_claim(
-                    crsid=course.shorthand, course=course, path=path, clause=self.rule.where
+                    crsid=course.shorthand,
+                    course=course,
+                    path=path,
+                    clause=self.rule.where,
                 )
 
                 if claim.failed():
                     logger.debug(
                         f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}'
                     )
-                    return FromResult(rule=self.rule, claimed=list())
+                    failed_claims.append(claim)
+                else:
+                    logger.debug(
+                        f'{path}\n\tcourse "{course}" exists, and has not been claimed'
+                    )
+                    successful_claims.append(claim)
 
-                logger.debug(
-                    f'{path}\n\tcourse "{course}" exists, and has not been claimed'
-                )
-
-            return FromResult(rule=self.rule, claimed=list(self.output))
+            return FromResult(
+                rule=self.rule,
+                successful_claims=successful_claims,
+                failed_claims=failed_claims,
+                success=len(failed_claims) == 0,
+            )
         else:
             # logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
-            return FromResult(rule=self.rule, claimed=[])
+            return FromResult(
+                rule=self.rule, successful_claims=[], failed_claims=[], success=False
+            )

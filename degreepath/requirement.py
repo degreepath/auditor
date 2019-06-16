@@ -14,7 +14,7 @@ from .rule import CourseRule
 
 if TYPE_CHECKING:
     from .solution import Solution
-    from .rule import Rule, CourseRule
+    from .rule import Rule
     from .clause import Clause
     from .result import Result
 
@@ -94,6 +94,12 @@ class RequirementContext:
             c for c in self.claims[crsid] if c.course_id == claim.course_id
         ]
 
+        # allow topics courses to be taken multiple times
+        if course.is_topic and all(c.course.is_topic for c in potential_conflicts):
+            if course.clbid not in set(c.course.clbid for c in potential_conflicts):
+                if all(course.identity == c.course.identity for c in potential_conflicts):
+                    return ClaimAttempt(claim, conflict_with=set())
+
         # If the claimant is a CourseRule specified with the `.allow_claimed` option,
         # the claim succeeds (and is not recorded).
         if isinstance(clause, CourseRule) and clause.allow_claimed:
@@ -147,6 +153,14 @@ class Claim:
     value: Union[CourseRule, Clause]
     course: CourseInstance
 
+    def to_dict(self):
+        return {
+            "course_id": self.course_id,
+            "claimant_path": self.claimant_path,
+            "value": self.value.to_dict(),
+            "course": self.course.to_dict(),
+        }
+
 
 @dataclass(frozen=True)
 class ClaimAttempt:
@@ -155,6 +169,12 @@ class ClaimAttempt:
 
     def failed(self) -> bool:
         return len(self.conflict_with) > 0
+
+    def to_dict(self):
+        return {
+            "claim": self.claim.to_dict(),
+            "claimant_path": [c.to_dict() for c in self.conflict_with],
+        }
 
 
 class RequirementState(object):

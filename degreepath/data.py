@@ -46,6 +46,7 @@ class CourseInstance:
     is_lab: bool
     is_flac: bool
     is_ace: bool
+    is_topic: bool
 
     name: str
     grade: decimal.Decimal
@@ -119,6 +120,9 @@ class CourseInstance:
         is_flac = False
         is_ace = False
 
+        # TODO: export the course type
+        is_topic = name[0:5] == 'Top: '
+
         grade = grade_from_str(grade)
 
         credits = decimal.Decimal(credits).quantize(
@@ -167,6 +171,7 @@ class CourseInstance:
             attributes=attributes,
             is_flac=is_flac,
             is_ace=is_ace,
+            is_topic=is_topic,
             identity=course_identity,
             shorthand=course_identity_short,
         )

@@ -122,8 +122,8 @@ class FromRule:
             assert self.action is not None
 
             for n in self.action.range(items=data):
-                did_iter = True
                 for combo in itertools.combinations(data, n):
+                    did_iter = True
                     yield FromSolution(output=combo, rule=self)
 
         if not did_iter:

@@ -2,16 +2,17 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, TYPE_CHECKING
 
-from ..data import CourseInstance
-
 if TYPE_CHECKING:
+    from ..requirement import ClaimAttempt
     from ..rule import FromRule
 
 
 @dataclass(frozen=True)
 class FromResult:
     rule: FromRule
-    claimed: List[CourseInstance]
+    successful_claims: List[ClaimAttempt]
+    failed_claims: List[ClaimAttempt]
+    success: bool
 
     def to_dict(self):
         return {
@@ -21,16 +22,17 @@ class FromResult:
             "ok": self.ok(),
             "rank": self.rank(),
             "claims": [c.to_dict() for c in self.claims()],
+            "failures": [c.to_dict() for c in self.failed_claims],
         }
 
     def claims(self):
-        return self.claimed
+        return self.successful_claims
 
     def state(self):
         return "result"
 
     def ok(self) -> bool:
-        return len(self.claimed) >= 1
+        return self.success
 
     def rank(self):
         return 1 if self.ok() else 0

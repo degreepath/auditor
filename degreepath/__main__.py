@@ -340,9 +340,16 @@ def print_result(rule, indent=0):
         if rule["claims"]:
             yield f"{prefix} Matching courses:"
             for c in rule["claims"]:
-                yield from print_result(
-                    {"type": "course", "course": c["identity"]}, indent=indent + 4
-                )
+                yield f"{prefix}   {c['claim']['course']['shorthand']} \"{c['claim']['course']['name']}\" ({c['claim']['course']['clbid']})"
+        # else:
+        #     yield json.dumps(rule)
+
+        if rule["failures"]:
+            yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
+            for c in rule["failures"]:
+                yield f"{prefix}   {c['claim']['course']['shorthand']} \"{c['claim']['course']['name']}\" ({c['claim']['course']['clbid']})"
+        # else:
+        #     yield json.dumps(rule)
 
         action_desc = ""
         action = rule["action"]
@@ -358,8 +365,7 @@ def print_result(rule, indent=0):
             elif action["operator"] == Operator.EqualTo.name:
                 action_desc = f"at least {action['compare_to']}"
 
-        yield f"{prefix} There must be {action_desc} matching courses"
-        yield f"{prefix} (result: have {len(rule['claims'])}; need: {action['compare_to']})"
+        yield f"{prefix} There must be {action_desc} matching courses (have: {len(rule['claims'])}; need: {action['compare_to']})"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":
