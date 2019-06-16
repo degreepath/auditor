@@ -39,7 +39,7 @@ class CourseInstance:
     section: Optional[str]
 
     transcript_code: str
-    clbid: int
+    clbid: str
     gereqs: List[str]
     term: Term
 
@@ -107,7 +107,7 @@ class CourseInstance:
 
         # TODO: handle did-not-complete courses
 
-        clbid = int(clbid)
+        clbid = clbid
         term = Term(term)
 
         gradeopt = graded
