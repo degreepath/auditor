@@ -48,35 +48,40 @@ class CourseSolution:
     def flatten(self):
         return [self.course]
 
-    def audit(self, *, ctx: RequirementContext, path: List) -> Result:
-        found_course = ctx.find_course(self.course)
+    # def audit(self, *, ctx: RequirementContext, path: List) -> Result:
+    #     found_course = ctx.find_course(self.course)
 
-        if found_course:
-            claimed = [found_course]
-            return CourseResult(course=self.course, rule=self.rule, claimed=claimed)
+    #     if found_course:
+    #         claimed = [found_course]
+    #         return CourseResult(course=self.course, rule=self.rule, claimed=claimed)
 
-        logger.debug(f"{path} course '{self.course}' does not exist in the transcript")
-        return CourseResult(course=self.course, rule=self.rule, claimed=[])
+    #     logger.debug(f"{path} course '{self.course}' does not exist in the transcript")
+    #     return CourseResult(course=self.course, rule=self.rule, claimed=[])
 
-    # def audit(self):
-    #     path = [*path, f"$c->{self.course}"]
-    #     if not ctx.has_course(self.course):
-    #         logger.debug(
-    #             f'{path}\n\tcourse "{self.course}" does not exist in the transcript'
-    #         )
-    #         return Solution.fail(self)
-    #
-    #     claim = ctx.make_claim(
-    #         course=self.course, key=path, value={"course": self.course}
-    #     )
-    #
-    #     if claim.failed():
-    #         logger.debug(
-    #             f'{path}\n\tcourse "{self.course}" exists, but has already been claimed by {claim.conflict.path}'
-    #         )
-    #         return Solution.fail(self)
-    #
-    #     logger.debug(
-    #         f'{path}\n\tcourse "{self.course}" exists, and has not been claimed'
-    #     )
-    #     claim.commit()
+    def audit(self, *, ctx: RequirementContext, path: List):
+        path = [*path, f"$c->{self.course}"]
+
+        matched_course = ctx.find_course(self.course)
+        if matched_course is None:
+            logger.debug(
+                f'{path}\n\tcourse "{self.course}" does not exist in the transcript'
+            )
+            return CourseResult(course=self.course, rule=self.rule, claimed=[])
+
+        claim = ctx.make_claim(
+            course=matched_course, key=path, value={"course": self.course}
+        )
+
+        if claim.failed():
+            logger.debug(
+                f'{path}\n\tcourse "{self.course}" exists, but has already been claimed by {claim.conflict_with}'
+            )
+            return CourseResult(course=self.course, rule=self.rule, claimed=[])
+
+        logger.debug(
+            f'{path}\n\tcourse "{self.course}" exists, and has not been claimed'
+        )
+
+        return CourseResult(
+            course=self.course, rule=self.rule, claimed=[claim.claim.course]
+        )

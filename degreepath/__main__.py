@@ -14,7 +14,7 @@ import jsonpickle
 import pendulum
 import yaml
 
-from . import CourseInstance, AreaOfStudy, CourseStatus
+from . import CourseInstance, AreaOfStudy, CourseStatus, Operator
 from .ms import pretty_ms
 
 logger = logging.getLogger()
@@ -274,31 +274,30 @@ def print_result(rule, indent=0):
     rule_type = rule["type"]
 
     if rule_type == "course":
-        if rule["ok"]:
+        status = "🌀      "
+        if "ok" in rule and rule["ok"]:
             course = rule["claims"][0]
 
             if course["status"] == CourseStatus.Ok.name:
-                status = "✅ [ ok]"
+                status = "💚 [ ok]"
             elif course["status"] == CourseStatus.DidNotComplete.name:
                 status = "⛔️ [dnf]"
             elif course["status"] == CourseStatus.InProgress.name:
-                status = "✅ [ ip]"
+                status = "💚 [ ip]"
             elif course["status"] == CourseStatus.Repeated.name:
-                status = "✅ [rep]"
+                status = "💚 [rep]"
             elif course["status"] == CourseStatus.NotTaken.name:
                 status = "🌀      "
-        else:
-            status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
 
     elif rule_type == "count":
         if rule["status"] == "pass":
-            emoji = "✅"
+            emoji = "💚"
         elif rule["status"] == "skip":
             emoji = "🌀"
         else:
-            emoji = "⚠️"
+            emoji = "🚫️"
 
         size = len(rule["items"])
         if rule["count"] == 1 and size == 2:
@@ -320,13 +319,51 @@ def print_result(rule, indent=0):
         for r in rule["items"]:
             yield from print_result(r, indent=indent + 4)
 
-    elif rule_type == "requirement":
+    elif rule_type == "from":
         if rule["status"] == "pass":
-            emoji = "✅"
+            emoji = "💚"
         elif rule["status"] == "skip":
             emoji = "🌀"
         else:
-            emoji = "⚠️"
+            emoji = "🚫️"
+
+        # descr = "from-things"
+        # descr = json.dumps(rule, indent=4)
+
+        yield f"{prefix}{emoji} Given courses matching:"
+        yield f"{prefix} {json.dumps(rule['where'])}"
+
+        if rule["claims"]:
+            yield f"{prefix} Matching courses:"
+            for c in rule["claims"]:
+                yield from print_result(
+                    {"type": "course", "course": c["identity"]}, indent=indent + 4
+                )
+
+        action_desc = ""
+        action = rule["action"]
+        if action["command"] == "count" and action["source"] == "courses":
+            if action["operator"] == Operator.GreaterThanOrEqualTo.name:
+                action_desc = f"at least {action['compare_to']}"
+            elif action["operator"] == Operator.GreaterThan.name:
+                action_desc = f"at least {action['compare_to']}"
+            elif action["operator"] == Operator.LessThanOrEqualTo.name:
+                action_desc = f"at least {action['compare_to']}"
+            elif action["operator"] == Operator.LessThan.name:
+                action_desc = f"at least {action['compare_to']}"
+            elif action["operator"] == Operator.EqualTo.name:
+                action_desc = f"at least {action['compare_to']}"
+
+        yield f"{prefix} There must be {action_desc} matching courses"
+        yield f"{prefix} (result: have {len(rule['claims'])}; need: {action['compare_to']})"
+
+    elif rule_type == "requirement":
+        if rule["status"] == "pass":
+            emoji = "💚"
+        elif rule["status"] == "skip":
+            emoji = "🌀"
+        else:
+            emoji = "🚫️"
 
         yield f"{prefix}{emoji} Requirement({rule['name']})"
         if rule["audited_by"] is not None:

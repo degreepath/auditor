@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional, TYPE_CHECKING
-import re
+from typing import Dict, List, Optional, TYPE_CHECKING
 import itertools
 import logging
 
@@ -28,7 +27,20 @@ class FromRule:
             "source": self.source.to_dict(),
             "action": self.action.to_dict() if self.action else None,
             "where": self.where.to_dict() if self.where else None,
+            "status": "skip",
+            "state": self.state(),
+            "ok": self.ok(),
+            "rank": self.rank(),
         }
+
+    def state(self):
+        return "rule"
+
+    def ok(self):
+        return True
+
+    def rank(self):
+        return 0
 
     @staticmethod
     def can_load(data: Dict) -> bool:

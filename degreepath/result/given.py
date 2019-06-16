@@ -5,13 +5,12 @@ from typing import List, TYPE_CHECKING
 from ..data import CourseInstance
 
 if TYPE_CHECKING:
-    from ..rule import CourseRule
+    from ..rule import FromRule
 
 
 @dataclass(frozen=True)
-class CourseResult:
-    course: str
-    rule: CourseRule
+class FromResult:
+    rule: FromRule
     claimed: List[CourseInstance]
 
     def to_dict(self):

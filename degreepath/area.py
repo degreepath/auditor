@@ -1,10 +1,11 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple
 import logging
 
 from .rule import Rule, load_rule
 from .data import CourseInstance
+from .limit import Limit
 from .requirement import RequirementContext, Requirement
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ class AreaOfStudy:
     degree: Optional[str]
     catalog: str
 
+    limit: Tuple[Limit, ...]
     result: Rule
     requirements: Dict[str, Requirement]
 
@@ -30,6 +32,7 @@ class AreaOfStudy:
             "type": self.kind,
             "degree": self.degree,
             "catalog": self.catalog,
+            "limit": [l.to_dict() for l in self.limit],
             "result": self.result.to_dict(),
             "requirements": {
                 name: r.to_dict() for name, r in self.requirements.items()
@@ -44,6 +47,7 @@ class AreaOfStudy:
             for name, r in data.get("requirements", {}).items()
         }
         result = load_rule(data["result"])
+        limit = tuple(Limit.load(l) for l in data.get('limit', []))
 
         return AreaOfStudy(
             name=data["name"],
@@ -53,6 +57,7 @@ class AreaOfStudy:
             requirements=requirements,
             result=result,
             attributes=data.get("attributes", {}),
+            limit=limit,
         )
 
     def validate(self):
@@ -74,9 +79,14 @@ class AreaOfStudy:
 
         self.result.validate(ctx=ctx)
 
+    # def limited_transcripts(self, transcript: List[CourseInstance]):
+
     def solutions(self, *, transcript: List[CourseInstance]):
         path = ["$root"]
         logger.debug(f"{path} evaluating area.result")
+
+        # TODO: generate alternate sizes of solution based on the courses subject to the limits
+        # for limited_transcript in
 
         ctx = RequirementContext(
             transcript=transcript,

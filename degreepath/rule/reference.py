@@ -83,6 +83,7 @@ class ReferenceRule:
         requirement = ctx.requirements[self.name]
 
         state = self._init(ctx=ctx, path=path)
+        # print("hi")
         # ident = hash(requirement.name)
         # ident = requirement.name
 

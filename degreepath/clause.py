@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Union, List, Sequence, Dict, Any
-import itertools
+from typing import Union, List, Tuple, Dict, Any
 import enum
 import logging
 
@@ -20,7 +19,7 @@ class Operator(enum.Enum):
 
 @dataclass(frozen=True)
 class AndClause:
-    children: Sequence[Clause]
+    children: Tuple[Clause, ...]
 
     def to_dict(self):
         return {"type": "and-clause", "children": [c.to_dict() for c in self.children]}
@@ -30,7 +29,7 @@ class AndClause:
         clauses = []
         for clause in data:
             clauses.append(SingleClause.load(clause))
-        return AndClause(children=clauses)
+        return AndClause(children=tuple(clauses))
 
     def __iter__(self):
         yield from self.children
@@ -38,7 +37,7 @@ class AndClause:
 
 @dataclass(frozen=True)
 class OrClause:
-    children: Sequence[Clause]
+    children: Tuple[Clause, ...]
 
     def to_dict(self):
         return {"type": "or-clause", "children": [c.to_dict() for c in self.children]}
@@ -48,7 +47,7 @@ class OrClause:
         clauses = []
         for clause in data:
             clauses.append(SingleClause.load(clause))
-        return OrClause(children=clauses)
+        return OrClause(children=tuple(clauses))
 
     def __iter__(self):
         yield from self.children
@@ -63,6 +62,7 @@ class SingleClause:
     def to_dict(self):
         return {
             "type": "single-clause",
+            "key": self.key,
             "expected": self.expected,
             "operator": self.operator.name,
         }
@@ -86,7 +86,7 @@ class SingleClause:
 
             clauses.append(clause)
 
-        return AndClause(children=clauses)
+        return AndClause(children=tuple(clauses))
 
     def compare(self, to_value: Any) -> bool:
         logging.debug(f"Clause.compare {self}, to: {to_value}")

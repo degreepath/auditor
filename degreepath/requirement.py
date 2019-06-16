@@ -21,17 +21,61 @@ class RequirementContext:
     requirements: Dict[str, Requirement] = field(default_factory=dict)
     save_rules: Dict[str, SaveRule] = field(default_factory=dict)
     requirement_cache: Dict[Requirement, RequirementState] = field(default_factory=dict)
+    claimed_courses: Dict[str, List[Claim]] = field(default_factory=dict)
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
         try:
             return next(
                 course
-                for course in self.transcript
-                if course.status != CourseStatus.DidNotComplete
-                and (course.course() == c or course.course_shorthand() == c)
+                for course in self.completed_courses()
+                if (course.course() == c or course.course_shorthand() == c)
             )
         except StopIteration:
             return None
+
+    def has_course(self, c: str) -> bool:
+        return self.find_course(c) is not None
+
+    def completed_courses(self):
+        return (
+            course
+            for course in self.transcript
+            if course.status != CourseStatus.DidNotComplete
+        )
+
+    def make_claim(self, course: CourseInstance, key: List[str], value: Dict) -> ClaimAttempt:
+        claim = Claim(course=course, key_path=key, value=frozendict(value))
+
+        if course.shorthand not in self.claimed_courses:
+            self.claimed_courses[course.shorthand] = []
+
+        claim_conflicts = [
+            c
+            for c in self.claimed_courses[course.shorthand]
+            if c.course == claim.course and claim.value.items() >= c.value.items()
+        ]
+
+        if not claim_conflicts:
+            self.claimed_courses[course.shorthand].append(claim)
+            return ClaimAttempt(claim, conflict_with=[])
+        else:
+            return ClaimAttempt(claim, conflict_with=claim_conflicts)
+
+
+@dataclass(frozen=True)
+class Claim:
+    key_path: List[str]
+    course: CourseInstance
+    value: frozendict
+
+
+@dataclass(frozen=True)
+class ClaimAttempt:
+    claim: Claim
+    conflict_with: List[Claim]
+
+    def failed(self) -> bool:
+        return self.conflict_with != []
 
 
 class RequirementState(object):
