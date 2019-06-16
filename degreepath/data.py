@@ -90,7 +90,7 @@ class CourseInstance:
         incomplete,
         semester,
         year,
-    ) -> CourseInstance:
+    ) -> Optional[CourseInstance]:
         status = CourseStatus.Ok
 
         if grade == "IP":
@@ -104,6 +104,9 @@ class CourseInstance:
 
         if incomplete:
             status = CourseStatus.DidNotComplete
+
+        if number == "":
+            return None
 
         # TODO: handle did-not-complete courses
 

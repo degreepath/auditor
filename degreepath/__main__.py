@@ -85,12 +85,14 @@ def run(*, students, areas, allowed, print_every, should_record, should_print):
     for i, student in enumerate(students):
         transcript = []
         for row in student["courses"]:
-            try:
-                transcript.append(CourseInstance.from_dict(**row))
-            except Exception as err:
-                # print(err)
-                raise err
-                continue
+            instance = CourseInstance.from_dict(**row)
+            if instance:
+                transcript.append(instance)
+            # try:
+            #     transcript.append(CourseInstance.from_dict(**row))
+            # except Exception as err:
+            #     print(err)
+            #     continue
 
         major_names = set(student["majors"])
         allowed_major_names = major_names.intersection(allowed["major"])
