@@ -95,10 +95,17 @@ class RequirementContext:
         ]
 
         # allow topics courses to be taken multiple times
-        if course.is_topic and all(c.course.is_topic for c in potential_conflicts):
-            if course.clbid not in set(c.course.clbid for c in potential_conflicts):
-                if all(course.identity == c.course.identity for c in potential_conflicts):
-                    return ClaimAttempt(claim, conflict_with=set())
+        if course.is_topic:
+            conflicts_are_topics = (c.course.is_topic for c in potential_conflicts)
+            if all(conflicts_are_topics):
+                conflicting_clbids = set(c.course.clbid for c in potential_conflicts)
+                if course.clbid not in conflicting_clbids:
+                    courses_are_equivalent = (
+                        course.identity == c.course.identity
+                        for c in potential_conflicts
+                    )
+                    if all(courses_are_equivalent):
+                        return ClaimAttempt(claim, conflict_with=set())
 
         # If the claimant is a CourseRule specified with the `.allow_claimed` option,
         # the claim succeeds (and is not recorded).
