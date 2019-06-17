@@ -83,6 +83,16 @@ class Assertion:
             # TODO: assert that the stored lookup exists
             pass
 
+    def get_value(self):
+        compare_to: Any = self.compare_to
+
+        if type(compare_to) not in [int, float]:
+            raise TypeError(
+                f"compare_to must be numeric to be used in min(); was {repr(compare_to)} ({type(compare_to)}"
+            )
+
+        return compare_to
+
     def range(self, *, items: List):
         compare_to: Any = self.compare_to
 
