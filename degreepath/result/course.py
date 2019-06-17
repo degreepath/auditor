@@ -1,18 +1,19 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import List, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 
 from ..data import CourseInstance
 
 if TYPE_CHECKING:
     from ..rule import CourseRule
+    from ..requirement import Claim, ClaimAttempt
 
 
 @dataclass(frozen=True)
 class CourseResult:
     course: str
     rule: CourseRule
-    claimed: List[CourseInstance]
+    claim_attempt: Optional[ClaimAttempt]
 
     def to_dict(self):
         return {
@@ -25,13 +26,16 @@ class CourseResult:
         }
 
     def claims(self):
-        return self.claimed
+        if self.claim_attempt:
+            return [self.claim_attempt]
+        else:
+            return []
 
     def state(self):
         return "result"
 
     def ok(self) -> bool:
-        return len(self.claimed) >= 1
+        return self.claim_attempt and self.claim_attempt.failed() == False
 
     def rank(self):
         return 1 if self.ok() else 0

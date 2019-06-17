@@ -6,7 +6,7 @@ import decimal
 import logging
 
 from .lib import grade_from_str, expand_subjects
-from .clause import Clause, SingleClause, AndClause, OrClause
+from .clause import Clause, SingleClause, AndClause, OrClause, str_clause
 
 
 @dataclasses.dataclass(frozen=True)
@@ -59,6 +59,7 @@ class CourseInstance:
 
     identity: str
     shorthand: str
+    institution: str
 
     def to_dict(self):
         return {
@@ -91,6 +92,7 @@ class CourseInstance:
         incomplete,
         semester,
         year,
+        institution="St. Olaf College",
     ) -> Optional[CourseInstance]:
         status = CourseStatus.Ok
 
@@ -117,7 +119,8 @@ class CourseInstance:
         gradeopt = graded
 
         is_lab = lab
-        is_flac = False
+        # TODO: export is_flac/is_ace
+        is_flac = name[0:6] == "FLC - "
         is_ace = False
 
         # TODO: export the course type
@@ -177,6 +180,7 @@ class CourseInstance:
             is_topic=is_topic,
             identity=course_identity,
             shorthand=course_identity_short,
+            institution=institution,
         )
 
     def attach_attrs(self, attributes=None):
@@ -192,20 +196,22 @@ class CourseInstance:
         return self.shorthand
 
     def __str__(self):
-        return f"!!course {self.course()}"
+        return f"CourseInstance( {self.course()} )"
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
+            logging.debug(f"clause/and/compare {str_clause(clause)}")
             return all(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, OrClause):
+            logging.debug(f"clause/or/compare {str_clause(clause)}")
             return any(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, SingleClause):
             if clause.key in self.__dict__:
-                logging.debug(f'single-clause, key "{clause.key}" exists')
+                logging.debug(f"clause/compare/key={clause.key}")
                 return clause.compare(self.__dict__[clause.key])
-            logging.debug(
-                f'single-clause, key "{clause.key}" not found in {list(self.__dict__.keys())}'
-            )
-            return False
+            else:
+                keys = list(self.__dict__.keys())
+                logging.debug(f"clause/compare[{clause.key}]: not found in {keys}")
+                return False
 
         raise TypeError(f"expected a clause; found {type(clause)}")

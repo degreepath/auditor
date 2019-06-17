@@ -35,4 +35,4 @@ class FromResult:
         return self.success
 
     def rank(self):
-        return 1 if self.ok() else 0
+        return len(self.successful_claims) + len(self.failed_claims)

@@ -1,13 +1,13 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, Optional, TYPE_CHECKING
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 import itertools
 import logging
 
 from .source import FromInput
 from .assertion import Assertion
-from ...limit import Limit
-from ...clause import Clause, SingleClause
+from ...limit import LimitSet, Limit
+from ...clause import Clause, SingleClause, str_clause
 from ...solution import FromSolution
 
 if TYPE_CHECKING:
@@ -18,13 +18,14 @@ if TYPE_CHECKING:
 class FromRule:
     source: FromInput
     action: Optional[Assertion]
-    limit: Optional[Limit]
+    limit: LimitSet
     where: Optional[Clause]
 
     def to_dict(self):
         return {
             "type": "from",
             "source": self.source.to_dict(),
+            "limit": self.limit.to_dict(),
             "action": self.action.to_dict() if self.action else None,
             "where": self.where.to_dict() if self.where else None,
             "status": "skip",
@@ -54,9 +55,7 @@ class FromRule:
         if where is not None:
             where = SingleClause.load(where)
 
-        limit = data.get("limit", None)
-        if limit is not None:
-            limit = [Limit.load(l) for l in limit]
+        limit = LimitSet.load(data=data.get("limit", None))
 
         action = None
         if "assert" in data:
@@ -111,20 +110,38 @@ class FromRule:
         else:
             raise KeyError(f'unknown "from" type "{self.source.mode}"')
 
+        assert self.action is not None
+
         did_iter = False
         for data in iterable:
             if self.where is not None:
-                logging.debug(f"fromrule/filter/clause: {self.where}")
-                logging.debug(f"fromrule/filter/before: {data}")
+                logging.debug(f"fromrule/filter/clause: {str_clause(self.where)}")
+                if data:
+                    for i, c in enumerate(data):
+                        logging.debug(f"fromrule/filter/before/{i}: {c}")
+                else:
+                    logging.debug(f"fromrule/filter/before: []")
+
                 data = [c for c in data if c.apply_clause(self.where)]
-                logging.debug(f"fromrule/filter/after: {data}")
 
-            assert self.action is not None
+                if data:
+                    for i, c in enumerate(data):
+                        logging.debug(f"fromrule/filter/after/{i}: {c}")
+                else:
+                    logging.debug(f"fromrule/filter/after: []")
 
-            for n in self.action.range(items=data):
-                for combo in itertools.combinations(data, n):
-                    did_iter = True
-                    yield FromSolution(output=combo, rule=self)
+            for course_set in self.limit.limited_transcripts(data):
+                for n in self.action.range(items=course_set):
+                    logging.debug(f"fromrule/resized/n={n}")
+                    if len(course_set) < n:
+                        logging.debug(f"fromrule/resized: {n} is less than {len(course_set)}")
+                        did_iter = True
+                        yield FromSolution(output=course_set, rule=self)
+                    else:
+                        for combo in itertools.combinations(course_set, n):
+                            logging.debug(f"fromrule/combo/size={n} of {len(course_set)}")
+                            did_iter = True
+                            yield FromSolution(output=combo, rule=self)
 
         if not did_iter:
             # be sure we always yield something

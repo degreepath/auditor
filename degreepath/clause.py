@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Union, List, Tuple, Dict, Any
 import enum
 import logging
-import collections
+import decimal
 
 
 class Operator(enum.Enum):
@@ -102,33 +102,53 @@ class SingleClause:
 
             clauses.append(clause)
 
+        if len(clauses) == 1:
+            return clauses[0]
+
         return AndClause(children=tuple(clauses))
 
     def compare(self, to_value: Any) -> bool:
-        logging.debug(f"Clause.compare {self}, to: {to_value}")
+        # logging.debug(f"clause/compare {to_value} against {self}")
 
         if isinstance(to_value, tuple) or isinstance(to_value, list):
             if len(to_value) is 0:
-                logging.debug(f"Skipping comparison as to_value was empty")
+                logging.debug(f"clause/compare: skipped (empty to_value)")
                 return False
 
-            logging.debug(f"Entering recursive comparison as to_value was a list")
-            return any(self.compare(v) for v in to_value)
+            if len(to_value) is 1:
+                to_value = to_value[0]
+            else:
+                logging.debug(f"clause/compare: beginning recursive comparison")
+                return any(self.compare(v) for v in to_value)
+
+        if isinstance(to_value, str) and (
+            isinstance(self.expected, int)
+            or isinstance(self.expected, float)
+            or isinstance(self.expected, decimal.Decimal)
+        ):
+            expected = str(self.expected)
+        else:
+            expected = self.expected
 
         if self.operator == Operator.LessThan:
-            return self.expected < to_value
+            result = expected < to_value
         elif self.operator == Operator.LessThanOrEqualTo:
-            return self.expected <= to_value
+            result = expected <= to_value
         elif self.operator == Operator.EqualTo:
-            return self.expected == to_value
+            result = expected == to_value
         elif self.operator == Operator.NotEqualTo:
-            return self.expected != to_value
+            result = expected != to_value
         elif self.operator == Operator.GreaterThanOrEqualTo:
-            return self.expected >= to_value
+            result = expected >= to_value
         elif self.operator == Operator.GreaterThan:
-            return self.expected > to_value
+            result = expected > to_value
+        else:
+            raise TypeError(f"unknown comparison function {self.operator}")
 
-        raise TypeError(f"unknown comparison function {self.operator}")
+        logging.debug(
+            f"clause/compare: '{expected}' {self.operator.value} '{to_value}'; {result}"
+        )
+        return result
 
     def mc_applies_same(self, other) -> bool:
         """Checks if this clause applies to the same items as the other clause,
@@ -153,7 +173,9 @@ class SingleClause:
         return self.compare(other)
 
 
-def str_clause(clause: Clause) -> str:
+def str_clause(clause: Union[Dict, Clause]) -> str:
+    if not isinstance(clause, dict):
+        return str_clause(clause.to_dict())
     if clause["type"] == "single-clause":
         return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\""
     elif clause["type"] == "or-clause":

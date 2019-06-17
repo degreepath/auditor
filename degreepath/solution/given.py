@@ -62,41 +62,37 @@ class FromSolution:
         raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
 
     def audit_when_student(self, ctx: RequirementContext, path: List) -> Result:
-        if self.rule.action.apply(len(self.output)):
-            successful_claims = []
-            failed_claims = []
-            for course in self.output:
-                if self.rule.where is None:
-                    raise Exception(
-                        "where should not be none here; otherwise this given-rule has nothing to do"
-                    )
-
-                claim = ctx.make_claim(
-                    crsid=course.shorthand,
-                    course=course,
-                    path=path,
-                    clause=self.rule.where,
+        successful_claims = []
+        failed_claims = []
+        for course in self.output:
+            if self.rule.where is None:
+                raise Exception(
+                    "`where` should not be none here; otherwise this given-rule has nothing to do"
                 )
 
-                if claim.failed():
-                    logger.debug(
-                        f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}'
-                    )
-                    failed_claims.append(claim)
-                else:
-                    logger.debug(
-                        f'{path}\n\tcourse "{course}" exists, and has not been claimed'
-                    )
-                    successful_claims.append(claim)
+            claim = ctx.make_claim(
+                crsid=course.shorthand, course=course, path=path, clause=self.rule.where
+            )
 
-            return FromResult(
-                rule=self.rule,
-                successful_claims=successful_claims,
-                failed_claims=failed_claims,
-                success=len(failed_claims) == 0,
-            )
+            if claim.failed():
+                logger.debug(
+                    f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}'
+                )
+                failed_claims.append(claim)
+            else:
+                logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
+                successful_claims.append(claim)
+
+        may_possibly_succeed = self.rule.action.apply(len(self.output))
+
+        if may_possibly_succeed:
+            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
         else:
-            # logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
-            return FromResult(
-                rule=self.rule, successful_claims=[], failed_claims=[], success=False
-            )
+            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+
+        return FromResult(
+            rule=self.rule,
+            successful_claims=successful_claims,
+            failed_claims=failed_claims,
+            success=may_possibly_succeed and len(failed_claims) == 0,
+        )
