@@ -1,17 +1,21 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Any, Dict, Iterable, TYPE_CHECKING
+from typing import List, Optional, Tuple, Any, Dict, Union, Set, TYPE_CHECKING
 import logging
+from collections import defaultdict
 import itertools
+import copy
 
 from frozendict import frozendict
 
 from .data import CourseInstance, CourseStatus
 from .save import SaveRule
+from .rule import CourseRule
 
 if TYPE_CHECKING:
     from .solution import Solution
     from .rule import Rule
+    from .clause import Clause
     from .result import Result
 
 
@@ -21,17 +25,166 @@ class RequirementContext:
     requirements: Dict[str, Requirement] = field(default_factory=dict)
     save_rules: Dict[str, SaveRule] = field(default_factory=dict)
     requirement_cache: Dict[Requirement, RequirementState] = field(default_factory=dict)
+    multicountable: List[List[Union[CourseRule, Clause]]] = field(default_factory=list)
+    claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
         try:
             return next(
                 course
-                for course in self.transcript
-                if course.status != CourseStatus.DidNotComplete
-                and (course.course() == c or course.course_shorthand() == c)
+                for course in self.completed_courses()
+                if (course.course() == c or course.course_shorthand() == c)
             )
         except StopIteration:
             return None
+
+    def has_course(self, c: str) -> bool:
+        return self.find_course(c) is not None
+
+    def completed_courses(self):
+        return (
+            course
+            for course in self.transcript
+            if course.status != CourseStatus.DidNotComplete
+        )
+
+    def checkpoint(self):
+        return copy.deepcopy(self.claims)
+
+    def restore_to_checkpoint(self, claims):
+        self.claims = copy.deepcopy(claims)
+
+    def reset_claims(self):
+        self.claims = defaultdict(set)
+
+    def make_claim(
+        self,
+        *,
+        crsid: str,
+        course: CourseInstance,
+        path: List[str],
+        clause: Union[CourseRule, Clause],
+    ) -> ClaimAttempt:
+        """
+        If the crsid is not in the claims dictionary, insert it with an empty list.
+
+        If the course that is being claimed has an empty list of claimants, 
+        then the claim succeeds.
+
+        Otherwise...
+
+        If the claimant is a {course} rule specified with the {including-claimed} option,
+        the claim is recorded, and succeeds.
+
+        If the claimed course matches multiple `multicountable` rulesets,
+            the first ruleset applicable to both the course and the claimant is selected.
+
+        If the claimed course matches a `multicountable` ruleset,
+            and the claimant is within said `multicountable` ruleset, 
+            and the claimant's clause has not already been used as a claim on this course,
+            then the claim is recorded, and succeeds.
+
+        Otherwise, the claim is rejected, with a list of the prior confirmed claims.
+        """
+        if clause is None:
+            raise Exception("clause must be provided")
+
+        claim = Claim(
+            course_id=crsid, claimant_path=tuple(path), value=clause, course=course
+        )
+
+        potential_conflicts = [
+            c for c in self.claims[crsid] if c.course_id == claim.course_id
+        ]
+
+        # allow topics courses to be taken multiple times
+        if course.is_topic:
+            conflicts_are_topics = (c.course.is_topic for c in potential_conflicts)
+            if all(conflicts_are_topics):
+                conflicting_clbids = set(c.course.clbid for c in potential_conflicts)
+                if course.clbid not in conflicting_clbids:
+                    courses_are_equivalent = (
+                        course.identity == c.course.identity
+                        for c in potential_conflicts
+                    )
+                    if all(courses_are_equivalent):
+                        return ClaimAttempt(claim, conflict_with=set())
+
+        # If the claimant is a CourseRule specified with the `.allow_claimed` option,
+        # the claim succeeds (and is not recorded).
+        if isinstance(clause, CourseRule) and clause.allow_claimed:
+            return ClaimAttempt(claim)
+
+        # If the course that is being claimed has an empty list of claimants,
+        # then the claim succeeds.
+        if not potential_conflicts:
+            # print(claim)
+            self.claims[crsid].add(claim)
+            return ClaimAttempt(claim)
+
+        applicable_rulesets = [
+            ruleset
+            for ruleset in self.multicountable
+            if any(c.applies_to(course) for c in ruleset)
+            and any(c.mc_applies_same(clause) for c in ruleset)
+        ]
+
+        claim_conflicts = set()
+
+        # If the claimed course matches multiple `multicountable` rulesets,
+        if applicable_rulesets:
+            # the first ruleset applicable to both the course and the claimant is selected.
+            ruleset = applicable_rulesets[0]
+
+            # If the claimed course matches a `multicountable` ruleset,
+            #   and the claimant is within said `multicountable` ruleset,
+            #   and the claimant's clause has not already been used as a claim on this course,
+            #   then the claim is recorded, and succeeds.
+            for ruleclause in ruleset:
+                for c in potential_conflicts:
+                    if not ruleclause.mc_applies_same(c):
+                        continue
+                    claim_conflicts.add(c)
+        else:
+            # print('no applicable rulesets')
+            claim_conflicts = potential_conflicts
+
+        if claim_conflicts:
+            return ClaimAttempt(claim, conflict_with=claim_conflicts)
+        else:
+            self.claims[crsid].add(claim)
+            return ClaimAttempt(claim, conflict_with=set())
+
+
+@dataclass(frozen=True)
+class Claim:
+    course_id: str
+    claimant_path: Tuple[str, ...]
+    value: Union[CourseRule, Clause]
+    course: CourseInstance
+
+    def to_dict(self):
+        return {
+            "course_id": self.course_id,
+            "claimant_path": self.claimant_path,
+            "value": self.value.to_dict(),
+            "course": self.course.to_dict(),
+        }
+
+
+@dataclass(frozen=True)
+class ClaimAttempt:
+    claim: Claim
+    conflict_with: Set[Claim] = field(default_factory=set)
+
+    def failed(self) -> bool:
+        return len(self.conflict_with) > 0
+
+    def to_dict(self):
+        return {
+            "claim": self.claim.to_dict(),
+            "claimant_path": [c.to_dict() for c in self.conflict_with],
+        }
 
 
 class RequirementState(object):
@@ -174,7 +327,7 @@ class Requirement:
 
         path = [*path, ".result"]
 
-        ident = self.name
+        ident = ",".join([*path, self.name])
 
         for i, solution in enumerate(self.result.solutions(ctx=new_ctx, path=path)):
             yield RequirementSolution.from_requirement(

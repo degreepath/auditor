@@ -1,13 +1,10 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import List, Tuple, Union, TYPE_CHECKING
+from typing import Tuple, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Result
-    from ..solution import Solution
     from ..rule import Rule
-
-from ..data import CourseStatus
 
 
 @dataclass(frozen=True)

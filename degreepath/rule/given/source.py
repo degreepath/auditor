@@ -1,10 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional, TYPE_CHECKING
-import re
-import itertools
-import logging
-
+from typing import Dict, List, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
     from ...requirement import RequirementContext
 
@@ -13,8 +9,8 @@ if TYPE_CHECKING:
 class FromInput:
     mode: str
     itemtype: str
-    requirements: List[str]
-    saves: List[str]
+    requirements: Tuple[str, ...]
+    saves: Tuple[str, ...]
 
     def to_dict(self):
         return {
@@ -27,27 +23,27 @@ class FromInput:
 
     @staticmethod
     def load(data: Dict) -> FromInput:
-        saves: List[str] = []
-        requirements: List[str] = []
+        saves: Tuple[str, ...] = tuple()
+        requirements: Tuple[str, ...] = tuple()
 
         if "student" in data:
             mode = "student"
             itemtype = data["student"]
         elif "saves" in data:
             mode = "saves"
-            saves = data["saves"]
+            saves = tuple(data["saves"])
             itemtype = None
         elif "save" in data:
             mode = "saves"
-            saves = [data["save"]]
+            saves = (data["save"],)
             itemtype = None
         elif "requirements" in data:
             mode = "requirements"
-            requirements = data["requirements"]
+            requirements = tuple(data["requirements"])
             itemtype = None
         elif "requirement" in data:
             mode = "requirements"
-            requirements = [data["requirement"]]
+            requirements = (data["requirement"],)
             itemtype = None
         else:
             raise KeyError(

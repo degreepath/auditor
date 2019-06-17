@@ -1,10 +1,12 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple, Union
 import logging
 
-from .rule import Rule, load_rule
+from .rule import Rule, load_rule, CourseRule
 from .data import CourseInstance
+from .limit import Limit
+from .clause import SingleClause, Clause
 from .requirement import RequirementContext, Requirement
 
 logger = logging.getLogger(__name__)
@@ -19,10 +21,12 @@ class AreaOfStudy:
     degree: Optional[str]
     catalog: str
 
+    limit: Tuple[Limit, ...]
     result: Rule
     requirements: Dict[str, Requirement]
 
     attributes: Dict
+    multicountable: List[List[Union[CourseRule, Clause]]]
 
     def to_dict(self):
         return {
@@ -30,6 +34,7 @@ class AreaOfStudy:
             "type": self.kind,
             "degree": self.degree,
             "catalog": self.catalog,
+            "limit": [l.to_dict() for l in self.limit],
             "result": self.result.to_dict(),
             "requirements": {
                 name: r.to_dict() for name, r in self.requirements.items()
@@ -43,7 +48,23 @@ class AreaOfStudy:
             name: Requirement.load(name, r)
             for name, r in data.get("requirements", {}).items()
         }
+
         result = load_rule(data["result"])
+        limit = tuple(Limit.load(l) for l in data.get("limit", []))
+
+        attributes = data.get("attributes", dict())
+        multicountable = []
+        for ruleset in attributes.get("multicountable", []):
+            clause = []
+            for clause in ruleset:
+                if "course" in clause:
+                    item = CourseRule.load(clause)
+                elif "attributes" in clause:
+                    item = SingleClause.load(clause)
+                else:
+                    raise Exception(f"invalid multicountable {clause}")
+                clause.append(item)
+            multicountable.append(clause)
 
         return AreaOfStudy(
             name=data["name"],
@@ -52,7 +73,9 @@ class AreaOfStudy:
             kind=data["type"],
             requirements=requirements,
             result=result,
-            attributes=data.get("attributes", {}),
+            attributes=attributes,
+            multicountable=multicountable,
+            limit=limit,
         )
 
     def validate(self):
@@ -74,17 +97,24 @@ class AreaOfStudy:
 
         self.result.validate(ctx=ctx)
 
+    # def limited_transcripts(self, transcript: List[CourseInstance]):
+
     def solutions(self, *, transcript: List[CourseInstance]):
         path = ["$root"]
         logger.debug(f"{path} evaluating area.result")
 
+        # TODO: generate alternate sizes of solution based on the courses subject to the limits
+        # for limited_transcript in
+
         ctx = RequirementContext(
             transcript=transcript,
             requirements={name: r for name, r in self.requirements.items()},
+            multicountable=self.multicountable,
         )
 
         new_path = [*path, ".result"]
         for sol in self.result.solutions(ctx=ctx, path=new_path):
+            ctx.reset_claims()
             logger.info(f"generated new area solution: {sol}")
             yield AreaSolution(solution=sol, area=self)
 
@@ -94,6 +124,7 @@ class AreaOfStudy:
         ctx = RequirementContext(
             transcript=transcript,
             requirements={name: r for name, r in self.requirements.items()},
+            multicountable=self.multicountable,
         )
 
         return self.result.estimate(ctx=ctx)

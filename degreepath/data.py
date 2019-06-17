@@ -1,12 +1,12 @@
 from __future__ import annotations
 import dataclasses
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import decimal
 import logging
 
 from .lib import grade_from_str, expand_subjects
-from .clause import Clause, SingleClause, AndClause, OrClause
+from .clause import Clause, SingleClause, AndClause, OrClause, str_clause
 
 
 @dataclasses.dataclass(frozen=True)
@@ -34,30 +34,32 @@ class CourseStatus(Enum):
 @dataclasses.dataclass(frozen=True)
 class CourseInstance:
     credits: decimal.Decimal
-    subject: List[str]
-    number: int
+    subject: Tuple[str, ...]
+    number: str
     section: Optional[str]
 
     transcript_code: str
-    clbid: int
-    gereqs: List[str]
+    clbid: str
+    gereqs: Tuple[str, ...]
     term: Term
 
     is_lab: bool
     is_flac: bool
     is_ace: bool
+    is_topic: bool
 
     name: str
     grade: decimal.Decimal
 
     gradeopt: str
     level: int
-    attributes: List[str]
+    attributes: Tuple[str, ...]
 
     status: CourseStatus
 
     identity: str
     shorthand: str
+    institution: str
 
     def to_dict(self):
         return {
@@ -90,7 +92,8 @@ class CourseInstance:
         incomplete,
         semester,
         year,
-    ) -> CourseInstance:
+        institution="St. Olaf College",
+    ) -> Optional[CourseInstance]:
         status = CourseStatus.Ok
 
         if grade == "IP":
@@ -105,16 +108,23 @@ class CourseInstance:
         if incomplete:
             status = CourseStatus.DidNotComplete
 
+        if number == "":
+            return None
+
         # TODO: handle did-not-complete courses
 
-        clbid = int(clbid)
+        clbid = clbid
         term = Term(term)
 
         gradeopt = graded
 
         is_lab = lab
-        is_flac = False
+        # TODO: export is_flac/is_ace
+        is_flac = name[0:6] == "FLC - "
         is_ace = False
+
+        # TODO: export the course type
+        is_topic = name[0:5] == "Top: "
 
         grade = grade_from_str(grade)
 
@@ -122,21 +132,32 @@ class CourseInstance:
             decimal.Decimal("0.01"), rounding=decimal.ROUND_DOWN
         )
 
-        subject = subjects if subjects is not None else [course.split(" ")[0]]
-        subject = list(expand_subjects(subject))
+        subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
+        subject = tuple(expand_subjects(subject))
         # we want to keep the original shorthand course identity for matching purposes
 
         number = number if number is not None else course.split(" ")[1]
-        number = int(number)
+        number = str(number)
 
         section = section if section != "" else None
 
-        level = number // 100 * 100
+        try:
+            level = int(number) // 100 * 100
+        except Exception:
+            level = 0
 
-        attributes = attributes if attributes is not None else []
+        attributes = tuple(attributes) if attributes is not None else tuple()
+        gereqs = tuple(gereqs) if gereqs is not None else tuple()
 
-        course_identity = f"{'/'.join(subject)} {number}"
-        course_identity_short = f"{'/'.join(subjects)} {number}"
+        if is_lab:
+            course_identity = f"{'/'.join(subject)} {number}.L"
+            course_identity_short = f"{'/'.join(subjects)} {number}.L"
+        elif is_flac:
+            course_identity = f"{'/'.join(subject)} {number}.F"
+            course_identity_short = f"{'/'.join(subjects)} {number}.F"
+        else:
+            course_identity = f"{'/'.join(subject)} {number}"
+            course_identity_short = f"{'/'.join(subjects)} {number}"
 
         return CourseInstance(
             status=status,
@@ -156,15 +177,17 @@ class CourseInstance:
             attributes=attributes,
             is_flac=is_flac,
             is_ace=is_ace,
+            is_topic=is_topic,
             identity=course_identity,
             shorthand=course_identity_short,
+            institution=institution,
         )
 
     def attach_attrs(self, attributes=None):
         if attributes is None:
-            attributes = []
+            attributes = tuple()
 
-        return dataclasses.replace(self, attributes=attributes)
+        return dataclasses.replace(self, attributes=tuple(attributes))
 
     def course(self):
         return self.identity
@@ -173,20 +196,22 @@ class CourseInstance:
         return self.shorthand
 
     def __str__(self):
-        return f"!!course {self.course()}"
+        return f"CourseInstance( {self.course()} )"
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
+            logging.debug(f"clause/and/compare {str_clause(clause)}")
             return all(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, OrClause):
+            logging.debug(f"clause/or/compare {str_clause(clause)}")
             return any(self.apply_clause(subclause) for subclause in clause)
         elif isinstance(clause, SingleClause):
             if clause.key in self.__dict__:
-                logging.debug(f'single-clause, key "{clause.key}" exists')
+                logging.debug(f"clause/compare/key={clause.key}")
                 return clause.compare(self.__dict__[clause.key])
-            logging.debug(
-                f'single-clause, key "{clause.key}" not found in {list(self.__dict__.keys())}'
-            )
-            return False
+            else:
+                keys = list(self.__dict__.keys())
+                logging.debug(f"clause/compare[{clause.key}]: not found in {keys}")
+                return False
 
         raise TypeError(f"expected a clause; found {type(clause)}")

@@ -9,6 +9,7 @@ from ..solution import CourseSolution
 
 if TYPE_CHECKING:
     from ..requirement import RequirementContext
+    from ..data import CourseInstance
 
 logger = logging.getLogger(__name__)
 
@@ -76,3 +77,15 @@ class CourseRule:
 
     def estimate(self, *, ctx: RequirementContext):
         return 1
+
+    def mc_applies_same(self, other) -> bool:
+        """Checks if this clause applies to the same items as the other clause,
+        when used as part of a multicountable ruleset."""
+
+        if not isinstance(other, CourseRule):
+            return False
+
+        return self.course == other.course
+
+    def applies_to(self, other: CourseInstance) -> bool:
+        return other.shorthand == self.course or other.identity == self.course

@@ -1,17 +1,18 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..rule import CourseRule
     from ..requirement import ClaimAttempt
+    from ..rule import FromRule
 
 
 @dataclass(frozen=True)
-class CourseResult:
-    course: str
-    rule: CourseRule
-    claim_attempt: Optional[ClaimAttempt]
+class FromResult:
+    rule: FromRule
+    successful_claims: List[ClaimAttempt]
+    failed_claims: List[ClaimAttempt]
+    success: bool
 
     def to_dict(self):
         return {
@@ -21,19 +22,18 @@ class CourseResult:
             "ok": self.ok(),
             "rank": self.rank(),
             "claims": [c.to_dict() for c in self.claims()],
+            "failures": [c.to_dict() for c in self.failed_claims],
         }
 
     def claims(self):
-        if self.claim_attempt:
-            return [self.claim_attempt]
-        else:
-            return []
+        return self.successful_claims
 
     def state(self):
         return "result"
 
     def ok(self) -> bool:
-        return self.claim_attempt and self.claim_attempt.failed() is False
+        return self.success
 
     def rank(self):
-        return 1 if self.ok() else 0
+        # TODO: fix this calculation so that it properly handles #154647's audit
+        return min(len(self.successful_claims) + len(self.failed_claims), self.rule.action.get_value())

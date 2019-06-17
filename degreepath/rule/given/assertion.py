@@ -83,6 +83,16 @@ class Assertion:
             # TODO: assert that the stored lookup exists
             pass
 
+    def get_value(self):
+        compare_to: Any = self.compare_to
+
+        if type(compare_to) not in [int, float]:
+            raise TypeError(
+                f"compare_to must be numeric to be used in min(); was {repr(compare_to)} ({type(compare_to)}"
+            )
+
+        return compare_to
+
     def range(self, *, items: List):
         compare_to: Any = self.compare_to
 
@@ -93,19 +103,21 @@ class Assertion:
 
         if self.operator == Operator.LessThanOrEqualTo:
             hi = compare_to
-            lo = len(items)
+            # lo = len(items)
+            lo = 0
 
         elif self.operator == Operator.LessThan:
             hi = compare_to - 1
-            lo = len(items)
+            # lo = len(items)
+            lo = 0
 
         elif self.operator == Operator.GreaterThan:
-            hi = len(items)
             lo = compare_to + 1
+            hi = max(len(items), lo + 1)
 
         elif self.operator == Operator.GreaterThanOrEqualTo:
-            hi = len(items)
             lo = compare_to
+            hi = max(len(items), lo + 1)
 
         elif self.operator == Operator.EqualTo:
             hi = compare_to + 1
@@ -115,3 +127,29 @@ class Assertion:
             logging.info(f"expected hi={hi} > lo={lo}")
 
         return range(lo, hi)
+
+    def apply(self, value: Any):
+        compare_to: Any = self.compare_to
+
+        if type(compare_to) not in [int, float]:
+            raise TypeError(
+                f"compare_to must be numeric to be used in apply(); was {repr(compare_to)} ({type(compare_to)}"
+            )
+
+        if self.operator == Operator.LessThanOrEqualTo:
+            return value <= compare_to
+
+        elif self.operator == Operator.LessThan:
+            return value < compare_to
+
+        elif self.operator == Operator.GreaterThan:
+            return value > compare_to
+
+        elif self.operator == Operator.GreaterThanOrEqualTo:
+            return value >= compare_to
+
+        elif self.operator == Operator.EqualTo:
+            return value == compare_to
+
+        else:
+            raise Exception("um")

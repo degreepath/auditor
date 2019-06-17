@@ -1,20 +1,17 @@
 import logging
-import glob
 import time
 import json
 import sys
-import pprint
 import decimal
 import collections
 from pathlib import Path
 
 import click
 import coloredlogs
-import jsonpickle
 import pendulum
 import yaml
 
-from . import CourseInstance, AreaOfStudy, CourseStatus
+from . import CourseInstance, AreaOfStudy, CourseStatus, Operator, str_clause
 from .ms import pretty_ms
 
 logger = logging.getLogger()
@@ -30,6 +27,7 @@ def take(iter, n=5):
 @click.command()
 @click.option("--print-every", "-e", default=1_000)
 @click.option("--loglevel", "-l", default="warn")
+@click.option("--print-all", default=False, is_flag=True)
 @click.option("--record/--no-record", default=True)
 # @click.option("--estimate", default=None, is_flag=True)
 @click.option("--print/--no-print", "stream", default=True)
@@ -37,7 +35,7 @@ def take(iter, n=5):
     "--area", "area_files", envvar="AREAS", multiple=True, type=click.Path(exists=True)
 )
 @click.argument("student_file", nargs=-1, type=click.Path(exists=True))
-def main(*, student_file, print_every, loglevel, record, stream, area_files):
+def main(*, student_file, print_every, loglevel, record, stream, area_files, print_all):
     """Audits a student against their areas of study."""
 
     should_record = record
@@ -78,17 +76,24 @@ def main(*, student_file, print_every, loglevel, record, stream, area_files):
         print_every=print_every,
         should_record=should_record,
         should_print=should_print,
+        print_all=print_all,
     )
 
 
-def run(*, students, areas, allowed, print_every, should_record, should_print):
+def run(
+    *, students, areas, allowed, print_every, should_record, should_print, print_all
+):
     for i, student in enumerate(students):
         transcript = []
         for row in student["courses"]:
-            try:
-                transcript.append(CourseInstance.from_dict(**row))
-            except:
-                continue
+            instance = CourseInstance.from_dict(**row)
+            if instance:
+                transcript.append(instance)
+            # try:
+            #     transcript.append(CourseInstance.from_dict(**row))
+            # except Exception as err:
+            #     print(err)
+            #     continue
 
         major_names = set(student["majors"])
         allowed_major_names = major_names.intersection(allowed["major"])
@@ -108,10 +113,20 @@ def run(*, students, areas, allowed, print_every, should_record, should_print):
                 print_every=print_every,
                 should_print=should_print,
                 should_record=should_record,
+                print_all=print_all,
             )
 
 
-def audit(*, area_def, transcript, student, print_every, should_print, should_record):
+def audit(
+    *,
+    area_def,
+    transcript,
+    student,
+    print_every,
+    should_print,
+    should_record,
+    print_all,
+):
     print(f"auditing #{student['stnum']}", file=sys.stderr)
 
     area = AreaOfStudy.load(area_def)
@@ -119,8 +134,11 @@ def audit(*, area_def, transcript, student, print_every, should_print, should_re
     area.validate()
 
     this_transcript = []
+    attributes_to_attach = area.attributes.get("courses", {})
     for c in transcript:
-        attributes = area.attributes.get("courses", {}).get(c.course(), [])
+        attributes = attributes_to_attach.get(
+            c.course(), []
+        ) or attributes_to_attach.get(c.course_shorthand(), [])
         c = c.attach_attrs(attributes=attributes)
         this_transcript.append(c)
 
@@ -154,6 +172,23 @@ def audit(*, area_def, transcript, student, print_every, should_print, should_re
 
         iter_end = time.perf_counter()
         times.append(iter_end - iter_start)
+
+        if print_all:
+            elapsed = pretty_ms((iter_end - start) * 1000)
+            print(
+                "".join(
+                    summarize(
+                        name=student["name"],
+                        stnum=student["stnum"],
+                        area=area,
+                        result=result,
+                        count=total_count,
+                        elapsed=elapsed,
+                        iterations=times,
+                    )
+                )
+            )
+
         iter_start = time.perf_counter()
 
     if not times:
@@ -218,7 +253,7 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     # counter = collections.Counter(chunked_times)
     # print(counter)
 
-    avg_iter_s = sum(times) / len(times)
+    avg_iter_s = sum(times) / max(len(times), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     endl = "\n"
@@ -234,7 +269,8 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
 
     yield endl
 
-    yield f"{count:,} attempts in {elapsed} (avg {avg_iter_time} per attempt)"
+    word = "attempt" if count == 1 else "attempts"
+    yield f"{count:,} {word} in {elapsed} (avg {avg_iter_time} per attempt)"
     yield endl
 
     # print(result)
@@ -274,31 +310,31 @@ def print_result(rule, indent=0):
     rule_type = rule["type"]
 
     if rule_type == "course":
-        if rule["ok"]:
-            course = rule["claims"][0]
+        status = "🌀      "
+        if "ok" in rule and rule["ok"]:
+            claim = rule["claims"][0]["claim"]
+            course = claim["course"]
 
             if course["status"] == CourseStatus.Ok.name:
-                status = "✅ [ ok]"
+                status = "💚 [ ok]"
             elif course["status"] == CourseStatus.DidNotComplete.name:
                 status = "⛔️ [dnf]"
             elif course["status"] == CourseStatus.InProgress.name:
-                status = "✅ [ ip]"
+                status = "💚 [ ip]"
             elif course["status"] == CourseStatus.Repeated.name:
-                status = "✅ [rep]"
+                status = "💚 [rep]"
             elif course["status"] == CourseStatus.NotTaken.name:
                 status = "🌀      "
-        else:
-            status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
 
     elif rule_type == "count":
         if rule["status"] == "pass":
-            emoji = "✅"
+            emoji = "💚"
         elif rule["status"] == "skip":
             emoji = "🌀"
         else:
-            emoji = "⚠️"
+            emoji = "🚫️"
 
         size = len(rule["items"])
         if rule["count"] == 1 and size == 2:
@@ -320,19 +356,70 @@ def print_result(rule, indent=0):
         for r in rule["items"]:
             yield from print_result(r, indent=indent + 4)
 
-    elif rule_type == "requirement":
+    elif rule_type == "from":
         if rule["status"] == "pass":
-            emoji = "✅"
+            emoji = "💚"
         elif rule["status"] == "skip":
             emoji = "🌀"
         else:
-            emoji = "⚠️"
+            emoji = "🚫️"
+
+        yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
+
+        if rule["claims"]:
+            yield f"{prefix} Matching courses:"
+            for c in rule["claims"]:
+                yield f"{prefix}   {c['claim']['course']['shorthand']} \"{c['claim']['course']['name']}\" ({c['claim']['course']['clbid']})"
+
+        if rule["failures"]:
+            yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
+            for c in rule["failures"]:
+                yield f"{prefix}   {c['claim']['course']['shorthand']} \"{c['claim']['course']['name']}\" ({c['claim']['course']['clbid']})"
+
+        action_desc = ""
+        action = rule["action"]
+        if action["operator"] == Operator.GreaterThanOrEqualTo.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.GreaterThan.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.LessThanOrEqualTo.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.LessThan.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.EqualTo.name:
+            action_desc = f"at least {action['compare_to']}"
+
+        if action["source"] == "courses":
+            word = "course" if action["compare_to"] == 1 else "courses"
+        else:
+            word = "items"
+
+        yield f"{prefix} There must be {action_desc} matching {word} (have: {len(rule['claims'])}; need: {action['compare_to']})"
+
+    elif rule_type == "requirement":
+        if rule["status"] == "pass":
+            emoji = "💚"
+        elif rule["status"] == "skip":
+            emoji = "🌀"
+        else:
+            emoji = "🚫️"
 
         yield f"{prefix}{emoji} Requirement({rule['name']})"
         if rule["audited_by"] is not None:
             yield f"{prefix}    Audited by: {rule['audited_by']}; assuming success"
             return
         yield from print_result(rule["result"], indent=indent + 4)
+
+    elif rule_type == "reference":
+        if rule["status"] == "pass":
+            emoji = "💚"
+        elif rule["status"] == "skip":
+            emoji = "🌀"
+        else:
+            emoji = "🚫️"
+
+        yield f"{prefix}{emoji} Requirement({rule['name']})"
+        yield f"{prefix}   [Skipped]"
 
     else:
         yield json.dumps(rule, indent=2)
