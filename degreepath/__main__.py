@@ -381,6 +381,17 @@ def print_result(rule, indent=0):
             return
         yield from print_result(rule["result"], indent=indent + 4)
 
+    elif rule_type == "reference":
+        if rule["status"] == "pass":
+            emoji = "💚"
+        elif rule["status"] == "skip":
+            emoji = "🌀"
+        else:
+            emoji = "🚫️"
+
+        yield f"{prefix}{emoji} Requirement({rule['name']})"
+        yield f"{prefix}   [Skipped]"
+
     else:
         yield json.dumps(rule, indent=2)
 
