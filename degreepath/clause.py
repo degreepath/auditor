@@ -93,10 +93,10 @@ class SingleClause:
             operator = Operator(op)
             expected_value = value[op]
 
-            if key == 'subjects':
-                key = 'subject'
-            if key == 'attribute':
-                key = 'attributes'
+            if key == "subjects":
+                key = "subject"
+            if key == "attribute":
+                key = "attributes"
 
             clause = SingleClause(key=key, expected=expected_value, operator=operator)
 
@@ -111,7 +111,7 @@ class SingleClause:
             if len(to_value) is 0:
                 logging.debug(f"Skipping comparison as to_value was empty")
                 return False
-            
+
             logging.debug(f"Entering recursive comparison as to_value was a list")
             return any(self.compare(v) for v in to_value)
 
