@@ -1,12 +1,10 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import List, Optional, TYPE_CHECKING
-
-from ..data import CourseInstance
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..rule import CourseRule
-    from ..requirement import Claim, ClaimAttempt
+    from ..requirement import ClaimAttempt
 
 
 @dataclass(frozen=True)
@@ -35,7 +33,7 @@ class CourseResult:
         return "result"
 
     def ok(self) -> bool:
-        return self.claim_attempt and self.claim_attempt.failed() == False
+        return self.claim_attempt and self.claim_attempt.failed() is False
 
     def rank(self):
         return 1 if self.ok() else 0
