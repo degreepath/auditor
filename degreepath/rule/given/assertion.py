@@ -123,7 +123,7 @@ class Assertion:
 
         if type(compare_to) not in [int, float]:
             raise TypeError(
-                f"compare_to must be numeric to be used in range(); was {repr(compare_to)} ({type(compare_to)}"
+                f"compare_to must be numeric to be used in apply(); was {repr(compare_to)} ({type(compare_to)}"
             )
 
         if self.operator == Operator.LessThanOrEqualTo:
