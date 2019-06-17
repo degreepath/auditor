@@ -73,6 +73,14 @@ class FromRule:
     def solutions_when_student(self, *, ctx: RequirementContext, path):
         if self.source.itemtype == "courses":
             data = ctx.transcript
+
+            if self.source.repeat_mode == 'first':
+                filtered_courses = []
+                course_identities = set()
+                for course in data:
+                    if course.identity not in course_identities:
+                        filtered_courses.append(course)
+                data = filtered_courses
         else:
             raise KeyError(f"{self.source.itemtype} not yet implemented")
 

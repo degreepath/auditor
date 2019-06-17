@@ -11,6 +11,7 @@ class FromInput:
     itemtype: str
     requirements: Tuple[str, ...]
     saves: Tuple[str, ...]
+    repeat_mode: Optional[str]
 
     def to_dict(self):
         return {
@@ -29,29 +30,35 @@ class FromInput:
         if "student" in data:
             mode = "student"
             itemtype = data["student"]
+            repeat_mode = data.get('repeats', 'all')
         elif "saves" in data:
             mode = "saves"
             saves = tuple(data["saves"])
             itemtype = None
+            repeat_mode = None
         elif "save" in data:
             mode = "saves"
             saves = (data["save"],)
             itemtype = None
+            repeat_mode = None
         elif "requirements" in data:
             mode = "requirements"
             requirements = tuple(data["requirements"])
             itemtype = None
+            repeat_mode = None
         elif "requirement" in data:
             mode = "requirements"
             requirements = (data["requirement"],)
             itemtype = None
+            repeat_mode = None
         else:
             raise KeyError(
                 f"expected student, saves, or requirements; got {list(data.keys())}"
             )
 
         return FromInput(
-            mode=mode, itemtype=itemtype, requirements=requirements, saves=saves
+            mode=mode, itemtype=itemtype, requirements=requirements, saves=saves,
+            repeat_mode=repeat_mode
         )
 
     def validate(self, *, ctx: RequirementContext):
