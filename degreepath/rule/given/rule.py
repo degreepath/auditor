@@ -132,16 +132,12 @@ class FromRule:
 
             for course_set in self.limit.limited_transcripts(data):
                 for n in self.action.range(items=course_set):
-                    logging.debug(f"fromrule/resized/n={n}")
-                    if len(course_set) < n:
-                        logging.debug(f"fromrule/resized: {n} is less than {len(course_set)}")
+                    for combo in itertools.combinations(course_set, n):
+                        logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
                         did_iter = True
-                        yield FromSolution(output=course_set, rule=self)
-                    else:
-                        for combo in itertools.combinations(course_set, n):
-                            logging.debug(f"fromrule/combo/size={n} of {len(course_set)}")
-                            did_iter = True
-                            yield FromSolution(output=combo, rule=self)
+                        yield FromSolution(output=combo, rule=self)
+                # also yield one with the entire set of courses
+                yield FromSolution(output=course_set, rule=self)
 
         if not did_iter:
             # be sure we always yield something
