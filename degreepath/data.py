@@ -35,7 +35,7 @@ class CourseStatus(Enum):
 class CourseInstance:
     credits: decimal.Decimal
     subject: Tuple[str, ...]
-    number: int
+    number: str
     section: Optional[str]
 
     transcript_code: str
@@ -121,7 +121,7 @@ class CourseInstance:
         is_ace = False
 
         # TODO: export the course type
-        is_topic = name[0:5] == 'Top: '
+        is_topic = name[0:5] == "Top: "
 
         grade = grade_from_str(grade)
 
@@ -134,11 +134,14 @@ class CourseInstance:
         # we want to keep the original shorthand course identity for matching purposes
 
         number = number if number is not None else course.split(" ")[1]
-        number = int(number)
+        number = str(number)
 
         section = section if section != "" else None
 
-        level = number // 100 * 100
+        try:
+            level = int(number) // 100 * 100
+        except Exception:
+            level = 0
 
         attributes = tuple(attributes) if attributes is not None else tuple()
         gereqs = tuple(gereqs) if gereqs is not None else tuple()
