@@ -14,7 +14,7 @@ import jsonpickle
 import pendulum
 import yaml
 
-from . import CourseInstance, AreaOfStudy, CourseStatus, Operator
+from . import CourseInstance, AreaOfStudy, CourseStatus, Operator, str_clause
 from .ms import pretty_ms
 
 logger = logging.getLogger()
@@ -334,8 +334,7 @@ def print_result(rule, indent=0):
         # descr = "from-things"
         # descr = json.dumps(rule, indent=4)
 
-        yield f"{prefix}{emoji} Given courses matching:"
-        yield f"{prefix} {json.dumps(rule['where'])}"
+        yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
         if rule["claims"]:
             yield f"{prefix} Matching courses:"
@@ -353,19 +352,23 @@ def print_result(rule, indent=0):
 
         action_desc = ""
         action = rule["action"]
-        if action["command"] == "count" and action["source"] == "courses":
-            if action["operator"] == Operator.GreaterThanOrEqualTo.name:
-                action_desc = f"at least {action['compare_to']}"
-            elif action["operator"] == Operator.GreaterThan.name:
-                action_desc = f"at least {action['compare_to']}"
-            elif action["operator"] == Operator.LessThanOrEqualTo.name:
-                action_desc = f"at least {action['compare_to']}"
-            elif action["operator"] == Operator.LessThan.name:
-                action_desc = f"at least {action['compare_to']}"
-            elif action["operator"] == Operator.EqualTo.name:
-                action_desc = f"at least {action['compare_to']}"
+        if action["operator"] == Operator.GreaterThanOrEqualTo.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.GreaterThan.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.LessThanOrEqualTo.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.LessThan.name:
+            action_desc = f"at least {action['compare_to']}"
+        elif action["operator"] == Operator.EqualTo.name:
+            action_desc = f"at least {action['compare_to']}"
 
-        yield f"{prefix} There must be {action_desc} matching courses (have: {len(rule['claims'])}; need: {action['compare_to']})"
+        if action["source"] == "courses":
+            word = "course" if action["compare_to"] == 1 else "courses"
+        else:
+            word = "items"
+
+        yield f"{prefix} There must be {action_desc} matching {word} (have: {len(rule['claims'])}; need: {action['compare_to']})"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":

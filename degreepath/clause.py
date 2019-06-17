@@ -153,4 +153,13 @@ class SingleClause:
         return self.compare(other)
 
 
+def str_clause(clause: Clause) -> str:
+    if clause["type"] == "single-clause":
+        return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\""
+    elif clause["type"] == "or-clause":
+        return f'({" or ".join(str_clause(c) for c in clause["children"])})'
+    elif clause["type"] == "and-clause":
+        return f'({" and ".join(str_clause(c) for c in clause["children"])})'
+
+
 Clause = Union[AndClause, OrClause, SingleClause]
