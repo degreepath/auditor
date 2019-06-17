@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, TYPE_CHECKING, Tuple
+from typing import Dict, TYPE_CHECKING, Tuple, Optional
 if TYPE_CHECKING:
     from ...requirement import RequirementContext
 
@@ -51,9 +51,14 @@ class FromInput:
             requirements = (data["requirement"],)
             itemtype = None
             repeat_mode = None
+        elif "stored-values" in data:
+            mode = "stored-values"
+            requirements = tuple(data["stored-values"])
+            itemtype = None
+            repeat_mode = None
         else:
             raise KeyError(
-                f"expected student, saves, or requirements; got {list(data.keys())}"
+                f"expected student, stored-values, saves, or requirements; got {list(data.keys())}"
             )
 
         return FromInput(

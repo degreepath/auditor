@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Union, Any, List, Optional, TYPE_CHECKING
+from typing import Dict, Union, Any, List, Tuple, TYPE_CHECKING
 import re
 import itertools
 import logging
@@ -9,6 +9,44 @@ from ...clause import Operator
 
 if TYPE_CHECKING:
     from ...requirement import RequirementContext
+
+
+@dataclass(frozen=True)
+class AndAssertion:
+    children: Tuple[AnyAssertion, ...]
+
+    def to_dict(self):
+        return {"type": "from-assertion/and", "children": [c.to_dict() for c in self.children]}
+
+    @staticmethod
+    def load(data: List[Dict]) -> AnyAssertion:
+        clauses = [Assertion.load(clause) for clause in data]
+        return AndAssertion(children=tuple(clauses))
+
+    def __iter__(self):
+        yield from self.children
+
+    def apply(self, value: Any):
+        return all(c.apply(value) for c in self)
+
+
+@dataclass(frozen=True)
+class OrAssertion:
+    children: Tuple[AnyAssertion, ...]
+
+    def to_dict(self):
+        return {"type": "from-assertion/or", "children": [c.to_dict() for c in self.children]}
+
+    @staticmethod
+    def load(data: Dict) -> AnyAssertion:
+        clauses = [Assertion.load(clause) for clause in data]
+        return OrAssertion(children=tuple(clauses))
+
+    def __iter__(self):
+        yield from self.children
+
+    def apply(self, value: Any):
+        return any(c.apply(value) for c in self)
 
 
 @dataclass(frozen=True)
@@ -29,11 +67,18 @@ class Assertion:
 
     @staticmethod
     def load(data: Dict) -> Assertion:
+        if "$and" in data:
+            assert len(data.keys()) is 1
+            return AndAssertion.load(data["$and"])
+        elif "$or" in data:
+            assert len(data.keys()) is 1
+            return OrAssertion.load(data["$or"])
+
         keys = list(data.keys())
 
         assert (len(keys)) == 1
 
-        rex = re.compile(r"(count|sum|minimum|maximum|stored)\((.*)\)")
+        rex = re.compile(r"(count|sum|minimum|maximum|stored|average)\((.*)\)")
 
         k = keys[0]
 
@@ -54,6 +99,9 @@ class Assertion:
         operator = Operator(op)
         compare_to = val[op]
 
+        if isinstance(compare_to, list):
+            compare_to = tuple(compare_to)
+
         return Assertion(
             command=command, source=source, operator=operator, compare_to=compare_to
         )
@@ -65,6 +113,7 @@ class Assertion:
             "minimum",
             "maximum",
             "stored",
+            "average",
         ], f"{self.command}"
 
         if self.command == "count":
@@ -76,6 +125,8 @@ class Assertion:
                 "semesters",
             ]
         elif self.command == "sum":
+            assert self.source in ["grades", "credits"]
+        elif self.command == "average":
             assert self.source in ["grades", "credits"]
         elif self.command == "minimum" or self.command == "maximum":
             assert self.source in ["terms", "semesters", "grades", "credits"]
@@ -153,3 +204,6 @@ class Assertion:
 
         else:
             raise Exception("um")
+
+
+AnyAssertion = Union[AndAssertion, OrAssertion, Assertion]
