@@ -62,7 +62,11 @@ class ReferenceRule:
 
         # print(requirement)
 
-        state = ctx.requirement_cache.get(requirement, None)
+        try:
+            state = ctx.requirement_cache.get(requirement, None)
+        except TypeError as ex:
+            print(requirement)
+            raise ex
 
         if state is None:
             state = RequirementState(iterable=requirement.solutions(ctx=ctx, path=path))
