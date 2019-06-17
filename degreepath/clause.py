@@ -97,6 +97,9 @@ class SingleClause:
                 key = "subject"
             if key == "attribute":
                 key = "attributes"
+            if key == "gereq":
+                key = "gereqs"
+
 
             clause = SingleClause(key=key, expected=expected_value, operator=operator)
 
