@@ -324,7 +324,7 @@ class Requirement:
 
         path = [*path, ".result"]
 
-        ident = self.name
+        ident = ",".join([*path, self.name])
 
         for i, solution in enumerate(self.result.solutions(ctx=new_ctx, path=path)):
             yield RequirementSolution.from_requirement(
