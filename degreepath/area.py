@@ -114,6 +114,7 @@ class AreaOfStudy:
 
         new_path = [*path, ".result"]
         for sol in self.result.solutions(ctx=ctx, path=new_path):
+            ctx.reset_claims()
             logger.info(f"generated new area solution: {sol}")
             yield AreaSolution(solution=sol, area=self)
 

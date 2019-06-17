@@ -54,6 +54,9 @@ class RequirementContext:
     def restore_to_checkpoint(self, claims):
         self.claims = copy.deepcopy(claims)
 
+    def reset_claims(self):
+        self.claims = defaultdict(set)
+
     def make_claim(
         self,
         *,
