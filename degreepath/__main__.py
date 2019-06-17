@@ -64,10 +64,14 @@ def main(*, student_file, print_every, loglevel, record, stream, area_files, pri
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
 
-        if set(data["majors"]).intersection(allowed["major"]):
+        if set(data["degrees"]).intersection(allowed["degree"]):
             students.append(data)
-        if set(data["concentrations"]).intersection(allowed["concentration"]):
+        elif set(data["majors"]).intersection(allowed["major"]):
             students.append(data)
+        elif set(data["concentrations"]).intersection(allowed["concentration"]):
+            students.append(data)
+        else:
+            print(f'skipping student {file} as their majors/degrees/concentrations were not loaded')
 
     run(
         students=students,
@@ -83,6 +87,9 @@ def main(*, student_file, print_every, loglevel, record, stream, area_files, pri
 def run(
     *, students, areas, allowed, print_every, should_record, should_print, print_all
 ):
+    if not students:
+        print('no students to process')
+
     for i, student in enumerate(students):
         transcript = []
         for row in student["courses"]:
@@ -95,13 +102,16 @@ def run(
             #     print(err)
             #     continue
 
+        degree_names = set(student["degrees"])
+        allowed_degree_names = degree_names.intersection(allowed["degree"])
+
         major_names = set(student["majors"])
         allowed_major_names = major_names.intersection(allowed["major"])
 
         conc_names = set(student["concentrations"])
         allowed_conc_names = conc_names.intersection(allowed["concentration"])
 
-        allowed_area_names = allowed_major_names.union(allowed_conc_names)
+        allowed_area_names = allowed_major_names | allowed_conc_names | allowed_degree_names
 
         for area_name in allowed_area_names:
             area_def = next(a for a in areas if a["name"] == area_name)
