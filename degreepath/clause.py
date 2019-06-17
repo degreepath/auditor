@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from collections import Mapping
 from typing import Union, List, Tuple, Dict, Any
 import enum
 import logging
@@ -13,6 +14,7 @@ class Operator(enum.Enum):
     GreaterThanOrEqualTo = "$gte"
     EqualTo = "$eq"
     NotEqualTo = "$neq"
+    In = "$in"
 
     def __repr__(self):
         return str(self)
@@ -78,6 +80,9 @@ class SingleClause:
 
     @staticmethod
     def load(data: Dict) -> Clause:
+        if not isinstance(data, Mapping):
+            raise Exception(f'expected {data} to be a dictionary')
+
         if "$and" in data:
             assert len(data.keys()) is 1
             return AndClause.load(data["$and"])
@@ -100,6 +105,8 @@ class SingleClause:
             if key == "gereq":
                 key = "gereqs"
 
+            if isinstance(expected_value, list):
+                expected_value = tuple(expected_value)
 
             clause = SingleClause(key=key, expected=expected_value, operator=operator)
 
@@ -113,6 +120,11 @@ class SingleClause:
     def compare(self, to_value: Any) -> bool:
         # logging.debug(f"clause/compare {to_value} against {self}")
 
+        if isinstance(self.expected, tuple) and self.operator != Operator.In:
+            raise Exception(f'operator {self.operator} does not accept a list as the expected value')
+        elif not isinstance(self.expected, tuple) and self.operator == Operator.In:
+            raise Exception('expected a list of values to compare with $in operator')
+
         if isinstance(to_value, tuple) or isinstance(to_value, list):
             if len(to_value) is 0:
                 logging.debug(f"clause/compare: skipped (empty to_value)")
@@ -123,6 +135,10 @@ class SingleClause:
             else:
                 logging.debug(f"clause/compare: beginning recursive comparison")
                 return any(self.compare(v) for v in to_value)
+
+        if self.operator == Operator.In:
+            logging.debug(f"clause/compare/$in: beginning inclusion check")
+            return any(to_value == v for v in self.expected)
 
         if isinstance(to_value, str) and (
             isinstance(self.expected, int)
