@@ -18,8 +18,8 @@ logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s: %(message)s"
 
 
-def take(iter, n=5):
-    for i, item in enumerate(iter):
+def take(it, n=5):
+    for i, item in enumerate(it):
         if i < n:
             yield item
 
@@ -29,13 +29,24 @@ def take(iter, n=5):
 @click.option("--loglevel", "-l", default="warn")
 @click.option("--print-all", default=False, is_flag=True)
 @click.option("--record/--no-record", default=True)
+@click.option("--json", "print_json", default=False, is_flag=True)
 # @click.option("--estimate", default=None, is_flag=True)
 @click.option("--print/--no-print", "stream", default=True)
 @click.option(
     "--area", "area_files", envvar="AREAS", multiple=True, type=click.Path(exists=True)
 )
 @click.argument("student_file", nargs=-1, type=click.Path(exists=True))
-def main(*, student_file, print_every, loglevel, record, stream, area_files, print_all):
+def main(
+    *,
+    student_file,
+    print_every,
+    loglevel,
+    record,
+    stream,
+    area_files,
+    print_all,
+    print_json,
+):
     """Audits a student against their areas of study."""
 
     should_record = record
@@ -71,7 +82,17 @@ def main(*, student_file, print_every, loglevel, record, stream, area_files, pri
         elif set(data["concentrations"]).intersection(allowed["concentration"]):
             students.append(data)
         else:
-            print(f'skipping student {file} as their majors/degrees/concentrations were not loaded')
+            if print_json:
+                msg = {
+                    "stnum": data["stnum"],
+                    "action": "skip",
+                    "reason": f"skipping student {file} as their majors/degrees/concentrations were not loaded",
+                }
+                print(json.dumps(msg))
+            else:
+                print(
+                    f"skipping student {file} as their majors/degrees/concentrations were not loaded"
+                )
 
     run(
         students=students,
@@ -81,14 +102,24 @@ def main(*, student_file, print_every, loglevel, record, stream, area_files, pri
         should_record=should_record,
         should_print=should_print,
         print_all=print_all,
+        print_json=print_json,
     )
 
 
 def run(
-    *, students, areas, allowed, print_every, should_record, should_print, print_all
+    *,
+    students,
+    areas,
+    allowed,
+    print_every,
+    should_record,
+    should_print,
+    print_all,
+    print_json,
 ):
     if not students:
-        print('no students to process')
+        if not print_json:
+            print("no students to process")
 
     for i, student in enumerate(students):
         transcript = []
@@ -111,7 +142,9 @@ def run(
         conc_names = set(student["concentrations"])
         allowed_conc_names = conc_names.intersection(allowed["concentration"])
 
-        allowed_area_names = allowed_major_names | allowed_conc_names | allowed_degree_names
+        allowed_area_names = (
+            allowed_major_names | allowed_conc_names | allowed_degree_names
+        )
 
         for area_name in allowed_area_names:
             area_def = next(a for a in areas if a["name"] == area_name)
@@ -124,6 +157,7 @@ def run(
                 should_print=should_print,
                 should_record=should_record,
                 print_all=print_all,
+                print_json=print_json,
             )
 
 
@@ -136,8 +170,13 @@ def audit(
     should_print,
     should_record,
     print_all,
+    print_json,
 ):
-    print(f"auditing #{student['stnum']}", file=sys.stderr)
+    if print_json:
+        msg = {"stnum": student["stnum"], "action": "start"}
+        print(json.dumps(msg))
+    else:
+        print(f"auditing #{student['stnum']}", file=sys.stderr)
 
     area = AreaOfStudy.load(area_def)
 
@@ -165,7 +204,15 @@ def audit(
         total_count += 1
 
         if total_count % print_every == 0:
-            print(f"... {total_count:,}", file=sys.stderr)
+            if print_json:
+                msg = {
+                    "stnum": student["stnum"],
+                    "action": "in-progress",
+                    "count": total_count,
+                }
+                print(json.dumps(msg))
+            else:
+                print(f"... {total_count:,}", file=sys.stderr)
 
         result = sol.audit(transcript=this_transcript)
 
@@ -185,28 +232,30 @@ def audit(
 
         if print_all:
             elapsed = pretty_ms((iter_end - start) * 1000)
-            print(
-                "".join(
-                    summarize(
-                        name=student["name"],
-                        stnum=student["stnum"],
-                        area=area,
-                        result=result,
-                        count=total_count,
-                        elapsed=elapsed,
-                        iterations=times,
-                    )
-                )
+            summary = summarize(
+                name=student["name"],
+                stnum=student["stnum"],
+                area=area,
+                result=result,
+                count=total_count,
+                elapsed=elapsed,
+                iterations=times,
             )
+            print("".join(summary))
 
         iter_start = time.perf_counter()
 
     if not times:
-        print("no audits completed")
+        if print_json:
+            msg = {"stnum": student["stnum"], "action": "no-audits"}
+            print(json.dumps(msg))
+        else:
+            print("no audits completed")
         return
 
     if should_print:
-        print()
+        if not print_json:
+            print()
 
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
@@ -222,6 +271,24 @@ def audit(
             iterations=times,
         )
     )
+
+    if should_print:
+        if print_json:
+            avg_iter_s = sum(times) / max(len(times), 1)
+            avg_iter = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
+            msg = {
+                "stnum": student["stnum"],
+                "action": "complete",
+                "area": area.to_dict(),
+                "result": best_sol.to_dict(),
+                "count": total_count,
+                "student": student,
+                "avg_iter": avg_iter,
+                "elapsed": elapsed,
+            }
+            print(json.dumps(msg))
+        else:
+            print(output)
 
     if should_record:
         filename = f'{student["stnum"]} {student["name"]}.txt'
@@ -249,9 +316,6 @@ def audit(
 
         with outpath.open("w") as outfile:
             outfile.write(output)
-
-    if should_print:
-        print(output)
 
 
 def summarize(*, name, stnum, area, result, count, elapsed, iterations):
@@ -283,13 +347,7 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     yield f"{count:,} {word} in {elapsed} (avg {avg_iter_time} per attempt)"
     yield endl
 
-    # print(result)
-    # import yaml
-    # print(yaml.dump(result))
     dictver = result.to_dict()
-
-    # print(f"The best solution we found was:")
-    # print(json.dumps(dictver))
 
     yield endl
 
@@ -305,13 +363,8 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     yield endl
 
 
-import pprint
-
-
 def print_result(rule, indent=0):
     prefix = " " * indent
-
-    # print(json.dumps(rule, indent=2))
 
     if rule is None:
         yield f"{prefix}???"
