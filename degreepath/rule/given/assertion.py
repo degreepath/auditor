@@ -2,7 +2,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Union, Any, List, Tuple, TYPE_CHECKING
 import re
-import itertools
 import logging
 
 from ...clause import Operator
