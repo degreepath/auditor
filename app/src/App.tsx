@@ -1046,9 +1046,15 @@ function WhereClause({ clause }: { clause: WhereClause }) {
 }
 
 const App: React.FC = () => {
-  let { data, isLoading } = useFetch(
-    "https://www.stolaf.edu/sis/degreepath/public-ndjson.cfm"
-  );
+  let url = new URL(window.location as any);
+
+  let fetchUrl = "https://www.stolaf.edu/sis/degreepath/public-ndjson.cfm";
+  if (url.searchParams.has("stnum")) {
+    let stnum = url.searchParams.get("stnum");
+    fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/test.cfm?stnum=${stnum}`;
+  }
+
+  let { data, isLoading } = useFetch(fetchUrl);
 
   let [lines, setLines] = React.useState<Result[]>([]);
 
