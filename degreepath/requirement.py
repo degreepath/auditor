@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Any, Dict, Union, Set, TYPE_CHECKING
 import logging
@@ -12,23 +11,17 @@ from .data import CourseInstance, CourseStatus
 from .save import SaveRule
 from .rule import CourseRule
 
-if TYPE_CHECKING:
-    from .solution import Solution
-    from .rule import Rule
-    from .clause import Clause
-    from .result import Result
-
 
 @dataclass(frozen=False)
 class RequirementContext:
-    transcript: List[CourseInstance] = field(default_factory=list)
-    requirements: Dict[str, Requirement] = field(default_factory=dict)
-    save_rules: Dict[str, SaveRule] = field(default_factory=dict)
-    requirement_cache: Dict[Requirement, RequirementState] = field(default_factory=dict)
-    multicountable: List[List[Union[CourseRule, Clause]]] = field(default_factory=list)
-    claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
+    transcript: List = field(default_factory=list)
+    requirements: Dict = field(default_factory=dict)
+    save_rules: Dict = field(default_factory=dict)
+    requirement_cache: Dict = field(default_factory=dict)
+    multicountable: List[List] = field(default_factory=list)
+    claims: Dict[str, Set] = field(default_factory=lambda: defaultdict(set))
 
-    def find_course(self, c: str) -> Optional[CourseInstance]:
+    def find_course(self, c: str) -> Optional:
         try:
             return next(
                 course
@@ -63,8 +56,8 @@ class RequirementContext:
         crsid: str,
         course: CourseInstance,
         path: List[str],
-        clause: Union[CourseRule, Clause],
-    ) -> ClaimAttempt:
+        clause: Union,
+    ):
         """
         If the crsid is not in the claims dictionary, insert it with an empty list.
 
@@ -160,7 +153,7 @@ class RequirementContext:
 class Claim:
     course_id: str
     claimant_path: Tuple[str, ...]
-    value: Union[CourseRule, Clause]
+    value: Union
     course: CourseInstance
 
     def to_dict(self):
@@ -216,7 +209,7 @@ class Requirement:
     saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
     message: Optional[str] = None
-    result: Optional[Rule] = None
+    result: Optional = None
     audited_by: Optional[str] = None
     contract: bool = False
 
@@ -234,7 +227,7 @@ class Requirement:
         }
 
     @staticmethod
-    def load(name: str, data: Dict[str, Any]) -> Requirement:
+    def load(name: str, data: Dict[str, Any]):
         from .rule import load_rule
 
         children = frozendict(
@@ -280,7 +273,7 @@ class Requirement:
 
         children = self.requirements
 
-        validated_saves: Dict[str, SaveRule] = {}
+        validated_saves: Dict = {}
         for save in self.saves.values():
             new_ctx = RequirementContext(
                 transcript=ctx.transcript,
@@ -349,7 +342,7 @@ class RequirementSolution:
     name: str
     saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
-    result: Optional[Solution]
+    result: Optional
     inputs: List[Tuple[str, int]]
     message: Optional[str] = None
     audited_by: Optional[str] = None
@@ -357,7 +350,7 @@ class RequirementSolution:
 
     @staticmethod
     def from_requirement(
-        req: Requirement, *, solution: Optional[Solution], inputs: List[Tuple[str, int]]
+        req: Requirement, *, solution: Optional, inputs: List[Tuple[str, int]]
     ):
         return RequirementSolution(
             inputs=inputs,
@@ -408,7 +401,7 @@ class RequirementSolution:
     def flatten(self):
         return self.result.flatten()
 
-    def audit(self, *, ctx: RequirementContext, path: List) -> RequirementResult:
+    def audit(self, *, ctx: RequirementContext, path: List):
         if not self.result:
             # TODO: return something better
             return RequirementResult.from_solution(self, result=None)
@@ -425,12 +418,12 @@ class RequirementResult:
     requirements: Any  # frozendict[str, Requirement]
     inputs: List[Tuple[str, int]]
     message: Optional[str] = None
-    result: Optional[Result] = None
+    result: Optional = None
     audited_by: Optional[str] = None
     contract: bool = False
 
     @staticmethod
-    def from_solution(sol: RequirementSolution, *, result: Optional[Result]):
+    def from_solution(sol: RequirementSolution, *, result: Optional):
         return RequirementResult(
             name=sol.name,
             saves=sol.saves,

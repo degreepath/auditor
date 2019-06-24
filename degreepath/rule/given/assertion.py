@@ -1,24 +1,20 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Union, Any, List, Tuple, TYPE_CHECKING
+from typing import Dict, Union, Any, List, Tuple
 import re
 import logging
 
 from ...clause import Operator
 
-if TYPE_CHECKING:
-    from ...requirement import RequirementContext
-
 
 @dataclass(frozen=True)
 class AndAssertion:
-    children: Tuple[AnyAssertion, ...]
+    children: Tuple
 
     def to_dict(self):
         return {"type": "from-assertion/and", "children": [c.to_dict() for c in self.children]}
 
     @staticmethod
-    def load(data: List[Dict]) -> AnyAssertion:
+    def load(data: List[Dict]):
         clauses = [Assertion.load(clause) for clause in data]
         return AndAssertion(children=tuple(clauses))
 
@@ -31,13 +27,13 @@ class AndAssertion:
 
 @dataclass(frozen=True)
 class OrAssertion:
-    children: Tuple[AnyAssertion, ...]
+    children: Tuple
 
     def to_dict(self):
         return {"type": "from-assertion/or", "children": [c.to_dict() for c in self.children]}
 
     @staticmethod
-    def load(data: Dict) -> AnyAssertion:
+    def load(data: Dict):
         clauses = [Assertion.load(clause) for clause in data]
         return OrAssertion(children=tuple(clauses))
 
@@ -65,7 +61,7 @@ class Assertion:
         }
 
     @staticmethod
-    def load(data: Dict) -> Assertion:
+    def load(data: Dict):
         if "$and" in data:
             assert len(data.keys()) is 1
             return AndAssertion.load(data["$and"])
@@ -105,7 +101,7 @@ class Assertion:
             command=command, source=source, operator=operator, compare_to=compare_to
         )
 
-    def validate(self, *, ctx: RequirementContext):
+    def validate(self, *, ctx):
         assert self.command in [
             "count",
             "sum",
@@ -205,4 +201,4 @@ class Assertion:
             raise Exception("um")
 
 
-AnyAssertion = Union[AndAssertion, OrAssertion, Assertion]
+AnyAssertion = Union

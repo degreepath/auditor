@@ -1,13 +1,7 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from typing import Union, List, Optional, Any, TYPE_CHECKING
 import itertools
 import logging
-
-if TYPE_CHECKING:
-    from ..rule import CourseRule
-    from ..result import Result
-    from ..requirement import RequirementContext
 
 from ..result import CourseResult
 from ..data import CourseStatus
@@ -18,7 +12,7 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class CourseSolution:
     course: str
-    rule: CourseRule
+    rule: Any
 
     def __repr__(self):
         return self.course
@@ -48,7 +42,7 @@ class CourseSolution:
     def flatten(self):
         return [self.course]
 
-    def audit(self, *, ctx: RequirementContext, path: List):
+    def audit(self, *, ctx: Any, path: List):
         path = [*path, f"$c->{self.course}"]
 
         matched_course = ctx.find_course(self.course)

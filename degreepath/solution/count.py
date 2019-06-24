@@ -1,14 +1,7 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Union, List, Tuple, TYPE_CHECKING
+from typing import List, Tuple, TYPE_CHECKING, Any
 import itertools
 import logging
-
-if TYPE_CHECKING:
-    from ..rule import CountRule, Rule
-    from ..result import Result
-    from ..requirement import RequirementContext
-    from . import Solution
 
 from ..result import CountResult
 
@@ -18,7 +11,7 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class CountSolution:
     count: int
-    items: Tuple[Union[Solution, Rule]]
+    items: Tuple
 
     def to_dict(self):
         return {
@@ -45,13 +38,13 @@ class CountSolution:
         return False
 
     @staticmethod
-    def from_rule(rule: CountRule, *, items) -> CountSolution:
+    def from_rule(rule: Any, *, items):
         return CountSolution(count=rule.count, items=items)
 
     def flatten(self):
         return (x for s in self.items for x in s.flatten())
 
-    def audit(self, *, ctx: RequirementContext, path: List) -> Result:
+    def audit(self, *, ctx, path: List):
         path = [*path, f".of"]
 
         results = tuple(

@@ -1,8 +1,5 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, TYPE_CHECKING, Tuple, Optional
-if TYPE_CHECKING:
-    from ...requirement import RequirementContext
+from typing import Dict, Tuple, Optional
 
 
 @dataclass(frozen=True)
@@ -23,7 +20,7 @@ class FromInput:
         }
 
     @staticmethod
-    def load(data: Dict) -> FromInput:
+    def load(data: Dict):
         saves: Tuple[str, ...] = tuple()
         requirements: Tuple[str, ...] = tuple()
 
@@ -66,7 +63,7 @@ class FromInput:
             repeat_mode=repeat_mode
         )
 
-    def validate(self, *, ctx: RequirementContext):
+    def validate(self, *, ctx):
         assert isinstance(self.mode, str)
 
         saves = ctx.save_rules

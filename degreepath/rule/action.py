@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Union, List, Optional, TYPE_CHECKING
 import re
@@ -6,9 +5,6 @@ import itertools
 import logging
 
 from ..solution import ActionSolution
-
-if TYPE_CHECKING:
-    from ..requirement import RequirementContext
 
 
 @dataclass(frozen=True)
@@ -22,13 +18,13 @@ class ActionRule:
         return False
 
     @staticmethod
-    def load(data: Dict) -> ActionRule:
+    def load(data: Dict):
         return ActionRule(assertion=data["assert"])
 
-    def validate(self, *, ctx: RequirementContext):
+    def validate(self, *, ctx):
         ...
         # TODO: check for input items here
 
-    def solutions(self, *, ctx: RequirementContext, path: List):
+    def solutions(self, *, ctx, path: List):
         logging.debug(f"{path} ActionRule#solutions")
         yield ActionSolution(result=None)

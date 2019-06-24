@@ -1,13 +1,9 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Sequence, Optional, TYPE_CHECKING
 from collections import defaultdict
 import logging
 
 from .clause import Clause, SingleClause, str_clause
-
-if TYPE_CHECKING:
-    from .data import CourseInstance
 
 
 @dataclass(frozen=True)
@@ -19,7 +15,7 @@ class Limit:
         return {"type": "limit", "at_most": self.at_most, "where": self.where.to_dict()}
 
     @staticmethod
-    def load(data: Dict) -> Limit:
+    def load(data: Dict):
         return Limit(at_most=data["at_most"], where=SingleClause.load(data["where"]))
 
     def __str__(self):
@@ -34,12 +30,12 @@ class LimitSet:
         return [l.to_dict() for l in self.limits]
 
     @staticmethod
-    def load(data: Optional[Sequence[Dict]] = None) -> LimitSet:
+    def load(data: Optional[Sequence[Dict]] = None):
         if data is None:
             return LimitSet(limits=tuple())
         return LimitSet(limits=tuple(Limit.load(l) for l in data))
 
-    def apply_limits(self, courses: List[CourseInstance]):
+    def apply_limits(self, courses: List):
         clause_counters = defaultdict(int)
         course_set = []
 
@@ -78,7 +74,7 @@ class LimitSet:
 
         return course_set
 
-    def limited_transcripts(self, courses: List[CourseInstance]):
+    def limited_transcripts(self, courses: List):
         """
         We need to iterate over each combination of limited courses.
 

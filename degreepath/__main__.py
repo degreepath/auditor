@@ -4,6 +4,7 @@ import json
 import sys
 import decimal
 import collections
+import glob
 from pathlib import Path
 
 import click
@@ -25,16 +26,13 @@ def take(it, n=5):
 
 
 @click.command()
-@click.option("--print-every", "-e", default=1_000)
+@click.option("--print-every", "-e", default=1000)
 @click.option("--loglevel", "-l", default="warn")
 @click.option("--print-all", default=False, is_flag=True)
 @click.option("--record/--no-record", default=True)
 @click.option("--json", "print_json", default=False, is_flag=True)
-# @click.option("--estimate", default=None, is_flag=True)
 @click.option("--print/--no-print", "stream", default=True)
-@click.option(
-    "--area", "area_files", envvar="AREAS", multiple=True, type=click.Path(exists=True)
-)
+@click.option("--area", "area_files", envvar="AREAS", multiple=True)
 @click.argument("student_file", nargs=-1, type=click.Path(exists=True))
 def main(
     *,
@@ -64,11 +62,12 @@ def main(
 
     areas = []
     allowed = collections.defaultdict(set)
-    for f in area_files:
-        with open(f, "r", encoding="utf-8") as infile:
-            a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
-        areas.append(a)
-        allowed[a["type"]].add(a["name"])
+    for globset in area_files:
+        for f in glob.iglob(globset):
+            with open(f, "r", encoding="utf-8") as infile:
+                a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
+            areas.append(a)
+            allowed[a["type"]].add(a["name"])
 
     students = []
     for file in student_file:
@@ -173,10 +172,10 @@ def audit(
     print_json,
 ):
     if print_json:
-        msg = {"stnum": student["stnum"], "action": "start"}
+        msg = {"stnum": student["stnum"], "action": "start", "area": area_def['name']}
         print(json.dumps(msg))
     else:
-        print(f"auditing #{student['stnum']}", file=sys.stderr)
+        print(f"auditing #{student['stnum']} for {area_def['name']}", file=sys.stderr)
 
     area = AreaOfStudy.load(area_def)
 

@@ -1,7 +1,6 @@
-from __future__ import annotations
 import dataclasses
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 import decimal
 import logging
 
@@ -93,7 +92,7 @@ class CourseInstance:
         semester,
         year,
         institution="St. Olaf College",
-    ) -> Optional[CourseInstance]:
+    ) -> Optional:
         status = CourseStatus.Ok
 
         if grade == "IP":

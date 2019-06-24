@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 import itertools
@@ -9,9 +8,6 @@ from .assertion import Assertion
 from ...limit import LimitSet, Limit
 from ...clause import Clause, SingleClause, str_clause
 from ...solution import FromSolution
-
-if TYPE_CHECKING:
-    from ...requirement import RequirementContext
 
 
 @dataclass(frozen=True)
@@ -50,7 +46,7 @@ class FromRule:
         return False
 
     @staticmethod
-    def load(data: Dict) -> FromRule:
+    def load(data: Dict):
         where = data.get("where", None)
         if where is not None:
             where = SingleClause.load(where)
@@ -65,12 +61,12 @@ class FromRule:
             source=FromInput.load(data["from"]), action=action, limit=limit, where=where
         )
 
-    def validate(self, *, ctx: RequirementContext):
+    def validate(self, *, ctx):
         self.source.validate(ctx=ctx)
         if self.action:
             self.action.validate(ctx=ctx)
 
-    def solutions_when_student(self, *, ctx: RequirementContext, path):
+    def solutions_when_student(self, *, ctx, path):
         if self.source.itemtype == "courses":
             data = ctx.transcript
 
@@ -86,7 +82,7 @@ class FromRule:
 
         yield data
 
-    def solutions_when_saves(self, *, ctx: RequirementContext, path):
+    def solutions_when_saves(self, *, ctx, path):
         saves = [
             ctx.save_rules[s].solutions(ctx=ctx, path=path) for s in self.source.saves
         ]
@@ -95,7 +91,7 @@ class FromRule:
             data = set(item for save_result in p for item in save_result.stored())
             yield data
 
-    def solutions_when_reqs(self, *, ctx: RequirementContext, path):
+    def solutions_when_reqs(self, *, ctx, path):
         reqs = [
             ctx.requirements[s].solutions(ctx=ctx, path=path)
             for s in self.source.requirements
@@ -105,7 +101,7 @@ class FromRule:
             data = set(item for req_result in p for item in req_result.matched())
             yield data
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
+    def solutions(self, *, ctx, path: List[str]):
         path = [*path, f".from"]
         logging.debug(f"{path}")
 

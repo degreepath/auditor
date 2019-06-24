@@ -1,16 +1,11 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Tuple, Union, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Result
-    from ..rule import Rule
+from typing import Tuple
 
 
 @dataclass(frozen=True)
 class CountResult:
     count: int
-    items: Tuple[Union[Rule, Result], ...]
+    items: Tuple
 
     def to_dict(self):
         return {

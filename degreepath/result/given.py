@@ -1,17 +1,12 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import List, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from ..requirement import ClaimAttempt
-    from ..rule import FromRule
+from typing import List, TYPE_CHECKING, Any
 
 
 @dataclass(frozen=True)
 class FromResult:
-    rule: FromRule
-    successful_claims: List[ClaimAttempt]
-    failed_claims: List[ClaimAttempt]
+    rule: Any
+    successful_claims: List
+    failed_claims: List
     success: bool
 
     def to_dict(self):

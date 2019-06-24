@@ -1,15 +1,10 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional, TYPE_CHECKING
+from typing import Dict, Union, List, Optional
 import re
 import itertools
 import logging
 
 from ..solution import CourseSolution
-
-if TYPE_CHECKING:
-    from ..requirement import RequirementContext
-    from ..data import CourseInstance
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +48,7 @@ class CourseRule:
         return False
 
     @staticmethod
-    def load(data: Dict) -> CourseRule:
+    def load(data: Dict):
         return CourseRule(
             course=data["course"],
             hidden=data.get("hidden", False),
@@ -61,7 +56,7 @@ class CourseRule:
             allow_claimed=data.get("including claimed", False),
         )
 
-    def validate(self, *, ctx: RequirementContext):
+    def validate(self, *, ctx):
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
         method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
         method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
@@ -70,12 +65,12 @@ class CourseRule:
             method_a or method_b or method_c
         ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, ctx: RequirementContext, path: List):
+    def solutions(self, *, ctx, path: List):
         logger.debug(f'{path} reference to course "{self.course}"')
 
         yield CourseSolution(course=self.course, rule=self)
 
-    def estimate(self, *, ctx: RequirementContext):
+    def estimate(self, *, ctx):
         return 1
 
     def mc_applies_same(self, other) -> bool:
@@ -87,5 +82,5 @@ class CourseRule:
 
         return self.course == other.course
 
-    def applies_to(self, other: CourseInstance) -> bool:
+    def applies_to(self, other) -> bool:
         return other.shorthand == self.course or other.identity == self.course
