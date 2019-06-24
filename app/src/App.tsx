@@ -1049,7 +1049,11 @@ const App: React.FC = () => {
   let url = new URL(window.location as any);
 
   let fetchUrl = "https://www.stolaf.edu/sis/degreepath/public-ndjson.cfm";
-  if (url.searchParams.has("stnum")) {
+  if (url.searchParams.has("stnum") && url.searchParams.has("areas")) {
+    let stnum = url.searchParams.get("stnum");
+    let areas = url.searchParams.get("areas");
+    fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/test.cfm?stnum=${stnum}&areas=${areas}`;
+  } else if (url.searchParams.has("stnum")) {
     let stnum = url.searchParams.get("stnum");
     fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/test.cfm?stnum=${stnum}`;
   }
