@@ -1,54 +1,57 @@
-import logging
-import time
-import json
-import sys
-import decimal
-import collections
 import glob
-from pathlib import Path
+import json
+import logging
+import pathlib
+import sys
+import time
 
 import click
 import coloredlogs
 import pendulum
 import yaml
 
-from . import CourseInstance, AreaOfStudy, CourseStatus, Operator, str_clause
+from degreepath import CourseInstance, AreaOfStudy, CourseStatus, Operator, str_clause
 from .ms import pretty_ms
 
 logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s: %(message)s"
 
 
-def take(it, n=5):
-    for i, item in enumerate(it):
-        if i < n:
-            yield item
-
-
 @click.command()
 @click.option("--print-every", "-e", default=1000)
 @click.option("--loglevel", "-l", default="warn")
 @click.option("--print-all", default=False, is_flag=True)
-@click.option("--record/--no-record", default=True)
+@click.option("--record/--no-record", "should_record", default=True)
 @click.option("--json", "print_json", default=False, is_flag=True)
-@click.option("--print/--no-print", "stream", default=True)
-@click.option("--area", "area_files", envvar="AREAS", multiple=True)
-@click.argument("student_file", nargs=-1, type=click.Path(exists=True))
+@click.option("--print/--no-print", "should_print", default=True)
+@click.option(
+    "--area",
+    "area_files",
+    envvar="AREAS",
+    multiple=True,
+    required=True,
+    type=click.Path(),
+)
+@click.option(
+    "--student",
+    "student_files",
+    envvar="STUDENTS",
+    multiple=True,
+    required=True,
+    type=click.Path(),
+)
 def main(
     *,
-    student_file,
+    student_files,
     print_every,
     loglevel,
-    record,
-    stream,
+    should_record,
+    should_print,
     area_files,
     print_all,
     print_json,
 ):
     """Audits a student against their areas of study."""
-
-    should_record = record
-    should_print = stream
 
     if loglevel.lower() == "warn":
         logger.setLevel(logging.WARNING)
@@ -61,42 +64,21 @@ def main(
         coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
     areas = []
-    allowed = collections.defaultdict(set)
     for globset in area_files:
         for f in glob.iglob(globset):
             with open(f, "r", encoding="utf-8") as infile:
                 a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
             areas.append(a)
-            allowed[a["type"]].add(a["name"])
 
     students = []
-    for file in student_file:
+    for file in student_files:
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
-
-        if set(data["degrees"]).intersection(allowed["degree"]):
-            students.append(data)
-        elif set(data["majors"]).intersection(allowed["major"]):
-            students.append(data)
-        elif set(data["concentrations"]).intersection(allowed["concentration"]):
-            students.append(data)
-        else:
-            if print_json:
-                msg = {
-                    "stnum": data["stnum"],
-                    "action": "skip",
-                    "reason": f"skipping student {file} as their majors/degrees/concentrations were not loaded",
-                }
-                print(json.dumps(msg))
-            else:
-                print(
-                    f"skipping student {file} as their majors/degrees/concentrations were not loaded"
-                )
+        students.append(data)
 
     run(
         students=students,
         areas=areas,
-        allowed=allowed,
         print_every=print_every,
         should_record=should_record,
         should_print=should_print,
@@ -106,50 +88,24 @@ def main(
 
 
 def run(
-    *,
-    students,
-    areas,
-    allowed,
-    print_every,
-    should_record,
-    should_print,
-    print_all,
-    print_json,
+    *, students, areas, print_every, should_record, should_print, print_all, print_json
 ):
     if not students:
         if not print_json:
             print("no students to process")
 
-    for i, student in enumerate(students):
+    for student in students:
         transcript = []
         for row in student["courses"]:
             instance = CourseInstance.from_dict(**row)
             if instance:
                 transcript.append(instance)
-            # try:
-            #     transcript.append(CourseInstance.from_dict(**row))
-            # except Exception as err:
-            #     print(err)
-            #     continue
+            else:
+                print("error loading course into transcript", row, file=sys.stderr)
 
-        degree_names = set(student["degrees"])
-        allowed_degree_names = degree_names.intersection(allowed["degree"])
-
-        major_names = set(student["majors"])
-        allowed_major_names = major_names.intersection(allowed["major"])
-
-        conc_names = set(student["concentrations"])
-        allowed_conc_names = conc_names.intersection(allowed["concentration"])
-
-        allowed_area_names = (
-            allowed_major_names | allowed_conc_names | allowed_degree_names
-        )
-
-        for area_name in allowed_area_names:
-            area_def = next(a for a in areas if a["name"] == area_name)
-
+        for area in areas:
             audit(
-                area_def=area_def,
+                area_def=area,
                 transcript=transcript,
                 student=student,
                 print_every=print_every,
@@ -172,31 +128,27 @@ def audit(
     print_json,
 ):
     if print_json:
-        msg = {"stnum": student["stnum"], "action": "start", "area": area_def['name']}
+        msg = {"stnum": student["stnum"], "action": "start", "area": area_def["name"]}
         print(json.dumps(msg))
     else:
         print(f"auditing #{student['stnum']} for {area_def['name']}", file=sys.stderr)
 
     area = AreaOfStudy.load(area_def)
-
     area.validate()
 
     this_transcript = []
     attributes_to_attach = area.attributes.get("courses", {})
     for c in transcript:
-        attributes = attributes_to_attach.get(
-            c.course(), []
-        ) or attributes_to_attach.get(c.course_shorthand(), [])
-        c = c.attach_attrs(attributes=attributes)
-        this_transcript.append(c)
+        attrs_by_course = attributes_to_attach.get(c.course(), [])
+        attrs_by_shorthand = attributes_to_attach.get(c.course_shorthand(), [])
 
-    start = time.perf_counter()
+        c = c.attach_attrs(attributes=attrs_by_course or attrs_by_shorthand)
+        this_transcript.append(c)
 
     best_sol = None
     total_count = 0
-
     times = []
-
+    start = time.perf_counter()
     iter_start = time.perf_counter()
 
     for sol in area.solutions(transcript=this_transcript):
@@ -259,17 +211,16 @@ def audit(
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
-    output = "".join(
-        summarize(
-            name=student["name"],
-            stnum=student["stnum"],
-            area=area,
-            result=best_sol,
-            count=total_count,
-            elapsed=elapsed,
-            iterations=times,
-        )
+    summary = summarize(
+        name=student["name"],
+        stnum=student["stnum"],
+        area=area,
+        result=best_sol,
+        count=total_count,
+        elapsed=elapsed,
+        iterations=times,
     )
+    output = "".join(summary)
 
     if should_print:
         if print_json:
@@ -292,7 +243,7 @@ def audit(
     if should_record:
         filename = f'{student["stnum"]} {student["name"]}.txt'
 
-        outdir = Path("./output")
+        outdir = pathlib.Path("./output")
         areadir = area.name.replace("/", "_")
         datestring = pendulum.now().format("MM MMMM DD")
         areadir = f"{areadir} - {datestring}"
@@ -318,15 +269,7 @@ def audit(
 
 
 def summarize(*, name, stnum, area, result, count, elapsed, iterations):
-    times = [decimal.Decimal(t) for t in iterations]
-
-    # chunked_times = [
-    #     t.quantize(decimal.Decimal('0.01'), rounding=decimal.ROUND_UP) for t in times
-    # ]
-    # counter = collections.Counter(chunked_times)
-    # print(counter)
-
-    avg_iter_s = sum(times) / max(len(times), 1)
+    avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     endl = "\n"
