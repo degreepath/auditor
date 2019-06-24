@@ -16,7 +16,17 @@ class Limit:
 
     @staticmethod
     def load(data: Dict):
-        return Limit(at_most=data["at_most"], where=SingleClause.load(data["where"]))
+        at_most = next(
+            x
+            for x in (
+                data.get("at most", None),
+                data.get("at-most", None),
+                data.get("at_most", None),
+            )
+            if x is not None
+        )
+
+        return Limit(at_most=at_most, where=SingleClause.load(data["where"]))
 
     def __str__(self):
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"
