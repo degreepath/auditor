@@ -76,6 +76,7 @@ class FromRule:
                 for course in data:
                     if course.identity not in course_identities:
                         filtered_courses.append(course)
+                        course_identities.add(course.identity)
                 data = filtered_courses
         else:
             raise KeyError(f"{self.source.itemtype} not yet implemented")
