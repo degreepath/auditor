@@ -349,9 +349,9 @@ function StudentDetail({ record }: { record?: Result }) {
     window.location.assign(url.toString());
   };
 
-  let selectedDegree = url.searchParams.get("degree");
-  let selectedMajor = url.searchParams.get("major");
-  let selectedConcentration = url.searchParams.get("concentration");
+  let selectedDegree = area.type === "degree" ? area : null;
+  let selectedMajor = area.type === "major" ? area : null;
+  let selectedConcentration = area.type === "concentration" ? area : null;
 
   return (
     <div>
@@ -438,7 +438,7 @@ function StudentDetail({ record }: { record?: Result }) {
                 key={d}
                 type="button"
                 disabled={!auditedDegrees.has(d)}
-                active={selectedDegree === d}
+                active={selectedDegree ? selectedDegree.name === d : false}
                 onClick={() => navigate("degree", d)}
               >
                 {d}
@@ -453,7 +453,7 @@ function StudentDetail({ record }: { record?: Result }) {
                 key={d}
                 type="button"
                 disabled={!auditedMajors.has(d)}
-                active={selectedMajor === d}
+                active={selectedMajor ? selectedMajor.name === d : false}
                 onClick={() => navigate("major", d)}
               >
                 {d}
@@ -474,7 +474,11 @@ function StudentDetail({ record }: { record?: Result }) {
                     key={d}
                     type="button"
                     disabled={!auditedConcentrations.has(d)}
-                    active={selectedConcentration === d}
+                    active={
+                      selectedConcentration
+                        ? selectedConcentration.name === d
+                        : false
+                    }
                     onClick={() => navigate("concentration", d)}
                   >
                     {d}
@@ -670,23 +674,20 @@ const RuleSection = styled.section<RuleSectionProps>`
     props.success ? "var(--success-fg)" : "var(--incomplete-fg)"};
 
   display: grid;
-  grid-template-areas:
-    "status header"
-    "status details";
   grid-template-columns: max-content 1fr;
   align-items: baseline;
   column-gap: 0.85em;
 
   & > ${StatusIcon} {
-    grid-area: status;
+    grid-column: 1;
   }
 
   & > *:not(${StatusIcon}) {
-    grid-area: "details";
+    grid-column: 2;
   }
 
   & > header {
-    grid-area: header;
+    grid-column: 2;
   }
 
   opacity: ${props => (props.skipped ? "0.5" : "1")};
@@ -860,36 +861,40 @@ function FromResult(props: ResultBlock<FromRule | FromResult>) {
     <RuleSection success={result.ok}>
       <StatusIcon>{result.ok ? `️️❇️` : `️️️⚠️`}</StatusIcon>
 
-      <header onClick={onClick}>
-        {intro}
-        {limits}
-        {where}
-        <p>
-          There must be {"at least"} {result.action.compare_to}{" "}
-          {result.action.compare_to === 1 ? "course" : "courses"}.
-        </p>
-
-        <p>
-          {result.ok ? (
-            result.claims.length === 1 ? (
-              <>There was a course!</>
-            ) : (
-              <>There were {result.claims.length} courses!</>
-            )
-          ) : result.claims.length === 1 ? (
-            <>There was only 1 course.</>
-          ) : (
-            <>️There were only {result.claims.length} courses.</>
-          )}
-        </p>
-      </header>
+      <header onClick={onClick}>{intro}</header>
 
       {isOpen ? (
-        <ul>
-          {result.claims.map(c => (
-            <li>{c.claim.course_id}</li>
-          ))}
-        </ul>
+        <>
+          <p>
+            {limits}
+            {where}
+          </p>
+
+          <p>
+            There must be {"at least"} {result.action.compare_to}{" "}
+            {result.action.compare_to === 1 ? "course" : "courses"}.
+          </p>
+
+          <p>
+            {result.ok ? (
+              result.claims.length === 1 ? (
+                <>There was a course!</>
+              ) : (
+                <>There were {result.claims.length} courses!</>
+              )
+            ) : result.claims.length === 1 ? (
+              <>There was only 1 course.</>
+            ) : (
+              <>️There were only {result.claims.length} courses.</>
+            )}
+          </p>
+
+          <ul>
+            {result.claims.map(c => (
+              <li>{c.claim.course_id}</li>
+            ))}
+          </ul>
+        </>
       ) : null}
     </RuleSection>
   );
@@ -1005,7 +1010,7 @@ function WhereClause({ clause }: { clause: WhereClause }) {
       </dl>
     );
   } else if (clause.type === "single-clause") {
-    let key = <>clause.key</>;
+    let key = <>{clause.key}</>;
     if (clause.key === "gereqs") {
       key = (
         <>
@@ -1026,6 +1031,9 @@ function WhereClause({ clause }: { clause: WhereClause }) {
     }
 
     let value = <>{clause.expected}</>;
+    if (Array.isArray(clause.expected)) {
+      value = <>{clause.expected.join(", ")}</>;
+    }
 
     return (
       <p style={{ marginLeft: "1em" }}>
