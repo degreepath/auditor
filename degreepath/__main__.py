@@ -10,7 +10,14 @@ import coloredlogs
 import pendulum
 import yaml
 
-from degreepath import CourseInstance, AreaOfStudy, CourseStatus, Operator, str_clause
+from degreepath import (
+    CourseInstance,
+    AreaOfStudy,
+    CourseStatus,
+    Operator,
+    str_clause,
+    str_assertion,
+)
 from .ms import pretty_ms
 
 logger = logging.getLogger()
@@ -381,25 +388,8 @@ def print_result(rule, indent=0):
             for c in rule["failures"]:
                 yield f"{prefix}   {c['claim']['course']['shorthand']} \"{c['claim']['course']['name']}\" ({c['claim']['course']['clbid']})"
 
-        action_desc = ""
         action = rule["action"]
-        if action["operator"] == Operator.GreaterThanOrEqualTo.name:
-            action_desc = f"at least {action['compare_to']}"
-        elif action["operator"] == Operator.GreaterThan.name:
-            action_desc = f"at least {action['compare_to']}"
-        elif action["operator"] == Operator.LessThanOrEqualTo.name:
-            action_desc = f"at least {action['compare_to']}"
-        elif action["operator"] == Operator.LessThan.name:
-            action_desc = f"at least {action['compare_to']}"
-        elif action["operator"] == Operator.EqualTo.name:
-            action_desc = f"at least {action['compare_to']}"
-
-        if action["source"] == "courses":
-            word = "course" if action["compare_to"] == 1 else "courses"
-        else:
-            word = "items"
-
-        yield f"{prefix} There must be {action_desc} matching {word} (have: {len(rule['claims'])}; need: {action['compare_to']})"
+        yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: {action['min']})"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":

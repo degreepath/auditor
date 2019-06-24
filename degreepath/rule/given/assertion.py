@@ -7,45 +7,73 @@ from ...clause import Operator
 
 
 @dataclass(frozen=True)
-class AndAssertion:
+class AssertionCollection:
     children: Tuple
-
-    def to_dict(self):
-        return {"type": "from-assertion/and", "children": [c.to_dict() for c in self.children]}
-
-    @staticmethod
-    def load(data: List[Dict]):
-        clauses = [Assertion.load(clause) for clause in data]
-        return AndAssertion(children=tuple(clauses))
 
     def __iter__(self):
         yield from self.children
+
+    def minmax(self, items: List) -> (int, int):
+        ranges = [c.minmax(items) for c in self]
+        lo = min(r[0] for r in ranges)
+        hi = max(r[1] for r in ranges)
+        return (lo, hi)
+
+    def range(self, items: List) -> range:
+        lo, hi = self.minmax(items)
+        return range(lo, hi)
+
+    def get_min_value(self) -> int:
+        return max(c.get_max_value() for c in self)
+
+    def get_max_value(self) -> int:
+        return min(c.get_min_value() for c in self)
+
+    def validate(self, *, ctx):
+        for child in self.children:
+            child.validate(ctx=ctx)
+
+
+@dataclass(frozen=True)
+class AndAssertion(AssertionCollection):
+    def to_dict(self):
+        return {
+            "type": "from-assertion/and",
+            "children": [c.to_dict() for c in self.children],
+            "min": self.get_min_value(),
+            "max": self.get_max_value(),
+        }
+
+    @staticmethod
+    def load(data: List[Dict]):
+        clauses = [SingleAssertion.load(clause) for clause in data]
+        return AndAssertion(children=tuple(clauses))
 
     def apply(self, value: Any):
         return all(c.apply(value) for c in self)
 
 
 @dataclass(frozen=True)
-class OrAssertion:
-    children: Tuple
-
+class OrAssertion(AssertionCollection):
     def to_dict(self):
-        return {"type": "from-assertion/or", "children": [c.to_dict() for c in self.children]}
+        return {
+            "type": "from-assertion/or",
+            "children": [c.to_dict() for c in self.children],
+            "min": self.get_min_value(),
+            "max": self.get_max_value(),
+        }
 
     @staticmethod
     def load(data: Dict):
-        clauses = [Assertion.load(clause) for clause in data]
+        clauses = [SingleAssertion.load(clause) for clause in data]
         return OrAssertion(children=tuple(clauses))
-
-    def __iter__(self):
-        yield from self.children
 
     def apply(self, value: Any):
         return any(c.apply(value) for c in self)
 
 
 @dataclass(frozen=True)
-class Assertion:
+class SingleAssertion:
     command: str
     source: str
     operator: Operator
@@ -97,7 +125,7 @@ class Assertion:
         if isinstance(compare_to, list):
             compare_to = tuple(compare_to)
 
-        return Assertion(
+        return SingleAssertion(
             command=command, source=source, operator=operator, compare_to=compare_to
         )
 
@@ -112,13 +140,17 @@ class Assertion:
         ], f"{self.command}"
 
         if self.command == "count":
-            assert self.source in [
+            allowed_sources = [
                 "courses",
                 "areas",
                 "performances",
                 "terms",
                 "semesters",
+                "subjects",
             ]
+            assert (
+                self.source in allowed_sources
+            ), f"{self.source} not in {','.join(allowed_sources)}"
         elif self.command == "sum":
             assert self.source in ["grades", "credits"]
         elif self.command == "average":
@@ -129,7 +161,7 @@ class Assertion:
             # TODO: assert that the stored lookup exists
             pass
 
-    def get_value(self):
+    def get_min_value(self):
         compare_to: Any = self.compare_to
 
         if type(compare_to) not in [int, float]:
@@ -139,12 +171,26 @@ class Assertion:
 
         return compare_to
 
-    def range(self, *, items: List):
+    def get_max_value(self):
+        compare_to = self.compare_to
+
+        if type(compare_to) not in [int, float]:
+            raise TypeError(
+                f"compare_to must be numeric to be used in max(); was {repr(compare_to)} ({type(compare_to)}"
+            )
+
+        return compare_to
+
+    def range(self, items: List) -> range:
+        lo, hi = self.minmax(items)
+        return range(lo, hi)
+
+    def minmax(self, items: List) -> (int, int):
         compare_to: Any = self.compare_to
 
         if type(compare_to) not in [int, float]:
             raise TypeError(
-                f"compare_to must be numeric to be used in range(); was {repr(compare_to)} ({type(compare_to)}"
+                f"compare_to must be numeric to be used in a range; was {repr(compare_to)} ({type(compare_to)}"
             )
 
         if self.operator == Operator.LessThanOrEqualTo:
@@ -169,12 +215,15 @@ class Assertion:
             hi = compare_to + 1
             lo = compare_to
 
+        else:
+            raise Exception(f"unknown operator {self.operator}")
+
         if hi <= lo:
             logging.info(f"expected hi={hi} > lo={lo}")
 
-        return range(lo, hi)
+        return (lo, hi)
 
-    def apply(self, value: Any):
+    def apply(self, value: Any) -> bool:
         compare_to: Any = self.compare_to
 
         if type(compare_to) not in [int, float]:
@@ -197,8 +246,49 @@ class Assertion:
         elif self.operator == Operator.EqualTo:
             return value == compare_to
 
+        elif self.operator == Operator.NotEqualTo:
+            return value != compare_to
+
         else:
-            raise Exception("um")
+            raise Exception(f"unknown operator {self.operator}")
 
 
-AnyAssertion = Union
+def str_assertion(assertion) -> str:
+    if not isinstance(assertion, dict):
+        return str_assertion(assertion.to_dict())
+
+    if assertion["type"] == "from-assertion":
+        op = assertion["operator"]
+        if op == Operator.GreaterThanOrEqualTo.name:
+            action_desc = f"at least {assertion['compare_to']}"
+        elif op == Operator.GreaterThan.name:
+            action_desc = f"at least {assertion['compare_to']}"
+        elif op == Operator.LessThanOrEqualTo.name:
+            action_desc = f"at most {actassertionion['compare_to']}"
+        elif op == Operator.LessThan.name:
+            action_desc = f"at most {assertion['compare_to']}"
+        elif op == Operator.EqualTo.name:
+            action_desc = f"exactly {assertion['compare_to']}"
+        elif op == Operator.NotEqualTo.name:
+            action_desc = f"not {assertion['compare_to']}"
+        else:
+            action_desc = ""
+
+        source = assertion["source"]
+        if source == "courses":
+            word = "course" if assertion["compare_to"] == 1 else "courses"
+        elif source == "subjects":
+            word = "subject code" if assertion["compare_to"] == 1 else "subject codes"
+        else:
+            word = "items"
+
+        return f"{action_desc} matching {word}"
+
+    if assertion["type"] == "from-assertion/or":
+        return f'({" or ".join(str_assertion(c) for c in assertion["children"])})'
+
+    if assertion["type"] == "from-assertion/and":
+        return f'({" and ".join(str_assertion(c) for c in assertion["children"])})'
+
+
+AnyAssertion = Union[AndAssertion, OrAssertion, SingleAssertion]

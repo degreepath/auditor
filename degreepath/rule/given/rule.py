@@ -4,7 +4,7 @@ import itertools
 import logging
 
 from .source import FromInput
-from .assertion import Assertion
+from .assertion import AnyAssertion, SingleAssertion
 from ...limit import LimitSet, Limit
 from ...clause import Clause, SingleClause, str_clause
 from ...solution import FromSolution
@@ -13,7 +13,7 @@ from ...solution import FromSolution
 @dataclass(frozen=True)
 class FromRule:
     source: FromInput
-    action: Optional[Assertion]
+    action: Optional[AnyAssertion]
     limit: LimitSet
     where: Optional[Clause]
 
@@ -55,7 +55,7 @@ class FromRule:
 
         action = None
         if "assert" in data:
-            action = Assertion.load(data=data["assert"])
+            action = SingleAssertion.load(data=data["assert"])
 
         return FromRule(
             source=FromInput.load(data["from"]), action=action, limit=limit, where=where
@@ -70,7 +70,7 @@ class FromRule:
         if self.source.itemtype == "courses":
             data = ctx.transcript
 
-            if self.source.repeat_mode == 'first':
+            if self.source.repeat_mode == "first":
                 filtered_courses = []
                 course_identities = set()
                 for course in data:
@@ -138,7 +138,9 @@ class FromRule:
             for course_set in self.limit.limited_transcripts(data):
                 for n in self.action.range(items=course_set):
                     for combo in itertools.combinations(course_set, n):
-                        logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                        logging.debug(
+                            f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}"
+                        )
                         did_iter = True
                         yield FromSolution(output=combo, rule=self)
                 # also yield one with the entire set of courses
