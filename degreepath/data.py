@@ -119,11 +119,11 @@ class CourseInstance:
 
         is_lab = lab
         # TODO: export is_flac/is_ace
-        is_flac = name[0:6] == "FLC - "
+        is_flac = name.startswith("FLC - ")
         is_ace = False
 
         # TODO: export the course type
-        is_topic = name[0:5] == "Top: "
+        is_topic = name.startswith("Top: ")
 
         grade = grade_from_str(grade)
 
