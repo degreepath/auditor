@@ -51,12 +51,7 @@ class RequirementContext:
         self.claims = defaultdict(set)
 
     def make_claim(
-        self,
-        *,
-        crsid: str,
-        course: CourseInstance,
-        path: List[str],
-        clause: Union,
+        self, *, crsid: str, course: CourseInstance, path: List[str], clause: Union
     ):
         """
         If the crsid is not in the claims dictionary, insert it with an empty list.
@@ -388,18 +383,21 @@ class RequirementSolution:
     def state(self):
         if self.audited_by:
             return "solution"
+        if not self.result:
+            return "solution"
         return self.result.state()
 
     def claims(self):
         if self.audited_by:
             return []
+        if not self.result:
+            return []
         return self.result.claims()
 
     def ok(self):
+        if not self.result:
+            return False
         return self.result.ok()
-
-    def flatten(self):
-        return self.result.flatten()
 
     def audit(self, *, ctx: RequirementContext, path: List):
         if not self.result:
@@ -457,10 +455,14 @@ class RequirementResult:
     def state(self):
         if self.audited_by:
             return "result"
+        if not self.result:
+            return []
         return self.result.state()
 
     def claims(self):
         if self.audited_by:
+            return []
+        if not self.result:
             return []
         return self.result.claims()
 
