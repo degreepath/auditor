@@ -5,14 +5,12 @@ import { Helmet } from "react-helmet";
 import "./App.css";
 
 type AreaOfStudy = {
+  id: number;
   name: string;
-  degree: string;
-  requirements: { string: UnevaluatedRequirement };
-  result: Rule;
-  type: "major" | "concentration" | "emphasis" | "degree";
-  attributes: {};
-  catalog: string;
-  limit: Limit[];
+  type: string;
+  degree: null | string;
+  catalog_year: number;
+  success_rank: number;
 };
 
 interface BaseRule {
@@ -138,77 +136,59 @@ type Course = {
   year?: number;
 };
 
-type StudentRecord = {
-  advisor: string;
-  concentrations: string[];
-  courses: Course[];
-  degrees: string[];
-  emphases: string[];
-  graduation: number;
-  majors: string[];
-  matriculation: number;
-  name: string;
-  stnum: number;
+type StudentOverviewRecord = {
+  result_id: number;
+  student_id: string;
+  student_name: string;
+  student_advisor: string;
+  anticipated_graduation: string;
+  classification: string;
+  area_id: number;
+  result_ts: string;
+  result_rank: number;
+  success_rank: number;
+  result_ok: boolean;
+  area_ident: string;
 };
 
-type Result =
-  | { stnum: number; action: "not-started" }
-  | { stnum: number; action: "start" }
-  | CompleteResult
-  | { stnum: number; action: "in-progress"; count: number };
-
-type CompleteResult = {
-  stnum: number;
-  action: "complete";
+type StudentResult = {
+  info: {
+    result_id: number;
+    student_id: string;
+    student_name: string;
+    student_advisor: string;
+    anticipated_graduation: string;
+    classification: string;
+    area_id: number;
+    result_ts: string;
+    result_rank: number;
+    success_rank: number;
+    result_ok: boolean;
+    area_ident: string;
+  };
+  student: {
+    anticipated_graduation: string;
+    catalog_year: number;
+    degrees: string[];
+    majors: string[];
+    id: string;
+    concentrations: string[];
+    input_courses: Course[];
+    matriculation_year: number;
+    student_advisor: string;
+    student_name: string;
+  };
   area: AreaOfStudy;
-  avg_iter: string;
-  count: number;
-  elapsed: string;
-  result: EvaluationResult;
-  student: StudentRecord;
+  result: null | EvaluationResult;
 };
 
-function StudentList({ results }: { results: Result[] }) {
-  let students = new Map<number, Result[]>();
-
-  results.forEach(row => {
-    let record = students.get(row.stnum);
-    if (!record) {
-      record = [];
-      students.set(row.stnum, record);
-    }
-    record.push(row);
-  });
-
-  let withStatus = [...students.entries()].map(([stnum, logEntries]) => {
-    let entry = logEntries.find(e => e.action === "complete") ||
-      logEntries.find(e => e.action === "in-progress") ||
-      logEntries.find(e => e.action === "start") || {
-        stnum,
-        action: "not-started"
-      };
-
-    return entry;
-  });
-
-  withStatus.sort((a, b) =>
-    a.stnum < b.stnum ? -1 : a.stnum === b.stnum ? 0 : 1
-  );
-
+function StudentList({ results }: { results: StudentOverviewRecord[] }) {
   let url = new URL(window.location as any);
 
-  let selectedStnum = url.searchParams.get("stnum");
-  if (selectedStnum) {
-    return (
-      <StudentDetail
-        record={withStatus.find(s => s.stnum.toString() === selectedStnum)}
-      />
-    );
+  let resultId = url.searchParams.get("result");
+  if (resultId) {
+    return <StudentDetail resultId={parseInt(resultId, 10)} />;
   }
-
-  let maxRank = Math.max(
-    ...withStatus.map(r => (r.action === "complete" ? r.result.rank : 0))
-  );
 
   return (
     <table>
@@ -216,38 +196,22 @@ function StudentList({ results }: { results: Result[] }) {
         <tr>
           <th>ID Number</th>
           <th>Name</th>
+          <th>Advisor</th>
           <th>Status</th>
           <th>Progress</th>
-          <th>Elapsed</th>
-          <th>Stats</th>
+          <th>Area Identifier</th>
         </tr>
       </thead>
       <tbody>
-        {withStatus.map(result => {
+        {results.map(result => {
           let handler = () => {
-            url.searchParams.set("stnum", result.stnum.toString());
+            url.searchParams.set("result", result.result_id.toString());
             window.location.assign(url.toString());
           };
 
           return (
-            <StyledStudentRow key={result.stnum} onClick={handler}>
-              {result.action === "complete" ? (
-                <StudentRow
-                  key={result.stnum}
-                  record={result}
-                  onClick={handler}
-                  maxRank={maxRank}
-                />
-              ) : (
-                <React.Fragment key={result.stnum}>
-                  <td>{result.stnum}</td>
-                  <td />
-                  <td>{result.action}</td>
-                  <td />
-                  <td />
-                  <td />
-                </React.Fragment>
-              )}
+            <StyledStudentRow key={result.result_id} onClick={handler}>
+              <StudentRow record={result} />
             </StyledStudentRow>
           );
         })}
@@ -257,13 +221,17 @@ function StudentList({ results }: { results: Result[] }) {
 }
 
 let StyledStudentRow = styled.tr`
-  --hover-bg: var(--md-grey-300);
-  --accent-bg: var(--md-grey-200);
+  --hover-bg: var(--md-grey-400);
+  --normal-bg: var(--md-grey-200);
+  --accent-bg: var(--md-grey-300);
 
   @media (prefers-color-scheme: dark) {
-    --hover-bg: var(--md-grey-700);
-    --accent-bg: var(--md-grey-800);
+    --hover-bg: var(--md-grey-900);
+    --normal-bg: var(--md-grey-800);
+    --accent-bg: var(--md-grey-700);
   }
+
+  background-color: var(--normal-bg);
 
   &:nth-child(even) {
     background-color: var(--accent-bg);
@@ -275,19 +243,14 @@ let StyledStudentRow = styled.tr`
   }
 `;
 
-function StudentRow(props: {
-  record: CompleteResult;
-  onClick: () => any;
-  maxRank: number;
-}) {
-  let { record, onClick, maxRank } = props;
+function StudentRow(props: { record: StudentOverviewRecord }) {
+  let { record } = props;
   return (
     <>
-      <td style={{ padding: "0 1em" }}>{record.stnum}</td>
+      <td style={{ padding: "0 0.25em" }}>{record.student_id}</td>
       <td style={{ padding: "0.5em 1em" }}>
         <button
           type="button"
-          onClick={() => onClick()}
           style={{
             border: "0",
             appearance: "none",
@@ -301,70 +264,99 @@ function StudentRow(props: {
             backgroundColor: "inherit"
           }}
         >
-          {record.student.name}
+          {record.student_name}
         </button>
       </td>
-      <td style={{ padding: "0 1em" }}>
-        {record.result.ok ? "Complete" : "Incomplete"}
+      <td style={{ padding: "0.5em 1em" }}>{record.student_advisor}</td>
+      <td style={{ padding: "0 1em", textAlign: "center" }}>
+        {record.result_ok ? "❇️ Complete" : "️⚠️ Incomplete"}
       </td>
       <td style={{ padding: "0 1em", whiteSpace: "nowrap" }}>
-        {record.result.ok ? "❇️" : "️⚠️"}
-        <progress value={record.result.rank} max={maxRank} />
+        <progress value={record.result_rank} max={record.success_rank} />
       </td>
-      <td style={{ padding: "0 1em" }}>{record.elapsed}</td>
-      <td style={{ padding: "0 1em" }}>
-        <div style={{ whiteSpace: "nowrap" }}>
-          {record.count} tries at {record.avg_iter}
-        </div>
+      <td style={{ padding: "0.5em 1em", whiteSpace: "pre-wrap" }}>
+        {record.area_ident.split(" → ").join("\n→ ")}
       </td>
     </>
   );
 }
 
-function StudentDetail({ record }: { record?: Result }) {
-  if (!record) {
-    return <p>No student found by that stnum.</p>;
+function StudentDetail({ resultId }: { resultId?: number }) {
+  let fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/collect.cfm?result=${resultId}&degreepath=neé-gobbldygook-cachet-breath-fling-snowstorm`;
+
+  let { data, isLoading, error } = useFetch<StudentResult>(fetchUrl, {
+    headers: { accept: "application/json" }
+  });
+
+  let e = (error as any) as Response | null;
+
+  let [errorDetail, setErrorDetail] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    if (!e) {
+      setErrorDetail(null);
+      return;
+    }
+    console.warn(e);
+    if (e instanceof Error) {
+      setErrorDetail(null);
+      return;
+    }
+    e.json().then(setErrorDetail);
+  }, [setErrorDetail, e]);
+
+  if (isLoading) {
+    return <Loading />;
   }
 
-  if (record.action !== "complete") {
+  if (error instanceof Error) {
+    return (
+      <pre>
+        <b>{error.message}</b>
+      </pre>
+    );
+  }
+
+  if (e && errorDetail) {
+    return (
+      <pre>
+        <b>
+          {e.status} {e.statusText}
+        </b>
+        {"\n"}
+        <span dangerouslySetInnerHTML={{ __html: errorDetail.detail.output }} />
+      </pre>
+    );
+  }
+
+  if (!data) {
+    return <p>No result record found for result ID {resultId}.</p>;
+  }
+
+  let { student, result, area } = data;
+
+  if (!result) {
     return <p>That student's audit is not yet complete.</p>;
   }
 
-  let { student, result, area } = record;
-
-  console.log(record);
-
   let progress = result.rank;
-  let progressMax = 22;
-
-  let auditedDegrees = new Set([area.type === "degree" ? area.name : null]);
-  let auditedMajors = new Set([area.type === "major" ? area.name : null]);
-  let auditedConcentrations = new Set([
-    area.type === "concentration" ? area.name : null
-  ]);
+  let progressMax = area.success_rank;
 
   let url = new URL(window.location as any);
-  let navigate = (key: "major" | "degree" | "concentration", value: string) => {
-    url.searchParams.set(key, value);
-    window.location.assign(url.toString());
-  };
-
-  let selectedDegree = area.type === "degree" ? area : null;
-  let selectedMajor = area.type === "major" ? area : null;
-  let selectedConcentration = area.type === "concentration" ? area : null;
+  // let navigate = (key: "major" | "degree" | "concentration", value: string) => {
+  //   url.searchParams.set(key, value);
+  //   window.history.pushState({}, "", url.toString());
+  // };
 
   return (
     <div>
       <Helmet>
-        <title>{student.name} | Degree Audit | St. Olaf College</title>
+        <title>{student.student_name} | Degree Audit | St. Olaf College</title>
       </Helmet>
 
       <button
         onClick={() => {
-          url.searchParams.delete("major");
-          url.searchParams.delete("concentration");
-          url.searchParams.delete("degree");
-          url.searchParams.delete("stnum");
+          url.searchParams.delete("result");
           window.location.assign(url.toString());
         }}
         type="button"
@@ -372,36 +364,32 @@ function StudentDetail({ record }: { record?: Result }) {
         Back to Student List
       </button>
 
-      <select>
-        <option>foo</option>
-      </select>
-
       <h1>
         The degree audit for{" "}
         <i>
-          <b>{student.name}</b>
+          <b>{student.student_name}</b>
         </i>
       </h1>
 
       <header>
         <dl style={{ display: "grid", gridTemplateColumns: "max-content 1fr" }}>
           <dt>Anticipated Graduation Date</dt>
-          <dd>MM/YYYY</dd>
+          <dd>{student.anticipated_graduation}</dd>
 
           <dt>Student Number</dt>
-          <dd>{student.stnum}</dd>
+          <dd>{student.id}</dd>
 
           <dt>Overall GPA</dt>
-          <dd>0.00</dd>
+          <dd>TBC{/*result.overall_gpa*/}</dd>
 
           <dt>Advisor</dt>
-          <dd>{student.advisor}</dd>
+          <dd>{student.student_advisor}</dd>
 
           <dt>Classification</dt>
-          <dd>(tbd: senior/junior/sophomore/first-year)</dd>
+          <dd>{(student as any).classification || ""}</dd>
 
           <dt>Catalog Year</dt>
-          <dd>{student.matriculation}</dd>
+          <dd>{student.catalog_year}</dd>
 
           <dt>Progress</dt>
           <dd>
@@ -410,21 +398,17 @@ function StudentDetail({ record }: { record?: Result }) {
         </dl>
       </header>
 
-      <nav>
+      {/*<nav>
         <AreaPicker>
           <dt />
           <dd>
             <AreaChoiceButton
               type="button"
               disabled={false}
-              active={
-                !selectedDegree && !selectedMajor && !selectedConcentration
-              }
+              active={!selectedArea}
               onClick={() => {
-                url.searchParams.delete("degree");
-                url.searchParams.delete("major");
-                url.searchParams.delete("concentration");
-                window.location.assign(url.toString());
+                url.searchParams.delete("area");
+                window.history.pushState({}, "", url.toString());
               }}
             >
               Overview
@@ -437,8 +421,7 @@ function StudentDetail({ record }: { record?: Result }) {
               <AreaChoiceButton
                 key={d}
                 type="button"
-                disabled={!auditedDegrees.has(d)}
-                active={selectedDegree ? selectedDegree.name === d : false}
+                active={selectedArea ? selectedDegree.name === d : false}
                 onClick={() => navigate("degree", d)}
               >
                 {d}
@@ -452,7 +435,6 @@ function StudentDetail({ record }: { record?: Result }) {
               <AreaChoiceButton
                 key={d}
                 type="button"
-                disabled={!auditedMajors.has(d)}
                 active={selectedMajor ? selectedMajor.name === d : false}
                 onClick={() => navigate("major", d)}
               >
@@ -473,7 +455,6 @@ function StudentDetail({ record }: { record?: Result }) {
                   <AreaChoiceButton
                     key={d}
                     type="button"
-                    disabled={!auditedConcentrations.has(d)}
                     active={
                       selectedConcentration
                         ? selectedConcentration.name === d
@@ -488,17 +469,19 @@ function StudentDetail({ record }: { record?: Result }) {
             </>
           ) : null}
         </AreaPicker>
-      </nav>
+                  </nav>*/}
 
-      {selectedDegree || selectedMajor || selectedConcentration ? (
+      <AreaResult area={area} result={result} />
+
+      {/* {selectedArea ? (
         <AreaResult area={area} result={result} />
       ) : (
         <>
           <p>No area selected. Please select an area above.</p>
 
-          <TranscriptList courses={student.courses} />
+          <TranscriptList courses={student.input_courses} />
         </>
-      )}
+      )} */}
     </div>
   );
 }
@@ -648,7 +631,7 @@ function AreaResult(props: { area: AreaOfStudy; result: EvaluationResult }) {
         </dl>
       </header>
 
-      <RuleResult result={result} />
+      <RuleResult result={result} topLevel={true} />
     </article>
   );
 }
@@ -715,13 +698,22 @@ function allItemsAreCourseRules(rule: Rule | EvaluationResult): boolean {
   );
 }
 
-function RuleResult({ result }: { result: EvaluationResult | Rule }) {
+function RuleResult({
+  result,
+  topLevel = false
+}: {
+  result: EvaluationResult | Rule;
+  topLevel?: boolean;
+}) {
   // console.log(result);
 
   let [isOpen, setOpenState] = React.useState(!result.ok);
   let handler = () => setOpenState(!isOpen);
 
   if (result.type === "count") {
+    if (topLevel) {
+      isOpen = true;
+    }
     return <CountResult result={result} isOpen={isOpen} onClick={handler} />;
   }
 
@@ -745,6 +737,7 @@ function RuleResult({ result }: { result: EvaluationResult | Rule }) {
     );
   }
 
+  console.log(result);
   throw new Error(`Unknown rule type: ${(result as any).type}`);
 }
 
@@ -865,10 +858,8 @@ function FromResult(props: ResultBlock<FromRule | FromResult>) {
 
       {isOpen ? (
         <>
-          <p>
-            {limits}
-            {where}
-          </p>
+          {limits}
+          {where}
 
           <p>
             There must be {"at least"} {result.action.compare_to}{" "}
@@ -927,19 +918,41 @@ function CountResult(props: ResultBlock<CountRule | CountResult>) {
 
       <header onClick={onClick}>
         <p>
-          {requiredItemCount === 1 && totalItemCount === 2 ? (
-            <>Either item is required</>
-          ) : requiredItemCount === 2 && totalItemCount === 2 ? (
-            <>Both items are required</>
-          ) : requiredItemCount === totalItemCount ? (
-            <>All items are required</>
-          ) : requiredItemCount === 1 ? (
-            <>1 item is required</>
+          {result.ok ? (
+            <>
+              {requiredItemCount === 1 && totalItemCount === 2 ? (
+                <>Either item is required blah</>
+              ) : requiredItemCount === 2 && totalItemCount === 2 ? (
+                <>Both items were successful</>
+              ) : requiredItemCount === totalItemCount ? (
+                <>All items were successful</>
+              ) : requiredItemCount === 1 ? (
+                <>1 item is required blah</>
+              ) : (
+                <>
+                  {requiredItemCount} of {totalItemCount}{" "}
+                  {totalItemCount === 1 ? "item" : "items"}{" "}
+                  {totalItemCount === 1 ? "is" : "are"} required
+                </>
+              )}
+            </>
           ) : (
             <>
-              {requiredItemCount} of {totalItemCount}{" "}
-              {totalItemCount === 1 ? "item" : "items"}{" "}
-              {totalItemCount === 1 ? "is" : "are"} required
+              {requiredItemCount === 1 && totalItemCount === 2 ? (
+                <>Either item is required</>
+              ) : requiredItemCount === 2 && totalItemCount === 2 ? (
+                <>Both items are required</>
+              ) : requiredItemCount === totalItemCount ? (
+                <>All items are required</>
+              ) : requiredItemCount === 1 ? (
+                <>1 item is required</>
+              ) : (
+                <>
+                  {requiredItemCount} of {totalItemCount}{" "}
+                  {totalItemCount === 1 ? "item" : "items"}{" "}
+                  {totalItemCount === 1 ? "is" : "are"} required
+                </>
+              )}
             </>
           )}
         </p>
@@ -1054,35 +1067,24 @@ function WhereClause({ clause }: { clause: WhereClause }) {
 }
 
 const App: React.FC = () => {
-  let url = new URL(window.location as any);
+  let fetchUrl =
+    "https://www.stolaf.edu/sis/degreepath/cf/list.cfm?degreepath=neé-gobbldygook-cachet-breath-fling-snowstorm";
 
-  let fetchUrl = "https://www.stolaf.edu/sis/degreepath/public-ndjson.cfm";
-  if (url.searchParams.has("stnum") && url.searchParams.has("areas")) {
-    let stnum = url.searchParams.get("stnum");
-    let areas = url.searchParams.get("areas");
-    fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/test.cfm?stnum=${stnum}&areas=${areas}`;
-  } else if (url.searchParams.has("stnum")) {
-    let stnum = url.searchParams.get("stnum");
-    fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/test.cfm?stnum=${stnum}`;
-  }
+  let { data, isLoading, error } = useFetch(fetchUrl, {
+    headers: { accept: "application/json" }
+  });
 
-  let { data, isLoading } = useFetch(fetchUrl);
+  let e = (error as any) as Response | null;
 
-  let [lines, setLines] = React.useState<Result[]>([]);
+  let [errorDetail, setErrorDetail] = React.useState<any>(null);
 
   React.useEffect(() => {
-    if (!data) {
+    if (!e) {
+      setErrorDetail(null);
       return;
     }
-    data.text().then((allLines: string) => {
-      let dataLines: Result[] = allLines
-        .split("\n")
-        .filter(l => l.trim())
-        .map((l: string) => JSON.parse(l));
-
-      setLines(dataLines);
-    });
-  }, [data]);
+    e.json().then(setErrorDetail);
+  }, [setErrorDetail, e]);
 
   return (
     <div className="degreepath profile--coatedgracol2006">
@@ -1090,15 +1092,31 @@ const App: React.FC = () => {
         <title>Degree Audit | St. Olaf College</title>
       </Helmet>
 
-      {isLoading ? (
-        <div className="App">
-          <header className="App-header">
-            <p>Loading…</p>
-          </header>
-        </div>
+      {isLoading ? <Loading /> : null}
+
+      {e && errorDetail ? (
+        <pre>
+          <b>
+            {e.status} {e.statusText}
+          </b>
+          {"\n"}
+          <span
+            dangerouslySetInnerHTML={{ __html: errorDetail.detail.output }}
+          />
+        </pre>
       ) : null}
 
-      <StudentList results={lines} />
+      {!e && !isLoading ? <StudentList results={data || []} /> : null}
+    </div>
+  );
+};
+
+const Loading = () => {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <p>Loading…</p>
+      </header>
     </div>
   );
 };
