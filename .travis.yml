@@ -1,14 +1,12 @@
 dist: xenial
 
 language: python
-
-python: '3.7'
-
-before_install:
-  - pip3 install poetry
+python: 
+  - '3.6'
+  - '3.7'
 
 install:
-  - poetry install
+  - pip3 install -r requirements.txt
 
 script:
-  - poetry run pytest
+  - pytest

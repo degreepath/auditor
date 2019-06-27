@@ -1,6 +1,4 @@
 click==7.0.0
 pyyaml==5.1.0
-pendulum==2.0.4
 coloredlogs==10.0.0
 frozendict==1.2.0
-jsonpickle==1.1.0
