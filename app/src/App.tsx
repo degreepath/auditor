@@ -282,7 +282,7 @@ function StudentRow(props: { record: StudentOverviewRecord }) {
 }
 
 function StudentDetail({ resultId }: { resultId?: number }) {
-  let fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/collect.cfm?result=${resultId}&degreepath=neé-gobbldygook-cachet-breath-fling-snowstorm`;
+  let fetchUrl = `https://www.stolaf.edu/sis/degreepath/cf/collect.cfm?result=${resultId}`;
 
   let { data, isLoading, error } = useFetch<StudentResult>(fetchUrl, {
     headers: { accept: "application/json" }
@@ -1067,8 +1067,7 @@ function WhereClause({ clause }: { clause: WhereClause }) {
 }
 
 const App: React.FC = () => {
-  let fetchUrl =
-    "https://www.stolaf.edu/sis/degreepath/cf/list.cfm?degreepath=neé-gobbldygook-cachet-breath-fling-snowstorm";
+  let fetchUrl = "https://www.stolaf.edu/sis/degreepath/cf/list.cfm";
 
   let { data, isLoading, error } = useFetch(fetchUrl, {
     headers: { accept: "application/json" }
@@ -1087,7 +1086,7 @@ const App: React.FC = () => {
   }, [setErrorDetail, e]);
 
   return (
-    <div className="degreepath profile--coatedgracol2006">
+    <div className="degreepath">
       <Helmet>
         <title>Degree Audit | St. Olaf College</title>
       </Helmet>
