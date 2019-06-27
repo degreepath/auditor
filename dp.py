@@ -1,14 +1,12 @@
 import glob
 import json
-import logging
-import pathlib
 import sys
 import time
+import datetime
+import argparse
 
-import click
-import coloredlogs
-import pendulum
 import yaml
+import dotenv
 
 from degreepath import (
     CourseInstance,
@@ -17,58 +15,39 @@ from degreepath import (
     Operator,
     str_clause,
     str_assertion,
+    pretty_ms,
 )
-from .ms import pretty_ms
-
-logger = logging.getLogger()
-logformat = "%(levelname)s %(name)s: %(message)s"
 
 
-@click.command()
-@click.option("--print-every", "-e", default=1000)
-@click.option("--loglevel", "-l", default="warn")
-@click.option("--print-all", default=False, is_flag=True)
-@click.option("--record/--no-record", "should_record", default=True)
-@click.option("--json", "print_json", default=False, is_flag=True)
-@click.option("--print/--no-print", "should_print", default=True)
-@click.option(
-    "--area",
-    "area_files",
-    envvar="AREAS",
-    multiple=True,
-    required=True,
-    type=click.Path(),
-)
-@click.option(
-    "--student",
-    "student_files",
-    envvar="STUDENTS",
-    multiple=True,
-    required=True,
-    type=click.Path(),
-)
-def main(
-    *,
-    student_files,
-    print_every,
-    loglevel,
-    should_record,
-    should_print,
-    area_files,
-    print_all,
-    print_json,
-):
-    """Audits a student against their areas of study."""
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--area", dest="area_files", nargs="+", required=True)
+    parser.add_argument("--student", dest="student_files", nargs="+", required=True)
+    parser.add_argument(
+        "--loglevel",
+        dest="loglevel",
+        nargs=1,
+        required=True,
+        choices=("warn", "debug", "info"),
+    )
+    args = parser.parse_args()
 
-    if loglevel.lower() == "warn":
-        logger.setLevel(logging.WARNING)
-        coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
-    elif loglevel.lower() == "debug":
-        logger.setLevel(logging.DEBUG)
-        coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
-    elif loglevel.lower() == "info":
-        logger.setLevel(logging.INFO)
-        coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
+    if args.loglevel:
+        import logging
+        import coloredlogs
+
+        logger = logging.getLogger()
+        logformat = "%(levelname)s %(name)s: %(message)s"
+
+        if args.loglevel == "warn":
+            logger.setLevel(logging.WARNING)
+            coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
+        elif args.loglevel == "debug":
+            logger.setLevel(logging.DEBUG)
+            coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+        elif args.loglevel == "info":
+            logger.setLevel(logging.INFO)
+            coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
     areas = []
     for globset in area_files:
@@ -83,23 +62,8 @@ def main(
             data = json.load(infile)
         students.append(data)
 
-    run(
-        students=students,
-        areas=areas,
-        print_every=print_every,
-        should_record=should_record,
-        should_print=should_print,
-        print_all=print_all,
-        print_json=print_json,
-    )
-
-
-def run(
-    *, students, areas, print_every, should_record, should_print, print_all, print_json
-):
     if not students:
-        if not print_json:
-            print("no students to process")
+        print("no students to process", file=sys.stderr)
 
     for student in students:
         transcript = []
@@ -111,34 +75,11 @@ def run(
                 print("error loading course into transcript", row, file=sys.stderr)
 
         for area in areas:
-            audit(
-                area_def=area,
-                transcript=transcript,
-                student=student,
-                print_every=print_every,
-                should_print=should_print,
-                should_record=should_record,
-                print_all=print_all,
-                print_json=print_json,
-            )
+            audit(area_def=area, transcript=transcript, student=student)
 
 
-def audit(
-    *,
-    area_def,
-    transcript,
-    student,
-    print_every,
-    should_print,
-    should_record,
-    print_all,
-    print_json,
-):
-    if print_json:
-        msg = {"stnum": student["stnum"], "action": "start", "area": area_def["name"]}
-        print(json.dumps(msg))
-    else:
-        print(f"auditing #{student['stnum']} for {area_def['name']}", file=sys.stderr)
+def audit(*, area_def, transcript, student):
+    print(f"auditing #{student['stnum']} for {area_def['name']}", file=sys.stderr)
 
     area = AreaOfStudy.load(area_def)
     area.validate()
@@ -156,21 +97,14 @@ def audit(
     total_count = 0
     times = []
     start = time.perf_counter()
+    start_time = datetime.datetime.now()
     iter_start = time.perf_counter()
 
     for sol in area.solutions(transcript=this_transcript):
         total_count += 1
 
-        if total_count % print_every == 0:
-            if print_json:
-                msg = {
-                    "stnum": student["stnum"],
-                    "action": "in-progress",
-                    "count": total_count,
-                }
-                print(json.dumps(msg))
-            else:
-                print(f"... {total_count:,}", file=sys.stderr)
+        if total_count % 1_000 == 0:
+            print(f"... {total_count:,}", file=sys.stderr)
 
         result = sol.audit(transcript=this_transcript)
 
@@ -188,32 +122,14 @@ def audit(
         iter_end = time.perf_counter()
         times.append(iter_end - iter_start)
 
-        if print_all:
-            elapsed = pretty_ms((iter_end - start) * 1000)
-            summary = summarize(
-                name=student["name"],
-                stnum=student["stnum"],
-                area=area,
-                result=result,
-                count=total_count,
-                elapsed=elapsed,
-                iterations=times,
-            )
-            print("".join(summary))
-
         iter_start = time.perf_counter()
 
     if not times:
-        if print_json:
-            msg = {"stnum": student["stnum"], "action": "no-audits"}
-            print(json.dumps(msg))
-        else:
-            print("no audits completed")
+        print("no audits completed", file=sys.stderr)
         return
 
     if should_print:
-        if not print_json:
-            print()
+        print()
 
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
@@ -230,49 +146,40 @@ def audit(
     output = "".join(summary)
 
     if should_print:
-        if print_json:
-            avg_iter_s = sum(times) / max(len(times), 1)
-            avg_iter = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
-            msg = {
-                "stnum": student["stnum"],
-                "action": "complete",
-                "area": area.to_dict(),
-                "result": best_sol.to_dict(),
-                "count": total_count,
-                "student": student,
-                "avg_iter": avg_iter,
-                "elapsed": elapsed,
-            }
-            print(json.dumps(msg))
-        else:
-            print(output)
+        print(output)
 
     if should_record:
-        filename = f'{student["stnum"]} {student["name"]}.txt'
+        write_result(student=student, area=area, output=output)
 
-        outdir = pathlib.Path("./output")
-        areadir = area.name.replace("/", "_")
-        datestring = pendulum.now().format("MM MMMM DD")
-        areadir = f"{areadir} - {datestring}"
 
-        ok_path = outdir / areadir / "ok"
-        ok_path.mkdir(parents=True, exist_ok=True)
+def write_result(*, student, area, output):
+    import pathlib
 
-        fail_path = outdir / areadir / "fail"
-        fail_path.mkdir(parents=True, exist_ok=True)
+    filename = f'{student["stnum"]} {student["name"]}.txt'
 
-        ok = best_sol.ok()
+    outdir = pathlib.Path("./output")
+    areadir = area.name.replace("/", "_")
+    datestring = datetime.dateime.now().strftime("%m %b %d")
+    areadir = f"{areadir} - {datestring}"
 
-        container = ok_path if ok else fail_path
-        otherpath = (ok_path if container == ok_path else fail_path) / filename
+    ok_path = outdir / areadir / "ok"
+    ok_path.mkdir(parents=True, exist_ok=True)
 
-        if otherpath.exists():
-            otherpath.unlink()
+    fail_path = outdir / areadir / "fail"
+    fail_path.mkdir(parents=True, exist_ok=True)
 
-        outpath = container / filename
+    ok = best_sol.ok()
 
-        with outpath.open("w") as outfile:
-            outfile.write(output)
+    container = ok_path if ok else fail_path
+    otherpath = (ok_path if container == ok_path else fail_path) / filename
+
+    if otherpath.exists():
+        otherpath.unlink()
+
+    outpath = container / filename
+
+    with outpath.open("w") as outfile:
+        outfile.write(output)
 
 
 def summarize(*, name, stnum, area, result, count, elapsed, iterations):
