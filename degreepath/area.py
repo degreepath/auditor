@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Tuple, Union
 import logging
@@ -21,12 +20,12 @@ class AreaOfStudy:
     degree: Optional[str]
     catalog: str
 
-    limit: Tuple[Limit, ...]
+    limit: Tuple
     result: Rule
-    requirements: Dict[str, Requirement]
+    requirements: Dict
 
     attributes: Dict
-    multicountable: List[List[Union[CourseRule, Clause]]]
+    multicountable: List
 
     def to_dict(self):
         return {
@@ -43,7 +42,7 @@ class AreaOfStudy:
         }
 
     @staticmethod
-    def load(data: Dict) -> AreaOfStudy:
+    def load(data: Dict):
         requirements = {
             name: Requirement.load(name, r)
             for name, r in data.get("requirements", {}).items()
@@ -99,7 +98,7 @@ class AreaOfStudy:
 
     # def limited_transcripts(self, transcript: List[CourseInstance]):
 
-    def solutions(self, *, transcript: List[CourseInstance]):
+    def solutions(self, *, transcript: List):
         path = ["$root"]
         logger.debug(f"{path} evaluating area.result")
 

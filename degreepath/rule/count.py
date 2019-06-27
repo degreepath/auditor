@@ -1,14 +1,9 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, TYPE_CHECKING
+from typing import Dict, List, Tuple, TYPE_CHECKING
 import re
 import itertools
 import logging
 from functools import reduce
-
-if TYPE_CHECKING:
-    from ..requirement import RequirementContext
-    from . import Rule
 
 from ..solution import CountSolution
 from .course import CourseRule
@@ -19,7 +14,7 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class CountRule:
     count: int
-    items: Tuple[Rule, ...]
+    items: Tuple
 
     def to_dict(self):
         return {
@@ -59,7 +54,7 @@ class CountRule:
         return False
 
     @staticmethod
-    def load(data: Dict) -> CountRule:
+    def load(data: Dict):
         from . import load_rule
 
         if "all" in data:
@@ -89,7 +84,7 @@ class CountRule:
 
         return CountRule(count=count, items=tuple(load_rule(r) for r in items))
 
-    def validate(self, *, ctx: RequirementContext):
+    def validate(self, *, ctx):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
         assert self.count >= 0
         assert self.count <= len(self.items)
@@ -97,7 +92,7 @@ class CountRule:
         for rule in self.items:
             rule.validate(ctx=ctx)
 
-    def solutions(self, *, ctx: RequirementContext, path: List):
+    def solutions(self, *, ctx, path: List):
         path = [*path, f".of"]
         logger.debug(f"{path}")
 
@@ -192,7 +187,7 @@ class CountRule:
             # ensure that we always yield something
             yield CountSolution.from_rule(self, items=self.items)
 
-    def estimate(self, *, ctx: RequirementContext):
+    def estimate(self, *, ctx):
         lo = self.count
         hi = len(self.items) + 1
 

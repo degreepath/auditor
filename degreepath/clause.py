@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from collections import Mapping
 from typing import Union, List, Tuple, Dict, Any
@@ -22,13 +21,13 @@ class Operator(enum.Enum):
 
 @dataclass(frozen=True)
 class AndClause:
-    children: Tuple[Clause, ...]
+    children: Tuple
 
     def to_dict(self):
         return {"type": "and-clause", "children": [c.to_dict() for c in self.children]}
 
     @staticmethod
-    def load(data: List[Dict]) -> Clause:
+    def load(data: List[Dict]):
         clauses = [SingleClause.load(clause) for clause in data]
         return AndClause(children=tuple(clauses))
 
@@ -44,13 +43,13 @@ class AndClause:
 
 @dataclass(frozen=True)
 class OrClause:
-    children: Tuple[Clause, ...]
+    children: Tuple
 
     def to_dict(self):
         return {"type": "or-clause", "children": [c.to_dict() for c in self.children]}
 
     @staticmethod
-    def load(data: Dict) -> Clause:
+    def load(data: Dict):
         clauses = [SingleClause.load(clause) for clause in data]
         return OrClause(children=tuple(clauses))
 
@@ -79,7 +78,7 @@ class SingleClause:
         }
 
     @staticmethod
-    def load(data: Dict) -> Clause:
+    def load(data: Dict):
         if not isinstance(data, Mapping):
             raise Exception(f'expected {data} to be a dictionary')
 
@@ -192,7 +191,7 @@ class SingleClause:
         return self.compare(other)
 
 
-def str_clause(clause: Union[Dict, Clause]) -> str:
+def str_clause(clause) -> str:
     if not isinstance(clause, dict):
         return str_clause(clause.to_dict())
     if clause["type"] == "single-clause":

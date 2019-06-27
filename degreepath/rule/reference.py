@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Union, List, Optional, TYPE_CHECKING
 import re
@@ -7,9 +6,6 @@ import logging
 
 from ..requirement import RequirementState, RequirementSolution
 from ..solution import CourseSolution
-
-if TYPE_CHECKING:
-    from ..requirement import RequirementContext
 
 
 @dataclass(frozen=True)
@@ -45,10 +41,10 @@ class ReferenceRule:
         return False
 
     @staticmethod
-    def load(data: Dict) -> ReferenceRule:
+    def load(data: Dict):
         return ReferenceRule(name=data["requirement"])
 
-    def validate(self, *, ctx: RequirementContext):
+    def validate(self, *, ctx):
         if self.name not in ctx.requirements:
             reqs = ", ".join(ctx.requirements.keys())
             raise AssertionError(
@@ -74,7 +70,7 @@ class ReferenceRule:
 
         return state
 
-    def estimate(self, *, ctx: RequirementContext):
+    def estimate(self, *, ctx):
         return 0
 
         requirement = ctx.requirements[self.name]
@@ -83,7 +79,7 @@ class ReferenceRule:
 
         return state.estimate(ctx=ctx)
 
-    def solutions(self, *, ctx: RequirementContext, path: List[str]):
+    def solutions(self, *, ctx, path: List[str]):
         requirement = ctx.requirements[self.name]
 
         state = self._init(ctx=ctx, path=path)

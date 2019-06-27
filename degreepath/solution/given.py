@@ -1,16 +1,10 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Union, List, TYPE_CHECKING, Sequence
+from typing import Union, List, TYPE_CHECKING, Sequence, Any
 import logging
 import decimal
 
 from ..result import FromResult
 from ..data import CourseInstance, Term
-
-if TYPE_CHECKING:
-    from ..rule import FromRule
-    from ..result import Result
-    from ..requirement import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +12,7 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class FromSolution:
     output: Sequence[Union[CourseInstance, Term, decimal.Decimal, int]]
-    rule: FromRule
+    rule: Any
 
     def to_dict(self):
         return {
@@ -49,7 +43,7 @@ class FromSolution:
     def stored(self):
         return self.output
 
-    def audit(self, *, ctx: RequirementContext, path: List) -> Result:
+    def audit(self, *, ctx, path: List):
         path = [*path, f".of"]
 
         if self.rule.source.mode == "student":
@@ -61,7 +55,7 @@ class FromSolution:
 
         raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
 
-    def audit_when_student(self, ctx: RequirementContext, path: List) -> Result:
+    def audit_when_student(self, ctx, path: List):
         successful_claims = []
         failed_claims = []
         for course in self.output:

@@ -1,17 +1,12 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import List, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from ..requirement import ClaimAttempt
-    from ..rule import FromRule
+from typing import List, TYPE_CHECKING, Any
 
 
 @dataclass(frozen=True)
 class FromResult:
-    rule: FromRule
-    successful_claims: List[ClaimAttempt]
-    failed_claims: List[ClaimAttempt]
+    rule: Any
+    successful_claims: List
+    failed_claims: List
     success: bool
 
     def to_dict(self):
@@ -36,4 +31,7 @@ class FromResult:
 
     def rank(self):
         # TODO: fix this calculation so that it properly handles #154647's audit
-        return min(len(self.successful_claims) + len(self.failed_claims), self.rule.action.get_value())
+        return min(
+            len(self.successful_claims) + len(self.failed_claims),
+            self.rule.action.get_min_value() if self.rule.action else 0,
+        )

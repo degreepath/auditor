@@ -5,6 +5,7 @@ output/
 *.egg-info
 /venv/
 __pycache__/
+/.env
 
 # Ignore IntelliJ files
 /.idea/

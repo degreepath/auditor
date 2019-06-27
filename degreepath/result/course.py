@@ -1,17 +1,12 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from ..rule import CourseRule
-    from ..requirement import ClaimAttempt
+from typing import Optional, TYPE_CHECKING, Any
 
 
 @dataclass(frozen=True)
 class CourseResult:
     course: str
-    rule: CourseRule
-    claim_attempt: Optional[ClaimAttempt]
+    rule: Any
+    claim_attempt: Any
 
     def to_dict(self):
         return {

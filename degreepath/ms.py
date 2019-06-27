@@ -68,7 +68,7 @@ def pretty_ms(
 
         if format_sub_ms:
             add(parsed["milliseconds"], "millisecond", "ms")
-            add(parsed["microseconds"], "microsecond", "µs")
+            add(parsed["microseconds"], "microsecond", "us")
             add(parsed["nanoseconds"], "nanosecond", "ns")
         else:
             ms_and_below = (

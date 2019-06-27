@@ -3,7 +3,7 @@ from typing import Union, Dict
 from .count import CountRule
 from .course import CourseRule
 from .action import ActionRule
-from .given import FromRule
+from .given import FromRule, str_assertion
 from .reference import ReferenceRule
 
 Rule = Union[CourseRule, CountRule, ReferenceRule, FromRule]
