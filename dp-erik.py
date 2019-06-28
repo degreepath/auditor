@@ -49,7 +49,6 @@ def main():
         user=os.getenv("PG_USER"),
         password=os.getenv("PG_PASSWORD"),
     )
-    conn.set_session(autocommit=True)
 
     try:
         for student in students:
@@ -140,6 +139,8 @@ def insert_student_record(*, student, area, conn):
             },
         )
 
+        conn.commit()
+
         result_id = curs.fetchone()[0]
 
         return result_id
@@ -180,6 +181,7 @@ def record_audit_result(*, conn, result_id, result, count, elapsed, iterations):
                 "ok": ok,
             },
         )
+        conn.commit()
 
 
 def audit(*, area_def, transcript, student, result_id=None, conn=None):
@@ -220,6 +222,7 @@ def audit(*, area_def, transcript, student, result_id=None, conn=None):
                         "start": start_time,
                     },
                 )
+                conn.commit()
 
         result = sol.audit(transcript=this_transcript)
 
