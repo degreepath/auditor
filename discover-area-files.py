@@ -51,8 +51,12 @@ def main():
                 print(fname, os.path.abspath(area_path))
 
 
-@functools.lru_cache(maxsize=None)
 def get_area_path(conn, area, catalog):
+    return lookup_area_path(conn, catalog, area['degree'], area['kind'], area['name'])
+
+
+@functools.lru_cache(maxsize=None)
+def lookup_area_path(conn, catalog, degree, kind, name):
     with conn.cursor() as curs:
         curs.execute("""
             SELECT concat_ws('/',
