@@ -52,7 +52,7 @@ def main():
 
 
 def get_area_path(conn, area, catalog):
-    return lookup_area_path(conn, catalog, area['degree'], area['kind'], area['name'])
+    return lookup_area_path(conn, str(catalog), area['degree'], area['kind'], area['name'])
 
 
 @functools.lru_cache(maxsize=None)
@@ -71,12 +71,7 @@ def lookup_area_path(conn, catalog, degree, kind, name):
               AND degree = %(degree)s
               AND type = %(type)s
               AND name = %(name)s
-        """, {
-            'catalog': str(catalog),
-            'degree': area['degree'],
-            'type': area['kind'],
-            'name': area['name'],
-        })
+        """, {'catalog': catalog, 'degree': degree, 'type': kind, 'name': name})
 
         for record in curs:
             return record[0]
