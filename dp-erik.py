@@ -1,9 +1,9 @@
+import argparse
+import datetime
 import glob
 import json
 import os
 import time
-import datetime
-import argparse
 
 import yaml
 import dotenv
@@ -54,7 +54,7 @@ def main():
             if instance:
                 transcript.append(instance)
 
-        result_id = insert_student_record(conn=conn, student=student, area=area)
+        result_id = get_result_id(conn=conn, student=student, area=area)
 
         if result_id is None:
             return
@@ -70,48 +70,8 @@ def main():
         conn.close()
 
 
-def insert_student_record(*, student, area, conn):
+def get_result_id(student, area, conn):
     with conn.cursor() as curs:
-        curs.execute(
-            """
-            INSERT INTO student (
-                id
-              , student_name, student_advisor, input_courses
-              , degrees, majors, concentrations
-              , matriculation_year, catalog_year, anticipated_graduation
-            )
-            VALUES (
-                %(student_id)s
-              , %(student_name)s, %(student_advisor)s, %(courses)s
-              , %(degrees)s, %(majors)s, %(concentrations)s
-              , %(matriculation_year)s, %(catalog_year)s, %(anticipated_graduation)s
-            )
-            ON CONFLICT (id)
-            DO UPDATE SET student_name = %(student_name)s
-                        , student_advisor = %(student_advisor)s
-                        , degrees = %(degrees)s
-                        , majors = %(majors)s
-                        , concentrations = %(concentrations)s
-                        , matriculation_year = %(matriculation_year)s
-                        , catalog_year = %(catalog_year)s
-                        , anticipated_graduation = %(anticipated_graduation)s
-                        , input_courses = %(courses)s
-            WHERE student.id = %(student_id)s
-            """,
-            {
-                "student_id": str(student["stnum"]),
-                "student_name": '',#student["name"],
-                "student_advisor": '',#student["advisor"],
-                "degrees": [],#student["degrees"],
-                "majors": [],#student["majors"],
-                "concentrations": [],#student["concentrations"],
-                "matriculation_year": student["matriculation"],
-                "catalog_year": student["catalog"],
-                "anticipated_graduation": '1900-05-31',#f"{student['graduation']}-05-31",
-                "courses": json.dumps(student["courses"]),
-            },
-        )
-
         area_degree = area.get('degree', None)
         if area_degree == 'Bachelor of Arts':
             area_degree = 'B.A.'
@@ -123,12 +83,12 @@ def insert_student_record(*, student, area, conn):
             SELECT id
             FROM area
             WHERE name = %(area_name)s
-                AND catalog_year = %(area_catalog)s
-                AND type = %(area_type)s
-                AND CASE type WHEN 'degree'
-                    THEN true
-                    ELSE degree = %(area_degree)s
-                END
+              AND catalog_year = %(area_catalog)s
+              AND type = %(area_type)s
+              AND CASE type WHEN 'degree'
+                THEN true
+                ELSE degree = %(area_degree)s
+              END
             """,
             {
                 "area_name": area["name"],
