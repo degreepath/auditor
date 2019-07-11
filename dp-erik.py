@@ -57,12 +57,12 @@ def main():
                     RETURNING id
                 """, {
                     "student_id": student["stnum"],
-                    "error": {"error": "could not find the area specification file"},
+                    "error": {"error": "could not find the area specification file at {}".format(args.area_file)},
                 })
                 conn.commit()
             return
 
-        result_id = make_result_id(conn=conn, student=student, area=area)
+        result_id = make_result_id(conn=conn, student=student, area=area, path=args.area_file)
 
         if result_id is None:
             return
@@ -176,7 +176,7 @@ def main():
         conn.close()
 
 
-def make_result_id(student, area, conn):
+def make_result_id(*, student, area, conn, path):
     with conn.cursor() as curs:
         area_degree = area.get('degree', None)
         if area_degree == 'Bachelor of Arts':
@@ -211,7 +211,7 @@ def make_result_id(student, area, conn):
                 VALUES (%(student_id)s, %(error)s)
             """, {
                 "student_id": student["stnum"],
-                "error": {"error": "could not find the area in the database"},
+                "error": {"error": "could not find the area {} in the database".format(path)},
             })
             conn.commit()
             return None
