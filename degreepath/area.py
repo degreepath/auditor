@@ -54,7 +54,7 @@ class AreaOfStudy:
         attributes = data.get("attributes", dict())
         multicountable = []
         for ruleset in attributes.get("multicountable", []):
-            clause = []
+            clauses = []
             for clause in ruleset:
                 if "course" in clause:
                     item = CourseRule.load(clause)
@@ -62,8 +62,8 @@ class AreaOfStudy:
                     item = SingleClause.load(clause)
                 else:
                     raise Exception(f"invalid multicountable {clause}")
-                clause.append(item)
-            multicountable.append(clause)
+                clauses.append(item)
+            multicountable.append(clauses)
 
         return AreaOfStudy(
             name=data["name"],
