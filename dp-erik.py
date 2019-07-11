@@ -3,6 +3,7 @@ import json
 import os
 import time
 import datetime
+import argparse
 
 import yaml
 import dotenv
@@ -26,22 +27,18 @@ dotenv.load_dotenv(verbose=True)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--area", dest="area_files", nargs="+", required=True)
-    parser.add_argument("--student", dest="student_files", nargs="+", required=True)
+    parser.add_argument("--area", dest="area_file", required=True)
+    parser.add_argument("--student", dest="student_file", required=True)
     args = parser.parse_args()
 
-    areas = []
-    for globset in args.area_files:
-        for f in glob.iglob(globset):
-            with open(f, "r", encoding="utf-8") as infile:
-                a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
-            areas.append(a)
+    try:
+        with open(args.area_file, "r", encoding="utf-8") as infile:
+            area = yaml.load(stream=infile, Loader=yaml.SafeLoader)
+    except FileNotFoundError:
+        return
 
-    students = []
-    for file in args.student_files:
-        with open(file, "r", encoding="utf-8") as infile:
-            data = json.load(infile)
-        students.append(data)
+    with open(args.student_file, "r", encoding="utf-8") as infile:
+        student = json.load(infile)
 
     conn = psycopg2.connect(
         host=os.getenv("PG_HOST"),
@@ -51,23 +48,24 @@ def main():
     )
 
     try:
-        for student in students:
-            transcript = []
-            for row in student["courses"]:
-                instance = CourseInstance.from_dict(**row)
-                if instance:
-                    transcript.append(instance)
+        transcript = []
+        for row in student["courses"]:
+            instance = CourseInstance.from_dict(**row)
+            if instance:
+                transcript.append(instance)
 
-            for area in areas:
-                result_id = insert_student_record(conn=conn, student=student, area=area)
+        result_id = insert_student_record(conn=conn, student=student, area=area)
 
-                audit(
-                    area_def=area,
-                    transcript=transcript,
-                    student=student,
-                    result_id=result_id,
-                    conn=conn,
-                )
+        if result_id is None:
+            return
+
+        audit(
+            area_def=area,
+            transcript=transcript,
+            student=student,
+            result_id=result_id,
+            conn=conn,
+        )
     finally:
         conn.close()
 
@@ -102,48 +100,64 @@ def insert_student_record(*, student, area, conn):
             """,
             {
                 "student_id": str(student["stnum"]),
-                "student_name": student["name"],
-                "student_advisor": student["advisor"],
-                "degrees": student["degrees"],
-                "majors": student["majors"],
-                "concentrations": student["concentrations"],
+                "student_name": '',#student["name"],
+                "student_advisor": '',#student["advisor"],
+                "degrees": [],#student["degrees"],
+                "majors": [],#student["majors"],
+                "concentrations": [],#student["concentrations"],
                 "matriculation_year": student["matriculation"],
-                "catalog_year": student["matriculation"],
-                "anticipated_graduation": f"{student['graduation']}-05-31",
+                "catalog_year": student["catalog"],
+                "anticipated_graduation": '1900-05-31',#f"{student['graduation']}-05-31",
                 "courses": json.dumps(student["courses"]),
             },
         )
 
+        area_degree = area.get('degree', None)
+        if area_degree == 'Bachelor of Arts':
+            area_degree = 'B.A.'
+        elif area_degree == 'Bachelor of Arts':
+            area_degree = 'B.M.'
+
         curs.execute(
             """
-            INSERT INTO result (student_id, area_id)
-            VALUES (
-                %(student_id)s,
-                (
-                    SELECT id
-                    FROM area
-                    WHERE name = %(area_name)s
-                        AND catalog_year = %(area_catalog)s
-                        AND type = %(area_type)s
-                        AND degree = %(area_degree)s
-                )
-            )
-            RETURNING id
+            SELECT id
+            FROM area
+            WHERE name = %(area_name)s
+                AND catalog_year = %(area_catalog)s
+                AND type = %(area_type)s
+                AND CASE type WHEN 'degree'
+                    THEN true
+                    ELSE degree = %(area_degree)s
+                END
             """,
             {
-                "student_id": student["stnum"],
                 "area_name": area["name"],
                 "area_catalog": int(area["catalog"][0:4]),
                 "area_type": area["type"],
-                "area_degree": area["degree"],
+                "area_degree": area_degree,
             },
+        )
+
+        area_id = None
+        for record in curs:
+            area_id = record[0]
+
+        if area_id is None:
+            return None
+
+        curs.execute(
+            """
+                INSERT INTO result (student_id, area_id)
+                VALUES (%(student_id)s, %(area_id)s)
+                RETURNING id
+            """,
+            {"student_id": student["stnum"], "area_id": area_id},
         )
 
         conn.commit()
 
-        result_id = curs.fetchone()[0]
-
-        return result_id
+        for record in curs:
+            return record[0]
 
 
 def record_audit_result(*, conn, result_id, result, count, elapsed, iterations):

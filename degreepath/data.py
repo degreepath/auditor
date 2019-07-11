@@ -60,6 +60,9 @@ class CourseInstance:
     shorthand: str
     institution: str
 
+    clbid: str
+    subtype: str
+
     def to_dict(self):
         return {
             **self.__dict__,
@@ -83,14 +86,14 @@ class CourseInstance:
         attributes=None,
         name,
         section,
-        clbid,
         gereqs,
         term,
-        lab,
         is_repeat,
         incomplete,
         semester,
         year,
+        subtype,
+        clbid,
         institution="St. Olaf College",
     ) -> Optional:
         status = CourseStatus.Ok
@@ -117,7 +120,7 @@ class CourseInstance:
 
         gradeopt = graded
 
-        is_lab = lab
+        is_lab = subtype == 'L'
         # TODO: export is_flac/is_ace
         is_flac = name.startswith("FLC - ")
         is_ace = False
@@ -180,6 +183,7 @@ class CourseInstance:
             identity=course_identity,
             shorthand=course_identity_short,
             institution=institution,
+            subtype=subtype,
         )
 
     def attach_attrs(self, attributes=None):

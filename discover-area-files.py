@@ -31,18 +31,18 @@ def main():
 
             degrees = set(a['degree'] for a in areas)
             for degree in degrees:
-                print(fname, "{}/{}/degree.yaml".format(catalog, degree))
+                print(fname, "../areas/{}/{}/degree.yaml".format(str(catalog) + '-' + str(catalog + 1)[2:], degree))
 
             paths = (get_area_path(conn, a, catalog) for a in areas)
             for area_path in paths:
                 if not area_path:
                     continue
-                print(fname, "{}.yaml".format(area_path))
+                print(fname, "../areas/{}.yaml".format(area_path))
 
 
 def get_area_path(conn, area, catalog):
     sql = """
-        SELECT concat_ws('/', catalog_year, degree, type, filename) as path
+        SELECT concat_ws('/', catalog_year::text || '-' || substr((catalog_year + 1)::text, 3, 2), degree, type, filename) as path
         FROM area
         WHERE catalog_year = '2018' -- %(catalog)s
           AND degree = %(degree)s
