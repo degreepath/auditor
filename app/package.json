@@ -5,19 +5,19 @@
   "homepage": "https://www.stolaf.edu/sis/degreepath",
   "dependencies": {
     "@types/jest": "24.0.15",
-    "@types/node": "12.0.8",
-    "@types/react": "16.8.20",
+    "@types/node": "12.6.2",
+    "@types/react": "16.8.23",
     "@types/react-dom": "16.8.4",
     "@types/react-helmet": "^5.0.8",
-    "@types/styled-components": "^4.1.16",
+    "@types/styled-components": "^4.1.18",
     "react": "^16.8.6",
     "react-async": "^6.2.2",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
     "react-is": "^16.8.6",
     "react-scripts": "3.0.1",
-    "styled-components": "^5.0.0-beta.3",
-    "typescript": "3.5.2"
+    "styled-components": "5.0.0-beta.8",
+    "typescript": "3.5.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,5 +40,8 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "installConfig": {
+    "pnp": true
+  }
 }
