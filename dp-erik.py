@@ -25,12 +25,15 @@ psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
 dotenv.load_dotenv(verbose=True)
 
 
-def main():
+def cli():
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file", required=True)
     parser.add_argument("--student", dest="student_file", required=True)
     args = parser.parse_args()
+    main(student_file=args.student_file, area_file=args.area_file)
 
+
+def main(area_file, student_file):
     conn = psycopg2.connect(
         host=os.getenv("PG_HOST"),
         database=os.getenv("PG_DATABASE"),
@@ -39,15 +42,15 @@ def main():
     )
 
     try:
-        with open(args.student_file, "r", encoding="utf-8") as infile:
+        with open(student_file, "r", encoding="utf-8") as infile:
             student = json.load(infile)
     except FileNotFoundError:
-        print('could not find file "{}"'.format(args.student_file))
+        print('could not find file "{}"'.format(student_file))
         return
 
     try:
         try:
-            with open(args.area_file, "r", encoding="utf-8") as infile:
+            with open(area_file, "r", encoding="utf-8") as infile:
                 area = yaml.load(stream=infile, Loader=yaml.SafeLoader)
         except FileNotFoundError:
             with conn.cursor() as curs:
@@ -57,12 +60,12 @@ def main():
                     RETURNING id
                 """, {
                     "student_id": student["stnum"],
-                    "error": {"error": "could not find the area specification file at {}".format(args.area_file)},
+                    "error": {"error": "could not find the area specification file at {}".format(area_file)},
                 })
                 conn.commit()
             return
 
-        result_id = make_result_id(conn=conn, student=student, area=area, path=args.area_file)
+        result_id = make_result_id(conn=conn, student=student, area=area, path=area_file)
 
         if result_id is None:
             return
@@ -229,4 +232,4 @@ def make_result_id(*, student, area, conn, path):
 
 
 if __name__ == "__main__":
-    main()
+    cli()

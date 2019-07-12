@@ -10,11 +10,16 @@ import psycopg2
 dotenv.load_dotenv(verbose=True)
 
 
-def main():
+def cli():
     parser = argparse.ArgumentParser()
-    parser.add_argument('student_file', nargs='+')
+    parser.add_argument('student_files', nargs='+')
     args = parser.parse_args()
 
+    for (name, path) in main(student_files=args.student_files):
+        print(name, path)
+
+
+def main(student_files):
     conn = psycopg2.connect(
         host=os.getenv("PG_HOST"),
         database=os.getenv("PG_DATABASE"),
@@ -22,7 +27,9 @@ def main():
         password=os.getenv("PG_PASSWORD"),
     )
 
-    for pattern in args.student_file:
+    area_root = '/home/www/sis/degreepath/areas/'
+
+    for pattern in student_files:
         for fname in glob.iglob(pattern):
             with open(fname, 'r', encoding='utf-8') as infile:
                 data = json.load(infile)
@@ -36,23 +43,25 @@ def main():
 
             degrees = set(a['degree'] for a in areas)
             for degree in degrees:
-                area_path = "../areas/{}/{}/degree.yaml".format(
+                area_path = area_root + "{}/{}/degree.yaml".format(
                     str(catalog) + '-' + str(catalog + 1)[2:],
                     degree,
                 )
-                print(fname, os.path.abspath(area_path))
+                yield (fname, os.path.abspath(area_path))
 
             paths = (get_area_path(conn, a, catalog) for a in areas)
             for area_path in paths:
                 if not area_path:
                     continue
 
-                area_path = "../areas/{}.yaml".format(area_path)
-                print(fname, os.path.abspath(area_path))
+                area_path = area_root + "{}.yaml".format(area_path)
+                yield (fname, os.path.abspath(area_path))
 
 
 def get_area_path(conn, area, catalog):
-    return lookup_area_path(conn, str(catalog), area['degree'], area['kind'], area['name'])
+    return lookup_area_path(
+        conn, str(catalog), area['degree'], area['kind'], area['name']
+    )
 
 
 @functools.lru_cache(maxsize=None)
@@ -71,11 +80,16 @@ def lookup_area_path(conn, catalog, degree, kind, name):
               AND degree = %(degree)s
               AND type = %(type)s
               AND name = %(name)s
-        """, {'catalog': catalog, 'degree': degree, 'type': kind, 'name': name})
+        """, {
+            'catalog': catalog,
+            'degree': degree,
+            'type': kind,
+            'name': name,
+        })
 
         for record in curs:
             return record[0]
 
 
 if __name__ == '__main__':
-    main()
+    cli()
