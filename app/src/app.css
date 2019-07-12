@@ -293,7 +293,7 @@
   --md-light-icons-inactive: rgba(255, 255, 255, 0.5);
 }
 
-body {
+.root {
   --primary: var(--md-amber-500);
   --primary-dark: var(--md-amber-700);
   --primary-light: var(--md-amber-50);
@@ -322,7 +322,7 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
+  .root {
     --primary: var(--md-amber-500);
     --primary-dark: var(--md-amber-700);
     --primary-light: var(--md-amber-50);
