@@ -18,10 +18,6 @@ const App: React.FC = () => {
   }
 
   if (!result) {
-    return <p>No result record found for result ID {resultId}.</p>;
-  }
-
-  if (!result) {
     return <p>That student's audit is not yet complete.</p>;
   }
 
