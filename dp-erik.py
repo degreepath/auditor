@@ -41,6 +41,8 @@ def main(area_file, student_file):
         password=os.getenv("PG_PASSWORD"),
     )
 
+    result_id = None
+
     try:
         with open(student_file, "r", encoding="utf-8") as infile:
             student = json.load(infile)
@@ -54,13 +56,13 @@ def main(area_file, student_file):
                 area = yaml.load(stream=infile, Loader=yaml.SafeLoader)
         except FileNotFoundError:
             with conn.cursor() as curs:
+                err = "could not find the area specification file at {}".format(area_file)
                 curs.execute("""
                     INSERT INTO result (student_id, error)
                     VALUES (%(student_id)s, %(error)s)
-                    RETURNING id
                 """, {
                     "student_id": student["stnum"],
-                    "error": {"error": "could not find the area specification file at {}".format(area_file)},
+                    "error": {"error": err},
                 })
                 conn.commit()
             return
@@ -175,6 +177,32 @@ def main(area_file, student_file):
                 },
             )
             conn.commit()
+    except Exception as ex:
+        import traceback
+
+        with conn.cursor() as curs:
+            tb = ''.join(traceback.format_exception(
+                etype=type(ex),
+                value=ex,
+                tb=ex.__traceback__,
+            ))
+
+            curs.execute("""
+                INSERT INTO result (student_id, id, error)
+                VALUES (%(student_id)s, %(result_id)s, %(error)s)
+                ON CONFLICT (id) DO UPDATE
+                SET error = %(error)s
+            """, {
+                "student_id": student["stnum"],
+                "error": {
+                    "error": "{}".format(ex),
+                    "student": student_file,
+                    "area": area_file,
+                    "trace": tb,
+                },
+                "result_id": result_id,
+            })
+            conn.commit()
     finally:
         conn.close()
 
@@ -182,10 +210,15 @@ def main(area_file, student_file):
 def make_result_id(*, student, area, conn, path):
     with conn.cursor() as curs:
         area_degree = area.get('degree', None)
+        area_name = area.get('name', None)
         if area_degree == 'Bachelor of Arts':
             area_degree = 'B.A.'
-        elif area_degree == 'Bachelor of Arts':
+            if area_name == 'Bachelor of Arts':
+                area_name = 'B.A.'
+        elif area_degree == 'Bachelor of Music':
             area_degree = 'B.M.'
+            if area_name == 'Bachelor of Music':
+                area_name = 'B.M.'
 
         curs.execute("""
             SELECT id
@@ -198,7 +231,7 @@ def make_result_id(*, student, area, conn, path):
                     ELSE degree = %(area_degree)s
                   END
         """, {
-            "area_name": area["name"],
+            "area_name": area_name,
             "area_catalog": int(area["catalog"][0:4]),
             "area_type": area["type"],
             "area_degree": area_degree,
@@ -209,12 +242,13 @@ def make_result_id(*, student, area, conn, path):
             area_id = record[0]
 
         if area_id is None:
+            err = "could not find the area {} in the database".format(path)
             curs.execute("""
                 INSERT INTO result (student_id, error)
                 VALUES (%(student_id)s, %(error)s)
             """, {
                 "student_id": student["stnum"],
-                "error": {"error": "could not find the area {} in the database".format(path)},
+                "error": {"error": err},
             })
             conn.commit()
             return None
