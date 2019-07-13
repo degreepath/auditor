@@ -49,13 +49,13 @@ const moduleFileExtensions = [
   "tsx",
   "json",
   "web.jsx",
-  "jsx"
+  "jsx",
 ];
 
 // Resolve file paths in the same order as webpack
 const resolveModule = (resolveFn, filePath) => {
   const extension = moduleFileExtensions.find(extension =>
-    fs.existsSync(resolveFn(`${filePath}.${extension}`))
+    fs.existsSync(resolveFn(`${filePath}.${extension}`)),
   );
 
   if (extension) {
@@ -80,7 +80,7 @@ module.exports = {
   proxySetup: resolveApp("src/setupProxy.js"),
   appNodeModules: resolveApp("node_modules"),
   publicUrl: getPublicUrl(resolveApp("package.json")),
-  servedPath: getServedPath(resolveApp("package.json"))
+  servedPath: getServedPath(resolveApp("package.json")),
 };
 
 module.exports.moduleFileExtensions = moduleFileExtensions;
