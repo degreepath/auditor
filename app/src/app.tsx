@@ -1,12 +1,12 @@
 import * as React from "react";
 import "./app.css";
 import { AreaResult } from "./result";
-import { StudentResult } from "./types";
+import { EvaluationResultT, AreaOfStudy } from "./types";
 
 const App: React.FC = () => {
-  let result = (window as any).__dpResult;
-  let error = (window as any).__dpError;
-  let area = (window as any).__dpArea;
+  let result: null | EvaluationResultT = (window as any).__dpResult;
+  let error: null | object = (window as any).__dpError;
+  let area: AreaOfStudy = (window as any).__dpArea;
 
   if (error) {
     return (

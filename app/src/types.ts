@@ -1,5 +1,6 @@
 export type AreaOfStudy = {
   id: number;
+  code: number;
   name: string;
   type: string;
   degree: null | string;
