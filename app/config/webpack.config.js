@@ -20,8 +20,6 @@ const ModuleNotFoundPlugin = require("react-dev-utils/ModuleNotFoundPlugin");
 const ForkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 
-const postcssNormalize = require("postcss-normalize");
-
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
 
@@ -82,14 +80,7 @@ module.exports = function(webpackEnv) {
           ident: "postcss",
           plugins: () => [
             require("postcss-flexbugs-fixes"),
-            require("postcss-preset-env")({
-              autoprefixer: { flexbox: "no-2009" },
-              stage: 3
-            }),
-            // Adds PostCSS Normalize as the reset css with default options,
-            // so that it honors browserslist config in package.json
-            // which in turn let's users customize the target behavior as per their needs.
-            postcssNormalize()
+            require("autoprefixer")({ flexbox: "no-2009" })
           ],
           sourceMap: isEnvProduction && shouldUseSourceMap
         }
