@@ -1,6 +1,5 @@
 import * as React from "react";
-import "./App.css";
-import { StudentDetail } from "./student";
+import "./app.css";
 import { AreaResult } from "./result";
 import { StudentResult } from "./types";
 
@@ -9,10 +8,10 @@ const App: React.FC = () => {
   let error = (window as any).__dpError;
   let area = (window as any).__dpArea;
 
-  if (error && typeof error.message !== "undefined") {
+  if (error) {
     return (
       <pre>
-        <b>{error.message}</b>
+        <b>{JSON.stringify(error, null, 2)}</b>
       </pre>
     );
   }
