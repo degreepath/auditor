@@ -12,7 +12,7 @@ import {
   Course,
   IReferenceRule,
   EvaluatedRequirement,
-  WhereClauseT
+  WhereClauseT,
 } from "./types";
 
 export function RuleResult(args: {
@@ -114,7 +114,7 @@ function allItemsAreCourseRules(rule: IRule | EvaluationResultT): boolean {
   }
 
   return rule.items.every(
-    r => r.type === "course" || allItemsAreCourseRules(r)
+    r => r.type === "course" || allItemsAreCourseRules(r),
   );
 }
 
@@ -273,7 +273,7 @@ function CountResult(props: ResultBlock<ICountRule | CountResultT>) {
 
   let successfulItemCount = result.items.filter(item => item.ok).length;
   let totalItemCount = result.items.filter(
-    item => item.type !== "course" || !item.hidden
+    item => item.type !== "course" || !item.hidden,
   ).length;
   let requiredItemCount = result.count;
 
@@ -431,7 +431,7 @@ function WhereClause({ clause }: { clause: WhereClauseT }) {
           style={{
             backgroundColor: "rgba(0,0,0,0.15)",
             borderRadius: "4px",
-            padding: "0 0.25em"
+            padding: "0 0.25em",
           }}
         >
           {key} {operator} {value}
