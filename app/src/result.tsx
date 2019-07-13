@@ -1,7 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 import {
-  AreaOfStudy,
   EvaluationResultT,
   IRule,
   ICourseRule,
@@ -16,31 +15,45 @@ import {
   WhereClauseT
 } from "./types";
 
-export function AreaResult(props: {
-  area: AreaOfStudy;
-  result: EvaluationResultT;
+export function RuleResult(args: {
+  result: EvaluationResultT | IRule;
+  topLevel?: boolean;
 }) {
-  let { area, result } = props;
+  let { result, topLevel = false } = args;
+  // console.log(result);
 
-  return (
-    <article>
-      <header>
-        <h2>
-          The <i>{area.name}</i> {area.type}
-        </h2>
+  let [isOpen, setOpenState] = React.useState(!result.ok);
+  let handler = () => setOpenState(!isOpen);
 
-        <dl>
-          <dt>Status</dt>
-          <dd>{result.ok ? "❇️ Complete" : "⚠️ Incomplete"}</dd>
+  if (result.type === "count") {
+    if (topLevel) {
+      isOpen = true;
+    }
+    return <CountResult result={result} isOpen={isOpen} onClick={handler} />;
+  }
 
-          <dt>In-Major GPA</dt>
-          <dd>0.00</dd>
-        </dl>
-      </header>
+  if (result.type === "course") {
+    return <CourseResult result={result} isOpen={isOpen} onClick={handler} />;
+  }
 
-      <RuleResult result={result} topLevel={true} />
-    </article>
-  );
+  if (result.type === "from") {
+    return <FromResult result={result} isOpen={isOpen} onClick={handler} />;
+  }
+
+  if (result.type === "reference") {
+    return (
+      <ReferenceResult result={result} isOpen={isOpen} onClick={handler} />
+    );
+  }
+
+  if (result.type === "requirement") {
+    return (
+      <RequirementResult result={result} isOpen={isOpen} onClick={handler} />
+    );
+  }
+
+  console.log(result);
+  throw new Error(`Unknown rule type: ${(result as any).type}`);
 }
 
 interface RuleSectionProps {
@@ -103,49 +116,6 @@ function allItemsAreCourseRules(rule: IRule | EvaluationResultT): boolean {
   return rule.items.every(
     r => r.type === "course" || allItemsAreCourseRules(r)
   );
-}
-
-function RuleResult({
-  result,
-  topLevel = false
-}: {
-  result: EvaluationResultT | IRule;
-  topLevel?: boolean;
-}) {
-  // console.log(result);
-
-  let [isOpen, setOpenState] = React.useState(!result.ok);
-  let handler = () => setOpenState(!isOpen);
-
-  if (result.type === "count") {
-    if (topLevel) {
-      isOpen = true;
-    }
-    return <CountResult result={result} isOpen={isOpen} onClick={handler} />;
-  }
-
-  if (result.type === "course") {
-    return <CourseResult result={result} isOpen={isOpen} onClick={handler} />;
-  }
-
-  if (result.type === "from") {
-    return <FromResult result={result} isOpen={isOpen} onClick={handler} />;
-  }
-
-  if (result.type === "reference") {
-    return (
-      <ReferenceResult result={result} isOpen={isOpen} onClick={handler} />
-    );
-  }
-
-  if (result.type === "requirement") {
-    return (
-      <RequirementResult result={result} isOpen={isOpen} onClick={handler} />
-    );
-  }
-
-  console.log(result);
-  throw new Error(`Unknown rule type: ${(result as any).type}`);
 }
 
 interface ResultBlock<T> {

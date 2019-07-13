@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./app.css";
-import { AreaResult } from "./result";
+import { RuleResult } from "./result";
 import { EvaluationResultT, AreaOfStudy } from "./types";
 
 const App: React.FC = () => {
@@ -21,9 +21,23 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="degreepath">
-      <AreaResult area={area} result={result} />
-    </div>
+    <article className="degreepath">
+      <header>
+        <h2>
+          The <i>{area.name}</i> {area.type}
+        </h2>
+
+        <dl>
+          <dt>Status</dt>
+          <dd>{result.ok ? "❇️ Complete" : "⚠️ Incomplete"}</dd>
+
+          <dt>In-Major GPA</dt>
+          <dd>0.00</dd>
+        </dl>
+      </header>
+
+      <RuleResult result={result} topLevel={true} />
+    </article>
   );
 };
 
