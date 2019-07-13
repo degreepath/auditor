@@ -1,19 +1,16 @@
-import * as React from "react";
 import "./app.css";
+
+import * as React from "react";
 import { RuleResult } from "./result";
 import { EvaluationResultT, AreaOfStudy } from "./types";
 
-const App: React.FC = () => {
+export function App() {
   let result: null | EvaluationResultT = (window as any).__dpResult;
   let error: null | object = (window as any).__dpError;
   let area: AreaOfStudy = (window as any).__dpArea;
 
   if (error) {
-    return (
-      <pre>
-        <b>{JSON.stringify(error, null, 2)}</b>
-      </pre>
-    );
+    return <pre>{JSON.stringify(error, null, 2)}</pre>;
   }
 
   if (!result) {
@@ -39,6 +36,4 @@ const App: React.FC = () => {
       <RuleResult result={result} topLevel={true} />
     </article>
   );
-};
-
-export default App;
+}
