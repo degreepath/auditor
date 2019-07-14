@@ -1,13 +1,3 @@
-export type AreaOfStudy = {
-  id: number;
-  code: number;
-  name: string;
-  type: string;
-  degree: null | string;
-  catalog_year: number;
-  success_rank: number;
-};
-
 interface BaseRule {
   type: string;
   state: "rule" | "solution" | "result";
