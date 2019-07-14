@@ -2,8 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 
 let icons = {
-  ok: "️️❇️",
-  warn: "️️️⚠️",
+  ok: "❇️",
+  warn: "⚠️",
 };
 
 let labels: typeof icons = {

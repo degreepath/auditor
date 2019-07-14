@@ -3,6 +3,7 @@ import "./app.css";
 import * as React from "react";
 import { RuleResult } from "./result";
 import { EvaluationResultT, Course, Transcript } from "./types";
+import { StatusIcon } from "./components";
 
 export function App() {
   return <Data>{props => <Contents {...props} />}</Data>;
@@ -28,7 +29,10 @@ function Contents({ result, transcript, error }: InnerProps) {
       <header>
         <dl>
           <dt>Status</dt>
-          <dd>{result.ok ? "❇️ Complete" : "⚠️ Incomplete"}</dd>
+          <dd>
+            <StatusIcon icon={result.ok ? "ok" : "warn"} />
+            {result.ok ? "Complete" : "Incomplete"}
+          </dd>
 
           <dt>In-Major GPA</dt>
           <dd>0.00</dd>

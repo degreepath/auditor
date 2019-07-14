@@ -13,7 +13,7 @@ export function RequirementResult(props: ResultBlock<EvaluatedRequirement>) {
       <header onClick={onClick}>
         <p>
           Requirement <i>“{result.name}”</i> was{" "}
-          {result.ok ? <>complete!</> : <>️incomplete.</>}
+          {result.ok ? <>complete!</> : <>incomplete.</>}
         </p>
       </header>
 
