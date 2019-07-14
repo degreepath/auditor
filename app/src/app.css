@@ -294,6 +294,8 @@
 }
 
 .root {
+  color-scheme: dark light;
+
   --primary: var(--md-amber-500);
   --primary-dark: var(--md-amber-700);
   --primary-light: var(--md-amber-50);
