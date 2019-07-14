@@ -1,6 +1,8 @@
 from degreepath import *
+from degreepath.clause import SingleClause, AndClause
 import pytest
 import io
+import logging
 
 
 def test_clauses(caplog):
@@ -10,9 +12,9 @@ def test_clauses(caplog):
     expected_single = SingleClause(
         key="attributes", expected="csci_elective", operator=Operator.EqualTo
     )
-    assert x == AndClause(children=[expected_single])
+    assert x == expected_single
 
-    c = CourseInstance.from_dict(course="CSCI 121", attributes=["csci_elective"])
+    c = CourseInstance.from_s(s="CSCI 121", attributes=["csci_elective"])
 
     assert c is not None
 

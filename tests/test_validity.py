@@ -1,6 +1,7 @@
 from degreepath import *
 import pytest
 import io
+import yaml
 
 
 def test_load():
@@ -32,7 +33,7 @@ def test_load():
     """
     )
 
-    area = load(test_data)
+    area = AreaOfStudy.load(yaml.load(stream=test_data, Loader=yaml.SafeLoader))
     area.validate()
 
 
@@ -61,5 +62,5 @@ def test_invalid():
         """
         )
 
-        area = load(test_data)
+        area = AreaOfStudy.load(yaml.load(stream=test_data, Loader=yaml.SafeLoader))
         area.validate()
