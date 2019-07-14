@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from collections import Mapping
+from collections.abc import Mapping
 from typing import Union, List, Tuple, Dict, Any
 import enum
 import logging
