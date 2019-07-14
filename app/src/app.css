@@ -350,23 +350,6 @@
   }
 }
 
-.App-header {
-  background-color: var(--surface);
-  min-height: 50vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--on-surface);
-}
-
-body {
-  background-color: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-}
-
 .degreepath {
   background-color: var(--surface);
   max-width: 8.5in;
@@ -377,12 +360,12 @@ body {
   color: var(--on-surface);
 }
 
-h1,
-h2 {
+.degreepath h1,
+.degreepath h2 {
   font-family: Calluna Sans, sans-serif;
   font-weight: 400;
 }
 
-h1 {
+.degreepath h1 {
   margin-top: 0;
 }

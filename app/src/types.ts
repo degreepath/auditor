@@ -1,5 +1,6 @@
 export type AreaOfStudy = {
   id: number;
+  code: number;
   name: string;
   type: string;
   degree: null | string;
@@ -87,16 +88,6 @@ export type WhereClauseT =
   | { type: "and-clause"; children: WhereClauseT[] }
   | { type: "or-clause"; children: WhereClauseT[] };
 
-type UnevaluatedRequirement = {
-  audited_by?: string;
-  contract: boolean;
-  message: string;
-  name: string;
-  requirements: { string: UnevaluatedRequirement };
-  result: IRule;
-  saves: {};
-};
-
 export type EvaluatedRequirement = {
   audited_by?: string;
   contract: boolean;
@@ -128,50 +119,4 @@ export type Course = {
   term: number | { year: number; semester: number };
   transcript_code: string;
   year?: number;
-};
-
-export type StudentOverviewRecord = {
-  result_id: number;
-  student_id: string;
-  student_name: string;
-  student_advisor: string;
-  anticipated_graduation: string;
-  classification: string;
-  area_id: number;
-  result_ts: string;
-  result_rank: number;
-  success_rank: number;
-  result_ok: boolean;
-  area_ident: string;
-};
-
-export type StudentResult = {
-  info: {
-    result_id: number;
-    student_id: string;
-    student_name: string;
-    student_advisor: string;
-    anticipated_graduation: string;
-    classification: string;
-    area_id: number;
-    result_ts: string;
-    result_rank: number;
-    success_rank: number;
-    result_ok: boolean;
-    area_ident: string;
-  };
-  student: {
-    anticipated_graduation: string;
-    catalog_year: number;
-    degrees: string[];
-    majors: string[];
-    id: string;
-    concentrations: string[];
-    input_courses: Course[];
-    matriculation_year: number;
-    student_advisor: string;
-    student_name: string;
-  };
-  area: AreaOfStudy;
-  result: null | EvaluationResultT;
 };

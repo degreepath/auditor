@@ -1,19 +1,16 @@
-import * as React from "react";
 import "./app.css";
-import { AreaResult } from "./result";
-import { StudentResult } from "./types";
 
-const App: React.FC = () => {
-  let result = (window as any).__dpResult;
-  let error = (window as any).__dpError;
-  let area = (window as any).__dpArea;
+import * as React from "react";
+import { RuleResult } from "./result";
+import { EvaluationResultT, AreaOfStudy } from "./types";
+
+export function App() {
+  let result: null | EvaluationResultT = (window as any).__dpResult;
+  let error: null | object = (window as any).__dpError;
+  let area: AreaOfStudy = (window as any).__dpArea;
 
   if (error) {
-    return (
-      <pre>
-        <b>{JSON.stringify(error, null, 2)}</b>
-      </pre>
-    );
+    return <pre>{JSON.stringify(error, null, 2)}</pre>;
   }
 
   if (!result) {
@@ -21,10 +18,22 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="degreepath">
-      <AreaResult area={area} result={result} />
-    </div>
-  );
-};
+    <article className="degreepath">
+      <header>
+        <h2>
+          The <i>{area.name}</i> {area.type}
+        </h2>
 
-export default App;
+        <dl>
+          <dt>Status</dt>
+          <dd>{result.ok ? "❇️ Complete" : "⚠️ Incomplete"}</dd>
+
+          <dt>In-Major GPA</dt>
+          <dd>0.00</dd>
+        </dl>
+      </header>
+
+      <RuleResult result={result} topLevel={true} />
+    </article>
+  );
+}
