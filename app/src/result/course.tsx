@@ -10,9 +10,16 @@ export function CourseResult(props: ResultBlock<ICourseRule | CourseResultT>) {
     return null;
   }
 
+  //
+  // TODO:             claim = rule["claims"][0]["claim"]
+  //                   course = next(c for c in transcript if c.clbid == claim["clbid"])
+  //
+  // ie, we need to get the transcript from the server, and pass it down into here
+  //
+
   let claimed = result.claims
     ? result.claims[0]
-      ? result.claims[0].claim.course
+      ? result.claims[0].claim.clbid
       : null
     : null;
 
