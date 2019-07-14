@@ -71,8 +71,8 @@ export type EvaluationResultT =
 
 type Claim = {
   claimant_path: string[];
-  course: Course;
-  course_id: string;
+  clbid: string;
+  crsid: string;
   value: ICourseRule;
 };
 

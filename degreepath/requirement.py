@@ -51,12 +51,12 @@ class RequirementContext:
         self.claims = defaultdict(set)
 
     def make_claim(
-        self, *, crsid: str, course: CourseInstance, path: List[str], clause: Union
+        self, *, course: CourseInstance, path: List[str], clause: Union, transcript: List[CourseInstance]
     ):
         """
         If the crsid is not in the claims dictionary, insert it with an empty list.
 
-        If the course that is being claimed has an empty list of claimants, 
+        If the course that is being claimed has an empty list of claimants,
         then the claim succeeds.
 
         Otherwise...
@@ -68,7 +68,7 @@ class RequirementContext:
             the first ruleset applicable to both the course and the claimant is selected.
 
         If the claimed course matches a `multicountable` ruleset,
-            and the claimant is within said `multicountable` ruleset, 
+            and the claimant is within said `multicountable` ruleset,
             and the claimant's clause has not already been used as a claim on this course,
             then the claim is recorded, and succeeds.
 
@@ -77,24 +77,24 @@ class RequirementContext:
         if clause is None:
             raise Exception("clause must be provided")
 
-        claim = Claim(
-            course_id=crsid, claimant_path=tuple(path), value=clause, course=course
-        )
+        claim = Claim(crsid=course.crsid, clbid=course.clbid, claimant_path=tuple(path), value=clause)
 
-        potential_conflicts = [
-            c for c in self.claims[crsid] if c.course_id == claim.course_id
-        ]
+        potential_conflicts = [cl for cl in self.claims[course.crsid] if cl.crsid == claim.crsid]
 
         # allow topics courses to be taken multiple times
         if course.is_topic:
-            conflicts_are_topics = (c.course.is_topic for c in potential_conflicts)
+            mapped_transcript = {c.clbid: c for c in transcript}
+            conflicts_are_topics = (
+                mapped_transcript[clm.clbid].is_topic
+                for clm in potential_conflicts
+                if clm.clbid in mapped_transcript
+            )
+
             if all(conflicts_are_topics):
-                conflicting_clbids = set(c.course.clbid for c in potential_conflicts)
+                conflicting_clbids = set(claim.clbid for claim in potential_conflicts)
+
                 if course.clbid not in conflicting_clbids:
-                    courses_are_equivalent = (
-                        course.identity == c.course.identity
-                        for c in potential_conflicts
-                    )
+                    courses_are_equivalent = (course.crsid == claim.crsid for claim in potential_conflicts)
                     if all(courses_are_equivalent):
                         return ClaimAttempt(claim, conflict_with=set())
 
@@ -107,7 +107,7 @@ class RequirementContext:
         # then the claim succeeds.
         if not potential_conflicts:
             # print(claim)
-            self.claims[crsid].add(claim)
+            self.claims[course.crsid].add(claim)
             return ClaimAttempt(claim)
 
         applicable_rulesets = [
@@ -140,23 +140,23 @@ class RequirementContext:
         if claim_conflicts:
             return ClaimAttempt(claim, conflict_with=claim_conflicts)
         else:
-            self.claims[crsid].add(claim)
+            self.claims[course.crsid].add(claim)
             return ClaimAttempt(claim, conflict_with=set())
 
 
 @dataclass(frozen=True)
 class Claim:
-    course_id: str
+    crsid: str
+    clbid: str
     claimant_path: Tuple[str, ...]
     value: Union
-    course: CourseInstance
 
     def to_dict(self):
         return {
-            "course_id": self.course_id,
+            "crsid": self.crsid,
+            "clbid": self.clbid,
             "claimant_path": self.claimant_path,
             "value": self.value.to_dict(),
-            "course": self.course.to_dict(),
         }
 
 

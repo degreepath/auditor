@@ -60,7 +60,7 @@ class CourseInstance:
     shorthand: str
     institution: str
 
-    clbid: str
+    crsid: str
     subtype: str
 
     def to_dict(self):
@@ -94,6 +94,7 @@ class CourseInstance:
         year,
         subtype,
         clbid,
+        crsid,
         institution="St. Olaf College",
     ) -> Optional:
         status = CourseStatus.Ok
@@ -184,6 +185,7 @@ class CourseInstance:
             shorthand=course_identity_short,
             institution=institution,
             subtype=subtype,
+            crsid=crsid,
         )
 
     def attach_attrs(self, attributes=None):

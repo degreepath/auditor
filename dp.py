@@ -23,13 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
-    parser.add_argument(
-        "--loglevel",
-        dest="loglevel",
-        nargs=1,
-        required=True,
-        choices=("warn", "debug", "info"),
-    )
+    parser.add_argument("--loglevel", dest="loglevel", nargs=1, choices=("warn", "debug", "info"))
     args = parser.parse_args()
 
     if args.loglevel:
@@ -50,14 +44,14 @@ def main():
             coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
     areas = []
-    for globset in area_files:
+    for globset in args.area_files:
         for f in glob.iglob(globset):
             with open(f, "r", encoding="utf-8") as infile:
                 a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
             areas.append(a)
 
     students = []
-    for file in student_files:
+    for file in args.student_files:
         with open(file, "r", encoding="utf-8") as infile:
             data = json.load(infile)
         students.append(data)
@@ -128,67 +122,32 @@ def audit(*, area_def, transcript, student):
         print("no audits completed", file=sys.stderr)
         return
 
-    if should_print:
-        print()
+    print()
 
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
     summary = summarize(
-        name=student["name"],
         stnum=student["stnum"],
         area=area,
         result=best_sol,
         count=total_count,
         elapsed=elapsed,
+        transcript=this_transcript,
         iterations=times,
     )
     output = "".join(summary)
 
-    if should_print:
-        print(output)
-
-    if should_record:
-        write_result(student=student, area=area, output=output)
+    print(output)
 
 
-def write_result(*, student, area, output):
-    import pathlib
-
-    filename = f'{student["stnum"]} {student["name"]}.txt'
-
-    outdir = pathlib.Path("./output")
-    areadir = area.name.replace("/", "_")
-    datestring = datetime.dateime.now().strftime("%m %b %d")
-    areadir = f"{areadir} - {datestring}"
-
-    ok_path = outdir / areadir / "ok"
-    ok_path.mkdir(parents=True, exist_ok=True)
-
-    fail_path = outdir / areadir / "fail"
-    fail_path.mkdir(parents=True, exist_ok=True)
-
-    ok = best_sol.ok()
-
-    container = ok_path if ok else fail_path
-    otherpath = (ok_path if container == ok_path else fail_path) / filename
-
-    if otherpath.exists():
-        otherpath.unlink()
-
-    outpath = container / filename
-
-    with outpath.open("w") as outfile:
-        outfile.write(output)
-
-
-def summarize(*, name, stnum, area, result, count, elapsed, iterations):
+def summarize(*, stnum, area, transcript, result, count, elapsed, iterations):
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     endl = "\n"
 
-    yield f'[#{stnum}] {name}\'s "{area.name}" {area.kind}'
+    yield f'#{stnum}\'s "{area.name}" {area.kind}'
 
     if result.ok():
         yield f" audit was successful."
@@ -214,12 +173,12 @@ def summarize(*, name, stnum, area, result, count, elapsed, iterations):
     yield endl
     yield endl
 
-    yield endl.join(print_result(dictver))
+    yield endl.join(print_result(dictver, transcript))
 
     yield endl
 
 
-def print_result(rule, indent=0):
+def print_result(rule, transcript, indent=0):
     prefix = " " * indent
 
     if rule is None:
@@ -232,17 +191,17 @@ def print_result(rule, indent=0):
         status = "🌀      "
         if "ok" in rule and rule["ok"]:
             claim = rule["claims"][0]["claim"]
-            course = claim["course"]
+            course = next(c for c in transcript if c.clbid == claim["clbid"])
 
-            if course["status"] == CourseStatus.Ok.name:
+            if course.status == CourseStatus.Ok:
                 status = "💚 [ ok]"
-            elif course["status"] == CourseStatus.DidNotComplete.name:
+            elif course.status == CourseStatus.DidNotComplete:
                 status = "⛔️ [dnf]"
-            elif course["status"] == CourseStatus.InProgress.name:
+            elif course.status == CourseStatus.InProgress:
                 status = "💚 [ ip]"
-            elif course["status"] == CourseStatus.Repeated.name:
+            elif course.status == CourseStatus.Repeated:
                 status = "💚 [rep]"
-            elif course["status"] == CourseStatus.NotTaken.name:
+            elif course.status == CourseStatus.NotTaken:
                 status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
@@ -273,7 +232,7 @@ def print_result(rule, indent=0):
         yield f"{prefix}{emoji} {descr}"
 
         for r in rule["items"]:
-            yield from print_result(r, indent=indent + 4)
+            yield from print_result(r, transcript, indent=indent + 4)
 
     elif rule_type == "from":
         if rule["status"] == "pass":
@@ -287,16 +246,21 @@ def print_result(rule, indent=0):
 
         if rule["claims"]:
             yield f"{prefix} Matching courses:"
-            for c in rule["claims"]:
-                yield f"{prefix}   {c['claim']['course']['shorthand']} \"{c['claim']['course']['name']}\" ({c['claim']['course']['clbid']})"
+            for clm in rule["claims"]:
+                course = next(c for c in transcript if c.clbid == clm['claim']["clbid"])
+                yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid})"
 
         if rule["failures"]:
             yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
-            for c in rule["failures"]:
-                yield f"{prefix}   {c['claim']['course']['shorthand']} \"{c['claim']['course']['name']}\" ({c['claim']['course']['clbid']})"
+            for clm in rule["failures"]:
+                course = next(c for c in transcript if c.clbid == clm['claim']["clbid"])
+                yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid})"
 
         action = rule["action"]
-        yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: {action['min']})"
+        if 'min' in action:
+            yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: {action['min']})"
+        else:
+            yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: N)"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":
@@ -310,7 +274,7 @@ def print_result(rule, indent=0):
         if rule["audited_by"] is not None:
             yield f"{prefix}    Audited by: {rule['audited_by']}; assuming success"
             return
-        yield from print_result(rule["result"], indent=indent + 4)
+        yield from print_result(rule["result"], transcript, indent=indent + 4)
 
     elif rule_type == "reference":
         if rule["status"] == "pass":

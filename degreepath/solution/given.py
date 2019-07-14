@@ -60,18 +60,12 @@ class FromSolution:
         failed_claims = []
         for course in self.output:
             if self.rule.where is None:
-                raise Exception(
-                    "`where` should not be none here; otherwise this given-rule has nothing to do"
-                )
+                raise Exception("`where` should not be none here; otherwise this given-rule has nothing to do")
 
-            claim = ctx.make_claim(
-                crsid=course.shorthand, course=course, path=path, clause=self.rule.where
-            )
+            claim = ctx.make_claim(course=course, path=path, clause=self.rule.where, transcript=ctx.transcript)
 
             if claim.failed():
-                logger.debug(
-                    f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}'
-                )
+                logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')
                 failed_claims.append(claim)
             else:
                 logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
