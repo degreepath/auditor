@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
     parser.add_argument("--loglevel", dest="loglevel", nargs=1, choices=("warn", "debug", "info"))
+    parser.add_argument("--json", action='store_true')
     args = parser.parse_args()
 
     if args.loglevel:
@@ -69,7 +70,12 @@ def main():
                 print("error loading course into transcript", row, file=sys.stderr)
 
         for area in areas:
-            audit(area_def=area, transcript=transcript, student=student)
+            (result_json, summary) = audit(area_def=area, transcript=transcript, student=student)
+
+            if args.json:
+                print(json.dumps(result_json))
+            else:
+                print("".join(summary))
 
 
 def audit(*, area_def, transcript, student):
@@ -127,18 +133,19 @@ def audit(*, area_def, transcript, student):
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
+    result_json = result.to_dict()
+
     summary = summarize(
         stnum=student["stnum"],
         area=area,
-        result=best_sol,
+        result=result_json,
         count=total_count,
         elapsed=elapsed,
         transcript=this_transcript,
         iterations=times,
     )
-    output = "".join(summary)
 
-    print(output)
+    return (result_json, summary)
 
 
 def summarize(*, stnum, area, transcript, result, count, elapsed, iterations):
@@ -149,20 +156,18 @@ def summarize(*, stnum, area, transcript, result, count, elapsed, iterations):
 
     yield f'#{stnum}\'s "{area.name}" {area.kind}'
 
-    if result.ok():
+    if result['ok']:
         yield f" audit was successful."
     else:
         yield f" audit failed."
 
-    yield f" (rank {result.rank()})"
+    yield f" (rank {result['rank']})"
 
     yield endl
 
     word = "attempt" if count == 1 else "attempts"
     yield f"{count:,} {word} in {elapsed} (avg {avg_iter_time} per attempt)"
     yield endl
-
-    dictver = result.to_dict()
 
     yield endl
 
@@ -173,7 +178,7 @@ def summarize(*, stnum, area, transcript, result, count, elapsed, iterations):
     yield endl
     yield endl
 
-    yield endl.join(print_result(dictver, transcript))
+    yield endl.join(print_result(result, transcript))
 
     yield endl
 
