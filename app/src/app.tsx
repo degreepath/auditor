@@ -5,12 +5,16 @@ import { RuleResult } from "./result";
 import { EvaluationResultT, Course, Transcript } from "./types";
 
 export function App() {
-  let result: null | EvaluationResultT = (window as any).__dpResult;
-  let error: null | object = (window as any).__dpError;
-  let transcript: ReadonlyArray<Course> = (window as any).__dpTranscript;
+  return <Data>{props => <Contents {...props} />}</Data>;
+}
 
-  let transcriptMap: Transcript = new Map(transcript.map(c => [c.clbid, c]));
+type InnerProps = {
+  result: null | EvaluationResultT;
+  transcript: Transcript;
+  error: null | object;
+};
 
+function Contents({ result, transcript, error }: InnerProps) {
   if (error) {
     return <pre>{JSON.stringify(error, null, 2)}</pre>;
   }
@@ -31,7 +35,81 @@ export function App() {
         </dl>
       </header>
 
-      <RuleResult result={result} topLevel={true} transcript={transcriptMap} />
+      <RuleResult result={result} topLevel={true} transcript={transcript} />
     </article>
+  );
+}
+
+function Data({ children }: { children: typeof Contents }) {
+  let { __dpResult: _r, __dpError: _e, __dpTranscript: _t } = window as any;
+
+  let [error, setError] = React.useState<null | object>(_e);
+  let [result, setResult] = React.useState<null | EvaluationResultT>(_r);
+  let [transcript, setTranscript] = React.useState<Course[]>(_t || []);
+
+  transcript = transcript || [];
+
+  let [transcriptError, setTrError] = React.useState(false);
+  let [resultError, setRsError] = React.useState(false);
+
+  let setSerializedError = (err: Error) => {
+    setError({ error: err.message });
+  };
+
+  let transcriptRef = React.useRef<null | HTMLTextAreaElement>(null);
+  let resultRef = React.useRef<null | HTMLTextAreaElement>(null);
+
+  let processData = (ev: React.SyntheticEvent) => {
+    console.log("submitting...");
+    ev.preventDefault();
+
+    let currentOrNull = (ref: React.MutableRefObject<any>) =>
+      ref.current && ref.current.value ? ref.current.value : "null";
+
+    try {
+      setTranscript(JSON.parse(currentOrNull(transcriptRef)));
+      setTrError(false);
+    } catch (error) {
+      setSerializedError(error);
+      setTrError(true);
+    }
+
+    try {
+      setResult(JSON.parse(currentOrNull(resultRef)));
+      setRsError(false);
+    } catch (error) {
+      setSerializedError(error);
+      setRsError(true);
+    }
+  };
+
+  let transcriptMap: Transcript = new Map(transcript.map(c => [c.clbid, c]));
+
+  return (
+    <>
+      {process.env.NODE_ENV === "development" ? (
+        <form onSubmit={processData}>
+          <textarea
+            ref={transcriptRef}
+            name="transcript"
+            style={{
+              border: transcriptError ? "solid 2px #FF4136" : "default",
+            }}
+          />
+
+          <textarea
+            ref={resultRef}
+            name="result"
+            style={{
+              border: resultError ? "solid 2px #FF4136" : "default",
+            }}
+          />
+
+          <button type="submit">Load</button>
+        </form>
+      ) : null}
+
+      {children({ result, error, transcript: transcriptMap })}
+    </>
   );
 }
