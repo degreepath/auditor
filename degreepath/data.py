@@ -188,6 +188,34 @@ class CourseInstance:
             crsid=crsid,
         )
 
+    @staticmethod
+    def from_s(s: str, attributes=None):
+        return CourseInstance(
+            status=CourseStatus.InProgress,
+            credits=decimal.Decimal('1.00'),
+            subject=[s.split(' ')[0]],
+            number=s.split(' ')[1],
+            section="",
+            transcript_code=None,
+            clbid=s,
+            gereqs=[],
+            term=20001,
+            is_lab=False,
+            name=s,
+            grade=grade_from_str('B'),
+            gradeopt="Graded",
+            level=0,
+            attributes=attributes or [],
+            is_flac=False,
+            is_ace=False,
+            is_topic=False,
+            identity=s,
+            shorthand=s,
+            institution="St. Olaf College",
+            subtype="x",
+            crsid=s,
+        )
+
     def attach_attrs(self, attributes=None):
         if attributes is None:
             attributes = tuple()
