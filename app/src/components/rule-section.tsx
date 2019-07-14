@@ -48,6 +48,6 @@ export const RuleSection = styled.section<Props>`
   }
 
   & > header {
-    cursor: ns-resize;
+    cursor: pointer;
   }
 `;
