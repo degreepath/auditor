@@ -4,7 +4,7 @@ import { IFromRule, FromResultT } from "../types";
 import { StatusIcon, RuleSection, WhereClause } from "../components";
 
 export function FromResult(props: ResultBlock<IFromRule | FromResultT>) {
-  let { result, isOpen, onClick } = props;
+  let { result, isOpen, onClick, transcript } = props;
 
   if (!result.claims) {
     throw new Error("claims should be defined");
@@ -88,7 +88,7 @@ export function FromResult(props: ResultBlock<IFromRule | FromResultT>) {
 
           <ul>
             {result.claims.map(c => (
-              <li>{c.claim.course_id}</li>
+              <li>{transcript.get(c.claim.clbid) || "???"}</li>
             ))}
           </ul>
         </>

@@ -120,3 +120,5 @@ export type Course = {
   transcript_code: string;
   year?: number;
 };
+
+export type Transcript = ReadonlyMap<string, Course>;

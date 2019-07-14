@@ -1,10 +1,10 @@
 import * as React from "react";
 import { ResultBlock } from "./common";
-import { ICourseRule, CourseResultT, Course } from "../types";
+import { ICourseRule, CourseResultT } from "../types";
 import { StatusIcon, RuleSection } from "../components";
 
 export function CourseResult(props: ResultBlock<ICourseRule | CourseResultT>) {
-  let { result, isOpen, onClick } = props;
+  let { result, isOpen, onClick, transcript } = props;
 
   if (result.hidden && result.status !== "pass") {
     return null;
@@ -17,11 +17,13 @@ export function CourseResult(props: ResultBlock<ICourseRule | CourseResultT>) {
   // ie, we need to get the transcript from the server, and pass it down into here
   //
 
-  let claimed = result.claims
+  let claimedClbid = result.claims
     ? result.claims[0]
       ? result.claims[0].claim.clbid
-      : null
-    : null;
+      : ""
+    : "";
+
+  let claimed = transcript.get(claimedClbid);
 
   return (
     <RuleSection success={result.ok} skipped={result.status === "skip"}>
@@ -31,7 +33,7 @@ export function CourseResult(props: ResultBlock<ICourseRule | CourseResultT>) {
         <p>
           {result.ok ? (
             <>
-              {result.course}: {(claimed as Course).name}
+              {result.course}: {claimed ? claimed.name : "???"}
             </>
           ) : result.status === "skip" ? (
             <>{result.course}</>

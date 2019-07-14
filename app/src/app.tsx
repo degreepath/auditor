@@ -2,11 +2,14 @@ import "./app.css";
 
 import * as React from "react";
 import { RuleResult } from "./result";
-import { EvaluationResultT } from "./types";
+import { EvaluationResultT, Course, Transcript } from "./types";
 
 export function App() {
   let result: null | EvaluationResultT = (window as any).__dpResult;
   let error: null | object = (window as any).__dpError;
+  let transcript: ReadonlyArray<Course> = (window as any).__dpTranscript;
+
+  let transcriptMap: Transcript = new Map(transcript.map(c => [c.clbid, c]));
 
   if (error) {
     return <pre>{JSON.stringify(error, null, 2)}</pre>;
@@ -28,7 +31,7 @@ export function App() {
         </dl>
       </header>
 
-      <RuleResult result={result} topLevel={true} />
+      <RuleResult result={result} topLevel={true} transcript={transcriptMap} />
     </article>
   );
 }

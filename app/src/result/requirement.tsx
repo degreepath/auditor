@@ -5,7 +5,7 @@ import { EvaluatedRequirement } from "../types";
 import { RuleResult } from "./index";
 
 export function RequirementResult(props: ResultBlock<EvaluatedRequirement>) {
-  let { result, isOpen, onClick } = props;
+  let { result, isOpen, onClick, transcript } = props;
   return (
     <RuleSection success={result.ok}>
       <StatusIcon icon={result.ok ? "ok" : "warn"} />
@@ -17,7 +17,9 @@ export function RequirementResult(props: ResultBlock<EvaluatedRequirement>) {
         </p>
       </header>
 
-      {isOpen ? <RuleResult result={result.result} /> : null}
+      {isOpen ? (
+        <RuleResult result={result.result} transcript={transcript} />
+      ) : null}
     </RuleSection>
   );
 }

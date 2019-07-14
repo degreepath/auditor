@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RuleSection, StatusIcon } from "../components";
-import { EvaluationResultT, IRule } from "../types";
+import { EvaluationResultT, IRule, Transcript } from "../types";
 
 import { CountResult } from "./count";
 import { CourseResult } from "./course";
@@ -11,8 +11,9 @@ import { RequirementResult } from "./requirement";
 export function RuleResult(args: {
   result: EvaluationResultT | IRule;
   topLevel?: boolean;
+  transcript: Transcript;
 }) {
-  let { result, topLevel = false } = args;
+  let { result, topLevel = false, transcript } = args;
 
   let [isOpen, setOpenState] = React.useState(!result.ok);
   let handler = () => setOpenState(!isOpen);
@@ -21,18 +22,49 @@ export function RuleResult(args: {
     if (topLevel) {
       isOpen = true;
     }
-    return <CountResult result={result} isOpen={isOpen} onClick={handler} />;
+    return (
+      <CountResult
+        result={result}
+        isOpen={isOpen}
+        onClick={handler}
+        transcript={transcript}
+      />
+    );
   } else if (result.type === "course") {
-    return <CourseResult result={result} isOpen={isOpen} onClick={handler} />;
+    return (
+      <CourseResult
+        result={result}
+        isOpen={isOpen}
+        onClick={handler}
+        transcript={transcript}
+      />
+    );
   } else if (result.type === "from") {
-    return <FromResult result={result} isOpen={isOpen} onClick={handler} />;
+    return (
+      <FromResult
+        result={result}
+        isOpen={isOpen}
+        onClick={handler}
+        transcript={transcript}
+      />
+    );
   } else if (result.type === "reference") {
     return (
-      <ReferenceResult result={result} isOpen={isOpen} onClick={handler} />
+      <ReferenceResult
+        result={result}
+        isOpen={isOpen}
+        onClick={handler}
+        transcript={transcript}
+      />
     );
   } else if (result.type === "requirement") {
     return (
-      <RequirementResult result={result} isOpen={isOpen} onClick={handler} />
+      <RequirementResult
+        result={result}
+        isOpen={isOpen}
+        onClick={handler}
+        transcript={transcript}
+      />
     );
   } else {
     console.error(result);

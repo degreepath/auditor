@@ -5,7 +5,7 @@ import { CountResultT, ICountRule, IRule, EvaluationResultT } from "../types";
 import { RuleResult } from "./index";
 
 export function CountResult(props: ResultBlock<ICountRule | CountResultT>) {
-  let { result, isOpen, onClick } = props;
+  let { result, isOpen, onClick, transcript } = props;
 
   let successfulItemCount = result.items.filter(item => item.ok).length;
   let totalItemCount = result.items.filter(
@@ -21,7 +21,10 @@ export function CountResult(props: ResultBlock<ICountRule | CountResultT>) {
     successfulItemCount === 1
   ) {
     return (
-      <RuleResult result={result.items.find(r => r.ok) as EvaluationResultT} />
+      <RuleResult
+        result={result.items.find(r => r.ok) as EvaluationResultT}
+        transcript={transcript}
+      />
     );
   }
 
@@ -73,7 +76,9 @@ export function CountResult(props: ResultBlock<ICountRule | CountResultT>) {
 
       <div>
         {isOpen
-          ? result.items.map((item, i) => <RuleResult key={i} result={item} />)
+          ? result.items.map((item, i) => (
+              <RuleResult key={i} result={item} transcript={transcript} />
+            ))
           : null}
       </div>
     </RuleSection>
