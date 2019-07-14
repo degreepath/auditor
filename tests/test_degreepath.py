@@ -1,13 +1,17 @@
 from degreepath import *
+from degreepath.requirement import Requirement
+from degreepath.save import SaveRule
+from degreepath.rule.given import FromRule, FromInput
 import pytest
 import io
+import logging
 
 
 def c(s):
     return CourseSolution(course=s)
 
 
-def test_save():
+def x_test_save():
     rule = SaveRule(
         innards=FromRule(
             source=FromInput(
@@ -73,7 +77,7 @@ def test_save():
     ]
 
 
-def test_saves(caplog):
+def x_test_saves(caplog):
     caplog.set_level(logging.DEBUG)
 
     # test_data = io.StringIO(
