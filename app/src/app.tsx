@@ -47,6 +47,11 @@ function Contents({ result, transcript, error }: InnerProps) {
 function Data({ children }: { children: typeof Contents }) {
   let { __dpResult: _r, __dpError: _e, __dpTranscript: _t } = window as any;
 
+  if (process.env.NODE_ENV === "development") {
+    _r = _r || JSON.parse(localStorage.getItem("dp-result") || "null");
+    _t = _t || JSON.parse(localStorage.getItem("dp-transcript") || "null");
+  }
+
   let [error, setError] = React.useState<null | object>(_e);
   let [result, setResult] = React.useState<null | EvaluationResultT>(_r);
   let [transcript, setTranscript] = React.useState<Course[]>(_t || []);
@@ -71,7 +76,9 @@ function Data({ children }: { children: typeof Contents }) {
       ref.current && ref.current.value ? ref.current.value : "null";
 
     try {
-      setTranscript(JSON.parse(currentOrNull(transcriptRef)));
+      let v = currentOrNull(transcriptRef);
+      localStorage.setItem("dp-transcript", v);
+      setTranscript(JSON.parse(v));
       setTrError(false);
     } catch (error) {
       setSerializedError(error);
@@ -79,7 +86,9 @@ function Data({ children }: { children: typeof Contents }) {
     }
 
     try {
-      setResult(JSON.parse(currentOrNull(resultRef)));
+      let v = currentOrNull(resultRef);
+      localStorage.setItem("dp-result", v);
+      setResult(JSON.parse(v));
       setRsError(false);
     } catch (error) {
       setSerializedError(error);
@@ -96,6 +105,8 @@ function Data({ children }: { children: typeof Contents }) {
           <textarea
             ref={transcriptRef}
             name="transcript"
+            placeholder="transcript"
+            defaultValue={JSON.stringify(_t)}
             style={{
               border: transcriptError ? "solid 2px #FF4136" : "default",
             }}
@@ -104,6 +115,8 @@ function Data({ children }: { children: typeof Contents }) {
           <textarea
             ref={resultRef}
             name="result"
+            placeholder="result"
+            defaultValue={JSON.stringify(_r)}
             style={{
               border: resultError ? "solid 2px #FF4136" : "default",
             }}
