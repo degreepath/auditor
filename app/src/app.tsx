@@ -2,12 +2,11 @@ import "./app.css";
 
 import * as React from "react";
 import { RuleResult } from "./result";
-import { EvaluationResultT, AreaOfStudy } from "./types";
+import { EvaluationResultT } from "./types";
 
 export function App() {
   let result: null | EvaluationResultT = (window as any).__dpResult;
   let error: null | object = (window as any).__dpError;
-  let area: AreaOfStudy = (window as any).__dpArea;
 
   if (error) {
     return <pre>{JSON.stringify(error, null, 2)}</pre>;
@@ -20,10 +19,6 @@ export function App() {
   return (
     <article className="degreepath">
       <header>
-        <h2>
-          The <i>{area.name}</i> {area.type}
-        </h2>
-
         <dl>
           <dt>Status</dt>
           <dd>{result.ok ? "❇️ Complete" : "⚠️ Incomplete"}</dd>
