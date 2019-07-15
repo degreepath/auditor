@@ -6,7 +6,6 @@ import datetime
 import argparse
 
 import yaml
-import dotenv
 
 from degreepath import (
     CourseInstance,
