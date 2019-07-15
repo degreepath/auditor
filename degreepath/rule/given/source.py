@@ -73,7 +73,7 @@ class FromInput:
 
         if self.mode == "requirements":
             # TODO: assert that the result type of all mentioned requirements is the same
-            if not self.requirements or not requirements:
+            if not self.requirements and not requirements:
                 raise ValueError(
                     "expected self.requirements and args.requirements to be lists"
                 )
@@ -85,7 +85,7 @@ class FromInput:
 
         elif self.mode == "saves":
             # TODO: assert that the result type of all mentioned saves is the same
-            if not self.saves or not saves:
+            if not self.saves and not saves:
                 raise ValueError("expected self.saves and args.saves to be lists")
             for name in self.saves:
                 assert isinstance(name, str), f"expected {name} to be a string"

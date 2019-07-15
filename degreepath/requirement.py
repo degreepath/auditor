@@ -237,7 +237,7 @@ class Requirement:
             result = load_rule(result)
 
         saves = frozendict(
-            {name: SaveRule.load(name, s) for name, s in data.get("saves", {}).items()}
+            {name: SaveRule.load(name, s) for name, s in data.get("saves", data.get("save", {})).items()}
         )
 
         audited_by = None

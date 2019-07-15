@@ -91,7 +91,8 @@ class SingleClause:
 
         clauses = []
         for key, value in data.items():
-            assert len(value.keys()) is 1
+            assert type(value) == dict, f"{data}"
+            assert len(value.keys()) is 1, f"{value}"
             op = list(value.keys())[0]
 
             operator = Operator(op)

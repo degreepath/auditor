@@ -141,6 +141,7 @@ class SingleAssertion:
 
         if self.command == "count":
             allowed_sources = [
+                "distinct courses",
                 "courses",
                 "areas",
                 "performances",
