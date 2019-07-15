@@ -62,12 +62,17 @@ def main():
                 print("error loading course into transcript", row, file=sys.stderr)
 
         for area in areas:
-            (result_json, summary) = audit(area_def=area, transcript=transcript, student=student)
+            try:
+                (result_json, summary) = audit(area_def=area, transcript=transcript, student=student)
 
-            if args.json:
-                print(json.dumps(result_json))
-            else:
-                print("".join(summary))
+                if args.json:
+                    print(json.dumps(result_json))
+                else:
+                    print("".join(summary))
+
+            except Exception as ex:
+                print(ex, file=sys.stderr)
+                print(f"failed: #{student['stnum']} for {area['name']}", file=sys.stderr)
 
 
 def audit(*, area_def, transcript, student):
