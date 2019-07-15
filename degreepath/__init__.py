@@ -1,5 +1,3 @@
-from .data import CourseInstance, CourseStatus
+from .data import CourseInstance
 from .area import AreaOfStudy
-from .clause import Operator, str_clause
-from .rule import str_assertion
-from .ms import pretty_ms
+from .stringify import summarize
