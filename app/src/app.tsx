@@ -83,6 +83,7 @@ function Data({ children }: { children: typeof Contents }) {
     } catch (error) {
       setSerializedError(error);
       setTrError(true);
+      localStorage.removeItem("dp-transcript");
     }
 
     try {
@@ -93,6 +94,7 @@ function Data({ children }: { children: typeof Contents }) {
     } catch (error) {
       setSerializedError(error);
       setRsError(true);
+      localStorage.removeItem("dp-result");
     }
   };
 
