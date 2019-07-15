@@ -88,7 +88,7 @@ export function FromResult(props: ResultBlock<IFromRule | FromResultT>) {
 
           <ul>
             {result.claims.map(c => (
-              <li>{transcript.has(c.claim.clbid) ? transcript.get(c.claim.clbid).name : "???"}</li>
+              <li>{transcript.has(c.claim.clbid) ? transcript.get(c.claim.clbid)!.name : "???"}</li>
             ))}
           </ul>
         </>
