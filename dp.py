@@ -112,6 +112,7 @@ def audit(*, area_def, transcript, student):
             best_sol = result
 
         if result.ok():
+            best_sol = result
             iter_end = time.perf_counter()
             times.append(iter_end - iter_start)
             break
@@ -130,7 +131,7 @@ def audit(*, area_def, transcript, student):
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
-    result_json = result.to_dict()
+    result_json = best_sol.to_dict()
 
     summary = summarize(
         stnum=student["stnum"],
