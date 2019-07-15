@@ -90,7 +90,7 @@ class AreaOfStudy:
         if self.kind != "degree":
             assert isinstance(self.degree, str)
             assert self.degree.strip() != ""
-            assert self.degree in ["Bachelor of Arts", "Bachelor of Music"]
+            assert self.degree in ["B.A.", "B.M."]
 
         ctx = RequirementContext(requirements=self.requirements)
 
