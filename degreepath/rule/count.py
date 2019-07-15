@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class CountRule:
     count: int
     items: Tuple
+    at_most: bool
 
     def to_dict(self):
         return {
@@ -60,21 +61,26 @@ class CountRule:
         if "all" in data:
             items = data["all"]
             count = len(items)
+            at_most = True
         elif "any" in data:
             items = data["any"]
             count = 1
+            at_most = True
         elif "both" in data:
             items = data["both"]
             count = 2
+            at_most = True
             if len(items) != 2:
                 raise Exception(f"expected two items in both; found {len(items)} items")
         elif "either" in data:
             items = data["either"]
             count = 1
+            at_most = True
             if len(items) != 2:
                 raise Exception(f"expected two items in both; found {len(items)} items")
         else:
             items = data["of"]
+            at_most = data.get('at_most', False)
             if data["count"] == "all":
                 count = len(items)
             elif data["count"] == "any":
@@ -82,7 +88,7 @@ class CountRule:
             else:
                 count = int(data["count"])
 
-        return CountRule(count=count, items=tuple(load_rule(r) for r in items))
+        return CountRule(count=count, items=tuple(load_rule(r) for r in items), at_most=at_most)
 
     def validate(self, *, ctx):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
@@ -99,7 +105,10 @@ class CountRule:
         did_iter = False
 
         lo = self.count
-        hi = len(self.items) + 1
+        if self.at_most:
+            hi = self.count + 1
+        else:
+            hi = len(self.items) + 1
 
         potentials = [
             r
