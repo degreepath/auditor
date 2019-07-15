@@ -9,6 +9,7 @@ import yaml
 import dotenv
 import psycopg2
 import psycopg2.extras
+import sentry_sdk
 
 from degreepath import (
     CourseInstance,
@@ -21,8 +22,11 @@ from degreepath import (
 )
 
 
-psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
 dotenv.load_dotenv(verbose=True)
+if os.environ.get('SENTRY_DSN', None):
+    sentry_sdk.init(dsn='http://b5ea900bd6e8496984ba360f8c5f36a0:976e13ab96f14ed7ac0cbe253ae7feb0@10.4.136.201:9000/6')
+
+psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
 
 
 def cli():
@@ -35,10 +39,10 @@ def cli():
 
 def main(area_file, student_file):
     conn = psycopg2.connect(
-        host=os.getenv("PG_HOST"),
-        database=os.getenv("PG_DATABASE"),
-        user=os.getenv("PG_USER"),
-        password=os.getenv("PG_PASSWORD"),
+        host=os.environ.get("PG_HOST"),
+        database=os.environ.get("PG_DATABASE"),
+        user=os.environ.get("PG_USER"),
+        password=os.environ.get("PG_PASSWORD"),
     )
 
     result_id = None
@@ -48,7 +52,11 @@ def main(area_file, student_file):
             student = json.load(infile)
     except FileNotFoundError:
         print('could not find file "{}"'.format(student_file))
+        sentry_sdk.capture_exception()
         return
+
+    with sentry_sdk.configure_scope() as scope:
+        scope.user = {"id": student["stnum"]}
 
     try:
         try:
@@ -65,12 +73,17 @@ def main(area_file, student_file):
                     "error": {"error": err},
                 })
                 conn.commit()
+                sentry_sdk.capture_exception(Exception(err))
             return
 
         result_id = make_result_id(conn=conn, student=student, area=area, path=area_file)
 
         if result_id is None:
+            sentry_sdk.capture_exception(Exception("skipped evaluation"))
             return
+
+        with sentry_sdk.configure_scope() as scope:
+            scope.set_tag('result_id', result_id)
 
         #####
 
@@ -178,6 +191,8 @@ def main(area_file, student_file):
             )
             conn.commit()
     except Exception as ex:
+        sentry_sdk.capture_exception()
+
         import traceback
 
         with conn.cursor() as curs:
@@ -243,6 +258,7 @@ def make_result_id(*, student, area, conn, path):
 
         if area_id is None:
             err = "could not find the area {} in the database".format(path)
+            sentry_sdk.capture_exception(Exception(err))
             curs.execute("""
                 INSERT INTO result (student_id, error)
                 VALUES (%(student_id)s, %(error)s)
@@ -252,6 +268,9 @@ def make_result_id(*, student, area, conn, path):
             })
             conn.commit()
             return None
+
+        with sentry_sdk.configure_scope() as scope:
+            scope.set_tag('area_id', area_id)
 
         curs.execute("""
             INSERT INTO result (student_id, area_id)
