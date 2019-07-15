@@ -3,3 +3,4 @@ coloredlogs==10.0.0
 frozendict==1.2.0
 python-dotenv==0.10.3
 sentry-sdk==0.10.1
+dataclasses==0.6
