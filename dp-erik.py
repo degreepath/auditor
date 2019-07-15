@@ -3,6 +3,8 @@ import datetime
 import glob
 import json
 import os
+import sys
+import pathlib
 import time
 
 import yaml
@@ -14,10 +16,11 @@ import sentry_sdk
 from degreepath import CourseInstance, AreaOfStudy
 from degreepath.ms import pretty_ms
 
-
 dotenv.load_dotenv(verbose=True)
 if os.environ.get('SENTRY_DSN', None):
-    sentry_sdk.init(dsn='http://b5ea900bd6e8496984ba360f8c5f36a0:976e13ab96f14ed7ac0cbe253ae7feb0@10.4.136.201:9000/6')
+    sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
+else:
+    print('SENTRY_DSN not set; skipping', file=sys.stderr)
 
 psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
 
@@ -52,27 +55,32 @@ def main(area_file, student_file):
         scope.user = {"id": student["stnum"]}
 
     try:
+        area_code = pathlib.Path(area_file).stem
+        area_catalog = pathlib.Path(area_file).parent.stem
+
         try:
             with open(area_file, "r", encoding="utf-8") as infile:
                 area = yaml.load(stream=infile, Loader=yaml.SafeLoader)
         except FileNotFoundError:
+            sentry_sdk.capture_exception()
             with conn.cursor() as curs:
-                err = "could not find the area specification file at {}".format(area_file)
+                err = "could not find the area specification file for {} {} at {}".format(area_code, area_catalog, area_file)
                 curs.execute("""
-                    INSERT INTO result (student_id, error)
-                    VALUES (%(student_id)s, %(error)s)
+                    INSERT INTO result (student_id, error, in_progress, area_code, catalog)
+                    VALUES (%(student_id)s, %(error)s, false, %(code)s, %(catalog)s)
                 """, {
                     "student_id": student["stnum"],
                     "error": {"error": err},
+                    "code": area_code,
+                    "catalog": area_catalog,
                 })
                 conn.commit()
-                sentry_sdk.capture_exception(Exception(err))
             return
 
-        result_id = make_result_id(conn=conn, student=student, area=area, path=area_file)
+        result_id = make_result_id(conn=conn, stnum=student["stnum"], area_code=area_code, catalog=area_catalog)
 
         if result_id is None:
-            sentry_sdk.capture_exception(Exception("skipped evaluation"))
+            sentry_sdk.capture_message("skipped evaluation")
             return
 
         with sentry_sdk.configure_scope() as scope:
@@ -116,11 +124,8 @@ def main(area_file, student_file):
                         SET iterations = %(total_count)s
                           , duration = cast(now() - %(start)s as interval)
                         WHERE id = %(result_id)s
-                    """, {
-                        "result_id": result_id,
-                        "total_count": total_count,
-                        "start": start_time,
-                    })
+                    """, {"result_id": result_id, "total_count": total_count, "start": start_time})
+
                     conn.commit()
 
             result = sol.audit(transcript=transcript)
@@ -169,6 +174,7 @@ def main(area_file, student_file):
                       , claimed_courses = %(claims)s::jsonb
                       , ok = %(ok)s
                       , ts = now()
+                      , in_progress = false
                     WHERE id = %(result_id)s
                 """,
                 {
@@ -186,90 +192,30 @@ def main(area_file, student_file):
     except Exception as ex:
         sentry_sdk.capture_exception()
 
-        import traceback
+        if result_id:
+            with conn.cursor() as curs:
+                curs.execute("""
+                    UPDATE result
+                    SET in_progress = false
+                    WHERE id = %(result_id)s
+                """, {"result_id": result_id})
 
-        with conn.cursor() as curs:
-            tb = ''.join(traceback.format_exception(
-                etype=type(ex),
-                value=ex,
-                tb=ex.__traceback__,
-            ))
-
-            curs.execute("""
-                INSERT INTO result (student_id, id, error)
-                VALUES (%(student_id)s, %(result_id)s, %(error)s)
-                ON CONFLICT (id) DO UPDATE
-                SET error = %(error)s
-            """, {
-                "student_id": student["stnum"],
-                "error": {
-                    "error": "{}".format(ex),
-                    "student": student_file,
-                    "area": area_file,
-                    "trace": tb,
-                },
-                "result_id": result_id,
-            })
-            conn.commit()
+                conn.commit()
     finally:
         conn.close()
 
 
-def make_result_id(*, student, area, conn, path):
+def make_result_id(*, stnum, conn, area_code, catalog):
     with conn.cursor() as curs:
-        area_degree = area.get('degree', None)
-        area_name = area.get('name', None)
-        if area_degree == 'Bachelor of Arts':
-            area_degree = 'B.A.'
-            if area_name == 'Bachelor of Arts':
-                area_name = 'B.A.'
-        elif area_degree == 'Bachelor of Music':
-            area_degree = 'B.M.'
-            if area_name == 'Bachelor of Music':
-                area_name = 'B.M.'
-
-        curs.execute("""
-            SELECT id
-            FROM area
-            WHERE name = %(area_name)s
-              AND catalog_year = %(area_catalog)s
-              AND type = %(area_type)s
-              AND CASE type WHEN 'degree'
-                    THEN true
-                    ELSE degree = %(area_degree)s
-                  END
-        """, {
-            "area_name": area_name,
-            "area_catalog": int(area["catalog"][0:4]),
-            "area_type": area["type"],
-            "area_degree": area_degree,
-        })
-
-        area_id = None
-        for record in curs:
-            area_id = record[0]
-
-        if area_id is None:
-            err = "could not find the area {} in the database".format(path)
-            sentry_sdk.capture_exception(Exception(err))
-            curs.execute("""
-                INSERT INTO result (student_id, error)
-                VALUES (%(student_id)s, %(error)s)
-            """, {
-                "student_id": student["stnum"],
-                "error": {"error": err},
-            })
-            conn.commit()
-            return None
-
         with sentry_sdk.configure_scope() as scope:
-            scope.set_tag('area_id', area_id)
+            scope.set_tag('area_code', area_code)
+            scope.set_tag('catalog', catalog)
 
         curs.execute("""
-            INSERT INTO result (student_id, area_id)
-            VALUES (%(student_id)s, %(area_id)s)
+            INSERT INTO result (student_id, area_code, catalog, in_progress)
+            VALUES (%(student_id)s, %(area_code)s, %(catalog)s, true)
             RETURNING id
-        """, {"student_id": student["stnum"], "area_id": area_id})
+        """, {"student_id": stnum, "area_code": area_code, "catalog": catalog})
 
         conn.commit()
 
