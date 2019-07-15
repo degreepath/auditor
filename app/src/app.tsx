@@ -77,8 +77,14 @@ function Data({ children }: { children: typeof Contents }) {
 
     try {
       let v = currentOrNull(transcriptRef);
-      localStorage.setItem("dp-transcript", v);
-      setTranscript(JSON.parse(v));
+      let studentOrTranscript = JSON.parse(v);
+      if (Array.isArray(studentOrTranscript)) {
+        setTranscript(studentOrTranscript);
+        localStorage.setItem("dp-transcript", JSON.stringify(studentOrTranscript));
+      } else {
+        setTranscript(studentOrTranscript.courses);
+        localStorage.setItem("dp-transcript", JSON.stringify(studentOrTranscript.courses));
+      }
       setTrError(false);
     } catch (error) {
       setSerializedError(error);
