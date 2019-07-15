@@ -1,5 +1,5 @@
 from degreepath import *
-from degreepath.clause import SingleClause, AndClause
+from degreepath.clause import SingleClause, AndClause, Operator
 import pytest
 import io
 import logging

@@ -10,7 +10,7 @@ def test_load():
         name: foo
         catalog: 2018-19
         type: major
-        degree: Bachelor of Arts
+        degree: B.A.
 
         result:
           all:
@@ -44,7 +44,7 @@ def test_invalid():
             name: foo
             catalog: 2018-19
             type: major
-            degree: Bachelor of Arts
+            degree: B.A.
 
             result:
                 count: 1
