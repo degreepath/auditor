@@ -11,15 +11,8 @@ import psycopg2
 import psycopg2.extras
 import sentry_sdk
 
-from degreepath import (
-    CourseInstance,
-    AreaOfStudy,
-    CourseStatus,
-    Operator,
-    str_clause,
-    str_assertion,
-    pretty_ms,
-)
+from degreepath import CourseInstance, AreaOfStudy
+from degreepath.ms import pretty_ms
 
 
 dotenv.load_dotenv(verbose=True)
