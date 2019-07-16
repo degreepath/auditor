@@ -190,6 +190,7 @@ class CountRule:
                     yield CountSolution.from_rule(self, items=tuple_solset)
 
         if not did_iter:
+            logger.debug(f"{path} did not iterate")
             # ensure that we always yield something
             yield CountSolution.from_rule(self, items=self.items)
 
