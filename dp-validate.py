@@ -1,5 +1,6 @@
 import glob
 import argparse
+import traceback
 import yaml
 from degreepath import AreaOfStudy
 
@@ -13,10 +14,14 @@ def main():
         with open(f, "r", encoding="utf-8") as infile:
             area_def = yaml.load(stream=infile, Loader=yaml.SafeLoader)
 
-        area = AreaOfStudy.load(area_def)
-        area.validate()
-
-        print(area)
+        try:
+          area = AreaOfStudy.load(area_def)
+          area.validate()
+        except Exception as ex:
+          print('!!\t{}'.format(f))
+          traceback.print_exc()
+          print()
+          print()
 
 
 if __name__ == "__main__":

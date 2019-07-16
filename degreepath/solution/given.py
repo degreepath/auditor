@@ -21,6 +21,7 @@ class FromSolution:
             "action": self.rule.action,
             "where": self.rule.where,
             "output": [x.to_dict() for x in self.output],
+            "allow_claimed": self.allow_claimed,
             "state": self.state(),
             "status": "pending",
             "ok": self.ok(),
@@ -62,7 +63,13 @@ class FromSolution:
             if self.rule.where is None:
                 raise Exception("`where` should not be none here; otherwise this given-rule has nothing to do")
 
-            claim = ctx.make_claim(course=course, path=path, clause=self.rule.where, transcript=ctx.transcript)
+            claim = ctx.make_claim(
+                course=course,
+                path=path,
+                clause=self.rule.where,
+                transcript=ctx.transcript,
+                allow_claimed=self.rule.allow_claimed,
+            )
 
             if claim.failed():
                 logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')

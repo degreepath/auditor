@@ -1,9 +1,16 @@
 from dataclasses import dataclass
-from collections.abc import Mapping
+from collections.abc import Mapping, Iterable
 from typing import Union, List, Tuple, Dict, Any
 import enum
 import logging
 import decimal
+
+VALID_CLAUSE_CONSTANTS = [
+    '$senior-year',
+    '$junior-year',
+    '$major-declaration',
+    '$matriculation-year',
+]
 
 
 class Operator(enum.Enum):
@@ -14,6 +21,7 @@ class Operator(enum.Enum):
     EqualTo = "$eq"
     NotEqualTo = "$neq"
     In = "$in"
+    NotIn = "$nin"
 
     def __repr__(self):
         return str(self)
@@ -108,14 +116,31 @@ class SingleClause:
             if isinstance(expected_value, list):
                 expected_value = tuple(expected_value)
 
-            clause = SingleClause(key=key, expected=expected_value, operator=operator)
+            if type(expected_value) == str:
+                if expected_value.startswith('$'):
+                    raise Exception('value constants are currently unimplemented: {}'.format(expected_value))
+                if not SingleClause.validate_value_constant(expected_value):
+                    raise Exception('value constants must be valid; {}'.format(expected_value))
+            elif isinstance(expected_value, Iterable):
+                if any(v.startswith('$') for v in expected_value if type(v) == str):
+                    raise Exception('value constants are currently unimplemented: {}'.format(expected_value))
+                if not all(SingleClause.validate_value_constant(v) for v in expected_value):
+                    raise Exception('value constants must be valid; {}'.format(expected_value))
 
-            clauses.append(clause)
+            clauses.append(SingleClause(key=key, expected=expected_value, operator=operator))
 
         if len(clauses) == 1:
             return clauses[0]
 
         return AndClause(children=tuple(clauses))
+
+    @staticmethod
+    def validate_value_constant(v) -> bool:
+        if type(v) != str:
+            return True
+        if not v.startswith('$'):
+            return True
+        return v in VALID_CLAUSE_CONSTANTS
 
     def compare(self, to_value: Any) -> bool:
         # logging.debug(f"clause/compare {to_value} against {self}")
@@ -195,12 +220,15 @@ class SingleClause:
 def str_clause(clause) -> str:
     if not isinstance(clause, dict):
         return str_clause(clause.to_dict())
+
     if clause["type"] == "single-clause":
         return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\""
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
         return f'({" and ".join(str_clause(c) for c in clause["children"])})'
+
+    raise Exception('not a clause')
 
 
 Clause = Union[AndClause, OrClause, SingleClause]

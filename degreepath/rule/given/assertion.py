@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Union, Any, List, Tuple
+from typing import Dict, Union, Any, List, Tuple, Iterable
 import re
 import logging
 
@@ -13,13 +13,13 @@ class AssertionCollection:
     def __iter__(self):
         yield from self.children
 
-    def minmax(self, items: List) -> (int, int):
+    def minmax(self, items: List) -> Tuple[int, int]:
         ranges = [c.minmax(items) for c in self]
         lo = min(r[0] for r in ranges)
         hi = max(r[1] for r in ranges)
         return (lo, hi)
 
-    def range(self, items: List) -> range:
+    def range(self, items: List) -> Iterable:
         lo, hi = self.minmax(items)
         return range(lo, hi)
 
@@ -72,6 +72,9 @@ class OrAssertion(AssertionCollection):
         return any(c.apply(value) for c in self)
 
 
+assertion_key_regex = re.compile(r"(count|sum|minimum|maximum|stored|average)\((.*)\)")
+
+
 @dataclass(frozen=True)
 class SingleAssertion:
     command: str
@@ -97,17 +100,17 @@ class SingleAssertion:
             assert len(data.keys()) is 1
             return OrAssertion.load(data["$or"])
 
+        assert type(data) == dict, "data must be a dictionary: {}".format(data)
+
         keys = list(data.keys())
 
         assert (len(keys)) == 1
 
-        rex = re.compile(r"(count|sum|minimum|maximum|stored|average)\((.*)\)")
-
         k = keys[0]
 
-        m = rex.match(k)
+        m = assertion_key_regex.match(k)
         if not m:
-            raise KeyError(f'expected "{k}" to match {rex}')
+            raise KeyError(f'expected "{k}" to match {assertion_key_regex}')
 
         val = data[k]
 
@@ -125,22 +128,21 @@ class SingleAssertion:
         if isinstance(compare_to, list):
             compare_to = tuple(compare_to)
 
-        return SingleAssertion(
-            command=command, source=source, operator=operator, compare_to=compare_to
-        )
+        return SingleAssertion(command=command, source=source, operator=operator, compare_to=compare_to)
 
     def validate(self, *, ctx):
-        assert self.command in [
+        allowed_commands = [
             "count",
             "sum",
             "minimum",
             "maximum",
             "stored",
             "average",
-        ], f"{self.command}"
+        ]
+        assert self.command in allowed_commands, f"{self.command} must be in {allowed_commands}"
 
         if self.command == "count":
-            allowed_sources = [
+            allowed = [
                 "distinct courses",
                 "courses",
                 "areas",
@@ -149,15 +151,16 @@ class SingleAssertion:
                 "semesters",
                 "subjects",
             ]
-            assert (
-                self.source in allowed_sources
-            ), f"{self.source} not in {','.join(allowed_sources)}"
+            assert self.source in allowed, f"{self.source} not in {allowed}"
         elif self.command == "sum":
-            assert self.source in ["grades", "credits"]
+            allowed = ["grades", "credits"]
+            assert self.source in allowed, f"{self.source} not in {allowed}"
         elif self.command == "average":
-            assert self.source in ["grades", "credits"]
+            allowed = ["grades", "credits"]
+            assert self.source in allowed, f"{self.source} not in {allowed}"
         elif self.command == "minimum" or self.command == "maximum":
-            assert self.source in ["terms", "semesters", "grades", "credits"]
+            allowed = ["terms", "semesters", "grades", "credits"]
+            assert self.source in allowed, f"{self.source} not in {allowed}"
         elif self.command == "stored":
             # TODO: assert that the stored lookup exists
             pass
@@ -166,9 +169,7 @@ class SingleAssertion:
         compare_to: Any = self.compare_to
 
         if type(compare_to) not in [int, float]:
-            raise TypeError(
-                f"compare_to must be numeric to be used in min(); was {repr(compare_to)} ({type(compare_to)}"
-            )
+            raise TypeError(f"compare_to must be numeric to be used in min(); was {repr(compare_to)} ({type(compare_to)}")
 
         return compare_to
 
@@ -176,23 +177,19 @@ class SingleAssertion:
         compare_to = self.compare_to
 
         if type(compare_to) not in [int, float]:
-            raise TypeError(
-                f"compare_to must be numeric to be used in max(); was {repr(compare_to)} ({type(compare_to)}"
-            )
+            raise TypeError(f"compare_to must be numeric to be used in max(); was {repr(compare_to)} ({type(compare_to)}")
 
         return compare_to
 
-    def range(self, items: List) -> range:
+    def range(self, items: List) -> Iterable:
         lo, hi = self.minmax(items)
         return range(lo, hi)
 
-    def minmax(self, items: List) -> (int, int):
+    def minmax(self, items: List) -> Tuple[int, int]:
         compare_to: Any = self.compare_to
 
         if type(compare_to) not in [int, float]:
-            raise TypeError(
-                f"compare_to must be numeric to be used in a range; was {repr(compare_to)} ({type(compare_to)}"
-            )
+            raise TypeError(f"compare_to must be numeric to be used in a range; was {repr(compare_to)} ({type(compare_to)}")
 
         if self.operator == Operator.LessThanOrEqualTo:
             hi = compare_to
@@ -228,9 +225,7 @@ class SingleAssertion:
         compare_to: Any = self.compare_to
 
         if type(compare_to) not in [int, float]:
-            raise TypeError(
-                f"compare_to must be numeric to be used in apply(); was {repr(compare_to)} ({type(compare_to)}"
-            )
+            raise TypeError(f"compare_to must be numeric to be used in apply(); was {repr(compare_to)} ({type(compare_to)}")
 
         if self.operator == Operator.LessThanOrEqualTo:
             return value <= compare_to
@@ -265,7 +260,7 @@ def str_assertion(assertion) -> str:
         elif op == Operator.GreaterThan.name:
             action_desc = f"at least {assertion['compare_to']}"
         elif op == Operator.LessThanOrEqualTo.name:
-            action_desc = f"at most {actassertionion['compare_to']}"
+            action_desc = f"at most {assertion['compare_to']}"
         elif op == Operator.LessThan.name:
             action_desc = f"at most {assertion['compare_to']}"
         elif op == Operator.EqualTo.name:
@@ -290,6 +285,8 @@ def str_assertion(assertion) -> str:
 
     if assertion["type"] == "from-assertion/and":
         return f'({" and ".join(str_assertion(c) for c in assertion["children"])})'
+
+    raise Exception('not an assertion')
 
 
 AnyAssertion = Union[AndAssertion, OrAssertion, SingleAssertion]

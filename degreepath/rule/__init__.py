@@ -5,8 +5,9 @@ from .course import CourseRule
 from .action import ActionRule
 from .given import FromRule, str_assertion
 from .reference import ReferenceRule
+from .audited import AuditedRule
 
-Rule = Union[CourseRule, CountRule, ReferenceRule, FromRule]
+Rule = Union[CourseRule, CountRule, ReferenceRule, FromRule, AuditedRule]
 
 
 def load_rule(data: Dict) -> Rule:
@@ -20,7 +21,9 @@ def load_rule(data: Dict) -> Rule:
         return ReferenceRule.load(data)
     # elif ActionRule.can_load(data):
     #     return ActionRule.load(data)
+    elif AuditedRule.can_load(data):
+        return AuditedRule.load(data)
 
     raise ValueError(
-        f"expected Course, Given, Count, Both, Either, or Do; found none of those ({data})"
+        f"expected Course, Given, Count, Both, Either, Audited, or Do; found none of those ({data})"
     )

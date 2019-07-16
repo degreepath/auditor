@@ -61,9 +61,7 @@ class CourseRule:
         method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
         method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
 
-        assert (
-            method_a or method_b or method_c
-        ) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
+        assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
     def solutions(self, *, ctx, path: List):
         logger.debug(f'{path} reference to course "{self.course}"')

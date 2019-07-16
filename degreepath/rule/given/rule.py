@@ -16,6 +16,7 @@ class FromRule:
     action: Optional[AnyAssertion]
     limit: LimitSet
     where: Optional[Clause]
+    allow_claimed: bool
 
     def to_dict(self):
         return {
@@ -24,6 +25,7 @@ class FromRule:
             "limit": self.limit.to_dict(),
             "action": self.action.to_dict() if self.action else None,
             "where": self.where.to_dict() if self.where else None,
+            "allow_claimed": self.allow_claimed,
             "status": "skip",
             "state": self.state(),
             "ok": self.ok(),
@@ -57,8 +59,11 @@ class FromRule:
         if "assert" in data:
             action = SingleAssertion.load(data=data["assert"])
 
+        allow_claimed = data.get('allow_claimed', False)
+
         return FromRule(
-            source=FromInput.load(data["from"]), action=action, limit=limit, where=where
+            source=FromInput.load(data["from"]), action=action,
+            limit=limit, where=where, allow_claimed=allow_claimed
         )
 
     def validate(self, *, ctx):
@@ -138,9 +143,7 @@ class FromRule:
             for course_set in self.limit.limited_transcripts(data):
                 for n in self.action.range(items=course_set):
                     for combo in itertools.combinations(course_set, n):
-                        logging.debug(
-                            f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}"
-                        )
+                        logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
                         did_iter = True
                         yield FromSolution(output=combo, rule=self)
                 # also yield one with the entire set of courses

@@ -1,6 +1,6 @@
 import dataclasses
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 import decimal
 import logging
 
@@ -37,7 +37,7 @@ class CourseInstance:
     number: str
     section: Optional[str]
 
-    transcript_code: str
+    transcript_code: Optional[str]
     clbid: str
     gereqs: Tuple[str, ...]
     term: Term
@@ -96,7 +96,7 @@ class CourseInstance:
         clbid,
         crsid,
         institution="St. Olaf College",
-    ) -> Optional:
+    ) -> Optional[Any]:
         status = CourseStatus.Ok
 
         if grade == "IP":
@@ -193,19 +193,19 @@ class CourseInstance:
         return CourseInstance(
             status=CourseStatus.InProgress,
             credits=decimal.Decimal('1.00'),
-            subject=[s.split(' ')[0]],
+            subject=tuple([s.split(' ')[0]]),
             number=s.split(' ')[1],
             section="",
             transcript_code=None,
             clbid=s,
-            gereqs=[],
-            term=20001,
+            gereqs=tuple(),
+            term=Term(20001),
             is_lab=False,
             name=s,
             grade=grade_from_str('B'),
             gradeopt="Graded",
             level=0,
-            attributes=attributes or [],
+            attributes=tuple(attributes) if attributes else tuple(),
             is_flac=False,
             is_ace=False,
             is_topic=False,
@@ -235,10 +235,18 @@ class CourseInstance:
         if isinstance(clause, AndClause):
             logging.debug(f"clause/and/compare {str_clause(clause)}")
             return all(self.apply_clause(subclause) for subclause in clause)
+
         elif isinstance(clause, OrClause):
             logging.debug(f"clause/or/compare {str_clause(clause)}")
             return any(self.apply_clause(subclause) for subclause in clause)
+
         elif isinstance(clause, SingleClause):
+            if clause.key == 'clbid':
+                return clause.compare(self.clbid)
+            elif clause.key == 'crsid':
+                return clause.compare(self.crsid)
+
+            # TODO: replace this with explicit key accesses
             if clause.key in self.__dict__:
                 logging.debug(f"clause/compare/key={clause.key}")
                 return clause.compare(self.__dict__[clause.key])

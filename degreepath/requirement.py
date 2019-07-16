@@ -21,7 +21,7 @@ class RequirementContext:
     multicountable: List[List] = field(default_factory=list)
     claims: Dict[str, Set] = field(default_factory=lambda: defaultdict(set))
 
-    def find_course(self, c: str) -> Optional:
+    def find_course(self, c: str) -> Optional[CourseInstance]:
         try:
             return next(
                 course
@@ -51,7 +51,12 @@ class RequirementContext:
         self.claims = defaultdict(set)
 
     def make_claim(
-        self, *, course: CourseInstance, path: List[str], clause: Union, transcript: List[CourseInstance]
+        self, *,
+        course: CourseInstance,
+        path: List[str],
+        clause: Union,
+        transcript: List[CourseInstance],
+        allow_claimed: bool = False
     ):
         """
         If the crsid is not in the claims dictionary, insert it with an empty list.
@@ -79,6 +84,11 @@ class RequirementContext:
 
         claim = Claim(crsid=course.crsid, clbid=course.clbid, claimant_path=tuple(path), value=clause)
 
+        # If the claimant is a CourseRule specified with the `.allow_claimed` option,
+        # the claim succeeds (and is not recorded).
+        if allow_claimed or isinstance(clause, CourseRule) and clause.allow_claimed:
+            return ClaimAttempt(claim)
+
         potential_conflicts = [cl for cl in self.claims[course.crsid] if cl.crsid == claim.crsid]
 
         # allow topics courses to be taken multiple times
@@ -95,13 +105,9 @@ class RequirementContext:
 
                 if course.clbid not in conflicting_clbids:
                     courses_are_equivalent = (course.crsid == claim.crsid for claim in potential_conflicts)
+
                     if all(courses_are_equivalent):
                         return ClaimAttempt(claim, conflict_with=set())
-
-        # If the claimant is a CourseRule specified with the `.allow_claimed` option,
-        # the claim succeeds (and is not recorded).
-        if isinstance(clause, CourseRule) and clause.allow_claimed:
-            return ClaimAttempt(claim)
 
         # If the course that is being claimed has an empty list of claimants,
         # then the claim succeeds.
@@ -204,7 +210,7 @@ class Requirement:
     saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
     message: Optional[str] = None
-    result: Optional = None
+    result: Optional[Any] = None
     audited_by: Optional[str] = None
     contract: bool = False
 
@@ -225,20 +231,19 @@ class Requirement:
     def load(name: str, data: Dict[str, Any]):
         from .rule import load_rule
 
-        children = frozendict(
-            {
-                name: Requirement.load(name, r)
-                for name, r in data.get("requirements", {}).items()
-            }
-        )
+        children = frozendict({
+            name: Requirement.load(name, r)
+            for name, r in data.get("requirements", {}).items()
+        })
 
         result = data.get("result", None)
         if result is not None:
             result = load_rule(result)
 
-        saves = frozendict(
-            {name: SaveRule.load(name, s) for name, s in data.get("saves", data.get("save", {})).items()}
-        )
+        saves = data.get("saves", data.get("save", {}))
+        assert type(saves) != list
+
+        saves = frozendict({name: SaveRule.load(name, s) for name, s in saves.items()})
 
         audited_by = None
         if data.get("department_audited", False):
@@ -337,16 +342,14 @@ class RequirementSolution:
     name: str
     saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
-    result: Optional
+    result: Optional[Any]
     inputs: List[Tuple[str, int]]
     message: Optional[str] = None
     audited_by: Optional[str] = None
     contract: bool = False
 
     @staticmethod
-    def from_requirement(
-        req: Requirement, *, solution: Optional, inputs: List[Tuple[str, int]]
-    ):
+    def from_requirement(req: Requirement, *, solution: Optional[Any], inputs: List[Tuple[str, int]]):
         return RequirementSolution(
             inputs=inputs,
             result=solution,
@@ -366,9 +369,7 @@ class RequirementSolution:
             "type": "requirement",
             "name": self.name,
             "saves": {name: s.to_dict() for name, s in self.saves.items()},
-            "requirements": {
-                name: r.to_dict() for name, r in self.requirements.items()
-            },
+            "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
             "result": self.result.to_dict() if self.result else None,
             "audited_by": self.audited_by,
@@ -416,12 +417,12 @@ class RequirementResult:
     requirements: Any  # frozendict[str, Requirement]
     inputs: List[Tuple[str, int]]
     message: Optional[str] = None
-    result: Optional = None
+    result: Optional[Any] = None
     audited_by: Optional[str] = None
     contract: bool = False
 
     @staticmethod
-    def from_solution(sol: RequirementSolution, *, result: Optional):
+    def from_solution(sol: RequirementSolution, *, result: Optional[Any]):
         return RequirementResult(
             name=sol.name,
             saves=sol.saves,
