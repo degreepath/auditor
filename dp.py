@@ -1,4 +1,3 @@
-import glob
 import json
 import sys
 import time
@@ -35,11 +34,10 @@ def main():
         coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
     areas = []
-    for globset in args.area_files:
-        for f in glob.iglob(globset):
-            with open(f, "r", encoding="utf-8") as infile:
-                a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
-            areas.append(a)
+    for f in args.area_files:
+        with open(f, "r", encoding="utf-8") as infile:
+            a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
+        areas.append(a)
 
     students = []
     for file in args.student_files:
