@@ -139,14 +139,16 @@ class CountRule:
                     if item not in other_children:
                         selected_original_indices[item] = idx
 
-                logger.debug(f"{path} combo={combo_i}: generating product(*solutions)")
+                logger.debug(f"{path} {lo}..<{hi}, r={r}, combo={combo_i}: generating product(*solutions)")
                 did_iter = True
 
                 solutions = [rule.solutions(ctx=ctx, path=path) for rule in combo]
 
                 # print("combo", combo)
 
-                for solutionset in itertools.product(*solutions):
+                for solset_i, solutionset in enumerate(itertools.product(*solutions)):
+                    if solset_i % 10_000 == 0:
+                        logger.debug(f"{path} {lo}..<{hi}, r={r}, combo={combo_i} solset={solset_i}: generating product(*solutions)")
 
                     # print("solset", solutionset)
 
