@@ -61,32 +61,29 @@ class CountRule:
         if "all" in data:
             items = data["all"]
             count = len(items)
-            at_most = True
         elif "any" in data:
             items = data["any"]
             count = 1
-            at_most = True
         elif "both" in data:
             items = data["both"]
             count = 2
-            at_most = True
             if len(items) != 2:
                 raise Exception(f"expected two items in both; found {len(items)} items")
         elif "either" in data:
             items = data["either"]
             count = 1
-            at_most = True
             if len(items) != 2:
                 raise Exception(f"expected two items in both; found {len(items)} items")
         else:
             items = data["of"]
-            at_most = data.get('at_most', False)
             if data["count"] == "all":
                 count = len(items)
             elif data["count"] == "any":
                 count = 1
             else:
                 count = int(data["count"])
+
+        at_most = data.get('at_most', False)
 
         return CountRule(count=count, items=tuple(load_rule(r) for r in items), at_most=at_most)
 
