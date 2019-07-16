@@ -4,37 +4,35 @@ import sys
 import time
 import datetime
 import argparse
+import logging
+import coloredlogs
 
 import yaml
 
 from degreepath import CourseInstance, AreaOfStudy, summarize
 from degreepath.ms import pretty_ms
 
+logger = logging.getLogger()
+logformat = "%(levelname)s %(name)s: %(message)s"
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
-    parser.add_argument("--loglevel", dest="loglevel", nargs=1, choices=("warn", "debug", "info"))
+    parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info"))
     parser.add_argument("--json", action='store_true')
     args = parser.parse_args()
 
-    if args.loglevel:
-        import logging
-        import coloredlogs
-
-        logger = logging.getLogger()
-        logformat = "%(levelname)s %(name)s: %(message)s"
-
-        if args.loglevel == "warn":
-            logger.setLevel(logging.WARNING)
-            coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
-        elif args.loglevel == "debug":
-            logger.setLevel(logging.DEBUG)
-            coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
-        elif args.loglevel == "info":
-            logger.setLevel(logging.INFO)
-            coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
+    if args.loglevel == "warn":
+        logger.setLevel(logging.WARNING)
+        coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
+    elif args.loglevel == "debug":
+        logger.setLevel(logging.DEBUG)
+        coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+    elif args.loglevel == "info":
+        logger.setLevel(logging.INFO)
+        coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
     areas = []
     for globset in args.area_files:
