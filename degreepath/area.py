@@ -18,6 +18,7 @@ class AreaOfStudy:
     name: str
     kind: str
     degree: Optional[str]
+    major: Optional[str]
     catalog: str
 
     limit: Tuple
@@ -69,6 +70,7 @@ class AreaOfStudy:
             name=data["name"],
             catalog=data["catalog"],
             degree=data.get("degree", None),
+            major=data.get("major", None),
             kind=data["type"],
             requirements=requirements,
             result=result,
@@ -82,7 +84,7 @@ class AreaOfStudy:
         assert self.name.strip() != ""
 
         assert isinstance(self.kind, str)
-        assert self.kind in ["degree", "major", "concentration"]
+        assert self.kind in ["degree", "major", "concentration", "emphasis"]
 
         assert isinstance(self.catalog, str)
         assert self.catalog.strip() != ""
@@ -91,6 +93,10 @@ class AreaOfStudy:
             assert isinstance(self.degree, str)
             assert self.degree.strip() != ""
             assert self.degree in ["B.A.", "B.M."]
+
+        if self.kind == "emphasis":
+            assert isinstance(self.major, str)
+            assert self.major.strip() != ""
 
         ctx = RequirementContext(requirements=self.requirements)
 
