@@ -185,7 +185,7 @@ def main(area_file, student_file):
                     "result": json.dumps(result),
                     "rank": rank,
                     "claims": json.dumps(claims),
-                    "ok": ok,
+                    "ok": False if ok is None else ok,
                 },
             )
             conn.commit()
