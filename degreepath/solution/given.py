@@ -110,7 +110,6 @@ class FromSolution:
             elif clause.key == 'count(subjects)':
                 assert all(isinstance(x, CourseInstance) for x in output)
                 count = len(set(s for c in output for s in c.subject))
-                print(set(s for c in output for s in c.subject), count)
                 return clause.compare(count)
 
             elif clause.key == 'count(terms)':
