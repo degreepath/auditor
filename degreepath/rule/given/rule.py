@@ -54,7 +54,7 @@ class FromRule:
         if where is not None:
             where = load_clause(where, c)
 
-        limit = LimitSet.load(data=data.get("limit", None))
+        limit = LimitSet.load(data=data.get("limit", None), c=c)
 
         action = None
         if "assert" in data:

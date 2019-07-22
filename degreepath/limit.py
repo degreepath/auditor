@@ -36,10 +36,10 @@ class LimitSet:
         return [l.to_dict() for l in self.limits]
 
     @staticmethod
-    def load(data: Optional[Sequence[Dict]] = None):
+    def load(data: Optional[Sequence[Dict]], c: Constants):
         if data is None:
             return LimitSet(limits=tuple())
-        return LimitSet(limits=tuple(Limit.load(l) for l in data))
+        return LimitSet(limits=tuple(Limit.load(l, c) for l in data))
 
     def apply_limits(self, courses: List):
         clause_counters = defaultdict(int)
