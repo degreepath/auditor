@@ -14,7 +14,7 @@ from ...constants import Constants
 @dataclass(frozen=True)
 class FromRule:
     source: FromInput
-    action: Optional[AnyAssertion]
+    action: Optional[Clause]
     limit: LimitSet
     where: Optional[Clause]
     allow_claimed: bool

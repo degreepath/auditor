@@ -65,9 +65,6 @@ class AndClause:
 
         return any(c.mc_applies_same(other) for c in self)
 
-    def compare(self, to_value: Any) -> bool:
-        return all(c.compare(to_value) for c in self.children)
-
 
 @dataclass(frozen=True)
 class OrClause:
@@ -93,9 +90,6 @@ class OrClause:
         when used as part of a multicountable ruleset."""
 
         return any(c.mc_applies_same(other) for c in self)
-
-    def compare(self, to_value: Any) -> bool:
-        return any(c.compare(to_value) for c in self.children)
 
 
 @dataclass(frozen=True)
@@ -155,9 +149,9 @@ class SingleClause:
     def compare(self, to_value: Any) -> bool:
         # logging.debug(f"clause/compare {to_value} against {self}")
 
-        if isinstance(self.expected, tuple) and self.operator != Operator.In:
+        if isinstance(self.expected, tuple) and (self.operator is not Operator.In or self.operator is not Operator.NotIn):
             raise Exception(f'operator {self.operator} does not accept a list as the expected value')
-        elif not isinstance(self.expected, tuple) and self.operator == Operator.In:
+        elif not isinstance(self.expected, tuple) and (self.operator is Operator.In or self.operator is Operator.NotIn):
             raise Exception('expected a list of values to compare with $in operator')
 
         if isinstance(to_value, tuple) or isinstance(to_value, list):
@@ -171,31 +165,35 @@ class SingleClause:
                 logging.debug(f"clause/compare: beginning recursive comparison")
                 return any(self.compare(v) for v in to_value)
 
-        if self.operator == Operator.In:
+        if self.operator is Operator.In:
             logging.debug(f"clause/compare/$in: beginning inclusion check")
             return any(to_value == v for v in self.expected)
+        elif self.operator is Operator.NotIn:
+            logging.debug(f"clause/compare/$in: beginning inclusion check")
+            return all(to_value != v for v in self.expected)
 
+        # if we're comparing to a string, make our value a string
         if isinstance(to_value, str) and not isinstance(self.expected, str):
             expected = str(self.expected)
         else:
             expected = self.expected
 
-        if self.operator == Operator.LessThan:
-            result = expected < to_value
-        elif self.operator == Operator.LessThanOrEqualTo:
-            result = expected <= to_value
-        elif self.operator == Operator.EqualTo:
-            result = expected == to_value
-        elif self.operator == Operator.NotEqualTo:
-            result = expected != to_value
-        elif self.operator == Operator.GreaterThanOrEqualTo:
-            result = expected >= to_value
-        elif self.operator == Operator.GreaterThan:
-            result = expected > to_value
+        if self.operator is Operator.LessThan:
+            result = to_value < expected
+        elif self.operator is Operator.LessThanOrEqualTo:
+            result = to_value <= expected
+        elif self.operator is Operator.EqualTo:
+            result = to_value == expected
+        elif self.operator is Operator.NotEqualTo:
+            result = to_value != expected
+        elif self.operator is Operator.GreaterThanOrEqualTo:
+            result = to_value >= expected
+        elif self.operator is Operator.GreaterThan:
+            result = to_value > expected
         else:
             raise TypeError(f"unknown comparison function {self.operator}")
 
-        logging.debug(f"clause/compare: '{expected}' {self.operator.value} '{to_value}'; {result}")
+        logging.debug(f"clause/compare: `{to_value}` {self.operator.value} `{expected}`; {result}")
         return result
 
     def mc_applies_same(self, other) -> bool:

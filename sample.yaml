@@ -1,16 +1,22 @@
 result:
   from: {student: courses}
+  # where:
+  #   $and:
+  #     - $or:
+  #         - foo: {$eq: bar}
+  #         - foo: {$eq: baz}
+  #     - $or:
+  #         - bark: {$eq: dog}
+  #         - bark: {$eq: cat}
   where:
     $and:
-      - $or:
-          - foo: {$eq: bar}
-          - foo: {$eq: baz}
-      - $or:
-          - bark: {$eq: dog}
-          - bark: {$eq: cat}
+      - level: {$gte: 200}
+      - subject: {$neq: 'ASIAN'}
   assert:
-    $and:
-      - $or:
-        - count(subjects): {$gte: 2}
-        - sum(credits): {$gte: 1}
-      - count(courses): {$gte: 2}
+    count(subjects): {$gte: 2}
+  # assert:
+  #   $and:
+  #     - $or:
+  #       - count(subjects): {$gte: 2}
+  #       - sum(credits): {$gte: 1}
+  #     - count(courses): {$gte: 2}

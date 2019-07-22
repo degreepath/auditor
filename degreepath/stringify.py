@@ -129,11 +129,7 @@ def print_result(rule, transcript, indent=0):
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
-        action = rule["action"]
-        if 'min' in action:
-            yield f"{prefix} There must be {str_clause(action)} (have: {len(rule['claims'])}; need: {action['min']})"
-        else:
-            yield f"{prefix} There must be {str_clause(action)} (have: {len(rule['claims'])}; need: N)"
+        yield f"{prefix} There must be {str_clause(rule['action'])} (have: {len(rule['claims'])})"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":
