@@ -35,20 +35,29 @@ class FromInput:
             saves = tuple(x for x in data.get("saves", [data.get("save", None)]) if x)
             itemtype = None
             repeat_mode = None
+
         elif "requirements" in data or "requirement" in data:
             mode = "requirements"
             requirements = tuple(x for x in data.get("requirements", [data.get("requirement", None)]) if x)
             itemtype = None
             repeat_mode = None
+
         elif "stored-values" in data:
             mode = "stored-values"
             requirements = tuple(data["stored-values"])
             itemtype = None
             repeat_mode = None
+
         else:
             raise KeyError(f"expected student, stored-values, saves, or requirements; got {list(data.keys())}")
 
-        return FromInput(mode=mode, itemtype=itemtype, requirements=requirements, saves=saves, repeat_mode=repeat_mode)
+        return FromInput(
+            mode=mode,
+            itemtype=itemtype,
+            requirements=requirements,
+            saves=saves,
+            repeat_mode=repeat_mode,
+        )
 
     def validate(self, *, ctx):
         assert isinstance(self.mode, str)

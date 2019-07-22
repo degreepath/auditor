@@ -63,8 +63,11 @@ class FromRule:
         allow_claimed = data.get('allow_claimed', False)
 
         return FromRule(
-            source=FromInput.load(data["from"], c), action=action,
-            limit=limit, where=where, allow_claimed=allow_claimed
+            source=FromInput.load(data["from"], c),
+            action=action,
+            limit=limit,
+            where=where,
+            allow_claimed=allow_claimed,
         )
 
     def validate(self, *, ctx):
