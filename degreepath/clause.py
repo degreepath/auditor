@@ -40,6 +40,66 @@ class Operator(enum.Enum):
         return str(self)
 
 
+def apply_operator(*, op, lhs, rhs) -> bool:
+    if isinstance(lhs, tuple) and (op is not Operator.In and op is not Operator.NotIn and op is not Operator.EqualTo and op is not Operator.NotEqualTo):
+        raise Exception(f'{op} does not accept a list as the expected value')
+
+    if not isinstance(lhs, tuple) and (op is Operator.In or op is Operator.NotIn):
+        raise Exception(f'expected a list of values to compare with {op}')
+
+    if isinstance(lhs, tuple) and (op is Operator.EqualTo or op is Operator.NotEqualTo):
+        if len(lhs) is 0:
+            logging.debug(f"apply_operator/simplify: `{lhs}` was empty, so returning False")
+            return False
+
+        if len(lhs) is 1:
+            logging.debug(f"apply_operator/simplify: reduced `{lhs}` to `{lhs[0]}`")
+            lhs = lhs[0]
+        else:
+            if op is Operator.EqualTo:
+                return apply_operator(lhs=lhs, op=Operator.In, rhs=rhs)
+            elif op is Operator.NotEqualTo:
+                return apply_operator(lhs=lhs, op=Operator.NotIn, rhs=rhs)
+
+    if op is Operator.In:
+        logging.debug(f"apply_operator/in: `{lhs}` {op.value} `{rhs}`")
+        return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
+    elif op is Operator.NotIn:
+        logging.debug(f"apply_operator/not-in: `{lhs}` {op.value} `{rhs}`")
+        return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
+
+    if isinstance(lhs, str) and not isinstance(rhs, str):
+        rhs = str(rhs)
+    if not isinstance(lhs, str) and isinstance(rhs, str):
+        lhs = str(lhs)
+
+    if op is Operator.EqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs == rhs}")
+        return lhs == rhs
+
+    if op is Operator.NotEqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs != rhs}")
+        return lhs != rhs
+
+    if op is Operator.LessThan:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs < rhs}")
+        return lhs < rhs
+
+    if op is Operator.LessThanOrEqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs <= rhs}")
+        return lhs <= rhs
+
+    if op is Operator.GreaterThan:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs > rhs}")
+        return lhs > rhs
+
+    if op is Operator.GreaterThanOrEqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs >= rhs}")
+        return lhs >= rhs
+
+    raise TypeError(f"unknown comparison function {op}")
+
+
 @dataclass(frozen=True)
 class AndClause:
     children: Tuple
@@ -147,54 +207,7 @@ class SingleClause:
         pass
 
     def compare(self, to_value: Any) -> bool:
-        # logging.debug(f"clause/compare {to_value} against {self}")
-
-        if isinstance(self.expected, tuple) and (self.operator is not Operator.In or self.operator is not Operator.NotIn):
-            raise Exception(f'operator {self.operator} does not accept a list as the expected value')
-        elif not isinstance(self.expected, tuple) and (self.operator is Operator.In or self.operator is Operator.NotIn):
-            raise Exception('expected a list of values to compare with $in operator')
-
-        if isinstance(to_value, tuple) or isinstance(to_value, list):
-            if len(to_value) is 0:
-                logging.debug(f"clause/compare: skipped (empty to_value)")
-                return False
-
-            if len(to_value) is 1:
-                to_value = to_value[0]
-            else:
-                logging.debug(f"clause/compare: beginning recursive comparison")
-                return any(self.compare(v) for v in to_value)
-
-        if self.operator is Operator.In:
-            logging.debug(f"clause/compare/$in: beginning inclusion check")
-            return any(to_value == v for v in self.expected)
-        elif self.operator is Operator.NotIn:
-            logging.debug(f"clause/compare/$in: beginning inclusion check")
-            return all(to_value != v for v in self.expected)
-
-        # if we're comparing to a string, make our value a string
-        if isinstance(to_value, str) and not isinstance(self.expected, str):
-            expected = str(self.expected)
-        else:
-            expected = self.expected
-
-        if self.operator is Operator.LessThan:
-            result = to_value < expected
-        elif self.operator is Operator.LessThanOrEqualTo:
-            result = to_value <= expected
-        elif self.operator is Operator.EqualTo:
-            result = to_value == expected
-        elif self.operator is Operator.NotEqualTo:
-            result = to_value != expected
-        elif self.operator is Operator.GreaterThanOrEqualTo:
-            result = to_value >= expected
-        elif self.operator is Operator.GreaterThan:
-            result = to_value > expected
-        else:
-            raise TypeError(f"unknown comparison function {self.operator}")
-
-        logging.debug(f"clause/compare: `{to_value}` {self.operator.value} `{expected}`; {result}")
-        return result
+        return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
     def mc_applies_same(self, other) -> bool:
         """Checks if this clause applies to the same items as the other clause,
