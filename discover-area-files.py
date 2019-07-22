@@ -1,7 +1,7 @@
 import argparse
 import glob
 import json
-import os
+from os.path import abspath, join
 
 
 def cli():
@@ -13,27 +13,25 @@ def cli():
         print(name, path)
 
 
-def main(files, area_codes=None):
-    area_root = '/home/www/sis/degreepath/areas/'
+def main(files, area_codes=None, root='/home/www/sis/degreepath/areas/'):
+    for student_file in glob.iglob(files):
+        with open(student_file, 'r', encoding='utf-8') as infile:
+            student = json.load(infile)
 
-    for fname in glob.iglob(files):
-        with open(fname, 'r', encoding='utf-8') as infile:
-            data = json.load(infile)
-
-        areas = data.get('areas', [])
-        catalog = data['catalog']
+        areas = student['areas']
+        catalog = student['catalog']
         if catalog is None:
             continue
         catalog = str(catalog) + '-' + str(catalog + 1)[2:]
 
-        for degree in set(a['degree'] for a in areas if not area_codes or a['degree'] in area_codes):
-            area_path = area_root + "{}/{}.yaml".format(catalog, degree)
-            yield (fname, os.path.abspath(area_path))
+        items = set(item for a in areas for item in (a['degree'], a['code']))
 
-        for area in (a for a in areas if not area_codes or a['code'] in area_codes):
-            area_path = area_root + "{}/{}.yaml".format(catalog, area['code'])
-            yield (fname, os.path.abspath(area_path))
+        if area_codes:
+            items = (x for x in items if x in area_codes)
 
+        for filename in items:
+            file_path = join(root, catalog, filename + '.yaml')
+            yield (abspath(student_file), abspath(file_path))
 
 if __name__ == '__main__':
     cli()
