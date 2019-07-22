@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from typing import Union, List, TYPE_CHECKING, Sequence, Any
+from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple
 import logging
 import decimal
 
 from ..result import FromResult
 from ..data import CourseInstance, Term
-from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause, Operator
+from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause, Operator, ResolvedClause
 
 logger = logging.getLogger(__name__)
 
@@ -79,108 +79,104 @@ class FromSolution:
                 logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
                 successful_claims.append(claim)
 
-        may_possibly_succeed = self.apply_clause(self.rule.action, self.output)
+        resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
-        if may_possibly_succeed:
+        if resolved_assertion.result is True:
             logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
         else:
             logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
 
         return FromResult(
             rule=self.rule,
+            resolved_assertion=resolved_assertion,
             successful_claims=successful_claims,
             failed_claims=failed_claims,
-            success=may_possibly_succeed and len(failed_claims) == 0,
+            success=resolved_assertion.result is True and len(failed_claims) == 0,
         )
 
+    def apply_clause(self, clause: Clause, output: Sequence) -> ResolvedClause:
+        if not isinstance(clause, (AndClause, OrClause, SingleClause)):
+            raise TypeError(f"expected a clause; found {clause} ({type(clause)})")
 
-    def apply_clause(self, clause: Clause, output: Sequence) -> bool:
-        if isinstance(clause, AndClause):
-            logging.debug(f"clause/and/compare {str_clause(clause)}")
-            return all(self.apply_clause(subclause, output) for subclause in clause)
-
-        elif isinstance(clause, OrClause):
-            logging.debug(f"clause/or/compare {str_clause(clause)}")
-            return any(self.apply_clause(subclause, output) for subclause in clause)
-
-        elif isinstance(clause, SingleClause):
-            if clause.key == 'count(courses)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                count = len(output)
-                return clause.compare(count)
-
-            elif clause.key == 'count(subjects)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                count = len(set(s for c in output for s in c.subject))
-                return clause.compare(count)
-
-            elif clause.key == 'count(terms)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                count = len(set(c.term for c in output))
-                return clause.compare(count)
-
-            elif clause.key == 'count(years)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                count = len(set(c.year for c in output))
-                return clause.compare(count)
-
-            elif clause.key == 'count(semesters)':
-                # TODO: what is the point of counting semesters as opposed to terms?
-                raise Exception
-                # assert all(isinstance(x, CourseInstance) for x in output)
-                # count = len(set(c.semester for c in output))
-                # return clause.compare(count)
-
-            elif clause.key == 'count(distinct_courses)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                count = len(set(c.crsid for c in output))
-                return clause.compare(count)
-
-            elif clause.key == 'count(areas)':
-                # TODO
-                pass
-
-            elif clause.key == 'count(performances)':
-                # TODO
-                pass
-
-            elif clause.key == 'sum(grades)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                total = sum(c.grade for c in output)
-                return clause.compare(total)
-
-            elif clause.key == 'sum(credits)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                total = sum(c.credits for c in output)
-                return clause.compare(total)
-
-            elif clause.key == 'average(grades)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                total = avg_or_0([c.grade for c in output])
-                return clause.compare(total)
-
-            elif clause.key == 'average(credits)':
-                assert all(isinstance(x, CourseInstance) for x in output)
-                total = avg_or_0([c.credits for c in output])
-                return clause.compare(total)
-
-            elif clause.key.startswith('min(') or clause.key.startswith('max('):
-                assert all(isinstance(x, CourseInstance) for x in output)
-                func = min if clause.key.startswith('min(') else max
-                if clause.key == 'min(terms)' or clause.key == 'max(terms)':
-                    total = func(c.term for c in output)
-                elif clause.key == 'min(semesters)' or clause.key == 'max(semesters)':
-                    # TODO: what is the point of using semesters instead of terms here?
-                    raise Exception
-                    # total = func(c.semester for c in output)
-                elif clause.key == 'min(grades)' or clause.key == 'max(grades)':
-                    total = func(c.grade for c in output)
-                elif clause.key == 'min(credits)' or clause.key == 'max(credits)':
-                    total = func(c.credits for c in output)
-                return clause.compare(total)
-
-        raise TypeError(f"expected a clause; found {type(clause)}")
+        return clause.compare_and_resolve_with(value=output, map=apply_clause_to_given)
 
 
 def avg_or_0(items: Sequence):
     return sum(items) / len(items) if items else 0
+
+
+def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, Sequence[Any]]:
+    if clause.key == 'count(courses)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.clbid for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(subjects)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(s for c in value for s in c.subject)
+        return (len(items), items)
+
+    elif clause.key == 'count(terms)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.term for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(years)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.year for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(distinct_courses)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.crsid for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(areas)':
+        # TODO
+        pass
+
+    elif clause.key == 'count(performances)':
+        # TODO
+        pass
+
+    elif clause.key == 'count(seminars)':
+        # TODO
+        pass
+
+    elif clause.key == 'sum(grades)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.grade for c in value)
+        return (sum(items), items)
+
+    elif clause.key == 'sum(credits)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.credits for c in value)
+        return (sum(items), items)
+
+    elif clause.key == 'average(grades)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.grade for c in value)
+        return (avg_or_0(items), items)
+
+    elif clause.key == 'average(credits)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.credits for c in value)
+        return (avg_or_0(items), items)
+
+    elif clause.key.startswith('min(') or clause.key.startswith('max('):
+        assert all(isinstance(x, CourseInstance) for x in value)
+        func = min if clause.key.startswith('min(') else max
+
+        if clause.key == 'min(terms)' or clause.key == 'max(terms)':
+            item = func(c.term for c in value)
+        elif clause.key == 'min(grades)' or clause.key == 'max(grades)':
+            item = func(c.grade for c in value)
+        elif clause.key == 'min(credits)' or clause.key == 'max(credits)':
+            item = func(c.credits for c in value)
+        else:
+            raise Exception(f'expected a valid clause key; got {clause.key}')
+
+        return (item, tuple([item]))
+
+    else:
+        raise Exception(f'expected a valid clause key; got {clause.key}')

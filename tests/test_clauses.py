@@ -103,3 +103,15 @@ def test_operator_gte(caplog):
     assert apply_operator(lhs=2, op=Operator.GreaterThanOrEqualTo, rhs=2)
     assert apply_operator(lhs=3, op=Operator.GreaterThanOrEqualTo, rhs=2)
 
+
+def test_resolution(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    c = Constants(matriculation_year=2000)
+
+    x = load_clause({"@xyz": {"$eq": 1}}, c=c)
+    expected_single = SingleClause(key="@xyz", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
+    assert x == expected_single
+
+    result = x.compare_and_resolve_with(value=1, map=lambda clause, value: (value, tuple([value])))
+    assert result.result is True

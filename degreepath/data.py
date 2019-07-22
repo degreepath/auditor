@@ -121,7 +121,7 @@ class CourseInstance:
         # TODO: handle did-not-complete courses
 
         clbid = clbid
-        term = Term(term)
+        term = Term(int(term))
 
         gradeopt = graded
 

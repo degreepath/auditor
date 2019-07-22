@@ -129,7 +129,7 @@ def print_result(rule, transcript, indent=0):
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
-        yield f"{prefix} There must be {str_clause(rule['action'])} (have: {len(rule['claims'])})"
+        yield f"{prefix} There must be {str_clause(rule['resolved_action'])}"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":

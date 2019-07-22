@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Tuple, Dict, Any
+from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence
 import enum
 import logging
 import decimal
@@ -97,7 +97,21 @@ def apply_operator(*, op, lhs, rhs) -> bool:
         logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs >= rhs}")
         return lhs >= rhs
 
-    raise TypeError(f"unknown comparison function {op}")
+    raise TypeError(f"unknown comparison Callable[[Any], Any] {op}")
+
+
+@dataclass(frozen=True)
+class ResolvedBaseClause:
+    resolved_with: Optional[Any]
+    resolved_items: Sequence[Any]
+    result: bool
+
+    def to_dict(self):
+        return {
+            "resolved_with": self.resolved_with,
+            "resolved_items": self.resolved_items,
+            "result": self.result,
+        }
 
 
 @dataclass(frozen=True)
@@ -105,7 +119,10 @@ class AndClause:
     children: Tuple
 
     def to_dict(self):
-        return {"type": "and-clause", "children": [c.to_dict() for c in self.children]}
+        return {
+            "type": "and-clause",
+            "children": [c.to_dict() for c in self.children],
+        }
 
     @staticmethod
     def load(data: List[Dict], c: Constants):
@@ -125,13 +142,31 @@ class AndClause:
 
         return any(c.mc_applies_same(other) for c in self)
 
+    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
+        children = [c.compare_and_resolve_with(value=value, map=map) for c in self.children]
+        result = all(c.result for c in children)
+
+        return ResolvedAndClause(children=children, resolved_with=None, resolved_items=[], result=result)
+
+
+@dataclass(frozen=True)
+class ResolvedAndClause(AndClause, ResolvedBaseClause):
+    def to_dict(self):
+        return {
+            **AndClause.to_dict(self),
+            **ResolvedBaseClause.to_dict(self),
+        }
+
 
 @dataclass(frozen=True)
 class OrClause:
     children: Tuple
 
     def to_dict(self):
-        return {"type": "or-clause", "children": [c.to_dict() for c in self.children]}
+        return {
+            "type": "or-clause",
+            "children": [c.to_dict() for c in self.children],
+        }
 
     @staticmethod
     def load(data: Dict, c: Constants):
@@ -150,6 +185,21 @@ class OrClause:
         when used as part of a multicountable ruleset."""
 
         return any(c.mc_applies_same(other) for c in self)
+
+    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
+        children = [c.compare_and_resolve_with(value=value, map=map) for c in self.children]
+        result = any(c.result for c in children)
+
+        return ResolvedOrClause(children=children, resolved_with=None, resolved_items=[], result=result)
+
+
+@dataclass(frozen=True)
+class ResolvedOrClause(OrClause, ResolvedBaseClause):
+    def to_dict(self):
+        return {
+            **OrClause.to_dict(self),
+            **ResolvedBaseClause.to_dict(self),
+        }
 
 
 @dataclass(frozen=True)
@@ -231,16 +281,46 @@ class SingleClause:
     def applies_to(self, other) -> bool:
         return self.compare(other)
 
+    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
+        reduced_value, value_items = map(clause=self, value=value)
+        result = self.compare(reduced_value)
+
+        return ResolvedSingleClause(
+            key=self.key,
+            expected=self.expected,
+            expected_verbatim=self.expected_verbatim,
+            operator=self.operator,
+            resolved_with=reduced_value,
+            resolved_items=value_items,
+            result=result,
+        )
+
+
+@dataclass(frozen=True)
+class ResolvedSingleClause(ResolvedBaseClause, SingleClause):
+    def to_dict(self):
+        return {
+            **SingleClause.to_dict(self),
+            **ResolvedBaseClause.to_dict(self),
+        }
+
 
 def str_clause(clause) -> str:
     if not isinstance(clause, dict):
         return str_clause(clause.to_dict())
 
     if clause["type"] == "single-clause":
-        if clause['expected'] == clause['expected_verbatim']:
-            return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\""
+        if clause.get('resolved_with', None) is not None:
+            resolved = f" ({clause.get('resolved_with', None)}; {sorted(clause.get('resolved_items', []))})"
         else:
-            return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\" (via \"{clause['expected_verbatim']}\")"
+            resolved = ""
+
+        if clause['expected'] != clause['expected_verbatim']:
+            postscript = f" (via \"{clause['expected_verbatim']}\")"
+        else:
+            postscript = ""
+
+        return f"\"{clause['key']}\"{resolved} {clause['operator']} \"{clause['expected']}\"{postscript}"
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
@@ -250,3 +330,4 @@ def str_clause(clause) -> str:
 
 
 Clause = Union[AndClause, OrClause, SingleClause]
+ResolvedClause = Union[ResolvedAndClause, ResolvedOrClause, ResolvedSingleClause]
