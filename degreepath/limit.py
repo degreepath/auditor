@@ -78,7 +78,7 @@ class LimitSet:
 
         logging.debug(f"limit/state: {clause_counters}")
 
-        return course_set
+        return tuple(course_set)
 
     def limited_transcripts(self, courses: List):
         """
@@ -92,7 +92,7 @@ class LimitSet:
         # skip _everything_ in here if there are no limits to apply
         if not self.limits:
             logging.debug(f"No limits to apply")
-            yield courses
+            yield tuple(courses)
             return
 
         # step 1: find the number of extra iterations we will need for each limiting clause
