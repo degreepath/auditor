@@ -4,18 +4,16 @@ from .rule import str_assertion
 from .ms import pretty_ms
 
 
-def summarize(*, stnum, transcript, result, count, elapsed, iterations):
+def summarize(*, transcript, result, count, elapsed, iterations):
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     endl = "\n"
 
-    yield f"#{stnum}'s"
-
     if result['ok']:
-        yield f" audit was successful."
+        yield f"audit was successful."
     else:
-        yield f" audit failed."
+        yield f"audit failed."
 
     yield f" (rank {result['rank']})"
 
@@ -106,7 +104,8 @@ def print_result(rule, transcript, indent=0):
         else:
             emoji = "🚫️"
 
-        yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
+        if rule['where'] is not None:
+            yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
         mapped_trns = {c.clbid: c for c in transcript}
 
@@ -124,15 +123,11 @@ def print_result(rule, transcript, indent=0):
             for clm in rule["failures"]:
                 course = mapped_trns.get(clm['claim']["clbid"], None)
                 if course:
-                    yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid})"
+                    yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid}) [{[x['claimant_path'] for x in clm['conflict_with']]}]"
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
-        action = rule["action"]
-        if 'min' in action:
-            yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: {action['min']})"
-        else:
-            yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: N)"
+        yield f"{prefix} There must be {str_clause(rule['resolved_action'])}"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":

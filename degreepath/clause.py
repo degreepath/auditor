@@ -1,10 +1,30 @@
 from dataclasses import dataclass
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Tuple, Dict, Any
+from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence
 import enum
 import logging
 import decimal
+# from functools import lru_cache
 from .constants import Constants
+
+
+def load_clause(data: Dict, c: Constants):
+    if not isinstance(data, Mapping):
+        raise Exception(f'expected {data} to be a dictionary')
+
+    if "$and" in data:
+        assert len(data.keys()) is 1
+        return AndClause.load(data["$and"], c)
+    elif "$or" in data:
+        assert len(data.keys()) is 1
+        return OrClause.load(data["$or"], c)
+
+    clauses = [SingleClause.load(key, value, c) for key, value in data.items()]
+
+    if len(clauses) == 1:
+        return clauses[0]
+
+    return AndClause(children=tuple(clauses))
 
 
 class Operator(enum.Enum):
@@ -21,17 +41,137 @@ class Operator(enum.Enum):
         return str(self)
 
 
+# @lru_cache(maxsize=256, typed=True)
+def apply_operator(*, op, lhs, rhs) -> bool:
+    """
+    Applies two values (lhs and rhs) to an operator.
+
+    `lhs` is drawn from the input data, while `rhs` is drawn from the area specification.
+
+    {attributes: {$eq: csci_elective}}, then, is transformed into something like
+    {[csci_elective, csci_systems]: {$eq: csci_elective}}, which is reduced to a set of
+    checks: csci_elective == csci_elective && csci_systems == csci_elective.
+
+    {count(courses): {$gte: 2}} is transformed into {5: {$gte: 2}}, which becomes
+    `5 >= 2`.
+
+    The additional complications are as follows:
+
+    1. When the comparison is started, if only one of RHS,LHS is a string, the
+       other is coerced into a string.
+
+    2. If both LHS and RHS are sequences, an error is raised.
+
+    3. If LHS is a sequence, and OP is .EqualTo, OP is changed to .In
+    4. If LHS is a sequence, and OP is .NotEqualTo, OP is changed to .NotIn
+    """
+    logging.debug(f"apply_operator: `{lhs}` ({type(lhs)}) {op} `{rhs}` ({type(rhs)})")
+
+    if isinstance(lhs, tuple) and isinstance(rhs, tuple):
+        if op is not Operator.In:
+            raise Exception(f'both rhs and lhs must not be sequences when using {op}; lhs={lhs}, rhs={rhs}')
+
+        if lhs == tuple() or rhs == tuple():
+            logging.debug(f"apply_operator/skip: either lhs={lhs == tuple()} or rhs={rhs == tuple()} was empty; returning false")
+            return False
+
+        logging.debug(f"apply_operator/coerce: converting both {lhs} and {rhs} to sets of strings, and running issubset")
+        lhs = set(str(s) for s in lhs)
+        rhs = set(str(s) for s in rhs)
+        logging.debug(f"apply_operator/coerce: lhs={lhs}; rhs={rhs}; lhs.issubset(rhs)={lhs.issubset(rhs)}; rhs.issubset(lhs)={rhs.issubset(lhs)}")
+        return lhs.issubset(rhs) or rhs.issubset(lhs)
+
+    if isinstance(lhs, tuple) or isinstance(rhs, tuple):
+        if op is Operator.EqualTo:
+            logging.debug(f"apply_operator/coerce: got lhs={type(lhs)} / rhs={type(rhs)}; switching to {Operator.In}")
+            return apply_operator(op=Operator.In, lhs=lhs, rhs=rhs)
+        elif op is Operator.NotEqualTo:
+            logging.debug(f"apply_operator/coerce: got lhs={type(lhs)} / rhs={type(rhs)}; switching to {Operator.NotIn}")
+            return apply_operator(op=Operator.NotIn, lhs=lhs, rhs=rhs)
+
+        if op is Operator.In:
+            logging.debug(f"apply_operator/in: `{lhs}` {op.value} `{rhs}`")
+            if isinstance(lhs, tuple):
+                return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
+            if isinstance(rhs, tuple):
+                return any(apply_operator(op=Operator.EqualTo, lhs=lhs, rhs=v) for v in rhs)
+            raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
+
+        elif op is Operator.NotIn:
+            logging.debug(f"apply_operator/not-in: `{lhs}` {op.value} `{rhs}`")
+            if isinstance(lhs, tuple):
+                return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
+            if isinstance(rhs, tuple):
+                return all(apply_operator(op=Operator.NotEqualTo, lhs=lhs, rhs=v) for v in rhs)
+            raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
+
+        else:
+            raise Exception(f'{op} does not accept a list; got {lhs} ({type(lhs)})')
+
+    if isinstance(lhs, str) and not isinstance(rhs, str):
+        rhs = str(rhs)
+    if not isinstance(lhs, str) and isinstance(rhs, str):
+        lhs = str(lhs)
+
+    if op is Operator.EqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs == rhs}")
+        return lhs == rhs
+
+    if op is Operator.NotEqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs != rhs}")
+        return lhs != rhs
+
+    if op is Operator.LessThan:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs < rhs}")
+        return lhs < rhs
+
+    if op is Operator.LessThanOrEqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs <= rhs}")
+        return lhs <= rhs
+
+    if op is Operator.GreaterThan:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs > rhs}")
+        return lhs > rhs
+
+    if op is Operator.GreaterThanOrEqualTo:
+        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs >= rhs}")
+        return lhs >= rhs
+
+    raise TypeError(f"unknown comparison {op}")
+
+
+@dataclass(frozen=True)
+class ResolvedBaseClause:
+    resolved_with: Optional[Any]
+    resolved_items: Sequence[Any]
+    result: bool
+
+    def to_dict(self):
+        return {
+            "resolved_with": self.resolved_with,
+            "resolved_items": self.resolved_items,
+            "result": self.result,
+        }
+
+
 @dataclass(frozen=True)
 class AndClause:
     children: Tuple
 
     def to_dict(self):
-        return {"type": "and-clause", "children": [c.to_dict() for c in self.children]}
+        return {
+            "type": "and-clause",
+            "children": [c.to_dict() for c in self.children],
+        }
 
     @staticmethod
-    def load(data: List[Dict]):
-        clauses = [SingleClause.load(clause) for clause in data]
+    def load(data: List[Dict], c: Constants):
+        clauses = [load_clause(clause, c) for clause in data]
         return AndClause(children=tuple(clauses))
+
+    def validate(self, *, ctx):
+        for c in self.children:
+            c.validate(ctx=ctx)
 
     def __iter__(self):
         yield from self.children
@@ -41,6 +181,21 @@ class AndClause:
         when used as part of a multicountable ruleset."""
 
         return any(c.mc_applies_same(other) for c in self)
+
+    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
+        children = [c.compare_and_resolve_with(value=value, map=map) for c in self.children]
+        result = all(c.result for c in children)
+
+        return ResolvedAndClause(children=children, resolved_with=None, resolved_items=[], result=result)
+
+
+@dataclass(frozen=True)
+class ResolvedAndClause(AndClause, ResolvedBaseClause):
+    def to_dict(self):
+        return {
+            **AndClause.to_dict(self),
+            **ResolvedBaseClause.to_dict(self),
+        }
 
 
 @dataclass(frozen=True)
@@ -48,12 +203,19 @@ class OrClause:
     children: Tuple
 
     def to_dict(self):
-        return {"type": "or-clause", "children": [c.to_dict() for c in self.children]}
+        return {
+            "type": "or-clause",
+            "children": [c.to_dict() for c in self.children],
+        }
 
     @staticmethod
-    def load(data: Dict):
-        clauses = [SingleClause.load(clause) for clause in data]
+    def load(data: Dict, c: Constants):
+        clauses = [load_clause(clause, c) for clause in data]
         return OrClause(children=tuple(clauses))
+
+    def validate(self, *, ctx):
+        for c in self.children:
+            c.validate(ctx=ctx)
 
     def __iter__(self):
         yield from self.children
@@ -63,6 +225,21 @@ class OrClause:
         when used as part of a multicountable ruleset."""
 
         return any(c.mc_applies_same(other) for c in self)
+
+    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
+        children = [c.compare_and_resolve_with(value=value, map=map) for c in self.children]
+        result = any(c.result for c in children)
+
+        return ResolvedOrClause(children=children, resolved_with=None, resolved_items=[], result=result)
+
+
+@dataclass(frozen=True)
+class ResolvedOrClause(OrClause, ResolvedBaseClause):
+    def to_dict(self):
+        return {
+            **OrClause.to_dict(self),
+            **ResolvedBaseClause.to_dict(self),
+        }
 
 
 @dataclass(frozen=True)
@@ -82,104 +259,45 @@ class SingleClause:
         }
 
     @staticmethod
-    def load(data: Dict, c: Constants):
-        if not isinstance(data, Mapping):
-            raise Exception(f'expected {data} to be a dictionary')
+    def load(key: str, value: Any, c: Constants):
+        if not isinstance(value, Mapping):
+            raise Exception(f'expected {value} to be a dictionary')
 
-        if "$and" in data:
-            assert len(data.keys()) is 1
-            return AndClause.load(data["$and"])
-        elif "$or" in data:
-            assert len(data.keys()) is 1
-            return OrClause.load(data["$or"])
+        assert len(value.keys()) is 1, f"{value}"
+        op = list(value.keys())[0]
 
-        clauses = []
-        for key, value in data.items():
-            assert type(value) == dict, f"{data}"
-            assert len(value.keys()) is 1, f"{value}"
-            op = list(value.keys())[0]
+        operator = Operator(op)
+        expected_value = value[op]
 
-            operator = Operator(op)
-            expected_value = value[op]
+        if isinstance(expected_value, list):
+            expected_value = tuple(expected_value)
 
-            if isinstance(expected_value, list):
-                expected_value = tuple(expected_value)
+        expected_verbatim = expected_value
 
-            expected_verbatim = expected_value
+        if key == "subjects":
+            key = "subject"
+        if key == "attribute":
+            key = "attributes"
+        if key == "gereq":
+            key = "gereqs"
 
-            if key == "subjects":
-                key = "subject"
-            if key == "attribute":
-                key = "attributes"
-            if key == "gereq":
-                key = "gereqs"
+        if type(expected_value) == str:
+            expected_value = c.get_by_name(expected_value)
+        elif isinstance(expected_value, Iterable):
+            expected_value = tuple(c.get_by_name(v) for v in expected_value)
 
-            if type(expected_value) == str:
-                expected_value = c.get_by_name(expected_value)
-            elif isinstance(expected_value, Iterable):
-                expected_value = tuple(c.get_by_name(v) for v in expected_value)
+        return SingleClause(
+            key=key,
+            expected=expected_value,
+            operator=operator,
+            expected_verbatim=expected_verbatim,
+        )
 
-            clauses.append(SingleClause(
-                key=key,
-                expected=expected_value,
-                operator=operator,
-                expected_verbatim=expected_verbatim,
-            ))
-
-        if len(clauses) == 1:
-            return clauses[0]
-
-        return AndClause(children=tuple(clauses))
+    def validate(self, *, ctx):
+        pass
 
     def compare(self, to_value: Any) -> bool:
-        # logging.debug(f"clause/compare {to_value} against {self}")
-
-        if isinstance(self.expected, tuple) and self.operator != Operator.In:
-            raise Exception(f'operator {self.operator} does not accept a list as the expected value')
-        elif not isinstance(self.expected, tuple) and self.operator == Operator.In:
-            raise Exception('expected a list of values to compare with $in operator')
-
-        if isinstance(to_value, tuple) or isinstance(to_value, list):
-            if len(to_value) is 0:
-                logging.debug(f"clause/compare: skipped (empty to_value)")
-                return False
-
-            if len(to_value) is 1:
-                to_value = to_value[0]
-            else:
-                logging.debug(f"clause/compare: beginning recursive comparison")
-                return any(self.compare(v) for v in to_value)
-
-        if self.operator == Operator.In:
-            logging.debug(f"clause/compare/$in: beginning inclusion check")
-            return any(to_value == v for v in self.expected)
-
-        if isinstance(to_value, str) and (
-            isinstance(self.expected, int)
-            or isinstance(self.expected, float)
-            or isinstance(self.expected, decimal.Decimal)
-        ):
-            expected = str(self.expected)
-        else:
-            expected = self.expected
-
-        if self.operator == Operator.LessThan:
-            result = expected < to_value
-        elif self.operator == Operator.LessThanOrEqualTo:
-            result = expected <= to_value
-        elif self.operator == Operator.EqualTo:
-            result = expected == to_value
-        elif self.operator == Operator.NotEqualTo:
-            result = expected != to_value
-        elif self.operator == Operator.GreaterThanOrEqualTo:
-            result = expected >= to_value
-        elif self.operator == Operator.GreaterThan:
-            result = expected > to_value
-        else:
-            raise TypeError(f"unknown comparison function {self.operator}")
-
-        logging.debug(f"clause/compare: '{expected}' {self.operator.value} '{to_value}'; {result}")
-        return result
+        return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
     def mc_applies_same(self, other) -> bool:
         """Checks if this clause applies to the same items as the other clause,
@@ -203,13 +321,46 @@ class SingleClause:
     def applies_to(self, other) -> bool:
         return self.compare(other)
 
+    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
+        reduced_value, value_items = map(clause=self, value=value)
+        result = self.compare(reduced_value)
+
+        return ResolvedSingleClause(
+            key=self.key,
+            expected=self.expected,
+            expected_verbatim=self.expected_verbatim,
+            operator=self.operator,
+            resolved_with=reduced_value,
+            resolved_items=value_items,
+            result=result,
+        )
+
+
+@dataclass(frozen=True)
+class ResolvedSingleClause(ResolvedBaseClause, SingleClause):
+    def to_dict(self):
+        return {
+            **SingleClause.to_dict(self),
+            **ResolvedBaseClause.to_dict(self),
+        }
+
 
 def str_clause(clause) -> str:
     if not isinstance(clause, dict):
         return str_clause(clause.to_dict())
 
     if clause["type"] == "single-clause":
-        return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\" (via {clause['expected_verbatim']})"
+        if clause.get('resolved_with', None) is not None:
+            resolved = f" ({clause.get('resolved_with', None)}; {sorted(clause.get('resolved_items', []))})"
+        else:
+            resolved = ""
+
+        if clause['expected'] != clause['expected_verbatim']:
+            postscript = f" (via \"{clause['expected_verbatim']}\")"
+        else:
+            postscript = ""
+
+        return f"\"{clause['key']}\"{resolved} {clause['operator']} \"{clause['expected']}\"{postscript}"
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
@@ -219,3 +370,4 @@ def str_clause(clause) -> str:
 
 
 Clause = Union[AndClause, OrClause, SingleClause]
+ResolvedClause = Union[ResolvedAndClause, ResolvedOrClause, ResolvedSingleClause]

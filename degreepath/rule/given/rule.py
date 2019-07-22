@@ -6,7 +6,7 @@ import logging
 from .source import FromInput
 from .assertion import AnyAssertion, load_assertion
 from ...limit import LimitSet, Limit
-from ...clause import Clause, SingleClause, str_clause
+from ...clause import Clause, str_clause, load_clause
 from ...solution import FromSolution
 from ...constants import Constants
 
@@ -14,10 +14,11 @@ from ...constants import Constants
 @dataclass(frozen=True)
 class FromRule:
     source: FromInput
-    action: Optional[AnyAssertion]
+    action: Optional[Clause]
     limit: LimitSet
     where: Optional[Clause]
     allow_claimed: bool
+    in_save: bool = False
 
     def to_dict(self):
         return {
@@ -49,22 +50,26 @@ class FromRule:
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, c: Constants, *, in_save: bool = False):
         where = data.get("where", None)
         if where is not None:
-            where = SingleClause.load(where, c)
+            where = load_clause(where, c)
 
-        limit = LimitSet.load(data=data.get("limit", None))
+        limit = LimitSet.load(data=data.get("limit", None), c=c)
 
         action = None
         if "assert" in data:
-            action = load_assertion(data["assert"], c)
+            action = load_clause(data["assert"], c)
 
         allow_claimed = data.get('allow_claimed', False)
 
         return FromRule(
-            source=FromInput.load(data["from"], c), action=action,
-            limit=limit, where=where, allow_claimed=allow_claimed
+            source=FromInput.load(data["from"], c),
+            action=action,
+            limit=limit,
+            where=where,
+            allow_claimed=allow_claimed,
+            in_save=in_save,
         )
 
     def validate(self, *, ctx):
@@ -79,10 +84,10 @@ class FromRule:
             if self.source.repeat_mode == "first":
                 filtered_courses = []
                 course_identities = set()
-                for course in data:
-                    if course.identity not in course_identities:
+                for course in sorted(data, key=lambda c: c.term):
+                    if course.crsid not in course_identities:
                         filtered_courses.append(course)
-                        course_identities.add(course.identity)
+                        course_identities.add(course.crsid)
                 data = filtered_courses
         else:
             raise KeyError(f"{self.source.itemtype} not yet implemented")
@@ -91,7 +96,8 @@ class FromRule:
 
     def solutions_when_saves(self, *, ctx, path):
         saves = [
-            ctx.save_rules[s].solutions(ctx=ctx, path=path) for s in self.source.saves
+            ctx.save_rules[s].solutions(ctx=ctx, path=path)
+            for s in self.source.saves
         ]
 
         for p in itertools.product(*saves):
@@ -105,7 +111,7 @@ class FromRule:
         ]
 
         for p in itertools.product(*reqs):
-            data = set(item for req_result in p for item in req_result.matched())
+            data = set(item for req_result in p for item in req_result.matched(ctx=ctx))
             yield data
 
     def solutions(self, *, ctx, path: List[str]):
@@ -121,7 +127,8 @@ class FromRule:
         else:
             raise KeyError(f'unknown "from" type "{self.source.mode}"')
 
-        assert self.action is not None
+        if not self.in_save:
+            assert self.action is not None
 
         did_iter = False
         for data in iterable:
@@ -142,15 +149,21 @@ class FromRule:
                     logging.debug(f"fromrule/filter/after: []")
 
             for course_set in self.limit.limited_transcripts(data):
-                for n in self.action.range(items=course_set):
-                    for combo in itertools.combinations(course_set, n):
-                        logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
-                        did_iter = True
-                        yield FromSolution(output=combo, rule=self)
+                # for n in self.action.range(items=course_set):
+                #     for combo in itertools.combinations(course_set, n):
+                #         logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                #         did_iter = True
+                #         yield FromSolution(output=combo, rule=self)
+
+                # for combo in itertools.combinations(course_set, n):
+                #     logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                #     did_iter = True
+                #     yield FromSolution(output=combo, rule=self)
+
                 # also yield one with the entire set of courses
                 yield FromSolution(output=course_set, rule=self)
 
         if not did_iter:
             # be sure we always yield something
             logging.info("did not yield anything; yielding empty collection")
-            yield FromSolution(output=[], rule=self)
+            yield FromSolution(output=tuple(), rule=self)

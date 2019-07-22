@@ -34,22 +34,13 @@ def main():
         logger.setLevel(logging.INFO)
         coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
 
-    areas = []
-    for f in args.area_files:
-        with open(f, "r", encoding="utf-8") as infile:
-            a = yaml.load(stream=infile, Loader=yaml.SafeLoader)
-        areas.append(a)
-
-    students = []
-    for file in args.student_files:
-        with open(file, "r", encoding="utf-8") as infile:
-            data = json.load(infile)
-        students.append(data)
-
-    if not students:
+    if not args.student_files:
         print("no students to process", file=sys.stderr)
 
-    for student in students:
+    for student_file in args.student_files:
+        with open(student_file, "r", encoding="utf-8") as infile:
+            student = json.load(infile)
+
         transcript = []
         for row in student["courses"]:
             instance = CourseInstance.from_dict(**row)
@@ -58,9 +49,16 @@ def main():
             else:
                 print("error loading course into transcript", row, file=sys.stderr)
 
-        for area in areas:
+        for area_file in args.area_files:
+            with open(area_file, "r", encoding="utf-8") as infile:
+                area_spec = yaml.load(stream=infile, Loader=yaml.SafeLoader)
+
+            print(f"auditing #{student['stnum']} against {area_file}", file=sys.stderr)
+
+            constants = Constants(matriculation_year=student['matriculation'])
+
             try:
-                (result_json, summary) = audit(area_def=area, transcript=transcript, student=student)
+                (result_json, summary) = audit(spec=area_spec, transcript=transcript, constants=constants)
 
                 if args.json:
                     print(json.dumps(result_json))
@@ -71,13 +69,11 @@ def main():
                 traceback.print_exc()
                 print(f"failed: #{student['stnum']}", file=sys.stderr)
 
+                break
 
-def audit(*, area_def, transcript, student):
-    print(f"auditing #{student['stnum']}", file=sys.stderr)
 
-    constants = Constants(matriculation_year=student['matriculation'])
-
-    area = AreaOfStudy.load(specification=area_def, c=constants)
+def audit(*, spec, transcript, constants):
+    area = AreaOfStudy.load(specification=spec, c=constants)
     area.validate()
 
     this_transcript = []
@@ -133,7 +129,6 @@ def audit(*, area_def, transcript, student):
     result_json = best_sol.to_dict()
 
     summary = summarize(
-        stnum=student["stnum"],
         result=result_json,
         count=total_count,
         elapsed=elapsed,

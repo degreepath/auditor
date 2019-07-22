@@ -46,8 +46,8 @@ class AreaOfStudy:
             for clause in ruleset:
                 if "course" in clause:
                     item = CourseRule.load(clause)
-                elif "attributes" in clause or "attribute" in clause:
-                    item = SingleClause.load(clause)
+                elif "attributes" in clause:
+                    item = SingleClause.load("attributes", clause["attributes"], c)
                 else:
                     raise Exception(f"invalid multicountable {clause}")
                 clauses.append(item)

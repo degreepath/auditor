@@ -3,6 +3,7 @@ from typing import Dict, List, Iterator, TYPE_CHECKING
 import logging
 
 from .rule import FromRule
+from .constants import Constants
 
 
 @dataclass(frozen=True)
@@ -14,17 +15,15 @@ class SaveRule:
         return {**self.innards.to_dict(), "type": "save", "name": self.name}
 
     @staticmethod
-    def load(name: str, data: Dict):
-        return SaveRule(innards=FromRule.load(data), name=name)
+    def load(name: str, data: Dict, c: Constants):
+        return SaveRule(innards=FromRule.load(data, c, in_save=True), name=name)
 
     def validate(self, *, ctx):
         assert self.name.strip() != ""
 
         self.innards.validate(ctx=ctx)
 
-    def solutions(
-        self, *, ctx, path: List[str]
-    ) -> Iterator:
+    def solutions(self, *, ctx, path: List[str]) -> Iterator:
         path = [*path, f'.save["{self.name}"]']
         logging.debug(f"{path} inside a saverule")
         yield from self.innards.solutions(ctx=ctx, path=path)

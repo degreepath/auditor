@@ -1,5 +1,5 @@
 import dataclasses
-from enum import Enum
+import enum
 from typing import Optional, Tuple, Any
 import decimal
 import logging
@@ -8,9 +8,13 @@ from .lib import grade_from_str, expand_subjects
 from .clause import Clause, SingleClause, AndClause, OrClause, str_clause
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, order=True)
 class Term:
     term: int
+
+    def __post_init__(self):
+        if not isinstance(self.term, int):
+            raise TypeError(f'expected {self.term} ({type(self.term)}) to be an int')
 
     def year(self):
         return int(str(self.term)[0:4])
@@ -22,12 +26,12 @@ class Term:
         return {"type": "term", "year": self.year(), "semester": self.semester()}
 
 
-class CourseStatus(Enum):
-    Ok = 0
-    InProgress = 1
-    DidNotComplete = 2
-    Repeated = 3
-    NotTaken = 4
+class CourseStatus(enum.Enum):
+    Ok = enum.auto()
+    InProgress = enum.auto()
+    DidNotComplete = enum.auto()
+    Repeated = enum.auto()
+    NotTaken = enum.auto()
 
 
 @dataclasses.dataclass(frozen=True)
@@ -76,26 +80,26 @@ class CourseInstance:
     @staticmethod
     def from_dict(
         *,
-        grade,
-        transcript_code=None,
-        graded,
-        credits,
-        subjects=None,
-        course,
-        number=None,
         attributes=None,
-        name,
-        section,
-        gereqs,
-        term,
-        is_repeat,
-        incomplete,
-        semester,
-        year,
-        subtype,
         clbid,
+        course,
+        credits,
         crsid,
+        gereqs,
+        grade,
+        graded,
+        incomplete,
         institution="St. Olaf College",
+        is_repeat,
+        name,
+        number=None,
+        section,
+        semester,
+        subjects=None,
+        subtype,
+        term,
+        transcript_code=None,
+        year,
     ) -> Optional[Any]:
         status = CourseStatus.Ok
 
@@ -117,7 +121,7 @@ class CourseInstance:
         # TODO: handle did-not-complete courses
 
         clbid = clbid
-        term = Term(term)
+        term = Term(int(term))
 
         gradeopt = graded
 
@@ -125,21 +129,18 @@ class CourseInstance:
         # TODO: export is_flac/is_ace
         is_flac = name.startswith("FLC - ")
         is_ace = False
-
         # TODO: export the course type
         is_topic = name.startswith("Top: ")
 
         grade = grade_from_str(grade)
-
         credits = decimal.Decimal(credits)
 
+        verbatim_subject_field = subjects
         subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
         subject = tuple(expand_subjects(subject))
         # we want to keep the original shorthand course identity for matching purposes
 
-        number = number if number is not None else course.split(" ")[1]
-        number = str(number)
-
+        number = str(number if number is not None else course.split(" ")[1])
         section = section if section != "" else None
 
         try:
@@ -152,67 +153,65 @@ class CourseInstance:
 
         if is_lab:
             course_identity = f"{'/'.join(subject)} {number}.L"
-            course_identity_short = f"{'/'.join(subjects)} {number}.L"
+            course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.L"
         elif is_flac:
             course_identity = f"{'/'.join(subject)} {number}.F"
-            course_identity_short = f"{'/'.join(subjects)} {number}.F"
+            course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.F"
         else:
             course_identity = f"{'/'.join(subject)} {number}"
-            course_identity_short = f"{'/'.join(subjects)} {number}"
+            course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}"
 
         return CourseInstance(
-            status=status,
-            credits=credits,
-            subject=subject,
-            number=number,
-            section=section,
-            transcript_code=transcript_code,
+            attributes=attributes,
             clbid=clbid,
+            credits=credits,
+            crsid=crsid,
             gereqs=gereqs,
-            term=term,
-            is_lab=is_lab,
-            name=name,
             grade=grade,
             gradeopt=gradeopt,
-            level=level,
-            attributes=attributes,
-            is_flac=is_flac,
-            is_ace=is_ace,
-            is_topic=is_topic,
             identity=course_identity,
-            shorthand=course_identity_short,
             institution=institution,
+            is_ace=is_ace,
+            is_flac=is_flac,
+            is_lab=is_lab,
+            is_topic=is_topic,
+            level=level,
+            name=name,
+            number=number,
+            section=section,
+            shorthand=course_identity_short,
+            status=status,
+            subject=subject,
             subtype=subtype,
-            crsid=crsid,
+            term=term,
+            transcript_code=transcript_code,
         )
 
     @staticmethod
-    def from_s(s: str, attributes=None):
-        return CourseInstance(
-            status=CourseStatus.InProgress,
-            credits=decimal.Decimal('1.00'),
-            subject=tuple([s.split(' ')[0]]),
-            number=s.split(' ')[1],
-            section="",
-            transcript_code=None,
-            clbid=s,
-            gereqs=tuple(),
-            term=Term(20001),
-            is_lab=False,
-            name=s,
-            grade=grade_from_str('B'),
-            gradeopt="Graded",
-            level=0,
-            attributes=tuple(attributes) if attributes else tuple(),
-            is_flac=False,
-            is_ace=False,
-            is_topic=False,
-            identity=s,
-            shorthand=s,
-            institution="St. Olaf College",
-            subtype="x",
-            crsid=s,
-        )
+    def from_s(s: str, **kwargs):
+        return CourseInstance.from_dict(**{
+            "attributes": tuple(),
+            "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
+            "course": s,
+            "credits": '1.00',
+            "crsid": f"<crsid={str(hash(s))}>",
+            "gereqs": tuple(),
+            "grade": 'B',
+            "graded": "Graded",
+            "incomplete": False,
+            "institution": "St. Olaf College",
+            "is_repeat": False,
+            "name": s,
+            "number": s.split(' ')[1],
+            "section": "",
+            "semester": 1,
+            "subjects": tuple([s.split(' ')[0]]),
+            "subtype": "x",
+            "term": 20001,
+            "transcript_code": None,
+            "year": 2000,
+            **kwargs,
+        })
 
     def attach_attrs(self, attributes=None):
         if attributes is None:

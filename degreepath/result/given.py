@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, TYPE_CHECKING, Any
+from ..clause import ResolvedBaseClause
 
 
 @dataclass(frozen=True)
@@ -8,6 +9,7 @@ class FromResult:
     successful_claims: List
     failed_claims: List
     success: bool
+    resolved_assertion: ResolvedBaseClause
 
     def to_dict(self):
         return {
@@ -18,6 +20,7 @@ class FromResult:
             "rank": self.rank(),
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.failed_claims],
+            "resolved_action": self.resolved_assertion.to_dict(),
         }
 
     def claims(self):
@@ -31,7 +34,4 @@ class FromResult:
 
     def rank(self):
         # TODO: fix this calculation so that it properly handles #154647's audit
-        return min(
-            len(self.successful_claims) + len(self.failed_claims),
-            self.rule.action.get_min_value() if self.rule.action else 0,
-        )
+        return len(self.successful_claims) + len(self.failed_claims)

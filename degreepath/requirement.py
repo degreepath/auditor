@@ -5,7 +5,7 @@ from collections import defaultdict
 import itertools
 import copy
 
-from frozendict import frozendict
+from .frozendict import frozendict
 
 from .data import CourseInstance, CourseStatus
 from .save import SaveRule
@@ -28,6 +28,12 @@ class RequirementContext:
                 for course in self.completed_courses()
                 if (course.course() == c or course.course_shorthand() == c)
             )
+        except StopIteration:
+            return None
+
+    def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
+        try:
+            return next(course for course in self.completed_courses() if course.clbid == clbid)
         except StopIteration:
             return None
 
@@ -177,8 +183,11 @@ class ClaimAttempt:
     def to_dict(self):
         return {
             "claim": self.claim.to_dict(),
-            "claimant_path": [c.to_dict() for c in self.conflict_with],
+            "conflict_with": [c.to_dict() for c in self.conflict_with],
         }
+
+    def get_course(self, *, ctx: RequirementContext):
+        return ctx.find_course_by_clbid(self.claim.clbid)
 
 
 class RequirementState(object):
@@ -307,7 +316,7 @@ class Requirement:
 
         if not self.result:
             logging.debug(f"{header} does not have a result")
-            yield RequirementSolution.from_requirement(self, solution=None, inputs=[])
+            yield RequirementSolution.from_requirement(self, solution=None, inputs=tuple())
             return
         else:
             logging.debug(f"{header} has a result")
@@ -323,9 +332,7 @@ class Requirement:
         ident = ",".join([*path, self.name])
 
         for i, solution in enumerate(self.result.solutions(ctx=new_ctx, path=path)):
-            yield RequirementSolution.from_requirement(
-                self, inputs=[(ident, i)], solution=solution
-            )
+            yield RequirementSolution.from_requirement(self, inputs=tuple([(ident, i)]), solution=solution)
 
     def estimate(self, *, ctx: RequirementContext):
         new_ctx = RequirementContext(
@@ -343,13 +350,13 @@ class RequirementSolution:
     saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
     result: Optional[Any]
-    inputs: List[Tuple[str, int]]
+    inputs: Tuple[Tuple[str, int], ...]
     message: Optional[str] = None
     audited_by: Optional[str] = None
     contract: bool = False
 
     @staticmethod
-    def from_requirement(req: Requirement, *, solution: Optional[Any], inputs: List[Tuple[str, int]]):
+    def from_requirement(req: Requirement, *, solution: Optional[Any], inputs: Tuple[Tuple[str, int], ...]):
         return RequirementSolution(
             inputs=inputs,
             result=solution,
@@ -361,8 +368,9 @@ class RequirementSolution:
             contract=req.contract,
         )
 
-    def matched(self):
-        return self.result
+    def matched(self, *, ctx: RequirementContext):
+        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
+        return tuple(c for c in claimed_courses if c)
 
     def to_dict(self):
         return {
@@ -439,9 +447,7 @@ class RequirementResult:
             "type": "requirement",
             "name": self.name,
             "saves": {name: s.to_dict() for name, s in self.saves.items()},
-            "requirements": {
-                name: r.to_dict() for name, r in self.requirements.items()
-            },
+            "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
             "result": self.result.to_dict() if self.result else None,
             "audited_by": self.audited_by,
@@ -466,6 +472,10 @@ class RequirementResult:
         if not self.result:
             return []
         return self.result.claims()
+
+    def matched(self, *, ctx: RequirementContext):
+        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
+        return tuple(c for c in claimed_courses if c)
 
     def ok(self) -> bool:
         # TODO: remove this once exceptions are in place

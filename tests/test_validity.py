@@ -3,6 +3,8 @@ import pytest
 import io
 import yaml
 
+c = Constants(matriculation_year=2000)
+
 
 def test_load():
     test_data = io.StringIO(
@@ -33,7 +35,7 @@ def test_load():
     """
     )
 
-    area = AreaOfStudy.load(yaml.load(stream=test_data, Loader=yaml.SafeLoader))
+    area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
     area.validate()
 
 
@@ -62,5 +64,5 @@ def test_invalid():
         """
         )
 
-        area = AreaOfStudy.load(yaml.load(stream=test_data, Loader=yaml.SafeLoader))
+        area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
         area.validate()

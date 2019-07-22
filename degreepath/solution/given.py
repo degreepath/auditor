@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Union, List, TYPE_CHECKING, Sequence, Any
+from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple
 import logging
 import decimal
 
 from ..result import FromResult
 from ..data import CourseInstance, Term
+from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause, Operator, ResolvedClause
 
 logger = logging.getLogger(__name__)
 
@@ -56,17 +57,55 @@ class FromSolution:
 
         raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
 
-    def audit_when_student(self, ctx, path: List):
+    def audit_when_saves(self, *, ctx, path: List):
         successful_claims = []
         failed_claims = []
-        for course in self.output:
-            if self.rule.where is None:
-                raise Exception("`where` should not be none here; otherwise this given-rule has nothing to do")
 
+        resolved_assertion = self.apply_clause(self.rule.action, self.output)
+
+        if resolved_assertion.result is True:
+            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
+        else:
+            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+
+        return FromResult(
+            rule=self.rule,
+            resolved_assertion=resolved_assertion,
+            successful_claims=successful_claims,
+            failed_claims=failed_claims,
+            success=resolved_assertion.result is True and len(failed_claims) == 0,
+        )
+
+    def audit_when_reqs(self, *, ctx, path: List):
+        successful_claims = []
+        failed_claims = []
+
+        resolved_assertion = self.apply_clause(self.rule.action, self.output)
+
+        if resolved_assertion.result is True:
+            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
+        else:
+            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+
+        return FromResult(
+            rule=self.rule,
+            resolved_assertion=resolved_assertion,
+            successful_claims=successful_claims,
+            failed_claims=failed_claims,
+            success=resolved_assertion.result is True and len(failed_claims) == 0,
+        )
+
+    def audit_when_student(self, *, ctx, path: List):
+        successful_claims = []
+        failed_claims = []
+
+        for course in self.output:
             claim = ctx.make_claim(
                 course=course,
                 path=path,
-                clause=self.rule.where,
+                clause=
+                    self.rule.where
+                    or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim=''),
                 transcript=ctx.transcript,
                 allow_claimed=self.rule.allow_claimed,
             )
@@ -78,16 +117,104 @@ class FromSolution:
                 logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
                 successful_claims.append(claim)
 
-        may_possibly_succeed = self.rule.action.apply(len(self.output))
+        resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
-        if may_possibly_succeed:
+        if resolved_assertion.result is True:
             logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
         else:
             logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
 
         return FromResult(
             rule=self.rule,
+            resolved_assertion=resolved_assertion,
             successful_claims=successful_claims,
             failed_claims=failed_claims,
-            success=may_possibly_succeed and len(failed_claims) == 0,
+            success=resolved_assertion.result is True and len(failed_claims) == 0,
         )
+
+    def apply_clause(self, clause: Clause, output: Sequence) -> ResolvedClause:
+        if not isinstance(clause, (AndClause, OrClause, SingleClause)):
+            raise TypeError(f"expected a clause; found {clause} ({type(clause)})")
+
+        return clause.compare_and_resolve_with(value=output, map=apply_clause_to_given)
+
+
+def avg_or_0(items: Sequence):
+    return sum(items) / len(items) if items else 0
+
+
+def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, Sequence[Any]]:
+    if clause.key == 'count(courses)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.clbid for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(subjects)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(s for c in value for s in c.subject)
+        return (len(items), items)
+
+    elif clause.key == 'count(terms)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.term for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(years)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.year for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(distinct_courses)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = frozenset(c.crsid for c in value)
+        return (len(items), items)
+
+    elif clause.key == 'count(areas)':
+        # TODO
+        pass
+
+    elif clause.key == 'count(performances)':
+        # TODO
+        pass
+
+    elif clause.key == 'count(seminars)':
+        # TODO
+        pass
+
+    elif clause.key == 'sum(grades)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.grade for c in value)
+        return (sum(items), items)
+
+    elif clause.key == 'sum(credits)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.credits for c in value)
+        return (sum(items), items)
+
+    elif clause.key == 'average(grades)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.grade for c in value)
+        return (avg_or_0(items), items)
+
+    elif clause.key == 'average(credits)':
+        assert all(isinstance(x, CourseInstance) for x in value)
+        items = tuple(c.credits for c in value)
+        return (avg_or_0(items), items)
+
+    elif clause.key.startswith('min(') or clause.key.startswith('max('):
+        assert all(isinstance(x, CourseInstance) for x in value)
+        func = min if clause.key.startswith('min(') else max
+
+        if clause.key == 'min(terms)' or clause.key == 'max(terms)':
+            item = func(c.term for c in value)
+        elif clause.key == 'min(grades)' or clause.key == 'max(grades)':
+            item = func(c.grade for c in value)
+        elif clause.key == 'min(credits)' or clause.key == 'max(credits)':
+            item = func(c.credits for c in value)
+        else:
+            raise Exception(f'expected a valid clause key; got {clause.key}')
+
+        return (item, tuple([item]))
+
+    else:
+        raise Exception(f'expected a valid clause key; got {clause.key}')
