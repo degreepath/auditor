@@ -1,5 +1,5 @@
 import dataclasses
-from enum import Enum
+import enum
 from typing import Optional, Tuple, Any
 import decimal
 import logging
@@ -26,12 +26,12 @@ class Term:
         return {"type": "term", "year": self.year(), "semester": self.semester()}
 
 
-class CourseStatus(Enum):
-    Ok = 0
-    InProgress = 1
-    DidNotComplete = 2
-    Repeated = 3
-    NotTaken = 4
+class CourseStatus(enum.Enum):
+    Ok = enum.auto()
+    InProgress = enum.auto()
+    DidNotComplete = enum.auto()
+    Repeated = enum.auto()
+    NotTaken = enum.auto()
 
 
 @dataclasses.dataclass(frozen=True)
