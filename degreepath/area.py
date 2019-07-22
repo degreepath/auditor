@@ -7,6 +7,7 @@ from .data import CourseInstance
 from .limit import Limit
 from .clause import SingleClause, Clause
 from .requirement import RequirementContext, Requirement
+from .constants import Constants
 
 logger = logging.getLogger(__name__)
 
@@ -14,45 +15,31 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class AreaOfStudy:
     """The overall class for working with an area"""
-
-    name: str
-    kind: str
-    degree: Optional[str]
-    major: Optional[str]
-    catalog: str
-
     limit: Tuple
     result: Rule
     requirements: Dict
-
     attributes: Dict
     multicountable: List
 
     def to_dict(self):
         return {
-            "name": self.name,
-            "type": self.kind,
-            "degree": self.degree,
-            "catalog": self.catalog,
             "limit": [l.to_dict() for l in self.limit],
             "result": self.result.to_dict(),
-            "requirements": {
-                name: r.to_dict() for name, r in self.requirements.items()
-            },
+            "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "attributes": self.attributes,
         }
 
     @staticmethod
-    def load(data: Dict):
+    def load(*, specification: Dict, c: Constants):
         requirements = {
-            name: Requirement.load(name, r)
-            for name, r in data.get("requirements", {}).items()
+            name: Requirement.load(name, r, c)
+            for name, r in specification.get("requirements", {}).items()
         }
 
-        result = load_rule(data["result"])
-        limit = tuple(Limit.load(l) for l in data.get("limit", []))
+        result = load_rule(specification["result"], c)
+        limit = tuple(Limit.load(l, c) for l in specification.get("limit", []))
 
-        attributes = data.get("attributes", dict())
+        attributes = specification.get("attributes", dict())
         multicountable = []
         for ruleset in attributes.get("multicountable", []):
             clauses = []
@@ -67,11 +54,6 @@ class AreaOfStudy:
             multicountable.append(clauses)
 
         return AreaOfStudy(
-            name=data["name"],
-            catalog=data["catalog"],
-            degree=data.get("degree", None),
-            major=data.get("major", None),
-            kind=data["type"],
             requirements=requirements,
             result=result,
             attributes=attributes,
@@ -80,24 +62,6 @@ class AreaOfStudy:
         )
 
     def validate(self):
-        assert isinstance(self.name, str)
-        assert self.name.strip() != ""
-
-        assert isinstance(self.kind, str)
-        assert self.kind in ["degree", "major", "concentration", "emphasis"]
-
-        assert isinstance(self.catalog, str)
-        assert self.catalog.strip() != ""
-
-        if self.kind != "degree":
-            assert isinstance(self.degree, str)
-            assert self.degree.strip() != ""
-            assert self.degree in ["B.A.", "B.M."]
-
-        if self.kind == "emphasis":
-            assert isinstance(self.major, str)
-            assert self.major.strip() != ""
-
         ctx = RequirementContext(requirements=self.requirements)
 
         self.result.validate(ctx=ctx)

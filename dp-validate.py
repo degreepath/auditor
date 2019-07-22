@@ -2,7 +2,7 @@ import glob
 import argparse
 import traceback
 import yaml
-from degreepath import AreaOfStudy
+from degreepath import AreaOfStudy, Constants
 
 
 def main():
@@ -15,7 +15,8 @@ def main():
             area_def = yaml.load(stream=infile, Loader=yaml.SafeLoader)
 
         try:
-          area = AreaOfStudy.load(area_def)
+          c = Constants(matriculation_year=200)
+          area = AreaOfStudy.load(area_def, c)
           area.validate()
         except Exception as ex:
           print('!!\t{}'.format(f))

@@ -4,13 +4,7 @@ from typing import Union, List, Tuple, Dict, Any
 import enum
 import logging
 import decimal
-
-VALID_CLAUSE_CONSTANTS = [
-    '$senior-year',
-    '$junior-year',
-    '$major-declaration',
-    '$matriculation-year',
-]
+from .constants import Constants
 
 
 class Operator(enum.Enum):
@@ -75,6 +69,7 @@ class OrClause:
 class SingleClause:
     key: str
     expected: Any
+    expected_verbatim: Any
     operator: Operator
 
     def to_dict(self):
@@ -82,11 +77,12 @@ class SingleClause:
             "type": "single-clause",
             "key": self.key,
             "expected": self.expected,
+            "expected_verbatim": self.expected_verbatim,
             "operator": self.operator.name,
         }
 
     @staticmethod
-    def load(data: Dict):
+    def load(data: Dict, c: Constants):
         if not isinstance(data, Mapping):
             raise Exception(f'expected {data} to be a dictionary')
 
@@ -106,6 +102,11 @@ class SingleClause:
             operator = Operator(op)
             expected_value = value[op]
 
+            if isinstance(expected_value, list):
+                expected_value = tuple(expected_value)
+
+            expected_verbatim = expected_value
+
             if key == "subjects":
                 key = "subject"
             if key == "attribute":
@@ -113,34 +114,22 @@ class SingleClause:
             if key == "gereq":
                 key = "gereqs"
 
-            if isinstance(expected_value, list):
-                expected_value = tuple(expected_value)
-
             if type(expected_value) == str:
-                if expected_value.startswith('$'):
-                    raise Exception('value constants are currently unimplemented: {}'.format(expected_value))
-                if not SingleClause.validate_value_constant(expected_value):
-                    raise Exception('value constants must be valid; {}'.format(expected_value))
+                expected_value = c.get_by_name(expected_value)
             elif isinstance(expected_value, Iterable):
-                if any(v.startswith('$') for v in expected_value if type(v) == str):
-                    raise Exception('value constants are currently unimplemented: {}'.format(expected_value))
-                if not all(SingleClause.validate_value_constant(v) for v in expected_value):
-                    raise Exception('value constants must be valid; {}'.format(expected_value))
+                expected_value = tuple(c.get_by_name(v) for v in expected_value)
 
-            clauses.append(SingleClause(key=key, expected=expected_value, operator=operator))
+            clauses.append(SingleClause(
+                key=key,
+                expected=expected_value,
+                operator=operator,
+                expected_verbatim=expected_verbatim,
+            ))
 
         if len(clauses) == 1:
             return clauses[0]
 
         return AndClause(children=tuple(clauses))
-
-    @staticmethod
-    def validate_value_constant(v) -> bool:
-        if type(v) != str:
-            return True
-        if not v.startswith('$'):
-            return True
-        return v in VALID_CLAUSE_CONSTANTS
 
     def compare(self, to_value: Any) -> bool:
         # logging.debug(f"clause/compare {to_value} against {self}")
@@ -189,9 +178,7 @@ class SingleClause:
         else:
             raise TypeError(f"unknown comparison function {self.operator}")
 
-        logging.debug(
-            f"clause/compare: '{expected}' {self.operator.value} '{to_value}'; {result}"
-        )
+        logging.debug(f"clause/compare: '{expected}' {self.operator.value} '{to_value}'; {result}")
         return result
 
     def mc_applies_same(self, other) -> bool:
@@ -222,7 +209,7 @@ def str_clause(clause) -> str:
         return str_clause(clause.to_dict())
 
     if clause["type"] == "single-clause":
-        return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\""
+        return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\" (via {clause['expected_verbatim']})"
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":

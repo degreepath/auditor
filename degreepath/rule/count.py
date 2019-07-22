@@ -5,6 +5,7 @@ import itertools
 import logging
 from functools import reduce
 
+from ..constants import Constants
 from ..solution import CountSolution
 from .course import CourseRule
 
@@ -55,7 +56,7 @@ class CountRule:
         return False
 
     @staticmethod
-    def load(data: Dict):
+    def load(data: Dict, c: Constants):
         from . import load_rule
 
         if "all" in data:
@@ -85,7 +86,7 @@ class CountRule:
 
         at_most = data.get('at_most', False)
 
-        return CountRule(count=count, items=tuple(load_rule(r) for r in items), at_most=at_most)
+        return CountRule(count=count, items=tuple(load_rule(r, c) for r in items), at_most=at_most)
 
     def validate(self, *, ctx):
         assert isinstance(self.count, int), f"{self.count} should be an integer"

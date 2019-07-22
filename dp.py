@@ -5,10 +5,11 @@ import datetime
 import argparse
 import logging
 import coloredlogs
+import traceback
 
 import yaml
 
-from degreepath import CourseInstance, AreaOfStudy, summarize
+from degreepath import CourseInstance, Constants, AreaOfStudy, summarize
 from degreepath.ms import pretty_ms
 
 logger = logging.getLogger()
@@ -67,14 +68,16 @@ def main():
                     print("".join(summary))
 
             except Exception as ex:
-                print(ex, file=sys.stderr)
-                print(f"failed: #{student['stnum']} for {area['name']}", file=sys.stderr)
+                traceback.print_exc()
+                print(f"failed: #{student['stnum']}", file=sys.stderr)
 
 
 def audit(*, area_def, transcript, student):
-    print(f"auditing #{student['stnum']} for {area_def['name']}", file=sys.stderr)
+    print(f"auditing #{student['stnum']}", file=sys.stderr)
 
-    area = AreaOfStudy.load(area_def)
+    constants = Constants(matriculation_year=student['matriculation'])
+
+    area = AreaOfStudy.load(specification=area_def, c=constants)
     area.validate()
 
     this_transcript = []
@@ -131,7 +134,6 @@ def audit(*, area_def, transcript, student):
 
     summary = summarize(
         stnum=student["stnum"],
-        area=area,
         result=result_json,
         count=total_count,
         elapsed=elapsed,

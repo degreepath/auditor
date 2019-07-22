@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Tuple, Optional
 from ppretty import ppretty
+from ...constants import Constants
 
 
 @dataclass(frozen=True)
@@ -21,7 +22,7 @@ class FromInput:
         }
 
     @staticmethod
-    def load(data: Dict):
+    def load(data: Dict, c: Constants):
         saves: Tuple[str, ...] = tuple()
         requirements: Tuple[str, ...] = tuple()
 

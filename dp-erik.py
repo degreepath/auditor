@@ -13,7 +13,7 @@ import psycopg2
 import psycopg2.extras
 import sentry_sdk
 
-from degreepath import CourseInstance, AreaOfStudy
+from degreepath import CourseInstance, AreaOfStudy, Constants
 from degreepath.ms import pretty_ms
 
 dotenv.load_dotenv(verbose=True)
@@ -88,7 +88,8 @@ def main(area_file, student_file):
 
         #####
 
-        area = AreaOfStudy.load(area)
+        constants = Constants(matriculation_year=student['matriculation'])
+        area = AreaOfStudy.load(specification=area, c=constants)
         area.validate()
 
         attributes_to_attach = area.attributes.get("courses", {})

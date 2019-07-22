@@ -131,9 +131,7 @@ class CourseInstance:
 
         grade = grade_from_str(grade)
 
-        credits = decimal.Decimal(credits).quantize(
-            decimal.Decimal("0.01"), rounding=decimal.ROUND_DOWN
-        )
+        credits = decimal.Decimal(credits)
 
         subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
         subject = tuple(expand_subjects(subject))

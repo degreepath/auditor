@@ -4,6 +4,7 @@ import re
 import itertools
 import logging
 
+from ..constants import Constants
 from ..requirement import RequirementState, RequirementSolution
 from ..solution import CourseSolution
 
@@ -41,7 +42,7 @@ class ReferenceRule:
         return False
 
     @staticmethod
-    def load(data: Dict):
+    def load(data: Dict, c: Constants):
         return ReferenceRule(name=data["requirement"])
 
     def validate(self, *, ctx):

@@ -228,22 +228,22 @@ class Requirement:
         }
 
     @staticmethod
-    def load(name: str, data: Dict[str, Any]):
+    def load(name: str, data: Dict[str, Any], c):
         from .rule import load_rule
 
         children = frozendict({
-            name: Requirement.load(name, r)
+            name: Requirement.load(name, r, c)
             for name, r in data.get("requirements", {}).items()
         })
 
         result = data.get("result", None)
         if result is not None:
-            result = load_rule(result)
+            result = load_rule(result, c)
 
         saves = data.get("saves", data.get("save", {}))
         assert type(saves) != list
 
-        saves = frozendict({name: SaveRule.load(name, s) for name, s in saves.items()})
+        saves = frozendict({name: SaveRule.load(name, s, c) for name, s in saves.items()})
 
         audited_by = None
         if data.get("department_audited", False):

@@ -4,10 +4,11 @@ import itertools
 import logging
 
 from .source import FromInput
-from .assertion import AnyAssertion, SingleAssertion
+from .assertion import AnyAssertion, load_assertion
 from ...limit import LimitSet, Limit
 from ...clause import Clause, SingleClause, str_clause
 from ...solution import FromSolution
+from ...constants import Constants
 
 
 @dataclass(frozen=True)
@@ -48,21 +49,21 @@ class FromRule:
         return False
 
     @staticmethod
-    def load(data: Dict):
+    def load(data: Dict, c: Constants):
         where = data.get("where", None)
         if where is not None:
-            where = SingleClause.load(where)
+            where = SingleClause.load(where, c)
 
         limit = LimitSet.load(data=data.get("limit", None))
 
         action = None
         if "assert" in data:
-            action = SingleAssertion.load(data=data["assert"])
+            action = load_assertion(data["assert"], c)
 
         allow_claimed = data.get('allow_claimed', False)
 
         return FromRule(
-            source=FromInput.load(data["from"]), action=action,
+            source=FromInput.load(data["from"], c), action=action,
             limit=limit, where=where, allow_claimed=allow_claimed
         )
 

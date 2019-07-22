@@ -2,8 +2,23 @@ from dataclasses import dataclass
 from typing import Dict, Union, Any, List, Tuple, Iterable
 import re
 import logging
+import enum
 
 from ...clause import Operator
+from ...constants import Constants
+
+
+def load_assertion(data: Dict, c: Constants):
+    if "$and" in data:
+        assert len(data.keys()) is 1
+        return AndAssertion.load(data["$and"], c)
+    elif "$or" in data:
+        assert len(data.keys()) is 1
+        return OrAssertion.load(data["$or"], c)
+
+    assert type(data) == dict, "data must be a dictionary: {}".format(data)
+
+    return SingleAssertion.load(data, c)
 
 
 @dataclass(frozen=True)
@@ -45,8 +60,8 @@ class AndAssertion(AssertionCollection):
         }
 
     @staticmethod
-    def load(data: List[Dict]):
-        clauses = [SingleAssertion.load(clause) for clause in data]
+    def load(data: List[Dict], c: Constants):
+        clauses = [SingleAssertion.load(clause, c) for clause in data]
         return AndAssertion(children=tuple(clauses))
 
     def apply(self, value: Any):
@@ -64,51 +79,84 @@ class OrAssertion(AssertionCollection):
         }
 
     @staticmethod
-    def load(data: Dict):
-        clauses = [SingleAssertion.load(clause) for clause in data]
+    def load(data: Dict, c: Constants):
+        clauses = [SingleAssertion.load(clause, c) for clause in data]
         return OrAssertion(children=tuple(clauses))
 
     def apply(self, value: Any):
         return any(c.apply(value) for c in self)
 
 
-assertion_key_regex = re.compile(r"(count|sum|minimum|maximum|stored|average)\((.*)\)")
+@enum.unique
+class Command(enum.Enum):
+    count = enum.auto()
+    sum = enum.auto()
+    minimum = enum.auto()
+    maximum = enum.auto()
+    average = enum.auto()
+    # TODO: assert that the stored lookup exists
+    stored = enum.auto()
+
+
+@enum.unique
+class Countables(enum.Enum):
+    courses = enum.auto()
+    areas = enum.auto()
+    performances = enum.auto()
+    terms = enum.auto()
+    semesters = enum.auto()
+    subjects = enum.auto()
+    distinct_courses = enum.auto()
+
+
+@enum.unique
+class Summables(enum.Enum):
+    grades = enum.auto()
+    credits = enum.auto()
+
+
+@enum.unique
+class Averagables(enum.Enum):
+    grades = enum.auto()
+    credits = enum.auto()
+
+
+@enum.unique
+class Sortables(enum.Enum):
+    terms = enum.auto()
+    semesters = enum.auto()
+    grades = enum.auto()
+    credits = enum.auto()
+
+
+Sources = Union[Countables, Summables, Averagables, Sortables, str]
 
 
 @dataclass(frozen=True)
 class SingleAssertion:
-    command: str
-    source: str
+    command: Command
+    source: Sources
     operator: Operator
     compare_to: Union[str, int, float]
 
     def to_dict(self):
         return {
             "type": "from-assertion",
-            "command": self.command,
-            "source": self.source,
+            "command": self.command.name,
+            "source": self.source.name,
             "operator": self.operator.name,
             "compare_to": self.compare_to,
         }
 
     @staticmethod
-    def load(data: Dict):
-        if "$and" in data:
-            assert len(data.keys()) is 1
-            return AndAssertion.load(data["$and"])
-        elif "$or" in data:
-            assert len(data.keys()) is 1
-            return OrAssertion.load(data["$or"])
-
-        assert type(data) == dict, "data must be a dictionary: {}".format(data)
-
+    def load(data: Dict, c: Constants):
         keys = list(data.keys())
 
         assert (len(keys)) == 1
 
         k = keys[0]
 
-        m = assertion_key_regex.match(k)
+        m = re.match(r"(count|sum|minimum|maximum|stored|average)\((.*)\)", k)
         if not m:
             raise KeyError(f'expected "{k}" to match {assertion_key_regex}')
 
@@ -120,8 +168,19 @@ class SingleAssertion:
 
         groups = m.groups()
 
-        command = groups[0]
-        source = groups[1]
+        command = Command[groups[0]]
+        if command is Command.count:
+            Sources = Countables
+        elif command is Command.sum:
+            Sources = Summables
+        elif command is Command.minimum or command is Command.maximum:
+            Sources = Sortables
+        elif command is Command.average:
+            Sources = Averagables
+        elif command is Command.stored:
+            Sources = {}
+
+        source = Sources[groups[1]]
         operator = Operator(op)
         compare_to = val[op]
 
@@ -131,39 +190,7 @@ class SingleAssertion:
         return SingleAssertion(command=command, source=source, operator=operator, compare_to=compare_to)
 
     def validate(self, *, ctx):
-        allowed_commands = [
-            "count",
-            "sum",
-            "minimum",
-            "maximum",
-            "stored",
-            "average",
-        ]
-        assert self.command in allowed_commands, f"{self.command} must be in {allowed_commands}"
-
-        if self.command == "count":
-            allowed = [
-                "distinct courses",
-                "courses",
-                "areas",
-                "performances",
-                "terms",
-                "semesters",
-                "subjects",
-            ]
-            assert self.source in allowed, f"{self.source} not in {allowed}"
-        elif self.command == "sum":
-            allowed = ["grades", "credits"]
-            assert self.source in allowed, f"{self.source} not in {allowed}"
-        elif self.command == "average":
-            allowed = ["grades", "credits"]
-            assert self.source in allowed, f"{self.source} not in {allowed}"
-        elif self.command == "minimum" or self.command == "maximum":
-            allowed = ["terms", "semesters", "grades", "credits"]
-            assert self.source in allowed, f"{self.source} not in {allowed}"
-        elif self.command == "stored":
-            # TODO: assert that the stored lookup exists
-            pass
+        pass
 
     def get_min_value(self):
         compare_to: Any = self.compare_to

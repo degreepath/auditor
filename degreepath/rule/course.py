@@ -4,6 +4,7 @@ import re
 import itertools
 import logging
 
+from ..constants import Constants
 from ..solution import CourseSolution
 
 logger = logging.getLogger(__name__)
@@ -48,7 +49,7 @@ class CourseRule:
         return False
 
     @staticmethod
-    def load(data: Dict):
+    def load(data: Dict, c: Constants):
         return CourseRule(
             course=data["course"],
             hidden=data.get("hidden", False),
