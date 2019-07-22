@@ -129,21 +129,18 @@ class CourseInstance:
         # TODO: export is_flac/is_ace
         is_flac = name.startswith("FLC - ")
         is_ace = False
-
         # TODO: export the course type
         is_topic = name.startswith("Top: ")
 
         grade = grade_from_str(grade)
-
         credits = decimal.Decimal(credits)
 
+        verbatim_subject_field = subjects
         subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
         subject = tuple(expand_subjects(subject))
         # we want to keep the original shorthand course identity for matching purposes
 
-        number = number if number is not None else course.split(" ")[1]
-        number = str(number)
-
+        number = str(number if number is not None else course.split(" ")[1])
         section = section if section != "" else None
 
         try:
@@ -156,13 +153,13 @@ class CourseInstance:
 
         if is_lab:
             course_identity = f"{'/'.join(subject)} {number}.L"
-            course_identity_short = f"{'/'.join(subjects)} {number}.L"
+            course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.L"
         elif is_flac:
             course_identity = f"{'/'.join(subject)} {number}.F"
-            course_identity_short = f"{'/'.join(subjects)} {number}.F"
+            course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.F"
         else:
             course_identity = f"{'/'.join(subject)} {number}"
-            course_identity_short = f"{'/'.join(subjects)} {number}"
+            course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}"
 
         return CourseInstance(
             attributes=attributes,
