@@ -59,26 +59,24 @@ class FromSolution:
     def audit_when_student(self, ctx, path: List):
         successful_claims = []
         failed_claims = []
-        for course in self.output:
-            if self.rule.where is None:
-                raise Exception("`where` should not be none here; otherwise this given-rule has nothing to do")
+        if self.rule.where is not None:
+            for course in self.output:
+                claim = ctx.make_claim(
+                    course=course,
+                    path=path,
+                    clause=self.rule.where,
+                    transcript=ctx.transcript,
+                    allow_claimed=self.rule.allow_claimed,
+                )
 
-            claim = ctx.make_claim(
-                course=course,
-                path=path,
-                clause=self.rule.where,
-                transcript=ctx.transcript,
-                allow_claimed=self.rule.allow_claimed,
-            )
+                if claim.failed():
+                    logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')
+                    failed_claims.append(claim)
+                else:
+                    logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
+                    successful_claims.append(claim)
 
-            if claim.failed():
-                logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')
-                failed_claims.append(claim)
-            else:
-                logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
-                successful_claims.append(claim)
-
-        may_possibly_succeed = self.rule.action.apply(len(self.output))
+        may_possibly_succeed = self.rule.action.compare(len(self.output))
 
         if may_possibly_succeed:
             logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")

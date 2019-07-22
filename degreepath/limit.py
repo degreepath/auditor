@@ -3,7 +3,8 @@ from typing import Dict, List, Tuple, Sequence, Optional, TYPE_CHECKING
 from collections import defaultdict
 import logging
 
-from .clause import Clause, SingleClause, str_clause
+from .clause import Clause, str_clause, load_clause
+from .constants import Constants
 
 
 @dataclass(frozen=True)
@@ -15,18 +16,13 @@ class Limit:
         return {"type": "limit", "at_most": self.at_most, "where": self.where.to_dict()}
 
     @staticmethod
-    def load(data: Dict):
-        at_most = next(
-            x
-            for x in (
-                data.get("at most", None),
-                data.get("at-most", None),
-                data.get("at_most", None),
-            )
-            if x is not None
-        )
+    def load(data: Dict, c: Constants):
+        at_most = data.get("at most", data.get("at-most", data.get("at_most", None)))
 
-        return Limit(at_most=at_most, where=SingleClause.load(data["where"]))
+        if at_most is None:
+            raise Exception(f'expected an at-most key; got {data}')
+
+        return Limit(at_most=at_most, where=load_clause(data["where"], c))
 
     def __str__(self):
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"

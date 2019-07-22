@@ -7,6 +7,25 @@ import decimal
 from .constants import Constants
 
 
+def load_clause(data: Dict, c: Constants):
+    if not isinstance(data, Mapping):
+        raise Exception(f'expected {data} to be a dictionary')
+
+    if "$and" in data:
+        assert len(data.keys()) is 1
+        return AndClause.load(data["$and"], c)
+    elif "$or" in data:
+        assert len(data.keys()) is 1
+        return OrClause.load(data["$or"], c)
+
+    clauses = [SingleClause.load(key, value, c) for key, value in data.items()]
+
+    if len(clauses) == 1:
+        return clauses[0]
+
+    return AndClause(children=tuple(clauses))
+
+
 class Operator(enum.Enum):
     LessThan = "$lt"
     LessThanOrEqualTo = "$lte"
@@ -29,9 +48,13 @@ class AndClause:
         return {"type": "and-clause", "children": [c.to_dict() for c in self.children]}
 
     @staticmethod
-    def load(data: List[Dict]):
-        clauses = [SingleClause.load(clause) for clause in data]
+    def load(data: List[Dict], c: Constants):
+        clauses = [load_clause(clause, c) for clause in data]
         return AndClause(children=tuple(clauses))
+
+    def validate(self, *, ctx):
+        for c in self.children:
+            c.validate(ctx=ctx)
 
     def __iter__(self):
         yield from self.children
@@ -41,6 +64,9 @@ class AndClause:
         when used as part of a multicountable ruleset."""
 
         return any(c.mc_applies_same(other) for c in self)
+
+    def compare(self, to_value: Any) -> bool:
+        return all(c.compare(to_value) for c in self.children)
 
 
 @dataclass(frozen=True)
@@ -51,9 +77,13 @@ class OrClause:
         return {"type": "or-clause", "children": [c.to_dict() for c in self.children]}
 
     @staticmethod
-    def load(data: Dict):
-        clauses = [SingleClause.load(clause) for clause in data]
+    def load(data: Dict, c: Constants):
+        clauses = [load_clause(clause, c) for clause in data]
         return OrClause(children=tuple(clauses))
+
+    def validate(self, *, ctx):
+        for c in self.children:
+            c.validate(ctx=ctx)
 
     def __iter__(self):
         yield from self.children
@@ -63,6 +93,9 @@ class OrClause:
         when used as part of a multicountable ruleset."""
 
         return any(c.mc_applies_same(other) for c in self)
+
+    def compare(self, to_value: Any) -> bool:
+        return any(c.compare(to_value) for c in self.children)
 
 
 @dataclass(frozen=True)
@@ -82,54 +115,42 @@ class SingleClause:
         }
 
     @staticmethod
-    def load(data: Dict, c: Constants):
-        if not isinstance(data, Mapping):
-            raise Exception(f'expected {data} to be a dictionary')
+    def load(key: str, value: Any, c: Constants):
+        if not isinstance(value, Mapping):
+            raise Exception(f'expected {value} to be a dictionary')
 
-        if "$and" in data:
-            assert len(data.keys()) is 1
-            return AndClause.load(data["$and"])
-        elif "$or" in data:
-            assert len(data.keys()) is 1
-            return OrClause.load(data["$or"])
+        assert len(value.keys()) is 1, f"{value}"
+        op = list(value.keys())[0]
 
-        clauses = []
-        for key, value in data.items():
-            assert type(value) == dict, f"{data}"
-            assert len(value.keys()) is 1, f"{value}"
-            op = list(value.keys())[0]
+        operator = Operator(op)
+        expected_value = value[op]
 
-            operator = Operator(op)
-            expected_value = value[op]
+        if isinstance(expected_value, list):
+            expected_value = tuple(expected_value)
 
-            if isinstance(expected_value, list):
-                expected_value = tuple(expected_value)
+        expected_verbatim = expected_value
 
-            expected_verbatim = expected_value
+        if key == "subjects":
+            key = "subject"
+        if key == "attribute":
+            key = "attributes"
+        if key == "gereq":
+            key = "gereqs"
 
-            if key == "subjects":
-                key = "subject"
-            if key == "attribute":
-                key = "attributes"
-            if key == "gereq":
-                key = "gereqs"
+        if type(expected_value) == str:
+            expected_value = c.get_by_name(expected_value)
+        elif isinstance(expected_value, Iterable):
+            expected_value = tuple(c.get_by_name(v) for v in expected_value)
 
-            if type(expected_value) == str:
-                expected_value = c.get_by_name(expected_value)
-            elif isinstance(expected_value, Iterable):
-                expected_value = tuple(c.get_by_name(v) for v in expected_value)
+        return SingleClause(
+            key=key,
+            expected=expected_value,
+            operator=operator,
+            expected_verbatim=expected_verbatim,
+        )
 
-            clauses.append(SingleClause(
-                key=key,
-                expected=expected_value,
-                operator=operator,
-                expected_verbatim=expected_verbatim,
-            ))
-
-        if len(clauses) == 1:
-            return clauses[0]
-
-        return AndClause(children=tuple(clauses))
+    def validate(self, *, ctx):
+        pass
 
     def compare(self, to_value: Any) -> bool:
         # logging.debug(f"clause/compare {to_value} against {self}")
@@ -154,11 +175,7 @@ class SingleClause:
             logging.debug(f"clause/compare/$in: beginning inclusion check")
             return any(to_value == v for v in self.expected)
 
-        if isinstance(to_value, str) and (
-            isinstance(self.expected, int)
-            or isinstance(self.expected, float)
-            or isinstance(self.expected, decimal.Decimal)
-        ):
+        if isinstance(to_value, str) and not isinstance(self.expected, str):
             expected = str(self.expected)
         else:
             expected = self.expected
@@ -209,7 +226,10 @@ def str_clause(clause) -> str:
         return str_clause(clause.to_dict())
 
     if clause["type"] == "single-clause":
-        return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\" (via {clause['expected_verbatim']})"
+        if clause['expected'] == clause['expected_verbatim']:
+            return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\""
+        else:
+            return f"\"{clause['key']}\" {clause['operator']} \"{clause['expected']}\" (via \"{clause['expected_verbatim']}\")"
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":

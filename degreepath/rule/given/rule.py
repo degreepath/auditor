@@ -6,7 +6,7 @@ import logging
 from .source import FromInput
 from .assertion import AnyAssertion, load_assertion
 from ...limit import LimitSet, Limit
-from ...clause import Clause, SingleClause, str_clause
+from ...clause import Clause, str_clause, load_clause
 from ...solution import FromSolution
 from ...constants import Constants
 
@@ -52,13 +52,13 @@ class FromRule:
     def load(data: Dict, c: Constants):
         where = data.get("where", None)
         if where is not None:
-            where = SingleClause.load(where, c)
+            where = load_clause(where, c)
 
         limit = LimitSet.load(data=data.get("limit", None))
 
         action = None
         if "assert" in data:
-            action = load_assertion(data["assert"], c)
+            action = load_clause(data["assert"], c)
 
         allow_claimed = data.get('allow_claimed', False)
 
@@ -142,11 +142,17 @@ class FromRule:
                     logging.debug(f"fromrule/filter/after: []")
 
             for course_set in self.limit.limited_transcripts(data):
-                for n in self.action.range(items=course_set):
-                    for combo in itertools.combinations(course_set, n):
-                        logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
-                        did_iter = True
-                        yield FromSolution(output=combo, rule=self)
+                # for n in self.action.range(items=course_set):
+                #     for combo in itertools.combinations(course_set, n):
+                #         logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                #         did_iter = True
+                #         yield FromSolution(output=combo, rule=self)
+
+                # for combo in itertools.combinations(course_set, n):
+                #     logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                #     did_iter = True
+                #     yield FromSolution(output=combo, rule=self)
+
                 # also yield one with the entire set of courses
                 yield FromSolution(output=course_set, rule=self)
 

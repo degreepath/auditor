@@ -106,7 +106,8 @@ def print_result(rule, transcript, indent=0):
         else:
             emoji = "🚫️"
 
-        yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
+        if rule['where'] is not None:
+            yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
         mapped_trns = {c.clbid: c for c in transcript}
 
@@ -130,9 +131,9 @@ def print_result(rule, transcript, indent=0):
 
         action = rule["action"]
         if 'min' in action:
-            yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: {action['min']})"
+            yield f"{prefix} There must be {str_clause(action)} (have: {len(rule['claims'])}; need: {action['min']})"
         else:
-            yield f"{prefix} There must be {str_assertion(action)} (have: {len(rule['claims'])}; need: N)"
+            yield f"{prefix} There must be {str_clause(action)} (have: {len(rule['claims'])}; need: N)"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":

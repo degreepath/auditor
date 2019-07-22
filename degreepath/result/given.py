@@ -31,7 +31,4 @@ class FromResult:
 
     def rank(self):
         # TODO: fix this calculation so that it properly handles #154647's audit
-        return min(
-            len(self.successful_claims) + len(self.failed_claims),
-            self.rule.action.get_min_value() if self.rule.action else 0,
-        )
+        return len(self.successful_claims) + len(self.failed_claims)

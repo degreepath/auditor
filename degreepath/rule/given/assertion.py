@@ -158,7 +158,7 @@ class SingleAssertion:
 
         m = re.match(r"(count|sum|minimum|maximum|stored|average)\((.*)\)", k)
         if not m:
-            raise KeyError(f'expected "{k}" to match {assertion_key_regex}')
+            raise KeyError(f'expected "{k}" to be an assertion key')
 
         val = data[k]
 
