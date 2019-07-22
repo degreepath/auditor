@@ -57,7 +57,45 @@ class FromSolution:
 
         raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
 
-    def audit_when_student(self, ctx, path: List):
+    def audit_when_saves(self, *, ctx, path: List):
+        successful_claims = []
+        failed_claims = []
+
+        resolved_assertion = self.apply_clause(self.rule.action, self.output)
+
+        if resolved_assertion.result is True:
+            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
+        else:
+            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+
+        return FromResult(
+            rule=self.rule,
+            resolved_assertion=resolved_assertion,
+            successful_claims=successful_claims,
+            failed_claims=failed_claims,
+            success=resolved_assertion.result is True and len(failed_claims) == 0,
+        )
+
+    def audit_when_reqs(self, *, ctx, path: List):
+        successful_claims = []
+        failed_claims = []
+
+        resolved_assertion = self.apply_clause(self.rule.action, self.output)
+
+        if resolved_assertion.result is True:
+            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
+        else:
+            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+
+        return FromResult(
+            rule=self.rule,
+            resolved_assertion=resolved_assertion,
+            successful_claims=successful_claims,
+            failed_claims=failed_claims,
+            success=resolved_assertion.result is True and len(failed_claims) == 0,
+        )
+
+    def audit_when_student(self, *, ctx, path: List):
         successful_claims = []
         failed_claims = []
 
