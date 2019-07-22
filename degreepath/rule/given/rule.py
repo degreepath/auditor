@@ -18,6 +18,7 @@ class FromRule:
     limit: LimitSet
     where: Optional[Clause]
     allow_claimed: bool
+    in_save: bool = False
 
     def to_dict(self):
         return {
@@ -49,7 +50,7 @@ class FromRule:
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, c: Constants, *, in_save: bool = False):
         where = data.get("where", None)
         if where is not None:
             where = load_clause(where, c)
@@ -68,6 +69,7 @@ class FromRule:
             limit=limit,
             where=where,
             allow_claimed=allow_claimed,
+            in_save=in_save,
         )
 
     def validate(self, *, ctx):
@@ -109,7 +111,7 @@ class FromRule:
         ]
 
         for p in itertools.product(*reqs):
-            data = set(item for req_result in p for item in req_result.matched())
+            data = set(item for req_result in p for item in req_result.matched(ctx=ctx))
             yield data
 
     def solutions(self, *, ctx, path: List[str]):
@@ -125,7 +127,8 @@ class FromRule:
         else:
             raise KeyError(f'unknown "from" type "{self.source.mode}"')
 
-        assert self.action is not None
+        if not self.in_save:
+            assert self.action is not None
 
         did_iter = False
         for data in iterable:
@@ -163,4 +166,4 @@ class FromRule:
         if not did_iter:
             # be sure we always yield something
             logging.info("did not yield anything; yielding empty collection")
-            yield FromSolution(output=[], rule=self)
+            yield FromSolution(output=tuple(), rule=self)
