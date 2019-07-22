@@ -177,7 +177,7 @@ class ClaimAttempt:
     def to_dict(self):
         return {
             "claim": self.claim.to_dict(),
-            "claimant_path": [c.to_dict() for c in self.conflict_with],
+            "conflict_with": [c.to_dict() for c in self.conflict_with],
         }
 
 
