@@ -4,18 +4,16 @@ from .rule import str_assertion
 from .ms import pretty_ms
 
 
-def summarize(*, stnum, transcript, result, count, elapsed, iterations):
+def summarize(*, transcript, result, count, elapsed, iterations):
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     endl = "\n"
 
-    yield f"#{stnum}'s"
-
     if result['ok']:
-        yield f" audit was successful."
+        yield f"audit was successful."
     else:
-        yield f" audit failed."
+        yield f"audit failed."
 
     yield f" (rank {result['rank']})"
 
