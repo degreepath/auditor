@@ -15,16 +15,30 @@ def test_clauses(caplog):
     assert x == expected_single
 
     c = CourseInstance.from_s(s="CSCI 121", attributes=["csci_elective"])
-    assert c is not None
 
-    result = c.apply_clause(x)
-    assert result is True
+    assert c.apply_clause(x) is True
+
+
+def test_clauses_in(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    c = Constants(matriculation_year=2000)
+    course = CourseInstance.from_s(s="CSCI 296")
+
+    values = tuple([296, 298, 396, 398])
+    x = load_clause({"number": {"$in": values}}, c=c)
+    expected_single = SingleClause(key="number", expected=values, expected_verbatim=values, operator=Operator.In)
+    assert x == expected_single
+
+    assert course.apply_clause(x) is True
 
 
 def test_operator_eq(caplog):
     caplog.set_level(logging.DEBUG)
 
     assert apply_operator(lhs="1", op=Operator.EqualTo, rhs=1)
+    assert apply_operator(lhs=["1"], op=Operator.EqualTo, rhs=1)
+    assert apply_operator(lhs=[1], op=Operator.EqualTo, rhs="1")
 
 
 def test_operator_eq(caplog):

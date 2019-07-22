@@ -41,32 +41,59 @@ class Operator(enum.Enum):
 
 
 def apply_operator(*, op, lhs, rhs) -> bool:
-    if isinstance(lhs, tuple) and (op is not Operator.In and op is not Operator.NotIn and op is not Operator.EqualTo and op is not Operator.NotEqualTo):
-        raise Exception(f'{op} does not accept a list as the expected value')
+    """
+    Applies two values (lhs and rhs) to an operator.
 
-    if not isinstance(lhs, tuple) and (op is Operator.In or op is Operator.NotIn):
-        raise Exception(f'expected a list of values to compare with {op}')
+    `lhs` is drawn from the input data, while `rhs` is drawn from the area specification.
 
-    if isinstance(lhs, tuple) and (op is Operator.EqualTo or op is Operator.NotEqualTo):
-        if len(lhs) is 0:
-            logging.debug(f"apply_operator/simplify: `{lhs}` was empty, so returning False")
-            return False
+    {attributes: {$eq: csci_elective}}, then, is transformed into something like
+    {[csci_elective, csci_systems]: {$eq: csci_elective}}, which is reduced to a set of
+    checks: csci_elective == csci_elective && csci_systems == csci_elective.
 
-        if len(lhs) is 1:
-            logging.debug(f"apply_operator/simplify: reduced `{lhs}` to `{lhs[0]}`")
-            lhs = lhs[0]
+    {count(courses): {$gte: 2}} is transformed into {5: {$gte: 2}}, which becomes
+    `5 >= 2`.
+
+    The additional complications are as follows:
+
+    1. When the comparison is started, if only one of RHS,LHS is a string, the
+       other is coerced into a string.
+
+    2. If both LHS and RHS are sequences, an error is raised.
+
+    3. If LHS is a sequence, and OP is .EqualTo, OP is changed to .In
+    4. If LHS is a sequence, and OP is .NotEqualTo, OP is changed to .NotIn
+    """
+    logging.debug(f"apply_operator: `{lhs}` ({type(lhs)}) {op} `{rhs}` ({type(rhs)})")
+
+    if isinstance(lhs, tuple) and isinstance(rhs, tuple):
+        raise Exception(f'both rhs and lhs must not be sequences; lhs={lhs}, rhs={rhs}')
+
+    if isinstance(lhs, tuple) or isinstance(rhs, tuple):
+        if op is Operator.EqualTo:
+            logging.debug(f"apply_operator/coerce: got lhs={type(lhs)} / rhs={type(rhs)}; switching to {Operator.In}")
+            return apply_operator(op=Operator.In, lhs=lhs, rhs=rhs)
+        elif op is Operator.NotEqualTo:
+            logging.debug(f"apply_operator/coerce: got lhs={type(lhs)} / rhs={type(rhs)}; switching to {Operator.NotIn}")
+            return apply_operator(op=Operator.NotIn, lhs=lhs, rhs=rhs)
+
+        if op is Operator.In:
+            logging.debug(f"apply_operator/in: `{lhs}` {op.value} `{rhs}`")
+            if isinstance(lhs, tuple):
+                return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
+            if isinstance(rhs, tuple):
+                return any(apply_operator(op=Operator.EqualTo, lhs=lhs, rhs=v) for v in rhs)
+            raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
+
+        elif op is Operator.NotIn:
+            logging.debug(f"apply_operator/not-in: `{lhs}` {op.value} `{rhs}`")
+            if isinstance(lhs, tuple):
+                return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
+            if isinstance(rhs, tuple):
+                return all(apply_operator(op=Operator.NotEqualTo, lhs=lhs, rhs=v) for v in rhs)
+            raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
+
         else:
-            if op is Operator.EqualTo:
-                return apply_operator(lhs=lhs, op=Operator.In, rhs=rhs)
-            elif op is Operator.NotEqualTo:
-                return apply_operator(lhs=lhs, op=Operator.NotIn, rhs=rhs)
-
-    if op is Operator.In:
-        logging.debug(f"apply_operator/in: `{lhs}` {op.value} `{rhs}`")
-        return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
-    elif op is Operator.NotIn:
-        logging.debug(f"apply_operator/not-in: `{lhs}` {op.value} `{rhs}`")
-        return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
+            raise Exception(f'{op} does not accept a list; got {lhs} ({type(lhs)})')
 
     if isinstance(lhs, str) and not isinstance(rhs, str):
         rhs = str(rhs)
@@ -97,7 +124,7 @@ def apply_operator(*, op, lhs, rhs) -> bool:
         logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs >= rhs}")
         return lhs >= rhs
 
-    raise TypeError(f"unknown comparison Callable[[Any], Any] {op}")
+    raise TypeError(f"unknown comparison {op}")
 
 
 @dataclass(frozen=True)
