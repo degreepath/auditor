@@ -8,9 +8,13 @@ from .lib import grade_from_str, expand_subjects
 from .clause import Clause, SingleClause, AndClause, OrClause, str_clause
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, order=True)
 class Term:
     term: int
+
+    def __post_init__(self):
+        if not isinstance(self.term, int):
+            raise TypeError(f'expected {self.term} ({type(self.term)}) to be an int')
 
     def year(self):
         return int(str(self.term)[0:4])
