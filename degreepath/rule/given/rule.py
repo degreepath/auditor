@@ -82,10 +82,10 @@ class FromRule:
             if self.source.repeat_mode == "first":
                 filtered_courses = []
                 course_identities = set()
-                for course in data:
-                    if course.identity not in course_identities:
+                for course in sorted(data, key=lambda c: c.term):
+                    if course.crsid not in course_identities:
                         filtered_courses.append(course)
-                        course_identities.add(course.identity)
+                        course_identities.add(course.crsid)
                 data = filtered_courses
         else:
             raise KeyError(f"{self.source.itemtype} not yet implemented")
