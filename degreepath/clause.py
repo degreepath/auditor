@@ -4,6 +4,7 @@ from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence
 import enum
 import logging
 import decimal
+# from functools import lru_cache
 from .constants import Constants
 
 
@@ -40,6 +41,7 @@ class Operator(enum.Enum):
         return str(self)
 
 
+# @lru_cache(maxsize=256, typed=True)
 def apply_operator(*, op, lhs, rhs) -> bool:
     """
     Applies two values (lhs and rhs) to an operator.
@@ -66,7 +68,18 @@ def apply_operator(*, op, lhs, rhs) -> bool:
     logging.debug(f"apply_operator: `{lhs}` ({type(lhs)}) {op} `{rhs}` ({type(rhs)})")
 
     if isinstance(lhs, tuple) and isinstance(rhs, tuple):
-        raise Exception(f'both rhs and lhs must not be sequences; lhs={lhs}, rhs={rhs}')
+        if op is not Operator.In:
+            raise Exception(f'both rhs and lhs must not be sequences when using {op}; lhs={lhs}, rhs={rhs}')
+
+        if lhs == tuple() or rhs == tuple():
+            logging.debug(f"apply_operator/skip: either lhs={lhs == tuple()} or rhs={rhs == tuple()} was empty; returning false")
+            return False
+
+        logging.debug(f"apply_operator/coerce: converting both {lhs} and {rhs} to sets of strings, and running issubset")
+        lhs = set(str(s) for s in lhs)
+        rhs = set(str(s) for s in rhs)
+        logging.debug(f"apply_operator/coerce: lhs={lhs}; rhs={rhs}; lhs.issubset(rhs)={lhs.issubset(rhs)}; rhs.issubset(lhs)={rhs.issubset(lhs)}")
+        return lhs.issubset(rhs) or rhs.issubset(lhs)
 
     if isinstance(lhs, tuple) or isinstance(rhs, tuple):
         if op is Operator.EqualTo:

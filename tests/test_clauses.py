@@ -78,6 +78,13 @@ def test_operator_in(caplog):
     assert apply_operator(lhs=(), op=Operator.In, rhs=2) == False
 
 
+def test_operator_in_subset(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    assert apply_operator(lhs=(1, 0, 1,), op=Operator.In, rhs=(0, 1))
+    assert apply_operator(lhs=(1, 2,), op=Operator.In, rhs=(0, 1)) == False
+
+
 def test_operator_nin(caplog):
     caplog.set_level(logging.DEBUG)
 
