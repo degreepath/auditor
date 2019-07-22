@@ -5,7 +5,7 @@ from collections import defaultdict
 import itertools
 import copy
 
-from frozendict import frozendict
+from .frozendict import frozendict
 
 from .data import CourseInstance, CourseStatus
 from .save import SaveRule
