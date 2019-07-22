@@ -30,6 +30,8 @@ class FromInput:
             mode = "student"
             itemtype = data["student"]
             repeat_mode = data.get('repeats', 'all')
+            assert repeat_mode in ['first', 'all']
+
         elif "saves" in data or "save" in data:
             mode = "saves"
             saves = tuple(x for x in data.get("saves", [data.get("save", None)]) if x)
