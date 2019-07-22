@@ -91,7 +91,8 @@ class FromRule:
 
     def solutions_when_saves(self, *, ctx, path):
         saves = [
-            ctx.save_rules[s].solutions(ctx=ctx, path=path) for s in self.source.saves
+            ctx.save_rules[s].solutions(ctx=ctx, path=path)
+            for s in self.source.saves
         ]
 
         for p in itertools.product(*saves):
