@@ -5,7 +5,7 @@ import decimal
 
 from ..result import FromResult
 from ..data import CourseInstance, Term
-from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause
+from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause, Operator
 
 logger = logging.getLogger(__name__)
 
@@ -60,22 +60,24 @@ class FromSolution:
     def audit_when_student(self, ctx, path: List):
         successful_claims = []
         failed_claims = []
-        if self.rule.where is not None:
-            for course in self.output:
-                claim = ctx.make_claim(
-                    course=course,
-                    path=path,
-                    clause=self.rule.where,
-                    transcript=ctx.transcript,
-                    allow_claimed=self.rule.allow_claimed,
-                )
 
-                if claim.failed():
-                    logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')
-                    failed_claims.append(claim)
-                else:
-                    logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
-                    successful_claims.append(claim)
+        for course in self.output:
+            claim = ctx.make_claim(
+                course=course,
+                path=path,
+                clause=
+                    self.rule.where
+                    or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim=''),
+                transcript=ctx.transcript,
+                allow_claimed=self.rule.allow_claimed,
+            )
+
+            if claim.failed():
+                logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')
+                failed_claims.append(claim)
+            else:
+                logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
+                successful_claims.append(claim)
 
         may_possibly_succeed = self.apply_clause(self.rule.action, self.output)
 
