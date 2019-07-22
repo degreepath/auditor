@@ -188,32 +188,30 @@ class CourseInstance:
         )
 
     @staticmethod
-    def from_s(s: str, attributes=None):
-        return CourseInstance(
-            status=CourseStatus.InProgress,
-            credits=decimal.Decimal('1.00'),
-            subject=tuple([s.split(' ')[0]]),
-            number=s.split(' ')[1],
-            section="",
-            transcript_code=None,
-            clbid=s,
-            gereqs=tuple(),
-            term=Term(20001),
-            is_lab=False,
-            name=s,
-            grade=grade_from_str('B'),
-            gradeopt="Graded",
-            level=0,
-            attributes=tuple(attributes) if attributes else tuple(),
-            is_flac=False,
-            is_ace=False,
-            is_topic=False,
-            identity=s,
-            shorthand=s,
-            institution="St. Olaf College",
-            subtype="x",
-            crsid=s,
-        )
+    def from_s(s: str, **kwargs):
+        return CourseInstance.from_dict(**{
+            "attributes": tuple(),
+            "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
+            "course": s,
+            "credits": '1.00',
+            "crsid": f"<crsid={str(hash(s))}>",
+            "gereqs": tuple(),
+            "grade": 'B',
+            "graded": "Graded",
+            "incomplete": False,
+            "institution": "St. Olaf College",
+            "is_repeat": False,
+            "name": s,
+            "number": s.split(' ')[1],
+            "section": "",
+            "semester": 1,
+            "subjects": tuple([s.split(' ')[0]]),
+            "subtype": "x",
+            "term": 20001,
+            "transcript_code": None,
+            "year": 2000,
+            **kwargs,
+        })
 
     def attach_attrs(self, attributes=None):
         if attributes is None:
