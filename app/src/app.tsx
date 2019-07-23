@@ -80,10 +80,16 @@ function Data({ children }: { children: typeof Contents }) {
       let studentOrTranscript = JSON.parse(v);
       if (Array.isArray(studentOrTranscript)) {
         setTranscript(studentOrTranscript);
-        localStorage.setItem("dp-transcript", JSON.stringify(studentOrTranscript));
+        localStorage.setItem(
+          "dp-transcript",
+          JSON.stringify(studentOrTranscript),
+        );
       } else {
         setTranscript(studentOrTranscript.courses);
-        localStorage.setItem("dp-transcript", JSON.stringify(studentOrTranscript.courses));
+        localStorage.setItem(
+          "dp-transcript",
+          JSON.stringify(studentOrTranscript.courses),
+        );
       }
       setTrError(false);
     } catch (error) {
