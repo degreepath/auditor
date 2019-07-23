@@ -96,7 +96,7 @@ def audit(*, spec, transcript, constants, area_pointers):
 
     best_sol = None
     total_count = 0
-    times = []
+    iterations = []
     start = time.perf_counter()
     start_time = datetime.datetime.now()
     iter_start = time.perf_counter()
@@ -120,15 +120,15 @@ def audit(*, spec, transcript, constants, area_pointers):
         if result.ok():
             best_sol = result
             iter_end = time.perf_counter()
-            times.append(iter_end - iter_start)
+            iterations.append(iter_end - iter_start)
             break
 
         iter_end = time.perf_counter()
-        times.append(iter_end - iter_start)
+        iterations.append(iter_end - iter_start)
 
         iter_start = time.perf_counter()
 
-    if not times:
+    if not iterations:
         print("no audits completed", file=sys.stderr)
         return
 
@@ -144,7 +144,7 @@ def audit(*, spec, transcript, constants, area_pointers):
         count=total_count,
         elapsed=elapsed,
         transcript=this_transcript,
-        iterations=times,
+        iterations=iterations,
     )
 
     return (result_json, summary)
