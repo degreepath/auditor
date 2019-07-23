@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Any, Dict, Union, Set, TYPE_CHECKING
+from dataclasses import dataclass, field, replace
+from typing import List, Optional, Tuple, Any, Dict, Union, Set
 import logging
 from collections import defaultdict
 import itertools
@@ -40,6 +40,7 @@ def clbid_transcript_map(transcript) -> Dict:
 @dataclass(frozen=False)
 class RequirementContext:
     transcript: Tuple = tuple()
+    areas: Tuple = tuple()
     requirements: Dict = field(default_factory=dict)
     save_rules: Dict = field(default_factory=dict)
     requirement_cache: Dict = field(default_factory=dict)
@@ -295,16 +296,16 @@ class Requirement:
 
         validated_saves: Dict = {}
         for save in self.saves.values():
-            new_ctx = RequirementContext(
-                transcript=ctx.transcript,
+            new_ctx = replace(
+                ctx,
                 save_rules={name: s for name, s in validated_saves.items()},
                 requirements=children,
             )
             save.validate(ctx=new_ctx)
             validated_saves[save.name] = save
 
-        new_ctx = RequirementContext(
-            transcript=ctx.transcript,
+        new_ctx = replace(
+            ctx,
             save_rules={name: s for name, s in self.saves.items() or {}},
             requirements=children,
         )
@@ -330,8 +331,8 @@ class Requirement:
         else:
             logging.debug("{} requirement \"{}\" has a result", path, self.name)
 
-        new_ctx = RequirementContext(
-            transcript=ctx.transcript,
+        new_ctx = replace(
+            ctx,
             save_rules={s.name: s for s in self.saves.values()},
             requirements={r.name: r for r in self.requirements.values()},
         )
@@ -343,14 +344,14 @@ class Requirement:
         for i, solution in enumerate(self.result.solutions(ctx=new_ctx, path=path)):
             yield RequirementSolution.from_requirement(self, inputs=tuple([(ident, i)]), solution=solution)
 
-    def estimate(self, *, ctx: RequirementContext):
-        new_ctx = RequirementContext(
-            transcript=ctx.transcript,
-            save_rules={s.name: s for s in self.saves.values()},
-            requirements={r.name: r for r in self.requirements.values()},
-        )
+    # def estimate(self, *, ctx: RequirementContext):
+    #     new_ctx = replace(
+    #         ctx,
+    #         save_rules={s.name: s for s in self.saves.values()},
+    #         requirements={r.name: r for r in self.requirements.values()},
+    #     )
 
-        return self.result.estimate(ctx=new_ctx)
+    #     return self.result.estimate(ctx=new_ctx)
 
 
 @dataclass(frozen=True)

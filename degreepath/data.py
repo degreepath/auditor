@@ -8,6 +8,71 @@ from .lib import grade_from_str, expand_subjects
 from .clause import Clause, SingleClause, AndClause, OrClause, str_clause
 
 
+class AreaStatus(enum.Enum):
+    certified = enum.auto()
+    declared = enum.auto()
+
+
+class AreaKind(enum.Enum):
+    major = enum.auto()
+    concentration = enum.auto()
+    emphasis = enum.auto()
+
+
+@dataclasses.dataclass(frozen=True)
+class AreaPointer:
+    code: int
+    status: AreaStatus
+    kind: AreaKind
+    name: str
+    degree: str
+
+    def to_dict(self):
+        return {
+            "type": "area",
+            "code": self.code,
+            "status": self.status.name,
+            "kind": self.kind.name,
+            "degree": self.degree,
+            "name": self.name,
+        }
+
+    @staticmethod
+    def from_dict(*, code, status, kind, name, degree) -> Optional[Any]:
+        return AreaPointer(
+            code=int(code),
+            status=AreaStatus[status],
+            kind=AreaKind[kind],
+            name=name,
+            degree=degree,
+        )
+
+    def apply_clause(self, clause: Clause) -> bool:
+        if isinstance(clause, AndClause):
+            logging.debug("clause/and/compare {}", clause)
+            return all(self.apply_clause(subclause) for subclause in clause)
+
+        elif isinstance(clause, OrClause):
+            logging.debug("clause/or/compare {}", clause)
+            return any(self.apply_clause(subclause) for subclause in clause)
+
+        elif isinstance(clause, SingleClause):
+            if clause.key == 'code':
+                return clause.compare(self.code)
+            elif clause.key == 'status':
+                return clause.compare(self.status.name)
+            elif clause.key == 'kind' or clause.key == 'type':
+                return clause.compare(self.kind.name)
+            elif clause.key == 'name':
+                return clause.compare(self.name)
+            elif clause.key == 'degree':
+                return clause.compare(self.degree)
+
+            raise TypeError(f"expected to get one of {list(self.__dict__.keys())}; got {clause.key}")
+
+        raise TypeError(f"expected a clause; found {type(clause)}")
+
+
 @dataclasses.dataclass(frozen=True, order=True)
 class Term:
     term: int

@@ -169,6 +169,7 @@ class SingleAssertion:
         groups = m.groups()
 
         command = Command[groups[0]]
+        Sources: Any = None
         if command is Command.count:
             Sources = Countables
         elif command is Command.sum:

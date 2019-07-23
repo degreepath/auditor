@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Any, Tuple, Union
 import logging
 
 from .rule import Rule, load_rule, CourseRule
-from .data import CourseInstance
+from .data import CourseInstance, AreaPointer
 from .limit import Limit
 from .clause import SingleClause, Clause
 from .requirement import RequirementContext, Requirement
@@ -68,7 +68,7 @@ class AreaOfStudy:
 
     # def limited_transcripts(self, transcript: List[CourseInstance]):
 
-    def solutions(self, *, transcript: Tuple[CourseInstance, ...]):
+    def solutions(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
         logger.debug("{} evaluating area.result", path)
 
@@ -77,6 +77,7 @@ class AreaOfStudy:
 
         ctx = RequirementContext(
             transcript=transcript,
+            areas=areas,
             requirements={name: r for name, r in self.requirements.items()},
             multicountable=self.multicountable,
         )
@@ -89,14 +90,13 @@ class AreaOfStudy:
 
         logger.debug("{} all solutions generated", path)
 
-    def estimate(self, *, transcript: Tuple[CourseInstance, ...]):
-        ctx = RequirementContext(
-            transcript=transcript,
-            requirements={name: r for name, r in self.requirements.items()},
-            multicountable=self.multicountable,
-        )
-
-        return self.result.estimate(ctx=ctx)
+    # def estimate(self, *, transcript: Tuple[CourseInstance, ...]):
+    #     ctx = RequirementContext(
+    #         transcript=transcript,
+    #         requirements={name: r for name, r in self.requirements.items()},
+    #         multicountable=self.multicountable,
+    #     )
+    #     return self.result.estimate(ctx=ctx)
 
 
 @dataclass(frozen=True)
@@ -111,12 +111,13 @@ class AreaSolution:
             "result": self.solution.to_dict(),
         }
 
-    def audit(self, *, transcript: Tuple[CourseInstance, ...]):
+    def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
         logger.debug("{} auditing area.result", path)
 
         ctx = RequirementContext(
             transcript=transcript,
+            areas=areas,
             requirements={name: r for name, r in self.area.requirements.items()},
         )
 

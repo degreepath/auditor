@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple
+from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple, FrozenSet
 import logging
 import decimal
 
@@ -58,8 +58,8 @@ class FromSolution:
         raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
 
     def audit_when_saves(self, *, ctx, path: List):
-        successful_claims = []
-        failed_claims = []
+        successful_claims: List = []
+        failed_claims: List = []
 
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
@@ -77,8 +77,8 @@ class FromSolution:
         )
 
     def audit_when_reqs(self, *, ctx, path: List):
-        successful_claims = []
-        failed_claims = []
+        successful_claims: List = []
+        failed_claims: List = []
 
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
@@ -99,20 +99,24 @@ class FromSolution:
         successful_claims = []
         failed_claims = []
 
-        for course in self.output:
-            claim = ctx.make_claim(
-                course=course,
-                path=path,
-                clause=
-                    self.rule.where
-                    or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim=''),
-                transcript=ctx.transcript,
-                allow_claimed=self.rule.allow_claimed,
-            )
+        for item in self.output:
+            if isinstance(item, CourseInstance):
+                claim = ctx.make_claim(
+                    course=item,
+                    path=path,
+                    clause=
+                        self.rule.where
+                        or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim=''),
+                    transcript=ctx.transcript,
+                    allow_claimed=self.rule.allow_claimed,
+                )
 
-            if claim.failed():
-                logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')
-                failed_claims.append(claim)
+                if claim.failed():
+                    logger.debug('{} course "{}" exists, but has already been claimed by {}', path, item.clbid, claim.conflict_with)
+                    failed_claims.append(claim)
+                else:
+                    logger.debug('{} course "{}" exists, and is available', path, item.clbid)
+                    successful_claims.append(claim)
             else:
                 logger.debug('{} item "{}" exists, and is available', path, item)
                 successful_claims.append(claim)
@@ -143,7 +147,7 @@ def avg_or_0(items: Sequence):
     return sum(items) / len(items) if items else 0
 
 
-def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, Sequence[Any]]:
+def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, FrozenSet[Any]]:
     if clause.key == 'count(courses)':
         assert all(isinstance(x, CourseInstance) for x in value)
         items = frozenset(c.clbid for c in value)

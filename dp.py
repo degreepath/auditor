@@ -9,7 +9,7 @@ import traceback
 
 import yaml
 
-from degreepath import CourseInstance, Constants, AreaOfStudy, summarize
+from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPointer
 from degreepath.ms import pretty_ms
 
 logger = logging.getLogger()
@@ -41,6 +41,8 @@ def main():
         with open(student_file, "r", encoding="utf-8") as infile:
             student = json.load(infile)
 
+        area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
+
         transcript = []
         for row in student["courses"]:
             instance = CourseInstance.from_dict(**row)
@@ -58,7 +60,12 @@ def main():
             constants = Constants(matriculation_year=student['matriculation'])
 
             try:
-                (result_json, summary) = audit(spec=area_spec, transcript=transcript, constants=constants)
+                (result_json, summary) = audit(
+                    spec=area_spec,
+                    transcript=transcript,
+                    constants=constants,
+                    area_pointers=area_pointers,
+                )
 
                 if args.json:
                     print(json.dumps(result_json))
@@ -72,7 +79,7 @@ def main():
                 break
 
 
-def audit(*, spec, transcript, constants):
+def audit(*, spec, transcript, constants, area_pointers):
     area = AreaOfStudy.load(specification=spec, c=constants)
     area.validate()
 
@@ -94,13 +101,13 @@ def audit(*, spec, transcript, constants):
     start_time = datetime.datetime.now()
     iter_start = time.perf_counter()
 
-    for sol in area.solutions(transcript=this_transcript):
+    for sol in area.solutions(transcript=this_transcript, areas=area_pointers):
         total_count += 1
 
         if total_count % 1_000 == 0:
             print(f"... {total_count:,}", file=sys.stderr)
 
-        result = sol.audit(transcript=this_transcript)
+        result = sol.audit(transcript=this_transcript, areas=area_pointers)
 
         if best_sol is None:
             best_sol = result

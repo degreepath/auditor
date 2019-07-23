@@ -89,6 +89,10 @@ class FromRule:
                         filtered_courses.append(course)
                         course_identities.add(course.crsid)
                 data = filtered_courses
+
+        elif self.source.itemtype == "areas":
+            data = ctx.areas
+
         else:
             raise KeyError(f"{self.source.itemtype} not yet implemented")
 
@@ -133,14 +137,14 @@ class FromRule:
         did_iter = False
         for data in iterable:
             if self.where is not None:
-                logging.debug("fromrule/filter/clause: {}", str_clause(self.where))
+                logging.debug("fromrule/filter/clause: {}", self.where)
                 if data:
                     for i, c in enumerate(data):
                         logging.debug("fromrule/filter/before/{}: {}", i, c)
                 else:
                     logging.debug("fromrule/filter/before: []")
 
-                data = [c for c in data if c.apply_clause(self.where)]
+                data = [item for item in data if item.apply_clause(self.where)]
 
                 if data:
                     for i, c in enumerate(data):

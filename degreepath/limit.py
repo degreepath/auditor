@@ -42,7 +42,7 @@ class LimitSet:
         return LimitSet(limits=tuple(Limit.load(l, c) for l in data))
 
     def apply_limits(self, courses: List):
-        clause_counters = defaultdict(int)
+        clause_counters: Dict = defaultdict(int)
         course_set = []
 
         if courses:

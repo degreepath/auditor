@@ -37,7 +37,7 @@ def x_test_save():
         CourseInstance.from_dict(course="ABCD 103", attributes=["elective"]),
     ])
 
-    ctx = RequirementContext(transcript=courses, saves={}, child_requirements={})
+    ctx = RequirementContext(transcript=courses)
 
     solutions = list(rule.solutions(path=["$root"], ctx=ctx))
 
@@ -190,7 +190,7 @@ def x_test_saves(caplog):
         CourseInstance.from_dict(course="ABCD 333", attributes=["elective"]),
     ])
 
-    ctx = RequirementContext(transcript=courses, saves={}, child_requirements={})
+    ctx = RequirementContext(transcript=courses)
 
     solutions = list(req.solutions(path=["$root"], ctx=ctx))
 
