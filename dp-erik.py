@@ -47,7 +47,7 @@ def main(area_file, student_file):
         with open(student_file, "r", encoding="utf-8") as infile:
             student = json.load(infile)
     except FileNotFoundError:
-        print('could not find file "{}"'.format(student_file))
+        print('could not find file "{student_file}"')
         sentry_sdk.capture_exception()
         return
 
@@ -63,18 +63,21 @@ def main(area_file, student_file):
                 area = yaml.load(stream=infile, Loader=yaml.SafeLoader)
         except FileNotFoundError:
             sentry_sdk.capture_exception()
+
             with conn.cursor() as curs:
-                err = "could not find the area specification file for {} {} at {}".format(area_code, area_catalog, area_file)
                 curs.execute("""
                     INSERT INTO result (student_id, error, in_progress, area_code, catalog)
                     VALUES (%(student_id)s, %(error)s, false, %(code)s, %(catalog)s)
                 """, {
                     "student_id": student["stnum"],
-                    "error": {"error": err},
+                    "error": {
+                        "error": f"could not find the area specification file for {area_code} {area_catalog} at {area_file}",
+                    },
                     "code": area_code,
                     "catalog": area_catalog,
                 })
                 conn.commit()
+
             return
 
         result_id = make_result_id(conn=conn, stnum=student["stnum"], area_code=area_code, catalog=area_catalog)
@@ -105,6 +108,8 @@ def main(area_file, student_file):
 
             c = c.attach_attrs(attributes=attrs_by_course or attrs_by_shorthand)
             transcript.append(c)
+
+        transcript = tuple(transcript)
 
         #####
 
@@ -141,6 +146,7 @@ def main(area_file, student_file):
             times.append(iter_end - iter_start)
 
             if result.ok():
+                best_sol = result
                 break
 
             iter_start = time.perf_counter()
@@ -156,7 +162,6 @@ def main(area_file, student_file):
         avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
         claims = result["claims"]
-        del result["claims"]
 
         rank = result["rank"]
         ok = result["ok"]
@@ -164,42 +169,39 @@ def main(area_file, student_file):
         claims = []
 
         with conn.cursor() as curs:
-            curs.execute(
-                """
-                    UPDATE result
-                    SET iterations = %(total_count)s
-                      , duration = interval %(elapsed)s
-                      , per_iteration = interval %(avg_iter_time)s
-                      , rank = %(rank)s
-                      , result = %(result)s
-                      , claimed_courses = %(claims)s::jsonb
-                      , ok = %(ok)s
-                      , ts = now()
-                      , in_progress = false
-                    WHERE id = %(result_id)s
-                """,
-                {
-                    "result_id": result_id,
-                    "total_count": total_count,
-                    "elapsed": elapsed,
-                    "avg_iter_time": avg_iter_time.strip("~"),
-                    "result": json.dumps(result),
-                    "rank": rank,
-                    "claims": json.dumps(claims),
-                    "ok": False if ok is None else ok,
-                },
-            )
+            curs.execute("""
+                UPDATE result
+                SET iterations = %(total_count)s
+                  , duration = interval %(elapsed)s
+                  , per_iteration = interval %(avg_iter_time)s
+                  , rank = %(rank)s
+                  , result = %(result)s
+                  , claimed_courses = %(claims)s::jsonb
+                  , ok = %(ok)s
+                  , ts = now()
+                  , in_progress = false
+                WHERE id = %(result_id)s
+            """, {
+                "result_id": result_id,
+                "total_count": total_count,
+                "elapsed": elapsed,
+                "avg_iter_time": avg_iter_time.strip("~"),
+                "result": json.dumps(result),
+                "rank": rank,
+                "claims": json.dumps(claims),
+                "ok": False if ok is None else ok,
+            })
             conn.commit()
+
     except Exception as ex:
         sentry_sdk.capture_exception()
 
         if result_id:
             with conn.cursor() as curs:
-                curs.execute("""
-                    UPDATE result
-                    SET in_progress = false
-                    WHERE id = %(result_id)s
-                """, {"result_id": result_id})
+                curs.execute(
+                    "UPDATE result SET in_progress = false WHERE id = %(result_id)s",
+                    {"result_id": result_id}
+                )
 
                 conn.commit()
     finally:
