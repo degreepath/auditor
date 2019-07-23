@@ -149,7 +149,7 @@ class ResolvedBaseClause:
     def to_dict(self):
         return {
             "resolved_with": self.resolved_with,
-            "resolved_items": self.resolved_items,
+            "resolved_items": list(x for x in self.resolved_items),
             "result": self.result,
         }
 
