@@ -4,7 +4,6 @@ import logging
 from collections import defaultdict
 import itertools
 import copy
-from functools import lru_cache
 
 from .frozendict import frozendict
 
@@ -12,29 +11,9 @@ from .data import CourseInstance, CourseStatus
 from .save import SaveRule
 from .rule import CourseRule
 
-
-@lru_cache(maxsize=128, typed=True)
-def completed_courses(transcript: List) -> List:
-    return [
-        course
-        for course in transcript
-        if course.status != CourseStatus.DidNotComplete
-    ]
-
-
-@lru_cache(maxsize=128, typed=True)
-def short_transcript_map(transcript) -> Dict:
-    return {c.course_shorthand(): c for c in completed_courses(transcript)}
-
-
-@lru_cache(maxsize=128, typed=True)
-def long_transcript_map(transcript) -> Dict:
-    return {c.course(): c for c in completed_courses(transcript)}
-
-
-@lru_cache(maxsize=128, typed=True)
-def clbid_transcript_map(transcript) -> Dict:
-    return {c.clbid: c for c in completed_courses(transcript)}
+COMPLETED_COURSES: Dict[Any, List[CourseInstance]] = {}
+COURSE_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
+CLBID_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
 
 
 @dataclass(frozen=False)
@@ -47,17 +26,43 @@ class RequirementContext:
     multicountable: List[List] = field(default_factory=list)
     claims: Dict[str, Set] = field(default_factory=lambda: defaultdict(set))
 
+    _course_lookup_map: Dict = field(init=False)
+    _clbid_lookup_map: Dict = field(init=False)
+    _completed_courses: Dict = field(init=False)
+
+    def __post_init__(self):
+        tid = id(self.transcript)
+
+        if tid not in COMPLETED_COURSES:
+            COMPLETED_COURSES[tid] = [
+                course
+                for course in self.transcript
+                if course.status != CourseStatus.DidNotComplete
+            ]
+        self._completed_courses = COMPLETED_COURSES[tid]
+
+        if tid not in COURSE_TRANSCRIPT_MAP:
+            COURSE_TRANSCRIPT_MAP[tid] = {
+                **{c.course_shorthand(): c for c in self._completed_courses},
+                **{c.course(): c for c in self._completed_courses},
+            }
+        self._course_lookup_map = COURSE_TRANSCRIPT_MAP[tid]
+
+        if tid not in CLBID_TRANSCRIPT_MAP:
+            CLBID_TRANSCRIPT_MAP[tid] = {c.clbid: c for c in self._completed_courses}
+        self._clbid_lookup_map = CLBID_TRANSCRIPT_MAP[tid]
+
     def find_course(self, c: str) -> Optional[CourseInstance]:
-        return short_transcript_map(self.transcript).get(c, long_transcript_map(self.transcript).get(c, None))
+        return self._course_lookup_map.get(c, None)
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
-        return clbid_transcript_map(self.transcript).get(clbid, None)
+        return self._clbid_lookup_map.get(clbid, None)
 
     def has_course(self, c: str) -> bool:
         return self.find_course(c) is not None
 
     def completed_courses(self):
-        return completed_courses(self.transcript)
+        return iter(self._completed_courses)
 
     def checkpoint(self):
         return copy.deepcopy(self.claims)
@@ -111,11 +116,10 @@ class RequirementContext:
 
         # allow topics courses to be taken multiple times
         if course.is_topic:
-            mapped_transcript = clbid_transcript_map(self.transcript)
             conflicts_are_topics = (
-                mapped_transcript[clm.clbid].is_topic
-                for clm in potential_conflicts
-                if clm.clbid in mapped_transcript
+                course.is_topic
+                for course in (self.find_course_by_clbid(clm.clbid) for clm in potential_conflicts)
+                if course is not None
             )
 
             if all(conflicts_are_topics):
@@ -433,7 +437,7 @@ class RequirementResult:
     name: str
     saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
-    inputs: List[Tuple[str, int]]
+    inputs: Tuple[Tuple[str, int], ...]
     message: Optional[str] = None
     result: Optional[Any] = None
     audited_by: Optional[str] = None
