@@ -5,7 +5,7 @@ import decimal
 import logging
 
 from .lib import grade_from_str, expand_subjects
-from .clause import Clause, SingleClause, AndClause, OrClause, str_clause
+from .clause import Clause, SingleClause, AndClause, OrClause
 
 
 class AreaStatus(enum.Enum):
@@ -295,11 +295,11 @@ class CourseInstance:
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
-            logging.debug("clause/and/compare {}", str_clause(clause))
+            logging.debug("clause/and/compare {}", clause)
             return all(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, OrClause):
-            logging.debug("clause/or/compare {}", str_clause(clause))
+            logging.debug("clause/or/compare {}", clause)
             return any(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, SingleClause):

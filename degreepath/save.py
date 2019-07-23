@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Iterator, TYPE_CHECKING
+from typing import Dict, List, Iterator
 import logging
 
 from .rule import FromRule
@@ -12,7 +12,11 @@ class SaveRule:
     name: str
 
     def to_dict(self):
-        return {**self.innards.to_dict(), "type": "save", "name": self.name}
+        return {
+            **self.innards.to_dict(),
+            "type": "save",
+            "name": self.name,
+        }
 
     @staticmethod
     def load(name: str, data: Dict, c: Constants):

@@ -6,7 +6,7 @@ import logging
 from .source import FromInput
 from .assertion import AnyAssertion, load_assertion
 from ...limit import LimitSet, Limit
-from ...clause import Clause, str_clause, load_clause
+from ...clause import Clause, load_clause
 from ...solution import FromSolution
 from ...constants import Constants
 
