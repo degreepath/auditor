@@ -47,7 +47,7 @@ class LimitSet:
 
         if courses:
             for i, c in enumerate(courses):
-                logging.debug(f"limit/before/{i}: {c}")
+                logging.debug("limit/before/{}: {}", i, c)
         else:
             logging.debug(f"limit/before: []")
 
@@ -55,14 +55,14 @@ class LimitSet:
             may_yield = False
 
             for l in self.limits:
-                logging.debug(f"limit/check: checking {c.identity} against {l}")
+                logging.debug("limit/check: checking {} against {}", c.identity, l)
                 if c.apply_clause(l.where):
                     if clause_counters[l] < l.at_most:
-                        logging.debug(f"limit/increment: {c.identity} matched {l}")
+                        logging.debug("limit/increment: {} matched {}", c.identity, l)
                         clause_counters[l] += 1
                         may_yield = True
                     else:
-                        logging.debug(f"limit/maximum: {c.identity} matched {l}")
+                        logging.debug("limit/maximum: {} matched {}", c.identity, l)
                         may_yield = False
                 else:
                     may_yield = True
@@ -72,11 +72,11 @@ class LimitSet:
 
         if course_set:
             for i, c in enumerate(course_set):
-                logging.debug(f"limit/after/{i}: {c}")
+                logging.debug("limit/after/{}: {}", i, c)
         else:
             logging.debug(f"limit/after: []")
 
-        logging.debug(f"limit/state: {clause_counters}")
+        logging.debug("limit/state: {}", clause_counters)
 
         return tuple(course_set)
 
@@ -99,7 +99,7 @@ class LimitSet:
         extra_iter_counters = defaultdict(int)
         for l in self.limits:
             for c in courses:
-                logging.debug(f"limit/probe: checking {c.identity} against {l}")
+                logging.debug("limit/probe: checking {} against {}", c.identity, l)
                 if c.apply_clause(l.where):
                     extra_iter_counters[l] += 1
             # set each counter to the number of extra courses, or 0, to find the number of extra iterations
@@ -112,7 +112,7 @@ class LimitSet:
             logging.debug(f"No limits result in extra combinations")
             yield self.apply_limits(courses)
 
-        logging.debug(f"Limits result in {len(extra_iter_counters)} extra combinations")
+        logging.debug("Limits result in {} extra combinations", len(extra_iter_counters))
         # TODO: figure out how to do this
         # for _ in extra_iter_counters:
         yield self.apply_limits(courses)

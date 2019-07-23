@@ -25,5 +25,5 @@ class AuditedRule:
         return True
 
     def solutions(self, *, ctx, path: List):
-        logging.debug(f"{path} AuditedRule#solutions")
+        logging.debug("{} AuditedRule#solutions", path)
         yield self

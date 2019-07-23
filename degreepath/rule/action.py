@@ -26,5 +26,5 @@ class ActionRule:
         # TODO: check for input items here
 
     def solutions(self, *, ctx, path: List):
-        logging.debug(f"{path} ActionRule#solutions")
+        logging.debug("{} ActionRule#solutions", path)
         yield ActionSolution(result=None)

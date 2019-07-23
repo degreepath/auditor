@@ -230,11 +230,11 @@ class CourseInstance:
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
-            logging.debug(f"clause/and/compare {str_clause(clause)}")
+            logging.debug("clause/and/compare {}", str_clause(clause))
             return all(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, OrClause):
-            logging.debug(f"clause/or/compare {str_clause(clause)}")
+            logging.debug("clause/or/compare {}", str_clause(clause))
             return any(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, SingleClause):
@@ -245,11 +245,11 @@ class CourseInstance:
 
             # TODO: replace this with explicit key accesses
             if clause.key in self.__dict__:
-                logging.debug(f"clause/compare/key={clause.key}")
+                logging.debug("clause/compare/key={}", clause.key)
                 return clause.compare(self.__dict__[clause.key])
             else:
                 keys = list(self.__dict__.keys())
-                logging.debug(f"clause/compare[{clause.key}]: not found in {keys}")
+                logging.debug("clause/compare[{}]: not found in {}", clause.key, keys)
                 return False
 
         raise TypeError(f"expected a clause; found {type(clause)}")

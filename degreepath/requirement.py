@@ -315,22 +315,20 @@ class Requirement:
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         path = [*path, f"$req->{self.name}"]
 
-        header = f'{path}\n\trequirement "{self.name}"'
-
-        logging.debug(f"{header} has not been evaluated")
+        logging.debug("{} requirement \"{}\" has not been evaluated", path, self.name)
 
         if not self.message:
-            logging.debug(f"{header} has no message")
+            logging.debug("{} requirement \"{}\" has no message", path, self.name)
 
         if not self.audited_by:
-            logging.debug(f"{header} is not audited")
+            logging.debug("{} requirement \"{}\" is not audited", path, self.name)
 
         if not self.result:
-            logging.debug(f"{header} does not have a result")
+            logging.debug("{} requirement \"{}\" does not have a result", path, self.name)
             yield RequirementSolution.from_requirement(self, solution=None, inputs=tuple())
             return
         else:
-            logging.debug(f"{header} has a result")
+            logging.debug("{} requirement \"{}\" has a result", path, self.name)
 
         new_ctx = RequirementContext(
             transcript=ctx.transcript,

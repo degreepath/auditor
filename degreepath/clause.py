@@ -65,32 +65,32 @@ def apply_operator(*, op, lhs, rhs) -> bool:
     3. If LHS is a sequence, and OP is .EqualTo, OP is changed to .In
     4. If LHS is a sequence, and OP is .NotEqualTo, OP is changed to .NotIn
     """
-    logging.debug(f"apply_operator: `{lhs}` ({type(lhs)}) {op} `{rhs}` ({type(rhs)})")
+    logging.debug("apply_operator: `{}` ({}) {} `{}` ({})", lhs, type(lhs), op, rhs, type(rhs))
 
     if isinstance(lhs, tuple) and isinstance(rhs, tuple):
         if op is not Operator.In:
-            raise Exception(f'both rhs and lhs must not be sequences when using {op}; lhs={lhs}, rhs={rhs}')
+            raise Exception('both rhs and lhs must not be sequences when using {}; lhs={}, rhs={}', op, lhs, rhs)
 
         if lhs == tuple() or rhs == tuple():
-            logging.debug(f"apply_operator/skip: either lhs={lhs == tuple()} or rhs={rhs == tuple()} was empty; returning false")
+            logging.debug("apply_operator/skip: either lhs={} or rhs={} was empty; returning false", lhs == tuple(), rhs == tuple())
             return False
 
-        logging.debug(f"apply_operator/coerce: converting both {lhs} and {rhs} to sets of strings, and running issubset")
+        logging.debug("apply_operator/coerce: converting both {} and {} to sets of strings, and running issubset", lhs, rhs)
         lhs = set(str(s) for s in lhs)
         rhs = set(str(s) for s in rhs)
-        logging.debug(f"apply_operator/coerce: lhs={lhs}; rhs={rhs}; lhs.issubset(rhs)={lhs.issubset(rhs)}; rhs.issubset(lhs)={rhs.issubset(lhs)}")
+        logging.debug("apply_operator/coerce: lhs={}; rhs={}; lhs.issubset(rhs)={}; rhs.issubset(lhs)={}", lhs, rhs, lhs.issubset(rhs), rhs.issubset(lhs))
         return lhs.issubset(rhs) or rhs.issubset(lhs)
 
     if isinstance(lhs, tuple) or isinstance(rhs, tuple):
         if op is Operator.EqualTo:
-            logging.debug(f"apply_operator/coerce: got lhs={type(lhs)} / rhs={type(rhs)}; switching to {Operator.In}")
+            logging.debug("apply_operator/coerce: got lhs={} / rhs={}; switching to {}", type(lhs), type(rhs), Operator.In)
             return apply_operator(op=Operator.In, lhs=lhs, rhs=rhs)
         elif op is Operator.NotEqualTo:
-            logging.debug(f"apply_operator/coerce: got lhs={type(lhs)} / rhs={type(rhs)}; switching to {Operator.NotIn}")
+            logging.debug("apply_operator/coerce: got lhs={} / rhs={}; switching to {}", type(lhs), type(rhs), Operator.NotIn)
             return apply_operator(op=Operator.NotIn, lhs=lhs, rhs=rhs)
 
         if op is Operator.In:
-            logging.debug(f"apply_operator/in: `{lhs}` {op.value} `{rhs}`")
+            logging.debug("apply_operator/in: `{}` {} `{}`", lhs, op.value, rhs)
             if isinstance(lhs, tuple):
                 return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
             if isinstance(rhs, tuple):
@@ -98,7 +98,7 @@ def apply_operator(*, op, lhs, rhs) -> bool:
             raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
 
         elif op is Operator.NotIn:
-            logging.debug(f"apply_operator/not-in: `{lhs}` {op.value} `{rhs}`")
+            logging.debug("apply_operator/not-in: `{}` {} `{}`", lhs, op.value, rhs)
             if isinstance(lhs, tuple):
                 return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
             if isinstance(rhs, tuple):
@@ -114,27 +114,27 @@ def apply_operator(*, op, lhs, rhs) -> bool:
         lhs = str(lhs)
 
     if op is Operator.EqualTo:
-        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs == rhs}")
+        logging.debug("apply_operator: `{}` {} `{}` == {}", lhs, op, rhs, lhs == rhs)
         return lhs == rhs
 
     if op is Operator.NotEqualTo:
-        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs != rhs}")
+        logging.debug("apply_operator: `{}` {} `{}` == {}", lhs, op, rhs, lhs != rhs)
         return lhs != rhs
 
     if op is Operator.LessThan:
-        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs < rhs}")
+        logging.debug("apply_operator: `{}` {} `{}` == {}", lhs, op, rhs, lhs < rhs)
         return lhs < rhs
 
     if op is Operator.LessThanOrEqualTo:
-        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs <= rhs}")
+        logging.debug("apply_operator: `{}` {} `{}` == {}", lhs, op, rhs, lhs <= rhs)
         return lhs <= rhs
 
     if op is Operator.GreaterThan:
-        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs > rhs}")
+        logging.debug("apply_operator: `{}` {} `{}` == {}", lhs, op, rhs, lhs > rhs)
         return lhs > rhs
 
     if op is Operator.GreaterThanOrEqualTo:
-        logging.debug(f"apply_operator: `{lhs}` {op} `{rhs}` == {lhs >= rhs}")
+        logging.debug("apply_operator: `{}` {} `{}` == {}", lhs, op, rhs, lhs >= rhs)
         return lhs >= rhs
 
     raise TypeError(f"unknown comparison {op}")

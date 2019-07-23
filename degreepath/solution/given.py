@@ -64,9 +64,9 @@ class FromSolution:
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
         if resolved_assertion.result is True:
-            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
+            logger.debug("{} from-rule '{}' might possibly succeed", path, self.rule)
         else:
-            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+            logger.debug("{} from-rule '{}' did not succeed", path, self.rule)
 
         return FromResult(
             rule=self.rule,
@@ -83,9 +83,9 @@ class FromSolution:
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
         if resolved_assertion.result is True:
-            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
+            logger.debug("{} from-rule '{}' might possibly succeed", path, self.rule)
         else:
-            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+            logger.debug("{} from-rule '{}' did not succeed", path, self.rule)
 
         return FromResult(
             rule=self.rule,
@@ -114,15 +114,15 @@ class FromSolution:
                 logger.debug(f'{path}\n\tcourse "{course}" exists, but has already been claimed by {claim.conflict_with}')
                 failed_claims.append(claim)
             else:
-                logger.debug(f'{path}\n\tcourse "{course}" exists, and is available')
+                logger.debug('{} item "{}" exists, and is available', path, item)
                 successful_claims.append(claim)
 
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
         if resolved_assertion.result is True:
-            logger.debug(f"{path} from-rule '{self.rule}' might possibly succeed")
+            logger.debug("{} from-rule '{}' might possibly succeed", path, self.rule)
         else:
-            logger.debug(f"{path} from-rule '{self.rule}' did not succeed")
+            logger.debug("{} from-rule '{}' did not succeed", path, self.rule)
 
         return FromResult(
             rule=self.rule,
