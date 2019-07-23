@@ -39,9 +39,9 @@ export function CountResult(props: ResultBlock<ICountRule | CountResultT>) {
               {requiredItemCount === 1 && totalItemCount === 2 ? (
                 <>Either item is required blah</>
               ) : requiredItemCount === 2 && totalItemCount === 2 ? (
-                <>Both items were successful</>
+                <>Both items are successful</>
               ) : requiredItemCount === totalItemCount ? (
-                <>All items were successful</>
+                <>All items are successful</>
               ) : requiredItemCount === 1 ? (
                 <>1 item is required blah</>
               ) : (
