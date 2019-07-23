@@ -68,7 +68,7 @@ class AreaOfStudy:
 
     # def limited_transcripts(self, transcript: List[CourseInstance]):
 
-    def solutions(self, *, transcript: List):
+    def solutions(self, *, transcript: Tuple[CourseInstance, ...]):
         path = ["$root"]
         logger.debug(f"{path} evaluating area.result")
 
@@ -89,7 +89,7 @@ class AreaOfStudy:
 
         logger.debug(f"{path} all solutions generated")
 
-    def estimate(self, *, transcript: List[CourseInstance]):
+    def estimate(self, *, transcript: Tuple[CourseInstance, ...]):
         ctx = RequirementContext(
             transcript=transcript,
             requirements={name: r for name, r in self.requirements.items()},
@@ -111,7 +111,7 @@ class AreaSolution:
             "result": self.solution.to_dict(),
         }
 
-    def audit(self, *, transcript: List[CourseInstance]):
+    def audit(self, *, transcript: Tuple[CourseInstance, ...]):
         path = ["$root"]
         logger.debug(f"{path} auditing area.result")
 

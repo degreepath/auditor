@@ -85,6 +85,8 @@ def audit(*, spec, transcript, constants):
         c = c.attach_attrs(attributes=attrs_by_course or attrs_by_shorthand)
         this_transcript.append(c)
 
+    this_transcript = tuple(this_transcript)
+
     best_sol = None
     total_count = 0
     times = []

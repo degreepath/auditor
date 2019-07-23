@@ -31,11 +31,11 @@ def x_test_save():
         name="Taken Electives",
     )
 
-    courses = [
+    courses = tuple([
         CourseInstance.from_dict(course="ABCD 101", attributes=["elective"]),
         CourseInstance.from_dict(course="ABCD 102", attributes=["elective"]),
         CourseInstance.from_dict(course="ABCD 103", attributes=["elective"]),
-    ]
+    ])
 
     ctx = RequirementContext(transcript=courses, saves={}, child_requirements={})
 
@@ -181,14 +181,14 @@ def x_test_saves(caplog):
         requirements={},
     )
 
-    courses = [
+    courses = tuple([
         CourseInstance.from_dict(course="ABCD 101", attributes=["elective"]),
         CourseInstance.from_dict(course="ABCD 102", attributes=["elective"]),
         CourseInstance.from_dict(course="ABCD 103", attributes=["elective"]),
         CourseInstance.from_dict(course="ABCD 331", attributes=["elective"]),
         CourseInstance.from_dict(course="ABCD 332", attributes=["elective"]),
         CourseInstance.from_dict(course="ABCD 333", attributes=["elective"]),
-    ]
+    ])
 
     ctx = RequirementContext(transcript=courses, saves={}, child_requirements={})
 

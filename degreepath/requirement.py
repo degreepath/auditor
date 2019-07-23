@@ -4,6 +4,7 @@ import logging
 from collections import defaultdict
 import itertools
 import copy
+from functools import lru_cache
 
 from .frozendict import frozendict
 
@@ -12,9 +13,33 @@ from .save import SaveRule
 from .rule import CourseRule
 
 
+@lru_cache(maxsize=128, typed=True)
+def completed_courses(transcript: List) -> List:
+    return [
+        course
+        for course in transcript
+        if course.status != CourseStatus.DidNotComplete
+    ]
+
+
+@lru_cache(maxsize=128, typed=True)
+def short_transcript_map(transcript) -> Dict:
+    return {c.course_shorthand(): c for c in completed_courses(transcript)}
+
+
+@lru_cache(maxsize=128, typed=True)
+def long_transcript_map(transcript) -> Dict:
+    return {c.course(): c for c in completed_courses(transcript)}
+
+
+@lru_cache(maxsize=128, typed=True)
+def clbid_transcript_map(transcript) -> Dict:
+    return {c.clbid: c for c in completed_courses(transcript)}
+
+
 @dataclass(frozen=False)
 class RequirementContext:
-    transcript: List = field(default_factory=list)
+    transcript: Tuple = tuple()
     requirements: Dict = field(default_factory=dict)
     save_rules: Dict = field(default_factory=dict)
     requirement_cache: Dict = field(default_factory=dict)
@@ -22,30 +47,16 @@ class RequirementContext:
     claims: Dict[str, Set] = field(default_factory=lambda: defaultdict(set))
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
-        try:
-            return next(
-                course
-                for course in self.completed_courses()
-                if (course.course() == c or course.course_shorthand() == c)
-            )
-        except StopIteration:
-            return None
+        return short_transcript_map(self.transcript).get(c, long_transcript_map(self.transcript).get(c, None))
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
-        try:
-            return next(course for course in self.completed_courses() if course.clbid == clbid)
-        except StopIteration:
-            return None
+        return clbid_transcript_map(self.transcript).get(clbid, None)
 
     def has_course(self, c: str) -> bool:
         return self.find_course(c) is not None
 
     def completed_courses(self):
-        return (
-            course
-            for course in self.transcript
-            if course.status != CourseStatus.DidNotComplete
-        )
+        return completed_courses(self.transcript)
 
     def checkpoint(self):
         return copy.deepcopy(self.claims)
@@ -99,7 +110,7 @@ class RequirementContext:
 
         # allow topics courses to be taken multiple times
         if course.is_topic:
-            mapped_transcript = {c.clbid: c for c in transcript}
+            mapped_transcript = clbid_transcript_map(self.transcript)
             conflicts_are_topics = (
                 mapped_transcript[clm.clbid].is_topic
                 for clm in potential_conflicts
