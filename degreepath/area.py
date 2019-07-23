@@ -45,7 +45,7 @@ class AreaOfStudy:
             clauses = []
             for clause in ruleset:
                 if "course" in clause:
-                    item = CourseRule.load(clause)
+                    item = CourseRule.load(clause, c)
                 elif "attributes" in clause:
                     item = SingleClause.load("attributes", clause["attributes"], c)
                 else:
