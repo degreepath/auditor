@@ -44,14 +44,8 @@ class FromInput:
             itemtype = None
             repeat_mode = None
 
-        elif "stored-values" in data:
-            mode = "stored-values"
-            requirements = tuple(data["stored-values"])
-            itemtype = None
-            repeat_mode = None
-
         else:
-            raise KeyError(f"expected student, stored-values, saves, or requirements; got {list(data.keys())}")
+            raise KeyError(f"expected student, saves, or requirements; got {list(data.keys())}")
 
         return FromInput(
             mode=mode,
