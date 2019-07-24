@@ -160,16 +160,31 @@ class CountRule:
                     cleaned = []
 
                     for rulesol in solutionset:
-                        if isinstance(rulesol, tuple):
-                            req_ident, req_idx = rulesol[0]
+                        if hasattr(rulesol, 'inputs'):
+                            # print(rulesol.inputs)
 
-                            req_ident_map.setdefault(req_ident, req_idx)
+                            for req_ident, req_idx in rulesol.inputs:
+                                req_ident_map.setdefault(req_ident, req_idx)
 
-                            if req_ident_map[req_ident] != req_idx:
-                                do_not_yield = True
-                                break
+                                if req_ident_map[req_ident] != req_idx:
+                                    do_not_yield = True
+                                    break
+                                else:
+                                    solution = rulesol
 
-                            solution = rulesol[1]
+                        # # if isinstance(rulesol, RequirementSolution):
+
+                        # if isinstance(rulesol, tuple):
+                        #     print(ppretty(rulesol))
+                        #     req_ident, req_idx = rulesol[0]
+
+                        #     req_ident_map.setdefault(req_ident, req_idx)
+
+                        #     if req_ident_map[req_ident] != req_idx:
+                        #         do_not_yield = True
+                        #         break
+
+                        #     solution = rulesol[1]
                         else:
                             solution = rulesol
 
