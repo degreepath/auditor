@@ -138,6 +138,9 @@ class FromRule:
 
         did_iter = False
         for data in iterable:
+            if not data:
+                continue
+
             if self.where is not None:
                 logger.debug("fromrule/filter/clause: %s", self.where)
                 if data:
