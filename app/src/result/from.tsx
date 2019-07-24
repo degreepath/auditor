@@ -75,20 +75,24 @@ export function FromResult(props: ResultBlock<IFromRule | FromResultT>) {
           <p>
             {result.ok ? (
               result.claims.length === 1 ? (
-                <>There was a course!</>
+                <>There is a course!</>
               ) : (
-                <>There were {result.claims.length} courses!</>
+                <>There are {result.claims.length} courses!</>
               )
             ) : result.claims.length === 1 ? (
-              <>There was only 1 course.</>
+              <>There is only 1 course.</>
             ) : (
-              <>️There were only {result.claims.length} courses.</>
+              <>️There are only {result.claims.length} courses.</>
             )}
           </p>
 
           <ul>
             {result.claims.map(c => (
-              <li>{transcript.has(c.claim.clbid) ? transcript.get(c.claim.clbid)!.name : "???"}</li>
+              <li>
+                {transcript.has(c.claim.clbid)
+                  ? transcript.get(c.claim.clbid)!.name
+                  : "???"}
+              </li>
             ))}
           </ul>
         </>
