@@ -73,7 +73,7 @@ class FromSolution:
             resolved_assertion=resolved_assertion,
             successful_claims=successful_claims,
             failed_claims=failed_claims,
-            success=resolved_assertion.result is True and len(failed_claims) == 0,
+            success=resolved_assertion.result is True,# and len(failed_claims) == 0,
         )
 
     def audit_when_reqs(self, *, ctx, path: List):
@@ -92,7 +92,7 @@ class FromSolution:
             resolved_assertion=resolved_assertion,
             successful_claims=successful_claims,
             failed_claims=failed_claims,
-            success=resolved_assertion.result is True and len(failed_claims) == 0,
+            success=resolved_assertion.result is True,# and len(failed_claims) == 0,
         )
 
     def audit_when_student(self, *, ctx, path: List):
@@ -135,7 +135,7 @@ class FromSolution:
             resolved_assertion=resolved_assertion,
             successful_claims=successful_claims,
             failed_claims=failed_claims,
-            success=resolved_assertion.result is True and len(failed_claims) == 0,
+            success=resolved_assertion.result is True,# and len(failed_claims) == 0,
         )
 
     def apply_clause(self, clause: Clause, output: Sequence) -> ResolvedClause:
