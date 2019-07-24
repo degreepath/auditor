@@ -8,12 +8,13 @@ import coloredlogs
 import traceback
 
 import yaml
+from ppretty import ppretty
 
 from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPointer
 from degreepath.ms import pretty_ms
 
 logger = logging.getLogger()
-logformat = "%(levelname)s %(name)s: %(message)s"
+logformat = "%(levelname)s %(name)s\n\t%(message)s"
 
 
 def main():
@@ -22,6 +23,7 @@ def main():
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info"))
     parser.add_argument("--json", action='store_true')
+    parser.add_argument("--raw", action='store_true')
     args = parser.parse_args()
 
     if args.loglevel == "warn":
@@ -60,7 +62,7 @@ def main():
             constants = Constants(matriculation_year=student['matriculation'])
 
             try:
-                (result_json, summary) = audit(
+                (result, count, elapsed, iterations) = audit(
                     spec=area_spec,
                     transcript=transcript,
                     constants=constants,
@@ -68,9 +70,18 @@ def main():
                 )
 
                 if args.json:
-                    print(json.dumps(result_json))
+                    if result:
+                        print(json.dumps(result.to_dict()))
+                    else:
+                        print(json.dumps(result))
+                elif args.raw:
+                    print(ppretty(result))
                 else:
-                    print("".join(summary))
+                    print()
+                    if result:
+                        print("".join(summarize(result=result.to_dict(), count=count, elapsed=elapsed, transcript=transcript, iterations=iterations)))
+                    else:
+                        print(result)
 
             except Exception as ex:
                 traceback.print_exc()
@@ -129,26 +140,16 @@ def audit(*, spec, transcript, constants, area_pointers):
 
         iter_start = time.perf_counter()
 
+        # sys.exit(0)
+
     if not iterations:
         print("no audits completed", file=sys.stderr)
-        return
-
-    print()
+        return (None, 0, '0s', [])
 
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
-    result_json = best_sol.to_dict()
-
-    summary = summarize(
-        result=result_json,
-        count=total_count,
-        elapsed=elapsed,
-        transcript=this_transcript,
-        iterations=iterations,
-    )
-
-    return (result_json, summary)
+    return (best_sol, total_count, elapsed, iterations)
 
 
 if __name__ == "__main__":
