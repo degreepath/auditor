@@ -6,6 +6,8 @@ import logging
 
 from ..solution import ActionSolution
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class ActionRule:
@@ -26,5 +28,5 @@ class ActionRule:
         # TODO: check for input items here
 
     def solutions(self, *, ctx, path: List):
-        logging.debug("%s ActionRule#solutions", path)
+        logger.debug("%s ActionRule#solutions", path)
         yield ActionSolution(result=None)

@@ -7,6 +7,8 @@ import logging
 from .lib import grade_from_str, expand_subjects
 from .clause import Clause, SingleClause, AndClause, OrClause
 
+logger = logging.getLogger(__name__)
+
 
 class AreaStatus(enum.Enum):
     certified = enum.auto()
@@ -49,11 +51,11 @@ class AreaPointer:
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
-            logging.debug("clause/and/compare %s", clause)
+            logger.debug("clause/and/compare %s", clause)
             return all(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, OrClause):
-            logging.debug("clause/or/compare %s", clause)
+            logger.debug("clause/or/compare %s", clause)
             return any(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, SingleClause):
@@ -295,11 +297,11 @@ class CourseInstance:
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
-            logging.debug("clause/and/compare %s", clause)
+            logger.debug("clause/and/compare %s", clause)
             return all(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, OrClause):
-            logging.debug("clause/or/compare %s", clause)
+            logger.debug("clause/or/compare %s", clause)
             return any(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, SingleClause):
@@ -310,11 +312,11 @@ class CourseInstance:
 
             # TODO: replace this with explicit key accesses
             if clause.key in self.__dict__:
-                logging.debug("clause/compare/key=%s", clause.key)
+                logger.debug("clause/compare/key=%s", clause.key)
                 return clause.compare(self.__dict__[clause.key])
             else:
                 keys = list(self.__dict__.keys())
-                logging.debug("clause/compare[%s]: not found in %s", clause.key, keys)
+                logger.debug("clause/compare[%s]: not found in %s", clause.key, keys)
                 return False
 
         raise TypeError(f"expected a clause; found {type(clause)}")

@@ -112,13 +112,13 @@ class FromSolution:
                 )
 
                 if claim.failed():
-                    logger.debug('{} course "{}" exists, but has already been claimed by {}', path, item.clbid, claim.conflict_with)
+                    logger.debug('%s course "%s" exists, but has already been claimed by %', path, item.clbid, claim.conflict_with)
                     failed_claims.append(claim)
                 else:
-                    logger.debug('{} course "{}" exists, and is available', path, item.clbid)
+                    logger.debug('%s course "%s" exists, and is available', path, item.clbid)
                     successful_claims.append(claim)
             # else:
-            #     logger.debug('{} item "{}" exists, and is available', path, item)
+            #     logger.debug('%s item "%s" exists, and is available', path, item)
             #     successful_claims.append(claim)
 
         resolved_assertion = self.apply_clause(self.rule.action, self.output)

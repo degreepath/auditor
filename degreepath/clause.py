@@ -7,6 +7,8 @@ import decimal
 # from functools import lru_cache
 from .constants import Constants
 
+logger = logging.getLogger(__name__)
+
 
 def load_clause(data: Dict, c: Constants):
     if not isinstance(data, Mapping):
@@ -65,32 +67,32 @@ def apply_operator(*, op, lhs, rhs) -> bool:
     3. If LHS is a sequence, and OP is .EqualTo, OP is changed to .In
     4. If LHS is a sequence, and OP is .NotEqualTo, OP is changed to .NotIn
     """
-    logging.debug("apply_operator: `%s` (%s) %s `%s` (%s)", lhs, type(lhs), op, rhs, type(rhs))
+    logger.debug("apply_operator: `%s` (%s) %s `%s` (%s)", lhs, type(lhs), op, rhs, type(rhs))
 
     if isinstance(lhs, tuple) and isinstance(rhs, tuple):
         if op is not Operator.In:
             raise Exception('both rhs and lhs must not be sequences when using %s; lhs=%s, rhs=%s', op, lhs, rhs)
 
         if lhs == tuple() or rhs == tuple():
-            logging.debug("apply_operator/skip: either lhs=%s or rhs=%s was empty; returning false", lhs == tuple(), rhs == tuple())
+            logger.debug("apply_operator/skip: either lhs=%s or rhs=%s was empty; returning false", lhs == tuple(), rhs == tuple())
             return False
 
-        logging.debug("apply_operator/coerce: converting both %s and %s to sets of strings, and running issubset", lhs, rhs)
+        logger.debug("apply_operator/coerce: converting both %s and %s to sets of strings, and running issubset", lhs, rhs)
         lhs = set(str(s) for s in lhs)
         rhs = set(str(s) for s in rhs)
-        logging.debug("apply_operator/coerce: lhs=%s; rhs=%s; lhs.issubset(rhs)=%s; rhs.issubset(lhs)=%s", lhs, rhs, lhs.issubset(rhs), rhs.issubset(lhs))
+        logger.debug("apply_operator/coerce: lhs=%s; rhs=%s; lhs.issubset(rhs)=%s; rhs.issubset(lhs)=%s", lhs, rhs, lhs.issubset(rhs), rhs.issubset(lhs))
         return lhs.issubset(rhs) or rhs.issubset(lhs)
 
     if isinstance(lhs, tuple) or isinstance(rhs, tuple):
         if op is Operator.EqualTo:
-            logging.debug("apply_operator/coerce: got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.In)
+            logger.debug("apply_operator/coerce: got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.In)
             return apply_operator(op=Operator.In, lhs=lhs, rhs=rhs)
         elif op is Operator.NotEqualTo:
-            logging.debug("apply_operator/coerce: got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.NotIn)
+            logger.debug("apply_operator/coerce: got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.NotIn)
             return apply_operator(op=Operator.NotIn, lhs=lhs, rhs=rhs)
 
         if op is Operator.In:
-            logging.debug("apply_operator/in: `%s` %s `%s`", lhs, op.value, rhs)
+            logger.debug("apply_operator/in: `%s` %s `%s`", lhs, op.value, rhs)
             if isinstance(lhs, tuple):
                 return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
             if isinstance(rhs, tuple):
@@ -98,7 +100,7 @@ def apply_operator(*, op, lhs, rhs) -> bool:
             raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
 
         elif op is Operator.NotIn:
-            logging.debug("apply_operator/not-in: `%s` %s `%s`", lhs, op.value, rhs)
+            logger.debug("apply_operator/not-in: `%s` %s `%s`", lhs, op.value, rhs)
             if isinstance(lhs, tuple):
                 return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
             if isinstance(rhs, tuple):
@@ -114,27 +116,27 @@ def apply_operator(*, op, lhs, rhs) -> bool:
         lhs = str(lhs)
 
     if op is Operator.EqualTo:
-        logging.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs == rhs)
+        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs == rhs)
         return lhs == rhs
 
     if op is Operator.NotEqualTo:
-        logging.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs != rhs)
+        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs != rhs)
         return lhs != rhs
 
     if op is Operator.LessThan:
-        logging.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs < rhs)
+        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs < rhs)
         return lhs < rhs
 
     if op is Operator.LessThanOrEqualTo:
-        logging.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs <= rhs)
+        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs <= rhs)
         return lhs <= rhs
 
     if op is Operator.GreaterThan:
-        logging.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs > rhs)
+        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs > rhs)
         return lhs > rhs
 
     if op is Operator.GreaterThanOrEqualTo:
-        logging.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs >= rhs)
+        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs >= rhs)
         return lhs >= rhs
 
     raise TypeError(f"unknown comparison {op}")

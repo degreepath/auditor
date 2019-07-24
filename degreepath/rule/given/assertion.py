@@ -7,6 +7,8 @@ import enum
 from ...clause import Operator
 from ...constants import Constants
 
+logger = logging.getLogger(__name__)
+
 
 def load_assertion(data: Dict, c: Constants):
     if "$and" in data:
@@ -245,7 +247,7 @@ class SingleAssertion:
             raise Exception(f"unknown operator {self.operator}")
 
         if hi <= lo:
-            logging.info(f"expected hi={hi} > lo={lo}")
+            logger.critical(f"expected hi={hi} > lo={lo}")
 
         return (lo, hi)
 

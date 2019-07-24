@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Any
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class AuditedRule:
@@ -25,5 +27,5 @@ class AuditedRule:
         return True
 
     def solutions(self, *, ctx, path: List):
-        logging.debug("%s AuditedRule#solutions", path)
+        logger.debug("%s AuditedRule#solutions", path)
         yield self

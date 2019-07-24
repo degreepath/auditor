@@ -6,6 +6,8 @@ import logging
 from .clause import Clause, str_clause, load_clause
 from .constants import Constants
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class Limit:
@@ -47,22 +49,22 @@ class LimitSet:
 
         if courses:
             for i, c in enumerate(courses):
-                logging.debug("limit/before/%s: %s", i, c)
+                logger.debug("limit/before/%s: %s", i, c)
         else:
-            logging.debug(f"limit/before: []")
+            logger.debug(f"limit/before: []")
 
         for c in courses:
             may_yield = False
 
             for l in self.limits:
-                logging.debug("limit/check: checking %s against %s", c.identity, l)
+                logger.debug("limit/check: checking %s against %s", c.identity, l)
                 if c.apply_clause(l.where):
                     if clause_counters[l] < l.at_most:
-                        logging.debug("limit/increment: %s matched %s", c.identity, l)
+                        logger.debug("limit/increment: %s matched %s", c.identity, l)
                         clause_counters[l] += 1
                         may_yield = True
                     else:
-                        logging.debug("limit/maximum: %s matched %s", c.identity, l)
+                        logger.debug("limit/maximum: %s matched %s", c.identity, l)
                         may_yield = False
                 else:
                     may_yield = True
@@ -72,11 +74,11 @@ class LimitSet:
 
         if course_set:
             for i, c in enumerate(course_set):
-                logging.debug("limit/after/%s: %s", i, c)
+                logger.debug("limit/after/%s: %s", i, c)
         else:
-            logging.debug(f"limit/after: []")
+            logger.debug(f"limit/after: []")
 
-        logging.debug("limit/state: %s", clause_counters)
+        logger.debug("limit/state: %s", clause_counters)
 
         return tuple(course_set)
 
@@ -91,7 +93,7 @@ class LimitSet:
         """
         # skip _everything_ in here if there are no limits to apply
         if not self.limits:
-            logging.debug(f"No limits to apply")
+            logger.debug(f"No limits to apply")
             yield tuple(courses)
             return
 
@@ -99,7 +101,7 @@ class LimitSet:
         extra_iter_counters: Dict = defaultdict(int)
         for l in self.limits:
             for c in courses:
-                logging.debug("limit/probe: checking %s against %s", c.identity, l)
+                logger.debug("limit/probe: checking %s against %s", c.identity, l)
                 if c.apply_clause(l.where):
                     extra_iter_counters[l] += 1
             # set each counter to the number of extra courses, or 0, to find the number of extra iterations
@@ -109,10 +111,10 @@ class LimitSet:
 
         # if nothing needs extra iteration, just spit out the limited transcript once
         if not extra_iter_counters:
-            logging.debug(f"No limits result in extra combinations")
+            logger.debug(f"No limits result in extra combinations")
             yield self.apply_limits(courses)
 
-        logging.debug("Limits result in %s extra combinations", len(extra_iter_counters))
+        logger.debug("Limits result in %s extra combinations", len(extra_iter_counters))
         # TODO: figure out how to do this
         # for _ in extra_iter_counters:
         yield self.apply_limits(courses)

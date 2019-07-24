@@ -5,6 +5,8 @@ import logging
 from .rule import FromRule
 from .constants import Constants
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class SaveRule:
@@ -29,5 +31,5 @@ class SaveRule:
 
     def solutions(self, *, ctx, path: List[str]) -> Iterator:
         path = [*path, f'.save["{self.name}"]']
-        logging.debug("%s inside a saverule", path)
+        logger.debug("%s inside a saverule", path)
         yield from self.innards.solutions(ctx=ctx, path=path)

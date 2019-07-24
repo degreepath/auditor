@@ -10,6 +10,8 @@ from ...clause import Clause, load_clause
 from ...solution import FromSolution
 from ...constants import Constants
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class FromRule:
@@ -120,7 +122,7 @@ class FromRule:
 
     def solutions(self, *, ctx, path: List[str]):
         path = [*path, f".from"]
-        logging.debug("%s", path)
+        logger.debug("%s", path)
 
         if self.source.mode == "student":
             iterable = self.solutions_when_student(ctx=ctx, path=path)
@@ -137,30 +139,30 @@ class FromRule:
         did_iter = False
         for data in iterable:
             if self.where is not None:
-                logging.debug("fromrule/filter/clause: %s", self.where)
+                logger.debug("fromrule/filter/clause: %s", self.where)
                 if data:
                     for i, c in enumerate(data):
-                        logging.debug("fromrule/filter/before/%s: %s", i, c)
+                        logger.debug("fromrule/filter/before/%s: %s", i, c)
                 else:
-                    logging.debug("fromrule/filter/before: []")
+                    logger.debug("fromrule/filter/before: []")
 
                 data = [item for item in data if item.apply_clause(self.where)]
 
                 if data:
                     for i, c in enumerate(data):
-                        logging.debug("fromrule/filter/after/%s: %s", i, c)
+                        logger.debug("fromrule/filter/after/%s: %s", i, c)
                 else:
-                    logging.debug("fromrule/filter/after: []")
+                    logger.debug("fromrule/filter/after: []")
 
             for course_set in self.limit.limited_transcripts(data):
                 # for n in self.action.range(items=course_set):
                 #     for combo in itertools.combinations(course_set, n):
-                #         logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                #         logger.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
                 #         did_iter = True
                 #         yield FromSolution(output=combo, rule=self)
 
                 # for combo in itertools.combinations(course_set, n):
-                #     logging.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                #     logger.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
                 #     did_iter = True
                 #     yield FromSolution(output=combo, rule=self)
 
@@ -169,5 +171,5 @@ class FromRule:
 
         if not did_iter:
             # be sure we always yield something
-            logging.info("did not yield anything; yielding empty collection")
+            logger.debug("did not yield anything; yielding empty collection")
             yield FromSolution(output=tuple(), rule=self)
