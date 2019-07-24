@@ -58,26 +58,23 @@ class FromInput:
     def validate(self, *, ctx):
         assert isinstance(self.mode, str)
 
-        saves = ctx.save_rules
-        requirements = ctx.requirements
-
-        lambda dbg: f"(when validating: {ppretty({'self': self, 'saves': saves, 'reqs': requirements})})"
-
         if self.mode == "requirements":
+            requirements = ctx.requirements
             # TODO: assert that the result type of all mentioned requirements is the same
             if not self.requirements and not requirements:
                 raise ValueError("expected self.requirements and args.requirements to be lists")
             for name in self.requirements:
                 assert isinstance(name, str), f"expected {name} to be a string"
-                assert name in ctx.requirements, f"expected to find '{name}' once, but could not find it {dbg()}"
+                assert name in ctx.requirements, f"expected to find '{name}' once, but could not find it (when validating: {ppretty({'self': self, 'reqs': requirements})})"
 
         elif self.mode == "saves":
+            saves = ctx.save_rules
             # TODO: assert that the result type of all mentioned saves is the same
             if not self.saves and not saves:
                 raise ValueError("expected self.saves and args.saves to be lists")
             for name in self.saves:
                 assert isinstance(name, str), f"expected {name} to be a string"
-                assert name in ctx.save_rules, f"expected to find '{name}' once, but could not find it {dbg()}"
+                assert name in ctx.save_rules, f"expected to find '{name}' once, but could not find it (when validating: {ppretty({'self': self, 'saves': saves})})"
 
         elif self.mode == "student":
             allowed = ["courses", "music performances", "areas"]
