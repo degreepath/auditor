@@ -98,7 +98,7 @@ class CountRule:
 
     def solutions(self, *, ctx, path: List):
         path = [*path, f".of"]
-        logger.debug("{}", path)
+        logger.debug("%s", path)
 
         did_iter = False
 
@@ -124,7 +124,7 @@ class CountRule:
         item_indices = {r: self.items.index(r) for r in self.items}
 
         for r in range(lo, hi):
-            logger.debug("{} {}..<{}, r={}, max={}", path, lo, hi, r, len(potentials))
+            logger.debug("%s %s..<%s, r=%s, max=%s", path, lo, hi, r, len(potentials))
 
             for combo_i, combo in enumerate(itertools.combinations(self.items, r)):
                 selected_children = set(combo)
@@ -140,7 +140,7 @@ class CountRule:
                     if item not in other_children:
                         selected_original_indices[item] = idx
 
-                logger.debug("{} {}..<{}, r={}, combo={}: generating product(*solutions)", path, lo, hi, r, combo_i)
+                logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", path, lo, hi, r, combo_i)
                 did_iter = True
 
                 solutions = [rule.solutions(ctx=ctx, path=path) for rule in combo]
@@ -149,7 +149,7 @@ class CountRule:
 
                 for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                     if solset_i % 10_000 == 0:
-                        logger.debug("{} {}..<{}, r={}, combo={} solset={}: generating product(*solutions)", path, lo, hi, r, combo_i, solset_i)
+                        logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", path, lo, hi, r, combo_i, solset_i)
 
                     # print("solset", solutionset)
 
@@ -193,7 +193,7 @@ class CountRule:
                     yield CountSolution.from_rule(self, items=tuple_solset)
 
         if not did_iter:
-            logger.debug("{} did not iterate", path)
+            logger.debug("%s did not iterate", path)
             # ensure that we always yield something
             yield CountSolution.from_rule(self, items=self.items)
 

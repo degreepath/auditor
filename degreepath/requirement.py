@@ -320,20 +320,20 @@ class Requirement:
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         path = [*path, f"$req->{self.name}"]
 
-        logging.debug("{} requirement \"{}\" has not been evaluated", path, self.name)
+        logging.debug("%s requirement \"%s\" has not been evaluated", path, self.name)
 
         if not self.message:
-            logging.debug("{} requirement \"{}\" has no message", path, self.name)
+            logging.debug("%s requirement \"%s\" has no message", path, self.name)
 
         if not self.audited_by:
-            logging.debug("{} requirement \"{}\" is not audited", path, self.name)
+            logging.debug("%s requirement \"%s\" is not audited", path, self.name)
 
         if not self.result:
-            logging.debug("{} requirement \"{}\" does not have a result", path, self.name)
+            logging.debug("%s requirement \"%s\" does not have a result", path, self.name)
             yield RequirementSolution.from_requirement(self, solution=None, inputs=tuple())
             return
         else:
-            logging.debug("{} requirement \"{}\" has a result", path, self.name)
+            logging.debug("%s requirement \"%s\" has a result", path, self.name)
 
         new_ctx = replace(
             ctx,

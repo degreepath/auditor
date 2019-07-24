@@ -49,11 +49,11 @@ class AreaPointer:
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
-            logging.debug("clause/and/compare {}", clause)
+            logging.debug("clause/and/compare %s", clause)
             return all(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, OrClause):
-            logging.debug("clause/or/compare {}", clause)
+            logging.debug("clause/or/compare %s", clause)
             return any(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, SingleClause):
@@ -295,11 +295,11 @@ class CourseInstance:
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
-            logging.debug("clause/and/compare {}", clause)
+            logging.debug("clause/and/compare %s", clause)
             return all(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, OrClause):
-            logging.debug("clause/or/compare {}", clause)
+            logging.debug("clause/or/compare %s", clause)
             return any(self.apply_clause(subclause) for subclause in clause)
 
         elif isinstance(clause, SingleClause):
@@ -310,11 +310,11 @@ class CourseInstance:
 
             # TODO: replace this with explicit key accesses
             if clause.key in self.__dict__:
-                logging.debug("clause/compare/key={}", clause.key)
+                logging.debug("clause/compare/key=%s", clause.key)
                 return clause.compare(self.__dict__[clause.key])
             else:
                 keys = list(self.__dict__.keys())
-                logging.debug("clause/compare[{}]: not found in {}", clause.key, keys)
+                logging.debug("clause/compare[%s]: not found in %s", clause.key, keys)
                 return False
 
         raise TypeError(f"expected a clause; found {type(clause)}")

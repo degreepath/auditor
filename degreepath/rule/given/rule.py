@@ -120,7 +120,7 @@ class FromRule:
 
     def solutions(self, *, ctx, path: List[str]):
         path = [*path, f".from"]
-        logging.debug("{}", path)
+        logging.debug("%s", path)
 
         if self.source.mode == "student":
             iterable = self.solutions_when_student(ctx=ctx, path=path)
@@ -137,10 +137,10 @@ class FromRule:
         did_iter = False
         for data in iterable:
             if self.where is not None:
-                logging.debug("fromrule/filter/clause: {}", self.where)
+                logging.debug("fromrule/filter/clause: %s", self.where)
                 if data:
                     for i, c in enumerate(data):
-                        logging.debug("fromrule/filter/before/{}: {}", i, c)
+                        logging.debug("fromrule/filter/before/%s: %s", i, c)
                 else:
                     logging.debug("fromrule/filter/before: []")
 
@@ -148,7 +148,7 @@ class FromRule:
 
                 if data:
                     for i, c in enumerate(data):
-                        logging.debug("fromrule/filter/after/{}: {}", i, c)
+                        logging.debug("fromrule/filter/after/%s: %s", i, c)
                 else:
                     logging.debug("fromrule/filter/after: []")
 

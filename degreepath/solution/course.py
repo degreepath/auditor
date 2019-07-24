@@ -47,15 +47,15 @@ class CourseSolution:
 
         matched_course = ctx.find_course(self.course)
         if matched_course is None:
-            logger.debug('{} course "{}" does not exist in the transcript', path, self.course)
+            logger.debug('%s course "%s" does not exist in the transcript', path, self.course)
             return CourseResult(course=self.course, rule=self.rule, claim_attempt=None)
 
         claim = ctx.make_claim(course=matched_course, path=path, clause=self.rule, transcript=ctx.transcript)
 
         if claim.failed():
-            logger.debug('{} course "{}" exists, but has already been claimed by {}', path, self.course, claim.conflict_with)
+            logger.debug('%s course "%s" exists, but has already been claimed by %s', path, self.course, claim.conflict_with)
             return CourseResult(course=self.course, rule=self.rule, claim_attempt=claim)
 
-        logger.debug('{} course "{}" exists, and has not been claimed', path, self.course)
+        logger.debug('%s course "%s" exists, and has not been claimed', path, self.course)
 
         return CourseResult(course=self.course, rule=self.rule, claim_attempt=claim)

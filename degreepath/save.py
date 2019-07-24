@@ -29,5 +29,5 @@ class SaveRule:
 
     def solutions(self, *, ctx, path: List[str]) -> Iterator:
         path = [*path, f'.save["{self.name}"]']
-        logging.debug("{} inside a saverule", path)
+        logging.debug("%s inside a saverule", path)
         yield from self.innards.solutions(ctx=ctx, path=path)

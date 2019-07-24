@@ -64,9 +64,9 @@ class FromSolution:
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
         if resolved_assertion.result is True:
-            logger.debug("{} from-rule '{}' might possibly succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
         else:
-            logger.debug("{} from-rule '{}' did not succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
 
         return FromResult(
             rule=self.rule,
@@ -83,9 +83,9 @@ class FromSolution:
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
         if resolved_assertion.result is True:
-            logger.debug("{} from-rule '{}' might possibly succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
         else:
-            logger.debug("{} from-rule '{}' did not succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
 
         return FromResult(
             rule=self.rule,
@@ -117,16 +117,16 @@ class FromSolution:
                 else:
                     logger.debug('{} course "{}" exists, and is available', path, item.clbid)
                     successful_claims.append(claim)
-            else:
-                logger.debug('{} item "{}" exists, and is available', path, item)
-                successful_claims.append(claim)
+            # else:
+            #     logger.debug('{} item "{}" exists, and is available', path, item)
+            #     successful_claims.append(claim)
 
         resolved_assertion = self.apply_clause(self.rule.action, self.output)
 
         if resolved_assertion.result is True:
-            logger.debug("{} from-rule '{}' might possibly succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
         else:
-            logger.debug("{} from-rule '{}' did not succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
 
         return FromResult(
             rule=self.rule,

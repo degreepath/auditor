@@ -70,7 +70,7 @@ class AreaOfStudy:
 
     def solutions(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
-        logger.debug("{} evaluating area.result", path)
+        logger.debug("%s evaluating area.result", path)
 
         # TODO: generate alternate sizes of solution based on the courses subject to the limits
         # for limited_transcript in
@@ -85,10 +85,10 @@ class AreaOfStudy:
         new_path = [*path, ".result"]
         for sol in self.result.solutions(ctx=ctx, path=new_path):
             ctx.reset_claims()
-            logger.info("generated new area solution: {}", sol)
+            logger.info("generated new area solution: %s", sol)
             yield AreaSolution(solution=sol, area=self)
 
-        logger.debug("{} all solutions generated", path)
+        logger.debug("%s all solutions generated", path)
 
     # def estimate(self, *, transcript: Tuple[CourseInstance, ...]):
     #     ctx = RequirementContext(
@@ -113,7 +113,7 @@ class AreaSolution:
 
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
-        logger.debug("{} auditing area.result", path)
+        logger.debug("%s auditing area.result", path)
 
         ctx = RequirementContext(
             transcript=transcript,

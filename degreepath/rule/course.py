@@ -65,7 +65,7 @@ class CourseRule:
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
     def solutions(self, *, ctx, path: List):
-        logger.debug('{} reference to course "{}"', path, self.course)
+        logger.debug('%s reference to course "%s"', path, self.course)
 
         yield CourseSolution(course=self.course, rule=self)
 
