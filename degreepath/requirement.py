@@ -2,11 +2,10 @@ from dataclasses import dataclass, field, replace
 from typing import List, Optional, Tuple, Any, Dict, Union, Set
 import logging
 from collections import defaultdict
-import itertools
 import copy
 
 from .frozendict import frozendict
-
+from .state import RequirementState
 from .data import CourseInstance, CourseStatus
 from .save import SaveRule
 from .rule import CourseRule
@@ -206,29 +205,6 @@ class ClaimAttempt:
 
     def get_course(self, *, ctx: RequirementContext):
         return ctx.find_course_by_clbid(self.claim.clbid)
-
-
-class RequirementState(object):
-    def __init__(self, iterable):
-        # self.iterable = iterable
-        self.iter = iter(iterable)
-        self.done = False
-        self.vals = []
-
-    def iter_solutions(self):
-        if self.done:
-            return iter(self.vals)
-
-        # chain vals so far & then gen the rest
-        return itertools.chain(self.vals, self._gen_iter())
-
-    def _gen_iter(self):
-        # gen new vals, appending as it goes
-        for new_val in self.iter:
-            self.vals.append(new_val)
-            yield new_val
-
-        self.done = True
 
 
 @dataclass(frozen=True)
