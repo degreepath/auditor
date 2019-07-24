@@ -97,6 +97,7 @@ class FromSolution:
 
     def audit_when_student(self, *, ctx, path: List):
         successful_claims = []
+        claimed_items = []
         failed_claims = []
 
         for item in self.output:
@@ -117,11 +118,12 @@ class FromSolution:
                 else:
                     logger.debug('%s course "%s" exists, and is available', path, item.clbid)
                     successful_claims.append(claim)
+                    claimed_items.append(item)
             # else:
             #     logger.debug('%s item "%s" exists, and is available', path, item)
             #     successful_claims.append(claim)
 
-        resolved_assertion = self.apply_clause(self.rule.action, self.output)
+        resolved_assertion = self.apply_clause(self.rule.action, claimed_items)
 
         if resolved_assertion.result is True:
             logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
