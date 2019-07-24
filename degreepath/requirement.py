@@ -322,20 +322,16 @@ class Requirement:
     def solutions(self, *, ctx: RequirementContext, path: List[str]):
         path = [*path, f"$req->{self.name}"]
 
-        logger.debug("%s requirement \"%s\" has not been evaluated", path, self.name)
-
         if not self.message:
             logger.debug("%s requirement \"%s\" has no message", path, self.name)
 
-        if not self.audited_by:
-            logger.debug("%s requirement \"%s\" is not audited", path, self.name)
+        if self.audited_by is not None:
+            logger.debug("%s requirement \"%s\" is audited %s", path, self.name, self.audited_by)
 
         if not self.result:
             logger.debug("%s requirement \"%s\" does not have a result", path, self.name)
             yield RequirementSolution.from_requirement(self, solution=None, inputs=tuple())
             return
-        else:
-            logger.debug("%s requirement \"%s\" has a result", path, self.name)
 
         new_ctx = replace(
             ctx,
