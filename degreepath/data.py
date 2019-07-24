@@ -224,6 +224,9 @@ class CourseInstance:
         elif is_flac:
             course_identity = f"{'/'.join(subject)} {number}.F"
             course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.F"
+        elif subtype == 'D':
+            course_identity = f"{'/'.join(subject)} {number}.D"
+            course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.D"
         else:
             course_identity = f"{'/'.join(subject)} {number}"
             course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}"
