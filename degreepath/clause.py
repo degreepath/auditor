@@ -4,8 +4,8 @@ from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence
 import enum
 import logging
 import decimal
-# from functools import lru_cache
 from .constants import Constants
+from .lib import grade_from_str
 
 logger = logging.getLogger(__name__)
 
@@ -287,6 +287,11 @@ class SingleClause:
             expected_value = c.get_by_name(expected_value)
         elif isinstance(expected_value, Iterable):
             expected_value = tuple(c.get_by_name(v) for v in expected_value)
+
+        if key == 'grade':
+            expected_value = grade_from_str(expected_value) if type(expected_value) is str else decimal.Decimal(expected_value)
+        elif key == 'credits':
+            expected_value = decimal.Decimal(expected_value)
 
         return SingleClause(
             key=key,
