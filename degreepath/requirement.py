@@ -221,11 +221,9 @@ class Requirement:
         return {
             "name": self.name,
             "saves": {name: s.to_dict() for name, s in self.saves.items()},
-            "requirements": {
-                name: r.to_dict() for name, r in self.requirements.items()
-            },
+            "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
-            "result": self.result.to_dict(),
+            "result": self.result.to_dict() if self.result is not None else None,
             "audited_by": self.audited_by,
             "contract": self.contract,
         }

@@ -57,13 +57,7 @@ class ReferenceRule:
     def _init(self, *, ctx, path):
         requirement = ctx.requirements[self.name]
 
-        # print(requirement)
-
-        try:
-            state = ctx.requirement_cache.get(requirement, None)
-        except TypeError as ex:
-            print(requirement)
-            raise ex
+        state = ctx.requirement_cache.get(requirement, None)
 
         if state is None:
             state = RequirementState(iterable=requirement.solutions(ctx=ctx, path=path))

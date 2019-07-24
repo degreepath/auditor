@@ -134,5 +134,5 @@ def test_resolution(caplog):
     expected_single = SingleClause(key="@xyz", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
     assert x == expected_single
 
-    result = x.compare_and_resolve_with(value=1, map=lambda clause, value: (value, tuple([value])))
+    result = x.compare_and_resolve_with(value=1, map_func=lambda clause, value: (value, tuple([value])))
     assert result.result is True

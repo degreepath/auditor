@@ -184,8 +184,8 @@ class AndClause:
 
         return any(c.mc_applies_same(other) for c in self)
 
-    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
-        children = [c.compare_and_resolve_with(value=value, map=map) for c in self.children]
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable[[Any], Any]) -> ResolvedBaseClause:
+        children = [c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children]
         result = all(c.result for c in children)
 
         return ResolvedAndClause(children=children, resolved_with=None, resolved_items=[], result=result)
@@ -228,8 +228,8 @@ class OrClause:
 
         return any(c.mc_applies_same(other) for c in self)
 
-    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
-        children = [c.compare_and_resolve_with(value=value, map=map) for c in self.children]
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable[[Any], Any]) -> ResolvedBaseClause:
+        children = [c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children]
         result = any(c.result for c in children)
 
         return ResolvedOrClause(children=children, resolved_with=None, resolved_items=[], result=result)
@@ -328,8 +328,8 @@ class SingleClause:
     def applies_to(self, other) -> bool:
         return self.compare(other)
 
-    def compare_and_resolve_with(self, *, value: Any, map: Callable[[Any], Any]) -> ResolvedBaseClause:
-        reduced_value, value_items = map(clause=self, value=value)
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable[[Any], Any]) -> ResolvedBaseClause:
+        reduced_value, value_items = map_func(clause=self, value=value)
         result = self.compare(reduced_value)
 
         return ResolvedSingleClause(

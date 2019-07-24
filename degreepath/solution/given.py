@@ -4,7 +4,7 @@ import logging
 import decimal
 
 from ..result import FromResult
-from ..data import CourseInstance, Term
+from ..data import CourseInstance, Term, AreaPointer
 from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause, Operator, ResolvedClause
 
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ class FromSolution:
     def ok(self):
         return False
 
-    def stored(self):
+    def stored(self, *, ctx):
         return self.output
 
     def audit(self, *, ctx, path: List):
@@ -119,9 +119,11 @@ class FromSolution:
                     logger.debug('%s course "%s" exists, and is available', path, item.clbid)
                     successful_claims.append(claim)
                     claimed_items.append(item)
-            # else:
-            #     logger.debug('%s item "%s" exists, and is available', path, item)
-            #     successful_claims.append(claim)
+            elif isinstance(item, AreaPointer):
+                logger.debug('%s item "%s" exists, and is available', path, item)
+                claimed_items.append(item)
+            else:
+                raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
         resolved_assertion = self.apply_clause(self.rule.action, claimed_items)
 
@@ -142,7 +144,7 @@ class FromSolution:
         if not isinstance(clause, (AndClause, OrClause, SingleClause)):
             raise TypeError(f"expected a clause; found {clause} ({type(clause)})")
 
-        return clause.compare_and_resolve_with(value=output, map=apply_clause_to_given)
+        return clause.compare_and_resolve_with(value=output, map_func=apply_clause_to_given)
 
 
 def avg_or_0(items: Sequence):
@@ -176,16 +178,17 @@ def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, Fro
         return (len(items), items)
 
     elif clause.key == 'count(areas)':
-        # TODO
-        pass
+        assert all(isinstance(x, AreaPointer) for x in value)
+        items = frozenset(c.code for c in value)
+        return (len(items), items)
 
     elif clause.key == 'count(performances)':
         # TODO
-        pass
+        raise Exception(f'count(performances) is not yet implemented')
 
     elif clause.key == 'count(seminars)':
         # TODO
-        pass
+        raise Exception(f'count(seminars) is not yet implemented')
 
     elif clause.key == 'sum(grades)':
         assert all(isinstance(x, CourseInstance) for x in value)

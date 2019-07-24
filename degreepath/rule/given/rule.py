@@ -157,20 +157,20 @@ class FromRule:
                 else:
                     logger.debug("fromrule/filter/after: []")
 
-            for course_set in self.limit.limited_transcripts(data):
-                # for n in self.action.range(items=course_set):
-                #     for combo in itertools.combinations(course_set, n):
-                #         logger.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+            for item_set in self.limit.limited_transcripts(data):
+                # for n in self.action.range(items=item_set):
+                #     for combo in itertools.combinations(item_set, n):
+                #         logger.debug(f"fromrule/combo/size={n} of {len(item_set)} :: {[str(c) for c in combo]}")
                 #         did_iter = True
                 #         yield FromSolution(output=combo, rule=self)
 
-                # for combo in itertools.combinations(course_set, n):
-                #     logger.debug(f"fromrule/combo/size={n} of {len(course_set)} :: {[str(c) for c in combo]}")
+                # for combo in itertools.combinations(item_set, n):
+                #     logger.debug(f"fromrule/combo/size={n} of {len(item_set)} :: {[str(c) for c in combo]}")
                 #     did_iter = True
                 #     yield FromSolution(output=combo, rule=self)
 
                 # also yield one with the entire set of courses
-                yield FromSolution(output=course_set, rule=self)
+                yield FromSolution(output=item_set, rule=self)
 
         if not did_iter:
             # be sure we always yield something
