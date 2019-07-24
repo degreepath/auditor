@@ -362,7 +362,24 @@ def str_clause(clause) -> str:
         else:
             postscript = ""
 
-        return f"\"{clause['key']}\"{resolved} {clause['operator']} \"{clause['expected']}\"{postscript}"
+        if clause['operator'] == 'LessThan':
+            op = '<'
+        elif clause['operator'] == 'LessThanOrEqualTo':
+            op = '≤'
+        elif clause['operator'] == 'GreaterThan':
+            op = '>'
+        elif clause['operator'] == 'GreaterThanOrEqualTo':
+            op = '≥'
+        elif clause['operator'] == 'EqualTo':
+            op = '=='
+        elif clause['operator'] == 'NotEqualTo':
+            op = '!='
+        elif clause['operator'] == 'In':
+            op = '∈'
+        elif clause['operator'] == 'NotIn':
+            op = '∉'
+
+        return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}"
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
