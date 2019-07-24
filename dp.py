@@ -105,7 +105,8 @@ def audit(*, spec, transcript, constants, area_pointers):
         total_count += 1
 
         if total_count % 1_000 == 0:
-            avg_iter_s = sum(iterations) / max(len(iterations), 1)
+            recent_iters = iterations[-1_000:]
+            avg_iter_s = sum(recent_iters) / max(len(recent_iters), 1)
             avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
             print(f"... {total_count:,} at {avg_iter_time} per", file=sys.stderr)
 
