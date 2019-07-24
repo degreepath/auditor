@@ -312,6 +312,14 @@ class CourseInstance:
                 return clause.compare(self.clbid)
             elif clause.key == 'crsid':
                 return clause.compare(self.crsid)
+            elif clause.key == 'grade':
+                return clause.compare(self.grade)
+            elif clause.key == 'level':
+                return clause.compare(self.level)
+            elif clause.key == 'attributes':
+                return clause.compare(self.attributes)
+            elif clause.key == 'course':
+                return clause.compare(self.identity) or clause.compare(self.shorthand)
 
             # TODO: replace this with explicit key accesses
             if clause.key in self.__dict__:
