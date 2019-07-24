@@ -417,6 +417,17 @@ class RequirementResult:
     audited_by: Optional[str] = None
     contract: bool = False
 
+    _ok: bool = field(init=False)
+    _rank: int = field(init=False)
+
+    def __post_init__(self):
+        _ok = self.result.ok() if self.result else False
+        object.__setattr__(self, '_ok', _ok)
+
+        boost = 1 if self._ok else 0
+        _rank = self.result.rank() + boost if self.result else 0
+        object.__setattr__(self, '_rank', _rank)
+
     @staticmethod
     def from_solution(sol: RequirementSolution, *, result: Optional[Any]):
         return RequirementResult(
@@ -466,16 +477,7 @@ class RequirementResult:
         return tuple(c for c in claimed_courses if c)
 
     def ok(self) -> bool:
-        # TODO: remove this once exceptions are in place
-        if self.audited_by:
-            return True
-        if not self.result:
-            return False
-        return self.result.ok()
+        return self._ok
 
     def rank(self):
-        if not self.result:
-            return 0
-
-        boost = 1 if self.ok() else 0
-        return self.result.rank() + boost
+        return self._rank

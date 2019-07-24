@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, TYPE_CHECKING, Any
 from ..clause import ResolvedBaseClause
 
@@ -10,6 +10,24 @@ class FromResult:
     failed_claims: List
     success: bool
     resolved_assertion: ResolvedBaseClause
+
+    _ok: bool = field(init=False)
+    _rank: int = field(init=False)
+
+    # def __post_init__(self):
+    #     self._ok = self.success == True
+
+    #     # TODO: fix this calculation so that it properly handles #154647's audit
+    #     self._rank = len(self.successful_claims) + len(self.failed_claims)
+
+    def __post_init__(self):
+        _ok = self.success == True
+        object.__setattr__(self, '_ok', _ok)
+        # self._ok = self.claim_attempt and self.claim_attempt.failed() is False
+
+        _rank = len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
+        object.__setattr__(self, '_rank', _rank)
+        # self._rank = 1 if self._ok else 0
 
     def to_dict(self):
         return {
@@ -30,8 +48,7 @@ class FromResult:
         return "result"
 
     def ok(self) -> bool:
-        return self.success
+        return self._ok
 
     def rank(self):
-        # TODO: fix this calculation so that it properly handles #154647's audit
-        return len(self.successful_claims) + len(self.failed_claims)
+        return self._rank

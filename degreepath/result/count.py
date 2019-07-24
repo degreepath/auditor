@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Tuple
 
 
@@ -6,6 +6,21 @@ from typing import Tuple
 class CountResult:
     count: int
     items: Tuple
+
+    _ok: bool = field(init=False)
+    _rank: int = field(init=False)
+
+    # def __post_init__(self):
+    #     self._ok = sum(1 if r.ok() else 0 for r in self.items) >= self.count
+    #
+    #     self._rank = sum(r.rank() for r in self.items)
+
+    def __post_init__(self):
+        _ok = sum(1 if r.ok() else 0 for r in self.items) >= self.count
+        object.__setattr__(self, '_ok', _ok)
+
+        _rank = sum(r.rank() for r in self.items)
+        object.__setattr__(self, '_rank', _rank)
 
     def to_dict(self):
         return {
@@ -26,7 +41,7 @@ class CountResult:
         return [claim for item in self.items for claim in item.claims()]
 
     def ok(self) -> bool:
-        return sum(1 if r.ok() else 0 for r in self.items) >= self.count
+        return self._ok
 
     def rank(self):
-        return sum(r.rank() for r in self.items)
+        return self._rank
