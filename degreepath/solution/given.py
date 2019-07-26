@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple, FrozenSet
+from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple, FrozenSet, Collection
 import logging
 import decimal
 
@@ -18,16 +18,18 @@ class FromSolution:
     def to_dict(self):
         return {
             "type": "from",
-            "source": self.rule.source,
-            "action": self.rule.action,
-            "where": self.rule.where,
+            "source": self.rule.source.to_dict(),
+            "action": self.rule.action.to_dict() if self.rule.action else None,
+            "where": self.rule.where.to_dict() if self.rule.where else None,
             "output": [x.to_dict() for x in self.output],
-            "allow_claimed": self.allow_claimed,
+            "allow_claimed": self.rule.allow_claimed,
             "state": self.state(),
             "status": "pending",
             "ok": self.ok(),
             "rank": self.rank(),
             "claims": [item for item in self.claims()],
+            "failures": [],
+            "resolved_action": None,
         }
 
     def state(self):
@@ -48,66 +50,20 @@ class FromSolution:
     def audit(self, *, ctx, path: List):
         path = [*path, f".of"]
 
-        if self.rule.source.mode == "student":
-            return self.audit_when_student(ctx=ctx, path=path)
-        if self.rule.source.mode == "saves":
-            return self.audit_when_saves(ctx=ctx, path=path)
-        if self.rule.source.mode == "requirements":
-            return self.audit_when_reqs(ctx=ctx, path=path)
+        if self.rule.source.mode != "student":
+            raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
 
-        raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
-
-    def audit_when_saves(self, *, ctx, path: List):
-        successful_claims: List = []
-        failed_claims: List = []
-
-        resolved_assertion = self.apply_clause(self.rule.action, self.output)
-
-        if resolved_assertion.result is True:
-            logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
-        else:
-            logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
-
-        return FromResult(
-            rule=self.rule,
-            resolved_assertion=resolved_assertion,
-            successful_claims=successful_claims,
-            failed_claims=failed_claims,
-            success=resolved_assertion.result is True,# and len(failed_claims) == 0,
-        )
-
-    def audit_when_reqs(self, *, ctx, path: List):
-        successful_claims: List = []
-        failed_claims: List = []
-
-        resolved_assertion = self.apply_clause(self.rule.action, self.output)
-
-        if resolved_assertion.result is True:
-            logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
-        else:
-            logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
-
-        return FromResult(
-            rule=self.rule,
-            resolved_assertion=resolved_assertion,
-            successful_claims=successful_claims,
-            failed_claims=failed_claims,
-            success=resolved_assertion.result is True,# and len(failed_claims) == 0,
-        )
-
-    def audit_when_student(self, *, ctx, path: List):
         successful_claims = []
         claimed_items = []
         failed_claims = []
 
         for item in self.output:
             if isinstance(item, CourseInstance):
+                clause = self.rule.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
                 claim = ctx.make_claim(
                     course=item,
                     path=path,
-                    clause=
-                        self.rule.where
-                        or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim=''),
+                    clause=clause,
                     transcript=ctx.transcript,
                     allow_claimed=self.rule.allow_claimed,
                 )
@@ -119,9 +75,11 @@ class FromSolution:
                     logger.debug('%s course "%s" exists, and is available', path, item.clbid)
                     successful_claims.append(claim)
                     claimed_items.append(item)
+
             elif isinstance(item, AreaPointer):
                 logger.debug('%s item "%s" exists, and is available', path, item)
                 claimed_items.append(item)
+
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
@@ -151,7 +109,7 @@ def avg_or_0(items: Sequence):
     return sum(items) / len(items) if items else 0
 
 
-def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, FrozenSet[Any]]:
+def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:
     if clause.key == 'count(courses)':
         assert all(isinstance(x, CourseInstance) for x in value)
         items = frozenset(c.clbid for c in value)
@@ -192,23 +150,23 @@ def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, Fro
 
     elif clause.key == 'sum(grades)':
         assert all(isinstance(x, CourseInstance) for x in value)
-        items = tuple(c.grade for c in value)
-        return (sum(items), items)
+        sum_items = tuple(c.grade for c in value)
+        return (sum(sum_items), sum_items)
 
     elif clause.key == 'sum(credits)':
         assert all(isinstance(x, CourseInstance) for x in value)
-        items = tuple(c.credits for c in value)
-        return (sum(items), items)
+        sum_items = tuple(c.credits for c in value)
+        return (sum(sum_items), sum_items)
 
     elif clause.key == 'average(grades)':
         assert all(isinstance(x, CourseInstance) for x in value)
-        items = tuple(c.grade for c in value)
-        return (avg_or_0(items), items)
+        sum_items = tuple(c.grade for c in value)
+        return (avg_or_0(sum_items), sum_items)
 
     elif clause.key == 'average(credits)':
         assert all(isinstance(x, CourseInstance) for x in value)
-        items = tuple(c.credits for c in value)
-        return (avg_or_0(items), items)
+        sum_items = tuple(c.credits for c in value)
+        return (avg_or_0(sum_items), sum_items)
 
     elif clause.key.startswith('min(') or clause.key.startswith('max('):
         assert all(isinstance(x, CourseInstance) for x in value)

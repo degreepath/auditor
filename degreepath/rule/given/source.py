@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Dict, Tuple, Optional
-from ppretty import ppretty
 from ...constants import Constants
 
 
@@ -33,19 +32,13 @@ class FromInput:
             assert repeat_mode in ['first', 'all']
 
         elif "saves" in data or "save" in data:
-            mode = "saves"
-            saves = tuple(x for x in data.get("saves", [data.get("save", None)]) if x)
-            itemtype = None
-            repeat_mode = None
+            raise ValueError('from:saves not supported')
 
         elif "requirements" in data or "requirement" in data:
-            mode = "requirements"
-            requirements = tuple(x for x in data.get("requirements", [data.get("requirement", None)]) if x)
-            itemtype = None
-            repeat_mode = None
+            raise ValueError('from:requirements not supported')
 
         else:
-            raise KeyError(f"expected student, saves, or requirements; got {list(data.keys())}")
+            raise KeyError(f"expected student; got {list(data.keys())}")
 
         return FromInput(
             mode=mode,
@@ -58,25 +51,7 @@ class FromInput:
     def validate(self, *, ctx):
         assert isinstance(self.mode, str)
 
-        if self.mode == "requirements":
-            requirements = ctx.requirements
-            # TODO: assert that the result type of all mentioned requirements is the same
-            if not self.requirements and not requirements:
-                raise ValueError("expected self.requirements and args.requirements to be lists")
-            for name in self.requirements:
-                assert isinstance(name, str), f"expected {name} to be a string"
-                assert name in ctx.requirements, f"expected to find '{name}' once, but could not find it (when validating: {ppretty({'self': self, 'reqs': requirements})})"
-
-        elif self.mode == "saves":
-            saves = ctx.save_rules
-            # TODO: assert that the result type of all mentioned saves is the same
-            if not self.saves and not saves:
-                raise ValueError("expected self.saves and args.saves to be lists")
-            for name in self.saves:
-                assert isinstance(name, str), f"expected {name} to be a string"
-                assert name in ctx.save_rules, f"expected to find '{name}' once, but could not find it (when validating: {ppretty({'self': self, 'saves': saves})})"
-
-        elif self.mode == "student":
+        if self.mode == "student":
             allowed = ["courses", "music performances", "areas"]
             assert self.itemtype in allowed, f"when from:student, '{self.itemtype}' must in in {allowed}"
 
