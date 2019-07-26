@@ -14,7 +14,8 @@ from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPo
 from degreepath.ms import pretty_ms
 
 logger = logging.getLogger()
-logformat = "%(levelname)s %(name)s\n\t%(message)s"
+logformat = "%(levelname)s %(name)s %(message)s"
+coloredlogs.install(fmt=logformat)
 
 
 def main():
@@ -24,17 +25,16 @@ def main():
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info"))
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--raw", action='store_true')
+    parser.add_argument("--print-every", action='store_true')
+    parser.add_argument("--color", action='store_true')
     args = parser.parse_args()
 
     if args.loglevel == "warn":
-        logger.setLevel(logging.WARNING)
-        coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
+        coloredlogs.install(level="WARNING", fmt=logformat)
     elif args.loglevel == "debug":
-        logger.setLevel(logging.DEBUG)
-        coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+        coloredlogs.install(level="DEBUG", fmt=logformat)
     elif args.loglevel == "info":
-        logger.setLevel(logging.INFO)
-        coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
+        coloredlogs.install(level="INFO", fmt=logformat)
 
     if not args.student_files:
         print("no students to process", file=sys.stderr)
@@ -67,6 +67,7 @@ def main():
                     transcript=transcript,
                     constants=constants,
                     area_pointers=area_pointers,
+                    args=args,
                 )
 
                 if args.json:
@@ -90,7 +91,7 @@ def main():
                 break
 
 
-def audit(*, spec, transcript, constants, area_pointers):
+def audit(*, spec, transcript, constants, area_pointers, args):
     area = AreaOfStudy.load(specification=spec, c=constants)
     area.validate()
 
@@ -123,6 +124,9 @@ def audit(*, spec, transcript, constants, area_pointers):
 
         result = sol.audit(transcript=this_transcript, areas=area_pointers)
 
+        if args.print_every:
+            print("".join(summarize(result=result.to_dict(), count=total_count, elapsed='', transcript=this_transcript, iterations=[])))
+
         if best_sol is None:
             best_sol = result
 
@@ -139,8 +143,6 @@ def audit(*, spec, transcript, constants, area_pointers):
         iterations.append(iter_end - iter_start)
 
         iter_start = time.perf_counter()
-
-        # sys.exit(0)
 
     if not iterations:
         print("no audits completed", file=sys.stderr)
