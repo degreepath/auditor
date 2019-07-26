@@ -1,11 +1,13 @@
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Tuple, Optional
+from ..clause import ResolvedClause
 
 
 @dataclass(frozen=True)
 class CountResult:
     count: int
     items: Tuple
+    audit_result: Optional[ResolvedClause]
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
@@ -16,7 +18,9 @@ class CountResult:
     #     self._rank = sum(r.rank() for r in self.items)
 
     def __post_init__(self):
-        _ok = sum(1 if r.ok() else 0 for r in self.items) >= self.count
+        passed_count = sum(1 if r.ok() else 0 for r in self.items)
+        audit_passed = self.audit_result is None or self.audit_result.success == True
+        _ok = passed_count >= self.count and audit_passed
         object.__setattr__(self, '_ok', _ok)
 
         _rank = sum(r.rank() for r in self.items)

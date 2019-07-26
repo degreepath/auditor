@@ -1,13 +1,15 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, TYPE_CHECKING
+from typing import Dict, List, Tuple, Optional, TYPE_CHECKING
 import re
 import itertools
 import logging
-from functools import reduce
 
 from ..constants import Constants
 from ..solution import CountSolution
 from .course import CourseRule
+from ..solution.requirement import RequirementSolution
+from .reference import ReferenceRulePlaceholder
+from .given.rule import PartialFromRule
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +19,7 @@ class CountRule:
     count: int
     items: Tuple
     at_most: bool
+    audit_clause: Optional[PartialFromRule]
 
     def to_dict(self):
         return {
@@ -24,6 +27,7 @@ class CountRule:
             "state": self.state(),
             "count": self.count,
             "items": [item.to_dict() for item in self.items],
+            "audit": self.audit_clause.to_dict() if self.audit_clause is not None else None,
             "ok": self.ok(),
             "status": "skip",
             "claims": self.claims(),
@@ -86,7 +90,16 @@ class CountRule:
 
         at_most = data.get('at_most', False)
 
-        return CountRule(count=count, items=tuple(load_rule(r, c) for r in items), at_most=at_most)
+        audit = data.get('audit', None)
+        if audit is not None:
+            audit = PartialFromRule.load(audit, c=c)
+
+        return CountRule(
+            count=count,
+            items=tuple(load_rule(r, c) for r in items),
+            at_most=at_most,
+            audit_clause=audit,
+        )
 
     def validate(self, *, ctx):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
