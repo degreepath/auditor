@@ -6,7 +6,8 @@ from .rule import Rule, load_rule, CourseRule
 from .data import CourseInstance, AreaPointer
 from .limit import Limit
 from .clause import SingleClause, Clause
-from .requirement import RequirementContext, Requirement
+from .requirement import Requirement
+from .context import RequirementContext
 from .constants import Constants
 
 logger = logging.getLogger(__name__)
@@ -113,7 +114,7 @@ class AreaSolution:
 
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
-        logger.debug("%s auditing area.result", path)
+        logger.debug("auditing area solution: %s", self.solution)
 
         ctx = RequirementContext(
             transcript=transcript,

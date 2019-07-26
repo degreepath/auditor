@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence
-import enum
+from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence, Iterator
 import logging
 import decimal
 from .constants import Constants
 from .lib import grade_from_str
+from .operator import Operator, apply_operator
 
 logger = logging.getLogger(__name__)
 
@@ -27,119 +27,6 @@ def load_clause(data: Dict, c: Constants):
         return clauses[0]
 
     return AndClause(children=tuple(clauses))
-
-
-class Operator(enum.Enum):
-    LessThan = "$lt"
-    LessThanOrEqualTo = "$lte"
-    GreaterThan = "$gt"
-    GreaterThanOrEqualTo = "$gte"
-    EqualTo = "$eq"
-    NotEqualTo = "$neq"
-    In = "$in"
-    NotIn = "$nin"
-
-    def __repr__(self):
-        return str(self)
-
-
-# @lru_cache(maxsize=256, typed=True)
-def apply_operator(*, op, lhs, rhs) -> bool:
-    """
-    Applies two values (lhs and rhs) to an operator.
-
-    `lhs` is drawn from the input data, while `rhs` is drawn from the area specification.
-
-    {attributes: {$eq: csci_elective}}, then, is transformed into something like
-    {[csci_elective, csci_systems]: {$eq: csci_elective}}, which is reduced to a set of
-    checks: csci_elective == csci_elective && csci_systems == csci_elective.
-
-    {count(courses): {$gte: 2}} is transformed into {5: {$gte: 2}}, which becomes
-    `5 >= 2`.
-
-    The additional complications are as follows:
-
-    1. When the comparison is started, if only one of RHS,LHS is a string, the
-       other is coerced into a string.
-
-    2. If both LHS and RHS are sequences, an error is raised.
-
-    3. If LHS is a sequence, and OP is .EqualTo, OP is changed to .In
-    4. If LHS is a sequence, and OP is .NotEqualTo, OP is changed to .NotIn
-    """
-    logger.debug("apply_operator: `%s` (%s) %s `%s` (%s)", lhs, type(lhs), op, rhs, type(rhs))
-
-    if isinstance(lhs, tuple) and isinstance(rhs, tuple):
-        if op is not Operator.In:
-            raise Exception('both rhs and lhs must not be sequences when using %s; lhs=%s, rhs=%s', op, lhs, rhs)
-
-        if lhs == tuple() or rhs == tuple():
-            logger.debug("apply_operator/skip: either lhs=%s or rhs=%s was empty; returning false", lhs == tuple(), rhs == tuple())
-            return False
-
-        logger.debug("apply_operator/coerce: converting both %s and %s to sets of strings, and running issubset", lhs, rhs)
-        lhs = set(str(s) for s in lhs)
-        rhs = set(str(s) for s in rhs)
-        logger.debug("apply_operator/coerce: lhs=%s; rhs=%s; lhs.issubset(rhs)=%s; rhs.issubset(lhs)=%s", lhs, rhs, lhs.issubset(rhs), rhs.issubset(lhs))
-        return lhs.issubset(rhs) or rhs.issubset(lhs)
-
-    if isinstance(lhs, tuple) or isinstance(rhs, tuple):
-        if op is Operator.EqualTo:
-            logger.debug("apply_operator/coerce: got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.In)
-            return apply_operator(op=Operator.In, lhs=lhs, rhs=rhs)
-        elif op is Operator.NotEqualTo:
-            logger.debug("apply_operator/coerce: got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.NotIn)
-            return apply_operator(op=Operator.NotIn, lhs=lhs, rhs=rhs)
-
-        if op is Operator.In:
-            logger.debug("apply_operator/in: `%s` %s `%s`", lhs, op.value, rhs)
-            if isinstance(lhs, tuple):
-                return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
-            if isinstance(rhs, tuple):
-                return any(apply_operator(op=Operator.EqualTo, lhs=lhs, rhs=v) for v in rhs)
-            raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
-
-        elif op is Operator.NotIn:
-            logger.debug("apply_operator/not-in: `%s` %s `%s`", lhs, op.value, rhs)
-            if isinstance(lhs, tuple):
-                return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
-            if isinstance(rhs, tuple):
-                return all(apply_operator(op=Operator.NotEqualTo, lhs=lhs, rhs=v) for v in rhs)
-            raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
-
-        else:
-            raise Exception(f'{op} does not accept a list; got {lhs} ({type(lhs)})')
-
-    if isinstance(lhs, str) and not isinstance(rhs, str):
-        rhs = str(rhs)
-    if not isinstance(lhs, str) and isinstance(rhs, str):
-        lhs = str(lhs)
-
-    if op is Operator.EqualTo:
-        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs == rhs)
-        return lhs == rhs
-
-    if op is Operator.NotEqualTo:
-        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs != rhs)
-        return lhs != rhs
-
-    if op is Operator.LessThan:
-        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs < rhs)
-        return lhs < rhs
-
-    if op is Operator.LessThanOrEqualTo:
-        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs <= rhs)
-        return lhs <= rhs
-
-    if op is Operator.GreaterThan:
-        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs > rhs)
-        return lhs > rhs
-
-    if op is Operator.GreaterThanOrEqualTo:
-        logger.debug("apply_operator: `%s` %s `%s` == %s", lhs, op, rhs, lhs >= rhs)
-        return lhs >= rhs
-
-    raise TypeError(f"unknown comparison {op}")
 
 
 @dataclass(frozen=True)
@@ -184,8 +71,8 @@ class AndClause:
 
         return any(c.mc_applies_same(other) for c in self)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable[[Any], Any]) -> ResolvedBaseClause:
-        children = [c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children]
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
+        children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = all(c.result for c in children)
 
         return ResolvedAndClause(children=children, resolved_with=None, resolved_items=[], result=result)
@@ -228,8 +115,8 @@ class OrClause:
 
         return any(c.mc_applies_same(other) for c in self)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable[[Any], Any]) -> ResolvedBaseClause:
-        children = [c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children]
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
+        children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = any(c.result for c in children)
 
         return ResolvedOrClause(children=children, resolved_with=None, resolved_items=[], result=result)
@@ -262,7 +149,7 @@ class SingleClause:
 
     @staticmethod
     def load(key: str, value: Any, c: Constants):
-        if not isinstance(value, Mapping):
+        if not isinstance(value, Dict):
             raise Exception(f'expected {value} to be a dictionary')
 
         assert len(value.keys()) is 1, f"{value}"
@@ -328,7 +215,7 @@ class SingleClause:
     def applies_to(self, other) -> bool:
         return self.compare(other)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable[[Any], Any]) -> ResolvedBaseClause:
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
         reduced_value, value_items = map_func(clause=self, value=value)
         result = self.compare(reduced_value)
 
@@ -341,6 +228,33 @@ class SingleClause:
             resolved_items=value_items,
             result=result,
         )
+
+    def input_size_range(self, *, maximum) -> Iterator[int]:
+        if type(self.expected) is not int:
+            raise TypeError('cannot find a range of values for a non-integer clause: %s', type(self.expected))
+
+        if self.operator == Operator.EqualTo:
+            yield from range(self.expected, self.expected + 1)
+
+        elif self.operator == Operator.NotEqualTo:
+            # from 0-maximum, skipping "expected"
+            yield from range(0, self.expected)
+            yield from range(self.expected + 1, max(self.expected + 1, maximum + 1))
+
+        elif self.operator == Operator.GreaterThanOrEqualTo:
+            yield from range(self.expected, max(self.expected + 1, maximum + 1))
+
+        elif self.operator == Operator.GreaterThan:
+            yield from range(self.expected + 1, max(self.expected + 2, maximum + 1))
+
+        elif self.operator == Operator.LessThan:
+            yield from range(0, self.expected)
+
+        elif self.operator == Operator.LessThanOrEqualTo:
+            yield from range(0, self.expected + 1)
+
+        else:
+            raise TypeError('unsupported operator for ranges %s', self.operator)
 
 
 @dataclass(frozen=True)
@@ -394,4 +308,4 @@ def str_clause(clause) -> str:
 
 
 Clause = Union[AndClause, OrClause, SingleClause]
-ResolvedClause = Union[ResolvedAndClause, ResolvedOrClause, ResolvedSingleClause]
+ResolvedClause = Union[ResolvedAndClause, ResolvedOrClause, ResolvedSingleClause, ResolvedBaseClause]

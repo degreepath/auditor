@@ -5,8 +5,9 @@ import itertools
 import logging
 
 from ..constants import Constants
-from ..requirement import RequirementState, RequirementSolution
 from ..solution import CourseSolution
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -48,38 +49,40 @@ class ReferenceRule:
     def validate(self, *, ctx):
         if self.name not in ctx.requirements:
             reqs = ", ".join(ctx.requirements.keys())
-            raise AssertionError(
-                f"expected a requirement named '{self.name}', but did not find one [options: {reqs}]"
-            )
+            raise AssertionError(f"expected a requirement named '{self.name}', but did not find one [options: {reqs}]")
 
         ctx.requirements[self.name].validate(ctx=ctx)
 
-    def _init(self, *, ctx, path):
+    def solutions(self, *, ctx, path: List[str]):
+        logger.debug('%s reference-rule name=%s', path, self.name)
         requirement = ctx.requirements[self.name]
 
-        state = ctx.requirement_cache.get(requirement, None)
+        yield from requirement.solutions(ctx=ctx, path=path)
 
-        if state is None:
-            state = RequirementState(iterable=requirement.solutions(ctx=ctx, path=path))
-            ctx.requirement_cache[requirement] = state
 
-        return state
+@dataclass(frozen=True)
+class ReferenceRulePlaceholder:
+    name: str
 
-    def estimate(self, *, ctx):
+    def to_dict(self):
+        return {
+            "type": "reference",
+            "name": self.name,
+            "status": "skip",
+            "state": self.state(),
+            "ok": self.ok(),
+            "rank": self.rank(),
+        }
+
+    def state(self):
+        return "rule"
+
+    def claims(self):
+        return []
+
+    def rank(self):
         return 0
 
-        requirement = ctx.requirements[self.name]
+    def ok(self):
+        return False
 
-        state = self._init(ctx=ctx, path=[])
-
-        return state.estimate(ctx=ctx)
-
-    def solutions(self, *, ctx, path: List[str]):
-        requirement = ctx.requirements[self.name]
-
-        state = self._init(ctx=ctx, path=path)
-        # print("hi")
-        # ident = hash(requirement.name)
-        # ident = requirement.name
-
-        yield from state.iter_solutions()
