@@ -8,14 +8,12 @@ import coloredlogs
 import traceback
 
 import yaml
-from ppretty import ppretty
 
 from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPointer
 from degreepath.ms import pretty_ms
 
 logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s %(message)s"
-coloredlogs.install(fmt=logformat)
 
 
 def main():
@@ -76,7 +74,7 @@ def main():
                     else:
                         print(json.dumps(result))
                 elif args.raw:
-                    print(ppretty(result))
+                    print(result)
                 else:
                     print()
                     if result:
