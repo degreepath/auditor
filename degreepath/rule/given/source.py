@@ -7,8 +7,6 @@ from ...constants import Constants
 class FromInput:
     mode: str
     itemtype: str
-    requirements: Tuple[str, ...]
-    saves: Tuple[str, ...]
     repeat_mode: Optional[str]
 
     def to_dict(self):
@@ -16,8 +14,6 @@ class FromInput:
             "type": "from-input",
             "mode": self.mode,
             "itemtype": self.itemtype,
-            "requirements": self.requirements,
-            "saves": self.saves,
         }
 
     @staticmethod
@@ -43,8 +39,6 @@ class FromInput:
         return FromInput(
             mode=mode,
             itemtype=itemtype,
-            requirements=requirements,
-            saves=saves,
             repeat_mode=repeat_mode,
         )
 

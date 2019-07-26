@@ -4,15 +4,10 @@ import logging
 from collections import defaultdict
 import copy
 
-if TYPE_CHECKING:
-    from ..requirement import Requirement, RequirementContext
-    from ..solution.requirement import RequirementSolution
-
 
 @dataclass(frozen=True)
 class RequirementResult:
     name: str
-    saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
     inputs: Tuple[Tuple[str, int], ...]
     message: Optional[str] = None
@@ -36,7 +31,6 @@ class RequirementResult:
     def from_solution(sol: Any, *, result: Optional[Any]):
         return RequirementResult(
             name=sol.name,
-            saves=sol.saves,
             requirements=sol.requirements,
             inputs=sol.inputs,
             message=sol.message,
@@ -49,7 +43,6 @@ class RequirementResult:
         return {
             "type": "requirement",
             "name": self.name,
-            "saves": {name: s.to_dict() for name, s in self.saves.items()},
             "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
             "result": self.result.to_dict() if self.result else None,

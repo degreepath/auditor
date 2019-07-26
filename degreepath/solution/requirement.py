@@ -10,7 +10,6 @@ from ..result.requirement import RequirementResult
 @dataclass(frozen=True)
 class RequirementSolution:
     name: str
-    saves: Any  # frozendict[str, SaveRule]
     requirements: Any  # frozendict[str, Requirement]
     result: Optional[Any]
     inputs: Tuple[Tuple[str, int], ...]
@@ -25,7 +24,6 @@ class RequirementSolution:
             inputs=inputs,
             result=solution,
             name=req.name,
-            saves=req.saves,
             requirements=req.requirements,
             message=req.message,
             audited_by=req.audited_by,
@@ -40,7 +38,6 @@ class RequirementSolution:
         return {
             "type": "requirement",
             "name": self.name,
-            "saves": {name: s.to_dict() for name, s in self.saves.items()},
             "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
             "result": self.result.to_dict() if self.result else None,

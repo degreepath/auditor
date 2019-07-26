@@ -21,7 +21,6 @@ class Requirement:
     def to_dict(self):
         return {
             "name": self.name,
-            "saves": {name: s.to_dict() for name, s in self.saves.items()},
             "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
             "result": self.result.to_dict() if self.result is not None else None,
@@ -67,12 +66,7 @@ class Requirement:
             assert isinstance(self.message, str)
             assert self.message.strip() != ""
 
-        children = self.requirements
-
-        new_ctx = replace(
-            ctx,
-            requirements=children,
-        )
+        new_ctx = replace(ctx, requirements=self.requirements)
 
         if self.result is not None:
             self.result.validate(ctx=new_ctx)
@@ -90,10 +84,7 @@ class Requirement:
             yield RequirementSolution.from_requirement(self, solution=None, inputs=tuple())
             return
 
-        new_ctx = replace(
-            ctx,
-            requirements={r.name: r for r in self.requirements.values()},
-        )
+        new_ctx = replace(ctx, requirements=self.requirements)
 
         path = [*path, ".result"]
 
