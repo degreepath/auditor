@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-from typing import List, Tuple, TYPE_CHECKING, Any
+from typing import List, Tuple, TYPE_CHECKING, Any, Optional
 import itertools
 import logging
 
-from ..result import CountResult
+from ..result import CountResult, RequirementResult
+from ..solution.given import apply_clause_to_given
+from ..rule.reference import ReferenceRulePlaceholder
+from ..rule.given.rule import PartialFromRule
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +15,7 @@ logger = logging.getLogger(__name__)
 class CountSolution:
     count: int
     items: Tuple
+    audit_clause: Optional[PartialFromRule]
 
     def to_dict(self):
         return {
@@ -19,6 +23,7 @@ class CountSolution:
             "state": self.state(),
             "count": self.count,
             "items": [item.to_dict() for item in self.items],
+            "audit": self.audit.to_dict() if self.audit is not None else None,
             "status": "pending",
             "ok": self.ok(),
             "rank": self.rank(),
@@ -39,19 +44,32 @@ class CountSolution:
 
     @staticmethod
     def from_rule(rule: Any, *, items):
-        return CountSolution(count=rule.count, items=items)
-
-    def flatten(self):
-        return (x for s in self.items for x in s.flatten())
+        return CountSolution(count=rule.count, items=items, audit_clause=rule.audit_clause)
 
     def audit(self, *, ctx, path: List):
         path = [*path, f".of"]
 
-        results = tuple(
-            r.audit(ctx=ctx, path=[*path, i]) if r.state() == "solution" else r
+        results = [
+            r.audit(ctx=ctx, path=[*path, i])
+            if r.state() == "solution"
+            else r
             for i, r in enumerate(self.items)
-        )
+        ]
 
-        # print(self.items)
+        audit_result = None
+        if self.audit_clause is not None:
+            subset = results
+            if self.audit_clause.where is not None:
+                subset = [
+                    item
+                    for sol in results
+                    # if hasattr(sol, 'matched')
+                    for item in sol.matched(ctx=ctx)
+                    if item.apply_clause(self.audit_clause.where)
+                ]
 
-        return CountResult(count=self.count, items=results)
+            audit_result = self.audit_clause.action.compare_and_resolve_with(value=subset, map_func=apply_clause_to_given)
+
+        tuple_results = tuple(results)
+
+        return CountResult(count=self.count, items=tuple_results, audit_result=audit_result)

@@ -39,9 +39,6 @@ class CourseSolution:
     def ok(self):
         return False
 
-    def flatten(self):
-        return [self.course]
-
     def audit(self, *, ctx: Any, path: List):
         path = [*path, f"$c->{self.course}"]
 
