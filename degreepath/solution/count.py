@@ -23,7 +23,7 @@ class CountSolution:
             "state": self.state(),
             "count": self.count,
             "items": [item.to_dict() for item in self.items],
-            "audit": self.audit.to_dict() if self.audit is not None else None,
+            "audit": self.audit_clause.to_dict() if self.audit_clause is not None else None,
             "status": "pending",
             "ok": self.ok(),
             "rank": self.rank(),
@@ -58,17 +58,20 @@ class CountSolution:
 
         audit_result = None
         if self.audit_clause is not None:
-            subset = results
+            matched_items = [
+                item
+                for sol in results
+                # if hasattr(sol, 'matched')
+                for item in sol.matched(ctx=ctx)
+            ]
+
             if self.audit_clause.where is not None:
-                subset = [
-                    item
-                    for sol in results
-                    # if hasattr(sol, 'matched')
-                    for item in sol.matched(ctx=ctx)
+                matched_items = [
+                    item for item in matched_items
                     if item.apply_clause(self.audit_clause.where)
                 ]
 
-            audit_result = self.audit_clause.action.compare_and_resolve_with(value=subset, map_func=apply_clause_to_given)
+            audit_result = self.audit_clause.action.compare_and_resolve_with(value=matched_items, map_func=apply_clause_to_given)
 
         tuple_results = tuple(results)
 

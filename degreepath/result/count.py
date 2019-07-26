@@ -19,7 +19,7 @@ class CountResult:
 
     def __post_init__(self):
         passed_count = sum(1 if r.ok() else 0 for r in self.items)
-        audit_passed = self.audit_result is None or self.audit_result.success == True
+        audit_passed = self.audit_result is None or self.audit_result.result == True
         _ok = passed_count >= self.count and audit_passed
         object.__setattr__(self, '_ok', _ok)
 
@@ -31,6 +31,7 @@ class CountResult:
             "type": "count",
             "state": self.state(),
             "count": self.count,
+            "audit": self.audit_result.to_dict() if self.audit_result is not None else None,
             "items": [x.to_dict() for x in self.items],
             "status": "pass" if self.ok() else "problem",
             "rank": self.rank(),
