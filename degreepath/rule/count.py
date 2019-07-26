@@ -103,8 +103,12 @@ class CountRule:
 
     def validate(self, *, ctx):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
-        assert self.count >= 0
-        assert self.count <= len(self.items)
+
+        lo = self.count
+        assert lo >= 0
+
+        hi = self.count + 1 if self.at_most == True else len(self.items) + 1
+        assert lo < hi
 
         for rule in self.items:
             rule.validate(ctx=ctx)
@@ -115,8 +119,6 @@ class CountRule:
 
         lo = self.count
         hi = len(self.items) + 1 if self.at_most == False else self.count + 1
-
-        assert lo < hi
 
         all_children = set(self.items)
         item_indices = {r: self.items.index(r) for r in self.items}
