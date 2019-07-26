@@ -37,12 +37,8 @@ def test_operator_eq(caplog):
     caplog.set_level(logging.DEBUG)
 
     assert apply_operator(lhs="1", op=Operator.EqualTo, rhs=1)
-    assert apply_operator(lhs=["1"], op=Operator.EqualTo, rhs=1)
-    assert apply_operator(lhs=[1], op=Operator.EqualTo, rhs="1")
-
-
-def test_operator_eq(caplog):
-    caplog.set_level(logging.DEBUG)
+    assert apply_operator(lhs=("1",), op=Operator.EqualTo, rhs=1)
+    assert apply_operator(lhs=(1,), op=Operator.EqualTo, rhs="1")
 
     assert apply_operator(lhs=1, op=Operator.EqualTo, rhs=1)
     assert apply_operator(lhs=2, op=Operator.EqualTo, rhs=1) == False
@@ -136,3 +132,32 @@ def test_resolution(caplog):
 
     result = x.compare_and_resolve_with(value=1, map_func=lambda clause, value: (value, tuple([value])))
     assert result.result is True
+
+
+def test_ranges(caplog):
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
+
+    x = load_clause({"count(courses)": {"$eq": 1}}, c=c)
+    result = x.input_size_range(maximum=5)
+    assert list(result) == [1]
+
+    x = load_clause({"count(courses)": {"$gte": 1}}, c=c)
+    result = x.input_size_range(maximum=5)
+    assert list(result) == [1, 2, 3, 4, 5]
+
+    x = load_clause({"count(courses)": {"$gt": 1}}, c=c)
+    result = x.input_size_range(maximum=5)
+    assert list(result) == [2, 3, 4, 5]
+
+    x = load_clause({"count(courses)": {"$neq": 1}}, c=c)
+    result = x.input_size_range(maximum=5)
+    assert list(result) == [0, 2, 3, 4, 5]
+
+    x = load_clause({"count(courses)": {"$lt": 5}}, c=c)
+    result = x.input_size_range(maximum=7)
+    assert list(result) == [0, 1, 2, 3, 4]
+
+    x = load_clause({"count(courses)": {"$lte": 5}}, c=c)
+    result = x.input_size_range(maximum=7)
+    assert list(result) == [0, 1, 2, 3, 4, 5]

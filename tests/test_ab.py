@@ -2,7 +2,7 @@ from degreepath import *
 from degreepath.solution.count import CountSolution
 from degreepath.solution.course import CourseSolution
 from degreepath.rule.course import CourseRule
-from degreepath.requirement import RequirementSolution
+from degreepath.solution.requirement import RequirementSolution
 import pytest
 import io
 import yaml
