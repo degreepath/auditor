@@ -117,7 +117,7 @@ class CourseInstance:
             return False
 
 
-def load_course(data: Dict) -> Optional[CourseInstance]:
+def load_course(data: Dict) -> Optional[CourseInstance]:  # noqa: C901
     attributes = data.get('attributes', tuple())
     clbid = data['clbid']
     course = data['course']

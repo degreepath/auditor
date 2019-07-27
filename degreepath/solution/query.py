@@ -66,7 +66,7 @@ class QuerySolution:
                 claim = ctx.make_claim(course=item, path=path, clause=clause, allow_claimed=self.rule.allow_claimed)
 
                 if claim.failed():
-                    logger.debug('%s course "%s" exists, but has already been claimed by %', path, item.clbid, claim.conflict_with)
+                    logger.debug('%s course "%s" exists, but has already been claimed by %s', path, item.clbid, claim.conflict_with)
                     failed_claims.append(claim)
                 else:
                     logger.debug('%s course "%s" exists, and is available', path, item.clbid)

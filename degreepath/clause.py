@@ -6,6 +6,7 @@ import decimal
 from .constants import Constants
 from .lib import str_to_grade_points
 from .operator import Operator, apply_operator, str_operator
+from .rule.course import CourseRule
 
 logger = logging.getLogger(__name__)
 
@@ -136,6 +137,10 @@ class SingleClause:
         }
 
     @staticmethod
+    def from_course_rule(rule: CourseRule):
+        return SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
+
+    @staticmethod
     def load(key: str, value: Any, c: Constants):
         if not isinstance(value, Dict):
             raise Exception(f'expected {value} to be a dictionary')
@@ -181,27 +186,6 @@ class SingleClause:
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
-    # def mc_applies_same(self, other) -> bool:
-    #     """Checks if this clause applies to the same items as the other clause,
-    #     when used as part of a multicountable ruleset."""
-    #
-    #     if isinstance(other, AndClause):
-    #         return other.mc_applies_same(self)
-    #
-    #     if isinstance(other, OrClause):
-    #         return other.mc_applies_same(self)
-    #
-    #     logger.debug('mc_applies_same: %s, %s', self, other)
-    #
-    #     if not isinstance(other, SingleClause):
-    #         return False
-    #
-    #     return (
-    #         self.key == other.key
-    #         and self.expected == other.expected
-    #         and self.operator == other.operator
-    #     )
-
     def is_subset(self, other_clause) -> bool:
         """
         answers the question, "am I a subset of $other"
@@ -213,6 +197,12 @@ class SingleClause:
         elif isinstance(other_clause, OrClause):
             return any(self.is_subset(c) for c in other_clause.children)
 
+        elif isinstance(other_clause, CourseRule):
+            return other_clause.is_equivalent_to_clause(self)
+
+        elif not isinstance(other_clause, type(self)):
+            raise TypeError(f'unsupported value {type(other_clause)}')
+
         if self.key != other_clause.key:
             return False
 
@@ -220,10 +210,6 @@ class SingleClause:
             return any(v == self.expected for v in other_clause.expected)
 
         return self.expected == other_clause.expected
-
-    def applies_to(self, other) -> bool:
-        logger.debug('applies_to: %s, %s', self, other)
-        return apply_operator(lhs=other, op=self.operator, rhs=self.expected)
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
         reduced_value, value_items = map_func(clause=self, value=value)

@@ -9,7 +9,9 @@ import logging
 c = Constants(matriculation_year=2000)
 
 
-def test_from():
+def test_from(caplog):
+    caplog.set_level(logging.DEBUG)
+
     test_data = io.StringIO("""
         result:
             from: {student: courses, repeats: first}
@@ -33,7 +35,9 @@ def test_from():
     assert a.successful_claims[0].claim.clbid == transcript[1].clbid
 
 
-def test_from_distinct():
+def test_from_distinct(caplog):
+    caplog.set_level(logging.DEBUG)
+
     test_data = io.StringIO("""
         result:
             from: {student: courses}
