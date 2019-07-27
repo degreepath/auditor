@@ -12,10 +12,21 @@ Degreepath is a tool to perform automated, comprehensive, and fast degree audits
 
 ---
 
-Requires Python 3.7+. Dependency management handled by [Poetry](https://github.com/sdispater/poetry).
+Requires Python 3.6+.
 
 ```
-python3 -m degreepath --help
+$ python3 -m venv ./venv
+$ source ./venv/bin/activate
+# or $ source ./venv/bin/activate.fish
+$ pip install -r requirements.txt
+$ python dp.py --help
+```
+
+To run tests:
+
+```
+pytest
+# or, with coverage: $ pytest --cov=degreepath
 ```
 
 ```
