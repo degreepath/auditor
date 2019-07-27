@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 import re
+from decimal import Decimal
 import logging
 
 from ..constants import Constants
+from ..lib import str_to_grade_points
 from ..operator import Operator
 from ..solution.course import CourseSolution
 
@@ -14,7 +16,7 @@ logger = logging.getLogger(__name__)
 class CourseRule:
     course: str
     hidden: bool
-    grade: Optional[str]
+    grade: Optional[Decimal]
     allow_claimed: bool
 
     def to_dict(self):
@@ -53,7 +55,7 @@ class CourseRule:
         return CourseRule(
             course=data["course"],
             hidden=data.get("hidden", False),
-            grade=data.get("grade", None),
+            grade=str_to_grade_points(data['grade']) if 'grade' in data else None,
             allow_claimed=data.get("including claimed", False),
         )
 

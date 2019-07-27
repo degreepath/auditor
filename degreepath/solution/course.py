@@ -45,6 +45,10 @@ class CourseSolution:
             logger.debug('%s course "%s" does not exist in the transcript', path, self.course)
             return CourseResult(course=self.course, rule=self.rule, claim_attempt=None)
 
+        if self.rule.grade is not None and matched_course.grade_points < self.rule.grade:
+            logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', path, self.course, matched_course.grade_points, self.rule.grade)
+            return CourseResult(course=self.course, rule=self.rule, claim_attempt=None, min_grade_not_met=matched_course)
+
         claim = ctx.make_claim(course=matched_course, path=path, clause=self.rule)
 
         if claim.failed():
