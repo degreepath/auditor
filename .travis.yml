@@ -8,6 +8,10 @@ python:
 
 install:
   - pip3 install -r requirements.txt
+  - pip3 install -r requirements-dev.txt
+  - pip3 install mypy
 
 script:
   - pytest
+  - mypy degreepath/
+  - flake8 degreepath/
