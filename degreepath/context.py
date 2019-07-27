@@ -64,7 +64,7 @@ class RequirementContext:
     def reset_claims(self):
         self.claims = defaultdict(set)
 
-    def make_claim(self, *, course: CourseInstance, path: List, clause: Union[Clause, CourseRule], allow_claimed: bool = False):
+    def make_claim(self, *, course: CourseInstance, path: List, clause: Union[Clause, CourseRule], allow_claimed: bool = False):  # noqa: C901
         """
         Make claims against courses, to ensure that they are only used once
         (with exceptions) in an audit.
