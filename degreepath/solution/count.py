@@ -3,10 +3,9 @@ from typing import List, Tuple, TYPE_CHECKING, Any, Optional
 import itertools
 import logging
 
-from ..result import CountResult, RequirementResult
-from ..solution.given import apply_clause_to_given
-from ..rule.reference import ReferenceRulePlaceholder
-from ..rule.query_assertion import QueryAssertionRule
+from ..result.count import CountResult
+from ..rule.assertion import AssertionRule
+from .query import apply_clause_to_query_rule
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 class CountSolution:
     count: int
     items: Tuple
-    audit_clause: Optional[QueryAssertionRule]
+    audit_clause: Optional[AssertionRule]
 
     def to_dict(self):
         return {
@@ -71,7 +70,7 @@ class CountSolution:
                     if item.apply_clause(self.audit_clause.where)
                 ]
 
-            audit_result = self.audit_clause.assertion.compare_and_resolve_with(value=matched_items, map_func=apply_clause_to_given)
+            audit_result = self.audit_clause.assertion.compare_and_resolve_with(value=matched_items, map_func=apply_clause_to_query_rule)
 
         tuple_results = tuple(results)
 

@@ -58,31 +58,3 @@ class ReferenceRule:
         requirement = ctx.requirements[self.name]
 
         yield from requirement.solutions(ctx=ctx, path=path)
-
-
-@dataclass(frozen=True)
-class ReferenceRulePlaceholder:
-    name: str
-
-    def to_dict(self):
-        return {
-            "type": "reference",
-            "name": self.name,
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-        }
-
-    def state(self):
-        return "rule"
-
-    def claims(self):
-        return []
-
-    def rank(self):
-        return 0
-
-    def ok(self):
-        return False
-

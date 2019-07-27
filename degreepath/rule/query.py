@@ -5,20 +5,20 @@ import logging
 
 from ..limit import LimitSet
 from ..clause import Clause, load_clause, SingleClause
-from ..solution.given import FromSolution
+from ..solution.query import QuerySolution
 from ..constants import Constants
-from .query_assertion import QueryAssertionRule
+from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class FromRule:
+class QueryRule:
     source: str
     source_type: str
     source_repeats: Optional[str]
 
-    assertions: Tuple[QueryAssertionRule, ...]
+    assertions: Tuple[AssertionRule, ...]
     limit: LimitSet
     where: Optional[Clause]
     allow_claimed: bool
@@ -62,11 +62,11 @@ class FromRule:
 
         limit = LimitSet.load(data=data.get("limit", None), c=c)
 
-        assertions: List[QueryAssertionRule] = []
+        assertions: List[AssertionRule] = []
         if "assert" in data:
-            assertions = [QueryAssertionRule.load({'assert': data["assert"]}, c)]
+            assertions = [AssertionRule.load({'assert': data["assert"]}, c)]
         if "all" in data:
-            assertions = [QueryAssertionRule.load(d, c) for d in data["all"]]
+            assertions = [AssertionRule.load(d, c) for d in data["all"]]
 
         allow_claimed = data.get('allow_claimed', False)
 
@@ -87,7 +87,7 @@ class FromRule:
         else:
             raise KeyError(f"expected from:student; got {list(source_data.keys())}")
 
-        return FromRule(
+        return QueryRule(
             source=source,
             source_type=source_type,
             source_repeats=source_repeats,
@@ -159,12 +159,12 @@ class FromRule:
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
                         logger.debug("combo: %s choose %s, round %s", len(item_set), n, i)
                         did_iter = True
-                        yield FromSolution(output=combo, rule=self)
+                        yield QuerySolution(output=combo, rule=self)
             else:
                 did_iter = True
-                yield FromSolution(output=item_set, rule=self)
+                yield QuerySolution(output=item_set, rule=self)
 
         if not did_iter:
             # be sure we always yield something
             logger.debug("did not yield anything; yielding empty collection")
-            yield FromSolution(output=tuple(), rule=self)
+            yield QuerySolution(output=tuple(), rule=self)

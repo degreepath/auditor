@@ -4,7 +4,7 @@ from collections import defaultdict
 import logging
 
 from .data import CourseInstance, CourseStatus, AreaPointer
-from .rule import CourseRule
+from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
 

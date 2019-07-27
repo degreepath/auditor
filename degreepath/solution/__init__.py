@@ -2,8 +2,8 @@ from typing import Union
 
 from .course import CourseSolution
 from .count import CountSolution
-from .action import ActionSolution
-from .given import FromSolution
+from .query import QuerySolution
+
 from .requirement import RequirementSolution
 
-Solution = Union[CourseSolution, CountSolution]
+Solution = Union[CourseSolution, CountSolution, QuerySolution]

@@ -2,9 +2,9 @@ from dataclasses import dataclass, replace
 from typing import List, Optional, Any, Mapping
 import logging
 
-from .frozendict import frozendict
-from .data import CourseInstance, CourseStatus
-from .solution.requirement import RequirementSolution
+from ..frozendict import frozendict
+from ..data import CourseInstance, CourseStatus
+from ..solution.requirement import RequirementSolution
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class Requirement:
 
     @staticmethod
     def load(name: str, data: Mapping[str, Any], c):
-        from .rule import load_rule
+        from . import load_rule
 
         children = frozendict({
             name: Requirement.load(name, r, c)

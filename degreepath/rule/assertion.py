@@ -5,13 +5,13 @@ from ..constants import Constants
 
 
 @dataclass(frozen=True)
-class QueryAssertionRule:
+class AssertionRule:
     where: Optional[Clause]
     assertion: Clause
 
     def to_dict(self):
         return {
-            "type": "partial-from",
+            "type": "assertion",
             "assertion": self.assertion.to_dict() if self.assertion else None,
             "where": self.where.to_dict() if self.where else None,
             "status": "skip",
@@ -48,5 +48,4 @@ class QueryAssertionRule:
 
         assertion = load_clause(data["assert"], c)
 
-        return QueryAssertionRule(assertion=assertion, where=where)
-
+        return AssertionRule(assertion=assertion, where=where)

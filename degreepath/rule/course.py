@@ -5,7 +5,7 @@ import itertools
 import logging
 
 from ..constants import Constants
-from ..solution import CourseSolution
+from ..solution.course import CourseSolution
 
 logger = logging.getLogger(__name__)
 

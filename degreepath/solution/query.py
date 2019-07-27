@@ -3,16 +3,16 @@ from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple, FrozenSet, 
 import logging
 import decimal
 
-from ..result import FromResult
-from ..rule.query_assertion import QueryAssertionRule
+from ..result.query import QueryResult
+from ..rule.assertion import AssertionRule
 from ..data import CourseInstance, Term, AreaPointer
-from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause, Operator, ResolvedClause
+from ..clause import Clause, SingleClause, Operator, ResolvedClause
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class FromSolution:
+class QuerySolution:
     output: Sequence[Union[CourseInstance, Term, decimal.Decimal, int]]
     rule: Any
 
@@ -63,12 +63,7 @@ class FromSolution:
         for item in self.output:
             if isinstance(item, CourseInstance):
                 clause = self.rule.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
-                claim = ctx.make_claim(
-                    course=item,
-                    path=path,
-                    clause=clause,
-                    allow_claimed=self.rule.allow_claimed,
-                )
+                claim = ctx.make_claim(course=item, path=path, clause=clause, allow_claimed=self.rule.allow_claimed)
 
                 if claim.failed():
                     logger.debug('%s course "%s" exists, but has already been claimed by %', path, item.clbid, claim.conflict_with)
@@ -85,7 +80,7 @@ class FromSolution:
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
-        resolved_assertions = tuple(self.apply_clause(a, claimed_items) for a in self.rule.assertions)
+        resolved_assertions = tuple(self.apply_assertion(a, claimed_items) for a in self.rule.assertions)
 
         resolved_result = all(a.result is True for a in resolved_assertions)
 
@@ -94,7 +89,7 @@ class FromSolution:
         else:
             logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
 
-        return FromResult(
+        return QueryResult(
             rule=self.rule,
             resolved_assertions=resolved_assertions,
             successful_claims=tuple(successful_claims),
@@ -102,26 +97,22 @@ class FromSolution:
             success=resolved_result,
         )
 
-    def apply_clause(self, clause: Clause, output: Sequence) -> ResolvedClause:
-        if not isinstance(clause, QueryAssertionRule):
+    def apply_assertion(self, clause: AssertionRule, output: Sequence) -> ResolvedClause:
+        if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
         filtered_output = output
         if clause.where is not None:
-            filtered_output = [
-                item
-                for item in output
-                if item.apply_clause(clause.where)
-            ]
+            filtered_output = [item for item in output if item.apply_clause(clause.where)]
 
-        return clause.assertion.compare_and_resolve_with(value=output, map_func=apply_clause_to_given)
+        return clause.assertion.compare_and_resolve_with(value=output, map_func=apply_clause_to_query_rule)
 
 
 def avg_or_0(items: Sequence):
     return sum(items) / len(items) if items else 0
 
 
-def apply_clause_to_given(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:
+def apply_clause_to_query_rule(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:
     if clause.key == 'count(courses)':
         assert all(isinstance(x, CourseInstance) for x in value)
         items = frozenset(c.clbid for c in value)

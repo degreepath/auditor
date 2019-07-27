@@ -2,7 +2,8 @@ from dataclasses import dataclass, field, replace
 from typing import List, Optional, Tuple, Any, Dict, Union, Set, TYPE_CHECKING
 import logging
 from collections import defaultdict
-import copy
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)

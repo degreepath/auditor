@@ -4,7 +4,7 @@ from ..clause import ResolvedBaseClause
 
 
 @dataclass(frozen=True)
-class FromResult:
+class QueryResult:
     rule: Any
     successful_claims: Tuple
     failed_claims: Tuple

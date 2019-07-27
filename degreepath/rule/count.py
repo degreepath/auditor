@@ -5,11 +5,9 @@ import itertools
 import logging
 
 from ..constants import Constants
-from ..solution import CountSolution
-from .course import CourseRule
+from ..solution.count import CountSolution
 from ..solution.requirement import RequirementSolution
-from .reference import ReferenceRulePlaceholder
-from .query_assertion import QueryAssertionRule
+from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +17,7 @@ class CountRule:
     count: int
     items: Tuple
     at_most: bool
-    audit_clause: Optional[QueryAssertionRule]
+    audit_clause: Optional[AssertionRule]
 
     def to_dict(self):
         return {
@@ -92,7 +90,7 @@ class CountRule:
 
         audit = data.get('audit', None)
         if audit is not None:
-            audit = QueryAssertionRule.load(audit, c=c)
+            audit = AssertionRule.load(audit, c=c)
 
         return CountRule(
             count=count,
