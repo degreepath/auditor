@@ -4,7 +4,7 @@ from ..constants import Constants
 from .count import CountRule
 from .course import CourseRule
 from .action import ActionRule
-from .given import FromRule, str_assertion
+from .given import FromRule
 from .reference import ReferenceRule
 from .audited import AuditedRule
 

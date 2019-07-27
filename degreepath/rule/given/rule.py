@@ -1,14 +1,12 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Set, TYPE_CHECKING
+from typing import Dict, List, Optional, Tuple, Set
 import itertools
 import logging
 
-from .source import FromInput
-from ...limit import LimitSet, Limit
+from ...limit import LimitSet
 from ...clause import Clause, load_clause, SingleClause
 from ...solution.given import FromSolution
 from ...constants import Constants
-from ...operator import Operator
 from ..query_assertion import QueryAssertionRule
 
 logger = logging.getLogger(__name__)
@@ -16,7 +14,10 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class FromRule:
-    source: FromInput
+    source: str
+    source_type: str
+    source_repeats: Optional[str]
+
     assertions: Tuple[QueryAssertionRule, ...]
     limit: LimitSet
     where: Optional[Clause]
@@ -25,7 +26,9 @@ class FromRule:
     def to_dict(self):
         return {
             "type": "from",
-            "source": self.source.to_dict(),
+            "source": self.source,
+            "source_type": self.source_type,
+            "source_repeats": self.source_repeats,
             "limit": self.limit.to_dict(),
             "assertions": [a.to_dict() for a in self.assertions],
             "where": self.where.to_dict() if self.where else None,
@@ -67,8 +70,27 @@ class FromRule:
 
         allow_claimed = data.get('allow_claimed', False)
 
+        source_data = data['from']
+
+        if "student" in source_data:
+            source = "student"
+            source_type = source_data["student"]
+            source_repeats = source_data.get('repeats', 'all')
+            assert source_repeats in ['first', 'all']
+
+        elif "saves" in source_data or "save" in source_data:
+            raise ValueError('from:saves not supported')
+
+        elif "requirements" in source_data or "requirement" in source_data:
+            raise ValueError('from:requirements not supported')
+
+        else:
+            raise KeyError(f"expected from:\{student\}; got {list(source_data.keys())}")
+
         return FromRule(
-            source=FromInput.load(data["from"], c),
+            source=source,
+            source_type=source_type,
+            source_repeats=source_repeats,
             assertions=tuple(assertions),
             limit=limit,
             where=where,
@@ -76,7 +98,15 @@ class FromRule:
         )
 
     def validate(self, *, ctx):
-        self.source.validate(ctx=ctx)
+        assert isinstance(self.source, str)
+
+        if self.source == "student":
+            allowed = ["courses", "music performances", "areas"]
+            assert self.source_type in allowed, f"when from:student, '{self.source_type}' must in in {allowed}"
+
+        else:
+            raise NameError(f"unknown 'from' type {self.source}")
+
         if self.assertions:
             [a.validate(ctx=ctx) for a in self.assertions]
 
@@ -86,13 +116,13 @@ class FromRule:
 
         ###
 
-        if self.source.mode != "student":
-            raise KeyError(f'unknown "from" type "{self.source.mode}"')
+        if self.source != "student":
+            raise KeyError(f'unknown "from" type "{self.source}"')
 
-        if self.source.itemtype == "courses":
+        if self.source_type == "courses":
             data = ctx.transcript
 
-            if self.source.repeat_mode == "first":
+            if self.source_repeats == "first":
                 filtered_courses = []
                 course_identities: Set[str] = set()
                 for course in sorted(data, key=lambda c: c.term):
@@ -101,11 +131,11 @@ class FromRule:
                         course_identities.add(course.crsid)
                 data = filtered_courses
 
-        elif self.source.itemtype == "areas":
+        elif self.source_type == "areas":
             data = ctx.areas
 
         else:
-            raise KeyError(f"{self.source.itemtype} not yet implemented")
+            raise KeyError(f"{self.source_type} not yet implemented")
 
         ###
 

@@ -19,7 +19,9 @@ class FromSolution:
     def to_dict(self):
         return {
             "type": "from",
-            "source": self.rule.source.to_dict(),
+            "source": self.rule.source,
+            "source_type": self.rule.source_type,
+            "source_repeats": self.rule.source_repeats,
             "assertions": [a.to_dict() for a in self.rule.assertions],
             "where": self.rule.where.to_dict() if self.rule.where else None,
             "output": [x.to_dict() for x in self.output],
@@ -51,8 +53,8 @@ class FromSolution:
     def audit(self, *, ctx, path: List):
         path = [*path, f".of"]
 
-        if self.rule.source.mode != "student":
-            raise KeyError(f'unknown "from" type "{self.rule.source.mode}"')
+        if self.rule.source != "student":
+            raise KeyError(f'unknown "from" type "{self.rule.source}"')
 
         successful_claims = []
         claimed_items = []

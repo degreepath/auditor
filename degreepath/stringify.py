@@ -1,6 +1,5 @@
 from .clause import Operator, str_clause
 from .data import CourseStatus
-from .rule import str_assertion
 from .ms import pretty_ms
 
 
