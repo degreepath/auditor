@@ -1,8 +1,9 @@
-from degreepath import *
 from degreepath.solution.count import CountSolution
 from degreepath.solution.course import CourseSolution
 from degreepath.rule.course import CourseRule
 from degreepath.solution.requirement import RequirementSolution
+from degreepath.area import AreaOfStudy
+from degreepath.data import course_from_str
 import pytest
 import io
 import yaml
@@ -53,7 +54,7 @@ def x_test_sample():
     area.validate()
 
     transcript = [
-        CourseInstance.from_s(c)
+        course_from_str(c)
         for c in ["CSCI 111", "CSCI 112", "CSCI 113", "CSCI 114", "CSCI 115"]
     ]
 

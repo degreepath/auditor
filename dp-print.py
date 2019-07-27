@@ -1,4 +1,5 @@
 import json
+import sys
 import argparse
 
 from degreepath.stringify import print_result

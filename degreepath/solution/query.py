@@ -5,7 +5,7 @@ import decimal
 
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
-from ..data import CourseInstance, Term, AreaPointer
+from ..data import CourseInstance, AreaPointer
 from ..clause import SingleClause, Operator, ResolvedClause
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class QuerySolution:
-    output: Sequence[Union[CourseInstance, Term, decimal.Decimal, int]]
+    output: Sequence[Union[CourseInstance, AreaPointer, decimal.Decimal, int]]
     rule: Any
 
     def to_dict(self):
@@ -57,7 +57,7 @@ class QuerySolution:
             raise KeyError(f'unknown "from" type "{self.rule.source}"')
 
         successful_claims = []
-        claimed_items = []
+        claimed_items: List[Union[CourseInstance, AreaPointer]] = []
         failed_claims = []
 
         for item in self.output:
@@ -142,7 +142,7 @@ def count_items(data, kind):
 
     if kind == 'years':
         assert all(isinstance(x, CourseInstance) for x in data)
-        items = frozenset(c.year for c in data)
+        items = frozenset(c.year() for c in data)
         return (len(items), items)
 
     if kind == 'distinct_courses':

@@ -79,7 +79,7 @@ class Requirement:
 
         if not self.result:
             logger.debug("%s requirement \"%s\" does not have a result", path, self.name)
-            yield RequirementSolution.from_requirement(self, solution=None, inputs=tuple())
+            yield RequirementSolution.from_requirement(self, solution=None)
             return
 
         new_ctx = replace(ctx, requirements=self.requirements)

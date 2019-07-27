@@ -1,10 +1,9 @@
 from degreepath.area import AreaOfStudy
-from degreepath.clause import SingleClause, AndClause, Operator, load_clause, apply_operator
-from degreepath.operator import Operator, apply_operator
+from degreepath.clause import SingleClause
+from degreepath.operator import Operator
 from degreepath.context import RequirementContext
-from degreepath.data import CourseInstance
+from degreepath.data import course_from_str
 from degreepath.constants import Constants
-from degreepath.rule.course import CourseRule
 import yaml
 import pytest
 import io
@@ -17,10 +16,6 @@ next_assertion = '\n\n... next assertion ...\n\n'
 
 def test_load_mc(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.context')
-
-    transcript = tuple([
-        CourseInstance.from_s("XYZ 101", attributes=['elective', 'alternate']),
-    ])
 
     test_data = io.StringIO("""
         result:
@@ -52,7 +47,7 @@ def test_load_mc(caplog):
 def test_mc(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.context')
 
-    course = CourseInstance.from_s("XYZ 101", attributes=['elective', 'alternate'])
+    course = course_from_str("XYZ 101", attributes=['elective', 'alternate'])
     transcript = tuple([course])
     ctx = RequirementContext(transcript=transcript, areas=tuple(), multicountable=[
         [
@@ -65,22 +60,22 @@ def test_mc(caplog):
     by_alternate = SingleClause(key='attributes', expected=('alternate',), expected_verbatim=('alternate',), operator=Operator.In)
 
     claim_a = ctx.make_claim(course=course, path=[], clause=by_elective, allow_claimed=False)
-    assert claim_a.failed() == False
+    assert claim_a.failed() is False
 
     logging.info(next_assertion)
 
     claim_b = ctx.make_claim(course=course, path=[], clause=by_alternate, allow_claimed=False)
-    assert claim_b.failed() == False
+    assert claim_b.failed() is False
 
     logging.info(next_assertion)
 
     claim_c = ctx.make_claim(course=course, path=[], clause=by_elective, allow_claimed=False)
-    assert claim_c.failed() == True
+    assert claim_c.failed() is True
 
     logging.info(next_assertion)
 
     claim_d = ctx.make_claim(course=course, path=[], clause=by_alternate, allow_claimed=False)
-    assert claim_d.failed() == True
+    assert claim_d.failed() is True
 
 
 def test_mc_course_attrs(caplog):
@@ -92,7 +87,7 @@ def test_mc_course_attrs(caplog):
         - {attributes: {$eq: econ_level_3}}
     """
 
-    course = CourseInstance.from_s("ECON 385", attributes=['econ_level_3'])
+    course = course_from_str("ECON 385", attributes=['econ_level_3'])
     transcript = tuple([course])
     ctx = RequirementContext(transcript=transcript, areas=tuple(), multicountable=[
         [
@@ -105,22 +100,22 @@ def test_mc_course_attrs(caplog):
     by_attr = SingleClause(key='attributes', expected='econ_level_3', expected_verbatim='econ_level_3', operator=Operator.EqualTo)
 
     claim_a = ctx.make_claim(course=course, path=[], clause=by_course, allow_claimed=False)
-    assert claim_a.failed() == False
+    assert claim_a.failed() is False
 
     logging.info(next_assertion)
 
     claim_b = ctx.make_claim(course=course, path=[], clause=by_attr, allow_claimed=False)
-    assert claim_b.failed() == False
+    assert claim_b.failed() is False
 
     logging.info(next_assertion)
 
     claim_c = ctx.make_claim(course=course, path=[], clause=by_course, allow_claimed=False)
-    assert claim_c.failed() == True
+    assert claim_c.failed() is True
 
     logging.info(next_assertion)
 
     claim_d = ctx.make_claim(course=course, path=[], clause=by_attr, allow_claimed=False)
-    assert claim_c.failed() == True
+    assert claim_d.failed() is True
 
 
 def test_mc_multiple_attr_sets(caplog):
@@ -149,7 +144,7 @@ def test_mc_multiple_attr_sets(caplog):
         - {attributes: {$eq: engl_period_pre1800}}
     """
 
-    course = CourseInstance.from_s("ENGL 205", attributes=['engl_elective', 'engl_period_post1800', 'engl_period_pre1800', 'engl_topic_crosscultural'])
+    course = course_from_str("ENGL 205", attributes=['engl_elective', 'engl_period_post1800', 'engl_period_pre1800', 'engl_topic_crosscultural'])
     transcript = tuple([course])
     ctx = RequirementContext(transcript=transcript, areas=tuple(), multicountable=[
         [
@@ -189,32 +184,32 @@ def test_mc_multiple_attr_sets(caplog):
     logger = logging.getLogger('degreepath.context')
 
     claim_a = ctx.make_claim(course=course, path=['a'], clause=by_elective, allow_claimed=False)
-    assert claim_a.failed() == False, 'Should pass because no claim exists on this course yet'
+    assert claim_a.failed() is False, 'Should pass because no claim exists on this course yet'
 
     logger.info(next_assertion)
 
     claim_b = ctx.make_claim(course=course, path=['c'], clause=by_xcultural, allow_claimed=False)
-    assert claim_b.failed() == True, 'Should fail due to no clauseset having both [elective] and [xcultural]'
+    assert claim_b.failed() is True, 'Should fail due to no clauseset having both [elective] and [xcultural]'
 
     logger.info(next_assertion)
 
     claim_c = ctx.make_claim(course=course, path=['a'], clause=by_post1800, allow_claimed=False)
-    assert claim_c.failed() == False, 'Should pass because there is a [elective, post1800, pre1800] set'
+    assert claim_c.failed() is False, 'Should pass because there is a [elective, post1800, pre1800] set'
 
     logger.info(next_assertion)
 
     claim_d = ctx.make_claim(course=course, path=['a'], clause=by_pre1800, allow_claimed=False)
-    assert claim_d.failed() == False, 'Should pass because there is a [elective, post1800, pre1800] set'
+    assert claim_d.failed() is False, 'Should pass because there is a [elective, post1800, pre1800] set'
 
     logger.info(next_assertion)
 
     claim_e = ctx.make_claim(course=course, path=['b'], clause=by_elective, allow_claimed=False)
-    assert claim_e.failed() == False, "Should fail because we've already claimed this course"
+    assert claim_e.failed() is False, "Should fail because we've already claimed this course"
 
     logger.info(next_assertion)
 
     claim_f = ctx.make_claim(course=course, path=['b'], clause=by_elective, allow_claimed=True)
-    assert claim_f.failed() == False, "Should pass because we said already_claimed was OK"
+    assert claim_f.failed() is False, "Should pass because we said already_claimed was OK"
 
 
 """

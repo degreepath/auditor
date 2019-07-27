@@ -1,5 +1,5 @@
 from degreepath.area import AreaOfStudy
-from degreepath.data import CourseInstance
+from degreepath.data import CourseInstance, course_from_str
 from degreepath.constants import Constants
 import pytest
 import io
@@ -20,9 +20,9 @@ def test_from():
     area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        CourseInstance.from_s("CSCI 111", gereqs=['SPM'], term=20091),
-        CourseInstance.from_s("CSCI 111", gereqs=['SPM'], term=20081),
-        CourseInstance.from_s("ASIAN 110"),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
+        course_from_str("ASIAN 110"),
     ]
 
     s = next(area.solutions(transcript=transcript, areas=[]))
@@ -44,10 +44,10 @@ def test_from_distinct():
     area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        CourseInstance.from_s("CSCI 111", gereqs=['SPM'], term=20091),
-        CourseInstance.from_s("CSCI 111", gereqs=['SPM'], term=20081),
-        CourseInstance.from_s("CSCI 111", gereqs=['SPM'], term=20071),
-        CourseInstance.from_s("ASIAN 110"),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20071),
+        course_from_str("ASIAN 110"),
     ]
 
     s = next(area.solutions(transcript=transcript, areas=[]))
@@ -62,9 +62,9 @@ def __get_data(spec):
     area = AreaOfStudy.load(specification=yaml.load(stream=io.StringIO(spec), Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        CourseInstance.from_s("CSCI 111", gereqs=['SPM'], term=20091),
-        CourseInstance.from_s("CSCI 112", gereqs=['SPM'], term=20081),
-        CourseInstance.from_s("CSCI 113", gereqs=['SPM'], term=20071),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
+        course_from_str("CSCI 112", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 113", gereqs=['SPM'], term=20071),
     ]
 
     return (area, transcript)

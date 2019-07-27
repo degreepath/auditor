@@ -8,7 +8,7 @@ import traceback
 
 import yaml
 
-from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPointer, pretty_ms
+from degreepath import load_course, Constants, AreaOfStudy, summarize, AreaPointer, pretty_ms
 
 logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s %(message)s"
@@ -41,13 +41,7 @@ def main():
 
         area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
 
-        transcript = []
-        for row in student["courses"]:
-            instance = CourseInstance.from_dict(**row)
-            if instance:
-                transcript.append(instance)
-            else:
-                print("error loading course into transcript", row, file=sys.stderr)
+        transcript = [load_course(row) for row in student["courses"]]
 
         for area_file in args.area_files:
             with open(area_file, "r", encoding="utf-8") as infile:
@@ -97,8 +91,6 @@ def audit(*, spec, transcript, constants, area_pointers, args):
         attrs_by_course = set(attributes_to_attach.get(c.course(), []))
         attrs_by_shorthand = set(attributes_to_attach.get(c.course_shorthand(), []))
         attrs_by_term = set(attributes_to_attach.get(c.course_with_term(), []))
-
-        print(c.course_with_term(), attrs_by_course | attrs_by_shorthand | attrs_by_term)
 
         c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
         this_transcript.append(c)

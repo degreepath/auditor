@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple, Any, Dict, Union, Set
 from collections import defaultdict
 import logging
 
-from .data import CourseInstance, CourseStatus, AreaPointer
+from .data import CourseInstance, CourseStatus, SubType, AreaPointer
 from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
@@ -34,7 +34,7 @@ class RequirementContext:
             COMPLETED_COURSES[tid] = [
                 course
                 for course in self.transcript
-                if course.status != CourseStatus.DidNotComplete
+                if course.status != CourseStatus.Incomplete
             ]
         self._completed_courses = COMPLETED_COURSES[tid]
 
@@ -105,10 +105,10 @@ class RequirementContext:
         potential_conflicts: Set[Claim] = set(cl for cl in self.claims[course.crsid] if cl.crsid == claim.crsid)
 
         # allow topics courses to be taken multiple times
-        if course.is_topic:
+        if course.subtype is SubType.Topic:
             conflicting_courses = (self.find_course_by_clbid(clm.clbid) for clm in potential_conflicts)
             all_conflicts_are_topics = all(
-                course.is_topic
+                course.subtype is SubType.Topic
                 for course in conflicting_courses
                 if course is not None
             )
