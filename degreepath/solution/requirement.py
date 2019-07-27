@@ -1,8 +1,5 @@
-from dataclasses import dataclass, field, replace
-from typing import List, Optional, Tuple, Any, Dict, Union, Set, TYPE_CHECKING
-import logging
-from collections import defaultdict
-import copy
+from dataclasses import dataclass
+from typing import List, Optional, Any
 
 from ..result.requirement import RequirementResult
 
@@ -12,16 +9,14 @@ class RequirementSolution:
     name: str
     requirements: Any  # frozendict[str, Requirement]
     result: Optional[Any]
-    inputs: Tuple[Tuple[str, int], ...]
     message: Optional[str] = None
     audited_by: Optional[str] = None
     contract: bool = False
 
     # req: Requirement
     @staticmethod
-    def from_requirement(req: Any, *, solution: Optional[Any], inputs: Tuple[Tuple[str, int], ...]):
+    def from_requirement(req: Any, *, solution: Optional[Any]):
         return RequirementSolution(
-            inputs=inputs,
             result=solution,
             name=req.name,
             requirements=req.requirements,

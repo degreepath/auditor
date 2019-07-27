@@ -1,14 +1,13 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any, Tuple, Union
+from typing import Dict, List, Any, Tuple
 import logging
 
-from .clause import SingleClause, Clause
+from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer
 from .limit import Limit
-from .rule import Rule, load_rule
-from .rule.course import CourseRule
+from .load_rule import Rule, load_rule
 from .rule.requirement import Requirement
 
 logger = logging.getLogger(__name__)

@@ -5,7 +5,7 @@ import logging
 import decimal
 from .constants import Constants
 from .lib import grade_from_str
-from .operator import Operator, apply_operator
+from .operator import Operator, apply_operator, str_operator
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +15,10 @@ def load_clause(data: Dict, c: Constants):
         raise Exception(f'expected {data} to be a dictionary')
 
     if "$and" in data:
-        assert len(data.keys()) is 1
+        assert len(data.keys()) == 1
         return AndClause.load(data["$and"], c)
     elif "$or" in data:
-        assert len(data.keys()) is 1
+        assert len(data.keys()) == 1
         return OrClause.load(data["$or"], c)
 
     clauses = [SingleClause.load(key, value, c) for key, value in data.items()]
@@ -140,7 +140,7 @@ class SingleClause:
         if not isinstance(value, Dict):
             raise Exception(f'expected {value} to be a dictionary')
 
-        assert len(value.keys()) is 1, f"{value}"
+        assert len(value.keys()) == 1, f"{value}"
         op = list(value.keys())[0]
 
         operator = Operator(op)
@@ -291,22 +291,7 @@ def str_clause(clause) -> str:
         else:
             postscript = ""
 
-        if clause['operator'] == 'LessThan':
-            op = '<'
-        elif clause['operator'] == 'LessThanOrEqualTo':
-            op = '≤'
-        elif clause['operator'] == 'GreaterThan':
-            op = '>'
-        elif clause['operator'] == 'GreaterThanOrEqualTo':
-            op = '≥'
-        elif clause['operator'] == 'EqualTo':
-            op = '=='
-        elif clause['operator'] == 'NotEqualTo':
-            op = '!='
-        elif clause['operator'] == 'In':
-            op = '∈'
-        elif clause['operator'] == 'NotIn':
-            op = '∉'
+        op = str_operator(clause['operator'])
 
         return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}"
     elif clause["type"] == "or-clause":

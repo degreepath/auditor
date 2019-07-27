@@ -3,8 +3,8 @@ from typing import List, Optional, Any, Mapping
 import logging
 
 from ..frozendict import frozendict
-from ..data import CourseInstance, CourseStatus
 from ..solution.requirement import RequirementSolution
+from ..load_rule import load_rule
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +30,6 @@ class Requirement:
 
     @staticmethod
     def load(name: str, data: Mapping[str, Any], c):
-        from . import load_rule
-
         children = frozendict({
             name: Requirement.load(name, r, c)
             for name, r in data.get("requirements", {}).items()
@@ -88,7 +86,5 @@ class Requirement:
 
         path = [*path, ".result"]
 
-        ident = ",".join([*path, self.name])
-
         for solution in self.result.solutions(ctx=new_ctx, path=path):
-            yield RequirementSolution.from_requirement(self, inputs=tuple(), solution=solution)
+            yield RequirementSolution.from_requirement(self, solution=solution)

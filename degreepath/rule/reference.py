@@ -1,11 +1,8 @@
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional, TYPE_CHECKING
-import re
-import itertools
+from typing import Dict, List
 import logging
 
 from ..constants import Constants
-from ..solution import CourseSolution
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Tuple
+from typing import Any, Tuple
 from ..clause import ResolvedBaseClause
 
 
@@ -21,7 +21,7 @@ class QueryResult:
     #     self._rank = len(self.successful_claims) + len(self.failed_claims)
 
     def __post_init__(self):
-        _ok = self.success == True
+        _ok = self.success is True
         object.__setattr__(self, '_ok', _ok)
         # self._ok = self.claim_attempt and self.claim_attempt.failed() is False
 

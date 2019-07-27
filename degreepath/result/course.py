@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Optional, TYPE_CHECKING, Any
+from typing import Any, Optional
 
 
 @dataclass(frozen=True)
 class CourseResult:
     course: str
     rule: Any
-    claim_attempt: Any
+    claim_attempt: Optional[Any]  # Optional[ClaimAttempt]
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)

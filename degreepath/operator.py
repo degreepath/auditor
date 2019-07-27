@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import enum
 import logging
 
@@ -20,7 +19,7 @@ class Operator(enum.Enum):
 
 
 # @lru_cache(maxsize=256, typed=True)
-def apply_operator(*, op, lhs, rhs) -> bool:
+def apply_operator(*, op, lhs, rhs) -> bool:  # noqa: C901
     """
     Applies two values (lhs and rhs) to an operator.
 
@@ -128,3 +127,22 @@ def apply_operator(*, op, lhs, rhs) -> bool:
         return lhs >= rhs
 
     raise TypeError(f"unknown comparison {op}")
+
+
+def str_operator(op):
+    if op == 'LessThan':
+        return '<'
+    elif op == 'LessThanOrEqualTo':
+        return '≤'
+    elif op == 'GreaterThan':
+        return '>'
+    elif op == 'GreaterThanOrEqualTo':
+        return '≥'
+    elif op == 'EqualTo':
+        return '=='
+    elif op == 'NotEqualTo':
+        return '!='
+    elif op == 'In':
+        return '∈'
+    elif op == 'NotIn':
+        return '∉'

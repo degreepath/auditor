@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Union, List, TYPE_CHECKING, Sequence, Any, Tuple, FrozenSet, Collection
+from typing import Union, List, Sequence, Any, Tuple, Collection
 import logging
 import decimal
 
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..data import CourseInstance, Term, AreaPointer
-from ..clause import Clause, SingleClause, Operator, ResolvedClause
+from ..clause import SingleClause, Operator, ResolvedClause
 
 logger = logging.getLogger(__name__)
 
@@ -105,86 +105,94 @@ class QuerySolution:
         if clause.where is not None:
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
 
-        return clause.assertion.compare_and_resolve_with(value=output, map_func=apply_clause_to_query_rule)
+        return clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
+
+
+def apply_clause_to_query_rule(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:
+    # remove the trailing ) with [:-1], then split on the opening ( to get the two parts
+    action, kind = clause.key[:-1].split('(', maxsplit=1)
+
+    if action == 'count':
+        return count_items(kind=kind, data=value)
+
+    elif action == 'sum':
+        return sum_items(kind=kind, data=value)
+
+    elif action == 'average':
+        return avg_items(kind=kind, data=value)
+
+    raise Exception(f'expected a valid clause key; got {clause.key}')
+
+
+def count_items(data, kind):
+    if kind == 'courses':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = frozenset(c.clbid for c in data)
+        return (len(items), items)
+
+    if kind == 'subjects':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = frozenset(s for c in data for s in c.subject)
+        return (len(items), items)
+
+    if kind == 'terms':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = frozenset(c.term for c in data)
+        return (len(items), items)
+
+    if kind == 'years':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = frozenset(c.year for c in data)
+        return (len(items), items)
+
+    if kind == 'distinct_courses':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = frozenset(c.crsid for c in data)
+        return (len(items), items)
+
+    if kind == 'areas':
+        assert all(isinstance(x, AreaPointer) for x in data)
+        items = frozenset(c.code for c in data)
+        return (len(items), items)
+
+    if kind == 'performances':
+        # TODO
+        raise Exception(f'count(performances) is not yet implemented')
+
+    if kind == 'seminars':
+        # TODO
+        raise Exception(f'count(seminars) is not yet implemented')
+
+    raise Exception(f'expected a valid kind; got {kind}')
+
+
+def sum_items(data, kind):
+    if kind == 'grades':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = tuple(c.grade for c in data)
+        return (sum(items), items)
+
+    if kind == 'credits':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = tuple(c.credits for c in data)
+        return (sum(items), items)
+
+    raise Exception(f'expected a valid kind; got {kind}')
+
+
+def avg_items(data, kind):
+    if kind == 'grades':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = tuple(c.grade for c in data)
+        return (avg_or_0(items), items)
+
+    if kind == 'credits':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        items = tuple(c.credits for c in data)
+        return (avg_or_0(items), items)
+
+    raise Exception(f'expected a valid kind; got {kind}')
 
 
 def avg_or_0(items: Sequence):
     return sum(items) / len(items) if items else 0
-
-
-def apply_clause_to_query_rule(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:
-    if clause.key == 'count(courses)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        items = frozenset(c.clbid for c in value)
-        return (len(items), items)
-
-    elif clause.key == 'count(subjects)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        items = frozenset(s for c in value for s in c.subject)
-        return (len(items), items)
-
-    elif clause.key == 'count(terms)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        items = frozenset(c.term for c in value)
-        return (len(items), items)
-
-    elif clause.key == 'count(years)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        items = frozenset(c.year for c in value)
-        return (len(items), items)
-
-    elif clause.key == 'count(distinct_courses)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        items = frozenset(c.crsid for c in value)
-        return (len(items), items)
-
-    elif clause.key == 'count(areas)':
-        assert all(isinstance(x, AreaPointer) for x in value)
-        items = frozenset(c.code for c in value)
-        return (len(items), items)
-
-    elif clause.key == 'count(performances)':
-        # TODO
-        raise Exception(f'count(performances) is not yet implemented')
-
-    elif clause.key == 'count(seminars)':
-        # TODO
-        raise Exception(f'count(seminars) is not yet implemented')
-
-    elif clause.key == 'sum(grades)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        sum_items = tuple(c.grade for c in value)
-        return (sum(sum_items), sum_items)
-
-    elif clause.key == 'sum(credits)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        sum_items = tuple(c.credits for c in value)
-        return (sum(sum_items), sum_items)
-
-    elif clause.key == 'average(grades)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        sum_items = tuple(c.grade for c in value)
-        return (avg_or_0(sum_items), sum_items)
-
-    elif clause.key == 'average(credits)':
-        assert all(isinstance(x, CourseInstance) for x in value)
-        sum_items = tuple(c.credits for c in value)
-        return (avg_or_0(sum_items), sum_items)
-
-    elif clause.key.startswith('min(') or clause.key.startswith('max('):
-        assert all(isinstance(x, CourseInstance) for x in value)
-        func = min if clause.key.startswith('min(') else max
-
-        if clause.key == 'min(terms)' or clause.key == 'max(terms)':
-            item = func(c.term for c in value)
-        elif clause.key == 'min(grades)' or clause.key == 'max(grades)':
-            item = func(c.grade for c in value)
-        elif clause.key == 'min(credits)' or clause.key == 'max(credits)':
-            item = func(c.credits for c in value)
-        else:
-            raise Exception(f'expected a valid clause key; got {clause.key}')
-
-        return (item, tuple([item]))
-
-    else:
-        raise Exception(f'expected a valid clause key; got {clause.key}')

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional
+from typing import Dict, List, Optional
 import re
-import itertools
 import logging
 
 from ..constants import Constants

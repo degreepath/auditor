@@ -19,7 +19,7 @@ class CountResult:
 
     def __post_init__(self):
         passed_count = sum(1 if r.ok() else 0 for r in self.items)
-        audit_passed = self.audit_result is None or self.audit_result.result == True
+        audit_passed = self.audit_result is None or self.audit_result.result is True
         _ok = passed_count >= self.count and audit_passed
         object.__setattr__(self, '_ok', _ok)
 

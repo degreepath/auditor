@@ -146,8 +146,8 @@ class RequirementContext:
         # the {attributes: elective} and {attributes: post1800} clauses.
 
         # for each ruleset
-            # gather the "claiming clauses" from potential_conflicts
-            # exclude any items which are a subset of any of the "claiming clauses"
+        # - gather the "claiming clauses" from potential_conflicts
+        # - exclude any items which are a subset of any of the "claiming clauses"
 
         # check if any potential_conflicts' claims are subsets of the any rules in the ruleset
         potential_conflict_claims: Set[Union[Clause, CourseRule]] = set(claim.value for claim in potential_conflicts)

@@ -1,3 +1,5 @@
+# flake8: noqa
+
 import decimal
 import math
 import re
@@ -71,11 +73,7 @@ def pretty_ms(
             add(parsed["microseconds"], "microsecond", "us")
             add(parsed["nanoseconds"], "nanosecond", "ns")
         else:
-            ms_and_below = (
-                parsed["milliseconds"]
-                + (parsed["microseconds"] / 1000)
-                + (parsed["nanoseconds"] / 1_000_000)
-            )
+            ms_and_below = parsed["milliseconds"] + (parsed["microseconds"] / 1000) + (parsed["nanoseconds"] / 1_000_000)
             ms_str = (
                 format(ms_and_below, f".{ms_digits}f")
                 if ms_digits

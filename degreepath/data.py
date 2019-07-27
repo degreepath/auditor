@@ -52,11 +52,11 @@ class AreaPointer:
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
             logger.debug("clause/and/compare %s", clause)
-            return all(self.apply_clause(subclause) for subclause in clause)
+            return all(self.apply_clause(subclause) for subclause in clause.children)
 
         elif isinstance(clause, OrClause):
             logger.debug("clause/or/compare %s", clause)
-            return any(self.apply_clause(subclause) for subclause in clause)
+            return any(self.apply_clause(subclause) for subclause in clause.children)
 
         elif isinstance(clause, SingleClause):
             if clause.key == 'code':
@@ -144,7 +144,7 @@ class CourseInstance:
             "type": "course",
         }
 
-    @staticmethod
+    @staticmethod  # noqa: C901
     def from_dict(
         *,
         attributes=None,
@@ -304,33 +304,36 @@ class CourseInstance:
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
             logger.debug("clause/and/compare %s", clause)
-            return all(self.apply_clause(subclause) for subclause in clause)
+            return all(self.apply_clause(subclause) for subclause in clause.children)
 
         elif isinstance(clause, OrClause):
             logger.debug("clause/or/compare %s", clause)
-            return any(self.apply_clause(subclause) for subclause in clause)
+            return any(self.apply_clause(subclause) for subclause in clause.children)
 
         elif isinstance(clause, SingleClause):
-            if clause.key == 'clbid':
-                return clause.compare(self.clbid)
-            elif clause.key == 'crsid':
-                return clause.compare(self.crsid)
-            elif clause.key == 'grade':
-                return clause.compare(self.grade)
-            elif clause.key == 'level':
-                return clause.compare(self.level)
-            elif clause.key == 'attributes':
-                return clause.compare(self.attributes)
-            elif clause.key == 'course':
-                return clause.compare(self.identity) or clause.compare(self.shorthand)
-
-            # TODO: replace this with explicit key accesses
-            if clause.key in self.__dict__:
-                logger.debug("clause/compare/key=%s", clause.key)
-                return clause.compare(self.__dict__[clause.key])
-            else:
-                keys = list(self.__dict__.keys())
-                logger.debug("clause/compare[%s]: not found in %s", clause.key, keys)
-                return False
+            return self.apply_single_clause(clause)
 
         raise TypeError(f"courseinstance: expected a clause; found {type(clause)}")
+
+    def apply_single_clause(self, clause: SingleClause):
+        if clause.key == 'clbid':
+            return clause.compare(self.clbid)
+        elif clause.key == 'crsid':
+            return clause.compare(self.crsid)
+        elif clause.key == 'grade':
+            return clause.compare(self.grade)
+        elif clause.key == 'level':
+            return clause.compare(self.level)
+        elif clause.key == 'attributes':
+            return clause.compare(self.attributes)
+        elif clause.key == 'course':
+            return clause.compare(self.identity) or clause.compare(self.shorthand)
+
+        # TODO: replace this with explicit key accesses
+        if clause.key in self.__dict__:
+            logger.debug("clause/compare/key=%s", clause.key)
+            return clause.compare(self.__dict__[clause.key])
+        else:
+            keys = list(self.__dict__.keys())
+            logger.debug("clause/compare[%s]: not found in %s", clause.key, keys)
+            return False

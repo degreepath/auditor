@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Tuple, TYPE_CHECKING, Any, Optional
-import itertools
+from typing import List, Tuple, Any, Optional
 import logging
 
 from ..result.count import CountResult

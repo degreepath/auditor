@@ -110,12 +110,7 @@ class QueryRule:
         if self.assertions:
             [a.validate(ctx=ctx) for a in self.assertions]
 
-    def solutions(self, *, ctx, path: List[str]):
-        path = [*path, f".from"]
-        logger.debug("%s", path)
-
-        ###
-
+    def get_data(self, *, ctx):
         if self.source != "student":
             raise KeyError(f'unknown "from" type "{self.source}"')
 
@@ -137,9 +132,15 @@ class QueryRule:
         else:
             raise KeyError(f"{self.source_type} not yet implemented")
 
-        ###
+        return data
 
-        assert self.assertions is not None
+    def solutions(self, *, ctx, path: List[str]):
+        path = [*path, f".from"]
+        logger.debug("%s", path)
+
+        data = self.get_data(ctx=ctx)
+
+        assert len(self.assertions) > 0
 
         did_iter = False
 

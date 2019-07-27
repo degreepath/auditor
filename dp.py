@@ -1,7 +1,6 @@
 import json
 import sys
 import time
-import datetime
 import argparse
 import logging
 import coloredlogs
@@ -9,8 +8,7 @@ import traceback
 
 import yaml
 
-from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPointer
-from degreepath.ms import pretty_ms
+from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPointer, pretty_ms
 
 logger = logging.getLogger()
 logformat = "%(levelname)s %(name)s %(message)s"
@@ -82,7 +80,7 @@ def main():
                     else:
                         print(result)
 
-            except Exception as ex:
+            except Exception:
                 traceback.print_exc()
                 print(f"failed: #{student['stnum']}", file=sys.stderr)
 
@@ -111,7 +109,6 @@ def audit(*, spec, transcript, constants, area_pointers, args):
     total_count = 0
     iterations = []
     start = time.perf_counter()
-    start_time = datetime.datetime.now()
     iter_start = time.perf_counter()
 
     for sol in area.solutions(transcript=this_transcript, areas=area_pointers):

@@ -1,4 +1,6 @@
-from .clause import Operator, str_clause
+# flake8: noqa
+
+from .clause import str_clause
 from .data import CourseStatus
 from .ms import pretty_ms
 

@@ -1,10 +1,10 @@
 from typing import Union, Dict
-from ..constants import Constants
+from .constants import Constants
 
-from .count import CountRule
-from .course import CourseRule
-from .query import QueryRule
-from .reference import ReferenceRule
+from .rule.count import CountRule
+from .rule.course import CourseRule
+from .rule.query import QueryRule
+from .rule.reference import ReferenceRule
 
 Rule = Union[CourseRule, CountRule, QueryRule, ReferenceRule]
 

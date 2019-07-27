@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Sequence, Optional, TYPE_CHECKING
+from typing import Dict, List, Tuple, Sequence, Optional
 from collections import defaultdict
 import logging
 

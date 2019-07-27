@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, FrozenSet, Optional
+from typing import Tuple, Union, FrozenSet
 import logging
 
 from .clause import Clause

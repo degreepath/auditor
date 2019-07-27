@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from typing import Union, List, Optional, Any, TYPE_CHECKING
-import itertools
+from typing import List, Any
 import logging
 
-from ..result import CourseResult
-from ..data import CourseStatus
+from ..result.course import CourseResult
 
 logger = logging.getLogger(__name__)
 

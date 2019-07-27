@@ -1,12 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, TYPE_CHECKING
-import re
+from typing import Dict, List, Tuple, Optional
 import itertools
 import logging
 
 from ..constants import Constants
 from ..solution.count import CountSolution
-from ..solution.requirement import RequirementSolution
 from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
@@ -59,7 +57,7 @@ class CountRule:
 
     @staticmethod
     def load(data: Dict, c: Constants):
-        from . import load_rule
+        from ..load_rule import load_rule
 
         if "all" in data:
             items = data["all"]
@@ -105,7 +103,7 @@ class CountRule:
         lo = self.count
         assert lo >= 0
 
-        hi = self.count + 1 if self.at_most == True else len(self.items) + 1
+        hi = self.count + 1 if self.at_most is True else len(self.items) + 1
         assert lo < hi
 
         for rule in self.items:
@@ -116,7 +114,7 @@ class CountRule:
         logger.debug("%s", path)
 
         lo = self.count
-        hi = len(self.items) + 1 if self.at_most == False else self.count + 1
+        hi = len(self.items) + 1 if self.at_most is False else self.count + 1
 
         all_children = set(self.items)
         item_indices = {r: self.items.index(r) for r in self.items}
