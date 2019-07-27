@@ -4,6 +4,7 @@ import logging
 import decimal
 
 from ..result import FromResult
+from ..rule.query_assertion import QueryAssertionRule
 from ..data import CourseInstance, Term, AreaPointer
 from ..clause import Clause, AndClause, OrClause, SingleClause, str_clause, Operator, ResolvedClause
 
@@ -19,7 +20,7 @@ class FromSolution:
         return {
             "type": "from",
             "source": self.rule.source.to_dict(),
-            "action": self.rule.action.to_dict() if self.rule.action else None,
+            "assertions": [a.to_dict() for a in self.rule.assertions],
             "where": self.rule.where.to_dict() if self.rule.where else None,
             "output": [x.to_dict() for x in self.output],
             "allow_claimed": self.rule.allow_claimed,
@@ -64,7 +65,6 @@ class FromSolution:
                     course=item,
                     path=path,
                     clause=clause,
-                    transcript=ctx.transcript,
                     allow_claimed=self.rule.allow_claimed,
                 )
 
@@ -83,26 +83,36 @@ class FromSolution:
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
-        resolved_assertion = self.apply_clause(self.rule.action, claimed_items)
+        resolved_assertions = tuple(self.apply_clause(a, claimed_items) for a in self.rule.assertions)
 
-        if resolved_assertion.result is True:
+        resolved_result = all(a.result is True for a in resolved_assertions)
+
+        if resolved_result:
             logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
         else:
             logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
 
         return FromResult(
             rule=self.rule,
-            resolved_assertion=resolved_assertion,
-            successful_claims=successful_claims,
-            failed_claims=failed_claims,
-            success=resolved_assertion.result is True,# and len(failed_claims) == 0,
+            resolved_assertions=resolved_assertions,
+            successful_claims=tuple(successful_claims),
+            failed_claims=tuple(failed_claims),
+            success=resolved_result,
         )
 
     def apply_clause(self, clause: Clause, output: Sequence) -> ResolvedClause:
-        if not isinstance(clause, (AndClause, OrClause, SingleClause)):
-            raise TypeError(f"expected a clause; found {clause} ({type(clause)})")
+        if not isinstance(clause, QueryAssertionRule):
+            raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
-        return clause.compare_and_resolve_with(value=output, map_func=apply_clause_to_given)
+        filtered_output = output
+        if clause.where is not None:
+            filtered_output = [
+                item
+                for item in output
+                if item.apply_clause(clause.where)
+            ]
+
+        return clause.assertion.compare_and_resolve_with(value=output, map_func=apply_clause_to_given)
 
 
 def avg_or_0(items: Sequence):

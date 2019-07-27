@@ -4,12 +4,12 @@ import itertools
 import logging
 
 from .source import FromInput
-from .assertion import AnyAssertion, load_assertion
 from ...limit import LimitSet, Limit
 from ...clause import Clause, load_clause, SingleClause
 from ...solution.given import FromSolution
 from ...constants import Constants
 from ...operator import Operator
+from ..query_assertion import QueryAssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class FromRule:
     source: FromInput
-    action: Optional[Clause]
+    assertions: Tuple[QueryAssertionRule, ...]
     limit: LimitSet
     where: Optional[Clause]
     allow_claimed: bool
@@ -27,7 +27,7 @@ class FromRule:
             "type": "from",
             "source": self.source.to_dict(),
             "limit": self.limit.to_dict(),
-            "action": self.action.to_dict() if self.action else None,
+            "assertions": [a.to_dict() for a in self.assertions],
             "where": self.where.to_dict() if self.where else None,
             "allow_claimed": self.allow_claimed,
             "status": "skip",
@@ -59,15 +59,17 @@ class FromRule:
 
         limit = LimitSet.load(data=data.get("limit", None), c=c)
 
-        action = None
+        assertions: List[QueryAssertionRule] = []
         if "assert" in data:
-            action = load_clause(data["assert"], c)
+            assertions = [QueryAssertionRule.load({'assert': data["assert"]}, c)]
+        if "all" in data:
+            assertions = [QueryAssertionRule.load(d, c) for d in data["all"]]
 
         allow_claimed = data.get('allow_claimed', False)
 
         return FromRule(
             source=FromInput.load(data["from"], c),
-            action=action,
+            assertions=tuple(assertions),
             limit=limit,
             where=where,
             allow_claimed=allow_claimed,
@@ -75,13 +77,8 @@ class FromRule:
 
     def validate(self, *, ctx):
         self.source.validate(ctx=ctx)
-        if self.action:
-            self.action.validate(ctx=ctx)
-
-    def solutions_when_student(self, *, ctx, path):
-
-
-        yield data
+        if self.assertions:
+            [a.validate(ctx=ctx) for a in self.assertions]
 
     def solutions(self, *, ctx, path: List[str]):
         path = [*path, f".from"]
@@ -112,7 +109,7 @@ class FromRule:
 
         ###
 
-        assert self.action is not None
+        assert self.assertions is not None
 
         did_iter = False
 
@@ -125,56 +122,19 @@ class FromRule:
             logger.debug("after filter: %s items", len(data))
 
         for item_set in self.limit.limited_transcripts(data):
-            if isinstance(self.action, SingleClause):
-                for n in self.action.input_size_range(maximum=len(item_set)):
+            if len(self.assertions) == 1 and isinstance(self.assertions[0].assertion, SingleClause):
+                assertion = self.assertions[0].assertion
+                logger.debug("using single assertion mode with %s", assertion)
+                for n in assertion.input_size_range(maximum=len(item_set)):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
                         logger.debug("combo: %s choose %s, round %s", len(item_set), n, i)
                         did_iter = True
                         yield FromSolution(output=combo, rule=self)
+            else:
+                did_iter = True
+                yield FromSolution(output=item_set, rule=self)
 
         if not did_iter:
             # be sure we always yield something
             logger.debug("did not yield anything; yielding empty collection")
             yield FromSolution(output=tuple(), rule=self)
-
-
-@dataclass(frozen=True)
-class PartialFromRule:
-    where: Optional[Clause]
-    action: Clause
-
-    def to_dict(self):
-        return {
-            "type": "partial-from",
-            "action": self.action.to_dict() if self.action else None,
-            "where": self.where.to_dict() if self.where else None,
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-        }
-
-    def state(self):
-        return "rule"
-
-    def ok(self):
-        return True
-
-    def rank(self):
-        return 0
-
-    @staticmethod
-    def can_load(data: Dict) -> bool:
-        if "assert" in data:
-            return True
-        return False
-
-    @staticmethod
-    def load(data: Dict, c: Constants):
-        where = data.get("where", None)
-        if where is not None:
-            where = load_clause(where, c)
-
-        assertion = load_clause(data["assert"], c)
-
-        return PartialFromRule(action=assertion, where=where)

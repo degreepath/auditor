@@ -96,10 +96,13 @@ def audit(*, spec, transcript, constants, area_pointers, args):
     this_transcript = []
     attributes_to_attach = area.attributes.get("courses", {})
     for c in transcript:
-        attrs_by_course = attributes_to_attach.get(c.course(), [])
-        attrs_by_shorthand = attributes_to_attach.get(c.course_shorthand(), [])
+        attrs_by_course = set(attributes_to_attach.get(c.course(), []))
+        attrs_by_shorthand = set(attributes_to_attach.get(c.course_shorthand(), []))
+        attrs_by_term = set(attributes_to_attach.get(c.course_with_term(), []))
 
-        c = c.attach_attrs(attributes=attrs_by_course or attrs_by_shorthand)
+        print(c.course_with_term(), attrs_by_course | attrs_by_shorthand | attrs_by_term)
+
+        c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
         this_transcript.append(c)
 
     this_transcript = tuple(this_transcript)

@@ -1,6 +1,9 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, Set
+from typing import Tuple, Union, FrozenSet, Optional
 import logging
+
+from .clause import Clause
+from .rule.course import CourseRule
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +13,7 @@ class Claim:
     crsid: str
     clbid: str
     claimant_path: Tuple[str, ...]
-    value: Union
+    value: Union[Clause, CourseRule]
 
     def to_dict(self):
         return {
@@ -24,7 +27,7 @@ class Claim:
 @dataclass(frozen=True)
 class ClaimAttempt:
     claim: Claim
-    conflict_with: Set[Claim] = field(default_factory=set)
+    conflict_with: FrozenSet[Claim] = field(default_factory=frozenset)
 
     def failed(self) -> bool:
         return len(self.conflict_with) > 0

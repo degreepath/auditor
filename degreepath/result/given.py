@@ -1,15 +1,15 @@
 from dataclasses import dataclass, field
-from typing import List, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Tuple
 from ..clause import ResolvedBaseClause
 
 
 @dataclass(frozen=True)
 class FromResult:
     rule: Any
-    successful_claims: List
-    failed_claims: List
+    successful_claims: Tuple
+    failed_claims: Tuple
     success: bool
-    resolved_assertion: ResolvedBaseClause
+    resolved_assertions: Tuple[ResolvedBaseClause, ...]
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
@@ -38,7 +38,7 @@ class FromResult:
             "rank": self.rank(),
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.failed_claims],
-            "resolved_action": self.resolved_assertion.to_dict(),
+            "assertions": [a.to_dict() for a in self.resolved_assertions],
         }
 
     def claims(self):

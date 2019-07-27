@@ -9,7 +9,7 @@ from ..solution import CountSolution
 from .course import CourseRule
 from ..solution.requirement import RequirementSolution
 from .reference import ReferenceRulePlaceholder
-from .given.rule import PartialFromRule
+from .query_assertion import QueryAssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class CountRule:
     count: int
     items: Tuple
     at_most: bool
-    audit_clause: Optional[PartialFromRule]
+    audit_clause: Optional[QueryAssertionRule]
 
     def to_dict(self):
         return {
@@ -92,7 +92,7 @@ class CountRule:
 
         audit = data.get('audit', None)
         if audit is not None:
-            audit = PartialFromRule.load(audit, c=c)
+            audit = QueryAssertionRule.load(audit, c=c)
 
         return CountRule(
             count=count,

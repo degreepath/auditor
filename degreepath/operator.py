@@ -82,7 +82,6 @@ def apply_operator(*, op, lhs, rhs) -> bool:
             return apply_operator(op=Operator.NotIn, lhs=lhs, rhs=rhs)
 
         elif op is Operator.In:
-            logger.debug("in: `%s` %s `%s`", lhs, op.value, rhs)
             if isinstance(lhs, tuple):
                 return any(apply_operator(op=Operator.EqualTo, lhs=v, rhs=rhs) for v in lhs)
             if isinstance(rhs, tuple):
@@ -90,7 +89,6 @@ def apply_operator(*, op, lhs, rhs) -> bool:
             raise TypeError(f"{op}: expected either {type(lhs)} or {type(rhs)} to be a tuple")
 
         elif op is Operator.NotIn:
-            logger.debug("not-in: `%s` %s `%s`", lhs, op.value, rhs)
             if isinstance(lhs, tuple):
                 return all(apply_operator(op=Operator.NotEqualTo, lhs=v, rhs=rhs) for v in lhs)
             if isinstance(rhs, tuple):

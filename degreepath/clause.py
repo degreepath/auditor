@@ -62,14 +62,8 @@ class AndClause:
         for c in self.children:
             c.validate(ctx=ctx)
 
-    def __iter__(self):
-        yield from self.children
-
-    def mc_applies_same(self, other) -> bool:
-        """Checks if this clause applies to the same items as the other clause,
-        when used as part of a multicountable ruleset."""
-
-        return any(c.mc_applies_same(other) for c in self)
+    def is_subset(self, other_clause) -> bool:
+        return any(c.is_subset(other_clause) for c in self.children)
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
@@ -106,14 +100,8 @@ class OrClause:
         for c in self.children:
             c.validate(ctx=ctx)
 
-    def __iter__(self):
-        yield from self.children
-
-    def mc_applies_same(self, other) -> bool:
-        """Checks if this clause applies to the same items as the other clause,
-        when used as part of a multicountable ruleset."""
-
-        return any(c.mc_applies_same(other) for c in self)
+    def is_subset(self, other_clause) -> bool:
+        return any(c.is_subset(other_clause) for c in self.children)
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
@@ -193,31 +181,53 @@ class SingleClause:
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
-    def mc_applies_same(self, other) -> bool:
-        """Checks if this clause applies to the same items as the other clause,
-        when used as part of a multicountable ruleset."""
+    # def mc_applies_same(self, other) -> bool:
+    #     """Checks if this clause applies to the same items as the other clause,
+    #     when used as part of a multicountable ruleset."""
+    #
+    #     if isinstance(other, AndClause):
+    #         return other.mc_applies_same(self)
+    #
+    #     if isinstance(other, OrClause):
+    #         return other.mc_applies_same(self)
+    #
+    #     logger.debug('mc_applies_same: %s, %s', self, other)
+    #
+    #     if not isinstance(other, SingleClause):
+    #         return False
+    #
+    #     return (
+    #         self.key == other.key
+    #         and self.expected == other.expected
+    #         and self.operator == other.operator
+    #     )
 
-        if isinstance(other, AndClause):
-            return other.mc_applies_same(self)
+    def is_subset(self, other_clause) -> bool:
+        """
+        answers the question, "am I a subset of $other"
+        """
 
-        if isinstance(other, OrClause):
-            return other.mc_applies_same(self)
+        if isinstance(other_clause, AndClause):
+            return any(self.is_subset(c) for c in other_clause.children)
 
-        if not isinstance(other, SingleClause):
+        elif isinstance(other_clause, OrClause):
+            return any(self.is_subset(c) for c in other_clause.children)
+
+        if self.key != other_clause.key:
             return False
 
-        return (
-            self.key == other.key
-            and self.expected == other.expected
-            and self.operator == other.operator
-        )
+        if self.operator == Operator.EqualTo and other_clause.operator == Operator.In:
+            return any(v == self.expected for v in other_clause.expected)
+
+        return self.expected == other_clause.expected
 
     def applies_to(self, other) -> bool:
-        return self.compare(other)
+        logger.debug('applies_to: %s, %s', self, other)
+        return apply_operator(lhs=other, op=self.operator, rhs=self.expected)
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
         reduced_value, value_items = map_func(clause=self, value=value)
-        result = self.compare(reduced_value)
+        result = apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected)
 
         return ResolvedSingleClause(
             key=self.key,

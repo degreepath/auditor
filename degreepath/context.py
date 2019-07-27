@@ -3,8 +3,9 @@ from typing import List, Optional, Tuple, Any, Dict, Union, Set
 from collections import defaultdict
 import logging
 
-from .data import CourseInstance, CourseStatus
+from .data import CourseInstance, CourseStatus, AreaPointer
 from .rule import CourseRule
+from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
 
 logger = logging.getLogger(__name__)
@@ -16,11 +17,11 @@ CLBID_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
 
 @dataclass(frozen=False)
 class RequirementContext:
-    transcript: Tuple = tuple()
-    areas: Tuple = tuple()
+    transcript: Tuple[CourseInstance, ...] = tuple()
+    areas: Tuple[AreaPointer, ...] = tuple()
     requirements: Dict = field(default_factory=dict)
-    multicountable: List[List] = field(default_factory=list)
-    claims: Dict[str, Set] = field(default_factory=lambda: defaultdict(set))
+    multicountable: List[List[SingleClause]] = field(default_factory=list)
+    claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
 
     _course_lookup_map: Dict = field(init=False)
     _clbid_lookup_map: Dict = field(init=False)
@@ -67,8 +68,7 @@ class RequirementContext:
         self, *,
         course: CourseInstance,
         path: List[str],
-        clause: Union,
-        transcript: List[CourseInstance],
+        clause: Union[Clause, CourseRule],
         allow_claimed: bool = False
     ):
         """
@@ -79,7 +79,7 @@ class RequirementContext:
 
         Otherwise...
 
-        If the claimant is a {course} rule specified with the {including-claimed} option,
+        If the claimant is a {course} rule specified with the {allow_claimed} option,
         the claim is recorded, and succeeds.
 
         If the claimed course matches multiple `multicountable` rulesets,
@@ -102,61 +102,88 @@ class RequirementContext:
         if allow_claimed or isinstance(clause, CourseRule) and clause.allow_claimed:
             return ClaimAttempt(claim)
 
-        potential_conflicts = [cl for cl in self.claims[course.crsid] if cl.crsid == claim.crsid]
+        potential_conflicts: Set[Claim] = set(cl for cl in self.claims[course.crsid] if cl.crsid == claim.crsid)
 
         # allow topics courses to be taken multiple times
         if course.is_topic:
-            conflicts_are_topics = (
+            conflicting_courses = (self.find_course_by_clbid(clm.clbid) for clm in potential_conflicts)
+            all_conflicts_are_topics = all(
                 course.is_topic
-                for course in (self.find_course_by_clbid(clm.clbid) for clm in potential_conflicts)
+                for course in conflicting_courses
                 if course is not None
             )
 
-            if all(conflicts_are_topics):
+            if all_conflicts_are_topics:
                 conflicting_clbids = set(claim.clbid for claim in potential_conflicts)
 
                 if course.clbid not in conflicting_clbids:
                     courses_are_equivalent = (course.crsid == claim.crsid for claim in potential_conflicts)
 
                     if all(courses_are_equivalent):
-                        return ClaimAttempt(claim, conflict_with=set())
+                        return ClaimAttempt(claim, conflict_with=frozenset())
 
-        # If the course that is being claimed has an empty list of claimants,
-        # then the claim succeeds.
-        if not potential_conflicts:
-            # logger.debug(claim)
-            self.claims[course.crsid].add(claim)
-            return ClaimAttempt(claim)
-
-        applicable_rulesets = [
+        # potential rulesets are those which are contain a subset of the clause issuing the claim
+        # IE:
+        # - {attributes: {$eq: x}} is a subset of {attributes: {$in: [x,y,z]}};
+        # - {attributes: {$eq: x}} is a subset of {$or: [{attributes: {$in: [x,y,z]}}]};
+        # - {attributes: {$eq: x}} is a subset of {$and: [{attributes: {$in: [x,y,z]}}]};
+        potential_rulesets = (
             ruleset
             for ruleset in self.multicountable
-            if any(c.applies_to(course) for c in ruleset)
-            and any(c.mc_applies_same(clause) for c in ruleset)
+            if any(c.is_subset(clause) for c in ruleset)
+        )
+
+        # an "applicable ruleset" is any which can apply to the course in question
+        applicable_rulesets = [
+            ruleset
+            for ruleset in potential_rulesets
+            if any(course.apply_clause(c) for c in ruleset)
         ]
 
-        claim_conflicts = set()
+        # next, we see if any of the applicable rulesets have an open claim slot.
+        # IE, with the input set of [{attributes: elective}, {attributes: post1800}],
+        # we would have two "claim slots" for a course – it could be claimed by both
+        # the {attributes: elective} and {attributes: post1800} clauses.
 
-        # If the claimed course matches multiple `multicountable` rulesets,
-        if applicable_rulesets:
+        # for each ruleset
+            # gather the "claiming clauses" from potential_conflicts
+            # exclude any items which are a subset of any of the "claiming clauses"
+
+        # check if any potential_conflicts' claims are subsets of the any rules in the ruleset
+        potential_conflict_claims: Set[Union[Clause, CourseRule]] = set(claim.value for claim in potential_conflicts)
+
+        open_rulesets = []
+        for ruleset in applicable_rulesets:
+            ruleset = [
+                c for c in ruleset
+                if not any(c.is_subset(claim_clause) for claim_clause in potential_conflict_claims)
+            ]
+
+            if ruleset:
+                open_rulesets.append(ruleset)
+
+        for pc in potential_conflicts:
+            logger.debug('potential conflict: %s', pc)
+        for rs in open_rulesets:
+            logger.debug('open ruleset: %s', rs)
+
+        claim_conflicts: Set[Claim] = set()
+
+        if open_rulesets:
             # the first ruleset applicable to both the course and the claimant is selected.
-            ruleset = applicable_rulesets[0]
+            ruleset = open_rulesets[0]
 
-            # If the claimed course matches a `multicountable` ruleset,
-            #   and the claimant is within said `multicountable` ruleset,
-            #   and the claimant's clause has not already been used as a claim on this course,
-            #   then the claim is recorded, and succeeds.
-            for ruleclause in ruleset:
-                for c in potential_conflicts:
-                    if not ruleclause.mc_applies_same(c):
-                        continue
-                    claim_conflicts.add(c)
-        else:
-            # logger.debug('no applicable rulesets')
-            claim_conflicts = potential_conflicts
+            logger.debug('there is an available ruleset: %s', ruleset)
 
-        if claim_conflicts:
-            return ClaimAttempt(claim, conflict_with=claim_conflicts)
-        else:
             self.claims[course.crsid].add(claim)
-            return ClaimAttempt(claim, conflict_with=set())
+            return ClaimAttempt(claim, conflict_with=frozenset())
+
+        else:
+            if applicable_rulesets:
+                logger.debug('there was a ruleset that would apply, but all rules have been used')
+            else:
+                logger.debug('there were no open rulesets that could apply')
+            # need to find the offending ruleset
+            claim_conflicts = set(potential_conflicts)
+
+            return ClaimAttempt(claim, conflict_with=frozenset(claim_conflicts))

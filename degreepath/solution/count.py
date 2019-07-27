@@ -6,7 +6,7 @@ import logging
 from ..result import CountResult, RequirementResult
 from ..solution.given import apply_clause_to_given
 from ..rule.reference import ReferenceRulePlaceholder
-from ..rule.given.rule import PartialFromRule
+from ..rule.query_assertion import QueryAssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class CountSolution:
     count: int
     items: Tuple
-    audit_clause: Optional[PartialFromRule]
+    audit_clause: Optional[QueryAssertionRule]
 
     def to_dict(self):
         return {
@@ -71,7 +71,7 @@ class CountSolution:
                     if item.apply_clause(self.audit_clause.where)
                 ]
 
-            audit_result = self.audit_clause.action.compare_and_resolve_with(value=matched_items, map_func=apply_clause_to_given)
+            audit_result = self.audit_clause.assertion.compare_and_resolve_with(value=matched_items, map_func=apply_clause_to_given)
 
         tuple_results = tuple(results)
 

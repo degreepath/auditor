@@ -108,6 +108,7 @@ def print_result(rule, transcript, indent=0):
             yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
         if rule["status"] in ("skip", "pending"):
+            yield f'{prefix}[skipped]'
             return
 
         mapped_trns = {c.clbid: c for c in transcript}
@@ -130,7 +131,12 @@ def print_result(rule, transcript, indent=0):
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
-        yield f"{prefix} There must be {str_clause(rule['resolved_action'])}"
+        if len(rule['assertions']) == 1:
+            yield f"{prefix} There must be {str_clause(rule['assertions'][0])}"
+        else:
+            yield f"{prefix} There must be:"
+            for a in rule['assertions']:
+                yield f"{prefix}- {str_clause(a)}"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":

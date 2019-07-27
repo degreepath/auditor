@@ -72,7 +72,7 @@ class AreaPointer:
 
             raise TypeError(f"expected to get one of {list(self.__dict__.keys())}; got {clause.key}")
 
-        raise TypeError(f"expected a clause; found {type(clause)}")
+        raise TypeError(f"areapointer: expected a clause; found {type(clause)}")
 
 
 @dataclasses.dataclass(frozen=True, order=True)
@@ -295,6 +295,9 @@ class CourseInstance:
     def course_shorthand(self):
         return self.shorthand
 
+    def course_with_term(self):
+        return f"{self.shorthand}{self.section or ''} {str(self.term.term)[0:4]}-{str(self.term.term)[4]}"
+
     def __str__(self):
         return f"CourseInstance( {self.course()} )"
 
@@ -330,4 +333,4 @@ class CourseInstance:
                 logger.debug("clause/compare[%s]: not found in %s", clause.key, keys)
                 return False
 
-        raise TypeError(f"expected a clause; found {type(clause)}")
+        raise TypeError(f"courseinstance: expected a clause; found {type(clause)}")
