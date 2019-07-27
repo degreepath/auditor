@@ -3,11 +3,11 @@ from typing import Dict, List, Optional, Tuple, Set
 import itertools
 import logging
 
-from ...limit import LimitSet
-from ...clause import Clause, load_clause, SingleClause
-from ...solution.given import FromSolution
-from ...constants import Constants
-from ..query_assertion import QueryAssertionRule
+from ..limit import LimitSet
+from ..clause import Clause, load_clause, SingleClause
+from ..solution.given import FromSolution
+from ..constants import Constants
+from .query_assertion import QueryAssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,7 @@ class FromRule:
             raise ValueError('from:requirements not supported')
 
         else:
-            raise KeyError(f"expected from:\{student\}; got {list(source_data.keys())}")
+            raise KeyError(f"expected from:student; got {list(source_data.keys())}")
 
         return FromRule(
             source=source,
