@@ -4,6 +4,7 @@ import os
 import sys
 import pathlib
 import time
+from datetime import datetime
 
 import yaml
 import dotenv
@@ -127,6 +128,7 @@ def audit(*, student, spec, conn, result_id, area_pointers):
     best_sol = None
     total_count = 0
     times = []
+    start_time = datetime.now()
     start = time.perf_counter()
     iter_start = time.perf_counter()
 
@@ -134,7 +136,7 @@ def audit(*, student, spec, conn, result_id, area_pointers):
         total_count += 1
 
         if total_count % 1000 == 0:
-            update_progress(result_id=result_id, count=total_count, start=start, conn=conn)
+            update_progress(result_id=result_id, count=total_count, start_time=start_time, conn=conn)
 
         result = sol.audit(transcript=transcript, areas=area_pointers)
 
@@ -203,12 +205,12 @@ def update_progress(*, conn, start_time, count, result_id):
         curs.execute("""
             UPDATE result
             SET iterations = %(count)s
-              , duration = cast(now() - %(start)s as interval)
+              , duration = cast(now() - %(start_time)s as interval)
             WHERE id = %(result_id)s
         """, {
             "result_id": result_id,
             "count": count,
-            "start": start_time,
+            "start_time": start_time,
         })
 
         conn.commit()
