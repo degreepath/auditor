@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional, Tuple, Any
+from typing import Optional, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 class RequirementResult:
     name: str
     requirements: Any  # frozendict[str, Requirement]
-    inputs: Tuple[Tuple[str, int], ...]
     message: Optional[str] = None
     result: Optional[Any] = None
     audited_by: Optional[str] = None
@@ -32,7 +31,6 @@ class RequirementResult:
         return RequirementResult(
             name=sol.name,
             requirements=sol.requirements,
-            inputs=sol.inputs,
             message=sol.message,
             audited_by=sol.audited_by,
             contract=sol.contract,
