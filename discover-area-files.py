@@ -33,5 +33,6 @@ def main(files, area_codes=None, root='/home/www/sis/degreepath/areas/'):
             file_path = join(root, catalog, filename + '.yaml')
             yield (abspath(student_file), abspath(file_path))
 
+
 if __name__ == '__main__':
     cli()
