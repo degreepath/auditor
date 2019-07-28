@@ -46,6 +46,8 @@ class Requirement:
             audited_by = "department"
         elif data.get("registrar_audited", False):
             audited_by = "registrar"
+        elif data.get("registrar-audited", False):
+            audited_by = "registrar"
 
         if 'audit' in data:
             raise TypeError('you probably meant to indent that audit: key into the result: key')

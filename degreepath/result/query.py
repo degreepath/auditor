@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Tuple
 from ..clause import ResolvedBaseClause
+from .assertion import AssertionResult
 
 
 @dataclass(frozen=True)
@@ -9,7 +10,7 @@ class QueryResult:
     successful_claims: Tuple
     failed_claims: Tuple
     success: bool
-    resolved_assertions: Tuple[ResolvedBaseClause, ...]
+    resolved_assertions: Tuple[AssertionResult, ...]
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
@@ -23,11 +24,9 @@ class QueryResult:
     def __post_init__(self):
         _ok = self.success is True
         object.__setattr__(self, '_ok', _ok)
-        # self._ok = self.claim_attempt and self.claim_attempt.failed() is False
 
         _rank = len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
         object.__setattr__(self, '_rank', _rank)
-        # self._rank = 1 if self._ok else 0
 
     def to_dict(self):
         return {

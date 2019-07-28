@@ -53,11 +53,11 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
             logger.debug("either lhs=%s or rhs=%s was empty; returning false", len(lhs) == 0, len(rhs) == 0)
             return False
 
-        logger.debug("converting both %s and %s to sets of strings, and running issubset", lhs, rhs)
+        logger.debug("converting both %s and %s to sets of strings, and running intersection", lhs, rhs)
         lhs = set(str(s) for s in lhs)
         rhs = set(str(s) for s in rhs)
-        logger.debug("lhs=%s; rhs=%s; lhs.issubset(rhs)=%s; rhs.issubset(lhs)=%s", lhs, rhs, lhs.issubset(rhs), rhs.issubset(lhs))
-        return lhs.issubset(rhs) or rhs.issubset(lhs)
+        logger.debug("lhs=%s; rhs=%s; intersection=%s", lhs, rhs, lhs.intersection(rhs))
+        return bool(lhs.intersection(rhs))
 
     if isinstance(lhs, tuple) or isinstance(rhs, tuple):
         if op is Operator.EqualTo:

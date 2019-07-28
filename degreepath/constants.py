@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 from typing import Any
+import logging
+
+logger = logging.getLogger(__name__)
 
 VALID_CLAUSE_CONSTANTS = [
     '$senior-year',
@@ -22,6 +25,18 @@ class Constants:
 
         if v == '$matriculation-year':
             return self.matriculation_year
+
+        if v == '$senior-year':
+            logger.critical("TODO: support constant value %s", v)
+            return 0
+
+        if v == '$junior-year':
+            logger.critical("TODO: support constant value %s", v)
+            return 0
+
+        if v == '$major-declaration':
+            logger.critical("TODO: support constant value %s", v)
+            return 0
 
         raise Exception('value constants must be one of {}; got {} ({})'.format(VALID_CLAUSE_CONSTANTS, v, type(v)))
 

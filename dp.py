@@ -10,7 +10,7 @@ import yaml
 
 from degreepath import load_course, Constants, AreaOfStudy, summarize, AreaPointer, pretty_ms
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logformat = "%(levelname)s %(name)s %(message)s"
 
 

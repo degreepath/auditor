@@ -131,11 +131,12 @@ def print_result(rule, transcript, indent=0):
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
         if len(rule['assertions']) == 1:
-            yield f"{prefix} There must be {str_clause(rule['assertions'][0])}"
+            a = rule['assertions'][0]
+            yield f"{prefix} There must be {str_clause(a['assertion'])}"
         else:
             yield f"{prefix} There must be:"
             for a in rule['assertions']:
-                yield f"{prefix}- {str_clause(a)}"
+                yield f"{prefix}- " + (f"where {str_clause(a['where'])}, " if a['where'] else '') + f"{str_clause(a['assertion'])}"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":
@@ -147,7 +148,7 @@ def print_result(rule, transcript, indent=0):
 
         yield f"{prefix}{emoji} Requirement({rule['name']})"
         if rule["audited_by"] is not None:
-            yield f"{prefix}    Audited by: {rule['audited_by']}; assuming success"
+            yield f"{prefix}    Audited by: {rule['audited_by']}"
             return
         yield from print_result(rule["result"], transcript, indent=indent + 4)
 

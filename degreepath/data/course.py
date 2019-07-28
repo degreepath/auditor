@@ -106,6 +106,8 @@ class CourseInstance:
             return clause.compare(self.attributes)
         elif clause.key == 'course':
             return clause.compare(self._identity) or clause.compare(self._shorthand)
+        elif clause.key == 'semester':
+            return clause.compare(self.semester())
 
         # TODO: replace this with explicit key accesses
         if clause.key in self.__dict__:

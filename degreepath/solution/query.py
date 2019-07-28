@@ -5,6 +5,7 @@ import decimal
 
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
+from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer
 from ..clause import SingleClause, Operator, ResolvedClause
 
@@ -62,15 +63,19 @@ class QuerySolution:
 
         for item in self.output:
             if isinstance(item, CourseInstance):
-                clause = self.rule.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
-                claim = ctx.make_claim(course=item, path=path, clause=clause, allow_claimed=self.rule.allow_claimed)
+                if self.rule.attempt_claims:
+                    clause = self.rule.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
+                    claim = ctx.make_claim(course=item, path=path, clause=clause, allow_claimed=self.rule.allow_claimed)
 
-                if claim.failed():
-                    logger.debug('%s course "%s" exists, but has already been claimed by %s', path, item.clbid, claim.conflict_with)
-                    failed_claims.append(claim)
+                    if claim.failed():
+                        logger.debug('%s course "%s" exists, but has already been claimed by %s', path, item.clbid, claim.conflict_with)
+                        failed_claims.append(claim)
+                    else:
+                        logger.debug('%s course "%s" exists, and is available', path, item.clbid)
+                        successful_claims.append(claim)
+                        claimed_items.append(item)
                 else:
                     logger.debug('%s course "%s" exists, and is available', path, item.clbid)
-                    successful_claims.append(claim)
                     claimed_items.append(item)
 
             elif isinstance(item, AreaPointer):
@@ -82,7 +87,7 @@ class QuerySolution:
 
         resolved_assertions = tuple(self.apply_assertion(a, claimed_items) for a in self.rule.assertions)
 
-        resolved_result = all(a.result is True for a in resolved_assertions)
+        resolved_result = all(a.assertion.result is True for a in resolved_assertions)
 
         if resolved_result:
             logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
@@ -97,7 +102,7 @@ class QuerySolution:
             success=resolved_result,
         )
 
-    def apply_assertion(self, clause: AssertionRule, output: Sequence) -> ResolvedClause:
+    def apply_assertion(self, clause: AssertionRule, output: Sequence) -> AssertionResult:
         if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
@@ -105,7 +110,8 @@ class QuerySolution:
         if clause.where is not None:
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
 
-        return clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
+        result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
+        return AssertionResult(where=clause.where, assertion=result)
 
 
 def apply_clause_to_query_rule(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:
@@ -169,7 +175,7 @@ def count_items(data, kind):
 def sum_items(data, kind):
     if kind == 'grades':
         assert all(isinstance(x, CourseInstance) for x in data)
-        items = tuple(c.grade for c in data)
+        items = tuple(c.grade for c in data if c.in_gpa)
         return (sum(items), items)
 
     if kind == 'credits':
@@ -183,7 +189,7 @@ def sum_items(data, kind):
 def avg_items(data, kind):
     if kind == 'grades':
         assert all(isinstance(x, CourseInstance) for x in data)
-        items = tuple(c.grade for c in data)
+        items = tuple(c.grade_points for c in data)
         return (avg_or_0(items), items)
 
     if kind == 'credits':

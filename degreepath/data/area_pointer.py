@@ -49,7 +49,7 @@ class AreaPointer:
                 return clause.compare(self.code)
             elif clause.key == 'status':
                 return clause.compare(self.status.name)
-            elif clause.key == 'kind' or clause.key == 'type':
+            elif clause.key in ('kind', 'type'):
                 return clause.compare(self.kind.name)
             elif clause.key == 'name':
                 return clause.compare(self.name)

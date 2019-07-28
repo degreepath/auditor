@@ -22,6 +22,7 @@ class QueryRule:
     limit: LimitSet
     where: Optional[Clause]
     allow_claimed: bool
+    attempt_claims: bool
 
     def to_dict(self):
         return {
@@ -65,6 +66,8 @@ class QueryRule:
         if 'limits' in data:
             raise ValueError(f'the key is "limit", not "limits": {data}')
 
+        attempt_claims = data.get('claim', True)
+
         assertions: List[AssertionRule] = []
         if "assert" in data:
             assertions = [AssertionRule.load({'assert': data["assert"]}, c)]
@@ -101,6 +104,7 @@ class QueryRule:
             limit=limit,
             where=where,
             allow_claimed=allow_claimed,
+            attempt_claims=attempt_claims,
         )
 
     def validate(self, *, ctx):
@@ -161,6 +165,10 @@ class QueryRule:
         for item_set in self.limit.limited_transcripts(data):
             if len(self.assertions) == 1 and isinstance(self.assertions[0].assertion, SingleClause):
                 assertion = self.assertions[0].assertion
+                if not assertion.key.startswith('count('):
+                    did_iter = True
+                    yield QuerySolution(output=item_set, rule=self)
+                    continue
                 logger.debug("using single assertion mode with %s", assertion)
                 for n in assertion.input_size_range(maximum=len(item_set)):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
