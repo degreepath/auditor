@@ -58,14 +58,12 @@ def print_result(rule, transcript, indent=0):
                 status = "!!!!!!! "
             elif course.status == CourseStatus.Ok:
                 status = "💚 [ ok]"
-            elif course.status == CourseStatus.DidNotComplete:
+            elif course.status == CourseStatus.Incomplete:
                 status = "⛔️ [dnf]"
             elif course.status == CourseStatus.InProgress:
                 status = "💚 [ ip]"
-            elif course.status == CourseStatus.Repeated:
+            elif course.status == CourseStatus.Repeat:
                 status = "💚 [rep]"
-            elif course.status == CourseStatus.NotTaken:
-                status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
 
@@ -119,7 +117,7 @@ def print_result(rule, transcript, indent=0):
             for clm in rule["claims"]:
                 course = mapped_trns.get(clm['claim']["clbid"], None)
                 if course:
-                    yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid})"
+                    yield f"{prefix}   {course.course_shorthand()} \"{course.name}\" ({course.clbid})"
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
@@ -128,7 +126,7 @@ def print_result(rule, transcript, indent=0):
             for clm in rule["failures"]:
                 course = mapped_trns.get(clm['claim']["clbid"], None)
                 if course:
-                    yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid}) [{[x['claimant_path'] for x in clm['conflict_with']]}]"
+                    yield f"{prefix}   {course.course_shorthand()} \"{course.name}\" ({course.clbid}) [{[x['claimant_path'] for x in clm['conflict_with']]}]"
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
