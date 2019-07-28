@@ -198,16 +198,16 @@ def record(*, result, times, conn, result_id, elapsed):
         conn.commit()
 
 
-def update_progress(*, conn, start_time, total_count, result_id):
+def update_progress(*, conn, start_time, count, result_id):
     with conn.cursor() as curs:
         curs.execute("""
             UPDATE result
-            SET iterations = %(total_count)s
+            SET iterations = %(count)s
               , duration = cast(now() - %(start)s as interval)
             WHERE id = %(result_id)s
         """, {
             "result_id": result_id,
-            "total_count": total_count,
+            "count": count,
             "start": start_time,
         })
 
