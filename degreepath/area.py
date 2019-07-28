@@ -27,10 +27,12 @@ class AreaOfStudy:
 
     def to_dict(self):
         return {
+            "type": "area",
             "limit": [l.to_dict() for l in self.limit],
             "result": self.result.to_dict(),
             "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "attributes": self.attributes,
+            "min_gpa": str(self.min_gpa) if self.min_gpa is not None else None,
         }
 
     @staticmethod
