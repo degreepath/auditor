@@ -130,10 +130,16 @@ class SingleClause:
     at_most: bool = False
 
     def to_dict(self):
+        expected = self.expected
+        if isinstance(self.expected, GradeType):
+            expected = self.expected.value
+        if isinstance(self.expected, decimal.Decimal):
+            expected = str(self.expected)
+
         return {
             "type": "single-clause",
             "key": self.key,
-            "expected": self.expected,
+            "expected": expected,
             "expected_verbatim": self.expected_verbatim,
             "operator": self.operator.name,
         }

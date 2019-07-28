@@ -94,12 +94,14 @@ class CourseInstance:
         raise TypeError(f"courseinstance: expected a clause; found {type(clause)}")
 
     def apply_single_clause(self, clause: SingleClause):
+        logger.debug("clause/compare/key=%s", clause.key)
+
         if clause.key == 'clbid':
             return clause.compare(self.clbid)
         elif clause.key == 'crsid':
             return clause.compare(self.crsid)
         elif clause.key == 'grade':
-            return clause.compare(self.grade)
+            return clause.compare(self.grade_points)
         elif clause.key == 'level':
             return clause.compare(self.level)
         elif clause.key == 'attributes':
@@ -111,7 +113,6 @@ class CourseInstance:
 
         # TODO: replace this with explicit key accesses
         if clause.key in self.__dict__:
-            logger.debug("clause/compare/key=%s", clause.key)
             return clause.compare(self.__dict__[clause.key])
         else:
             keys = list(self.__dict__.keys())
