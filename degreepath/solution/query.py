@@ -131,7 +131,7 @@ def apply_clause_to_query_rule(*, value: Any, clause: SingleClause) -> Tuple[Any
     raise Exception(f'expected a valid clause key; got {clause.key}')
 
 
-def count_items(data, kind):
+def count_items(data, kind):  # noqa: C901
     if kind == 'courses':
         assert all(isinstance(x, CourseInstance) for x in data)
         items = frozenset(c.clbid for c in data)
