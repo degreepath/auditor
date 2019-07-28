@@ -1,13 +1,11 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, TYPE_CHECKING
-import re
+from typing import Dict, List, Tuple, Optional
 import itertools
 import logging
-from functools import reduce
 
 from ..constants import Constants
-from ..solution import CountSolution
-from .course import CourseRule
+from ..solution.count import CountSolution
+from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +15,7 @@ class CountRule:
     count: int
     items: Tuple
     at_most: bool
+    audit_clause: Optional[AssertionRule]
 
     def to_dict(self):
         return {
@@ -24,6 +23,7 @@ class CountRule:
             "state": self.state(),
             "count": self.count,
             "items": [item.to_dict() for item in self.items],
+            "audit": self.audit_clause.to_dict() if self.audit_clause is not None else None,
             "ok": self.ok(),
             "status": "skip",
             "claims": self.claims(),
@@ -57,7 +57,7 @@ class CountRule:
 
     @staticmethod
     def load(data: Dict, c: Constants):
-        from . import load_rule
+        from ..load_rule import load_rule
 
         if "all" in data:
             items = data["all"]
@@ -86,12 +86,25 @@ class CountRule:
 
         at_most = data.get('at_most', False)
 
-        return CountRule(count=count, items=tuple(load_rule(r, c) for r in items), at_most=at_most)
+        audit = data.get('audit', None)
+        if audit is not None:
+            audit = AssertionRule.load(audit, c=c)
+
+        return CountRule(
+            count=count,
+            items=tuple(load_rule(r, c) for r in items),
+            at_most=at_most,
+            audit_clause=audit,
+        )
 
     def validate(self, *, ctx):
         assert isinstance(self.count, int), f"{self.count} should be an integer"
-        assert self.count >= 0
-        assert self.count <= len(self.items)
+
+        lo = self.count
+        assert lo >= 0
+
+        hi = self.count + 1 if self.at_most is True else len(self.items) + 1
+        assert lo < hi
 
         for rule in self.items:
             rule.validate(ctx=ctx)
@@ -100,129 +113,35 @@ class CountRule:
         path = [*path, f".of"]
         logger.debug("%s", path)
 
-        did_iter = False
-
         lo = self.count
-        if self.at_most:
-            hi = self.count + 1
-        else:
-            hi = len(self.items) + 1
-
-        potentials = [
-            r
-            for r in self.items
-            if (not isinstance(r, CourseRule)) or ctx.find_course(r.course)
-        ]
-        pot_hi = len(potentials) + 1
-
-        assert lo < hi
-
-        size = len(self.items)
+        hi = len(self.items) + 1 if self.at_most is False else self.count + 1
 
         all_children = set(self.items)
-
         item_indices = {r: self.items.index(r) for r in self.items}
 
+        did_yield = False
         for r in range(lo, hi):
-            logger.debug("%s %s..<%s, r=%s, max=%s", path, lo, hi, r, len(potentials))
+            logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
 
             for combo_i, combo in enumerate(itertools.combinations(self.items, r)):
-                selected_children = set(combo)
-
-                other_children = sorted(
-                    list(all_children.difference(selected_children)),
-                    key=lambda r: item_indices[r],
-                )
-
-                selected_original_indices = {}
-                last_missing_idx = 0
-                for idx, item in enumerate(self.items):
-                    if item not in other_children:
-                        selected_original_indices[item] = idx
-
                 logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", path, lo, hi, r, combo_i)
-                did_iter = True
+
+                selected_children = set(combo)
+                other_children = sorted(all_children.difference(selected_children), key=lambda r: item_indices[r])
 
                 solutions = [rule.solutions(ctx=ctx, path=path) for rule in combo]
 
-                # print("combo", combo)
-
                 for solset_i, solutionset in enumerate(itertools.product(*solutions)):
-                    if solset_i % 10_000 == 0:
+                    if solset_i > 0 and solset_i % 10_000 == 0:
                         logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", path, lo, hi, r, combo_i, solset_i)
 
-                    # print("solset", solutionset)
+                    did_yield = True
 
-                    # todo: clean up this block
-                    req_ident_map: Dict[int, int] = {}
-                    do_not_yield = False
+                    solset = solutionset + tuple(other_children)
 
-                    cleaned = []
+                    yield CountSolution.from_rule(self, items=solset)
 
-                    for rulesol in solutionset:
-                        if hasattr(rulesol, 'inputs'):
-                            # print(rulesol.inputs)
-
-                            for req_ident, req_idx in rulesol.inputs:
-                                req_ident_map.setdefault(req_ident, req_idx)
-
-                                if req_ident_map[req_ident] != req_idx:
-                                    do_not_yield = True
-                                    break
-                                else:
-                                    solution = rulesol
-
-                        # # if isinstance(rulesol, RequirementSolution):
-
-                        # if isinstance(rulesol, tuple):
-                        #     print(ppretty(rulesol))
-                        #     req_ident, req_idx = rulesol[0]
-
-                        #     req_ident_map.setdefault(req_ident, req_idx)
-
-                        #     if req_ident_map[req_ident] != req_idx:
-                        #         do_not_yield = True
-                        #         break
-
-                        #     solution = rulesol[1]
-                        else:
-                            solution = rulesol
-
-                        cleaned.append(solution)
-
-                    if do_not_yield:
-                        continue
-                    # end clean-up-this-block
-
-                    solset = cleaned + other_children
-
-                    # ordered_solset = sorted(
-                    #     solset,
-                    #     key=lambda r: item_indices[r]
-                    #     # if r in item_indices
-                    #     # else selected_original_indices[r],
-                    # )
-
-                    tuple_solset = tuple(solset)
-
-                    yield CountSolution.from_rule(self, items=tuple_solset)
-
-        if not did_iter:
+        if not did_yield:
             logger.debug("%s did not iterate", path)
             # ensure that we always yield something
             yield CountSolution.from_rule(self, items=self.items)
-
-    def estimate(self, *, ctx):
-        lo = self.count
-        hi = len(self.items) + 1
-
-        estimates = [rule.estimate(ctx=ctx) for rule in self.items]
-        indices = [n for n, _ in enumerate(self.items)]
-
-        count = 0
-        for r in range(lo, hi):
-            for combo in itertools.combinations(indices, r):
-                inner = (estimates[i] for i in combo)
-                count += reduce(lambda x, y: x * y, inner)
-
-        return count

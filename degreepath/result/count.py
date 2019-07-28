@@ -1,11 +1,14 @@
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Tuple, Optional
+from ..clause import ResolvedClause
+from ..lib import grade_point_average
 
 
 @dataclass(frozen=True)
 class CountResult:
     count: int
     items: Tuple
+    audit_result: Optional[ResolvedClause]
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
@@ -16,7 +19,9 @@ class CountResult:
     #     self._rank = sum(r.rank() for r in self.items)
 
     def __post_init__(self):
-        _ok = sum(1 if r.ok() else 0 for r in self.items) >= self.count
+        passed_count = sum(1 if r.ok() else 0 for r in self.items)
+        audit_passed = self.audit_result is None or self.audit_result.result is True
+        _ok = passed_count >= self.count and audit_passed
         object.__setattr__(self, '_ok', _ok)
 
         _rank = sum(r.rank() for r in self.items)
@@ -27,6 +32,7 @@ class CountResult:
             "type": "count",
             "state": self.state(),
             "count": self.count,
+            "audit": self.audit_result.to_dict() if self.audit_result is not None else None,
             "items": [x.to_dict() for x in self.items],
             "status": "pass" if self.ok() else "problem",
             "rank": self.rank(),
@@ -39,6 +45,9 @@ class CountResult:
 
     def claims(self):
         return [claim for item in self.items for claim in item.claims()]
+
+    def gpa(self):
+        return grade_point_average(self.claims())
 
     def ok(self) -> bool:
         return self._ok

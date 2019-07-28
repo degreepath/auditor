@@ -1,20 +1,17 @@
 import json
 import sys
 import time
-import datetime
 import argparse
 import logging
 import coloredlogs
 import traceback
 
 import yaml
-from ppretty import ppretty
 
-from degreepath import CourseInstance, Constants, AreaOfStudy, summarize, AreaPointer
-from degreepath.ms import pretty_ms
+from degreepath import load_course, Constants, AreaOfStudy, summarize, AreaPointer, pretty_ms
 
-logger = logging.getLogger()
-logformat = "%(levelname)s %(name)s\n\t%(message)s"
+logger = logging.getLogger(__name__)
+logformat = "%(levelname)s %(name)s %(message)s"
 
 
 def main():
@@ -24,17 +21,16 @@ def main():
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info"))
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--raw", action='store_true')
+    parser.add_argument("--print-every", action='store_true')
+    parser.add_argument("--color", action='store_true')
     args = parser.parse_args()
 
     if args.loglevel == "warn":
-        logger.setLevel(logging.WARNING)
-        coloredlogs.install(level="WARNING", logger=logger, fmt=logformat)
+        coloredlogs.install(level="WARNING", fmt=logformat)
     elif args.loglevel == "debug":
-        logger.setLevel(logging.DEBUG)
-        coloredlogs.install(level="DEBUG", logger=logger, fmt=logformat)
+        coloredlogs.install(level="DEBUG", fmt=logformat)
     elif args.loglevel == "info":
-        logger.setLevel(logging.INFO)
-        coloredlogs.install(level="INFO", logger=logger, fmt=logformat)
+        coloredlogs.install(level="INFO", fmt=logformat)
 
     if not args.student_files:
         print("no students to process", file=sys.stderr)
@@ -45,13 +41,7 @@ def main():
 
         area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
 
-        transcript = []
-        for row in student["courses"]:
-            instance = CourseInstance.from_dict(**row)
-            if instance:
-                transcript.append(instance)
-            else:
-                print("error loading course into transcript", row, file=sys.stderr)
+        transcript = [load_course(row) for row in student["courses"]]
 
         for area_file in args.area_files:
             with open(area_file, "r", encoding="utf-8") as infile:
@@ -67,6 +57,7 @@ def main():
                     transcript=transcript,
                     constants=constants,
                     area_pointers=area_pointers,
+                    args=args,
                 )
 
                 if args.json:
@@ -75,7 +66,7 @@ def main():
                     else:
                         print(json.dumps(result))
                 elif args.raw:
-                    print(ppretty(result))
+                    print(result)
                 else:
                     print()
                     if result:
@@ -83,24 +74,25 @@ def main():
                     else:
                         print(result)
 
-            except Exception as ex:
+            except Exception:
                 traceback.print_exc()
                 print(f"failed: #{student['stnum']}", file=sys.stderr)
 
                 break
 
 
-def audit(*, spec, transcript, constants, area_pointers):
+def audit(*, spec, transcript, constants, area_pointers, args):
     area = AreaOfStudy.load(specification=spec, c=constants)
     area.validate()
 
     this_transcript = []
     attributes_to_attach = area.attributes.get("courses", {})
     for c in transcript:
-        attrs_by_course = attributes_to_attach.get(c.course(), [])
-        attrs_by_shorthand = attributes_to_attach.get(c.course_shorthand(), [])
+        attrs_by_course = set(attributes_to_attach.get(c.course(), []))
+        attrs_by_shorthand = set(attributes_to_attach.get(c.course_shorthand(), []))
+        attrs_by_term = set(attributes_to_attach.get(c.course_with_term(), []))
 
-        c = c.attach_attrs(attributes=attrs_by_course or attrs_by_shorthand)
+        c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
         this_transcript.append(c)
 
     this_transcript = tuple(this_transcript)
@@ -109,7 +101,6 @@ def audit(*, spec, transcript, constants, area_pointers):
     total_count = 0
     iterations = []
     start = time.perf_counter()
-    start_time = datetime.datetime.now()
     iter_start = time.perf_counter()
 
     for sol in area.solutions(transcript=this_transcript, areas=area_pointers):
@@ -122,6 +113,9 @@ def audit(*, spec, transcript, constants, area_pointers):
             print(f"... {total_count:,} at {avg_iter_time} per", file=sys.stderr)
 
         result = sol.audit(transcript=this_transcript, areas=area_pointers)
+
+        if args.print_every:
+            print("".join(summarize(result=result.to_dict(), count=total_count, elapsed='', transcript=this_transcript, iterations=[])))
 
         if best_sol is None:
             best_sol = result
@@ -139,8 +133,6 @@ def audit(*, spec, transcript, constants, area_pointers):
         iterations.append(iter_end - iter_start)
 
         iter_start = time.perf_counter()
-
-        # sys.exit(0)
 
     if not iterations:
         print("no audits completed", file=sys.stderr)

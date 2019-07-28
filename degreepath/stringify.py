@@ -1,6 +1,7 @@
-from .clause import Operator, str_clause
+# flake8: noqa
+
+from .clause import str_clause
 from .data import CourseStatus
-from .rule import str_assertion
 from .ms import pretty_ms
 
 
@@ -57,14 +58,12 @@ def print_result(rule, transcript, indent=0):
                 status = "!!!!!!! "
             elif course.status == CourseStatus.Ok:
                 status = "💚 [ ok]"
-            elif course.status == CourseStatus.DidNotComplete:
+            elif course.status == CourseStatus.Incomplete:
                 status = "⛔️ [dnf]"
             elif course.status == CourseStatus.InProgress:
                 status = "💚 [ ip]"
-            elif course.status == CourseStatus.Repeated:
+            elif course.status == CourseStatus.Repeat:
                 status = "💚 [rep]"
-            elif course.status == CourseStatus.NotTaken:
-                status = "🌀      "
 
         yield f"{prefix}{status} {rule['course']}"
 
@@ -107,6 +106,10 @@ def print_result(rule, transcript, indent=0):
         if rule['where'] is not None:
             yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
+        if rule["status"] in ("skip", "pending"):
+            yield f'{prefix}[skipped]'
+            return
+
         mapped_trns = {c.clbid: c for c in transcript}
 
         if rule["claims"]:
@@ -114,7 +117,7 @@ def print_result(rule, transcript, indent=0):
             for clm in rule["claims"]:
                 course = mapped_trns.get(clm['claim']["clbid"], None)
                 if course:
-                    yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid})"
+                    yield f"{prefix}   {course.course_shorthand()} \"{course.name}\" ({course.clbid})"
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
@@ -123,11 +126,17 @@ def print_result(rule, transcript, indent=0):
             for clm in rule["failures"]:
                 course = mapped_trns.get(clm['claim']["clbid"], None)
                 if course:
-                    yield f"{prefix}   {course.shorthand} \"{course.name}\" ({course.clbid}) [{[x['claimant_path'] for x in clm['conflict_with']]}]"
+                    yield f"{prefix}   {course.course_shorthand()} \"{course.name}\" ({course.clbid}) [{[x['claimant_path'] for x in clm['conflict_with']]}]"
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
-        yield f"{prefix} There must be {str_clause(rule['resolved_action'])}"
+        if len(rule['assertions']) == 1:
+            a = rule['assertions'][0]
+            yield f"{prefix} There must be {str_clause(a['assertion'])}"
+        else:
+            yield f"{prefix} There must be:"
+            for a in rule['assertions']:
+                yield f"{prefix}- " + (f"where {str_clause(a['where'])}, " if a['where'] else '') + f"{str_clause(a['assertion'])}"
 
     elif rule_type == "requirement":
         if rule["status"] == "pass":
@@ -139,7 +148,7 @@ def print_result(rule, transcript, indent=0):
 
         yield f"{prefix}{emoji} Requirement({rule['name']})"
         if rule["audited_by"] is not None:
-            yield f"{prefix}    Audited by: {rule['audited_by']}; assuming success"
+            yield f"{prefix}    Audited by: {rule['audited_by']}"
             return
         yield from print_result(rule["result"], transcript, indent=indent + 4)
 

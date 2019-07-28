@@ -1,4 +1,5 @@
-from degreepath import *
+from degreepath.area import AreaOfStudy
+from degreepath.constants import Constants
 import pytest
 import io
 import yaml

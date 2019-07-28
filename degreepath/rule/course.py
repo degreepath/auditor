@@ -1,11 +1,13 @@
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional
+from typing import Dict, List, Optional
 import re
-import itertools
+from decimal import Decimal
 import logging
 
 from ..constants import Constants
-from ..solution import CourseSolution
+from ..lib import str_to_grade_points
+from ..operator import Operator
+from ..solution.course import CourseSolution
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +16,7 @@ logger = logging.getLogger(__name__)
 class CourseRule:
     course: str
     hidden: bool
-    grade: Optional[str]
+    grade: Optional[Decimal]
     allow_claimed: bool
 
     def to_dict(self):
@@ -53,7 +55,7 @@ class CourseRule:
         return CourseRule(
             course=data["course"],
             hidden=data.get("hidden", False),
-            grade=data.get("grade", None),
+            grade=str_to_grade_points(data['grade']) if 'grade' in data else None,
             allow_claimed=data.get("including claimed", False),
         )
 
@@ -72,14 +74,13 @@ class CourseRule:
     def estimate(self, *, ctx):
         return 1
 
-    def mc_applies_same(self, other) -> bool:
-        """Checks if this clause applies to the same items as the other clause,
-        when used as part of a multicountable ruleset."""
-
-        if not isinstance(other, CourseRule):
+    def is_equivalent_to_clause(self, clause) -> bool:
+        if clause.key != 'course':
             return False
 
-        return self.course == other.course
-
-    def applies_to(self, other) -> bool:
-        return other.shorthand == self.course or other.identity == self.course
+        if clause.operator is Operator.EqualTo:
+            return self.course == clause.expected
+        elif clause.operator is Operator.In:
+            return self.course in clause.expected
+        else:
+            return False

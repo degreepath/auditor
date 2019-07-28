@@ -1,15 +1,16 @@
 from dataclasses import dataclass, field
-from typing import List, TYPE_CHECKING, Any
+from typing import Any, Tuple
 from ..clause import ResolvedBaseClause
+from .assertion import AssertionResult
 
 
 @dataclass(frozen=True)
-class FromResult:
+class QueryResult:
     rule: Any
-    successful_claims: List
-    failed_claims: List
+    successful_claims: Tuple
+    failed_claims: Tuple
     success: bool
-    resolved_assertion: ResolvedBaseClause
+    resolved_assertions: Tuple[AssertionResult, ...]
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
@@ -21,13 +22,11 @@ class FromResult:
     #     self._rank = len(self.successful_claims) + len(self.failed_claims)
 
     def __post_init__(self):
-        _ok = self.success == True
+        _ok = self.success is True
         object.__setattr__(self, '_ok', _ok)
-        # self._ok = self.claim_attempt and self.claim_attempt.failed() is False
 
         _rank = len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
         object.__setattr__(self, '_rank', _rank)
-        # self._rank = 1 if self._ok else 0
 
     def to_dict(self):
         return {
@@ -38,7 +37,7 @@ class FromResult:
             "rank": self.rank(),
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.failed_claims],
-            "resolved_action": self.resolved_assertion.to_dict(),
+            "assertions": [a.to_dict() for a in self.resolved_assertions],
         }
 
     def claims(self):

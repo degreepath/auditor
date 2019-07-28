@@ -1,12 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, Union, List, Optional, TYPE_CHECKING
-import re
-import itertools
+from typing import Dict, List
 import logging
 
 from ..constants import Constants
-from ..requirement import RequirementState, RequirementSolution
-from ..solution import CourseSolution
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -48,38 +46,15 @@ class ReferenceRule:
     def validate(self, *, ctx):
         if self.name not in ctx.requirements:
             reqs = ", ".join(ctx.requirements.keys())
-            raise AssertionError(
-                f"expected a requirement named '{self.name}', but did not find one [options: {reqs}]"
-            )
+            raise AssertionError(f"expected a requirement named '{self.name}', but did not find one [options: {reqs}]")
 
         ctx.requirements[self.name].validate(ctx=ctx)
 
-    def _init(self, *, ctx, path):
-        requirement = ctx.requirements[self.name]
-
-        state = ctx.requirement_cache.get(requirement, None)
-
-        if state is None:
-            state = RequirementState(iterable=requirement.solutions(ctx=ctx, path=path))
-            ctx.requirement_cache[requirement] = state
-
-        return state
-
-    def estimate(self, *, ctx):
-        return 0
-
-        requirement = ctx.requirements[self.name]
-
-        state = self._init(ctx=ctx, path=[])
-
-        return state.estimate(ctx=ctx)
-
     def solutions(self, *, ctx, path: List[str]):
+        logger.debug('%s reference-rule name=%s', path, self.name)
         requirement = ctx.requirements[self.name]
 
-        state = self._init(ctx=ctx, path=path)
-        # print("hi")
-        # ident = hash(requirement.name)
-        # ident = requirement.name
+        yield from requirement.solutions(ctx=ctx, path=path)
 
-        yield from state.iter_solutions()
+    def matched(self, *, ctx):
+        return []

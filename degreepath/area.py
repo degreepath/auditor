@@ -1,13 +1,14 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any, Tuple, Union
+from typing import Dict, List, Any, Tuple
 import logging
 
-from .rule import Rule, load_rule, CourseRule
+from .clause import SingleClause
+from .constants import Constants
+from .context import RequirementContext
 from .data import CourseInstance, AreaPointer
 from .limit import Limit
-from .clause import SingleClause, Clause
-from .requirement import RequirementContext, Requirement
-from .constants import Constants
+from .load_rule import Rule, load_rule
+from .rule.requirement import Requirement
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ class AreaOfStudy:
             clauses = []
             for clause in ruleset:
                 if "course" in clause:
-                    item = CourseRule.load(clause, c)
+                    item = SingleClause.load('course', clause['course'], c)
                 elif "attributes" in clause:
                     item = SingleClause.load("attributes", clause["attributes"], c)
                 else:
@@ -113,7 +114,7 @@ class AreaSolution:
 
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
-        logger.debug("%s auditing area.result", path)
+        logger.debug("auditing area solution: %s", self.solution)
 
         ctx = RequirementContext(
             transcript=transcript,

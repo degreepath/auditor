@@ -1,6 +1,4 @@
 import argparse
-import datetime
-import glob
 import json
 import os
 import sys
@@ -13,7 +11,7 @@ import psycopg2
 import psycopg2.extras
 import sentry_sdk
 
-from degreepath import CourseInstance, AreaOfStudy, Constants
+from degreepath import load_course, AreaOfStudy, Constants
 from degreepath.ms import pretty_ms
 
 dotenv.load_dotenv(verbose=True)
@@ -70,9 +68,7 @@ def main(area_file, student_file):
                     VALUES (%(student_id)s, %(error)s, false, %(code)s, %(catalog)s)
                 """, {
                     "student_id": student["stnum"],
-                    "error": {
-                        "error": f"could not find the area specification file for {area_code} {area_catalog} at {area_file}",
-                    },
+                    "error": {"error": f"could not find the area specification file for {area_code} {area_catalog} at {area_file}"},
                     "code": area_code,
                     "catalog": area_catalog,
                 })
@@ -89,123 +85,129 @@ def main(area_file, student_file):
         with sentry_sdk.configure_scope() as scope:
             scope.set_tag('result_id', result_id)
 
-        #####
+        result_info = audit(student=student, spec=area, conn=conn, result_id=result_id)
+        record(**result_info, conn=conn)
 
-        constants = Constants(matriculation_year=student['matriculation'])
-        area = AreaOfStudy.load(specification=area, c=constants)
-        area.validate()
-
-        attributes_to_attach = area.attributes.get("courses", {})
-        transcript = []
-        for record in student["courses"]:
-            c = CourseInstance.from_dict(**record)
-
-            if c is None:
-                continue
-
-            attrs_by_course = attributes_to_attach.get(c.course(), [])
-            attrs_by_shorthand = attributes_to_attach.get(c.course_shorthand(), [])
-
-            c = c.attach_attrs(attributes=attrs_by_course or attrs_by_shorthand)
-            transcript.append(c)
-
-        transcript = tuple(transcript)
-
-        #####
-
-        best_sol = None
-        total_count = 0
-        times = []
-        start = time.perf_counter()
-        start_time = datetime.datetime.now()
-        iter_start = time.perf_counter()
-
-        for sol in area.solutions(transcript=transcript):
-            total_count += 1
-
-            if total_count % 1000 == 0:
-                with conn.cursor() as curs:
-                    curs.execute("""
-                        UPDATE result
-                        SET iterations = %(total_count)s
-                          , duration = cast(now() - %(start)s as interval)
-                        WHERE id = %(result_id)s
-                    """, {"result_id": result_id, "total_count": total_count, "start": start_time})
-
-                    conn.commit()
-
-            result = sol.audit(transcript=transcript)
-
-            if best_sol is None:
-                best_sol = result
-
-            if result.rank() > best_sol.rank():
-                best_sol = result
-
-            iter_end = time.perf_counter()
-            times.append(iter_end - iter_start)
-
-            if result.ok():
-                best_sol = result
-                break
-
-            iter_start = time.perf_counter()
-
-        end = time.perf_counter()
-        elapsed = pretty_ms((end - start) * 1000)
-
-        #####
-
-        result = best_sol.to_dict()
-
-        avg_iter_s = sum(times) / max(len(times), 1)
-        avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
-
-        claims = result["claims"]
-
-        rank = result["rank"]
-        ok = result["ok"]
-
-        claims = []
-
-        with conn.cursor() as curs:
-            curs.execute("""
-                UPDATE result
-                SET iterations = %(total_count)s
-                  , duration = interval %(elapsed)s
-                  , per_iteration = interval %(avg_iter_time)s
-                  , rank = %(rank)s
-                  , result = %(result)s
-                  , claimed_courses = %(claims)s::jsonb
-                  , ok = %(ok)s
-                  , ts = now()
-                  , in_progress = false
-                WHERE id = %(result_id)s
-            """, {
-                "result_id": result_id,
-                "total_count": total_count,
-                "elapsed": elapsed,
-                "avg_iter_time": avg_iter_time.strip("~"),
-                "result": json.dumps(result),
-                "rank": rank,
-                "claims": json.dumps(claims),
-                "ok": False if ok is None else ok,
-            })
-            conn.commit()
-
-    except Exception as ex:
+    except Exception:
         sentry_sdk.capture_exception()
 
         if result_id:
             with conn.cursor() as curs:
-                curs.execute(
-                    "UPDATE result SET in_progress = false WHERE id = %(result_id)s",
-                    {"result_id": result_id}
-                )
-
+                curs.execute("UPDATE result SET in_progress = false WHERE id = %(result_id)s", {"result_id": result_id})
                 conn.commit()
     finally:
         conn.close()
+
+
+def audit(*, student, spec, conn, result_id):
+    constants = Constants(matriculation_year=student['matriculation'])
+    area = AreaOfStudy.load(specification=spec, c=constants)
+    area.validate()
+
+    attributes_to_attach = area.attributes.get("courses", {})
+    transcript = []
+    for record in student["courses"]:
+        c = load_course(record)
+
+        attrs_by_course = set(attributes_to_attach.get(c.course(), []))
+        attrs_by_shorthand = set(attributes_to_attach.get(c.course_shorthand(), []))
+        attrs_by_term = set(attributes_to_attach.get(c.course_with_term(), []))
+
+        c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
+        transcript.append(c)
+
+    transcript = tuple(transcript)
+
+    #####
+
+    best_sol = None
+    total_count = 0
+    times = []
+    start = time.perf_counter()
+    iter_start = time.perf_counter()
+
+    for sol in area.solutions(transcript=transcript):
+        total_count += 1
+
+        if total_count % 1000 == 0:
+            update_progress(result_id=result_id, count=total_count, start=start, conn=conn)
+
+        result = sol.audit(transcript=transcript)
+
+        if best_sol is None:
+            best_sol = result
+
+        if result.rank() > best_sol.rank():
+            best_sol = result
+
+        iter_end = time.perf_counter()
+        times.append(iter_end - iter_start)
+
+        if result.ok():
+            best_sol = result
+            break
+
+        iter_start = time.perf_counter()
+
+    end = time.perf_counter()
+    elapsed = pretty_ms((end - start) * 1000)
+
+    return {'result': result, 'times': times, 'elapsed': elapsed}
+
+
+def record(*, result, times, conn, result_id, elapsed):
+    result = result.to_dict()
+
+    avg_iter_s = sum(times) / max(len(times), 1)
+    avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
+
+    claims = result["claims"]
+
+    rank = result["rank"]
+    ok = result["ok"]
+
+    claims = []
+
+    with conn.cursor() as curs:
+        curs.execute("""
+            UPDATE result
+            SET iterations = %(total_count)s
+              , duration = interval %(elapsed)s
+              , per_iteration = interval %(avg_iter_time)s
+              , rank = %(rank)s
+              , result = %(result)s
+              , claimed_courses = %(claims)s::jsonb
+              , ok = %(ok)s
+              , ts = now()
+              , in_progress = false
+            WHERE id = %(result_id)s
+        """, {
+            "result_id": result_id,
+            "total_count": len(times),
+            "elapsed": elapsed,
+            "avg_iter_time": avg_iter_time.strip("~"),
+            "result": json.dumps(result),
+            "rank": rank,
+            "claims": json.dumps(claims),
+            "ok": False if ok is None else ok,
+        })
+        conn.commit()
+
+
+def update_progress(*, conn, start_time, total_count, result_id):
+    with conn.cursor() as curs:
+        curs.execute("""
+            UPDATE result
+            SET iterations = %(total_count)s
+              , duration = cast(now() - %(start)s as interval)
+            WHERE id = %(result_id)s
+        """, {
+            "result_id": result_id,
+            "total_count": total_count,
+            "start": start_time,
+        })
+
+        conn.commit()
 
 
 def make_result_id(*, stnum, conn, area_code, catalog):
