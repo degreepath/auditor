@@ -57,14 +57,14 @@ class LimitSet:
             may_yield = False
 
             for l in self.limits:
-                logger.debug("limit/check: checking %s against %s", c.identity, l)
+                logger.debug("limit/check: checking %s against %s", c.course(), l)
                 if c.apply_clause(l.where):
                     if clause_counters[l] < l.at_most:
-                        logger.debug("limit/increment: %s matched %s", c.identity, l)
+                        logger.debug("limit/increment: %s matched %s", c.course(), l)
                         clause_counters[l] += 1
                         may_yield = True
                     else:
-                        logger.debug("limit/maximum: %s matched %s", c.identity, l)
+                        logger.debug("limit/maximum: %s matched %s", c.course(), l)
                         may_yield = False
                 else:
                     may_yield = True
@@ -101,7 +101,7 @@ class LimitSet:
         extra_iter_counters: Dict = defaultdict(int)
         for l in self.limits:
             for c in courses:
-                logger.debug("limit/probe: checking %s against %s", c.identity, l)
+                logger.debug("limit/probe: checking %s against %s", c.course(), l)
                 if c.apply_clause(l.where):
                     extra_iter_counters[l] += 1
             # set each counter to the number of extra courses, or 0, to find the number of extra iterations
