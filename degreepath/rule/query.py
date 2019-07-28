@@ -140,7 +140,8 @@ class QueryRule:
             data = ctx.areas
 
         else:
-            raise KeyError(f"{self.source_type} not yet implemented")
+            data = []
+            logger.critical("%s not yet implemented", self.source_type)
 
         return data
 

@@ -55,3 +55,6 @@ class ReferenceRule:
         requirement = ctx.requirements[self.name]
 
         yield from requirement.solutions(ctx=ctx, path=path)
+
+    def matched(self, *, ctx):
+        return []

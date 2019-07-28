@@ -163,11 +163,13 @@ def count_items(data, kind):
 
     if kind == 'performances':
         # TODO
-        raise Exception(f'count(performances) is not yet implemented')
+        logger.critical('count(performances) is not yet implemented')
+        return (0, frozenset())
 
     if kind == 'seminars':
         # TODO
-        raise Exception(f'count(seminars) is not yet implemented')
+        logger.critical('count(seminars) is not yet implemented')
+        return (0, frozenset())
 
     raise Exception(f'expected a valid kind; got {kind}')
 
