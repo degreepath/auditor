@@ -22,4 +22,4 @@ def load_rule(data: Dict, c: Constants) -> Rule:
     elif ReferenceRule.can_load(data):
         return ReferenceRule.load(data, c)
 
-    raise ValueError(f"expected Course, Query, Count, Both, Either, or Reference; found none of those (in {data})")
+    raise ValueError(f"expected Course, Query, Count, Both, Either, or Reference; found none of those (in {data}, {type(data)})")

@@ -47,6 +47,9 @@ class Requirement:
         elif data.get("registrar_audited", False):
             audited_by = "registrar"
 
+        if 'audit' in data:
+            raise TypeError('you probably meant to indent that audit: key into the result: key')
+
         return Requirement(
             name=name,
             message=data.get("message", None),

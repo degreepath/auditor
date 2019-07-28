@@ -62,11 +62,17 @@ class QueryRule:
 
         limit = LimitSet.load(data=data.get("limit", None), c=c)
 
+        if 'limits' in data:
+            raise ValueError(f'the key is "limit", not "limits": {data}')
+
         assertions: List[AssertionRule] = []
         if "assert" in data:
             assertions = [AssertionRule.load({'assert': data["assert"]}, c)]
-        if "all" in data:
+        elif "all" in data:
             assertions = [AssertionRule.load(d, c) for d in data["all"]]
+
+        if 'assert' in data and 'all' in data:
+            raise ValueError(f'you cannot have both assert: and all: keys; {data}')
 
         allow_claimed = data.get('allow_claimed', False)
 
