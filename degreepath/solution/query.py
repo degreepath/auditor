@@ -7,7 +7,7 @@ from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer
-from ..clause import SingleClause, Operator, ResolvedClause
+from ..clause import SingleClause, Operator
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional, Dict
-from ..clause import Clause, ResolvedClause, load_clause
-from ..constants import Constants
+from typing import Optional
+from ..clause import Clause, ResolvedClause
 
 
 @dataclass(frozen=True)

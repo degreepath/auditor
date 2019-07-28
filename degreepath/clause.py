@@ -142,7 +142,7 @@ class SingleClause:
     def from_course_rule(rule: CourseRule):
         return SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
-    @staticmethod
+    @staticmethod  # noqa: C901
     def load(key: str, value: Any, c: Constants):
         if not isinstance(value, Dict):
             raise Exception(f'expected {value} to be a dictionary')

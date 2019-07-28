@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import Any, Tuple
-from ..clause import ResolvedBaseClause
 from .assertion import AssertionResult
 
 
