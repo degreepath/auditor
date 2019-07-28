@@ -49,6 +49,9 @@ class QueryRule:
     def rank(self):
         return 0
 
+    def claims(self):
+        return []
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "from" in data:
