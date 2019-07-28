@@ -11,7 +11,7 @@ import psycopg2
 import psycopg2.extras
 import sentry_sdk
 
-from degreepath import load_course, AreaOfStudy, Constants
+from degreepath import load_course, AreaOfStudy, Constants, AreaPointer
 from degreepath.ms import pretty_ms
 
 dotenv.load_dotenv(verbose=True)
@@ -56,6 +56,8 @@ def main(area_file, student_file):
         area_code = pathlib.Path(area_file).stem
         area_catalog = pathlib.Path(area_file).parent.stem
 
+        area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
+
         try:
             with open(area_file, "r", encoding="utf-8") as infile:
                 area = yaml.load(stream=infile, Loader=yaml.SafeLoader)
@@ -85,11 +87,13 @@ def main(area_file, student_file):
         with sentry_sdk.configure_scope() as scope:
             scope.set_tag('result_id', result_id)
 
-        result_info = audit(student=student, spec=area, conn=conn, result_id=result_id)
-        record(**result_info, conn=conn)
+        result_info = audit(student=student, spec=area, conn=conn, result_id=result_id, area_pointers=area_pointers)
+        record(**result_info, conn=conn, result_id=result_id)
 
-    except Exception:
+    except Exception as ex:
         sentry_sdk.capture_exception()
+
+        print(ex, file=sys.stderr)
 
         if result_id:
             with conn.cursor() as curs:
@@ -99,7 +103,7 @@ def main(area_file, student_file):
         conn.close()
 
 
-def audit(*, student, spec, conn, result_id):
+def audit(*, student, spec, conn, result_id, area_pointers):
     constants = Constants(matriculation_year=student['matriculation'])
     area = AreaOfStudy.load(specification=spec, c=constants)
     area.validate()
@@ -126,13 +130,13 @@ def audit(*, student, spec, conn, result_id):
     start = time.perf_counter()
     iter_start = time.perf_counter()
 
-    for sol in area.solutions(transcript=transcript):
+    for sol in area.solutions(transcript=transcript, areas=area_pointers):
         total_count += 1
 
         if total_count % 1000 == 0:
             update_progress(result_id=result_id, count=total_count, start=start, conn=conn)
 
-        result = sol.audit(transcript=transcript)
+        result = sol.audit(transcript=transcript, areas=area_pointers)
 
         if best_sol is None:
             best_sol = result
