@@ -32,9 +32,9 @@ def load_clause(data: Dict, c: Constants):
 
 @dataclass(frozen=True)
 class ResolvedBaseClause:
-    resolved_with: Optional[Any]
-    resolved_items: Sequence[Any]
-    result: bool
+    resolved_with: Optional[Any] = None
+    resolved_items: Sequence[Any] = tuple()
+    result: bool = False
 
     def to_dict(self):
         return {
@@ -46,7 +46,7 @@ class ResolvedBaseClause:
 
 @dataclass(frozen=True)
 class AndClause:
-    children: Tuple
+    children: Tuple = tuple()
 
     def to_dict(self):
         return {
@@ -84,7 +84,7 @@ class ResolvedAndClause(AndClause, ResolvedBaseClause):
 
 @dataclass(frozen=True)
 class OrClause:
-    children: Tuple
+    children: Tuple = tuple()
 
     def to_dict(self):
         return {
@@ -126,6 +126,7 @@ class SingleClause:
     expected: Any
     expected_verbatim: Any
     operator: Operator
+    at_most: bool = False
 
     def to_dict(self):
         return {
@@ -145,8 +146,13 @@ class SingleClause:
         if not isinstance(value, Dict):
             raise Exception(f'expected {value} to be a dictionary')
 
-        assert len(value.keys()) == 1, f"{value}"
-        op = list(value.keys())[0]
+        operators = [k for k in value.keys() if k.startswith('$')]
+
+        assert len(operators) == 1, f"{value}"
+        op = list(operators)[0]
+
+        at_most = value.get('at_most', False)
+        assert type(at_most) is bool
 
         operator = Operator(op)
         expected_value = value[op]
@@ -178,6 +184,7 @@ class SingleClause:
             expected=expected_value,
             operator=operator,
             expected_verbatim=expected_verbatim,
+            at_most=at_most,
         )
 
     def validate(self, *, ctx):
@@ -220,6 +227,7 @@ class SingleClause:
             expected=self.expected,
             expected_verbatim=self.expected_verbatim,
             operator=self.operator,
+            at_most=self.at_most,
             resolved_with=reduced_value,
             resolved_items=value_items,
             result=result,
@@ -229,7 +237,7 @@ class SingleClause:
         if type(self.expected) is not int:
             raise TypeError('cannot find a range of values for a non-integer clause: %s', type(self.expected))
 
-        if self.operator == Operator.EqualTo:
+        if self.operator == Operator.EqualTo or (self.operator == Operator.GreaterThanOrEqualTo and self.at_most is True):
             yield from range(self.expected, self.expected + 1)
 
         elif self.operator == Operator.NotEqualTo:

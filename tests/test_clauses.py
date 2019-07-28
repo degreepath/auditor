@@ -134,7 +134,7 @@ def test_resolution(caplog):
     assert result.result is True
 
 
-def test_ranges(caplog):
+def test_ranges_eq(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
@@ -142,21 +142,55 @@ def test_ranges(caplog):
     result = x.input_size_range(maximum=5)
     assert list(result) == [1]
 
+
+def test_ranges_gte(caplog):
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
+
     x = load_clause({"count(courses)": {"$gte": 1}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [1, 2, 3, 4, 5]
+
+
+def test_ranges_gte_at_most(caplog):
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
+
+    x = load_clause({"count(courses)": {"$gte": 1, "at_most": True}}, c=c)
+    result = x.input_size_range(maximum=5)
+    assert list(result) == [1]
+
+
+def test_ranges_gt(caplog):
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
 
     x = load_clause({"count(courses)": {"$gt": 1}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [2, 3, 4, 5]
 
+
+def test_ranges_neq(caplog):
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
+
     x = load_clause({"count(courses)": {"$neq": 1}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [0, 2, 3, 4, 5]
 
+
+def test_ranges_lt(caplog):
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
+
     x = load_clause({"count(courses)": {"$lt": 5}}, c=c)
     result = x.input_size_range(maximum=7)
     assert list(result) == [0, 1, 2, 3, 4]
+
+
+def test_ranges_lte(caplog):
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
 
     x = load_clause({"count(courses)": {"$lte": 5}}, c=c)
     result = x.input_size_range(maximum=7)
