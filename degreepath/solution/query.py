@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Union, List, Sequence, Any, Tuple, Collection
 import logging
 import decimal
+from collections import Counter
 
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
@@ -134,6 +135,16 @@ def count_items(data, kind):
     if kind == 'courses':
         assert all(isinstance(x, CourseInstance) for x in data)
         items = frozenset(c.clbid for c in data)
+        return (len(items), items)
+
+    if kind == 'terms_from_most_common_course':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        if not data:
+            return (0, frozenset())
+        counted = Counter(c.crsid for c in data)
+        most_common = counted.most_common(1)[0]
+        most_common_crsid, _count = most_common
+        items = frozenset(c.term for c in data if c.crsid == most_common_crsid)
         return (len(items), items)
 
     if kind == 'subjects':
