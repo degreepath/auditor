@@ -53,7 +53,7 @@ class QuerySolution:
         return self.output
 
     def audit(self, *, ctx, path: List):
-        path = [*path, f".of"]
+        path = [*path, f".query"]
 
         if self.rule.source != "student":
             raise KeyError(f'unknown "from" type "{self.rule.source}"')
