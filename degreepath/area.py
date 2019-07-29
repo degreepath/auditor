@@ -89,7 +89,7 @@ class AreaOfStudy:
         new_path = [*path, ".result"]
         for sol in self.result.solutions(ctx=ctx, path=new_path):
             ctx.reset_claims()
-            logger.info("generated new area solution: %s", sol)
+            # logger.info("generated new area solution: %s", sol)
             yield AreaSolution(solution=sol, area=self)
 
         logger.debug("%s all solutions generated", path)
@@ -117,7 +117,7 @@ class AreaSolution:
 
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
-        logger.debug("auditing area solution: %s", self.solution)
+        # logger.debug("auditing area solution: %s", self.solution)
 
         ctx = RequirementContext(
             transcript=transcript,
