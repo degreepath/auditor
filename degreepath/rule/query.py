@@ -38,6 +38,8 @@ class QueryRule:
             "state": self.state(),
             "ok": self.ok(),
             "rank": self.rank(),
+            "claims": [],
+            "failures": [],
         }
 
     def state(self):
