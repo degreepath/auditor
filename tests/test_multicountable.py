@@ -469,3 +469,47 @@ def test_mc_spanish_sets(caplog):
 
     claim_c = ctx.make_claim(course=course, path=['a'], clause=by_focus, allow_claimed=False)
     assert claim_c.failed() is True, 'Should fail because we have already locked in to 313+elective, not 313+focus'
+
+
+def test_mc_dance_sets(caplog):
+    caplog.set_level(logging.DEBUG, logger='degreepath.context')
+
+    """
+    multicountable:
+      - - {attributes: {$eq: dance_movement}}
+        - {attributes: {$eq: dance_genre_ballet}}
+
+      - - {attributes: {$eq: dance_movement}}
+        - {attributes: {$eq: dance_genre_international}}
+
+      - - {attributes: {$eq: dance_movement}}
+        - {attributes: {$eq: dance_genre_modern}}
+
+      - - {attributes: {$eq: dance_movement}}
+        - {attributes: {$eq: dance_genre_other}}
+    """
+
+    course = course_from_str("DANCE 313", attributes=['dance_movement', 'dance_genre_modern'])
+    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+        [
+            SingleClause(key='attributes', expected='dance_movement', expected_verbatim='dance_movement', operator=Operator.EqualTo),
+            SingleClause(key='attributes', expected='dance_genre_ballet', expected_verbatim='dance_genre_ballet', operator=Operator.EqualTo),
+        ],
+        [
+            SingleClause(key='attributes', expected='dance_movement', expected_verbatim='dance_movement', operator=Operator.EqualTo),
+            SingleClause(key='attributes', expected='dance_genre_modern', expected_verbatim='dance_genre_modern', operator=Operator.EqualTo),
+        ],
+    ])
+
+    by_movement = SingleClause(key='attributes', expected='dance_movement', expected_verbatim='dance_movement', operator=Operator.EqualTo)
+    by_modern = SingleClause(key='attributes', expected='dance_genre_modern', expected_verbatim='dance_genre_modern', operator=Operator.EqualTo)
+
+    logger = logging.getLogger('degreepath.context')
+
+    claim_a = ctx.make_claim(course=course, path=['a'], clause=by_movement, allow_claimed=False)
+    assert claim_a.failed() is False, 'Should pass because no claim exists on this course yet'
+
+    logger.info(next_assertion)
+
+    claim_b = ctx.make_claim(course=course, path=['c'], clause=by_modern, allow_claimed=False)
+    assert claim_b.failed() is False, 'Should pass because we allow the pairing'
