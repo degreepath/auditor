@@ -129,7 +129,7 @@ class CountRule:
                 selected_children = set(combo)
                 other_children = sorted(all_children.difference(selected_children), key=lambda r: item_indices[r])
 
-                solutions = [rule.solutions(ctx=ctx, path=path) for rule in combo]
+                solutions = [rule.solutions(ctx=ctx, path=[*path, item_indices[rule]]) for rule in combo]
 
                 for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                     if solset_i > 0 and solset_i % 10_000 == 0:
