@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Dict, List, Any, Tuple, Optional
+from typing import Dict, List, Any, Tuple
 import logging
-import decimal
 
 from .clause import SingleClause
 from .constants import Constants
