@@ -106,7 +106,7 @@ def print_result(rule, transcript, indent=0):
         if rule['where'] is not None:
             yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
-        if rule["status"] in ("skip", "pending"):
+        if rule["status"] in ("pending"):
             yield f'{prefix}[skipped]'
             return
 
