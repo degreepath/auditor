@@ -22,8 +22,6 @@ class AreaOfStudy:
     requirements: Dict
     attributes: Dict
     multicountable: List
-    # TODO: audit min_gpa
-    min_gpa: Optional[decimal.Decimal]
 
     def to_dict(self):
         return {
@@ -45,9 +43,6 @@ class AreaOfStudy:
         result = load_rule(specification["result"], c)
         limit = tuple(Limit.load(l, c) for l in specification.get("limit", []))
 
-        min_gpa = specification.get('gpa', None)
-        min_gpa = decimal.Decimal(min_gpa) if min_gpa is not None else None
-
         attributes = specification.get("attributes", dict())
         multicountable = []
         for ruleset in attributes.get("multicountable", []):
@@ -68,7 +63,6 @@ class AreaOfStudy:
             attributes=attributes,
             multicountable=multicountable,
             limit=limit,
-            min_gpa=min_gpa,
         )
 
     def validate(self):
