@@ -123,6 +123,7 @@ class AreaSolution:
             transcript=transcript,
             areas=areas,
             requirements={name: r for name, r in self.area.requirements.items()},
+            multicountable=self.area.multicountable,
         )
 
         new_path = [*path, ".result"]
