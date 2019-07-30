@@ -26,19 +26,6 @@ function Contents({ result, transcript, error }: InnerProps) {
 
   return (
     <article className="degreepath">
-      <header>
-        <dl>
-          <dt>Status</dt>
-          <dd>
-            <StatusIcon icon={result.ok ? "ok" : "warn"} />
-            {result.ok ? "Complete" : "Incomplete"}
-          </dd>
-
-          <dt>In-Major GPA</dt>
-          <dd>0.00</dd>
-        </dl>
-      </header>
-
       <RuleResult result={result} topLevel={true} transcript={transcript} />
     </article>
   );
