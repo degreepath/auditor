@@ -116,6 +116,7 @@ function Data({ children }: { children: typeof Contents }) {
     <>
       {process.env.NODE_ENV === "development" ? (
         <form onSubmit={processData}>
+          <label>Transcript</label>
           <textarea
             ref={transcriptRef}
             name="transcript"
@@ -126,6 +127,7 @@ function Data({ children }: { children: typeof Contents }) {
             }}
           />
 
+          <label>Result</label>
           <textarea
             ref={resultRef}
             name="result"

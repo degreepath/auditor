@@ -12,10 +12,7 @@ export function FromResult(props: ResultBlock<IFromRule | FromResultT>) {
 
   let intro: null | React.ReactNode = null;
 
-  if (
-    result.source.mode === "student" &&
-    result.source.itemtype === "courses"
-  ) {
+  if (result.source === "student" && result.source_type === "courses") {
     intro = <p>Given the courses from the transcript…</p>;
   }
 
@@ -56,6 +53,23 @@ export function FromResult(props: ResultBlock<IFromRule | FromResultT>) {
     );
   }
 
+  let assertions: null | React.ReactNode = (
+    <details open>
+      <summary style={{ display: "flex", alignItems: "center" }}>
+        <p>Fulfilling the following assertions…</p>
+      </summary>
+
+      {result.assertions.map(assertion => {
+        return (
+          <>
+            {assertion.where ? <WhereClause clause={assertion.where} /> : null}
+            <WhereClause clause={assertion.assertion} />
+          </>
+        );
+      })}
+    </details>
+  );
+
   return (
     <RuleSection success={result.ok}>
       <StatusIcon icon={result.ok ? "ok" : "warn"} />
@@ -67,10 +81,7 @@ export function FromResult(props: ResultBlock<IFromRule | FromResultT>) {
           {limits}
           {where}
 
-          <p>
-            There must be {"at least"} {result.action.compare_to}{" "}
-            {result.action.compare_to === 1 ? "course" : "courses"}.
-          </p>
+          {assertions}
 
           <p>
             {result.ok ? (

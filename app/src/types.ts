@@ -27,23 +27,37 @@ export interface IReferenceRule extends BaseRule {
   name: string;
 }
 
+export interface AssertionClauseT {
+  expected: number;
+  expected_verbatim: number | "$senior-year" | "$matriculation-year";
+  where: WhereClauseT | null;
+  key: "count(courses)" | "sum(credits)";
+  operator: Operator;
+  source: string;
+  type: "single-clause";
+}
+
+export interface IAssertionT {
+  type: "assertion";
+  status: "skip";
+  state: "rule";
+  rank: number;
+  ok: boolean;
+  assertion: WhereClauseT;
+  where: null | WhereClauseT;
+}
+
 export interface IFromRule extends BaseRule {
   type: "from";
-  source: {
-    itemtype: "courses";
-    mode: "student";
-    requirements: string[];
-    saves: string[];
-  };
+  source_type: "courses" | "areas" | string;
+  source_repeats: "all" | "first";
+  source: "student";
   claims?: ClaimList[];
+  failures?: ClaimList[];
   limit: Limit[];
   where: WhereClauseT;
-  action: {
-    command: "count";
-    compare_to: any;
-    operator: Operator;
-    source: string;
-  };
+  assertions: IAssertionT[];
+  allow_claimed: boolean;
 }
 
 type Limit = { at_most: number; where: WhereClauseT };
@@ -71,24 +85,33 @@ type ClaimList = {
   claimant_path: string[];
 };
 
-type Operator = "EqualTo" | "GreaterThanOrEqualTo";
+type Operator = "EqualTo" | "GreaterThanOrEqualTo" | "GreaterThan" | "In";
 
 export type WhereClauseT =
-  | { type: "single-clause"; operator: Operator; key: string; expected: any }
+  | {
+      type: "single-clause";
+      operator: Operator;
+      key: string;
+      expected: any;
+      expected_verbatim: any;
+      resolved_with?: number;
+      resolved_items?: any[];
+      result?: boolean;
+    }
   | { type: "and-clause"; children: WhereClauseT[] }
   | { type: "or-clause"; children: WhereClauseT[] };
 
 export type EvaluatedRequirement = {
-  audited_by?: string;
+  audited_by: null | string;
   contract: boolean;
-  message: string;
+  message: null | string;
   name: string;
   result: EvaluationResultT;
-  saves: {};
   ok: boolean;
   claims: ClaimList[];
   rank: number;
   type: "requirement";
+  requirements: { [key: string]: EvaluatedRequirement };
 };
 
 export type Course = {
