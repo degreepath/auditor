@@ -1,147 +1,70 @@
-import json
-import sys
-import time
 import argparse
 import logging
-import coloredlogs
-import traceback
+import runpy
+import sys
 
-import yaml
+from degreepath import pretty_ms, summarize
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
-from degreepath import load_course, Constants, AreaOfStudy, summarize, AreaPointer, pretty_ms
+dp = runpy.run_path('./dp-common.py')
 
 logger = logging.getLogger(__name__)
-logformat = "%(levelname)s %(name)s %(message)s"
+# logformat = "%(levelname)s:%(name)s:%(message)s"
+logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
-    parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info"))
+    parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--raw", action='store_true')
-    parser.add_argument("--print-every", action='store_true')
-    parser.add_argument("--color", action='store_true')
-    args = parser.parse_args()
+    parser.add_argument("--print-all", action='store_true')
+    cli_args = parser.parse_args()
 
-    if args.loglevel == "warn":
-        coloredlogs.install(level="WARNING", fmt=logformat)
-    elif args.loglevel == "debug":
-        coloredlogs.install(level="DEBUG", fmt=logformat)
-    elif args.loglevel == "info":
-        coloredlogs.install(level="INFO", fmt=logformat)
+    loglevel = getattr(logging, cli_args.loglevel.upper())
+    logging.basicConfig(level=loglevel, format=logformat)
 
-    if not args.student_files:
-        print("no students to process", file=sys.stderr)
+    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all)
 
-    for student_file in args.student_files:
-        with open(student_file, "r", encoding="utf-8") as infile:
-            student = json.load(infile)
+    for msg in dp['run'](args):
+        if isinstance(msg, NoStudentsMsg):
+            logger.critical('no student files provided')
 
-        area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
+        elif isinstance(msg, NoAuditsCompletedMsg):
+            logger.critical('no audits completed')
 
-        transcript = [load_course(row) for row in student["courses"]]
+        elif isinstance(msg, AuditStartMsg):
+            print(f"auditing #{msg.stnum} against {msg.area_catalog} {msg.area_code}", file=sys.stderr)
 
-        for area_file in args.area_files:
-            with open(area_file, "r", encoding="utf-8") as infile:
-                area_spec = yaml.load(stream=infile, Loader=yaml.SafeLoader)
+        elif isinstance(msg, ExceptionMsg):
+            logger.critical("%s %s", msg.msg, msg.ex)
 
-            print(f"auditing #{student['stnum']} against {area_file}", file=sys.stderr)
-
-            constants = Constants(matriculation_year=student['matriculation'])
-
-            try:
-                (result, count, elapsed, iterations) = audit(
-                    spec=area_spec,
-                    transcript=transcript,
-                    constants=constants,
-                    area_pointers=area_pointers,
-                    args=args,
-                )
-
-                if args.json:
-                    if result:
-                        print(json.dumps(result.to_dict()))
-                    else:
-                        print(json.dumps(result))
-                elif args.raw:
-                    print(result)
-                else:
-                    print()
-                    if result:
-                        print("".join(summarize(result=result.to_dict(), count=count, elapsed=elapsed, transcript=transcript, iterations=iterations)))
-                    else:
-                        print(result)
-
-            except Exception:
-                traceback.print_exc()
-                print(f"failed: #{student['stnum']}", file=sys.stderr)
-
-                break
-
-
-def audit(*, spec, transcript, constants, area_pointers, args):
-    area = AreaOfStudy.load(specification=spec, c=constants)
-    area.validate()
-
-    this_transcript = []
-    attributes_to_attach = area.attributes.get("courses", {})
-    for c in transcript:
-        attrs_by_course = set(attributes_to_attach.get(c.course(), []))
-        attrs_by_shorthand = set(attributes_to_attach.get(c.course_shorthand(), []))
-        attrs_by_term = set(attributes_to_attach.get(c.course_with_term(), []))
-
-        c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
-        this_transcript.append(c)
-
-    this_transcript = tuple(this_transcript)
-
-    best_sol = None
-    total_count = 0
-    iterations = []
-    start = time.perf_counter()
-    iter_start = time.perf_counter()
-
-    for sol in area.solutions(transcript=this_transcript, areas=area_pointers):
-        total_count += 1
-
-        if total_count % 1_000 == 0:
-            recent_iters = iterations[-1_000:]
-            avg_iter_s = sum(recent_iters) / max(len(recent_iters), 1)
+        elif isinstance(msg, ProgressMsg):
+            avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
             avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
-            print(f"... {total_count:,} at {avg_iter_time} per", file=sys.stderr)
+            print(f"{msg.count:,} at {avg_iter_time} per audit", file=sys.stderr)
 
-        result = sol.audit(transcript=this_transcript, areas=area_pointers)
+        elif isinstance(msg, ResultMsg):
+            print(result_str(msg, json=cli_args.json, raw=cli_args.raw))
 
-        if args.print_every:
-            print("".join(summarize(result=result.to_dict(), count=total_count, elapsed='', transcript=this_transcript, iterations=[])))
+        else:
+            logger.critical('unknown message %s', msg)
 
-        if best_sol is None:
-            best_sol = result
 
-        if result.rank() > best_sol.rank():
-            best_sol = result
+def result_str(msg, *, json=False, raw=False):
+    if json:
+        return json.dumps(msg.result.to_dict() if msg.result is not None else None)
 
-        if result.ok():
-            best_sol = result
-            iter_end = time.perf_counter()
-            iterations.append(iter_end - iter_start)
-            break
+    if raw:
+        return msg.result
 
-        iter_end = time.perf_counter()
-        iterations.append(iter_end - iter_start)
-
-        iter_start = time.perf_counter()
-
-    if not iterations:
-        print("no audits completed", file=sys.stderr)
-        return (None, 0, '0s', [])
-
-    end = time.perf_counter()
-    elapsed = pretty_ms((end - start) * 1000)
-
-    return (best_sol, total_count, elapsed, iterations)
+    return "\n" + "".join(summarize(
+        result=msg.result.to_dict() if msg.result is not None else None,
+        count=msg.count, elapsed=msg.elapsed, iterations=msg.iterations,
+        transcript=msg.transcript,
+    ))
 
 
 if __name__ == "__main__":

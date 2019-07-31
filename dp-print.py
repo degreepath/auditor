@@ -1,9 +1,8 @@
 import json
-import sys
 import argparse
 
 from degreepath.stringify import print_result
-from degreepath import CourseInstance
+from degreepath import load_course
 
 
 def main():
@@ -18,13 +17,7 @@ def main():
     with open(args.student_file, 'r', encoding="utf-8") as infile:
         student = json.load(infile)
 
-    transcript = []
-    for row in student["courses"]:
-        instance = CourseInstance.from_dict(**row)
-        if instance:
-            transcript.append(instance)
-        else:
-            print("error loading course into transcript", row, file=sys.stderr)
+    transcript = [load_course(row) for row in student["courses"]]
 
     summary = "\n".join(print_result(data, transcript=transcript))
     print(summary)
