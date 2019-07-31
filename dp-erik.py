@@ -62,7 +62,7 @@ def main(area_file, student_file, run_id=None):
                 with sentry_sdk.configure_scope() as scope:
                     scope.user = {"id": msg.stnum}
 
-                result_id = make_result_id(conn=conn, stnum=msg.stnum, area_code=msg.area_code, catalog=msg.area_catalog)
+                result_id = make_result_id(conn=conn, stnum=msg.stnum, area_code=msg.area_code, catalog=msg.area_catalog, run=run_id)
                 logger.info("result id = %s", result_id)
 
                 with sentry_sdk.configure_scope() as scope:
@@ -151,13 +151,13 @@ def update_progress(*, conn, start_time, count, result_id):
         conn.commit()
 
 
-def make_result_id(*, stnum, conn, area_code, catalog):
+def make_result_id(*, stnum, conn, area_code, catalog, run):
     with conn.cursor() as curs:
         curs.execute("""
-            INSERT INTO result (student_id, area_code, catalog, in_progress)
-            VALUES (%(student_id)s, %(area_code)s, %(catalog)s, true)
+            INSERT INTO result (student_id, area_code, catalog, in_progress, run)
+            VALUES (%(student_id)s, %(area_code)s, %(catalog)s, true, %(run)s)
             RETURNING id
-        """, {"student_id": stnum, "area_code": area_code, "catalog": catalog})
+        """, {"student_id": stnum, "area_code": area_code, "catalog": catalog, "run": run})
 
         conn.commit()
 
