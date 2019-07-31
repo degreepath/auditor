@@ -6,6 +6,9 @@ from .ms import pretty_ms
 
 
 def summarize(*, transcript, result, count, elapsed, iterations):
+    if result is None:
+        return 'None'
+
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
