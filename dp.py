@@ -41,7 +41,7 @@ def main():
             print(f"auditing #{msg.stnum} against {msg.area_catalog} {msg.area_code}", file=sys.stderr)
 
         elif isinstance(msg, ExceptionMsg):
-            logger.critical("%s %s", msg.msg, msg.ex)
+            logger.critical("%s %s", msg.ex, msg.tb)
 
         elif isinstance(msg, ProgressMsg):
             avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
