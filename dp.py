@@ -2,11 +2,13 @@ import argparse
 import logging
 import runpy
 import sys
+import os
 
 from degreepath import pretty_ms, summarize
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
-dp = runpy.run_path('./dp-common.py')
+dirpath = os.path.dirname(os.path.abspath(__file__))
+dp = runpy.run_path(dirpath + '/dp-common.py')
 
 logger = logging.getLogger(__name__)
 # logformat = "%(levelname)s:%(name)s:%(message)s"
