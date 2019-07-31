@@ -73,7 +73,6 @@ def main(area_file, student_file, run_id=None):
                     scope.set_extra('result_id', result_id)
 
             elif isinstance(msg, ExceptionMsg):
-                logger.critical("%s %s", msg.ex, msg.tb)
                 sentry_sdk.capture_exception(msg.ex)
 
                 if result_id:
