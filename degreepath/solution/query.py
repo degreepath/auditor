@@ -174,12 +174,12 @@ def count_items(data, kind):  # noqa: C901
 
     if kind == 'performances':
         # TODO
-        logger.critical('count(performances) is not yet implemented')
+        logger.info('count(performances) is not yet implemented')
         return (0, frozenset())
 
     if kind == 'seminars':
         # TODO
-        logger.critical('count(seminars) is not yet implemented')
+        logger.info('count(seminars) is not yet implemented')
         return (0, frozenset())
 
     raise Exception(f'expected a valid kind; got {kind}')

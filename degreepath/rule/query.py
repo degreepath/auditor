@@ -146,7 +146,7 @@ class QueryRule:
 
         else:
             data = []
-            logger.critical("%s not yet implemented", self.source_type)
+            logger.info("%s not yet implemented", self.source_type)
 
         return data
 
