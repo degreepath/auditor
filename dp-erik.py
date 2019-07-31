@@ -11,7 +11,8 @@ import sentry_sdk
 from degreepath import pretty_ms
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
-dp = runpy.run_path('./dp-common.py')
+dirpath = os.path.dirname(os.path.abspath(__file__))
+dp = runpy.run_path(dirpath + '/dp-common.py')
 
 
 logger = logging.getLogger(__name__)
