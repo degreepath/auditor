@@ -1,6 +1,7 @@
 import argparse
 import logging
 import runpy
+import json
 import sys
 import os
 
@@ -49,17 +50,17 @@ def main():
             print(f"{msg.count:,} at {avg_iter_time} per audit", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
-            print(result_str(msg, json=cli_args.json, raw=cli_args.raw))
+            print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw))
 
         else:
             logger.critical('unknown message %s', msg)
 
 
-def result_str(msg, *, json=False, raw=False):
-    if json:
+def result_str(msg, *, as_json=False, as_raw=False):
+    if as_json:
         return json.dumps(msg.result.to_dict() if msg.result is not None else None)
 
-    if raw:
+    if as_raw:
         return msg.result
 
     return "\n" + "".join(summarize(
