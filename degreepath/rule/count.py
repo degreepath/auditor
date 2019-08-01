@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple
 import itertools
 import logging
 
@@ -15,7 +15,7 @@ class CountRule:
     count: int
     items: Tuple
     at_most: bool
-    audit_clause: Optional[AssertionRule]
+    audit_clauses: Tuple[AssertionRule, ...]
 
     def to_dict(self):
         return {
@@ -23,7 +23,7 @@ class CountRule:
             "state": self.state(),
             "count": self.count,
             "items": [item.to_dict() for item in self.items],
-            "audit": self.audit_clause.to_dict() if self.audit_clause is not None else None,
+            "audit": [c.to_dict() for c in self.audit_clauses],
             "ok": self.ok(),
             "status": "skip",
             "claims": self.claims(),
@@ -55,7 +55,7 @@ class CountRule:
             return True
         return False
 
-    @staticmethod
+    @staticmethod  # noqa: C901
     def load(data: Dict, c: Constants):
         from ..load_rule import load_rule
 
@@ -86,15 +86,20 @@ class CountRule:
 
         at_most = data.get('at_most', False)
 
-        audit = data.get('audit', None)
-        if audit is not None:
-            audit = AssertionRule.load(audit, c=c)
+        audit_clause = data.get('audit', None)
+        if audit_clause is not None:
+            if 'all' in audit_clause:
+                audit_clauses = tuple([AssertionRule.load(audit, c=c) for audit in audit_clause['all']])
+            else:
+                audit_clauses = tuple([AssertionRule.load(audit_clause, c=c)])
+        else:
+            audit_clauses = tuple()
 
         return CountRule(
             count=count,
             items=tuple(load_rule(r, c) for r in items),
             at_most=at_most,
-            audit_clause=audit,
+            audit_clauses=audit_clauses,
         )
 
     def validate(self, *, ctx):

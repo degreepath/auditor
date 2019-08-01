@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Optional
-from ..clause import ResolvedClause
+from typing import Tuple
+from .assertion import AssertionResult
 from ..lib import grade_point_average
 
 
@@ -8,7 +8,7 @@ from ..lib import grade_point_average
 class CountResult:
     count: int
     items: Tuple
-    audit_result: Optional[ResolvedClause]
+    audit_results: Tuple[AssertionResult, ...]
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
@@ -20,7 +20,7 @@ class CountResult:
 
     def __post_init__(self):
         passed_count = sum(1 if r.ok() else 0 for r in self.items)
-        audit_passed = self.audit_result is None or self.audit_result.result is True
+        audit_passed = len(self.audit_results) == 0 or all(a.ok() for a in self.audit_results)
         _ok = passed_count >= self.count and audit_passed
         object.__setattr__(self, '_ok', _ok)
 
@@ -32,7 +32,7 @@ class CountResult:
             "type": "count",
             "state": self.state(),
             "count": self.count,
-            "audit": self.audit_result.to_dict() if self.audit_result is not None else None,
+            "audit": [a.to_dict() for a in self.audit_results],
             "items": [x.to_dict() for x in self.items],
             "status": "pass" if self.ok() else "problem",
             "rank": self.rank(),

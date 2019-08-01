@@ -95,6 +95,18 @@ def print_result(rule, transcript, indent=0):
 
         yield f"{prefix}{emoji} {descr}"
 
+        if rule['audit']:
+            yield f'{prefix} This requirement has a post-audit:'
+
+            for a in rule['audit']:
+                content = (f"where {str_clause(a['where'])}, " if a['where'] else '') + f"{str_clause(a['assertion'])}"
+                if a['ok']:
+                    yield f"{prefix}   - 💚 {content}"
+                else:
+                    yield f"{prefix}   - 🚫️ {content}"
+
+            yield ''
+
         for r in rule["items"]:
             yield from print_result(r, transcript, indent=indent + 4)
 

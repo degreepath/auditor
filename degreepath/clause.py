@@ -285,9 +285,11 @@ def str_clause(clause) -> str:
 
     if clause["type"] == "single-clause":
         if clause.get('resolved_with', None) is not None:
-            resolved = f" ({clause.get('resolved_with', None)}; {sorted(clause.get('resolved_items', []))})"
+            resolved = f" ({clause.get('resolved_with', None)})"
+            postpostscript = f" (resolved items: {sorted(clause.get('resolved_items', []))})"
         else:
             resolved = ""
+            postpostscript = ""
 
         if clause['expected'] != clause['expected_verbatim']:
             postscript = f" (via \"{clause['expected_verbatim']}\")"
@@ -296,7 +298,7 @@ def str_clause(clause) -> str:
 
         op = str_operator(clause['operator'])
 
-        return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}"
+        return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}{postpostscript}"
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
