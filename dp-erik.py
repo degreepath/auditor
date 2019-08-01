@@ -133,7 +133,7 @@ def record(*, message, conn, result_id):
             "rank": rank,
             "max_rank": 30,
             "claims": json.dumps(claims),
-            "gpa": "0.00",
+            "gpa": message.gpa,
             "ok": False if ok is None else ok,
         })
 

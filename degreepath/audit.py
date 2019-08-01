@@ -2,9 +2,11 @@ import dataclasses
 from typing import List, Any
 from datetime import datetime
 import time
+import decimal
 
 from .area import AreaOfStudy
 from .ms import pretty_ms
+from .lib import grade_point_average
 
 
 @dataclasses.dataclass
@@ -34,6 +36,7 @@ class ResultMsg:
     elapsed: str
     iterations: List[int]
     startup_time: int
+    gpa: decimal.Decimal
 
 
 @dataclasses.dataclass
@@ -91,7 +94,8 @@ def audit(*, spec, transcript, constants, area_pointers, print_all):
         result = sol.audit(transcript=this_transcript, areas=area_pointers)
 
         if print_all:
-            yield ResultMsg(result=result, transcript=this_transcript, count=total_count, elapsed='∞', iterations=[], startup_time=startup_time)
+            gpa = gpa_from_solution(result=result, transcript=this_transcript)
+            yield ResultMsg(result=result, gpa=gpa, transcript=this_transcript, count=total_count, elapsed='∞', iterations=[], startup_time=startup_time)
 
         if best_sol is None:
             best_sol = result
@@ -115,5 +119,14 @@ def audit(*, spec, transcript, constants, area_pointers, print_all):
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
-    yield ResultMsg(result=best_sol, transcript=this_transcript, count=total_count, elapsed=elapsed, iterations=iterations, startup_time=startup_time)
+    gpa = gpa_from_solution(result=best_sol, transcript=this_transcript)
+
+    yield ResultMsg(result=best_sol, gpa=gpa, transcript=this_transcript, count=total_count, elapsed=elapsed, iterations=iterations, startup_time=startup_time)
     return
+
+
+def gpa_from_solution(*, result, transcript):
+    transcript_map = {c.clbid: c for c in transcript}
+    claimed_courses = [transcript_map[c.claim.clbid] for c in result.claims() if c.failed() is False]
+
+    return round(grade_point_average(claimed_courses), 2)

@@ -57,16 +57,21 @@ def main():
 
 
 def result_str(msg, *, as_json=False, as_raw=False):
+    if msg.result is None:
+        return json.dumps(None)
+
+    dict_result = msg.result.to_dict()
+    dict_result['gpa'] = msg.gpa
+
     if as_json:
-        return json.dumps(msg.result.to_dict() if msg.result is not None else None)
+        return json.dumps(dict_result)
 
     if as_raw:
         return msg.result
 
     return "\n" + "".join(summarize(
-        result=msg.result.to_dict() if msg.result is not None else None,
+        result=dict_result, transcript=msg.transcript, gpa=msg.gpa,
         count=msg.count, elapsed=msg.elapsed, iterations=msg.iterations,
-        transcript=msg.transcript,
     ))
 
 

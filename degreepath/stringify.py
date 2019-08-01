@@ -5,7 +5,7 @@ from .data import CourseStatus
 from .ms import pretty_ms
 
 
-def summarize(*, transcript, result, count, elapsed, iterations):
+def summarize(*, transcript, result, count, elapsed, iterations, gpa):
     if result is None:
         return 'None'
 
@@ -20,6 +20,8 @@ def summarize(*, transcript, result, count, elapsed, iterations):
         yield f"audit failed."
 
     yield f" (rank {result['rank']})"
+
+    yield f" (gpa: {gpa})"
 
     yield endl
 

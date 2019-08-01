@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Tuple
 from .assertion import AssertionResult
-from ..lib import grade_point_average
 
 
 @dataclass(frozen=True)
@@ -45,9 +44,6 @@ class CountResult:
 
     def claims(self):
         return [claim for item in self.items for claim in item.claims()]
-
-    def gpa(self):
-        return grade_point_average(self.claims())
 
     def ok(self) -> bool:
         return self._ok
