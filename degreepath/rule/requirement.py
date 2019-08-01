@@ -26,6 +26,7 @@ class Requirement:
             "result": self.result.to_dict() if self.result is not None else None,
             "audited_by": self.audited_by,
             "contract": self.contract,
+            "type": "requirement",
         }
 
     @staticmethod
