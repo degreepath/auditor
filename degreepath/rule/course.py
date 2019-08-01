@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Mapping
 import re
 from decimal import Decimal
 import logging
@@ -51,7 +51,7 @@ class CourseRule:
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, c: Constants, children: Mapping):
         return CourseRule(
             course=data["course"],
             hidden=data.get("hidden", False),

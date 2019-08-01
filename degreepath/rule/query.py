@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Set
+from typing import Dict, List, Optional, Tuple, Set, Mapping
 import itertools
 import logging
 
@@ -61,7 +61,7 @@ class QueryRule:
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, c: Constants, children: Mapping):
         where = data.get("where", None)
         if where is not None:
             where = load_clause(where, c)

@@ -7,7 +7,6 @@ from ..result.requirement import RequirementResult
 @dataclass(frozen=True)
 class RequirementSolution:
     name: str
-    requirements: Any  # frozendict[str, Requirement]
     result: Optional[Any]
     message: Optional[str] = None
     audited_by: Optional[str] = None
@@ -19,7 +18,6 @@ class RequirementSolution:
         return RequirementSolution(
             result=solution,
             name=req.name,
-            requirements=req.requirements,
             message=req.message,
             audited_by=req.audited_by,
             contract=req.contract,
@@ -33,7 +31,6 @@ class RequirementSolution:
         return {
             "type": "requirement",
             "name": self.name,
-            "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
             "result": self.result.to_dict() if self.result else None,
             "audited_by": self.audited_by,

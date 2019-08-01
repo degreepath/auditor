@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Mapping
 import itertools
 import logging
 
@@ -56,7 +56,7 @@ class CountRule:
         return False
 
     @staticmethod  # noqa: C901
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, c: Constants, children: Mapping):
         from ..load_rule import load_rule
 
         if "all" in data:
@@ -97,7 +97,7 @@ class CountRule:
 
         return CountRule(
             count=count,
-            items=tuple(load_rule(r, c) for r in items),
+            items=tuple(load_rule(r, c, children) for r in items),
             at_most=at_most,
             audit_clauses=audit_clauses,
         )

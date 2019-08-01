@@ -1,38 +1,12 @@
 from dataclasses import dataclass
-from typing import Dict, List
-import logging
+from typing import Dict, Mapping
 
 from ..constants import Constants
-
-logger = logging.getLogger(__name__)
+from .requirement import Requirement
 
 
 @dataclass(frozen=True)
 class ReferenceRule:
-    name: str
-
-    def to_dict(self):
-        return {
-            "type": "reference",
-            "name": self.name,
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-        }
-
-    def state(self):
-        return "rule"
-
-    def claims(self):
-        return []
-
-    def rank(self):
-        return 0
-
-    def ok(self):
-        return False
-
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "requirement" in data:
@@ -40,21 +14,5 @@ class ReferenceRule:
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants):
-        return ReferenceRule(name=data["requirement"])
-
-    def validate(self, *, ctx):
-        if self.name not in ctx.requirements:
-            reqs = ", ".join(ctx.requirements.keys())
-            raise AssertionError(f"expected a requirement named '{self.name}', but did not find one [options: {reqs}]")
-
-        ctx.requirements[self.name].validate(ctx=ctx)
-
-    def solutions(self, *, ctx, path: List[str]):
-        logger.debug('%s reference-rule name=%s', path, self.name)
-        requirement = ctx.requirements[self.name]
-
-        yield from requirement.solutions(ctx=ctx, path=path)
-
-    def matched(self, *, ctx):
-        return []
+    def load(data: Dict, c: Constants, children: Mapping):
+        return Requirement.load(name=data["requirement"], data=children[data["requirement"]], c=c)

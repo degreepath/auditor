@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class RequirementResult:
     name: str
-    requirements: Any  # frozendict[str, Requirement]
     message: Optional[str] = None
     result: Optional[Any] = None
     audited_by: Optional[str] = None
@@ -30,7 +29,6 @@ class RequirementResult:
     def from_solution(sol: Any, *, result: Optional[Any]):
         return RequirementResult(
             name=sol.name,
-            requirements=sol.requirements,
             message=sol.message,
             audited_by=sol.audited_by,
             contract=sol.contract,
@@ -41,7 +39,6 @@ class RequirementResult:
         return {
             "type": "requirement",
             "name": self.name,
-            "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "message": self.message,
             "result": self.result.to_dict() if self.result else None,
             "audited_by": self.audited_by,

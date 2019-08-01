@@ -8,7 +8,6 @@ from .context import RequirementContext
 from .data import CourseInstance, AreaPointer
 from .limit import Limit
 from .load_rule import Rule, load_rule
-from .rule.requirement import Requirement
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +17,6 @@ class AreaOfStudy:
     """The overall class for working with an area"""
     limit: Tuple
     result: Rule
-    requirements: Dict
     attributes: Dict
     multicountable: List
 
@@ -27,19 +25,12 @@ class AreaOfStudy:
             "type": "area",
             "limit": [l.to_dict() for l in self.limit],
             "result": self.result.to_dict(),
-            "requirements": {name: r.to_dict() for name, r in self.requirements.items()},
             "attributes": self.attributes,
-            "min_gpa": str(self.min_gpa) if self.min_gpa is not None else None,
         }
 
     @staticmethod
     def load(*, specification: Dict, c: Constants):
-        requirements = {
-            name: Requirement.load(name, r, c)
-            for name, r in specification.get("requirements", {}).items()
-        }
-
-        result = load_rule(specification["result"], c)
+        result = load_rule(specification["result"], c, specification.get("requirements", {}))
         limit = tuple(Limit.load(l, c) for l in specification.get("limit", []))
 
         attributes = specification.get("attributes", dict())
@@ -56,16 +47,10 @@ class AreaOfStudy:
                 clauses.append(item)
             multicountable.append(clauses)
 
-        return AreaOfStudy(
-            requirements=requirements,
-            result=result,
-            attributes=attributes,
-            multicountable=multicountable,
-            limit=limit,
-        )
+        return AreaOfStudy(result=result, attributes=attributes, multicountable=multicountable, limit=limit)
 
     def validate(self):
-        ctx = RequirementContext(requirements=self.requirements)
+        ctx = RequirementContext()
 
         self.result.validate(ctx=ctx)
 
@@ -81,25 +66,15 @@ class AreaOfStudy:
         ctx = RequirementContext(
             transcript=transcript,
             areas=areas,
-            requirements={name: r for name, r in self.requirements.items()},
             multicountable=self.multicountable,
         )
 
         new_path = [*path, ".result"]
         for sol in self.result.solutions(ctx=ctx, path=new_path):
             ctx.reset_claims()
-            # logger.info("generated new area solution: %s", sol)
             yield AreaSolution(solution=sol, area=self)
 
         logger.debug("%s all solutions generated", path)
-
-    # def estimate(self, *, transcript: Tuple[CourseInstance, ...]):
-    #     ctx = RequirementContext(
-    #         transcript=transcript,
-    #         requirements={name: r for name, r in self.requirements.items()},
-    #         multicountable=self.multicountable,
-    #     )
-    #     return self.result.estimate(ctx=ctx)
 
 
 @dataclass(frozen=True)
@@ -116,12 +91,10 @@ class AreaSolution:
 
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
-        # logger.debug("auditing area solution: %s", self.solution)
 
         ctx = RequirementContext(
             transcript=transcript,
             areas=areas,
-            requirements={name: r for name, r in self.area.requirements.items()},
             multicountable=self.area.multicountable,
         )
 
