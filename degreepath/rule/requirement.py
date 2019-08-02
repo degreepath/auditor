@@ -102,3 +102,6 @@ class Requirement:
 
     def claims(self):
         return []
+
+    def matched(self, *, ctx):
+        return []
