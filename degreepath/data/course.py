@@ -73,6 +73,12 @@ class CourseInstance:
     def course_with_term(self):
         return f"{self._shorthand}{self.section or ''} {str(self.term)[0:4]}-{str(self.term)[4]}"
 
+    def __str__(self):
+        return self._shorthand
+
+    def __repr__(self):
+        return f'Course("{self._shorthand}")'
+
     def year(self):
         return int(str(self.term)[0:4])
 

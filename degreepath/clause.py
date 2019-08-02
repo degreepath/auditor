@@ -196,6 +196,9 @@ class SingleClause:
             at_most=at_most,
         )
 
+    def __repr__(self):
+        return f"Clause({str_clause(self)})"
+
     def validate(self, *, ctx):
         pass
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, Dict
-from ..clause import Clause, load_clause
+from ..clause import Clause, load_clause, str_clause
 from ..constants import Constants
 
 
@@ -33,6 +33,10 @@ class AssertionRule:
 
     def rank(self):
         return 0
+
+    def __repr__(self):
+        content = (f"where {str_clause(self.where)}, " if self.where else '') + f"{str_clause(self.assertion)}"
+        return f"AssertionRule({content})"
 
     @staticmethod
     def can_load(data: Dict) -> bool:
