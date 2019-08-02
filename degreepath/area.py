@@ -6,7 +6,7 @@ from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer
-from .limit import Limit
+from .limit import Limit, LimitSet
 from .load_rule import Rule, load_rule
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class AreaOfStudy:
     """The overall class for working with an area"""
-    limit: Tuple
+    limit: LimitSet
     result: Rule
     attributes: Dict
     multicountable: List
@@ -31,7 +31,7 @@ class AreaOfStudy:
     @staticmethod
     def load(*, specification: Dict, c: Constants):
         result = load_rule(specification["result"], c, specification.get("requirements", {}))
-        limit = tuple(Limit.load(l, c) for l in specification.get("limit", []))
+        limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         attributes = specification.get("attributes", dict())
         multicountable = []
@@ -54,25 +54,19 @@ class AreaOfStudy:
 
         self.result.validate(ctx=ctx)
 
-    # def limited_transcripts(self, transcript: List[CourseInstance]):
-
     def solutions(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
         logger.debug("%s evaluating area.result", path)
 
-        # TODO: generate alternate sizes of solution based on the courses subject to the limits
-        # for limited_transcript in
+        for limited_transcript in self.limit.limited_transcripts(courses=transcript):
+            logger.debug("%s evaluating area.result with limited transcript %s", path, limited_transcript)
 
-        ctx = RequirementContext(
-            transcript=transcript,
-            areas=areas,
-            multicountable=self.multicountable,
-        )
+            ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
 
-        new_path = [*path, ".result"]
-        for sol in self.result.solutions(ctx=ctx, path=new_path):
-            ctx.reset_claims()
-            yield AreaSolution(solution=sol, area=self)
+            new_path = [*path, ".result"]
+            for sol in self.result.solutions(ctx=ctx, path=new_path):
+                ctx.reset_claims()
+                yield AreaSolution(solution=sol, area=self)
 
         logger.debug("%s all solutions generated", path)
 
@@ -92,11 +86,7 @@ class AreaSolution:
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]
 
-        ctx = RequirementContext(
-            transcript=transcript,
-            areas=areas,
-            multicountable=self.area.multicountable,
-        )
+        ctx = RequirementContext(transcript=transcript, areas=areas, multicountable=self.area.multicountable)
 
         new_path = [*path, ".result"]
 

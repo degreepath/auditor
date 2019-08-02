@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import Dict, Tuple, Sequence, Optional
+from typing import Dict, Tuple, Sequence, Optional, List
+import itertools
 from collections import defaultdict
 import logging
 
@@ -30,10 +31,22 @@ class Limit:
     def __str__(self):
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"
 
+    def iterate(self, courses):
+        logger.debug("limit/loop/start: limit=%s, matched=%s", self, courses)
+
+        for n in range(0, self.at_most + 1):
+            logger.debug("limit/loop(%s..<%s): n=%s applying %s", 0, self.at_most + 1, n, self.where)
+            for combo in itertools.combinations(courses, n):
+                logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
+                yield combo
+
 
 @dataclass(frozen=True)
 class LimitSet:
     limits: Tuple[Limit, ...]
+
+    def has_limits(self):
+        return len(self.limits) > 0
 
     def to_dict(self):
         return [l.to_dict() for l in self.limits]
@@ -76,31 +89,39 @@ class LimitSet:
         IE, if we have {at-most: 1, where: subject == CSCI}, and three CSCI courses,
         then we need to generate three transcripts - one with each of them.
 
-        To do that, we do … what?
+        - capture the things that match each limit
+        - make a list of the things that matched no limit clause
+        - for each set of things that matched…
+            - for N in range(0,at_most)…
+                - add the result of combinations(matched_things, N) to the unmatched set
+                - yield this combined set
         """
         # skip _everything_ in here if there are no limits to apply
         if not self.limits:
-            yield tuple(courses)
+            logger.debug("no limits to apply")
+            yield courses
             return
 
+        logger.debug("applying limits")
+
+        all_courses = set(courses)
+
         # step 1: find the number of extra iterations we will need for each limiting clause
-        extra_iter_counters: Dict = defaultdict(int)
+        matched_items: Dict = defaultdict(set)
         for l in self.limits:
             for c in courses:
                 logger.debug("limit/probe: checking %s against %s", c.course(), l)
                 if c.apply_clause(l.where):
-                    extra_iter_counters[l] += 1
-            # set each counter to the number of extra courses, or 0, to find the number of extra iterations
-            extra_iter_counters[l] = max(0, extra_iter_counters[l] - l.at_most)
+                    matched_items[l].add(c)
 
-        extra_iter_counters = {k: v for k, v in extra_iter_counters.items() if v > 0}
+        all_matched_items = set(item for matchset in matched_items.values() for item in matchset)
+        unmatched_items = list(all_courses.difference(all_matched_items))
 
-        # if nothing needs extra iteration, just spit out the limited transcript once
-        if not extra_iter_counters:
-            logger.debug(f"No limits result in extra combinations")
-            yield tuple(self.apply_limits(courses))
+        logger.debug("limit: unmatched items: %s", unmatched_items)
 
-        logger.debug("Limits result in %s extra combinations", len(extra_iter_counters))
-        # TODO: figure out how to do this
-        # for _ in extra_iter_counters:
-        yield tuple(self.apply_limits(courses))
+        # we need to attach _a_ combo from each limit clause
+        clause_iterators = [limit.iterate(matchset) for limit, matchset in matched_items.items()]
+        for results in itertools.product(*clause_iterators):
+            this_combo = tuple(unmatched_items) + tuple(item for group in results for item in group)
+            logger.debug("limit/combos: %s", this_combo)
+            yield this_combo
