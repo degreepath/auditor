@@ -1,5 +1,5 @@
 from degreepath.area import AreaOfStudy
-from degreepath.data import CourseInstance, course_from_str
+from degreepath.data import course_from_str
 from degreepath.constants import Constants
 import pytest
 import io

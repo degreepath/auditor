@@ -14,13 +14,7 @@ def c(s):
 
 
 def x_test_sample():
-    test_data = io.StringIO(
-        """
-        name: foo
-        catalog: 2018-19
-        type: major
-        degree: Bachelor of Arts
-
+    test_data = io.StringIO("""
         result:
           all:
             - requirement: A
@@ -47,8 +41,7 @@ def x_test_sample():
                 - course: CSCI 113
                 - course: CSCI 114
                 - course: CSCI 115
-    """
-    )
+    """)
 
     area = AreaOfStudy.load(yaml.load(stream=test_data, Loader=yaml.SafeLoader))
     area.validate()
