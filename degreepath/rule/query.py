@@ -162,11 +162,11 @@ class QueryRule:
 
         if self.where is not None:
             logger.debug("clause: %s", self.where)
-            logger.debug("before filter: %s items", len(data))
+            logger.debug("before filter: %s item(s)", len(data))
 
             data = [item for item in data if item.apply_clause(self.where)]
 
-            logger.debug("after filter: %s items", len(data))
+            logger.debug("after filter: %s item(s)", len(data))
 
         for item_set in self.limit.limited_transcripts(data):
             if len(self.assertions) == 1 and isinstance(self.assertions[0].assertion, SingleClause):
