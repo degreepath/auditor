@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Sequence, Optional
+from typing import Dict, Tuple, Sequence, Optional
 from collections import defaultdict
 import logging
 
 from .clause import Clause, str_clause, load_clause
 from .constants import Constants
+from .data.course import CourseInstance
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ class LimitSet:
             return LimitSet(limits=tuple())
         return LimitSet(limits=tuple(Limit.load(l, c) for l in data))
 
-    def apply_limits(self, courses: List):
+    def apply_limits(self, courses: Tuple[CourseInstance, ...]):
         clause_counters: Dict = defaultdict(int)
         course_set = []
 
@@ -82,7 +83,7 @@ class LimitSet:
 
         return tuple(course_set)
 
-    def limited_transcripts(self, courses: List):
+    def limited_transcripts(self, courses: Tuple[CourseInstance, ...]):
         """
         We need to iterate over each combination of limited courses.
 
