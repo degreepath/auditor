@@ -1,9 +1,0 @@
-/node_modules/
-/build/
-/.vscode/
-/.pnp/
-/.pnp.js
-/yarn.lock
-/.*ignore
-/.*rc
-.DS_Store
