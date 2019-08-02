@@ -56,8 +56,9 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
         logger.debug("converting both %s and %s to sets of strings, and running intersection", lhs, rhs)
         lhs = set(str(s) for s in lhs)
         rhs = set(str(s) for s in rhs)
-        logger.debug("lhs=%s; rhs=%s; intersection=%s", lhs, rhs, lhs.intersection(rhs))
-        return bool(lhs.intersection(rhs))
+        result = lhs.intersection(rhs)
+        logger.debug("lhs=%s; rhs=%s; intersection=%s", lhs, rhs, result)
+        return bool(result)
 
     if isinstance(lhs, tuple) or isinstance(rhs, tuple):
         if op is Operator.EqualTo:
@@ -104,28 +105,34 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
         lhs = str(lhs)
 
     if op is Operator.EqualTo:
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, lhs == rhs)
-        return lhs == rhs
+        result = lhs == rhs
+        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        return result
 
     if op is Operator.NotEqualTo:
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, lhs != rhs)
-        return lhs != rhs
+        result = lhs != rhs
+        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        return result
 
     if op is Operator.LessThan:
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, lhs < rhs)
-        return lhs < rhs
+        result = lhs < rhs
+        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        return result
 
     if op is Operator.LessThanOrEqualTo:
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, lhs <= rhs)
-        return lhs <= rhs
+        result = lhs <= rhs
+        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        return result
 
     if op is Operator.GreaterThan:
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, lhs > rhs)
-        return lhs > rhs
+        result = lhs > rhs
+        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        return result
 
     if op is Operator.GreaterThanOrEqualTo:
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, lhs >= rhs)
-        return lhs >= rhs
+        result = lhs >= rhs
+        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        return result
 
     raise TypeError(f"unknown comparison {op}")
 
