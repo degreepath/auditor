@@ -54,9 +54,9 @@ class AreaOfStudy:
             multicountable.append(clauses)
 
         return AreaOfStudy(
-            name=specification['name'],
-            type=specification['type'],
-            catalog=specification['catalog'],
+            name=specification.get('name', 'Test'),
+            type=specification.get('type', 'test'),
+            catalog=specification.get('catalog', '2000-01'),
             major=specification.get('major', None),
             degree=specification.get('degree', None),
             result=result,
