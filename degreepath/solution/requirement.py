@@ -59,10 +59,6 @@ class RequirementSolution:
             return []
         return self.result.claims()
 
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
     def ok(self):
         if not self.result:
             return False
