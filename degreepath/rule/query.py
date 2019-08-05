@@ -175,7 +175,9 @@ class QueryRule:
                     did_iter = True
                     yield QuerySolution(output=item_set, rule=self)
                     continue
+
                 logger.debug("using single assertion mode with %s", assertion)
+
                 for n in assertion.input_size_range(maximum=len(item_set)):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
                         logger.debug("combo: %s choose %s, round %s", len(item_set), n, i)
