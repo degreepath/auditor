@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 Decimal = decimal.Decimal
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, order=True)
 class CourseInstance:
     attributes: Tuple[str, ...]
     clbid: str

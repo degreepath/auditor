@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any, Tuple, Optional
 import logging
 
 from .clause import SingleClause
@@ -15,6 +15,12 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class AreaOfStudy:
     """The overall class for working with an area"""
+    name: str
+    type: str
+    catalog: str
+    major: Optional[str]
+    degree: Optional[str]
+
     limit: LimitSet
     result: Rule
     attributes: Dict
@@ -47,7 +53,17 @@ class AreaOfStudy:
                 clauses.append(item)
             multicountable.append(clauses)
 
-        return AreaOfStudy(result=result, attributes=attributes, multicountable=multicountable, limit=limit)
+        return AreaOfStudy(
+            name=specification['name'],
+            type=specification['type'],
+            catalog=specification['catalog'],
+            major=specification.get('major', None),
+            degree=specification.get('degree', None),
+            result=result,
+            attributes=attributes,
+            multicountable=multicountable,
+            limit=limit,
+        )
 
     def validate(self):
         ctx = RequirementContext()

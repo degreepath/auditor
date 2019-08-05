@@ -9,6 +9,7 @@ from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer
 from ..clause import SingleClause, Operator
+from ..lib import grade_point_average_items, grade_point_average
 
 logger = logging.getLogger(__name__)
 
@@ -202,8 +203,9 @@ def sum_items(data, kind):
 def avg_items(data, kind):
     if kind == 'grades':
         assert all(isinstance(x, CourseInstance) for x in data)
-        items = tuple(c.grade_points for c in data)
-        return (avg_or_0(items), items)
+        avg = grade_point_average(data)
+        items = tuple(c.grade_points for c in grade_point_average_items(data))
+        return (avg, items)
 
     if kind == 'credits':
         assert all(isinstance(x, CourseInstance) for x in data)

@@ -119,14 +119,17 @@ def audit(*, spec, transcript, constants, area_pointers, print_all):
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
-    gpa = gpa_from_solution(result=best_sol, transcript=this_transcript)
+    gpa = gpa_from_solution(area=area, result=best_sol, transcript=this_transcript)
 
     yield ResultMsg(result=best_sol, gpa=gpa, transcript=this_transcript, count=total_count, elapsed=elapsed, iterations=iterations, startup_time=startup_time)
     return
 
 
-def gpa_from_solution(*, result, transcript):
+def gpa_from_solution(*, result, transcript, area):
     transcript_map = {c.clbid: c for c in transcript}
-    claimed_courses = [transcript_map[c.claim.clbid] for c in result.claims() if c.failed() is False]
 
-    return round(grade_point_average(claimed_courses), 2)
+    if area.type == 'degree':
+        return grade_point_average(transcript_map.values())
+
+    claimed_courses = [transcript_map[c.claim.clbid] for c in result.claims() if c.failed() is False]
+    return grade_point_average(claimed_courses)

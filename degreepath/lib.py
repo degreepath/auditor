@@ -6,13 +6,17 @@ def filter_transcript(courses):
     return (c for c in courses if c.status != CourseStatus.Incomplete)
 
 
+def grade_point_average_items(courses):
+    return [c for c in courses if c.in_gpa]
+
+
 def grade_point_average(courses):
-    allowed = [c for c in courses if c.in_gpa]
+    allowed = grade_point_average_items(courses)
 
     if not allowed:
         return Decimal('0.00')
 
-    return sum(c.grade_points for c in allowed) / len(allowed)
+    return round(sum(c.grade_points for c in allowed) / len(allowed), 2)
 
 
 def grade_to_grade_points(g: Grade) -> Decimal:
