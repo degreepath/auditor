@@ -144,6 +144,30 @@ def test_ranges_eq(caplog):
     assert list(result) == [1]
 
 
+def test_ranges_eq_2(caplog):
+    """ensure that a solution with fewer matching courses than requested is still proposed"""
+    caplog.set_level(logging.DEBUG)
+    c = Constants(matriculation_year=2000)
+
+    result = load_clause({"count(courses)": {"$eq": 3}}, c=c).input_size_range(maximum=2)
+    assert list(result) == [2]
+
+    result = load_clause({"count(courses)": {"$neq": 3}}, c=c).input_size_range(maximum=2)
+    assert list(result) == [0, 1, 2]
+
+    result = load_clause({"count(courses)": {"$lt": 3}}, c=c).input_size_range(maximum=2)
+    assert list(result) == [0, 1, 2]
+
+    result = load_clause({"count(courses)": {"$lte": 3}}, c=c).input_size_range(maximum=2)
+    assert list(result) == [0, 1, 2, 3]
+
+    result = load_clause({"count(courses)": {"$gt": 3}}, c=c).input_size_range(maximum=2)
+    assert list(result) == [2]
+
+    result = load_clause({"count(courses)": {"$gte": 3}}, c=c).input_size_range(maximum=2)
+    assert list(result) == [2]
+
+
 def test_ranges_gte(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)

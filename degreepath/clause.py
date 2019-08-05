@@ -250,6 +250,9 @@ class SingleClause:
             raise TypeError('cannot find a range of values for a non-integer clause: %s', type(self.expected))
 
         if self.operator == Operator.EqualTo or (self.operator == Operator.GreaterThanOrEqualTo and self.at_most is True):
+            if maximum < self.expected:
+                yield maximum
+                return
             yield from range(self.expected, self.expected + 1)
 
         elif self.operator == Operator.NotEqualTo:
@@ -258,9 +261,15 @@ class SingleClause:
             yield from range(self.expected + 1, max(self.expected + 1, maximum + 1))
 
         elif self.operator == Operator.GreaterThanOrEqualTo:
+            if maximum < self.expected:
+                yield maximum
+                return
             yield from range(self.expected, max(self.expected + 1, maximum + 1))
 
         elif self.operator == Operator.GreaterThan:
+            if maximum < self.expected:
+                yield maximum
+                return
             yield from range(self.expected + 1, max(self.expected + 2, maximum + 1))
 
         elif self.operator == Operator.LessThan:
