@@ -104,4 +104,5 @@ class Requirement:
         return []
 
     def matched(self, *, ctx):
-        return []
+        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
+        return tuple(c for c in claimed_courses if c)

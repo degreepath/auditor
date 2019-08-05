@@ -45,6 +45,10 @@ class CountResult:
     def claims(self):
         return [claim for item in self.items for claim in item.claims()]
 
+    def matched(self, *, ctx):
+        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
+        return tuple(c for c in claimed_courses if c)
+
     def ok(self) -> bool:
         return self._ok
 

@@ -31,6 +31,10 @@ class CourseSolution:
     def claims(self):
         return []
 
+    def matched(self, *, ctx):
+        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
+        return tuple(c for c in claimed_courses if c)
+
     def rank(self):
         return 0
 
