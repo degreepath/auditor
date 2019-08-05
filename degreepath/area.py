@@ -6,7 +6,7 @@ from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer
-from .limit import Limit, LimitSet
+from .limit import LimitSet
 from .load_rule import Rule, load_rule
 
 logger = logging.getLogger(__name__)
