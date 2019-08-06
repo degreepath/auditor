@@ -188,8 +188,12 @@ class QueryRule:
                         did_iter = True
                         yield QuerySolution(output=combo, rule=self)
             else:
-                did_iter = True
-                yield QuerySolution(output=item_set, rule=self)
+                logger.debug("not running single assertion mode")
+                for n in range(1, len(item_set) + 1):
+                    for i, combo in enumerate(itertools.combinations(item_set, n)):
+                        logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
+                        did_iter = True
+                        yield QuerySolution(output=combo, rule=self)
 
         if not did_iter:
             # be sure we always yield something
