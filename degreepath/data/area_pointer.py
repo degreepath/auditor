@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass(frozen=True)
 class AreaPointer:
-    code: int
+    code: str
     status: AreaStatus
     kind: AreaType
     name: str
@@ -28,7 +28,7 @@ class AreaPointer:
     @staticmethod
     def from_dict(*, code, status, kind, name, degree):
         return AreaPointer(
-            code=int(code),
+            code=code,
             status=AreaStatus(status),
             kind=AreaType(kind),
             name=name,

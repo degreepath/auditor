@@ -39,7 +39,14 @@ def run(args: Arguments):
             yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
 
             try:
-                yield from audit(spec=area_spec, transcript=transcript, constants=constants, area_pointers=area_pointers, print_all=args.print_all)
+                yield from audit(
+                    spec=area_spec,
+                    transcript=transcript,
+                    constants=constants,
+                    area_pointers=area_pointers,
+                    print_all=args.print_all,
+                    other_areas=area_pointers,
+                )
 
             except Exception as ex:
                 yield ExceptionMsg(ex=ex, tb=traceback.format_exc())

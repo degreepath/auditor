@@ -5,6 +5,7 @@ import logging
 
 from ..constants import Constants
 from ..solution.count import CountSolution
+from .requirement import Requirement
 from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
@@ -60,27 +61,34 @@ class CountRule:
         return False
 
     @staticmethod  # noqa: C901
-    def load(data: Dict, c: Constants, children: Mapping):
+    def load(data: Dict, c: Constants, children: Dict, emphases: List[Dict] = []):
         from ..load_rule import load_rule
 
+        extra_items: List = []
+        if emphases:
+            for r in emphases:
+                emphasis_key = f"Emphasis: {r['name']}"
+                children[emphasis_key] = r
+                extra_items.append({"requirement": emphasis_key})
+
         if "all" in data:
-            items = data["all"]
+            items = data["all"] + extra_items
             count = len(items)
         elif "any" in data:
-            items = data["any"]
+            items = data["any"] + extra_items
             count = 1
         elif "both" in data:
-            items = data["both"]
+            items = data["both"] + extra_items
             count = 2
             if len(items) != 2:
                 raise Exception(f"expected two items in both; found {len(items)} items")
         elif "either" in data:
-            items = data["either"]
+            items = data["either"] + extra_items
             count = 1
             if len(items) != 2:
                 raise Exception(f"expected two items in both; found {len(items)} items")
         else:
-            items = data["of"]
+            items = data["of"] + extra_items
             if data["count"] == "all":
                 count = len(items)
             elif data["count"] == "any":

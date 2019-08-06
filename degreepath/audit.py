@@ -57,8 +57,8 @@ class ProgressMsg:
     start_time: datetime
 
 
-def audit(*, spec, transcript, constants, area_pointers, print_all):
-    area = AreaOfStudy.load(specification=spec, c=constants)
+def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas):
+    area = AreaOfStudy.load(specification=spec, c=constants, other_areas=other_areas)
     area.validate()
 
     this_transcript = []

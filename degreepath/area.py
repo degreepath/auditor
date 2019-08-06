@@ -5,7 +5,7 @@ import logging
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
-from .data import CourseInstance, AreaPointer
+from .data import CourseInstance, AreaPointer, AreaType
 from .limit import LimitSet
 from .load_rule import Rule, load_rule
 
@@ -35,8 +35,16 @@ class AreaOfStudy:
         }
 
     @staticmethod
-    def load(*, specification: Dict, c: Constants):
-        result = load_rule(specification["result"], c, specification.get("requirements", {}))
+    def load(*, specification: Dict, c: Constants, other_areas: Tuple[AreaPointer, ...]):
+        emphases = specification.get('emphases', {})
+        taken_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
+
+        result = load_rule(
+            data=specification["result"],
+            c=c,
+            children=specification.get("requirements", {}),
+            emphases=[v for k, v in emphases.items() if str(k) in taken_emphases],
+        )
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         attributes = specification.get("attributes", dict())
@@ -104,6 +112,4 @@ class AreaSolution:
 
         ctx = RequirementContext(transcript=transcript, areas=areas, multicountable=self.area.multicountable)
 
-        new_path = [*path, ".result"]
-
-        return self.solution.audit(ctx=ctx, path=new_path)
+        return self.solution.audit(ctx=ctx, path=path)

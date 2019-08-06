@@ -1,4 +1,4 @@
-from typing import Union, Dict, Mapping
+from typing import Union, Dict, List
 from .constants import Constants
 
 from .rule.count import CountRule
@@ -10,7 +10,11 @@ from .rule.reference import ReferenceRule
 Rule = Union[CourseRule, CountRule, QueryRule, Requirement]
 
 
-def load_rule(data: Dict, c: Constants, children: Mapping) -> Rule:
+def load_rule(data: Dict, c: Constants, children: Dict, emphases: List[Dict] = []) -> Rule:
+    if emphases:
+        assert CountRule.can_load(data)
+        return CountRule.load(data, c, children, emphases)
+
     if CourseRule.can_load(data):
         return CourseRule.load(data, c, children)
 
