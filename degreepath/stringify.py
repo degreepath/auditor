@@ -51,6 +51,9 @@ def print_result(rule, transcript, indent=0):
         return
 
     rule_type = rule["type"]
+    rank = rule["rank"]
+
+    prefix += f"({rank}) "
 
     if rule_type == "course":
         status = "🌀      "

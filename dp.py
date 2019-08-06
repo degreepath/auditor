@@ -47,7 +47,7 @@ def main():
         elif isinstance(msg, ProgressMsg):
             avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
             avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
-            print(f"{msg.count:,} at {avg_iter_time} per audit", file=sys.stderr)
+            print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
             print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw))

@@ -55,6 +55,7 @@ class ProgressMsg:
     count: int
     recent_iters: List[int]
     start_time: datetime
+    best_rank: int
 
 
 def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas):
@@ -89,7 +90,7 @@ def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas)
         total_count += 1
 
         if total_count % 1_000 == 0:
-            yield ProgressMsg(count=total_count, recent_iters=iterations[-1_000:], start_time=start_time)
+            yield ProgressMsg(count=total_count, recent_iters=iterations[-1_000:], start_time=start_time, best_rank=best_sol.rank())
 
         result = sol.audit(transcript=this_transcript, areas=area_pointers)
 

@@ -28,6 +28,7 @@ class CountRule:
             "ok": self.ok(),
             "status": "skip",
             "claims": self.claims(),
+            "rank": self.rank(),
         }
 
     def state(self):
