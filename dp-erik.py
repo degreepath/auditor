@@ -77,7 +77,14 @@ def main(area_file, student_file, run_id=None):
 
                 if result_id:
                     with conn.cursor() as curs:
-                        curs.execute("UPDATE result SET in_progress = false WHERE id = %(result_id)s", {"result_id": result_id})
+                        curs.execute("""
+                            UPDATE result
+                            SET in_progress = false, error = %(error)s
+                            WHERE id = %(result_id)s
+                        """, {
+                            "result_id": result_id,
+                            "error": str(msg.ex),
+                        })
                         conn.commit()
 
             elif isinstance(msg, ProgressMsg):
