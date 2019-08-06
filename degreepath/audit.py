@@ -94,7 +94,7 @@ def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas)
         result = sol.audit(transcript=this_transcript, areas=area_pointers)
 
         if print_all:
-            gpa = gpa_from_solution(result=result, transcript=this_transcript)
+            gpa = gpa_from_solution(result=result, transcript=this_transcript, area=area)
             yield ResultMsg(result=result, gpa=gpa, transcript=this_transcript, count=total_count, elapsed='∞', iterations=[], startup_time=startup_time)
 
         if best_sol is None:
@@ -115,6 +115,7 @@ def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas)
 
     if not iterations:
         yield NoAuditsCompletedMsg()
+        return
 
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
@@ -122,7 +123,6 @@ def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas)
     gpa = gpa_from_solution(area=area, result=best_sol, transcript=this_transcript)
 
     yield ResultMsg(result=best_sol, gpa=gpa, transcript=this_transcript, count=total_count, elapsed=elapsed, iterations=iterations, startup_time=startup_time)
-    return
 
 
 def gpa_from_solution(*, result, transcript, area):

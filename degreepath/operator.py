@@ -50,7 +50,7 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
             raise Exception('both rhs and lhs must not be sequences when using %s; lhs=%s, rhs=%s', op, lhs, rhs)
 
         if len(lhs) == 0 or len(rhs) == 0:
-            logger.debug("either lhs=%s or rhs=%s was empty; returning false", len(lhs) == 0, len(rhs) == 0)
+            logger.debug("either lhs=%s or rhs=%s was empty; returning false", len(lhs), len(rhs))
             return False
 
         logger.debug("converting both %s and %s to sets of strings, and running intersection", lhs, rhs)
