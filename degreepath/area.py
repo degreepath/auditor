@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Any, Tuple, Optional
+from typing import Dict, List, Any, Tuple, Optional, Sequence
 import logging
 
 from .clause import SingleClause
@@ -35,7 +35,7 @@ class AreaOfStudy:
         }
 
     @staticmethod
-    def load(*, specification: Dict, c: Constants, other_areas: Tuple[AreaPointer, ...]):
+    def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()):
         emphases = specification.get('emphases', {})
         taken_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
 

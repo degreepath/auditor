@@ -1,11 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Mapping
+from typing import Dict, List, Tuple
 import itertools
 import logging
 
 from ..constants import Constants
 from ..solution.count import CountSolution
-from .requirement import Requirement
 from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
