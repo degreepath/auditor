@@ -128,7 +128,7 @@ class CountRule:
 
     def solutions(self, *, ctx, path: List):
         path = [*path, f".of"]
-        logger.debug("%s", path)
+        # logger.debug("%s", path)
 
         lo = self.count
         hi = len(self.items) + 1 if self.at_most is False else self.count + 1
@@ -138,7 +138,7 @@ class CountRule:
 
         did_yield = False
         for r in range(lo, hi):
-            logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
+            # logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
 
             for combo_i, combo in enumerate(itertools.combinations(self.items, r)):
                 logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", path, lo, hi, r, combo_i)

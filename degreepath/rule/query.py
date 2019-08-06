@@ -165,12 +165,12 @@ class QueryRule:
         did_iter = False
 
         if self.where is not None:
-            logger.debug("clause: %s", self.where)
-            logger.debug("before filter: %s item(s)", len(data))
+            logger.debug("%s clause: %s", path, self.where)
+            logger.debug("%s before filter: %s item(s)", path, len(data))
 
             data = [item for item in data if item.apply_clause(self.where)]
 
-            logger.debug("after filter: %s item(s)", len(data))
+            logger.debug("%s after filter: %s item(s)", path, len(data))
 
         for item_set in self.limit.limited_transcripts(data):
             if len(self.assertions) == 1 and isinstance(self.assertions[0].assertion, SingleClause):
@@ -180,11 +180,11 @@ class QueryRule:
                     yield QuerySolution(output=item_set, rule=self)
                     continue
 
-                logger.debug("using single assertion mode with %s", assertion)
+                logger.debug("%s using single assertion mode with %s", path, assertion)
 
                 for n in assertion.input_size_range(maximum=len(item_set)):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        logger.debug("combo: %s choose %s, round %s", len(item_set), n, i)
+                        logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
                         did_iter = True
                         yield QuerySolution(output=combo, rule=self)
             else:
@@ -193,5 +193,5 @@ class QueryRule:
 
         if not did_iter:
             # be sure we always yield something
-            logger.debug("did not yield anything; yielding empty collection")
+            logger.debug("%s did not yield anything; yielding empty collection", path)
             yield QuerySolution(output=tuple(), rule=self)

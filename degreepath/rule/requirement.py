@@ -72,7 +72,7 @@ class Requirement:
             self.result.validate(ctx=new_ctx)
 
     def solutions(self, *, ctx, path: List[str]):
-        path = [*path, f"$req->{self.name}"]
+        path = [*path, f"$r->{self.name}"]
 
         logger.debug("%s auditing %s", path, self.name)
 
@@ -85,8 +85,6 @@ class Requirement:
             return
 
         new_ctx = replace(ctx)
-
-        path = [*path, ".result"]
 
         for solution in self.result.solutions(ctx=new_ctx, path=path):
             yield RequirementSolution.from_requirement(self, solution=solution)

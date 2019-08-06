@@ -87,8 +87,7 @@ class AreaOfStudy:
 
             ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
 
-            new_path = [*path, ".result"]
-            for sol in self.result.solutions(ctx=ctx, path=new_path):
+            for sol in self.result.solutions(ctx=ctx, path=path):
                 ctx.reset_claims()
                 yield AreaSolution(solution=sol, area=self)
 
