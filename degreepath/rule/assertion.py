@@ -29,7 +29,7 @@ class AssertionRule:
         return "rule"
 
     def ok(self):
-        return True
+        return False
 
     def rank(self):
         return 0
