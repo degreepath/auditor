@@ -40,3 +40,6 @@ class ClaimAttempt:
 
     def get_course(self, *, ctx):
         return ctx.find_course_by_clbid(self.claim.clbid)
+
+    def hash(self):
+        return str(hash(self))
