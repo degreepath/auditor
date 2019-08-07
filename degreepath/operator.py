@@ -19,7 +19,6 @@ class Operator(enum.Enum):
         return str(self)
 
 
-# @lru_cache(maxsize=256, typed=True)
 def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
     """
     Applies two values (lhs and rhs) to an operator.
