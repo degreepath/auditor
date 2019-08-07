@@ -9,7 +9,7 @@ import psycopg2
 import sentry_sdk
 
 from degreepath import pretty_ms
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
@@ -95,6 +95,9 @@ def main(area_file, student_file, run_id=None):
 
             elif isinstance(msg, ResultMsg):
                 record(conn=conn, result_id=result_id, message=msg)
+
+            elif isinstance(msg, EstimateMsg):
+                pass
 
             else:
                 logger.critical('unknown message %s', msg)
