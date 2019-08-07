@@ -93,7 +93,7 @@ def print_result(rule, transcript, indent=0):
         elif rule["count"] == 1:
             descr = f"any of (these {size})"
         else:
-            descr = f"{rule['count']} of {size}"
+            descr = f"at least {rule['count']} of {size}"
 
         ok_count = len([r for r in rule["items"] if r["ok"]])
         descr += f" (ok: {ok_count}; need: {rule['count']})"
