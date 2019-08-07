@@ -154,7 +154,7 @@ class QueryRule:
 
         return data
 
-    def solutions(self, *, ctx, path: List[str]):
+    def solutions(self, *, ctx, path: List[str]):  # noqa: C901
         path = [*path, f".from"]
         logger.debug("%s", path)
 
