@@ -7,9 +7,10 @@ from os.path import abspath, join
 def cli():
     parser = argparse.ArgumentParser()
     parser.add_argument('student')
+    parser.add_argument('area_codes', metavar='CODE', action='store', nargs='*', default=tuple())
     args = parser.parse_args()
 
-    for (name, path) in main(files=args.student):
+    for (name, path) in main(files=args.student, area_codes=args.area_codes):
         print(name, path)
 
 
@@ -24,10 +25,8 @@ def main(files, area_codes=None, root='/home/www/sis/degreepath/areas/'):
             continue
         catalog = str(catalog) + '-' + str(catalog + 1)[2:]
 
-        items = set(a['code'] for a in areas)
-
-        if area_codes:
-            items = (x for x in items if x in area_codes)
+        items = set(a['code'] for a in areas).union(area_codes)
+        items = items.intersection(area_codes or items)
 
         for filename in items:
             file_path = join(root, catalog, filename + '.yaml')
