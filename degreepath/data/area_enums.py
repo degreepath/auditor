@@ -9,6 +9,7 @@ class AreaStatus(enum.Enum):
 
 @enum.unique
 class AreaType(enum.Enum):
+    Degree = "degree"
     Major = "major"
     Concentration = "concentration"
     Emphasis = "emphasis"
