@@ -149,14 +149,12 @@ class CountRule:
                 solutions = [rule.solutions(ctx=ctx, path=[*path, item_indices[rule]]) for rule in combo]
 
                 for solset_i, solutionset in enumerate(itertools.product(*solutions)):
+                    did_yield = True
+
                     if solset_i > 0 and solset_i % 10_000 == 0:
                         logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", path, lo, hi, r, combo_i, solset_i)
 
-                    did_yield = True
-
-                    solset = solutionset + tuple(other_children)
-
-                    yield CountSolution.from_rule(self, items=solset)
+                    yield CountSolution.from_rule(self, items=solutionset + tuple(other_children))
 
         if not did_yield:
             logger.debug("%s did not iterate", path)

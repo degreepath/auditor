@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Set, Mapping
+from typing import Dict, List, Optional, Tuple, Set, Mapping, Sequence, Iterator
 import itertools
 import logging
 
 from ..limit import LimitSet
-from ..clause import Clause, load_clause, SingleClause
+from ..clause import Clause, load_clause, SingleClause, OrClause, AndClause
 from ..solution.query import QuerySolution
 from ..constants import Constants
 from .assertion import AssertionRule
@@ -173,14 +173,32 @@ class QueryRule:
             logger.debug("%s after filter: %s item(s)", path, len(data))
 
         for item_set in self.limit.limited_transcripts(data):
-            if len(self.assertions) == 1 and isinstance(self.assertions[0].assertion, SingleClause):
-                assertion = self.assertions[0].assertion
-                if not assertion.key.startswith('count('):
-                    did_iter = True
-                    yield QuerySolution(output=item_set, rule=self)
-                    continue
+            if self.attempt_claims is False:
+                did_iter = True
+                yield QuerySolution(output=item_set, rule=self)
+                continue
+            # if len(self.assertions) == 1 and isinstance(self.assertions[0].assertion, SingleClause):
+            #     assertion = self.assertions[0].assertion
+            #     if not assertion.key.startswith('count('):
+            #         did_iter = True
+            #         yield QuerySolution(output=item_set, rule=self)
+            #         continue
 
-                logger.debug("%s using single assertion mode with %s", path, assertion)
+            #     logger.debug("%s using single assertion mode with %s", path, assertion)
+
+            #     for n in assertion.input_size_range(maximum=len(item_set)):
+            #         for i, combo in enumerate(itertools.combinations(item_set, n)):
+            #             logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
+            #             did_iter = True
+            #             yield QuerySolution(output=combo, rule=self)
+            # elif has_simple_count_assertion(assertions=self.assertions):
+            if has_simple_count_assertion(assertions=self.assertions):
+                maybe_assertion = get_largest_simple_count_assertion(upper_bound=len(item_set), assertions=self.assertions)
+                if maybe_assertion is None:
+                    raise Exception('has_simple_count_assertion and get_largest_simple_count_assertion disagreed')
+                assertion = maybe_assertion
+
+                logger.debug("%s using simple assertion mode with %s", path, assertion)
 
                 for n in assertion.input_size_range(maximum=len(item_set)):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
@@ -199,3 +217,48 @@ class QueryRule:
             # be sure we always yield something
             logger.debug("%s did not yield anything; yielding empty collection", path)
             yield QuerySolution(output=tuple(), rule=self)
+
+
+def has_simple_count_assertion(*, assertions: Sequence[AssertionRule]) -> bool:
+    if not assertions:
+        return False
+
+    for assertion in assertions:
+        if assertion.where is not None:
+            continue
+        if has_simple_count_clause(assertion.assertion):
+            return True
+
+    return False
+
+
+def has_simple_count_clause(clause: Clause) -> bool:
+    try:
+        next(get_simple_count_clauses(clause))
+        return True
+    except StopIteration:
+        return False
+
+
+def get_simple_count_clauses(clause: Clause) -> Iterator[SingleClause]:
+    if isinstance(clause, SingleClause) and clause.key.startswith('count('):
+        yield clause
+    elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
+        for c in clause.children:
+            yield from get_simple_count_clauses(c)
+
+
+def get_largest_simple_count_assertion(*, upper_bound: int, assertions: Sequence[AssertionRule]) -> Optional[SingleClause]:
+    if not assertions:
+        return None
+
+    largest_clause = None
+    largest_count = -1
+    for assertion in assertions:
+        clauses = get_simple_count_clauses(assertion.assertion)
+        for clause in clauses:
+            if type(clause.expected) == int and clause.expected > largest_count:
+                largest_clause = clause
+                largest_count = clause.expected
+
+    return largest_clause
