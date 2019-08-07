@@ -177,8 +177,8 @@ class QueryRule:
                 yield QuerySolution(output=item_set, rule=self)
                 continue
 
-            if has_simple_count_assertion(assertions=self.assertions):
-                assertion = get_largest_simple_count_assertion(upper_bound=len(item_set), assertions=self.assertions)
+            if has_simple_count_assertion(self.assertions):
+                assertion = get_largest_simple_count_assertion(self.assertions)
                 if assertion is None:
                     raise Exception('has_simple_count_assertion and get_largest_simple_count_assertion disagreed')
 
@@ -215,8 +215,8 @@ class QueryRule:
                 iterations += 1
                 continue
 
-            if has_simple_count_assertion(assertions=self.assertions):
-                assertion = get_largest_simple_count_assertion(upper_bound=len(item_set), assertions=self.assertions)
+            if has_simple_count_assertion(self.assertions):
+                assertion = get_largest_simple_count_assertion(self.assertions)
                 if assertion is None:
                     raise Exception('has_simple_count_assertion and get_largest_simple_count_assertion disagreed')
                 for n in assertion.input_size_range(maximum=len(item_set)):
@@ -231,7 +231,7 @@ class QueryRule:
         return iterations
 
 
-def has_simple_count_assertion(*, assertions: Sequence[AssertionRule]) -> bool:
+def has_simple_count_assertion(assertions: Sequence[AssertionRule]) -> bool:
     if not assertions:
         return False
 
@@ -260,7 +260,7 @@ def get_simple_count_clauses(clause: Clause) -> Iterator[SingleClause]:
             yield from get_simple_count_clauses(c)
 
 
-def get_largest_simple_count_assertion(*, upper_bound: int, assertions: Sequence[AssertionRule]) -> Optional[SingleClause]:
+def get_largest_simple_count_assertion(assertions: Sequence[AssertionRule]) -> Optional[SingleClause]:
     if not assertions:
         return None
 
