@@ -14,6 +14,7 @@ class Arguments:
     area_files: List[str]
     student_files: List[str]
     print_all: bool = False
+    estimate_only: bool = False
 
 
 @dataclasses.dataclass
@@ -58,7 +59,12 @@ class ProgressMsg:
     best_rank: int
 
 
-def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas):
+@dataclasses.dataclass
+class EstimateMsg:
+    estimate: int
+
+
+def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas, estimate_only):  # noqa: C901
     area = AreaOfStudy.load(specification=spec, c=constants, other_areas=other_areas)
     area.validate()
 
@@ -81,6 +87,12 @@ def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas)
     start = time.perf_counter()
     iter_start = time.perf_counter()
     startup_time = 0
+
+    estimate = area.estimate(transcript=this_transcript, areas=area_pointers)
+    yield EstimateMsg(estimate=estimate)
+
+    if estimate_only:
+        return
 
     for sol in area.solutions(transcript=this_transcript, areas=area_pointers):
         if total_count == 0:

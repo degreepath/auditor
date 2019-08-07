@@ -5,6 +5,7 @@ import logging
 
 from ..constants import Constants
 from ..solution.count import CountSolution
+from ..ncr import mult
 from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
@@ -160,3 +161,18 @@ class CountRule:
             logger.debug("%s did not iterate", path)
             # ensure that we always yield something
             yield CountSolution.from_rule(self, items=self.items)
+
+    def estimate(self, *, ctx):
+        lo = self.count
+        hi = len(self.items) + 1 if self.at_most is False else self.count + 1
+
+        did_yield = False
+        iterations = 0
+        for r in range(lo, hi):
+            for combo in itertools.combinations(self.items, r):
+                iterations += mult(rule.estimate(ctx=ctx) for rule in combo)
+
+        if not did_yield:
+            iterations += 1
+
+        return iterations

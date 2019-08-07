@@ -89,6 +89,12 @@ class Requirement:
         for solution in self.result.solutions(ctx=new_ctx, path=path):
             yield RequirementSolution.from_requirement(self, solution=solution)
 
+    def estimate(self, *, ctx):
+        if not self.result:
+            return 1
+
+        return self.result.estimate(ctx=ctx)
+
     def state(self):
         return "rule"
 

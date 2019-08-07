@@ -6,7 +6,7 @@ import sys
 import os
 
 from degreepath import pretty_ms, summarize
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
@@ -24,12 +24,13 @@ def main():
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--raw", action='store_true')
     parser.add_argument("--print-all", action='store_true')
+    parser.add_argument("--estimate", action='store_true')
     cli_args = parser.parse_args()
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
     logging.basicConfig(level=loglevel, format=logformat)
 
-    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all)
+    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=cli_args.estimate)
 
     for msg in dp['run'](args):
         if isinstance(msg, NoStudentsMsg):
@@ -51,6 +52,9 @@ def main():
 
         elif isinstance(msg, ResultMsg):
             print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw))
+
+        elif isinstance(msg, EstimateMsg):
+            print(f"estimated iterations: {msg.estimate:,}")
 
         else:
             logger.critical('unknown message %s', msg)

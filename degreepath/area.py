@@ -93,6 +93,16 @@ class AreaOfStudy:
 
         logger.debug("%s all solutions generated", path)
 
+    def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
+        iterations = 0
+
+        for limited_transcript in self.limit.limited_transcripts(courses=transcript):
+            ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
+
+            iterations += self.result.estimate(ctx=ctx)
+
+        return iterations
+
 
 @dataclass(frozen=True)
 class AreaSolution:

@@ -46,6 +46,7 @@ def run(args: Arguments):
                     area_pointers=area_pointers,
                     print_all=args.print_all,
                     other_areas=area_pointers,
+                    estimate_only=args.estimate_only,
                 )
 
             except Exception as ex:

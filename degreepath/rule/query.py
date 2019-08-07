@@ -8,6 +8,7 @@ from ..clause import Clause, load_clause, SingleClause, OrClause, AndClause
 from ..solution.query import QuerySolution
 from ..constants import Constants
 from .assertion import AssertionRule
+from ..ncr import ncr
 
 logger = logging.getLogger(__name__)
 
@@ -217,6 +218,34 @@ class QueryRule:
             # be sure we always yield something
             logger.debug("%s did not yield anything; yielding empty collection", path)
             yield QuerySolution(output=tuple(), rule=self)
+
+    def estimate(self, *, ctx):
+        data = self.get_data(ctx=ctx)
+
+        if self.where is not None:
+            data = [item for item in data if item.apply_clause(self.where)]
+
+        did_iter = False
+        iterations = 0
+        for item_set in self.limit.limited_transcripts(data):
+            if self.attempt_claims is False:
+                iterations += 1
+                continue
+
+            if has_simple_count_assertion(assertions=self.assertions):
+                assertion = get_largest_simple_count_assertion(upper_bound=len(item_set), assertions=self.assertions)
+                if assertion is None:
+                    raise Exception('has_simple_count_assertion and get_largest_simple_count_assertion disagreed')
+                for n in assertion.input_size_range(maximum=len(item_set)):
+                    iterations += ncr(len(item_set), n)
+            else:
+                for n in range(1, len(item_set) + 1):
+                    iterations += ncr(len(item_set), n)
+
+        if not did_iter:
+            iterations += 1
+
+        return iterations
 
 
 def has_simple_count_assertion(*, assertions: Sequence[AssertionRule]) -> bool:
