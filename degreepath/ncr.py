@@ -10,4 +10,4 @@ def ncr(n, r):
 
 
 def mult(it):
-    return reduce(op.mul, it)
+    return reduce(op.mul, it, 0)
