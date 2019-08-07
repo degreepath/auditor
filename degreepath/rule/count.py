@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Sequence
 import itertools
 import logging
 
@@ -62,7 +62,7 @@ class CountRule:
         return False
 
     @staticmethod  # noqa: C901
-    def load(data: Dict, c: Constants, children: Dict, emphases: List[Dict] = []):
+    def load(data: Dict, c: Constants, children: Dict, emphases: Sequence[Dict] = tuple()):
         from ..load_rule import load_rule
 
         extra_items: List = []
