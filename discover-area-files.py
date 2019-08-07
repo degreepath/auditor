@@ -24,7 +24,7 @@ def main(files, area_codes=None, root='/home/www/sis/degreepath/areas/'):
             continue
         catalog = str(catalog) + '-' + str(catalog + 1)[2:]
 
-        items = set(item for a in areas for item in (a['degree'], a['code']))
+        items = set(a['code'] for a in areas)
 
         if area_codes:
             items = (x for x in items if x in area_codes)
