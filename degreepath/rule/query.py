@@ -160,10 +160,7 @@ class QueryRule:
         logger.debug("%s", path)
 
         data = self.get_data(ctx=ctx)
-
         assert len(self.assertions) > 0
-
-        did_iter = False
 
         if self.where is not None:
             logger.debug("%s clause: %s", path, self.where)
@@ -173,31 +170,17 @@ class QueryRule:
 
             logger.debug("%s after filter: %s item(s)", path, len(data))
 
+        did_iter = False
         for item_set in self.limit.limited_transcripts(data):
             if self.attempt_claims is False:
                 did_iter = True
                 yield QuerySolution(output=item_set, rule=self)
                 continue
-            # if len(self.assertions) == 1 and isinstance(self.assertions[0].assertion, SingleClause):
-            #     assertion = self.assertions[0].assertion
-            #     if not assertion.key.startswith('count('):
-            #         did_iter = True
-            #         yield QuerySolution(output=item_set, rule=self)
-            #         continue
 
-            #     logger.debug("%s using single assertion mode with %s", path, assertion)
-
-            #     for n in assertion.input_size_range(maximum=len(item_set)):
-            #         for i, combo in enumerate(itertools.combinations(item_set, n)):
-            #             logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
-            #             did_iter = True
-            #             yield QuerySolution(output=combo, rule=self)
-            # elif has_simple_count_assertion(assertions=self.assertions):
             if has_simple_count_assertion(assertions=self.assertions):
-                maybe_assertion = get_largest_simple_count_assertion(upper_bound=len(item_set), assertions=self.assertions)
-                if maybe_assertion is None:
+                assertion = get_largest_simple_count_assertion(upper_bound=len(item_set), assertions=self.assertions)
+                if assertion is None:
                     raise Exception('has_simple_count_assertion and get_largest_simple_count_assertion disagreed')
-                assertion = maybe_assertion
 
                 logger.debug("%s using simple assertion mode with %s", path, assertion)
 
