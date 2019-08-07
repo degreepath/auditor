@@ -65,7 +65,7 @@ def result_str(msg, *, as_json=False, as_raw=False):
         return json.dumps(None)
 
     dict_result = msg.result.to_dict()
-    dict_result['gpa'] = msg.gpa
+    dict_result['gpa'] = str(msg.gpa)
 
     if as_json:
         return json.dumps(dict_result)
