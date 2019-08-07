@@ -253,7 +253,7 @@ def has_simple_count_clause(clause: Clause) -> bool:
 
 
 def get_simple_count_clauses(clause: Clause) -> Iterator[SingleClause]:
-    if isinstance(clause, SingleClause) and clause.key.startswith('count('):
+    if isinstance(clause, SingleClause) and clause.key == 'count(courses)':
         yield clause
     elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
         for c in clause.children:
