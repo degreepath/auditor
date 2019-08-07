@@ -83,7 +83,7 @@ def main(area_file, student_file, run_id=None):
                             WHERE id = %(result_id)s
                         """, {
                             "result_id": result_id,
-                            "error": str(msg.ex),
+                            "error": {"error": str(msg.ex)},
                         })
                         conn.commit()
 
