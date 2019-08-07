@@ -11,6 +11,7 @@ class CountResult:
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
+    _max_rank: int = field(init=False)
 
     # def __post_init__(self):
     #     self._ok = sum(1 if r.ok() else 0 for r in self.items) >= self.count
@@ -26,6 +27,9 @@ class CountResult:
         _rank = sum(r.rank() for r in self.items)
         object.__setattr__(self, '_rank', _rank)
 
+        _max_rank = sum(r.max_rank() for r in self.items)
+        object.__setattr__(self, '_max_rank', _max_rank)
+
     def to_dict(self):
         return {
             "type": "count",
@@ -35,6 +39,7 @@ class CountResult:
             "items": [x.to_dict() for x in self.items],
             "status": "pass" if self.ok() else "problem",
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
             "ok": self.ok(),
             "claims": [c.to_dict() for c in self.claims()],
         }
@@ -54,3 +59,6 @@ class CountResult:
 
     def rank(self):
         return self._rank
+
+    def max_rank(self):
+        return self._max_rank

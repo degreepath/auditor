@@ -22,6 +22,7 @@ class CourseSolution:
             "status": "pending",
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
             "claims": self.claims(),
         }
 
@@ -36,6 +37,9 @@ class CourseSolution:
         return tuple(c for c in claimed_courses if c)
 
     def rank(self):
+        return 0
+
+    def max_rank(self):
         return 0
 
     def ok(self):

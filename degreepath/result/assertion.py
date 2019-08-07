@@ -17,6 +17,7 @@ class AssertionResult:
             "state": self.state(),
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
         }
 
     def validate(self, *, ctx):
@@ -31,4 +32,7 @@ class AssertionResult:
         return self.assertion.result is True
 
     def rank(self):
+        return 0
+
+    def max_rank(self):
         return 0

@@ -13,6 +13,7 @@ class QueryResult:
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
+    _max_rank: int = field(init=False)
 
     # def __post_init__(self):
     #     self._ok = self.success == True
@@ -27,6 +28,9 @@ class QueryResult:
         _rank = len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
         object.__setattr__(self, '_rank', _rank)
 
+        _max_rank = len(self.successful_claims) + len(self.failed_claims)
+        object.__setattr__(self, '_max_rank', _max_rank)
+
     def to_dict(self):
         return {
             **self.rule.to_dict(),
@@ -34,6 +38,7 @@ class QueryResult:
             "status": "pass" if self.ok() else "skip",
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.failed_claims],
             "assertions": [a.to_dict() for a in self.resolved_assertions],
@@ -54,3 +59,6 @@ class QueryResult:
 
     def rank(self):
         return self._rank
+
+    def max_rank(self):
+        return self._max_rank

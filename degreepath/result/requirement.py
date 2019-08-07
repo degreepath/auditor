@@ -15,14 +15,20 @@ class RequirementResult:
 
     _ok: bool = field(init=False)
     _rank: int = field(init=False)
+    _max_rank: int = field(init=False)
 
     def __post_init__(self):
         _ok = self.result.ok() if self.result else False
+        if self.audited_by is not None:
+            _ok = True
         object.__setattr__(self, '_ok', _ok)
 
         boost = 1 if self._ok else 0
         _rank = self.result.rank() + boost if self.result else 0
         object.__setattr__(self, '_rank', _rank)
+
+        _max_rank = self.result.max_rank() + 1 if self.result else 0
+        object.__setattr__(self, '_max_rank', _max_rank)
 
     # sol: RequirementSolution
     @staticmethod
@@ -47,6 +53,7 @@ class RequirementResult:
             "status": "pass" if self.ok() else "problem",
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
             "claims": [c.to_dict() for c in self.claims()],
         }
 
@@ -73,3 +80,6 @@ class RequirementResult:
 
     def rank(self):
         return self._rank
+
+    def max_rank(self):
+        return self._max_rank

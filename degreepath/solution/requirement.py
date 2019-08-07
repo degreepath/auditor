@@ -39,10 +39,14 @@ class RequirementSolution:
             "status": "pending",
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
             "claims": self.claims(),
         }
 
     def rank(self):
+        return 0
+
+    def max_rank(self):
         return 0
 
     def state(self):

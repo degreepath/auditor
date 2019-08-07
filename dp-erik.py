@@ -115,6 +115,7 @@ def record(*, message, conn, result_id):
     claims = result["claims"]
 
     rank = result["rank"]
+    max_rank = result["max_rank"]
     ok = result["ok"]
 
     claims = []
@@ -141,7 +142,7 @@ def record(*, message, conn, result_id):
             "avg_iter_time": avg_iter_time.strip("~"),
             "result": json.dumps(result),
             "rank": rank,
-            "max_rank": 30,
+            "max_rank": max_rank,
             "claims": json.dumps(claims),
             "gpa": message.gpa,
             "ok": False if ok is None else ok,

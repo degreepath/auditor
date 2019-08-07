@@ -18,6 +18,7 @@ class AssertionRule:
             "state": self.state(),
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
         }
 
     def validate(self, *, ctx):
@@ -32,6 +33,9 @@ class AssertionRule:
         return False
 
     def rank(self):
+        return 0
+
+    def max_rank(self):
         return 0
 
     def __repr__(self):

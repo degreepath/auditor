@@ -29,6 +29,7 @@ class CountRule:
             "status": "skip",
             "claims": self.claims(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
         }
 
     def state(self):
@@ -42,6 +43,9 @@ class CountRule:
         return tuple(c for c in claimed_courses if c)
 
     def rank(self):
+        return 0
+
+    def max_rank(self):
         return 0
 
     def ok(self):

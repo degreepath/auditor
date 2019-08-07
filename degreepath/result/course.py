@@ -26,6 +26,7 @@ class CourseResult:
             "status": "pass" if self.ok() else "skip",
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.max_rank(),
             "claims": [c.to_dict() for c in self.claims()],
             "min_grade_not_met": self.min_grade_not_met.to_dict() if self.min_grade_not_met else None,
         }
@@ -48,3 +49,6 @@ class CourseResult:
 
     def rank(self):
         return self._rank
+
+    def max_rank(self):
+        return 1

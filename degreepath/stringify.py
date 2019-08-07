@@ -19,7 +19,7 @@ def summarize(*, transcript, result, count, elapsed, iterations, gpa):
     else:
         yield f"audit failed."
 
-    yield f" (rank {result['rank']})"
+    yield f" (rank {result['rank']} of {result['max_rank']})"
 
     yield f" (gpa: {gpa})"
 

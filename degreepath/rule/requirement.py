@@ -27,6 +27,7 @@ class Requirement:
             "state": self.state(),
             "ok": self.ok(),
             "rank": self.rank(),
+            "max_rank": self.rank(),
         }
 
     @staticmethod
@@ -102,6 +103,9 @@ class Requirement:
         return False
 
     def rank(self):
+        return 0
+
+    def max_rank(self):
         return 0
 
     def claims(self):
