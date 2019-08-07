@@ -19,8 +19,7 @@ class RequirementResult:
 
     def __post_init__(self):
         _ok = self.result.ok() if self.result else False
-        if self.audited_by is not None:
-            _ok = True
+        # _ok = True if self.audited_by is not None else _ok
         object.__setattr__(self, '_ok', _ok)
 
         boost = 1 if self._ok else 0
