@@ -146,8 +146,12 @@ def load_course(data: Dict) -> CourseInstance:  # noqa: C901
     term = data['term']
     transcript_code = data.get('transcript_code', None) or None
 
+    clbid = clbid
+    term = int(term)
+    credits = decimal.Decimal(credits)
+
     grade = Grade(grade)
-    grade_points = grade_to_grade_points(grade)
+    grade_points = grade_to_grade_points(grade) * credits
     subtype = SubType(subtype)
     grade_type = GradeType(graded)
     transcript_code = TranscriptCode(transcript_code)
@@ -162,10 +166,6 @@ def load_course(data: Dict) -> CourseInstance:  # noqa: C901
 
     if transcript_code is TranscriptCode.TakenAtCarleton:
         institution = 'Carleton College'
-
-    clbid = clbid
-    term = int(term)
-    credits = decimal.Decimal(credits)
 
     verbatim_subject_field = subjects
     subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
