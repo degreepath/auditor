@@ -1,7 +1,12 @@
 import argparse
 import glob
 import json
+import os
 from os.path import abspath, join
+
+import dotenv
+
+dotenv.load_dotenv(verbose=True)
 
 
 def cli():
@@ -14,7 +19,7 @@ def cli():
         print(name, path)
 
 
-def main(files, area_codes=None, root='/home/www/sis/degreepath/areas/'):
+def main(files, area_codes=tuple(), root=os.getenv('AREA_ROOT')):
     for student_file in glob.iglob(files):
         with open(student_file, 'r', encoding='utf-8') as infile:
             student = json.load(infile)
