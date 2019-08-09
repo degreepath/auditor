@@ -2,36 +2,28 @@ import enum
 
 
 @enum.unique
-class CourseStatus(enum.Enum):
-    Ok = enum.auto()
-    InProgress = enum.auto()
-    Incomplete = enum.auto()
-    Repeat = enum.auto()
-
-
-@enum.unique
-class GradeType(enum.Enum):
-    AU = "Audit"
-    GR = "Graded"
-    NG = "No Grade"
-    PN = "P/N"
-    SU = "S/U"
+class GradeOption(enum.Enum):
+    Audit = "audit"
+    Grade = "grade"
+    NoGrade = "no grade"
+    PN = "p/n"
+    SU = "s/u"
 
 
 @enum.unique
 class SubType(enum.Enum):
-    Discussion = "D"
-    E = "E"
-    FLAC = "F"
-    Lab = "L"
-    Research = "R"
-    Seminar = "S"
-    Topic = "T"
+    Discussion = "discussion"
+    Ensemble = "ensemble"
+    Flac = "flac"
+    Lab = "lab"
+    Research = "research"
+    Seminar = "seminar"
+    Topic = "topic"
     Normal = ""
 
 
 @enum.unique
-class Grade(enum.Enum):
+class GradeCode(enum.Enum):
     A = "A"
     Aplus = "A+"
     Aminus = "A-"
@@ -48,23 +40,15 @@ class Grade(enum.Enum):
 
     _BC = "BC"
     _AB = "AB"
-    _AU = "AU"
-    _I = "I"
-    _IP = "IP"
-    _N = "N"
     _NG = "NG"
+    _IP = "IP"
+    _I = "I"
     _P = "P"
+    _N = "N"
     _S = "S"
     _U = "U"
+    _AU = "AU"
     _UA = "UA"
-    _W = "W"
     _WF = "WF"
     _WP = "WP"
-
-
-@enum.unique
-class TranscriptCode(enum.Enum):
-    TakenAtCarleton = "#"
-    RepeatedLater = "R"
-    Incomplete = "*"
-    NoCode = None
+    _W = "W"

@@ -7,7 +7,7 @@ from .constants import Constants
 from .lib import str_to_grade_points
 from .operator import Operator, apply_operator, str_operator
 from .rule.course import CourseRule
-from .data.course_enums import GradeType
+from .data.course_enums import GradeOption
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +131,7 @@ class SingleClause:
 
     def to_dict(self):
         expected = self.expected
-        if isinstance(self.expected, GradeType):
+        if isinstance(self.expected, GradeOption):
             expected = self.expected.value
         if isinstance(self.expected, decimal.Decimal):
             expected = str(self.expected)
@@ -183,8 +183,8 @@ class SingleClause:
 
         if key == 'grade':
             expected_value = str_to_grade_points(expected_value) if type(expected_value) is str else decimal.Decimal(expected_value)
-        elif key == 'grade_type':
-            expected_value = GradeType(expected_value)
+        elif key == 'grade_option':
+            expected_value = GradeOption(expected_value)
         elif key == 'credits':
             expected_value = decimal.Decimal(expected_value)
 

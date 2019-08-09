@@ -4,8 +4,7 @@ import decimal
 import logging
 
 from ..clause import Clause, SingleClause, AndClause, OrClause
-from .course_enums import CourseStatus, SubType, TranscriptCode, Grade, GradeType
-from ..lib import grade_to_grade_points
+from .course_enums import GradeCode, GradeOption, SubType
 
 logger = logging.getLogger(__name__)
 Decimal = decimal.Decimal
@@ -18,20 +17,25 @@ class CourseInstance:
     credits: decimal.Decimal
     crsid: str
     gereqs: Tuple[str, ...]
-    grade: Grade
-    grade_points: Decimal
-    grade_type: GradeType
-    institution: str
-    in_gpa: bool
+    grade_code: GradeCode
+    grade_option: GradeOption
+    grade_points: decimal.Decimal
+    grade_points_gpa: decimal.Decimal
+    is_in_gpa: bool
+    is_in_progress: bool
+    is_incomplete: bool
+    is_repeat: bool
+    is_stolaf: bool
+    is_lab: bool
     level: int
     name: str
     number: str
     section: Optional[str]
-    status: CourseStatus
+    sub_type: SubType
     subject: Tuple[str, ...]
-    subtype: SubType
-    term: int
-    transcript_code: TranscriptCode
+    term: str
+    year: int
+
     _identity: str
     _shorthand: str
 
@@ -42,19 +46,23 @@ class CourseInstance:
             "credits": str(self.credits),
             "crsid": self.crsid,
             "gereqs": list(self.gereqs),
-            "grade": self.grade.value,
+            "grade_code": self.grade_code.value,
+            "grade_option": self.grade_option.value,
             "grade_points": str(self.grade_points),
-            "grade_type": self.grade_type.value,
-            "institution": self.institution,
+            "grade_points_gpa": str(self.grade_points_gpa),
+            "is_in_gpa": self.is_in_gpa,
+            "is_in_progress": self.is_in_progress,
+            "is_incomplete": self.is_incomplete,
+            "is_repeat": self.is_repeat,
+            "is_stolaf": self.is_stolaf,
+            "is_lab": self.is_lab,
             "level": self.level,
             "name": self.name,
             "number": self.number,
             "section": self.section,
-            "status": self.status.value,
             "subject": list(self.subject),
-            "subtype": self.subtype.value,
+            "sub_type": self.sub_type.value,
             "term": self.term,
-            "transcript_code": self.transcript_code.value,
             "type": "course",
         }
 
@@ -71,19 +79,13 @@ class CourseInstance:
         return self._shorthand
 
     def course_with_term(self):
-        return f"{self._shorthand}{self.section or ''} {str(self.term)[0:4]}-{str(self.term)[4]}"
+        return f"{self._shorthand}{self.section or ''} {self.year}-{self.term}"
 
     def __str__(self):
         return self._shorthand
 
     def __repr__(self):
         return f'Course("{self._shorthand}")'
-
-    def year(self):
-        return int(str(self.term)[0:4])
-
-    def semester(self):
-        return int(str(self.term)[4])
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
@@ -99,31 +101,58 @@ class CourseInstance:
 
         raise TypeError(f"courseinstance: expected a clause; found {type(clause)}")
 
-    def apply_single_clause(self, clause: SingleClause):
+    def apply_single_clause(self, clause: SingleClause):  # noqa: C901
         logger.debug("clause/compare/key=%s", clause.key)
+
+        if clause.key == 'attributes':
+            return clause.compare(self.attributes)
+
+        if clause.key == 'gereqs':
+            return clause.compare(self.gereqs)
+
+        if clause.key == 'number':
+            return clause.compare(self.number)
+
+        if clause.key == 'course':
+            return clause.compare(self._identity) or clause.compare(self._shorthand)
+
+        if clause.key == 'subject':
+            return clause.compare(self.subject)
+
+        if clause.key == 'grade':
+            return clause.compare(self.grade_points)
+
+        if clause.key == 'level':
+            return clause.compare(self.level)
+
+        if clause.key == 'semester':
+            return clause.compare(self.term)
+
+        if clause.key == 's/u':
+            return clause.compare(self.grade_option is GradeOption.SU)
+
+        if clause.key == 'p/n':
+            return clause.compare(self.grade_option is GradeOption.PN)
+
+        if clause.key == 'lab':
+            return clause.compare(self.is_lab)
+
+        if clause.key == 'grade_option':
+            return clause.compare(self.grade_option)
+
+        if clause.key == 'is_stolaf':
+            return clause.compare(self.is_stolaf)
+
+        if clause.key == 'year':
+            return clause.compare(self.year)
 
         if clause.key == 'clbid':
             return clause.compare(self.clbid)
-        elif clause.key == 'crsid':
-            return clause.compare(self.crsid)
-        elif clause.key == 'grade':
-            return clause.compare(self.grade_points)
-        elif clause.key == 'level':
-            return clause.compare(self.level)
-        elif clause.key == 'attributes':
-            return clause.compare(self.attributes)
-        elif clause.key == 'course':
-            return clause.compare(self._identity) or clause.compare(self._shorthand)
-        elif clause.key == 'semester':
-            return clause.compare(self.semester())
 
-        # TODO: replace this with explicit key accesses
-        if clause.key in self.__dict__:
-            return clause.compare(self.__dict__[clause.key])
-        else:
-            keys = list(self.__dict__.keys())
-            logger.debug("clause/compare[%s]: not found in %s", clause.key, keys)
-            return False
+        if clause.key == 'crsid':
+            return clause.compare(self.crsid)
+
+        raise TypeError(f'{clause.key} is not a known clause key')
 
 
 def load_course(data: Dict) -> CourseInstance:  # noqa: C901
@@ -132,102 +161,86 @@ def load_course(data: Dict) -> CourseInstance:  # noqa: C901
     course = data['course']
     credits = data['credits']
     crsid = data['crsid']
+    flag_gpa = data['flag_gpa']
+    flag_incomplete = data['flag_incomplete']
+    flag_in_progress = data['flag_in_progress']
+    flag_repeat = data['flag_repeat']
+    flag_stolaf = data['flag_stolaf']
     gereqs = data['gereqs']
-    grade = data['grade']
-    graded = data['graded']
-    incomplete = data['incomplete']
-    institution = data.get('institution', "St. Olaf College")
-    is_repeat = data['is_repeat']
+    grade_code = data['grade_code']
+    grade_option = data['grade_option']
+    grade_points = data['grade_points']
     name = data['name']
     number = data['number']
     section = data['section']
+    sub_type = data['sub_type']
     subjects = data['subjects']
-    subtype = data['subtype']
     term = data['term']
-    transcript_code = data.get('transcript_code', None) or None
+    year = data['year']
 
     clbid = clbid
     term = int(term)
     credits = decimal.Decimal(credits)
+    section = section or None
 
-    grade = Grade(grade)
-    grade_points = grade_to_grade_points(grade) * credits
-    subtype = SubType(subtype)
-    grade_type = GradeType(graded)
-    transcript_code = TranscriptCode(transcript_code)
+    grade_code = GradeCode(grade_code)
+    grade_points = decimal.Decimal(grade_points)
+    grade_option = GradeOption(grade_option)
+    sub_type = SubType(sub_type)
 
-    status = CourseStatus.Ok
-    if grade is Grade._IP:
-        status = CourseStatus.InProgress
-    if transcript_code is TranscriptCode.RepeatedLater or is_repeat:
-        status = CourseStatus.Repeat
-    if incomplete:
-        status = CourseStatus.Incomplete
+    grade_points_gpa = grade_points * credits
 
-    if transcript_code is TranscriptCode.TakenAtCarleton:
-        institution = 'Carleton College'
-
+    # we want to keep the original shorthand course identity for matching purposes
     verbatim_subject_field = subjects
     subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
     subject = tuple(expand_subjects(subject))
-    # we want to keep the original shorthand course identity for matching purposes
-
-    number = str(number if number is not None else course.split(" ")[1])
-    section = section or None
 
     try:
         level = int(number) // 100 * 100
+        level = level if flag_stolaf else 0
     except Exception:
         level = 0
 
     attributes = tuple(attributes) if attributes else tuple()
     gereqs = tuple(gereqs) if gereqs else tuple()
 
-    if subtype is SubType.Lab:
+    if sub_type == 'lab':
         course_identity = f"{'/'.join(subject)} {number}.L"
         course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.L"
-    elif subtype is SubType.FLAC:
+    elif sub_type == 'flac':
         course_identity = f"{'/'.join(subject)} {number}.F"
         course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.F"
-    elif subtype is SubType.Discussion:
+    elif sub_type == 'discussion':
         course_identity = f"{'/'.join(subject)} {number}.D"
         course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.D"
     else:
         course_identity = f"{'/'.join(subject)} {number}"
         course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}"
 
-    in_gpa = True
-    if str(term)[-1] == '9':
-        in_gpa = False
-    elif institution not in ('St. Olaf College', 'Carleton College'):
-        in_gpa = False
-    elif grade_type is not GradeType.GR:
-        in_gpa = False
-    elif grade in (Grade._NG, Grade._W):
-        in_gpa = False
-    elif status in (CourseStatus.Repeat, CourseStatus.InProgress):
-        in_gpa = False
-
     return CourseInstance(
         attributes=attributes,
         clbid=clbid,
         credits=credits,
         crsid=crsid,
-        in_gpa=in_gpa,
         gereqs=gereqs,
-        grade=grade,
-        grade_type=grade_type,
+        grade_code=grade_code,
+        grade_option=grade_option,
         grade_points=grade_points,
-        institution=institution,
+        grade_points_gpa=grade_points_gpa,
+        is_in_gpa=flag_gpa,
+        is_in_progress=flag_in_progress,
+        is_incomplete=flag_incomplete,
+        is_repeat=flag_repeat,
+        is_stolaf=flag_stolaf,
+        is_lab=sub_type is SubType.Lab,
         level=level,
         name=name,
         number=number,
         section=section,
-        status=status,
+        sub_type=sub_type,
         subject=subject,
-        subtype=subtype,
         term=term,
-        transcript_code=transcript_code,
+        year=year,
         _identity=course_identity,
         _shorthand=course_identity_short,
     )

@@ -1,8 +1,8 @@
-# flake8: noqa
-
+from typing import List
 from .clause import str_clause
-from .data import CourseStatus
+from .data import CourseInstance
 from .ms import pretty_ms
+import json
 
 
 def summarize(*, transcript, result, count, elapsed, iterations, gpa):
@@ -43,7 +43,7 @@ def summarize(*, transcript, result, count, elapsed, iterations, gpa):
     yield endl
 
 
-def print_result(rule, transcript, indent=0):
+def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C901
     prefix = " " * indent
 
     if rule is None:
@@ -64,14 +64,14 @@ def print_result(rule, transcript, indent=0):
 
             if not course:
                 status = "!!!!!!! "
-            elif course.status == CourseStatus.Ok:
-                status = "💚 [ ok]"
-            elif course.status == CourseStatus.Incomplete:
+            elif course.is_incomplete:
                 status = "⛔️ [dnf]"
-            elif course.status == CourseStatus.InProgress:
+            elif course.is_in_progress:
                 status = "💚 [ ip]"
-            elif course.status == CourseStatus.Repeat:
+            elif course.is_repeat:
                 status = "💚 [rep]"
+            else:
+                status = "💚 [ ok]"
 
         yield f"{prefix}{status} {rule['course']}"
 

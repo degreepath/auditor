@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple, Any, Dict, Union, Set
 from collections import defaultdict
 import logging
 
-from .data import CourseInstance, CourseStatus, AreaPointer
+from .data import CourseInstance, AreaPointer
 from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
@@ -34,7 +34,7 @@ class RequirementContext:
             COMPLETED_COURSES[tid] = [
                 course
                 for course in self.transcript
-                if course.status != CourseStatus.Incomplete
+                if not course.is_in_progress
             ]
         self._completed_courses = COMPLETED_COURSES[tid]
 
