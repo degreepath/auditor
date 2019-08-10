@@ -166,6 +166,8 @@ class QueryRule(Rule, BaseQueryRule):
         if not did_iter:
             iterations += 1
 
+        logger.debug('QueryRule.estimate: %s', iterations)
+
         return iterations
 
 

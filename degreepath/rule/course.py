@@ -41,4 +41,5 @@ class CourseRule(Rule, BaseCourseRule):
         yield CourseSolution.from_rule(rule=self)
 
     def estimate(self, *, ctx):
+        logger.debug('CourseRule.estimate: 1')
         return 1

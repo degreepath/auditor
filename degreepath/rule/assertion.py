@@ -1,10 +1,13 @@
 from dataclasses import dataclass
 from typing import Dict
+import logging
+
 from ..clause import load_clause, str_clause
 from ..constants import Constants
-
 from ..base.bases import Rule
 from ..base.assertion import BaseAssertionRule
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -35,6 +38,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         self.assertion.validate(ctx=ctx)
 
     def estimate(self):
+        logger.debug('AssertionRule.estimate: 0')
         return 0
 
     def solutions(self):

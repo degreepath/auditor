@@ -74,6 +74,9 @@ class RequirementRule(Rule, BaseRequirementRule):
 
     def estimate(self, *, ctx):
         if not self.result:
+            logger.debug('RequirementRule.estimate: 1')
             return 1
 
-        return self.result.estimate(ctx=ctx)
+        estimate = self.result.estimate(ctx=ctx)
+        logger.debug('RequirementRule.estimate: %s', estimate)
+        return estimate

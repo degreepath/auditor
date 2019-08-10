@@ -136,6 +136,8 @@ class CountRule(Rule, BaseCountRule):
             yield CountSolution.from_rule(rule=self, items=self.items)
 
     def estimate(self, *, ctx):
+        logger.debug('CountRule.estimate')
+
         lo = self.count
         hi = len(self.items) + 1 if self.at_most is False else self.count + 1
 
@@ -143,9 +145,16 @@ class CountRule(Rule, BaseCountRule):
         iterations = 0
         for r in range(lo, hi):
             for combo in itertools.combinations(self.items, r):
-                iterations += mult(rule.estimate(ctx=ctx) for rule in combo)
+                estimates = [rule.estimate(ctx=ctx) for rule in combo]
+                product = mult(estimates)
+                if product == 0 or product == 1:
+                    iterations += sum(estimates)
+                else:
+                    iterations += product
 
         if not did_yield:
             iterations += 1
+
+        logger.debug('CountRule.estimate: %s', iterations)
 
         return iterations
