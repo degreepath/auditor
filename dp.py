@@ -25,6 +25,7 @@ def main():
     parser.add_argument("--raw", action='store_true')
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--estimate", action='store_true')
+    parser.add_argument("--transcript", action='store_true')
     cli_args = parser.parse_args()
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
@@ -32,7 +33,7 @@ def main():
 
     args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=cli_args.estimate)
 
-    for msg in dp['run'](args):
+    for msg in dp['run'](args, transcript_only=cli_args.transcript):
         if isinstance(msg, NoStudentsMsg):
             logger.critical('no student files provided')
 

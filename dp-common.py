@@ -8,7 +8,7 @@ from degreepath import load_course, Constants, AreaPointer
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, Arguments
 
 
-def run(args: Arguments):
+def run(args: Arguments, *, transcript_only=False):
     if not args.student_files:
         yield NoStudentsMsg()
         return
@@ -24,6 +24,11 @@ def run(args: Arguments):
         area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
         transcript = [load_course(row) for row in student["courses"]]
         constants = Constants(matriculation_year=student['matriculation'])
+
+        if transcript_only:
+            for c in transcript:
+                print(repr(c))
+            return
 
         for area_file in args.area_files:
             try:
