@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Tuple
 from ..clause import Clause
 
 from .bases import Base
@@ -9,6 +9,7 @@ from .bases import Base
 class BaseAssertionRule(Base):
     assertion: Clause
     where: Optional[Clause]
+    path: Tuple[str, ...]
 
     def to_dict(self):
         return {

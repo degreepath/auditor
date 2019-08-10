@@ -1,10 +1,13 @@
 import abc
-from typing import List, Iterator
+from typing import Iterator, Sequence
 
 
 class Base(abc.ABC):
+    path: Sequence[str]
+
     def to_dict(self):
         return {
+            "path": list(self.path),
             "type": self.type(),
             "status": self.status(),
             "state": self.state(),
@@ -47,7 +50,7 @@ class Rule(Base):
         raise NotImplementedError(f'must define a validate() method')
 
     @abc.abstractmethod
-    def solutions(self, *, ctx, path: List[str]) -> Iterator:
+    def solutions(self, *, ctx) -> Iterator:
         raise NotImplementedError(f'must define a solutions() method')
 
     @abc.abstractmethod
@@ -60,7 +63,7 @@ class Solution(Base):
         return "solution"
 
     @abc.abstractmethod
-    def audit(self, *, ctx, path: List):
+    def audit(self, *, ctx):
         raise NotImplementedError(f'must define an audit() method')
 
 

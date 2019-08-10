@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Tuple
 from decimal import Decimal
 
 from .bases import Base
@@ -12,6 +12,7 @@ class BaseCourseRule(Base):
     hidden: bool
     grade: Optional[Decimal]
     allow_claimed: bool
+    path: Tuple[str, ...]
 
     def to_dict(self):
         return {

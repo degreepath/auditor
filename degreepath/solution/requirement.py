@@ -17,6 +17,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             message=rule.message,
             audited_by=rule.audited_by,
             is_contract=rule.is_contract,
+            path=rule.path,
         )
 
     def state(self):
@@ -34,8 +35,8 @@ class RequirementSolution(Solution, BaseRequirementRule):
             return False
         return self.result.ok()
 
-    def audit(self, *, ctx, path: List):
+    def audit(self, *, ctx):
         if self.result is None:
             return RequirementResult.from_solution(solution=self, result=None)
 
-        return RequirementResult.from_solution(solution=self, result=self.result.audit(ctx=ctx, path=path))
+        return RequirementResult.from_solution(solution=self, result=self.result.audit(ctx=ctx))

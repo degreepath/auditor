@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Mapping, Sequence, Iterator
+from typing import Dict, List, Optional, Set, Sequence, Iterator
 import itertools
 import logging
 
@@ -24,7 +24,9 @@ class QueryRule(Rule, BaseQueryRule):
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants, children: Mapping):
+    def load(data: Dict, *, c: Constants, path: List[str]):
+        path = [*path, f".query"]
+
         where = data.get("where", None)
         if where is not None:
             where = load_clause(where, c)
@@ -38,9 +40,9 @@ class QueryRule(Rule, BaseQueryRule):
 
         assertions: List[AssertionRule] = []
         if "assert" in data:
-            assertions = [AssertionRule.load({'assert': data["assert"]}, c)]
+            assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, "[0]"])]
         elif "all" in data:
-            assertions = [AssertionRule.load(d, c) for d in data["all"]]
+            assertions = [AssertionRule.load(d, c=c, path=[*path, f"[{i}]"]) for i, d in enumerate(data["all"])]
 
         if 'assert' in data and 'all' in data:
             raise ValueError(f'you cannot have both assert: and all: keys; {data}')
@@ -65,6 +67,7 @@ class QueryRule(Rule, BaseQueryRule):
             where=where,
             allow_claimed=allow_claimed,
             attempt_claims=attempt_claims,
+            path=tuple(path),
         )
 
     def validate(self, *, ctx):
@@ -93,20 +96,19 @@ class QueryRule(Rule, BaseQueryRule):
 
         return data
 
-    def solutions(self, *, ctx, path: List[str]):  # noqa: C901
-        path = [*path, f".from"]
-        logger.debug("%s", path)
+    def solutions(self, *, ctx):  # noqa: C901
+        logger.debug("%s", self.path)
 
         data = self.get_data(ctx=ctx)
         assert len(self.assertions) > 0
 
         if self.where is not None:
-            logger.debug("%s clause: %s", path, self.where)
-            logger.debug("%s before filter: %s item(s)", path, len(data))
+            logger.debug("%s clause: %s", self.path, self.where)
+            logger.debug("%s before filter: %s item(s)", self.path, len(data))
 
             data = [item for item in data if item.apply_clause(self.where)]
 
-            logger.debug("%s after filter: %s item(s)", path, len(data))
+            logger.debug("%s after filter: %s item(s)", self.path, len(data))
 
         did_iter = False
         for item_set in self.limit.limited_transcripts(data):
@@ -120,24 +122,24 @@ class QueryRule(Rule, BaseQueryRule):
                 if assertion is None:
                     raise Exception('has_simple_count_assertion and get_largest_simple_count_assertion disagreed')
 
-                logger.debug("%s using simple assertion mode with %s", path, assertion)
+                logger.debug("%s using simple assertion mode with %s", self.path, assertion)
 
                 for n in assertion.input_size_range(maximum=len(item_set)):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
+                        logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
                         did_iter = True
                         yield QuerySolution.from_rule(rule=self, output=combo)
             else:
                 logger.debug("not running single assertion mode")
                 for n in range(1, len(item_set) + 1):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
+                        logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
                         did_iter = True
                         yield QuerySolution.from_rule(rule=self, output=combo)
 
         if not did_iter:
             # be sure we always yield something
-            logger.debug("%s did not yield anything; yielding empty collection", path)
+            logger.debug("%s did not yield anything; yielding empty collection", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple())
 
     def estimate(self, *, ctx):

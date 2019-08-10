@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Sequence
 import logging
 
 from ..clause import load_clause, str_clause
@@ -23,14 +23,16 @@ class AssertionRule(Rule, BaseAssertionRule):
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, *, c: Constants, path: Sequence[str]):
+        path = [*path, ".assert"]
+
         where = data.get("where", None)
         if where is not None:
             where = load_clause(where, c)
 
         assertion = load_clause(data["assert"], c)
 
-        return AssertionRule(assertion=assertion, where=where)
+        return AssertionRule(assertion=assertion, where=where, path=tuple(path))
 
     def validate(self, *, ctx):
         if self.where:

@@ -31,14 +31,23 @@ class CountRule(Rule, BaseCountRule):
         return False
 
     @staticmethod  # noqa: C901
-    def load(data: Dict, c: Constants, children: Dict, emphases: Sequence[Dict] = tuple()):
+    def load(
+        data: Dict, *,
+        c: Constants,
+        children: Dict[str, Dict],
+        path: List[str],
+        emphases: Sequence[Dict[str, Dict]] = tuple(),
+    ):
         from ..load_rule import load_rule
 
+        path = [*path, f".count"]
+
+        children_with_emphases = {**children}
         extra_items: List = []
         if emphases:
             for r in emphases:
                 emphasis_key = f"Emphasis: {r['name']}"
-                children[emphasis_key] = r
+                children_with_emphases[emphasis_key] = r
                 extra_items.append({"requirement": emphasis_key})
 
         if "all" in data:
@@ -69,19 +78,28 @@ class CountRule(Rule, BaseCountRule):
         at_most = data.get('at_most', False)
 
         audit_clause = data.get('audit', None)
+        audit_clauses: Tuple[AssertionRule, ...] = tuple()
+
         if audit_clause is not None:
             if 'all' in audit_clause:
-                audit_clauses = tuple([AssertionRule.load(audit, c=c) for audit in audit_clause['all']])
+                audit_clauses = tuple(
+                    AssertionRule.load(audit, c=c, path=[*path, f"[{i}]"])
+                    for i, audit in enumerate(audit_clause['all'])
+                )
             else:
-                audit_clauses = tuple([AssertionRule.load(audit_clause, c=c)])
-        else:
-            audit_clauses = tuple()
+                audit_clauses = tuple([AssertionRule.load(audit_clause, c=c, path=[*path, "[0]"])])
+
+        loaded_items = tuple(
+            load_rule(data=r, c=c, children=children_with_emphases, path=[*path, f"[{i}]"])
+            for i, r in enumerate(items)
+        )
 
         return CountRule(
             count=count,
-            items=tuple(load_rule(r, c, children) for r in items),
+            items=loaded_items,
             at_most=at_most,
             audit_clauses=audit_clauses,
+            path=tuple(path),
         )
 
     def validate(self, *, ctx):
@@ -96,10 +114,7 @@ class CountRule(Rule, BaseCountRule):
         for rule in self.items:
             rule.validate(ctx=ctx)
 
-    def solutions(self, *, ctx, path: List):
-        path = [*path, f".of"]
-        # logger.debug("%s", path)
-
+    def solutions(self, *, ctx):
         lo = self.count
         hi = len(self.items) + 1 if self.at_most is False else self.count + 1
 
@@ -111,14 +126,14 @@ class CountRule(Rule, BaseCountRule):
             # logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
 
             for combo_i, combo in enumerate(itertools.combinations(self.items, r)):
-                logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", path, lo, hi, r, combo_i)
+                logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i)
 
                 selected_children = set(combo)
                 deselected_children = all_children.difference(selected_children)
                 other_children = sorted(deselected_children, key=lambda r: item_indices[r])
 
                 solutions = [
-                    r.solutions(ctx=ctx, path=[*path, str(item_indices[r])])
+                    r.solutions(ctx=ctx)
                     for r in combo
                 ]
 
@@ -126,12 +141,12 @@ class CountRule(Rule, BaseCountRule):
                     did_yield = True
 
                     if solset_i > 0 and solset_i % 10_000 == 0:
-                        logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", path, lo, hi, r, combo_i, solset_i)
+                        logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i, solset_i)
 
                     yield CountSolution.from_rule(rule=self, items=solutionset + tuple(other_children))
 
         if not did_yield:
-            logger.debug("%s did not iterate", path)
+            logger.debug("%s did not iterate", self.path)
             # ensure that we always yield something
             yield CountSolution.from_rule(rule=self, items=self.items)
 

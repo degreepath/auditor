@@ -30,13 +30,14 @@ class AreaOfStudy:
     @staticmethod
     def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()):
         emphases = specification.get('emphases', {})
-        taken_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
+        declared_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
 
         result = load_rule(
             data=specification["result"],
             c=c,
             children=specification.get("requirements", {}),
-            emphases=[v for k, v in emphases.items() if str(k) in taken_emphases],
+            emphases=[v for k, v in emphases.items() if str(k) in declared_emphases],
+            path=["$"],
         )
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
@@ -80,7 +81,7 @@ class AreaOfStudy:
 
             ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
 
-            for sol in self.result.solutions(ctx=ctx, path=path):
+            for sol in self.result.solutions(ctx=ctx):
                 ctx.reset_claims()
                 yield AreaSolution(solution=sol, area=self)
 
@@ -103,8 +104,6 @@ class AreaSolution:
     area: AreaOfStudy
 
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
-        path = ["$root"]
-
         ctx = RequirementContext(transcript=transcript, areas=areas, multicountable=self.area.multicountable)
 
-        return self.solution.audit(ctx=ctx, path=path)
+        return self.solution.audit(ctx=ctx)

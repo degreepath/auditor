@@ -19,18 +19,17 @@ class CountSolution(Solution, BaseCountRule):
             items=items if isinstance(items, tuple) else tuple(items),
             audit_clauses=rule.audit_clauses,
             at_most=rule.at_most,
+            path=rule.path,
         )
 
-    def audit(self, *, ctx, path: List):
-        path = [*path, f".of"]
-
+    def audit(self, *, ctx):
         results = [
-            r.audit(ctx=ctx, path=[*path, i]) if isinstance(r, Solution) else r
+            r.audit(ctx=ctx) if isinstance(r, Solution) else r
             for i, r in enumerate(self.items)
         ]
 
         audit_results = []
-        for clause in self.audit_clauses:
+        for i, clause in enumerate(self.audit_clauses):
             matched_items = [
                 item for sol in results
                 # if hasattr(sol, 'matched')
@@ -45,6 +44,10 @@ class CountSolution(Solution, BaseCountRule):
 
             result = clause.assertion.compare_and_resolve_with(value=matched_items, map_func=apply_clause_to_query_rule)
 
-            audit_results.append(AssertionResult(where=clause.where, assertion=result))
+            audit_results.append(AssertionResult(
+                where=clause.where,
+                assertion=result,
+                path=tuple([*self.path, f"[{i}]"]),
+            ))
 
         return CountResult.from_solution(solution=self, items=tuple(results), audit_results=tuple(audit_results))

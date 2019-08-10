@@ -18,6 +18,7 @@ class CourseResult(Result, BaseCourseRule):
             allow_claimed=solution.allow_claimed,
             claim_attempt=claim_attempt,
             min_grade_not_met=min_grade_not_met,
+            path=solution.path,
         )
 
     def to_dict(self):

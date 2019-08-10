@@ -17,6 +17,7 @@ class CountResult(Result, BaseCountRule):
             audit_clauses=solution.audit_clauses,
             at_most=solution.at_most,
             audit_results=audit_results,
+            path=solution.path,
         )
 
     def status(self):

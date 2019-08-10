@@ -35,6 +35,7 @@ class QueryResult(Result, BaseQueryRule):
             successful_claims=successful_claims,
             failed_claims=failed_claims,
             success=success,
+            path=solution.path,
         )
 
     def to_dict(self):

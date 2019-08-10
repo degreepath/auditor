@@ -1,9 +1,10 @@
 from dataclasses import dataclass, replace
-from typing import List, Any, Mapping, Optional
+from typing import Any, Mapping, Optional, List
 import logging
 
 from ..base import Rule, BaseRequirementRule
 from ..base.requirement import AuditedBy
+from ..constants import Constants
 from ..solution.requirement import RequirementSolution
 
 logger = logging.getLogger(__name__)
@@ -17,12 +18,18 @@ class RequirementRule(Rule, BaseRequirementRule):
         return "pending"
 
     @staticmethod
-    def load(name: str, data: Mapping[str, Any], c):
+    def can_load(data: Mapping) -> bool:
+        return "requirement" in data
+
+    @staticmethod
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str]):
         from ..load_rule import load_rule
+
+        path = [*path, f"%{name}"]
 
         result = data.get("result", None)
         if result is not None:
-            result = load_rule(result, c, data.get("requirements", {}))
+            result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path)
 
         audited_by = None
         if data.get("department_audited", data.get("department-audited", False)):
@@ -39,6 +46,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             result=result,
             is_contract=data.get("contract", False),
             audited_by=audited_by,
+            path=tuple(path),
         )
 
     def validate(self, *, ctx):
@@ -54,22 +62,20 @@ class RequirementRule(Rule, BaseRequirementRule):
         if self.result is not None:
             self.result.validate(ctx=new_ctx)
 
-    def solutions(self, *, ctx, path: List[str]):
-        path = [*path, f"$r->{self.name}"]
-
-        logger.debug("%s auditing %s", path, self.name)
+    def solutions(self, *, ctx):
+        logger.debug("%s auditing %s", self.path, self.name)
 
         if self.audited_by is not None:
-            logger.debug("%s requirement \"%s\" is audited %s", path, self.name, self.audited_by)
+            logger.debug("%s requirement \"%s\" is audited %s", self.path, self.name, self.audited_by)
 
         if not self.result:
-            logger.debug("%s requirement \"%s\" does not have a result", path, self.name)
+            logger.debug("%s requirement \"%s\" does not have a result", self.path, self.name)
             yield RequirementSolution.from_rule(rule=self, solution=None)
             return
 
         new_ctx = replace(ctx)
 
-        for solution in self.result.solutions(ctx=new_ctx, path=path):
+        for solution in self.result.solutions(ctx=new_ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
 
     def estimate(self, *, ctx):

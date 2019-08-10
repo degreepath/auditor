@@ -32,6 +32,7 @@ class QuerySolution(Solution, BaseQueryRule):
             allow_claimed=rule.allow_claimed,
             attempt_claims=rule.attempt_claims,
             output=output,
+            path=rule.path,
         )
 
     def to_dict(self):
@@ -40,9 +41,7 @@ class QuerySolution(Solution, BaseQueryRule):
             "output": [x.to_dict() for x in self.output],
         }
 
-    def audit(self, *, ctx, path: List):
-        path = [*path, f".query"]
-
+    def audit(self, *, ctx):
         successful_claims: List[CourseInstance] = []
         claimed_items: List[Union[CourseInstance, AreaPointer]] = []
         failed_claims: List[CourseInstance] = []
@@ -51,34 +50,37 @@ class QuerySolution(Solution, BaseQueryRule):
             if isinstance(item, CourseInstance):
                 if self.attempt_claims:
                     clause = self.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
-                    claim = ctx.make_claim(course=item, path=path, clause=clause, allow_claimed=self.allow_claimed)
+                    claim = ctx.make_claim(course=item, path=self.path, clause=clause, allow_claimed=self.allow_claimed)
 
                     if claim.failed():
-                        logger.debug('%s course "%s" exists, but has already been claimed by %s', path, item.clbid, claim.conflict_with)
+                        logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, item.clbid, claim.conflict_with)
                         failed_claims.append(claim)
                     else:
-                        logger.debug('%s course "%s" exists, and is available', path, item.clbid)
+                        logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
                         successful_claims.append(claim)
                         claimed_items.append(item)
                 else:
-                    logger.debug('%s course "%s" exists, and is available', path, item.clbid)
+                    logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
                     claimed_items.append(item)
 
             elif isinstance(item, AreaPointer):
-                logger.debug('%s item "%s" exists, and is available', path, item)
+                logger.debug('%s item "%s" exists, and is available', self.path, item)
                 claimed_items.append(item)
 
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
-        resolved_assertions = tuple(self.apply_assertion(a, claimed_items) for a in self.assertions)
+        resolved_assertions = tuple(
+            self.apply_assertion(a, output=claimed_items, path=[*self.path, f"[{i}]"])
+            for i, a in enumerate(self.assertions)
+        )
 
         resolved_result = all(a.assertion.result is True for a in resolved_assertions)
 
         if resolved_result:
-            logger.debug("%s from-rule '%s' might possibly succeed", path, self)
+            logger.debug("%s from-rule '%s' might possibly succeed", self.path, self)
         else:
-            logger.debug("%s from-rule '%s' did not succeed", path, self)
+            logger.debug("%s from-rule '%s' did not succeed", self.path, self)
 
         return QueryResult.from_solution(
             solution=self,
@@ -88,7 +90,7 @@ class QuerySolution(Solution, BaseQueryRule):
             success=resolved_result,
         )
 
-    def apply_assertion(self, clause: AssertionRule, output: Sequence) -> AssertionResult:
+    def apply_assertion(self, clause: AssertionRule, *, path: Sequence[str], output: Sequence[Union[CourseInstance, AreaPointer]] = tuple()) -> AssertionResult:
         if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
@@ -97,7 +99,7 @@ class QuerySolution(Solution, BaseQueryRule):
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
 
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
-        return AssertionResult(where=clause.where, assertion=result)
+        return AssertionResult(where=clause.where, assertion=result, path=tuple(path))
 
 
 def apply_clause_to_query_rule(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:

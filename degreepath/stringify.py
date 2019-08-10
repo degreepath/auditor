@@ -52,6 +52,9 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
 
     rule_type = rule["type"]
     rank = rule["rank"]
+    path = rule["path"]
+
+    yield f"{prefix}{path}"
 
     prefix += f"({rank}|{'t' if rule['ok'] else 'f'}) "
 

@@ -16,6 +16,7 @@ class RequirementResult(Result, BaseRequirementRule):
             message=solution.message,
             audited_by=solution.audited_by,
             is_contract=solution.is_contract,
+            path=solution.path,
             result=result,
         )
 

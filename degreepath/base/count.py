@@ -14,6 +14,7 @@ class BaseCountRule(Base):
     items: Tuple[Union[Rule, Solution, Result], ...]
     at_most: bool
     audit_clauses: Tuple[AssertionRule, ...]
+    path: Tuple[str, ...]
 
     def to_dict(self):
         return {

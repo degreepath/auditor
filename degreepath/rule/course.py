@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Mapping
+from typing import Dict, List
 import re
 import logging
 
@@ -20,12 +20,18 @@ class CourseRule(Rule, BaseCourseRule):
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants, children: Mapping):
+    def load(data: Dict, *, c: Constants, path: List[str]):
+        course = data['course']
+        min_grade = data.get('grade', None)
+
+        path = [*path, f"*{course}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
+
         return CourseRule(
-            course=data["course"],
+            course=course,
             hidden=data.get("hidden", False),
-            grade=str_to_grade_points(data['grade']) if 'grade' in data else None,
+            grade=str_to_grade_points(min_grade) if min_grade is not None else None,
             allow_claimed=data.get("including claimed", False),
+            path=tuple(path),
         )
 
     def validate(self, *, ctx):
@@ -35,8 +41,8 @@ class CourseRule(Rule, BaseCourseRule):
 
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, ctx, path: List):
-        logger.debug('%s reference to course "%s"', path, self.course)
+    def solutions(self, *, ctx):
+        logger.debug('%s reference to course "%s"', self.path, self.course)
 
         yield CourseSolution.from_rule(rule=self)
 

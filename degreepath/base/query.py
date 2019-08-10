@@ -36,6 +36,7 @@ class BaseQueryRule(Base):
     where: Optional[Clause]
     allow_claimed: bool
     attempt_claims: bool
+    path: Tuple[str, ...]
 
     def to_dict(self):
         return {
