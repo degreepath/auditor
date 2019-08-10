@@ -204,13 +204,13 @@ def load_course(data: Dict) -> CourseInstance:  # noqa: C901
     attributes = tuple(attributes) if attributes else tuple()
     gereqs = tuple(gereqs) if gereqs else tuple()
 
-    if sub_type == 'lab':
+    if sub_type is SubType.Lab:
         course_identity = f"{'/'.join(subject)} {number}.L"
         course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.L"
-    elif sub_type == 'flac':
+    elif sub_type is SubType.Flac:
         course_identity = f"{'/'.join(subject)} {number}.F"
         course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.F"
-    elif sub_type == 'discussion':
+    elif sub_type is SubType.Discussion:
         course_identity = f"{'/'.join(subject)} {number}.D"
         course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.D"
     else:
