@@ -115,7 +115,7 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
         for r in rule["items"]:
             yield from print_result(r, transcript, indent=indent + 4)
 
-    elif rule_type == "from":
+    elif rule_type == "query":
         if rule["status"] == "pass":
             emoji = "💚"
         elif rule["status"] == "skip":
