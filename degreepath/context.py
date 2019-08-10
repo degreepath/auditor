@@ -7,6 +7,7 @@ from .data import CourseInstance, AreaPointer
 from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
+from .operator import Operator
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,6 @@ CLBID_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
 class RequirementContext:
     transcript: Tuple[CourseInstance, ...] = tuple()
     areas: Tuple[AreaPointer, ...] = tuple()
-    requirements: Dict = field(default_factory=dict)
     multicountable: List[List[SingleClause]] = field(default_factory=list)
     claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
 
@@ -80,7 +80,7 @@ class RequirementContext:
         rule = None
         if isinstance(clause, CourseRule):
             rule = clause
-            clause = SingleClause.from_course_rule(clause)
+            clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
         # build a claim so it can be returned later
         claim = Claim(

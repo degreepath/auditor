@@ -1,13 +1,11 @@
-from typing import Union, Dict, Sequence
+from typing import Dict, Sequence
 from .constants import Constants
 
+from .base import Rule
 from .rule.count import CountRule
 from .rule.course import CourseRule
 from .rule.query import QueryRule
-from .rule.requirement import Requirement
-from .rule.reference import ReferenceRule
-
-Rule = Union[CourseRule, CountRule, QueryRule, Requirement]
+from .rule.requirement import RequirementRule
 
 
 def load_rule(data: Dict, c: Constants, children: Dict, emphases: Sequence[Dict] = tuple()) -> Rule:
@@ -24,7 +22,7 @@ def load_rule(data: Dict, c: Constants, children: Dict, emphases: Sequence[Dict]
     elif CountRule.can_load(data):
         return CountRule.load(data, c, children)
 
-    elif ReferenceRule.can_load(data):
-        return ReferenceRule.load(data, c, children)
+    elif "requirement" in data:
+        return RequirementRule.load(name=data["requirement"], data=children[data["requirement"]], c=c)
 
     raise ValueError(f"expected Course, Query, Count, or Reference; found none of those (in {data}, {type(data)})")

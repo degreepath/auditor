@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Union, List, Sequence, Any, Tuple, Collection
 import logging
-import decimal
 from collections import Counter
 
+from ..base import Solution, BaseQueryRule
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
@@ -13,69 +13,45 @@ from ..lib import grade_point_average_items, grade_point_average
 
 logger = logging.getLogger(__name__)
 
+ResolvedItem = Union[CourseInstance, AreaPointer]
+
 
 @dataclass(frozen=True)
-class QuerySolution:
-    output: Sequence[Union[CourseInstance, AreaPointer, decimal.Decimal, int]]
-    rule: Any
+class QuerySolution(Solution, BaseQueryRule):
+    output: Tuple[ResolvedItem, ...]
+
+    @staticmethod
+    def from_rule(*, rule: BaseQueryRule, output=Tuple[Union[CourseInstance, AreaPointer], ...]):
+        return QuerySolution(
+            source=rule.source,
+            source_type=rule.source_type,
+            source_repeats=rule.source_repeats,
+            assertions=rule.assertions,
+            limit=rule.limit,
+            where=rule.where,
+            allow_claimed=rule.allow_claimed,
+            attempt_claims=rule.attempt_claims,
+            output=output,
+        )
 
     def to_dict(self):
         return {
-            "type": "from",
-            "source": self.rule.source,
-            "source_type": self.rule.source_type,
-            "source_repeats": self.rule.source_repeats,
-            "assertions": [a.to_dict() for a in self.rule.assertions],
-            "where": self.rule.where.to_dict() if self.rule.where else None,
+            **super().to_dict(),
             "output": [x.to_dict() for x in self.output],
-            "allow_claimed": self.rule.allow_claimed,
-            "state": self.state(),
-            "status": "pending",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": [item for item in self.claims()],
-            "failures": [],
-            "resolved_action": None,
         }
-
-    def state(self):
-        return "solution"
-
-    def claims(self):
-        return []
-
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def ok(self):
-        return False
-
-    def stored(self, *, ctx):
-        return self.output
 
     def audit(self, *, ctx, path: List):
         path = [*path, f".query"]
 
-        if self.rule.source != "student":
-            raise KeyError(f'unknown "from" type "{self.rule.source}"')
-
-        successful_claims = []
+        successful_claims: List[CourseInstance] = []
         claimed_items: List[Union[CourseInstance, AreaPointer]] = []
-        failed_claims = []
+        failed_claims: List[CourseInstance] = []
 
         for item in self.output:
             if isinstance(item, CourseInstance):
-                if self.rule.attempt_claims:
-                    clause = self.rule.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
-                    claim = ctx.make_claim(course=item, path=path, clause=clause, allow_claimed=self.rule.allow_claimed)
+                if self.attempt_claims:
+                    clause = self.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
+                    claim = ctx.make_claim(course=item, path=path, clause=clause, allow_claimed=self.allow_claimed)
 
                     if claim.failed():
                         logger.debug('%s course "%s" exists, but has already been claimed by %s', path, item.clbid, claim.conflict_with)
@@ -95,17 +71,17 @@ class QuerySolution:
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
-        resolved_assertions = tuple(self.apply_assertion(a, claimed_items) for a in self.rule.assertions)
+        resolved_assertions = tuple(self.apply_assertion(a, claimed_items) for a in self.assertions)
 
         resolved_result = all(a.assertion.result is True for a in resolved_assertions)
 
         if resolved_result:
-            logger.debug("%s from-rule '%s' might possibly succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' might possibly succeed", path, self)
         else:
-            logger.debug("%s from-rule '%s' did not succeed", path, self.rule)
+            logger.debug("%s from-rule '%s' did not succeed", path, self)
 
-        return QueryResult(
-            rule=self.rule,
+        return QueryResult.from_solution(
+            solution=self,
             resolved_assertions=resolved_assertions,
             successful_claims=tuple(successful_claims),
             failed_claims=tuple(failed_claims),

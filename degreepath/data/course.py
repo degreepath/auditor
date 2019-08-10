@@ -5,6 +5,7 @@ import logging
 
 from ..clause import Clause, SingleClause, AndClause, OrClause
 from .course_enums import GradeCode, GradeOption, SubType
+from ..lib import str_to_grade_points
 
 logger = logging.getLogger(__name__)
 Decimal = decimal.Decimal
@@ -253,19 +254,22 @@ def course_from_str(s: str, **kwargs):
         "course": s,
         "credits": '1.00',
         "crsid": f"<crsid={str(hash(s))}>",
+        "flag_gpa": True,
+        "flag_in_progress": False,
+        "flag_incomplete": False,
+        "flag_repeat": False,
+        "flag_stolaf": True,
         "gereqs": tuple(),
-        "grade": 'B',
-        "graded": "Graded",
-        "incomplete": False,
-        "institution": "St. Olaf College",
-        "is_repeat": False,
+        "grade_code": "B",
+        "grade_option": GradeOption.Grade,
+        "grade_points": str_to_grade_points("B"),
         "name": s,
         "number": s.split(' ')[1],
         "section": "",
+        "sub_type": SubType.Normal,
         "subjects": tuple([s.split(' ')[0]]),
-        "subtype": "",
-        "term": 20001,
-        "transcript_code": None,
+        "term": "1",
+        "year": 2000,
         **kwargs,
     })
 

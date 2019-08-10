@@ -3,10 +3,11 @@ from collections.abc import Mapping, Iterable
 from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence, Iterator
 import logging
 import decimal
+import abc
+
 from .constants import Constants
 from .lib import str_to_grade_points
 from .operator import Operator, apply_operator, str_operator
-from .rule.course import CourseRule
 from .data.course_enums import GradeOption
 
 logger = logging.getLogger(__name__)
@@ -31,8 +32,14 @@ def load_clause(data: Dict, c: Constants):
     return AndClause(children=tuple(clauses))
 
 
+class _Clause(abc.ABC):
+    @abc.abstractmethod
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable):
+        raise NotImplementedError(f'must define a compare_and_resolve_with() method')
+
+
 @dataclass(frozen=True)
-class ResolvedBaseClause:
+class ResolvedClause:
     resolved_with: Optional[Any] = None
     resolved_items: Sequence[Any] = tuple()
     result: bool = False
@@ -46,11 +53,12 @@ class ResolvedBaseClause:
 
 
 @dataclass(frozen=True)
-class AndClause:
+class AndClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
     def to_dict(self):
         return {
+            **super().to_dict(),
             "type": "and-clause",
             "children": [c.to_dict() for c in self.children],
         }
@@ -67,28 +75,20 @@ class AndClause:
     def is_subset(self, other_clause) -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = all(c.result for c in children)
 
-        return ResolvedAndClause(children=children, resolved_with=None, resolved_items=[], result=result)
+        return AndClause(children=children, resolved_with=None, resolved_items=[], result=result)
 
 
 @dataclass(frozen=True)
-class ResolvedAndClause(AndClause, ResolvedBaseClause):
-    def to_dict(self):
-        return {
-            **AndClause.to_dict(self),
-            **ResolvedBaseClause.to_dict(self),
-        }
-
-
-@dataclass(frozen=True)
-class OrClause:
+class OrClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
     def to_dict(self):
         return {
+            **super().to_dict(),
             "type": "or-clause",
             "children": [c.to_dict() for c in self.children],
         }
@@ -105,28 +105,19 @@ class OrClause:
     def is_subset(self, other_clause) -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = any(c.result for c in children)
 
-        return ResolvedOrClause(children=children, resolved_with=None, resolved_items=[], result=result)
+        return OrClause(children=children, resolved_with=None, resolved_items=[], result=result)
 
 
 @dataclass(frozen=True)
-class ResolvedOrClause(OrClause, ResolvedBaseClause):
-    def to_dict(self):
-        return {
-            **OrClause.to_dict(self),
-            **ResolvedBaseClause.to_dict(self),
-        }
-
-
-@dataclass(frozen=True)
-class SingleClause:
-    key: str
-    expected: Any
-    expected_verbatim: Any
-    operator: Operator
+class SingleClause(_Clause, ResolvedClause):
+    key: str = "???"
+    expected: Any = None
+    expected_verbatim: Any = None
+    operator: Operator = Operator.EqualTo
     at_most: bool = False
 
     def to_dict(self):
@@ -137,16 +128,13 @@ class SingleClause:
             expected = str(self.expected)
 
         return {
+            **super().to_dict(),
             "type": "single-clause",
             "key": self.key,
             "expected": expected,
             "expected_verbatim": self.expected_verbatim,
             "operator": self.operator.name,
         }
-
-    @staticmethod
-    def from_course_rule(rule: CourseRule):
-        return SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
     @staticmethod  # noqa: C901
     def load(key: str, value: Any, c: Constants):
@@ -216,7 +204,7 @@ class SingleClause:
         elif isinstance(other_clause, OrClause):
             return any(self.is_subset(c) for c in other_clause.children)
 
-        elif isinstance(other_clause, CourseRule):
+        elif hasattr(other_clause, 'is_equivalent_to_clause'):
             return other_clause.is_equivalent_to_clause(self)
 
         elif not isinstance(other_clause, type(self)):
@@ -230,11 +218,11 @@ class SingleClause:
 
         return self.expected == other_clause.expected
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> ResolvedBaseClause:
+    def compare_and_resolve_with(self, *, value: Any, map_func: Callable):
         reduced_value, value_items = map_func(clause=self, value=value)
         result = apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected)
 
-        return ResolvedSingleClause(
+        return SingleClause(
             key=self.key,
             expected=self.expected,
             expected_verbatim=self.expected_verbatim,
@@ -245,7 +233,7 @@ class SingleClause:
             result=result,
         )
 
-    def input_size_range(self, *, maximum) -> Iterator[int]:  # noqa: C901
+    def input_size_range(self, *, maximum) -> Iterator[int]:
         if type(self.expected) is not int:
             raise TypeError('cannot find a range of values for a non-integer clause: %s', type(self.expected))
 
@@ -282,15 +270,6 @@ class SingleClause:
             raise TypeError('unsupported operator for ranges %s', self.operator)
 
 
-@dataclass(frozen=True)
-class ResolvedSingleClause(ResolvedBaseClause, SingleClause):
-    def to_dict(self):
-        return {
-            **SingleClause.to_dict(self),
-            **ResolvedBaseClause.to_dict(self),
-        }
-
-
 def str_clause(clause) -> str:
     if not isinstance(clause, dict):
         return str_clause(clause.to_dict())
@@ -320,4 +299,3 @@ def str_clause(clause) -> str:
 
 
 Clause = Union[AndClause, OrClause, SingleClause]
-ResolvedClause = Union[ResolvedAndClause, ResolvedOrClause, ResolvedSingleClause, ResolvedBaseClause]

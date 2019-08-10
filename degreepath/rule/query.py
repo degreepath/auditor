@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Set, Mapping, Sequence, Iterator
+from typing import Dict, List, Optional, Set, Mapping, Sequence, Iterator
 import itertools
 import logging
 
+from ..base import Rule, BaseQueryRule
+from ..base.query import QuerySource, QuerySourceType, QuerySourceRepeatMode
 from ..limit import LimitSet
 from ..clause import Clause, load_clause, SingleClause, OrClause, AndClause
 from ..solution.query import QuerySolution
@@ -14,55 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class QueryRule:
-    source: str
-    source_type: str
-    source_repeats: Optional[str]
-
-    assertions: Tuple[AssertionRule, ...]
-    limit: LimitSet
-    where: Optional[Clause]
-    allow_claimed: bool
-    attempt_claims: bool
-
-    def to_dict(self):
-        return {
-            "type": "from",
-            "source": self.source,
-            "source_type": self.source_type,
-            "source_repeats": self.source_repeats,
-            "limit": self.limit.to_dict(),
-            "assertions": [a.to_dict() for a in self.assertions],
-            "where": self.where.to_dict() if self.where else None,
-            "allow_claimed": self.allow_claimed,
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": [],
-            "failures": [],
-        }
-
-    def state(self):
-        return "rule"
-
-    def ok(self):
-        return False
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def claims(self):
-        return []
-
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
+class QueryRule(Rule, BaseQueryRule):
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "from" in data:
@@ -95,20 +49,12 @@ class QueryRule:
 
         source_data = data['from']
 
-        if "student" in source_data:
-            source = "student"
-            source_type = source_data["student"]
-            source_repeats = source_data.get('repeats', 'all')
-            assert source_repeats in ['first', 'all']
-
-        elif "saves" in source_data or "save" in source_data:
-            raise ValueError('from:saves not supported')
-
-        elif "requirements" in source_data or "requirement" in source_data:
-            raise ValueError('from:requirements not supported')
-
-        else:
+        if "student" not in source_data:
             raise KeyError(f"expected from:student; got {list(source_data.keys())}")
+
+        source = QuerySource.Student
+        source_type = QuerySourceType(source_data["student"])
+        source_repeats = QuerySourceRepeatMode(source_data.get('repeats', 'all'))
 
         return QueryRule(
             source=source,
@@ -122,26 +68,14 @@ class QueryRule:
         )
 
     def validate(self, *, ctx):
-        assert isinstance(self.source, str)
-
-        if self.source == "student":
-            allowed = ["courses", "music performances", "areas"]
-            assert self.source_type in allowed, f"when from:student, '{self.source_type}' must in in {allowed}"
-
-        else:
-            raise NameError(f"unknown 'from' type {self.source}")
-
         if self.assertions:
             [a.validate(ctx=ctx) for a in self.assertions]
 
     def get_data(self, *, ctx):
-        if self.source != "student":
-            raise KeyError(f'unknown "from" type "{self.source}"')
-
-        if self.source_type == "courses":
+        if self.source_type is QuerySourceType.Courses:
             data = ctx.transcript
 
-            if self.source_repeats == "first":
+            if self.source_repeats is QuerySourceRepeatMode.First:
                 filtered_courses = []
                 course_identities: Set[str] = set()
                 for course in sorted(data, key=lambda c: c.term):
@@ -150,7 +84,7 @@ class QueryRule:
                         course_identities.add(course.crsid)
                 data = filtered_courses
 
-        elif self.source_type == "areas":
+        elif self.source_type is QuerySourceType.Areas:
             data = ctx.areas
 
         else:
@@ -178,7 +112,7 @@ class QueryRule:
         for item_set in self.limit.limited_transcripts(data):
             if self.attempt_claims is False:
                 did_iter = True
-                yield QuerySolution(output=item_set, rule=self)
+                yield QuerySolution.from_rule(rule=self, output=item_set)
                 continue
 
             if has_simple_count_assertion(self.assertions):
@@ -192,19 +126,19 @@ class QueryRule:
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
                         logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
                         did_iter = True
-                        yield QuerySolution(output=combo, rule=self)
+                        yield QuerySolution.from_rule(rule=self, output=combo)
             else:
                 logger.debug("not running single assertion mode")
                 for n in range(1, len(item_set) + 1):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
                         logger.debug("%s combo: %s choose %s, round %s", path, len(item_set), n, i)
                         did_iter = True
-                        yield QuerySolution(output=combo, rule=self)
+                        yield QuerySolution.from_rule(rule=self, output=combo)
 
         if not did_iter:
             # be sure we always yield something
             logger.debug("%s did not yield anything; yielding empty collection", path)
-            yield QuerySolution(output=tuple(), rule=self)
+            yield QuerySolution.from_rule(rule=self, output=tuple())
 
     def estimate(self, *, ctx):
         data = self.get_data(ctx=ctx)

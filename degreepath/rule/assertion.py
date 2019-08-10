@@ -1,43 +1,14 @@
 from dataclasses import dataclass
-from typing import Optional, Dict
-from ..clause import Clause, load_clause, str_clause
+from typing import Dict
+from ..clause import load_clause, str_clause
 from ..constants import Constants
+
+from ..base.bases import Rule
+from ..base.assertion import BaseAssertionRule
 
 
 @dataclass(frozen=True)
-class AssertionRule:
-    where: Optional[Clause]
-    assertion: Clause
-
-    def to_dict(self):
-        return {
-            "type": "assertion",
-            "assertion": self.assertion.to_dict() if self.assertion else None,
-            "where": self.where.to_dict() if self.where else None,
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-        }
-
-    def validate(self, *, ctx):
-        if self.where:
-            self.where.validate(ctx=ctx)
-        self.assertion.validate(ctx=ctx)
-
-    def state(self):
-        return "rule"
-
-    def ok(self):
-        return False
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
+class AssertionRule(Rule, BaseAssertionRule):
     def __repr__(self):
         content = (f"where {str_clause(self.where)}, " if self.where else '') + f"{str_clause(self.assertion)}"
         return f"AssertionRule({content})"
@@ -57,3 +28,14 @@ class AssertionRule:
         assertion = load_clause(data["assert"], c)
 
         return AssertionRule(assertion=assertion, where=where)
+
+    def validate(self, *, ctx):
+        if self.where:
+            self.where.validate(ctx=ctx)
+        self.assertion.validate(ctx=ctx)
+
+    def estimate(self):
+        return 0
+
+    def solutions(self):
+        raise Exception('this method should not be called')

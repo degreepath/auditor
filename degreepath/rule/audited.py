@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class AuditedRule:
         message = data.get('message', None)
         return AuditedRule(by=by, message=message)
 
-    def validate(self, ctx: Any) -> bool:
+    def validate(self, ctx) -> bool:
         assert self.validate != 'unknown'
         return True
 

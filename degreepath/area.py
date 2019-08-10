@@ -1,13 +1,14 @@
 from dataclasses import dataclass
-from typing import Dict, List, Any, Tuple, Optional, Sequence
+from typing import Dict, List, Tuple, Optional, Sequence
 import logging
 
+from .base import Rule, Solution
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
 from .limit import LimitSet
-from .load_rule import Rule, load_rule
+from .load_rule import load_rule
 
 logger = logging.getLogger(__name__)
 
@@ -25,14 +26,6 @@ class AreaOfStudy:
     result: Rule
     attributes: Dict
     multicountable: List
-
-    def to_dict(self):
-        return {
-            "type": "area",
-            "limit": [l.to_dict() for l in self.limit],
-            "result": self.result.to_dict(),
-            "attributes": self.attributes,
-        }
 
     @staticmethod
     def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()):
@@ -106,15 +99,8 @@ class AreaOfStudy:
 
 @dataclass(frozen=True)
 class AreaSolution:
-    solution: Any
+    solution: Solution
     area: AreaOfStudy
-
-    def to_dict(self):
-        return {
-            **self.area.to_dict(),
-            "type": "area",
-            "result": self.solution.to_dict(),
-        }
 
     def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         path = ["$root"]

@@ -1,33 +1,28 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Optional
+
+from ..base import Result, BaseCourseRule
 
 
 @dataclass(frozen=True)
-class CourseResult:
-    course: str
-    rule: Any
+class CourseResult(Result, BaseCourseRule):
     claim_attempt: Optional[Any]  # Optional[ClaimAttempt]
     min_grade_not_met: Optional[Any] = None  # Optional[CourseInstance]
 
-    _ok: bool = field(init=False)
-    _rank: int = field(init=False)
-
-    def __post_init__(self):
-        _ok = self.claim_attempt and self.claim_attempt.failed() is False and self.min_grade_not_met is None
-        object.__setattr__(self, '_ok', _ok)
-
-        _rank = 1 if self._ok else 0
-        object.__setattr__(self, '_rank', _rank)
+    @staticmethod
+    def from_solution(*, solution: BaseCourseRule, claim_attempt=None, min_grade_not_met=None):
+        return CourseResult(
+            course=solution.course,
+            hidden=solution.hidden,
+            grade=solution.grade,
+            allow_claimed=solution.allow_claimed,
+            claim_attempt=claim_attempt,
+            min_grade_not_met=min_grade_not_met,
+        )
 
     def to_dict(self):
         return {
-            **self.rule.to_dict(),
-            "state": self.state(),
-            "status": "pass" if self.ok() else "skip",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": [c.to_dict() for c in self.claims()],
+            **super().to_dict(),
             "min_grade_not_met": self.min_grade_not_met.to_dict() if self.min_grade_not_met else None,
         }
 
@@ -37,18 +32,14 @@ class CourseResult:
         else:
             return []
 
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
     def state(self):
         return "result"
 
     def ok(self) -> bool:
-        return self._ok
+        return self.claim_attempt is not None and self.claim_attempt.failed() is False and self.min_grade_not_met is None
 
     def rank(self):
-        return self._rank
+        return 1 if self.ok() else 0
 
     def max_rank(self):
         return 1

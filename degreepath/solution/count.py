@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Tuple, Any
+from typing import List, Tuple, Union
 import logging
 
+from ..base import Solution, BaseCountRule, Rule, Result
 from ..result.count import CountResult
-from ..rule.assertion import AssertionRule
 from .query import apply_clause_to_query_rule
 from ..result.assertion import AssertionResult
 
@@ -11,53 +11,21 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class CountSolution:
-    count: int
-    items: Tuple
-    audit_clauses: Tuple[AssertionRule, ...]
-
-    def to_dict(self):
-        return {
-            "type": "count",
-            "state": self.state(),
-            "count": self.count,
-            "items": [item.to_dict() for item in self.items],
-            "audit": [c.to_dict() for c in self.audit_clauses],
-            "status": "pending",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": [item for item in self.claims()],
-        }
-
-    def state(self):
-        return "solution"
-
-    def claims(self):
-        return []
-
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def ok(self):
-        return False
-
+class CountSolution(Solution, BaseCountRule):
     @staticmethod
-    def from_rule(rule: Any, *, items):
-        return CountSolution(count=rule.count, items=items, audit_clauses=rule.audit_clauses)
+    def from_rule(*, rule: BaseCountRule, items: Tuple[Union[Rule, Solution, Result], ...]):
+        return CountSolution(
+            count=rule.count,
+            items=items if isinstance(items, tuple) else tuple(items),
+            audit_clauses=rule.audit_clauses,
+            at_most=rule.at_most,
+        )
 
     def audit(self, *, ctx, path: List):
         path = [*path, f".of"]
 
         results = [
-            r.audit(ctx=ctx, path=[*path, i]) if r.state() == "solution" else r
+            r.audit(ctx=ctx, path=[*path, i]) if isinstance(r, Solution) else r
             for i, r in enumerate(self.items)
         ]
 
@@ -79,4 +47,4 @@ class CountSolution:
 
             audit_results.append(AssertionResult(where=clause.where, assertion=result))
 
-        return CountResult(count=self.count, items=tuple(results), audit_results=tuple(audit_results))
+        return CountResult.from_solution(solution=self, items=tuple(results), audit_results=tuple(audit_results))
