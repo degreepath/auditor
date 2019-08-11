@@ -99,7 +99,7 @@ def test_solution_count_exact(caplog):
         next(solutions)
 
 
-def x_test_solution_count_lessthan_3(caplog):
+def test_solution_count_lessthan_3(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
     area, transcript = __get_data("""
@@ -114,7 +114,7 @@ def x_test_solution_count_lessthan_3(caplog):
     assert count == 7
 
 
-def x_test_solution_count_lessthan_1(caplog):
+def test_solution_count_lessthan_1(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
     area, transcript = __get_data("""
@@ -133,7 +133,7 @@ def x_test_solution_count_lessthan_1(caplog):
         next(solutions)
 
 
-def x_test_solution_count_lessthanequal_1(caplog):
+def test_solution_count_lessthanequal_1(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
     area, transcript = __get_data("""
@@ -161,7 +161,7 @@ def x_test_solution_count_lessthanequal_1(caplog):
         next(solutions)
 
 
-def x_test_solution_count_greaterthan_1(caplog):
+def test_solution_count_greaterthan_1(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
     area, transcript = __get_data("""
         result:
@@ -188,7 +188,7 @@ def x_test_solution_count_greaterthan_1(caplog):
         next(solutions)
 
 
-def x_test_solution_count_always_yield_something(caplog):
+def test_solution_count_always_yield_something(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
     area, transcript = __get_data("""
         result:
