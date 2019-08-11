@@ -14,8 +14,8 @@ Decimal = decimal.Decimal
 
 @dataclasses.dataclass(frozen=True, order=True)
 class CourseInstance(Clausable):
-    attributes: Tuple[str, ...]
     clbid: str
+    attributes: Tuple[str, ...]
     credits: decimal.Decimal
     crsid: str
     gereqs: Tuple[str, ...]
