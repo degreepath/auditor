@@ -1,12 +1,9 @@
-from degreepath.clause import SingleClause, Operator, load_clause, apply_operator
 from degreepath.data import course_from_str
 from degreepath.area import AreaOfStudy
 from degreepath.constants import Constants
 from degreepath.base import Solution
-from degreepath.exception import InsertionException, OverrideException, load_exception
+from degreepath.exception import load_exception
 import logging
-import io
-import yaml
 
 c = Constants(matriculation_year=2000)
 
@@ -36,7 +33,34 @@ def test_insertion_on_course_rule(caplog):
     assert result.claims()[0].claim.clbid == course_b.clbid
 
 
-def test_insertion_on_query_rule(): ...
+def test_insertion_on_query_rule(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": {"student": "courses"},
+            "where": {"subject": {"$eq": "ABC"}},
+            "assert": {"count(courses)": {"$gte": 1}},
+        },
+    }, c=c)
+
+    exception = load_exception({
+        "action": "insert",
+        "path": ["$", ".query"],
+        "clbid": "0",
+    })
+
+    course_a = course_from_str("OTHER 123", clbid="0")
+    transcript = [course_a]
+
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
+    assert len(solutions) == 1
+
+    result = solutions[0].audit(transcript=transcript, areas=[], exceptions=[exception])
+
+    assert result.ok() is True
+    assert result.was_overridden() is False
+    assert result.claims()[0].claim.clbid == course_a.clbid
 
 
 def test_insertion_on_count_rule__any(caplog):
