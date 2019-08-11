@@ -220,7 +220,7 @@ class SingleClause(_Clause, ResolvedClause):
         if self.operator == Operator.EqualTo and other_clause.operator == Operator.In:
             return any(v == self.expected for v in other_clause.expected)
 
-        return self.expected == other_clause.expected
+        return str(self.expected) == str(other_clause.expected)
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'SingleClause':
         reduced_value, value_items = map_func(clause=self, value=value)

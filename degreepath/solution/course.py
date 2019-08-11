@@ -44,7 +44,7 @@ class CourseSolution(Solution, BaseCourseRule):
                 logger.debug('%s course "%s" does not exist in the transcript', self.path, self.course)
                 return CourseResult.from_solution(solution=self, claim_attempt=None)
 
-            matched_course = cast('CourseInstance', _matched_course)
+            matched_course = _matched_course
 
             if self.grade is not None and matched_course.grade_points < self.grade:
                 logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.course, matched_course.grade_points, self.grade)

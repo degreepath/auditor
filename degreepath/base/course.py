@@ -37,6 +37,8 @@ class BaseCourseRule(Base):
             return False
 
         if clause.operator is Operator.EqualTo:
+            if not isinstance(clause.expected, str):
+                return False
             return self.course == clause.expected
         elif clause.operator is Operator.In:
             return self.course in clause.expected

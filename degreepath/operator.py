@@ -55,9 +55,9 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
         logger.debug("converting both %s and %s to sets of strings, and running intersection", lhs, rhs)
         lhs = set(str(s) for s in lhs)
         rhs = set(str(s) for s in rhs)
-        result = lhs.intersection(rhs)
-        logger.debug("lhs=%s; rhs=%s; intersection=%s", lhs, rhs, result)
-        return bool(result)
+        intersection = lhs.intersection(rhs)
+        logger.debug("lhs=%s; rhs=%s; intersection=%s", lhs, rhs, intersection)
+        return bool(intersection)
 
     if isinstance(lhs, tuple) or isinstance(rhs, tuple):
         if op is Operator.EqualTo:
@@ -104,7 +104,7 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
         lhs = str(lhs)
 
     if op is Operator.EqualTo:
-        result = lhs == rhs
+        result: bool = lhs == rhs
         logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
