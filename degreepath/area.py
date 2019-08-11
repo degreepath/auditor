@@ -84,6 +84,8 @@ class AreaOfStudy:
         mapped_exceptions = map_exceptions(exceptions)
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
+            limited_transcript = tuple(sorted(limited_transcript))
+
             logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
             ctx = RequirementContext(areas=areas, exceptions=mapped_exceptions, multicountable=self.multicountable).with_transcript(limited_transcript)

@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 from typing import Iterable, TYPE_CHECKING
 from .data.course_enums import GradeCode
 
@@ -25,7 +25,7 @@ def grade_point_average(courses: Iterable['CourseInstance']) -> Decimal:
     gpa = summed / credits
 
     # GPA is _truncated_ to two decimal places, not rounded
-    return Decimal(int(gpa * 100) / 100)
+    return Decimal(gpa).quantize(Decimal('1.00'), rounding=ROUND_DOWN)
 
 
 def grade_to_grade_points(g: GradeCode) -> Decimal:

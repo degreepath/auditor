@@ -88,7 +88,7 @@ class QueryRule(Rule, BaseQueryRule):
             if self.source_repeats is QuerySourceRepeatMode.First:
                 filtered_courses = []
                 course_identities: Set[str] = set()
-                for course in sorted(data, key=lambda c: c.term):
+                for course in sorted(data, key=lambda c: f"{c.year}{c.term}"):
                     if course.crsid not in course_identities:
                         filtered_courses.append(course)
                         course_identities.add(course.crsid)
@@ -127,6 +127,8 @@ class QueryRule(Rule, BaseQueryRule):
                 did_iter = True
                 yield QuerySolution.from_rule(rule=self, output=item_set)
                 continue
+
+            item_set = tuple(sorted(item_set))
 
             if has_simple_count_assertion(self.assertions):
                 assertion = get_largest_simple_count_assertion(self.assertions)
