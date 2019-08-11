@@ -1,12 +1,14 @@
 import dataclasses
-from typing import List, Any
+from typing import List, Optional, cast, Tuple
 from datetime import datetime
 import time
 import decimal
 
+from .base import Result
 from .area import AreaOfStudy
 from .ms import pretty_ms
 from .lib import grade_point_average
+from .data import CourseInstance
 
 
 @dataclasses.dataclass
@@ -31,12 +33,12 @@ class AuditStartMsg:
 
 @dataclasses.dataclass
 class ResultMsg:
-    result: Any
-    transcript: List
+    result: Result
+    transcript: Tuple[CourseInstance, ...]
     count: int
     elapsed: str
-    iterations: List[int]
-    startup_time: int
+    iterations: List[float]
+    startup_time: float
     gpa: decimal.Decimal
 
 
@@ -54,7 +56,7 @@ class NoAuditsCompletedMsg:
 @dataclasses.dataclass
 class ProgressMsg:
     count: int
-    recent_iters: List[int]
+    recent_iters: List[float]
     start_time: datetime
     best_rank: int
 
@@ -68,7 +70,7 @@ def audit(*, spec, transcript, constants, exceptions, area_pointers, print_all, 
     area = AreaOfStudy.load(specification=spec, c=constants, other_areas=other_areas)
     area.validate()
 
-    this_transcript = []
+    _transcript = []
     attributes_to_attach = area.attributes.get("courses", {})
     for c in transcript:
         attrs_by_course = set(attributes_to_attach.get(c.course(), []))
@@ -76,17 +78,17 @@ def audit(*, spec, transcript, constants, exceptions, area_pointers, print_all, 
         attrs_by_term = set(attributes_to_attach.get(c.course_with_term(), []))
 
         c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
-        this_transcript.append(c)
+        _transcript.append(c)
 
-    this_transcript = tuple(this_transcript)
+    this_transcript = tuple(_transcript)
 
-    best_sol = None
+    best_sol: Optional[Result] = None
     total_count = 0
-    iterations = []
+    iterations: List[float] = []
     start_time = datetime.now()
     start = time.perf_counter()
     iter_start = time.perf_counter()
-    startup_time = 0
+    startup_time = 0.00
 
     estimate = area.estimate(transcript=this_transcript, areas=area_pointers)
     yield EstimateMsg(estimate=estimate)
@@ -102,13 +104,26 @@ def audit(*, spec, transcript, constants, exceptions, area_pointers, print_all, 
         total_count += 1
 
         if total_count % 1_000 == 0:
-            yield ProgressMsg(count=total_count, recent_iters=iterations[-1_000:], start_time=start_time, best_rank=best_sol.rank())
+            yield ProgressMsg(
+                count=total_count,
+                recent_iters=iterations[-1_000:],
+                start_time=start_time,
+                best_rank=cast(Result, best_sol).rank(),
+            )
 
         result = sol.audit(transcript=this_transcript, areas=area_pointers, exceptions=exceptions)
 
         if print_all:
             gpa = gpa_from_solution(result=result, transcript=this_transcript, area=area)
-            yield ResultMsg(result=result, gpa=gpa, transcript=this_transcript, count=total_count, elapsed='∞', iterations=[], startup_time=startup_time)
+            yield ResultMsg(
+                result=result,
+                gpa=gpa,
+                transcript=this_transcript,
+                count=total_count,
+                elapsed='∞',
+                iterations=[],
+                startup_time=startup_time,
+            )
 
         if best_sol is None:
             best_sol = result
@@ -135,7 +150,15 @@ def audit(*, spec, transcript, constants, exceptions, area_pointers, print_all, 
 
     gpa = gpa_from_solution(area=area, result=best_sol, transcript=this_transcript)
 
-    yield ResultMsg(result=best_sol, gpa=gpa, transcript=this_transcript, count=total_count, elapsed=elapsed, iterations=iterations, startup_time=startup_time)
+    yield ResultMsg(
+        result=cast(Result, best_sol),
+        gpa=gpa,
+        transcript=this_transcript,
+        count=total_count,
+        elapsed=elapsed,
+        iterations=iterations,
+        startup_time=startup_time,
+    )
 
 
 def gpa_from_solution(*, result, transcript, area):
