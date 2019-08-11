@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, List, Dict
+from typing import Optional, Tuple, List, Dict, Any
 import dataclasses
 import decimal
 import logging
@@ -156,7 +156,7 @@ class CourseInstance:
         raise TypeError(f'{clause.key} is not a known clause key')
 
 
-def load_course(data: Dict) -> CourseInstance:  # noqa: C901
+def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     attributes = data.get('attributes', tuple())
     clbid = data['clbid']
     course = data['course']

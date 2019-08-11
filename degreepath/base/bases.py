@@ -62,6 +62,20 @@ class Base(abc.ABC):
         return False
 
 
+class Result(Base):
+    def state(self):
+        return "result"
+
+
+class Solution(Base):
+    def state(self):
+        return "solution"
+
+    @abc.abstractmethod
+    def audit(self, *, ctx) -> Result:
+        raise NotImplementedError(f'must define an audit() method')
+
+
 class Rule(Base):
     def state(self):
         return "rule"
@@ -71,23 +85,9 @@ class Rule(Base):
         raise NotImplementedError(f'must define a validate() method')
 
     @abc.abstractmethod
-    def solutions(self, *, ctx) -> Iterator:
+    def solutions(self, *, ctx) -> Iterator[Solution]:
         raise NotImplementedError(f'must define a solutions() method')
 
     @abc.abstractmethod
     def estimate(self, *, ctx) -> int:
         raise NotImplementedError(f'must define an estimate() method')
-
-
-class Solution(Base):
-    def state(self):
-        return "solution"
-
-    @abc.abstractmethod
-    def audit(self, *, ctx):
-        raise NotImplementedError(f'must define an audit() method')
-
-
-class Result(Base):
-    def state(self):
-        return "result"
