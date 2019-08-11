@@ -6,7 +6,6 @@ from ..base import Rule, BaseRequirementRule, ResultStatus
 from ..base.requirement import AuditedBy
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
-from ..result.requirement import RequirementResult
 
 logger = logging.getLogger(__name__)
 
