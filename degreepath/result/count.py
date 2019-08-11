@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Tuple, Union, Sequence, List
 
-from .assertion import AssertionResult
-from ..rule.assertion import AssertionRule
 from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule
 from ..claim import ClaimAttempt
 

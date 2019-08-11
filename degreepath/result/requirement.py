@@ -5,7 +5,7 @@ import logging
 from ..base import Base, Result, BaseRequirementRule, ResultStatus
 
 if TYPE_CHECKING:
-    from ..claim import ClaimAttempt
+    from ..claim import ClaimAttempt  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
