@@ -15,9 +15,9 @@ class CountSolution(Solution, BaseCountRule):
     overridden: bool = False
 
     @staticmethod
-    def from_rule(*, rule: BaseCountRule, items: Tuple[Union[Rule, Solution, Result], ...], overridden: bool = False):
+    def from_rule(*, rule: BaseCountRule, count: int, items: Tuple[Union[Rule, Solution, Result], ...], overridden: bool = False):
         return CountSolution(
-            count=rule.count,
+            count=count,
             items=items,
             audit_clauses=rule.audit_clauses,
             at_most=rule.at_most,

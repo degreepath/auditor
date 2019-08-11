@@ -1,7 +1,6 @@
 from degreepath.clause import SingleClause, Operator, load_clause, apply_operator
 from degreepath.data import course_from_str
 from degreepath.constants import Constants
-import pytest
 import logging
 
 

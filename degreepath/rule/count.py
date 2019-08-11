@@ -119,7 +119,7 @@ class CountRule(Rule, BaseCountRule):
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
-            yield CountSolution.from_rule(solution=self, items=self.items, overridden=True)
+            yield CountSolution.from_rule(rule=self, count=self.count, items=self.items, overridden=True)
             return
 
         items = self.items
@@ -127,8 +127,11 @@ class CountRule(Rule, BaseCountRule):
 
         exception = ctx.get_exception(self.path)
         if exception and exception.is_insertion():
+            logger.debug("inserting new choice into %s: %s", self.path, exception)
+
             # if this is an `all` rule, we want to keep it as an `all` rule, so we need to increase `count`
-            if count == len(items):
+            if count == len(items) and count > 1:
+                logger.debug("incrementing count b/c 'all' rule at %s", self.path)
                 count += 1
 
             matched_course = ctx.forced_course_by_clbid(exception.clbid)
@@ -140,6 +143,8 @@ class CountRule(Rule, BaseCountRule):
                 allow_claimed=False,
                 path=tuple([*self.path, f"*{matched_course.course()}"])
             )
+
+            logger.debug("new choice at %s is %s", self.path, new_rule)
 
             items = tuple([new_rule, *self.items])
 
@@ -168,12 +173,12 @@ class CountRule(Rule, BaseCountRule):
                     if solset_i > 0 and solset_i % 10_000 == 0:
                         logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i, solset_i)
 
-                    yield CountSolution.from_rule(rule=self, items=solutionset + tuple(other_children))
+                    yield CountSolution.from_rule(rule=self, count=count, items=solutionset + tuple(other_children))
 
         if not did_yield:
             logger.debug("%s did not iterate", self.path)
             # ensure that we always yield something
-            yield CountSolution.from_rule(rule=self, items=items)
+            yield CountSolution.from_rule(rule=self, count=count, items=items)
 
     def estimate(self, *, ctx):
         logger.debug('CountRule.estimate')

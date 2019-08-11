@@ -46,6 +46,7 @@ class QuerySolution(Solution, BaseQueryRule):
     def audit(self, *, ctx):
         if self.overridden:
             return QueryResult.from_solution(
+                solution=self,
                 resolved_assertions=tuple(),
                 successful_claims=tuple(),
                 failed_claims=tuple(),

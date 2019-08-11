@@ -22,15 +22,13 @@ class CourseSolution(Solution, BaseCourseRule):
             overridden=overridden,
         )
 
-    def __repr__(self):
-        return self.course
-
     def audit(self, *, ctx):
         if self.overridden:
             return CourseResult.from_solution(solution=self, overridden=self.overridden)
 
         exception = ctx.get_exception(self.path)
         if exception and exception.is_insertion():
+            logger.debug('inserting %s into %s due to override', exception.clbid, self)
             matched_course = ctx.forced_course_by_clbid(exception.clbid)
 
         else:
@@ -47,9 +45,9 @@ class CourseSolution(Solution, BaseCourseRule):
         claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
 
         if claim.failed():
-            logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, self.course, claim.conflict_with)
+            logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, matched_course.course(), claim.conflict_with)
             return CourseResult.from_solution(solution=self, claim_attempt=claim)
 
-        logger.debug('%s course "%s" exists, and has not been claimed', self.path, self.course)
+        logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
 
         return CourseResult.from_solution(solution=self, claim_attempt=claim)
