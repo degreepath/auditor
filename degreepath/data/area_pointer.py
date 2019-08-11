@@ -3,12 +3,13 @@ import logging
 
 from ..clause import Clause, SingleClause, AndClause, OrClause
 from .area_enums import AreaStatus, AreaType
+from .clausable import Clausable
 
 logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(frozen=True)
-class AreaPointer:
+class AreaPointer(Clausable):
     code: str
     status: AreaStatus
     kind: AreaType

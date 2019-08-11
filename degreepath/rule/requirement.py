@@ -1,11 +1,14 @@
 from dataclasses import dataclass, replace
-from typing import Any, Mapping, Optional, List
+from typing import Any, Mapping, Optional, List, Iterator, TYPE_CHECKING
 import logging
 
 from ..base import Rule, BaseRequirementRule, ResultStatus
 from ..base.requirement import AuditedBy
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +25,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return "requirement" in data
 
     @staticmethod
-    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str]):
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str]) -> 'RequirementRule':
         from ..load_rule import load_rule
 
         path = [*path, f"%{name}"]
@@ -49,7 +52,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             path=tuple(path),
         )
 
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         assert isinstance(self.name, str)
         assert self.name.strip() != ""
 
@@ -62,7 +65,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         if self.result is not None:
             self.result.validate(ctx=new_ctx)
 
-    def solutions(self, *, ctx):
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[RequirementSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -84,7 +87,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         for solution in self.result.solutions(ctx=new_ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
 
-    def estimate(self, *, ctx):
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
         if not self.result:
             logger.debug('RequirementRule.estimate: 1')
             return 1

@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, Tuple, TYPE_CHECKING
 from decimal import Decimal
 
 from .bases import Base
 from ..operator import Operator
+
+if TYPE_CHECKING:
+    from ..clause import SingleClause
 
 
 @dataclass(frozen=True)
@@ -26,7 +29,7 @@ class BaseCourseRule(Base):
     def type(self):
         return "course"
 
-    def is_equivalent_to_clause(self, clause) -> bool:
+    def is_equivalent_to_clause(self, clause: 'SingleClause') -> bool:
         if clause.key != 'course':
             return False
 

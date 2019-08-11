@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Sequence, Iterator
+from typing import Dict, List, Optional, Set, Sequence, Iterator, TYPE_CHECKING
 import itertools
 import logging
 
@@ -9,8 +9,12 @@ from ..limit import LimitSet
 from ..clause import Clause, load_clause, SingleClause, OrClause, AndClause
 from ..solution.query import QuerySolution
 from ..constants import Constants
-from .assertion import AssertionRule
 from ..ncr import ncr
+from .assertion import AssertionRule
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +28,7 @@ class QueryRule(Rule, BaseQueryRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: List[str]):
+    def load(data: Dict, *, c: Constants, path: List[str]) -> 'QueryRule':
         path = [*path, f".query"]
 
         where = data.get("where", None)
@@ -72,13 +76,14 @@ class QueryRule(Rule, BaseQueryRule):
             path=tuple(path),
         )
 
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.assertions:
-            [a.validate(ctx=ctx) for a in self.assertions]
+            for a in self.assertions:
+                a.validate(ctx=ctx)
 
-    def get_data(self, *, ctx):
+    def get_data(self, *, ctx: 'RequirementContext') -> Sequence['Clausable']:
         if self.source_type is QuerySourceType.Courses:
-            data = ctx.transcript
+            data = ctx.transcript()
 
             if self.source_repeats is QuerySourceRepeatMode.First:
                 filtered_courses = []
@@ -89,16 +94,16 @@ class QueryRule(Rule, BaseQueryRule):
                         course_identities.add(course.crsid)
                 data = filtered_courses
 
+            return data
+
         elif self.source_type is QuerySourceType.Areas:
-            data = ctx.areas
+            return list(ctx.areas)
 
         else:
-            data = []
             logger.info("%s not yet implemented", self.source_type)
+            return []
 
-        return data
-
-    def solutions(self, *, ctx):  # noqa: C901
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[QuerySolution]:  # noqa: C901
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -148,7 +153,7 @@ class QueryRule(Rule, BaseQueryRule):
             logger.debug("%s did not yield anything; yielding empty collection", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple())
 
-    def estimate(self, *, ctx):
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
         data = self.get_data(ctx=ctx)
 
         if self.where is not None:

@@ -1,11 +1,14 @@
 from dataclasses import dataclass
-from typing import Tuple, Union
+from typing import Tuple, Union, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseCountRule, Rule, Result
 from ..result.count import CountResult
-from .query import apply_clause_to_query_rule
 from ..result.assertion import AssertionResult
+from .query import apply_clause_to_query_rule
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +18,7 @@ class CountSolution(Solution, BaseCountRule):
     overridden: bool = False
 
     @staticmethod
-    def from_rule(*, rule: BaseCountRule, count: int, items: Tuple[Union[Rule, Solution, Result], ...], overridden: bool = False):
+    def from_rule(*, rule: BaseCountRule, count: int, items: Tuple[Union[Rule, Solution, Result], ...], overridden: bool = False) -> 'CountSolution':
         return CountSolution(
             count=count,
             items=items,
@@ -25,7 +28,7 @@ class CountSolution(Solution, BaseCountRule):
             overridden=overridden,
         )
 
-    def audit(self, *, ctx):
+    def audit(self, *, ctx: 'RequirementContext') -> CountResult:
         if self.overridden:
             return CountResult.from_solution(
                 solution=self,

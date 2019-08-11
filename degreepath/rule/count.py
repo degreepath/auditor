@@ -1,14 +1,18 @@
 from dataclasses import dataclass
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List, Sequence, Tuple, Iterator, TYPE_CHECKING
 import itertools
 import logging
 
 from ..base import Rule, BaseCountRule
 from ..constants import Constants
+from ..exception import InsertionException
 from ..solution.count import CountSolution
 from ..ncr import mult
 from .course import CourseRule
 from .assertion import AssertionRule
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +42,7 @@ class CountRule(Rule, BaseCountRule):
         children: Dict[str, Dict],
         path: List[str],
         emphases: Sequence[Dict[str, Dict]] = tuple(),
-    ):
+    ) -> 'CountRule':
         from ..load_rule import load_rule
 
         path = [*path, f".count"]
@@ -115,7 +119,7 @@ class CountRule(Rule, BaseCountRule):
         for rule in self.items:
             rule.validate(ctx=ctx)
 
-    def solutions(self, *, ctx):
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CountSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -126,7 +130,7 @@ class CountRule(Rule, BaseCountRule):
         count = self.count
 
         exception = ctx.get_exception(self.path)
-        if exception and exception.is_insertion():
+        if exception and isinstance(exception, InsertionException):
             logger.debug("inserting new choice into %s: %s", self.path, exception)
 
             # if this is an `all` rule, we want to keep it as an `all` rule, so we need to increase `count`
@@ -180,7 +184,7 @@ class CountRule(Rule, BaseCountRule):
             # ensure that we always yield something
             yield CountSolution.from_rule(rule=self, count=count, items=items)
 
-    def estimate(self, *, ctx):
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('CountRule.estimate')
 
         lo = self.count

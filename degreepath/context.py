@@ -1,9 +1,10 @@
-from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Any, Dict, Union, Set, Sequence
+from dataclasses import dataclass, field, replace
+from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable
 from collections import defaultdict
 import logging
 
 from .data import CourseInstance, AreaPointer
+from .base import BaseCourseRule
 from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
@@ -12,43 +13,32 @@ from .exception import RuleException
 
 logger = logging.getLogger(__name__)
 
-COMPLETED_COURSES: Dict[Any, List[CourseInstance]] = {}
-COURSE_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
-CLBID_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
-
 
 @dataclass(frozen=False)
 class RequirementContext:
-    transcript: Tuple[CourseInstance, ...] = tuple()
+    _transcript: List[CourseInstance] = field(default_factory=list)
+    _course_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
+    _clbid_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
+
     areas: Tuple[AreaPointer, ...] = tuple()
     multicountable: List[List[SingleClause]] = field(default_factory=list)
     claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
     exceptions: Dict[Tuple[str, ...], RuleException] = field(default_factory=dict)
 
-    _course_lookup_map: Dict = field(init=False)
-    _clbid_lookup_map: Dict = field(init=False)
-    _completed_courses: Dict = field(init=False)
+    def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
+        transcript = list(transcript)
 
-    def __post_init__(self):
-        tid = id(self.transcript)
+        course_lookup_map = {
+            **{c.course_shorthand(): c for c in transcript},
+            **{c.course(): c for c in transcript},
+        }
 
-        if tid not in COMPLETED_COURSES:
-            COMPLETED_COURSES[tid] = [
-                course for course in self.transcript
-                # if not course.is_in_progress
-            ]
-        self._completed_courses = COMPLETED_COURSES[tid]
+        clbid_lookup_map = {c.clbid: c for c in transcript}
 
-        if tid not in COURSE_TRANSCRIPT_MAP:
-            COURSE_TRANSCRIPT_MAP[tid] = {
-                **{c.course_shorthand(): c for c in self._completed_courses},
-                **{c.course(): c for c in self._completed_courses},
-            }
-        self._course_lookup_map = COURSE_TRANSCRIPT_MAP[tid]
+        return replace(self, _transcript=transcript, _course_lookup_map=course_lookup_map, _clbid_lookup_map=clbid_lookup_map)
 
-        if tid not in CLBID_TRANSCRIPT_MAP:
-            CLBID_TRANSCRIPT_MAP[tid] = {c.clbid: c for c in self._completed_courses}
-        self._clbid_lookup_map = CLBID_TRANSCRIPT_MAP[tid]
+    def transcript(self) -> List[CourseInstance]:
+        return self._transcript
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
         return self._course_lookup_map.get(c, None)
@@ -79,7 +69,7 @@ class RequirementContext:
     def reset_claims(self):
         self.claims = defaultdict(set)
 
-    def make_claim(self, *, course: CourseInstance, path: List, clause: Union[Clause, CourseRule], allow_claimed: bool = False):  # noqa: C901
+    def make_claim(self, *, course: CourseInstance, path: Sequence[str], clause: Union[Clause, BaseCourseRule], allow_claimed: bool = False) -> ClaimAttempt:  # noqa: C901
         """
         Make claims against courses, to ensure that they are only used once
         (with exceptions) in an audit.

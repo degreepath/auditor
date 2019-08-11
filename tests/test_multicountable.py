@@ -47,12 +47,13 @@ def test_mc(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.context')
 
     course = course_from_str("XYZ 101", attributes=['elective', 'alternate'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='attributes', expected='elective', expected_verbatim='elective', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='alternate', expected_verbatim='alternate', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_elective = SingleClause(key='attributes', expected=('elective',), expected_verbatim=('elective',), operator=Operator.In)
     by_alternate = SingleClause(key='attributes', expected=('alternate',), expected_verbatim=('alternate',), operator=Operator.In)
@@ -86,12 +87,13 @@ def test_mc_course_attrs(caplog):
     """
 
     course = course_from_str("ECON 385", attributes=['econ_level_3'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='course', expected='ECON 385', expected_verbatim='ECON 385', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='econ_level_3', expected_verbatim='econ_level_3', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_course = SingleClause(key='course', expected='ECON 385', expected_verbatim='ECON 385', operator=Operator.EqualTo)
     by_attr = SingleClause(key='attributes', expected='econ_level_3', expected_verbatim='econ_level_3', operator=Operator.EqualTo)
@@ -125,12 +127,13 @@ def test_mc_course_attrs_courserule(caplog):
     """
 
     course = course_from_str("ECON 385", attributes=['econ_level_3'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='course', expected='ECON 385', expected_verbatim='ECON 385', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='econ_level_3', expected_verbatim='econ_level_3', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_course_rule = CourseRule(course='ECON 385', hidden=False, grade=None, allow_claimed=False, path=tuple())
     by_course_clause = CourseRule(course='ECON 385', hidden=False, grade=None, allow_claimed=False, path=tuple())
@@ -187,7 +190,7 @@ def test_mc_multiple_attr_sets(caplog):
     """
 
     course = course_from_str("ENGL 205", attributes=['engl_elective', 'engl_period_post1800', 'engl_period_pre1800', 'engl_topic_crosscultural'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='attributes', expected='engl_elective', expected_verbatim='engl_elective', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='engl_period_post1800', expected_verbatim='engl_period_post1800', operator=Operator.EqualTo),
@@ -213,7 +216,8 @@ def test_mc_multiple_attr_sets(caplog):
             SingleClause(key='attributes', expected='engl_period_post1800', expected_verbatim='engl_period_post1800', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='engl_period_pre1800', expected_verbatim='engl_period_pre1800', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_elective = SingleClause(key='attributes', expected='engl_elective', expected_verbatim='engl_elective', operator=Operator.EqualTo)
     by_post1800 = SingleClause(key='attributes', expected='engl_period_post1800', expected_verbatim='engl_period_post1800', operator=Operator.EqualTo)
@@ -267,7 +271,7 @@ def test_mc_massive_attr_set(caplog):
     """
 
     course = course_from_str("HIST 204", attributes=['history_era_premodern'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='attributes', expected='history_era_premodern', expected_verbatim='history_era_premodern', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='history_l2_seminar', expected_verbatim='history_l2_seminar', operator=Operator.EqualTo),
@@ -276,7 +280,8 @@ def test_mc_massive_attr_set(caplog):
             SingleClause(key='attributes', expected='history_region_nonwesternworld', expected_verbatim='history_region_nonwesternworld', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='history_region_us', expected_verbatim='history_region_us', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_premodern = SingleClause(key='attributes', expected='history_era_premodern', expected_verbatim='history_era_premodern', operator=Operator.EqualTo)
     by_l2_seminar = SingleClause(key='attributes', expected='history_l2_seminar', expected_verbatim='history_l2_seminar', operator=Operator.EqualTo)
@@ -373,7 +378,7 @@ def test_mc_math_sets(caplog):
     """
 
     course = course_from_str("MATH 399", attributes=['math_perspective_a', 'math_perspective_c', 'math_level_3'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='attributes', expected='math_perspective_a', expected_verbatim='math_perspective_a', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='math_level_3', expected_verbatim='math_level_3', operator=Operator.EqualTo),
@@ -394,7 +399,8 @@ def test_mc_math_sets(caplog):
             SingleClause(key='attributes', expected='math_level_3', expected_verbatim='math_level_3', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='math_transitions', expected_verbatim='math_transitions', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_a = SingleClause(key='attributes', expected='math_perspective_a', expected_verbatim='math_perspective_a', operator=Operator.EqualTo)
     by_l3 = SingleClause(key='attributes', expected='math_level_3', expected_verbatim='math_level_3', operator=Operator.EqualTo)
@@ -437,7 +443,7 @@ def test_mc_spanish_sets(caplog):
     """
 
     course = course_from_str("SPAN 313", attributes=['spanish_elective', 'spanish_focus_spain'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='course', expected='SPAN 313', expected_verbatim='SPAN 313', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='spanish_elective', expected_verbatim='spanish_elective', operator=Operator.EqualTo),
@@ -446,7 +452,8 @@ def test_mc_spanish_sets(caplog):
             SingleClause(key='course', expected='SPAN 313', expected_verbatim='SPAN 313', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='spanish_focus_spain', expected_verbatim='spanish_focus_spain', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_course = CourseRule(course='SPAN 313', hidden=False, grade=None, allow_claimed=False, path=tuple())
     by_elective = SingleClause(key='attributes', expected='spanish_elective', expected_verbatim='spanish_elective', operator=Operator.EqualTo)
@@ -489,7 +496,7 @@ def test_mc_dance_sets(caplog):
     """
 
     course = course_from_str("DANCE 313", attributes=['dance_movement', 'dance_genre_modern'])
-    ctx = RequirementContext(transcript=tuple([course]), areas=tuple(), multicountable=[
+    multicountable = [
         [
             SingleClause(key='attributes', expected='dance_movement', expected_verbatim='dance_movement', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='dance_genre_ballet', expected_verbatim='dance_genre_ballet', operator=Operator.EqualTo),
@@ -498,7 +505,8 @@ def test_mc_dance_sets(caplog):
             SingleClause(key='attributes', expected='dance_movement', expected_verbatim='dance_movement', operator=Operator.EqualTo),
             SingleClause(key='attributes', expected='dance_genre_modern', expected_verbatim='dance_genre_modern', operator=Operator.EqualTo),
         ],
-    ])
+    ]
+    ctx = RequirementContext(areas=tuple(), multicountable=multicountable).with_transcript(tuple([course]))
 
     by_movement = SingleClause(key='attributes', expected='dance_movement', expected_verbatim='dance_movement', operator=Operator.EqualTo)
     by_modern = SingleClause(key='attributes', expected='dance_genre_modern', expected_verbatim='dance_genre_modern', operator=Operator.EqualTo)

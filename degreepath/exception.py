@@ -24,9 +24,6 @@ class RuleException:
     def is_pass_override(self) -> bool:
         return False
 
-    def is_insertion(self) -> bool:
-        return False
-
 
 @dataclass(frozen=True)
 class InsertionException(RuleException):
@@ -34,9 +31,6 @@ class InsertionException(RuleException):
 
     def to_dict(self):
         return {**super().to_dict(), "clbid": self.clbid}
-
-    def is_insertion(self) -> bool:
-        return True
 
 
 @dataclass(frozen=True)

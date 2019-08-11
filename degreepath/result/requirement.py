@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 import logging
 
-from ..base import Result, BaseRequirementRule, ResultStatus
+from ..base import Base, Result, BaseRequirementRule, ResultStatus
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +15,9 @@ class RequirementResult(Result, BaseRequirementRule):
     def from_solution(
         *,
         solution: BaseRequirementRule,
-        result: Optional[Result],
+        result: Optional[Base],
         overridden: bool = False,
-    ):
+    ) -> 'RequirementResult':
         return RequirementResult(
             name=solution.name,
             message=solution.message,
@@ -28,7 +28,7 @@ class RequirementResult(Result, BaseRequirementRule):
             overridden=overridden,
         )
 
-    def status(self):
+    def status(self) -> ResultStatus:
         return ResultStatus.Pass if self.ok() else ResultStatus.Problem
 
     def state(self):

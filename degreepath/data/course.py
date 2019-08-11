@@ -1,10 +1,11 @@
-from typing import Optional, Tuple, List, Dict, Any
+from typing import Optional, Tuple, List, Dict, Any, Iterator
 import dataclasses
 import decimal
 import logging
 
-from ..clause import Clause, SingleClause, AndClause, OrClause
+from .clausable import Clausable
 from .course_enums import GradeCode, GradeOption, SubType
+from ..clause import Clause, SingleClause, AndClause, OrClause
 from ..lib import str_to_grade_points
 
 logger = logging.getLogger(__name__)
@@ -12,7 +13,7 @@ Decimal = decimal.Decimal
 
 
 @dataclasses.dataclass(frozen=True, order=True)
-class CourseInstance:
+class CourseInstance(Clausable):
     attributes: Tuple[str, ...]
     clbid: str
     credits: decimal.Decimal
@@ -102,7 +103,7 @@ class CourseInstance:
 
         raise TypeError(f"courseinstance: expected a clause; found {type(clause)}")
 
-    def apply_single_clause(self, clause: SingleClause):  # noqa: C901
+    def apply_single_clause(self, clause: SingleClause) -> bool:  # noqa: C901
         logger.debug("clause/compare/key=%s", clause.key)
 
         if clause.key == 'attributes':
@@ -247,7 +248,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     )
 
 
-def course_from_str(s: str, **kwargs):
+def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
     return load_course({
         "attributes": tuple(),
         "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
@@ -274,7 +275,7 @@ def course_from_str(s: str, **kwargs):
     })
 
 
-def expand_subjects(subjects: List[str]):
+def expand_subjects(subjects: List[str]) -> Iterator[str]:
     shorthands = {
         "AS": "ASIAN",
         "BI": "BIO",

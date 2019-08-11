@@ -1,7 +1,7 @@
 from degreepath.data import course_from_str
 from degreepath.area import AreaOfStudy
 from degreepath.constants import Constants
-from degreepath.base import Solution
+from degreepath.solution.course import CourseSolution
 from degreepath.exception import load_exception
 import logging
 
@@ -26,7 +26,7 @@ def test_insertion_on_course_rule(caplog):
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=transcript, areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.ok() is True
     assert result.was_overridden() is False
@@ -56,7 +56,7 @@ def test_insertion_on_query_rule(caplog):
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=transcript, areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.ok() is True
     assert result.was_overridden() is False
@@ -89,12 +89,12 @@ def test_insertion_on_count_rule__any(caplog):
     #     print(s.solution.items)
 
     assert [
-        [x.course for x in s.solution.items if isinstance(x, Solution)]
+        [x.course for x in s.solution.items if isinstance(x, CourseSolution)]
         for s in solutions
     ] == [['OTHER 234'], ['DEPT 123'], ['OTHER 234', 'DEPT 123']]
     assert len(solutions) == 3
 
-    result = solutions[0].audit(transcript=transcript, areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.count == 1
     assert result.ok() is True
@@ -128,7 +128,7 @@ def test_insertion_on_count_rule__all(caplog):
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=transcript, areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.count == 3
     assert result.ok() is True
@@ -154,10 +154,16 @@ def test_insertion_on_requirement_rule(caplog):
         "clbid": "2",
     })
 
+    print('start')
+
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+    print('begin audit')
+
+    result = solutions[0].audit()
+
+    print(result)
 
     assert result.ok() is False
     assert result.was_overridden() is False
@@ -177,7 +183,7 @@ def test_override_on_course_rule(caplog):
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.ok() is True
     assert result.was_overridden() is True
@@ -202,7 +208,7 @@ def test_override_on_query_rule(caplog):
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.ok() is True
     assert result.was_overridden() is True
@@ -228,7 +234,7 @@ def test_override_on_count_rule(caplog):
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.ok() is True
     assert result.was_overridden() is True
@@ -253,7 +259,7 @@ def test_override_on_requirement_rule(caplog):
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.ok() is True
     assert result.was_overridden() is True
@@ -282,7 +288,7 @@ def test_override_on_count_rule_assertion_clause(caplog):
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=transcript, areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.audits()[0].was_overridden() is True
     assert result.ok() is False
@@ -308,7 +314,7 @@ def test_override_on_query_rule_audit_clause(caplog):
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
-    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+    result = solutions[0].audit()
 
     assert result.resolved_assertions[0].was_overridden() is True
     assert result.ok() is True

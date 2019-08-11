@@ -3,13 +3,13 @@ from typing import Tuple
 from .assertion import AssertionResult
 
 from ..base import Result, BaseQueryRule
-from ..data import CourseInstance
+from ..claim import ClaimAttempt
 
 
 @dataclass(frozen=True)
 class QueryResult(Result, BaseQueryRule):
-    successful_claims: Tuple[CourseInstance, ...]
-    failed_claims: Tuple[CourseInstance, ...]
+    successful_claims: Tuple[ClaimAttempt, ...]
+    failed_claims: Tuple[ClaimAttempt, ...]
     resolved_assertions: Tuple[AssertionResult, ...]
     success: bool
     overridden: bool = False
@@ -17,13 +17,13 @@ class QueryResult(Result, BaseQueryRule):
     @staticmethod
     def from_solution(
         *,
-        solution,
-        resolved_assertions=Tuple[AssertionResult, ...],
-        successful_claims=Tuple[CourseInstance, ...],
-        failed_claims=Tuple[CourseInstance, ...],
+        solution: BaseQueryRule,
+        resolved_assertions: Tuple[AssertionResult, ...],
+        successful_claims: Tuple[ClaimAttempt, ...],
+        failed_claims: Tuple[ClaimAttempt, ...],
         success: bool,
         overridden: bool = False,
-    ):
+    ) -> 'QueryResult':
         return QueryResult(
             source=solution.source,
             source_type=solution.source_type,

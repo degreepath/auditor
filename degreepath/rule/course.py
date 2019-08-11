@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Iterator, TYPE_CHECKING
 import re
 import logging
 
@@ -7,6 +7,9 @@ from ..base import Rule, BaseCourseRule
 from ..constants import Constants
 from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +23,7 @@ class CourseRule(Rule, BaseCourseRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: List[str]):
+    def load(data: Dict, *, c: Constants, path: List[str]) -> 'CourseRule':
         course = data['course']
         min_grade = data.get('grade', None)
 
@@ -34,14 +37,14 @@ class CourseRule(Rule, BaseCourseRule):
             path=tuple(path),
         )
 
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
         method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
         method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
 
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, ctx):
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CourseSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -52,6 +55,6 @@ class CourseRule(Rule, BaseCourseRule):
 
         yield CourseSolution.from_rule(rule=self)
 
-    def estimate(self, *, ctx):
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('CourseRule.estimate: 1')
         return 1

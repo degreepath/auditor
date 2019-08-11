@@ -1,17 +1,20 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union, TYPE_CHECKING
 
-from ..base import BaseRequirementRule, Solution
+from ..base import BaseRequirementRule, Solution, Rule
 from ..result.requirement import RequirementResult
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 
 @dataclass(frozen=True)
 class RequirementSolution(Solution, BaseRequirementRule):
-    result: Optional[Solution]
+    result: Optional[Union[Rule, Solution]]
     overridden: bool = False
 
     @staticmethod
-    def from_rule(*, rule: BaseRequirementRule, solution: Optional[Solution], overridden: bool = False):
+    def from_rule(*, rule: BaseRequirementRule, solution: Optional[Union[Rule, Solution]], overridden: bool = False) -> 'RequirementSolution':
         return RequirementSolution(
             result=solution,
             name=rule.name,
@@ -37,7 +40,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             return False
         return self.result.ok()
 
-    def audit(self, *, ctx):
+    def audit(self, *, ctx: 'RequirementContext') -> RequirementResult:
         if self.overridden:
             return RequirementResult.from_solution(
                 solution=self,
@@ -47,5 +50,8 @@ class RequirementSolution(Solution, BaseRequirementRule):
 
         if self.result is None:
             return RequirementResult.from_solution(solution=self, result=None)
+
+        if isinstance(self.result, Rule):
+            return RequirementResult.from_solution(solution=self, result=self.result)
 
         return RequirementResult.from_solution(solution=self, result=self.result.audit(ctx=ctx))

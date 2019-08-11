@@ -1,9 +1,11 @@
 from dataclasses import dataclass
-from typing import Tuple, Union
+from typing import Tuple, Union, TYPE_CHECKING
 import logging
 
 from .bases import Base, Rule, Solution, Result
-from ..rule.assertion import AssertionRule
+
+if TYPE_CHECKING:
+    from ..rule.assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +15,7 @@ class BaseCountRule(Base):
     count: int
     items: Tuple[Union[Rule, Solution, Result], ...]
     at_most: bool
-    audit_clauses: Tuple[AssertionRule, ...]
+    audit_clauses: Tuple['AssertionRule', ...]
     path: Tuple[str, ...]
 
     def to_dict(self):

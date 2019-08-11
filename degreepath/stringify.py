@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Iterator, Any, Dict
 from .clause import str_clause, get_resolved_items
 from .data import CourseInstance
 from .ms import pretty_ms
@@ -43,12 +43,8 @@ def summarize(*, transcript, result, count, elapsed, iterations, gpa):
     yield endl
 
 
-def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C901
+def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent: int = 0) -> Iterator[str]:  # noqa: C901
     prefix = " " * indent
-
-    if rule is None:
-        yield f"{prefix}???"
-        return
 
     rule_type = rule["type"]
     rank = rule["rank"]

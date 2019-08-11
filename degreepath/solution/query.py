@@ -1,28 +1,32 @@
 from dataclasses import dataclass
-from typing import Union, List, Sequence, Any, Tuple, Collection
-import logging
+from typing import List, Sequence, Any, Tuple, Collection, TYPE_CHECKING
 from collections import Counter
+import logging
+import decimal
 
 from ..base import Solution, BaseQueryRule
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
-from ..data import CourseInstance, AreaPointer
+from ..data import CourseInstance, AreaPointer, Clausable
 from ..clause import SingleClause, Operator
 from ..lib import grade_point_average_items, grade_point_average
+from ..exception import InsertionException
+
+if TYPE_CHECKING:
+    from ..claim import ClaimAttempt  # noqa: F401
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
-
-ResolvedItem = Union[CourseInstance, AreaPointer]
 
 
 @dataclass(frozen=True)
 class QuerySolution(Solution, BaseQueryRule):
-    output: Tuple[ResolvedItem, ...]
+    output: Tuple[Clausable, ...]
     overridden: bool = False
 
     @staticmethod
-    def from_rule(*, rule: BaseQueryRule, output=Tuple[Union[CourseInstance, AreaPointer], ...], overridden: bool = False):
+    def from_rule(*, rule: BaseQueryRule, output: Tuple[Clausable, ...], overridden: bool = False) -> 'QuerySolution':
         return QuerySolution(
             source=rule.source,
             source_type=rule.source_type,
@@ -43,7 +47,7 @@ class QuerySolution(Solution, BaseQueryRule):
             "output": [x.to_dict() for x in self.output],
         }
 
-    def audit(self, *, ctx):
+    def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
         if self.overridden:
             return QueryResult.from_solution(
                 solution=self,
@@ -54,9 +58,9 @@ class QuerySolution(Solution, BaseQueryRule):
                 overridden=self.overridden,
             )
 
-        successful_claims: List[CourseInstance] = []
-        claimed_items: List[Union[CourseInstance, AreaPointer]] = []
-        failed_claims: List[CourseInstance] = []
+        claimed_items: List[Clausable] = []
+        successful_claims: List['ClaimAttempt'] = []
+        failed_claims: List['ClaimAttempt'] = []
 
         for item in self.output:
             if isinstance(item, CourseInstance):
@@ -83,9 +87,10 @@ class QuerySolution(Solution, BaseQueryRule):
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
         exception = ctx.get_exception(self.path)
-        if exception and exception.is_insertion():
+        if exception and isinstance(exception, InsertionException):
             matched_course = ctx.forced_course_by_clbid(exception.clbid)
-            claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
+            clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=exception.clbid, expected_verbatim=exception.clbid)
+            claim = ctx.make_claim(course=matched_course, path=self.path, clause=clause)
 
             if claim.failed():
                 logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, exception.clbid, claim.conflict_with)
@@ -115,7 +120,7 @@ class QuerySolution(Solution, BaseQueryRule):
             success=resolved_result,
         )
 
-    def apply_assertion(self, clause: AssertionRule, *, ctx, output: Sequence[Union[CourseInstance, AreaPointer]] = tuple()) -> AssertionResult:
+    def apply_assertion(self, clause: AssertionRule, *, ctx: 'RequirementContext', output: Sequence[Clausable] = tuple()) -> AssertionResult:
         if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
@@ -231,5 +236,8 @@ def avg_items(data, kind):
     raise Exception(f'expected a valid kind; got {kind}')
 
 
-def avg_or_0(items: Sequence):
-    return sum(items) / len(items) if items else 0
+def avg_or_0(items: Sequence[decimal.Decimal]) -> decimal.Decimal:
+    if not items:
+        return decimal.Decimal('0.00')
+
+    return decimal.Decimal(sum(items) / len(items))

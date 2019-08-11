@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, Sequence
+from typing import Dict, List, Tuple, Optional, Sequence, Iterable
 import logging
 
-from .base import Rule, Solution
+from .base import Rule, Solution, Result
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
@@ -29,7 +29,7 @@ class AreaOfStudy:
     multicountable: List
 
     @staticmethod
-    def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()):
+    def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
         emphases = specification.get('emphases', {})
         declared_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
 
@@ -78,32 +78,27 @@ class AreaOfStudy:
         transcript: Tuple[CourseInstance, ...],
         areas: Tuple[AreaPointer, ...],
         exceptions: Tuple[RuleException, ...],
-    ):
-        logger.debug("%s evaluating area.result")
+    ) -> Iterable['AreaOfStudy']:
+        logger.debug("evaluating area.result")
 
         mapped_exceptions = map_exceptions(exceptions)
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
             logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
-            ctx = RequirementContext(
-                transcript=limited_transcript,
-                areas=areas,
-                exceptions=mapped_exceptions,
-                multicountable=self.multicountable,
-            )
+            ctx = RequirementContext(areas=areas, exceptions=mapped_exceptions, multicountable=self.multicountable).with_transcript(limited_transcript)
 
             for sol in self.result.solutions(ctx=ctx):
                 ctx.reset_claims()
-                yield AreaSolution.from_area(solution=sol, area=self)
+                yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx)
 
-        logger.debug("%s all solutions generated")
+        logger.debug("all solutions generated")
 
-    def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
+    def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]) -> int:
         iterations = 0
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
+            ctx = RequirementContext(areas=areas, multicountable=self.multicountable).with_transcript(limited_transcript)
 
             iterations += self.result.estimate(ctx=ctx)
 
@@ -113,8 +108,9 @@ class AreaOfStudy:
 @dataclass(frozen=True)
 class AreaSolution(AreaOfStudy):
     solution: Solution
+    context: RequirementContext
 
-    def from_area(*, area: AreaOfStudy, solution: Solution):
+    def from_area(*, area: AreaOfStudy, solution: Solution, ctx: RequirementContext) -> 'AreaSolution':
         return AreaSolution(
             name=area.name,
             type=area.type,
@@ -126,24 +122,11 @@ class AreaSolution(AreaOfStudy):
             attributes=area.attributes,
             multicountable=area.multicountable,
             solution=solution,
+            context=ctx,
         )
 
-    def audit(
-        self, *,
-        transcript: Tuple[CourseInstance, ...],
-        areas: Tuple[AreaPointer, ...],
-        exceptions: Tuple[RuleException, ...],
-    ):
-        mapped_exceptions = map_exceptions(exceptions)
-
-        ctx = RequirementContext(
-            transcript=transcript,
-            areas=areas,
-            exceptions=mapped_exceptions,
-            multicountable=self.multicountable,
-        )
-
-        return self.solution.audit(ctx=ctx)
+    def audit(self) -> Result:
+        return self.solution.audit(ctx=self.context)
 
 
 def map_exceptions(exceptions: Sequence[RuleException]) -> Dict[Tuple[str, ...], RuleException]:

@@ -1,23 +1,27 @@
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Optional, TYPE_CHECKING
 
 from ..base import Result, BaseCourseRule
+
+if TYPE_CHECKING:
+    from ..claim import ClaimAttempt  # noqa: F401
+    from ..data import CourseInstance  # noqa: F401
 
 
 @dataclass(frozen=True)
 class CourseResult(Result, BaseCourseRule):
-    claim_attempt: Optional[Any]  # Optional[ClaimAttempt]
-    min_grade_not_met: Optional[Any] = None  # Optional[CourseInstance]
+    claim_attempt: Optional['ClaimAttempt']
+    min_grade_not_met: Optional['CourseInstance'] = None
     overridden: bool = False
 
     @staticmethod
     def from_solution(
         *,
         solution: BaseCourseRule,
-        claim_attempt=None,
-        min_grade_not_met=None,
+        claim_attempt: Optional['ClaimAttempt'] = None,
+        min_grade_not_met: Optional['CourseInstance'] = None,
         overridden: bool = False,
-    ):
+    ) -> 'CourseResult':
         return CourseResult(
             course=solution.course,
             hidden=solution.hidden,

@@ -1,17 +1,20 @@
 from decimal import Decimal
-from typing import Sequence
+from typing import Iterable, TYPE_CHECKING
 from .data.course_enums import GradeCode
 
+if TYPE_CHECKING:
+    from .data import CourseInstance  # noqa: F401
 
-def filter_transcript(courses: Sequence):
+
+def filter_transcript(courses: Iterable['CourseInstance']) -> Iterable['CourseInstance']:
     return (c for c in courses if not c.is_in_progress)
 
 
-def grade_point_average_items(courses: Sequence):
+def grade_point_average_items(courses: Iterable['CourseInstance']) -> Iterable['CourseInstance']:
     return (c for c in courses if c.is_in_gpa)
 
 
-def grade_point_average(courses):
+def grade_point_average(courses: Iterable['CourseInstance']) -> Decimal:
     allowed = list(grade_point_average_items(courses))
 
     if not allowed:
@@ -22,7 +25,7 @@ def grade_point_average(courses):
     gpa = summed / credits
 
     # GPA is _truncated_ to two decimal places, not rounded
-    return int(gpa * 100) / 100
+    return Decimal(int(gpa * 100) / 100)
 
 
 def grade_to_grade_points(g: GradeCode) -> Decimal:

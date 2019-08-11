@@ -16,7 +16,7 @@ VALID_CLAUSE_CONSTANTS = [
 class Constants:
     matriculation_year: int
 
-    def get_by_name(self, v: Any):
+    def get_by_name(self, v: Any) -> int:
         if type(v) != str:
             return v
 

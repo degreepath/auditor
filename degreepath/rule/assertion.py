@@ -1,11 +1,14 @@
 from dataclasses import dataclass
-from typing import Dict, Sequence
+from typing import Dict, Sequence, TYPE_CHECKING
 import logging
 
 from ..clause import load_clause
 from ..constants import Constants
 from ..base.bases import Rule
 from ..base.assertion import BaseAssertionRule
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +22,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: Sequence[str]):
+    def load(data: Dict, *, c: Constants, path: Sequence[str]) -> 'AssertionRule':
         path = [*path, ".assert"]
 
         where = data.get("where", None)
@@ -30,12 +33,12 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         return AssertionRule(assertion=assertion, where=where, path=tuple(path))
 
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.where:
             self.where.validate(ctx=ctx)
         self.assertion.validate(ctx=ctx)
 
-    def estimate(self):
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('AssertionRule.estimate: 0')
         return 0
 

@@ -1,5 +1,5 @@
 import dataclasses
-from typing import List, Optional, cast, Tuple
+from typing import List, Optional, cast, Tuple, Sequence
 from datetime import datetime
 import time
 import decimal
@@ -111,7 +111,7 @@ def audit(*, spec, transcript, constants, exceptions, area_pointers, print_all, 
                 best_rank=cast(Result, best_sol).rank(),
             )
 
-        result = sol.audit(transcript=this_transcript, areas=area_pointers, exceptions=exceptions)
+        result = sol.audit()
 
         if print_all:
             gpa = gpa_from_solution(result=result, transcript=this_transcript, area=area)
@@ -161,7 +161,10 @@ def audit(*, spec, transcript, constants, exceptions, area_pointers, print_all, 
     )
 
 
-def gpa_from_solution(*, result, transcript, area):
+def gpa_from_solution(*, result: Optional[Result], transcript: Sequence[CourseInstance], area: AreaOfStudy) -> decimal.Decimal:
+    if not result:
+        return decimal.Decimal('0.00')
+
     transcript_map = {c.clbid: c for c in transcript}
 
     if area.type == 'degree':

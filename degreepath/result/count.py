@@ -1,26 +1,27 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Union
 
 from .assertion import AssertionResult
-from ..base import Result, BaseCountRule, Rule, ResultStatus
+from ..rule.assertion import AssertionRule
+from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution
 
 
 @dataclass(frozen=True)
 class CountResult(Result, BaseCountRule):
-    audit_results: Tuple[AssertionResult, ...]
+    audit_results: Tuple[Union[AssertionResult, AssertionRule], ...]
     overridden: bool = False
 
     @staticmethod
     def from_solution(
         *,
         solution: BaseCountRule,
-        items: Tuple[Rule, ...],
-        audit_results=Tuple[AssertionResult, ...],
+        items: Tuple[Union[Rule, Result, Solution], ...],
+        audit_results: Tuple[Union[AssertionResult, AssertionRule], ...],
         overridden: bool = False,
-    ):
+    ) -> 'CountResult':
         return CountResult(
             count=solution.count,
-            items=items if isinstance(items, tuple) else tuple(items),
+            items=tuple(items),
             audit_clauses=solution.audit_clauses,
             at_most=solution.at_most,
             audit_results=audit_results,
