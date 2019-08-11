@@ -136,6 +136,9 @@ class CourseInstance(Clausable):
         if clause.key == 'p/n':
             return clause.compare(self.grade_option is GradeOption.PN)
 
+        if clause.key == 'type':
+            return clause.compare(self.sub_type.name)
+
         if clause.key == 'lab':
             return clause.compare(self.is_lab)
 
