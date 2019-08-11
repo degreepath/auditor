@@ -68,10 +68,12 @@ class RequirementContext:
     def completed_courses(self):
         return iter(self._completed_courses)
 
-    def has_exception(self, path: Sequence[str]) -> bool:
-        return tuple(path) in self.exceptions
-
     def get_exception(self, path: Sequence[str]) -> Optional[RuleException]:
+        exception = self.exceptions.get(tuple(path), None)
+        if exception:
+            logger.debug("exception found for %s: %s", path, exception)
+        else:
+            logger.debug("no exception for %s", path)
         return self.exceptions.get(tuple(path), None)
 
     def reset_claims(self):
