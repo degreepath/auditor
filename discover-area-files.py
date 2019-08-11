@@ -2,6 +2,7 @@ import argparse
 import glob
 import json
 import os
+from typing import Sequence, Iterator, Tuple, Optional
 from os.path import abspath, join
 
 import dotenv
@@ -9,7 +10,7 @@ import dotenv
 dotenv.load_dotenv(verbose=True)
 
 
-def cli():
+def cli() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('student')
     parser.add_argument('area_codes', metavar='CODE', action='store', nargs='*', default=tuple())
@@ -19,7 +20,10 @@ def cli():
         print(name, path)
 
 
-def main(files, area_codes=tuple(), root=os.getenv('AREA_ROOT')):
+def main(files: str, area_codes: Sequence[str] = tuple(), root: Optional[str] = os.getenv('AREA_ROOT')) -> Iterator[Tuple[str, str]]:
+    if not root:
+        raise ValueError('the environment variable AREA_ROOT must be set to a path')
+
     for student_file in glob.iglob(files):
         with open(student_file, 'r', encoding='utf-8') as infile:
             student = json.load(infile)
