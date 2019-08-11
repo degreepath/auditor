@@ -7,6 +7,7 @@ from ..base import Rule, BaseCountRule
 from ..constants import Constants
 from ..solution.count import CountSolution
 from ..ncr import mult
+from .course import CourseRule
 from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
@@ -121,27 +122,45 @@ class CountRule(Rule, BaseCountRule):
             yield CountSolution.from_rule(solution=self, items=self.items, overridden=True)
             return
 
-        lo = self.count
-        hi = len(self.items) + 1 if self.at_most is False else self.count + 1
+        items = self.items
+        count = self.count
 
-        all_children = set(self.items)
-        item_indices = {r: self.items.index(r) for r in self.items}
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_insertion():
+            # if this is an `all` rule, we want to keep it as an `all` rule, so we need to increase `count`
+            if count == len(items):
+                count += 1
+
+            matched_course = ctx.forced_course_by_clbid(exception.clbid)
+
+            new_rule = CourseRule(
+                course=matched_course.course(),
+                hidden=False,
+                grade=None,
+                allow_claimed=False,
+                path=tuple([*self.path, f"*{matched_course.course()}"])
+            )
+
+            items = tuple([new_rule, *self.items])
+
+        lo = count
+        hi = len(items) + 1 if self.at_most is False else count + 1
+
+        all_children = set(items)
+        item_indices = {r: items.index(r) for r in items}
 
         did_yield = False
         for r in range(lo, hi):
             # logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
 
-            for combo_i, combo in enumerate(itertools.combinations(self.items, r)):
+            for combo_i, combo in enumerate(itertools.combinations(items, r)):
                 logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i)
 
                 selected_children = set(combo)
                 deselected_children = all_children.difference(selected_children)
                 other_children = sorted(deselected_children, key=lambda r: item_indices[r])
 
-                solutions = [
-                    r.solutions(ctx=ctx)
-                    for r in combo
-                ]
+                solutions = [r.solutions(ctx=ctx) for r in combo]
 
                 for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                     did_yield = True
@@ -154,7 +173,7 @@ class CountRule(Rule, BaseCountRule):
         if not did_yield:
             logger.debug("%s did not iterate", self.path)
             # ensure that we always yield something
-            yield CountSolution.from_rule(rule=self, items=self.items)
+            yield CountSolution.from_rule(rule=self, items=items)
 
     def estimate(self, *, ctx):
         logger.debug('CountRule.estimate')
