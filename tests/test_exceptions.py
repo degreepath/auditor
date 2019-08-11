@@ -135,9 +135,6 @@ def test_insertion_on_count_rule__all(caplog):
     assert result.was_overridden() is False
 
 
-def test_insertion_on_count_rule_assertion_clause(): ...
-
-
 def test_insertion_on_requirement_rule(caplog):
     '''the long and short of this test is, attempting to insert a course
     directly into a Requirement directly should do nothing.'''
@@ -237,9 +234,6 @@ def test_override_on_count_rule(caplog):
     assert result.was_overridden() is True
 
 
-def test_override_on_count_rule_assertion_clause(): ...
-
-
 def test_override_on_requirement_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
@@ -263,3 +257,33 @@ def test_override_on_requirement_rule(caplog):
 
     assert result.ok() is True
     assert result.was_overridden() is True
+
+
+def test_override_on_count_rule_assertion_clause(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "all": [{"course": "DEPT 123"}],
+            "audit": {"assert": {"count(courses)": {"$gte": 1}}},
+        },
+    }, c=c)
+
+    exception = load_exception({
+        "action": "override",
+        "path": ['$', '.count', '.audit', '[0]', '.assert'],
+        "status": "pass",
+    })
+
+    course_a = course_from_str("DEPT 234", clbid="0")
+    course_b = course_from_str("DEPT 345", clbid="1")
+    transcript = [course_a, course_b]
+
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
+    assert len(solutions) == 1
+
+    result = solutions[0].audit(transcript=transcript, areas=[], exceptions=[exception])
+
+    assert result.audits()[0].was_overridden() is True
+    assert result.ok() is False
+    assert result.was_overridden() is False

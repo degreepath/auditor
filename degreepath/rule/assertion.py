@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, Sequence
 import logging
 
-from ..clause import load_clause, str_clause
+from ..clause import load_clause
 from ..constants import Constants
 from ..base.bases import Rule
 from ..base.assertion import BaseAssertionRule
@@ -12,10 +12,6 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class AssertionRule(Rule, BaseAssertionRule):
-    def __repr__(self):
-        content = (f"where {str_clause(self.where)}, " if self.where else '') + f"{str_clause(self.assertion)}"
-        return f"AssertionRule({content})"
-
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "assert" in data:
