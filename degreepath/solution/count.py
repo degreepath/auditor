@@ -34,20 +34,22 @@ class CountSolution(Solution, BaseCountRule):
                 overridden=self.overridden,
             )
 
-        results = [
-            r.audit(ctx=ctx) if isinstance(r, Solution) else r
-            for i, r in enumerate(self.items)
-        ]
+        results = [r.audit(ctx=ctx) if isinstance(r, Solution) else r for r in self.items]
 
         audit_results = []
-        for i, clause in enumerate(self.audit_clauses):
-            audit_path = tuple([*self.path, f"[{i}]"])
+        for clause in self.audit_clauses:
+            exception = ctx.get_exception(clause.path)
+            if exception and exception.is_pass_override():
+                logger.debug("forced override on %s", self.path)
+                audit_results.append(AssertionResult(
+                    where=clause.where,
+                    assertion=clause.assertion,
+                    path=clause.path,
+                    overridden=True,
+                ))
+                continue
 
-            matched_items = [
-                item for sol in results
-                # if hasattr(sol, 'matched')
-                for item in sol.matched(ctx=ctx)
-            ]
+            matched_items = [item for sol in results for item in sol.matched(ctx=ctx)]
 
             if clause.where is not None:
                 matched_items = [
@@ -63,7 +65,7 @@ class CountSolution(Solution, BaseCountRule):
             audit_results.append(AssertionResult(
                 where=clause.where,
                 assertion=result,
-                path=audit_path,
+                path=clause.path,
             ))
 
         return CountResult.from_solution(

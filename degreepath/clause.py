@@ -275,12 +275,11 @@ def str_clause(clause) -> str:
         return str_clause(clause.to_dict())
 
     if clause["type"] == "single-clause":
-        if clause.get('resolved_with', None) is not None:
-            resolved = f" ({clause.get('resolved_with', None)})"
-            postpostscript = f" (resolved items: {sorted(clause.get('resolved_items', []))})"
+        resolved_with = clause.get('resolved_with', None)
+        if resolved_with is not None:
+            resolved = f" ({resolved_with})"
         else:
             resolved = ""
-            postpostscript = ""
 
         if clause['expected'] != clause['expected_verbatim']:
             postscript = f" (via \"{clause['expected_verbatim']}\")"
@@ -289,11 +288,29 @@ def str_clause(clause) -> str:
 
         op = str_operator(clause['operator'])
 
-        return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}{postpostscript}"
+        return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}"
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
         return f'({" and ".join(str_clause(c) for c in clause["children"])})'
+
+    raise Exception('not a clause')
+
+
+def get_resolved_items(clause) -> str:
+    if not isinstance(clause, dict):
+        return get_resolved_items(clause.to_dict())
+
+    if clause["type"] == "single-clause":
+        resolved_with = clause.get('resolved_with', None)
+        if resolved_with is not None:
+            return str(sorted(clause.get('resolved_items', [])))
+        else:
+            return ""
+    elif clause["type"] == "or-clause":
+        return f'({" or ".join(get_resolved_items(c) for c in clause["children"])})'
+    elif clause["type"] == "and-clause":
+        return f'({" and ".join(get_resolved_items(c) for c in clause["children"])})'
 
     raise Exception('not a clause')
 

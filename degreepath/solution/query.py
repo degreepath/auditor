@@ -96,11 +96,11 @@ class QuerySolution(Solution, BaseQueryRule):
                 claimed_items.append(matched_course)
 
         resolved_assertions = tuple(
-            self.apply_assertion(a, output=claimed_items, path=[*self.path, f"[{i}]"])
+            self.apply_assertion(a, ctx=ctx, output=claimed_items)
             for i, a in enumerate(self.assertions)
         )
 
-        resolved_result = all(a.assertion.result is True for a in resolved_assertions)
+        resolved_result = all(a.ok() for a in resolved_assertions)
 
         if resolved_result:
             logger.debug("%s from-rule '%s' might possibly succeed", self.path, self)
@@ -115,16 +115,21 @@ class QuerySolution(Solution, BaseQueryRule):
             success=resolved_result,
         )
 
-    def apply_assertion(self, clause: AssertionRule, *, path: Sequence[str], output: Sequence[Union[CourseInstance, AreaPointer]] = tuple()) -> AssertionResult:
+    def apply_assertion(self, clause: AssertionRule, *, ctx, output: Sequence[Union[CourseInstance, AreaPointer]] = tuple()) -> AssertionResult:
         if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
+
+        exception = ctx.get_exception(clause.path)
+        if exception and exception.is_pass_override():
+            logger.debug("forced override on %s", self.path)
+            return AssertionResult(where=clause.where, assertion=clause.assertion, path=clause.path, overridden=True)
 
         filtered_output = output
         if clause.where is not None:
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
 
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
-        return AssertionResult(where=clause.where, assertion=result, path=tuple(path))
+        return AssertionResult(where=clause.where, assertion=result, path=clause.path)
 
 
 def apply_clause_to_query_rule(*, value: Any, clause: SingleClause) -> Tuple[Any, Collection[Any]]:

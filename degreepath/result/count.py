@@ -28,6 +28,9 @@ class CountResult(Result, BaseCountRule):
             overridden=overridden,
         )
 
+    def audits(self):
+        return self.audit_results
+
     def status(self):
         return ResultStatus.Pass if self.ok() else ResultStatus.Problem
 

@@ -1,5 +1,5 @@
 from typing import List
-from .clause import str_clause
+from .clause import str_clause, get_resolved_items
 from .data import CourseInstance
 from .ms import pretty_ms
 import json
@@ -77,12 +77,14 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
                 else:
                     status = "💚 [ ok]"
             else:
-                status = "💚 [ovr]"
+                status = "💜 [ovr]"
 
         yield f"{prefix}{status} {rule['course']}"
 
     elif rule_type == "count":
-        if rule["status"] == "pass":
+        if rule["overridden"]:
+            emoji = "💜"
+        elif rule["status"] == "pass":
             emoji = "💚"
         elif rule["status"] == "skip":
             emoji = "🌀"
@@ -109,12 +111,23 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
         if rule['audit']:
             yield f'{prefix} This requirement has a post-audit:'
 
+            yield f"{prefix} There must be:"
             for a in rule['audit']:
-                content = (f"where {str_clause(a['where'])}, " if a['where'] else '') + f"{str_clause(a['assertion'])}"
-                if a['ok']:
-                    yield f"{prefix}   - 💚 {content}"
+                if a["overridden"]:
+                    emoji = "💜"
+                elif a["status"] == "pass":
+                    emoji = "💚"
+                elif a["status"] == "skip":
+                    emoji = "🌀"
                 else:
-                    yield f"{prefix}   - 🚫️ {content}"
+                    emoji = "🚫️"
+
+                yield f"{prefix} - {emoji} {str_clause(a['assertion'])} {str(a['path'])}"
+                if a['where']:
+                    yield f"{prefix}      where {str_clause(a['where'])}"
+                resolved_items = get_resolved_items(a['assertion'])
+                if resolved_items:
+                    yield f"{prefix}      resolved items: {resolved_items}"
 
             yield ''
 
@@ -122,7 +135,9 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
             yield from print_result(r, transcript, indent=indent + 4)
 
     elif rule_type == "query":
-        if rule["status"] == "pass":
+        if rule["overridden"]:
+            emoji = "💜"
+        elif rule["status"] == "pass":
             emoji = "💚"
         elif rule["status"] == "skip":
             emoji = "🌀"
@@ -152,20 +167,33 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
             for clm in rule["failures"]:
                 course = mapped_trns.get(clm['claim']["clbid"], None)
                 if course:
-                    yield f"{prefix}   {course.course_shorthand()} \"{course.name}\" ({course.clbid}) [{[x['claimant_path'] for x in clm['conflict_with']]}]"
+                    conflicts = [x['claimant_path'] for x in clm['conflict_with']]
+                    yield f"{prefix}   {course.course_shorthand()} \"{course.name}\" ({course.clbid}) [{conflicts}]"
                 else:
                     yield f"{prefix}   !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
-        if len(rule['assertions']) == 1:
-            a = rule['assertions'][0]
-            yield f"{prefix} There must be {str_clause(a['assertion'])}"
-        else:
-            yield f"{prefix} There must be:"
-            for a in rule['assertions']:
-                yield f"{prefix}- " + (f"where {str_clause(a['where'])}, " if a['where'] else '') + f"{str_clause(a['assertion'])}"
+        yield f"{prefix} There must be:"
+        for a in rule['assertions']:
+            if a["overridden"]:
+                emoji = "💜"
+            elif a["status"] == "pass":
+                emoji = "💚"
+            elif a["status"] == "skip":
+                emoji = "🌀"
+            else:
+                emoji = "🚫️"
+
+            yield f"{prefix} - {emoji} {str_clause(a['assertion'])} {str(a['path'])}"
+            if a['where']:
+                yield f"{prefix}      where {str_clause(a['where'])}"
+            resolved_items = get_resolved_items(a['assertion'])
+            if resolved_items:
+                yield f"{prefix}      resolved items: {resolved_items}"
 
     elif rule_type == "requirement":
-        if rule["status"] == "pass":
+        if rule["overridden"]:
+            emoji = "💜"
+        elif rule["status"] == "pass":
             emoji = "💚"
         elif rule["status"] == "skip":
             emoji = "🌀"
@@ -177,17 +205,6 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
             yield f"{prefix}    Audited by: {rule['audited_by']}"
             return
         yield from print_result(rule["result"], transcript, indent=indent + 4)
-
-    elif rule_type == "reference":
-        if rule["status"] == "pass":
-            emoji = "💚"
-        elif rule["status"] == "skip":
-            emoji = "🌀"
-        else:
-            emoji = "🚫️"
-
-        yield f"{prefix}{emoji} Requirement({rule['name']})"
-        yield f"{prefix}   [Skipped]"
 
     else:
         yield json.dumps(rule, indent=2)

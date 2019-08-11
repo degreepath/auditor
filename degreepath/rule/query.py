@@ -40,9 +40,11 @@ class QueryRule(Rule, BaseQueryRule):
 
         assertions: List[AssertionRule] = []
         if "assert" in data:
-            assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, "[0]"])]
+            assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, ".assertions", "[0]"])]
         elif "all" in data:
-            assertions = [AssertionRule.load(d, c=c, path=[*path, f"[{i}]"]) for i, d in enumerate(data["all"])]
+            assertions = [AssertionRule.load(d, c=c, path=[*path, ".assertions", f"[{i}]"]) for i, d in enumerate(data["all"])]
+        else:
+            raise ValueError(f'you must have either an assert: or an all: key in {data}')
 
         if 'assert' in data and 'all' in data:
             raise ValueError(f'you cannot have both assert: and all: keys; {data}')

@@ -84,11 +84,11 @@ class CountRule(Rule, BaseCountRule):
         if audit_clause is not None:
             if 'all' in audit_clause:
                 audit_clauses = tuple(
-                    AssertionRule.load(audit, c=c, path=[*path, f"[{i}]"])
+                    AssertionRule.load(audit, c=c, path=[*path, ".audit", f"[{i}]"])
                     for i, audit in enumerate(audit_clause['all'])
                 )
             else:
-                audit_clauses = tuple([AssertionRule.load(audit_clause, c=c, path=[*path, "[0]"])])
+                audit_clauses = tuple([AssertionRule.load(audit_clause, c=c, path=[*path, ".audit", "[0]"])])
 
         loaded_items = tuple(
             load_rule(data=r, c=c, children=children_with_emphases, path=[*path, f"[{i}]"])

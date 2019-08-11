@@ -21,8 +21,11 @@ class BaseCountRule(Base):
             **super().to_dict(),
             "count": self.count,
             "items": [item.to_dict() for item in self.items],
-            "audit": [c.to_dict() for c in self.audit_clauses],
+            "audit": [c.to_dict() for c in self.audits()],
         }
+
+    def audits(self):
+        return self.audit_clauses
 
     def type(self):
         return "count"

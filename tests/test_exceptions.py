@@ -138,7 +138,32 @@ def test_insertion_on_count_rule__all(caplog):
 def test_insertion_on_count_rule_assertion_clause(): ...
 
 
-def test_insertion_on_requirement_rule(): ...
+def test_insertion_on_requirement_rule(caplog):
+    '''the long and short of this test is, attempting to insert a course
+    directly into a Requirement directly should do nothing.'''
+
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={
+        "result": {"requirement": "req"},
+        "requirements": {
+            "req": {"result": {"course": "DEPT 123"}},
+        },
+    }, c=c)
+
+    exception = load_exception({
+        "action": "insert",
+        "path": ["$", r"%req"],
+        "clbid": "2",
+    })
+
+    solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
+    assert len(solutions) == 1
+
+    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+
+    assert result.ok() is False
+    assert result.was_overridden() is False
 
 
 def test_override_on_course_rule(caplog):

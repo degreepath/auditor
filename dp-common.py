@@ -24,7 +24,6 @@ def run(args: Arguments, *, transcript_only=False):
         area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
         transcript = [load_course(row) for row in student["courses"]]
         constants = Constants(matriculation_year=student['matriculation'])
-        exceptions = [load_exception(e) for e in student.get("exceptions", [])]
 
         if transcript_only:
             for c in transcript:
@@ -41,6 +40,8 @@ def run(args: Arguments, *, transcript_only=False):
 
             area_code = pathlib.Path(area_file).stem
             area_catalog = pathlib.Path(area_file).parent.stem
+
+            exceptions = [load_exception(e) for e in student.get("exceptions", []) if e['area_code'] == area_code]
 
             yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
 
