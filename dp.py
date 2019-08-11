@@ -1,3 +1,4 @@
+from typing import Any
 import argparse
 import logging
 import runpy
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
@@ -61,7 +62,7 @@ def main():
             logger.critical('unknown message %s', msg)
 
 
-def result_str(msg, *, as_json=False, as_raw=False):
+def result_str(msg: Any, *, as_json: bool = False, as_raw: bool = False) -> str:
     if msg.result is None:
         return json.dumps(None)
 
@@ -72,7 +73,7 @@ def result_str(msg, *, as_json=False, as_raw=False):
         return json.dumps(dict_result)
 
     if as_raw:
-        return msg.result
+        return repr(msg.result)
 
     return "\n" + "".join(summarize(
         result=dict_result, transcript=msg.transcript, gpa=msg.gpa,
