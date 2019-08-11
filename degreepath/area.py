@@ -95,7 +95,7 @@ class AreaOfStudy:
 
             for sol in self.result.solutions(ctx=ctx):
                 ctx.reset_claims()
-                yield AreaSolution(solution=sol, area=self)
+                yield AreaSolution.from_area(solution=sol, area=self)
 
         logger.debug("%s all solutions generated")
 
@@ -111,9 +111,22 @@ class AreaOfStudy:
 
 
 @dataclass(frozen=True)
-class AreaSolution:
+class AreaSolution(AreaOfStudy):
     solution: Solution
-    area: AreaOfStudy
+
+    def from_area(*, area: AreaOfStudy, solution: Solution):
+        return AreaSolution(
+            name=area.name,
+            type=area.type,
+            catalog=area.catalog,
+            major=area.major,
+            degree=area.degree,
+            limit=area.limit,
+            result=area.result,
+            attributes=area.attributes,
+            multicountable=area.multicountable,
+            solution=solution,
+        )
 
     def audit(
         self, *,
@@ -127,7 +140,7 @@ class AreaSolution:
             transcript=transcript,
             areas=areas,
             exceptions=mapped_exceptions,
-            multicountable=self.area.multicountable,
+            multicountable=self.multicountable,
         )
 
         return self.solution.audit(ctx=ctx)
