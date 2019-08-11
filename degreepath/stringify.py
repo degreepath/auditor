@@ -206,7 +206,8 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
         if rule["audited_by"] is not None:
             yield f"{prefix}    Audited by: {rule['audited_by']}"
             return
-        yield from print_result(rule["result"], transcript, indent=indent + 4)
+        if rule["result"]:
+            yield from print_result(rule["result"], transcript, indent=indent + 4)
 
     else:
         yield json.dumps(rule, indent=2)
