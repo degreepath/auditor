@@ -287,3 +287,29 @@ def test_override_on_count_rule_assertion_clause(caplog):
     assert result.audits()[0].was_overridden() is True
     assert result.ok() is False
     assert result.was_overridden() is False
+
+
+def test_override_on_query_rule_audit_clause(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": {"student": "courses"},
+            "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
+        },
+    }, c=c)
+
+    exception = load_exception({
+        "action": "override",
+        "path": ['$', '.query', '.assertions', '[0]', '.assert'],
+        "status": "pass",
+    })
+
+    solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
+    assert len(solutions) == 1
+
+    result = solutions[0].audit(transcript=[], areas=[], exceptions=[exception])
+
+    assert result.resolved_assertions[0].was_overridden() is True
+    assert result.ok() is True
+    assert result.was_overridden() is False
