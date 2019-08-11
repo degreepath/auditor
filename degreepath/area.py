@@ -78,7 +78,7 @@ class AreaOfStudy:
         transcript: Tuple[CourseInstance, ...],
         areas: Tuple[AreaPointer, ...],
         exceptions: Tuple[RuleException, ...],
-    ) -> Iterable['AreaOfStudy']:
+    ) -> Iterable['AreaSolution']:
         logger.debug("evaluating area.result")
 
         mapped_exceptions = map_exceptions(exceptions)
