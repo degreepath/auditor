@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Dict, Any, List
 from .assertion import AssertionResult
 
 from ..base import Result, BaseQueryRule
@@ -41,17 +41,17 @@ class QueryResult(Result, BaseQueryRule):
             overridden=overridden,
         )
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "failures": [c.to_dict() for c in self.failed_claims],
             "assertions": [a.to_dict() for a in self.resolved_assertions],
         }
 
-    def claims(self):
-        return self.successful_claims
+    def claims(self) -> List[ClaimAttempt]:
+        return list(self.successful_claims)
 
-    def was_overridden(self):
+    def was_overridden(self) -> bool:
         return self.overridden
 
     def ok(self) -> bool:
@@ -60,8 +60,8 @@ class QueryResult(Result, BaseQueryRule):
 
         return self.success is True
 
-    def rank(self):
+    def rank(self) -> int:
         return len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
 
-    def max_rank(self):
+    def max_rank(self) -> int:
         return len(self.successful_claims) + len(self.failed_claims)

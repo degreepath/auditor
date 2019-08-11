@@ -1,14 +1,15 @@
 from dataclasses import dataclass
-from typing import Tuple, Union
+from typing import Tuple, Union, Sequence, List
 
 from .assertion import AssertionResult
 from ..rule.assertion import AssertionRule
-from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution
+from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule
+from ..claim import ClaimAttempt
 
 
 @dataclass(frozen=True)
 class CountResult(Result, BaseCountRule):
-    audit_results: Tuple[Union[AssertionResult, AssertionRule], ...]
+    audit_results: Tuple[BaseAssertionRule, ...]
     overridden: bool = False
 
     @staticmethod
@@ -16,7 +17,7 @@ class CountResult(Result, BaseCountRule):
         *,
         solution: BaseCountRule,
         items: Tuple[Union[Rule, Result, Solution], ...],
-        audit_results: Tuple[Union[AssertionResult, AssertionRule], ...],
+        audit_results: Tuple[BaseAssertionRule, ...],
         overridden: bool = False,
     ) -> 'CountResult':
         return CountResult(
@@ -29,16 +30,16 @@ class CountResult(Result, BaseCountRule):
             overridden=overridden,
         )
 
-    def audits(self):
+    def audits(self) -> Sequence[BaseAssertionRule]:
         return self.audit_results
 
-    def status(self):
+    def status(self) -> ResultStatus:
         return ResultStatus.Pass if self.ok() else ResultStatus.Problem
 
-    def claims(self):
+    def claims(self) -> List[ClaimAttempt]:
         return [claim for item in self.items for claim in item.claims()]
 
-    def was_overridden(self):
+    def was_overridden(self) -> bool:
         return self.overridden
 
     def ok(self) -> bool:
@@ -49,8 +50,8 @@ class CountResult(Result, BaseCountRule):
         audit_passed = len(self.audit_results) == 0 or all(a.ok() for a in self.audit_results)
         return passed_count >= self.count and audit_passed
 
-    def rank(self):
+    def rank(self) -> int:
         return sum(r.rank() for r in self.items)
 
-    def max_rank(self):
+    def max_rank(self) -> int:
         return sum(r.max_rank() for r in self.items)

@@ -68,7 +68,7 @@ class AreaOfStudy:
             limit=limit,
         )
 
-    def validate(self):
+    def validate(self) -> None:
         ctx = RequirementContext()
 
         self.result.validate(ctx=ctx)

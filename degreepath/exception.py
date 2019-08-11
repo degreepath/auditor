@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Any
 import logging
 import enum
 from .base import ResultStatus
@@ -18,7 +18,7 @@ class RuleException:
     path: Tuple[str, ...]
     action: ExceptionAction
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {"path": list(self.path), "action": self.action.value}
 
     def is_pass_override(self) -> bool:
@@ -29,7 +29,7 @@ class RuleException:
 class InsertionException(RuleException):
     clbid: str
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {**super().to_dict(), "clbid": self.clbid}
 
 
@@ -37,14 +37,14 @@ class InsertionException(RuleException):
 class OverrideException(RuleException):
     status: ResultStatus
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {**super().to_dict(), "status": self.status.value}
 
     def is_pass_override(self) -> bool:
         return self.status is ResultStatus.Pass
 
 
-def load_exception(data: Dict) -> RuleException:
+def load_exception(data: Dict[str, Any]) -> RuleException:
     if data['action'] == 'insert':
         return InsertionException(clbid=data['clbid'], path=data['path'], action=ExceptionAction.Insert)
     elif data['action'] == 'override':

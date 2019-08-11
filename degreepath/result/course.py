@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, List, Dict, Any, TYPE_CHECKING
 
 from ..base import Result, BaseCourseRule
 
@@ -33,22 +33,22 @@ class CourseResult(Result, BaseCourseRule):
             overridden=overridden,
         )
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "min_grade_not_met": self.min_grade_not_met.to_dict() if self.min_grade_not_met else None,
         }
 
-    def claims(self):
+    def claims(self) -> List['ClaimAttempt']:
         if self.claim_attempt:
             return [self.claim_attempt]
         else:
             return []
 
-    def state(self):
+    def state(self) -> str:
         return "result"
 
-    def was_overridden(self):
+    def was_overridden(self) -> bool:
         return self.overridden
 
     def ok(self) -> bool:
@@ -57,8 +57,8 @@ class CourseResult(Result, BaseCourseRule):
 
         return self.claim_attempt is not None and self.claim_attempt.failed() is False and self.min_grade_not_met is None
 
-    def rank(self):
+    def rank(self) -> int:
         return 1 if self.ok() else 0
 
-    def max_rank(self):
+    def max_rank(self) -> int:
         return 1

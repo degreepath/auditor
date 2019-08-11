@@ -107,7 +107,7 @@ class CountRule(Rule, BaseCountRule):
             path=tuple(path),
         )
 
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         assert isinstance(self.count, int), f"{self.count} should be an integer"
 
         lo = self.count

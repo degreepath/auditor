@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def load_clause(data: Dict, c: Constants) -> 'Clause':
+def load_clause(data: Dict[str, Any], c: Constants) -> 'Clause':
     if not isinstance(data, Mapping):
         raise Exception(f'expected {data} to be a dictionary')
 
@@ -48,7 +48,7 @@ class ResolvedClause:
     resolved_items: Sequence[Any] = tuple()
     result: bool = False
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "resolved_with": str(self.resolved_with) if isinstance(self.resolved_with, decimal.Decimal) else self.resolved_with,
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
@@ -60,7 +60,7 @@ class ResolvedClause:
 class AndClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "type": "and-clause",
@@ -90,7 +90,7 @@ class AndClause(_Clause, ResolvedClause):
 class OrClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "type": "or-clause",
@@ -124,7 +124,7 @@ class SingleClause(_Clause, ResolvedClause):
     operator: Operator = Operator.EqualTo
     at_most: bool = False
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         expected = self.expected
         if isinstance(self.expected, GradeOption):
             expected = self.expected.value

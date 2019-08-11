@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, List, Dict, Any, Iterator
+from typing import Optional, Tuple, List, Dict, Any, Iterator, Sequence
 import dataclasses
 import decimal
 import logging
@@ -41,7 +41,7 @@ class CourseInstance(Clausable):
     _identity: str
     _shorthand: str
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "attributes": list(self.attributes),
             "clbid": self.clbid,
@@ -68,19 +68,19 @@ class CourseInstance(Clausable):
             "type": "course",
         }
 
-    def attach_attrs(self, attributes=None):
-        if attributes is None:
+    def attach_attrs(self, attributes: Sequence['str'] = tuple()) -> 'CourseInstance':
+        if not attributes:
             attributes = tuple()
 
         return dataclasses.replace(self, attributes=tuple(attributes))
 
-    def course(self):
+    def course(self) -> str:
         return self._identity
 
-    def course_shorthand(self):
+    def course_shorthand(self) -> str:
         return self._shorthand
 
-    def course_with_term(self):
+    def course_with_term(self) -> str:
         return f"{self._shorthand}{self.section or ''} {self.year}-{self.term}"
 
     def __str__(self):

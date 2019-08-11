@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar
+from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List
 import itertools
 from collections import defaultdict
 import logging
@@ -18,7 +18,7 @@ class Limit:
     at_most: int
     where: Clause
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {"type": "limit", "at_most": self.at_most, "where": self.where.to_dict()}
 
     @staticmethod
@@ -47,10 +47,10 @@ class Limit:
 class LimitSet:
     limits: Tuple[Limit, ...]
 
-    def has_limits(self):
+    def has_limits(self) -> bool:
         return len(self.limits) > 0
 
-    def to_dict(self):
+    def to_dict(self) -> List[Dict[str, Any]]:
         return [l.to_dict() for l in self.limits]
 
     @staticmethod

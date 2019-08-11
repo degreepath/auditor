@@ -1,3 +1,4 @@
+from typing import Dict, Any
 import dataclasses
 import logging
 
@@ -16,7 +17,7 @@ class AreaPointer(Clausable):
     name: str
     degree: str
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "type": "area",
             "code": self.code,
@@ -27,7 +28,7 @@ class AreaPointer(Clausable):
         }
 
     @staticmethod
-    def from_dict(*, code, status, kind, name, degree):
+    def from_dict(*, code: str, status: str, kind: str, name: str, degree: str) -> 'AreaPointer':
         return AreaPointer(
             code=code,
             status=AreaStatus(status),

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict, Any
 import enum
 
 from .bases import Base
@@ -20,7 +20,7 @@ class BaseRequirementRule(Base):
     is_contract: bool
     path: Tuple[str, ...]
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "name": self.name,

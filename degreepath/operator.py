@@ -136,7 +136,7 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
     raise TypeError(f"unknown comparison {op}")
 
 
-def str_operator(op):
+def str_operator(op: str) -> str:
     if op == 'LessThan':
         return '<'
     elif op == 'LessThanOrEqualTo':
@@ -153,3 +153,5 @@ def str_operator(op):
         return '∈'
     elif op == 'NotIn':
         return '∉'
+
+    raise TypeError(f'unknown operator {op}')

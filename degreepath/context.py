@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field, replace
-from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable
+from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
 import logging
 
@@ -55,8 +55,8 @@ class RequirementContext:
     def has_course(self, c: str) -> bool:
         return self.find_course(c) is not None
 
-    def completed_courses(self):
-        return iter(self._completed_courses)
+    def completed_courses(self) -> Iterator[CourseInstance]:
+        return (c for c in self.completed_courses())
 
     def get_exception(self, path: Sequence[str]) -> Optional[RuleException]:
         exception = self.exceptions.get(tuple(path), None)
@@ -66,7 +66,7 @@ class RequirementContext:
             logger.debug("no exception for %s", path)
         return self.exceptions.get(tuple(path), None)
 
-    def reset_claims(self):
+    def reset_claims(self) -> None:
         self.claims = defaultdict(set)
 
     def make_claim(self, *, course: CourseInstance, path: Sequence[str], clause: Union[Clause, BaseCourseRule], allow_claimed: bool = False) -> ClaimAttempt:  # noqa: C901

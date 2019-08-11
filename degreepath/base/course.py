@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Tuple, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Any, TYPE_CHECKING
 from decimal import Decimal
 
 from .bases import Base
@@ -17,7 +17,7 @@ class BaseCourseRule(Base):
     allow_claimed: bool
     path: Tuple[str, ...]
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "course": self.course,
@@ -26,7 +26,7 @@ class BaseCourseRule(Base):
             "allow_claimed": self.allow_claimed,
         }
 
-    def type(self):
+    def type(self) -> str:
         return "course"
 
     def is_equivalent_to_clause(self, clause: 'SingleClause') -> bool:

@@ -1,5 +1,5 @@
 import abc
-from typing import Iterator, Sequence, List, Tuple, TYPE_CHECKING
+from typing import Iterator, Dict, Any, Sequence, List, Tuple, TYPE_CHECKING
 import enum
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ class ResultStatus(enum.Enum):
 class Base(abc.ABC):
     path: Sequence[str]
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "path": list(self.path),
             "type": self.type(),
@@ -35,6 +35,9 @@ class Base(abc.ABC):
     @abc.abstractmethod
     def type(self) -> str:
         raise NotImplementedError(f'must define a type() method')
+
+    def state(self) -> str:
+        return "rule"
 
     def status(self) -> ResultStatus:
         return ResultStatus.Pass if self.ok() else ResultStatus.Skip
