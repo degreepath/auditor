@@ -12,6 +12,7 @@ class QueryResult(Result, BaseQueryRule):
     failed_claims: Tuple[CourseInstance, ...]
     resolved_assertions: Tuple[AssertionResult, ...]
     success: bool
+    overridden: bool = False
 
     @staticmethod
     def from_solution(
@@ -20,7 +21,8 @@ class QueryResult(Result, BaseQueryRule):
         resolved_assertions=Tuple[AssertionResult, ...],
         successful_claims=Tuple[CourseInstance, ...],
         failed_claims=Tuple[CourseInstance, ...],
-        success=bool,
+        success: bool,
+        overridden: bool = False,
     ):
         return QueryResult(
             source=solution.source,
@@ -36,6 +38,7 @@ class QueryResult(Result, BaseQueryRule):
             failed_claims=failed_claims,
             success=success,
             path=solution.path,
+            overridden=overridden,
         )
 
     def to_dict(self):
@@ -48,7 +51,13 @@ class QueryResult(Result, BaseQueryRule):
     def claims(self):
         return self.successful_claims
 
+    def was_overridden(self):
+        return self.overridden
+
     def ok(self) -> bool:
+        if self.was_overridden():
+            return True
+
         return self.success is True
 
     def rank(self):

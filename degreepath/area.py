@@ -7,6 +7,7 @@ from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
+from .exception import RuleException
 from .limit import LimitSet
 from .load_rule import load_rule
 
@@ -72,20 +73,31 @@ class AreaOfStudy:
 
         self.result.validate(ctx=ctx)
 
-    def solutions(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
-        path = ["$root"]
-        logger.debug("%s evaluating area.result", path)
+    def solutions(
+        self, *,
+        transcript: Tuple[CourseInstance, ...],
+        areas: Tuple[AreaPointer, ...],
+        exceptions: Tuple[RuleException, ...],
+    ):
+        logger.debug("%s evaluating area.result")
+
+        mapped_exceptions = map_exceptions(exceptions)
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            logger.debug("%s evaluating area.result with limited transcript %s", path, limited_transcript)
+            logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
-            ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
+            ctx = RequirementContext(
+                transcript=limited_transcript,
+                areas=areas,
+                exceptions=mapped_exceptions,
+                multicountable=self.multicountable,
+            )
 
             for sol in self.result.solutions(ctx=ctx):
                 ctx.reset_claims()
                 yield AreaSolution(solution=sol, area=self)
 
-        logger.debug("%s all solutions generated", path)
+        logger.debug("%s all solutions generated")
 
     def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
         iterations = 0
@@ -103,7 +115,32 @@ class AreaSolution:
     solution: Solution
     area: AreaOfStudy
 
-    def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
-        ctx = RequirementContext(transcript=transcript, areas=areas, multicountable=self.area.multicountable)
+    def audit(
+        self, *,
+        transcript: Tuple[CourseInstance, ...],
+        areas: Tuple[AreaPointer, ...],
+        exceptions: Tuple[RuleException, ...],
+    ):
+        mapped_exceptions = map_exceptions(exceptions)
+
+        ctx = RequirementContext(
+            transcript=transcript,
+            areas=areas,
+            exceptions=mapped_exceptions,
+            multicountable=self.area.multicountable,
+        )
 
         return self.solution.audit(ctx=ctx)
+
+
+def map_exceptions(exceptions: Sequence[RuleException]) -> Dict[Tuple[str, ...], RuleException]:
+    mapped_exceptions: Dict[Tuple[str, ...], RuleException] = dict()
+
+    for e in exceptions:
+        path = tuple(e.path)
+        if path in mapped_exceptions:
+            raise ValueError(f'expected only one exception per path: {e}')
+        else:
+            mapped_exceptions[path] = e
+
+    return mapped_exceptions

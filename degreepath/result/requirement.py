@@ -2,15 +2,22 @@ from dataclasses import dataclass
 from typing import Optional
 import logging
 
-from ..base import Result, BaseRequirementRule
+from ..base import Result, BaseRequirementRule, ResultStatus
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
 class RequirementResult(Result, BaseRequirementRule):
+    overridden: bool = False
+
     @staticmethod
-    def from_solution(*, solution: BaseRequirementRule, result: Optional[Result]):
+    def from_solution(
+        *,
+        solution: BaseRequirementRule,
+        result: Optional[Result],
+        overridden: bool = False,
+    ):
         return RequirementResult(
             name=solution.name,
             message=solution.message,
@@ -18,22 +25,31 @@ class RequirementResult(Result, BaseRequirementRule):
             is_contract=solution.is_contract,
             path=solution.path,
             result=result,
+            overridden=overridden,
         )
 
     def status(self):
-        return "pass" if self.ok() else "problem"
+        return ResultStatus.Pass if self.ok() else ResultStatus.Problem
 
     def state(self):
-        if self.audited_by or self.result is None:
+        if self.result is None:
             return "result"
+
         return self.result.state()
 
     def claims(self):
-        if self.audited_by or self.result is None:
+        if self.result is None:
             return []
+
         return self.result.claims()
 
+    def was_overridden(self):
+        return self.overridden
+
     def ok(self) -> bool:
+        if self.was_overridden():
+            return self.overridden
+
         # return True if self.audited_by is not None else _ok
         return self.result.ok() if self.result else False
 

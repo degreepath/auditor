@@ -64,7 +64,7 @@ class EstimateMsg:
     estimate: int
 
 
-def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas, estimate_only):  # noqa: C901
+def audit(*, spec, transcript, constants, exceptions, area_pointers, print_all, other_areas, estimate_only):  # noqa: C901
     area = AreaOfStudy.load(specification=spec, c=constants, other_areas=other_areas)
     area.validate()
 
@@ -94,7 +94,7 @@ def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas,
     if estimate_only:
         return
 
-    for sol in area.solutions(transcript=this_transcript, areas=area_pointers):
+    for sol in area.solutions(transcript=this_transcript, areas=area_pointers, exceptions=exceptions):
         if total_count == 0:
             startup_time = time.perf_counter() - iter_start
             iter_start = time.perf_counter()
@@ -104,7 +104,7 @@ def audit(*, spec, transcript, constants, area_pointers, print_all, other_areas,
         if total_count % 1_000 == 0:
             yield ProgressMsg(count=total_count, recent_iters=iterations[-1_000:], start_time=start_time, best_rank=best_sol.rank())
 
-        result = sol.audit(transcript=this_transcript, areas=area_pointers)
+        result = sol.audit(transcript=this_transcript, areas=area_pointers, exceptions=exceptions)
 
         if print_all:
             gpa = gpa_from_solution(result=result, transcript=this_transcript, area=area)

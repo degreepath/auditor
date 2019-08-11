@@ -2,10 +2,11 @@ from dataclasses import dataclass, replace
 from typing import Any, Mapping, Optional, List
 import logging
 
-from ..base import Rule, BaseRequirementRule
+from ..base import Rule, BaseRequirementRule, ResultStatus
 from ..base.requirement import AuditedBy
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
+from ..result.requirement import RequirementResult
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class RequirementRule(Rule, BaseRequirementRule):
     result: Optional[Rule]
 
     def status(self):
-        return "pending"
+        return ResultStatus.Pending
 
     @staticmethod
     def can_load(data: Mapping) -> bool:
@@ -63,6 +64,12 @@ class RequirementRule(Rule, BaseRequirementRule):
             self.result.validate(ctx=new_ctx)
 
     def solutions(self, *, ctx):
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_pass_override():
+            logger.debug("forced override on %s", self.path)
+            yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
+            return
+
         logger.debug("%s auditing %s", self.path, self.name)
 
         if self.audited_by is not None:

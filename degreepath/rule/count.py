@@ -115,6 +115,12 @@ class CountRule(Rule, BaseCountRule):
             rule.validate(ctx=ctx)
 
     def solutions(self, *, ctx):
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_pass_override():
+            logger.debug("forced override on %s", self.path)
+            yield CountSolution.from_rule(solution=self, items=self.items, overridden=True)
+            return
+
         lo = self.count
         hi = len(self.items) + 1 if self.at_most is False else self.count + 1
 

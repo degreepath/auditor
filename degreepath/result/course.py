@@ -8,9 +8,16 @@ from ..base import Result, BaseCourseRule
 class CourseResult(Result, BaseCourseRule):
     claim_attempt: Optional[Any]  # Optional[ClaimAttempt]
     min_grade_not_met: Optional[Any] = None  # Optional[CourseInstance]
+    overridden: bool = False
 
     @staticmethod
-    def from_solution(*, solution: BaseCourseRule, claim_attempt=None, min_grade_not_met=None):
+    def from_solution(
+        *,
+        solution: BaseCourseRule,
+        claim_attempt=None,
+        min_grade_not_met=None,
+        overridden: bool = False,
+    ):
         return CourseResult(
             course=solution.course,
             hidden=solution.hidden,
@@ -19,6 +26,7 @@ class CourseResult(Result, BaseCourseRule):
             claim_attempt=claim_attempt,
             min_grade_not_met=min_grade_not_met,
             path=solution.path,
+            overridden=overridden,
         )
 
     def to_dict(self):
@@ -36,7 +44,13 @@ class CourseResult(Result, BaseCourseRule):
     def state(self):
         return "result"
 
+    def was_overridden(self):
+        return self.overridden
+
     def ok(self) -> bool:
+        if self.was_overridden():
+            return True
+
         return self.claim_attempt is not None and self.claim_attempt.failed() is False and self.min_grade_not_met is None
 
     def rank(self):

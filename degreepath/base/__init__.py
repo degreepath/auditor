@@ -1,6 +1,6 @@
 # flake8: noqa
 
-from .bases import Base, Rule, Result, Solution
+from .bases import Base, Rule, Result, Solution, ResultStatus
 from .course import BaseCourseRule
 from .count import BaseCountRule
 from .query import BaseQueryRule

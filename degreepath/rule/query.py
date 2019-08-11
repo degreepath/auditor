@@ -97,7 +97,11 @@ class QueryRule(Rule, BaseQueryRule):
         return data
 
     def solutions(self, *, ctx):  # noqa: C901
-        logger.debug("%s", self.path)
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_pass_override():
+            logger.debug("forced override on %s", self.path)
+            yield QuerySolution.from_rule(rule=self, output=tuple(), overridden=True)
+            return
 
         data = self.get_data(ctx=ctx)
         assert len(self.assertions) > 0

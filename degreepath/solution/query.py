@@ -19,9 +19,10 @@ ResolvedItem = Union[CourseInstance, AreaPointer]
 @dataclass(frozen=True)
 class QuerySolution(Solution, BaseQueryRule):
     output: Tuple[ResolvedItem, ...]
+    overridden: bool = False
 
     @staticmethod
-    def from_rule(*, rule: BaseQueryRule, output=Tuple[Union[CourseInstance, AreaPointer], ...]):
+    def from_rule(*, rule: BaseQueryRule, output=Tuple[Union[CourseInstance, AreaPointer], ...], overridden: bool = False):
         return QuerySolution(
             source=rule.source,
             source_type=rule.source_type,
@@ -33,6 +34,7 @@ class QuerySolution(Solution, BaseQueryRule):
             attempt_claims=rule.attempt_claims,
             output=output,
             path=rule.path,
+            overridden=overridden,
         )
 
     def to_dict(self):
@@ -42,6 +44,15 @@ class QuerySolution(Solution, BaseQueryRule):
         }
 
     def audit(self, *, ctx):
+        if self.overridden:
+            return QueryResult.from_solution(
+                resolved_assertions=tuple(),
+                successful_claims=tuple(),
+                failed_claims=tuple(),
+                success=self.overridden,
+                overridden=self.overridden,
+            )
+
         successful_claims: List[CourseInstance] = []
         claimed_items: List[Union[CourseInstance, AreaPointer]] = []
         failed_claims: List[CourseInstance] = []
@@ -69,6 +80,19 @@ class QuerySolution(Solution, BaseQueryRule):
 
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
+
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_insertion():
+            matched_course = ctx.forced_course_by_clbid(exception.clbid)
+            claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
+
+            if claim.failed():
+                logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, exception.clbid, claim.conflict_with)
+                failed_claims.append(claim)
+            else:
+                logger.debug('%s course "%s" exists, and is available', self.path, exception.clbid)
+                successful_claims.append(claim)
+                claimed_items.append(matched_course)
 
         resolved_assertions = tuple(
             self.apply_assertion(a, output=claimed_items, path=[*self.path, f"[{i}]"])

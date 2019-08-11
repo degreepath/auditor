@@ -42,6 +42,12 @@ class CourseRule(Rule, BaseCourseRule):
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
     def solutions(self, *, ctx):
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_pass_override():
+            logger.debug("forced override on %s", self.path)
+            yield CourseSolution.from_rule(rule=self, overridden=True)
+            return
+
         logger.debug('%s reference to course "%s"', self.path, self.course)
 
         yield CourseSolution.from_rule(rule=self)

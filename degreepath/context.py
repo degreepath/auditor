@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Any, Dict, Union, Set
+from typing import List, Optional, Tuple, Any, Dict, Union, Set, Sequence
 from collections import defaultdict
 import logging
 
@@ -8,6 +8,7 @@ from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
 from .operator import Operator
+from .exception import RuleException
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ class RequirementContext:
     areas: Tuple[AreaPointer, ...] = tuple()
     multicountable: List[List[SingleClause]] = field(default_factory=list)
     claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
+    exceptions: Dict[Tuple[str, ...], RuleException] = field(default_factory=dict)
 
     _course_lookup_map: Dict = field(init=False)
     _clbid_lookup_map: Dict = field(init=False)
@@ -32,9 +34,8 @@ class RequirementContext:
 
         if tid not in COMPLETED_COURSES:
             COMPLETED_COURSES[tid] = [
-                course
-                for course in self.transcript
-                if not course.is_in_progress
+                course for course in self.transcript
+                # if not course.is_in_progress
             ]
         self._completed_courses = COMPLETED_COURSES[tid]
 
@@ -55,11 +56,23 @@ class RequirementContext:
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self._clbid_lookup_map.get(clbid, None)
 
+    def forced_course_by_clbid(self, clbid: str) -> CourseInstance:
+        match = self.find_course_by_clbid(clbid)
+        if not match:
+            raise Exception(f'attempted to use CLBID={clbid}, but it was not found in the transcript')
+        return match
+
     def has_course(self, c: str) -> bool:
         return self.find_course(c) is not None
 
     def completed_courses(self):
         return iter(self._completed_courses)
+
+    def has_exception(self, path: Sequence[str]) -> bool:
+        return tuple(path) in self.exceptions
+
+    def get_exception(self, path: Sequence[str]) -> Optional[RuleException]:
+        return self.exceptions.get(tuple(path), None)
 
     def reset_claims(self):
         self.claims = defaultdict(set)

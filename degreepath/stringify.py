@@ -60,21 +60,24 @@ def print_result(rule, transcript: List[CourseInstance], indent=0):  # noqa: C90
 
     if rule_type == "course":
         status = "🌀      "
-        if "ok" in rule and rule["ok"]:
-            claim = rule["claims"][0]["claim"]
-            mapped_trns = {c.clbid: c for c in transcript}
-            course = mapped_trns.get(claim["clbid"], None)
+        if rule["ok"]:
+            if not rule["overridden"]:
+                claim = rule["claims"][0]["claim"]
+                mapped_trns = {c.clbid: c for c in transcript}
+                course = mapped_trns.get(claim["clbid"], None)
 
-            if not course:
-                status = "!!!!!!! "
-            elif course.is_incomplete:
-                status = "⛔️ [dnf]"
-            elif course.is_in_progress:
-                status = "💚 [ ip]"
-            elif course.is_repeat:
-                status = "💚 [rep]"
+                if not course:
+                    status = "!!!!!!! "
+                elif course.is_incomplete:
+                    status = "⛔️ [dnf]"
+                elif course.is_in_progress:
+                    status = "💚 [ ip]"
+                elif course.is_repeat:
+                    status = "💚 [rep]"
+                else:
+                    status = "💚 [ ok]"
             else:
-                status = "💚 [ ok]"
+                status = "💚 [ovr]"
 
         yield f"{prefix}{status} {rule['course']}"
 
