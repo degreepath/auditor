@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseCourseRule
