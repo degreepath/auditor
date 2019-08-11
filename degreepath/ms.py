@@ -5,10 +5,6 @@ import math
 import re
 
 
-def pluralize(word, count):
-    return word if count == 1 else f"{word}s"
-
-
 def to_zero(dec: decimal.Decimal) -> decimal.Decimal:
     return dec.quantize(decimal.Decimal("1"), rounding=decimal.ROUND_DOWN)
 

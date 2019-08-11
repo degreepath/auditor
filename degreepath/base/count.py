@@ -27,5 +27,5 @@ class BaseCountRule(Base):
     def audits(self) -> Sequence[BaseAssertionRule]:
         return self.audit_clauses
 
-    def type(self):
+    def type(self) -> str:
         return "count"

@@ -1,14 +1,20 @@
-from typing import List, Iterator, Any, Dict
+from typing import List, Iterator, Any, Dict, Sequence
 from .clause import str_clause, get_resolved_items
 from .data import CourseInstance
 from .ms import pretty_ms
 import json
+import decimal
 
 
-def summarize(*, transcript, result, count, elapsed, iterations, gpa):
-    if result is None:
-        return 'None'
-
+def summarize(
+    *,
+    transcript: Sequence[CourseInstance],
+    result: Dict[str, Any],
+    count: int,
+    elapsed: int,
+    iterations: List[float],
+    gpa: decimal.Decimal,
+) -> Iterator[str]:
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
@@ -38,7 +44,7 @@ def summarize(*, transcript, result, count, elapsed, iterations, gpa):
     yield endl
     yield endl
 
-    yield endl.join(print_result(result, transcript))
+    yield endl.join(print_result(result, list(transcript)))
 
     yield endl
 

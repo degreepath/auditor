@@ -66,12 +66,12 @@ class Base(abc.ABC):
 
 
 class Result(Base):
-    def state(self):
+    def state(self) -> str:
         return "result"
 
 
 class Solution(Base):
-    def state(self):
+    def state(self) -> str:
         return "solution"
 
     @abc.abstractmethod
@@ -80,7 +80,7 @@ class Solution(Base):
 
 
 class Rule(Base):
-    def state(self):
+    def state(self) -> str:
         return "rule"
 
     @abc.abstractmethod

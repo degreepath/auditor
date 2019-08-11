@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, List, Dict, Any, Iterator, Sequence
+from typing import Optional, Tuple, List, Dict, Any, Iterator, Iterable
 import dataclasses
 import decimal
 import logging
@@ -68,7 +68,7 @@ class CourseInstance(Clausable):
             "type": "course",
         }
 
-    def attach_attrs(self, attributes: Sequence['str'] = tuple()) -> 'CourseInstance':
+    def attach_attrs(self, attributes: Iterable['str'] = tuple()) -> 'CourseInstance':
         if not attributes:
             attributes = tuple()
 
@@ -83,10 +83,10 @@ class CourseInstance(Clausable):
     def course_with_term(self) -> str:
         return f"{self._shorthand}{self.section or ''} {self.year}-{self.term}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._shorthand
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'Course("{self._shorthand}")'
 
     def apply_clause(self, clause: Clause) -> bool:

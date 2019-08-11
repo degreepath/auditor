@@ -15,7 +15,7 @@ class Operator(enum.Enum):
     In = "$in"
     NotIn = "$nin"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
 

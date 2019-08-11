@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, Sequence, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, TYPE_CHECKING
 import logging
 
 from ..clause import load_clause
 from ..constants import Constants
-from ..base.bases import Rule
+from ..base.bases import Rule, Solution
 from ..base.assertion import BaseAssertionRule
 
 if TYPE_CHECKING:
@@ -42,5 +42,5 @@ class AssertionRule(Rule, BaseAssertionRule):
         logger.debug('AssertionRule.estimate: 0')
         return 0
 
-    def solutions(self):
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[Solution]:
         raise Exception('this method should not be called')

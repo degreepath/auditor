@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class RequirementRule(Rule, BaseRequirementRule):
     result: Optional[Rule]
 
-    def status(self):
+    def status(self) -> ResultStatus:
         return ResultStatus.Pending
 
     @staticmethod

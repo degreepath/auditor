@@ -51,5 +51,5 @@ class BaseQueryRule(Base):
             "failures": [],
         }
 
-    def type(self):
+    def type(self) -> str:
         return "query"

@@ -30,7 +30,7 @@ class Limit:
 
         return Limit(at_most=at_most, where=load_clause(data["where"], c))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"
 
     def iterate(self, courses: Sequence[T]) -> Iterator[Tuple[T, ...]]:

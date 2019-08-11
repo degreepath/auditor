@@ -1,11 +1,12 @@
 from dataclasses import dataclass
-from typing import Optional, Union, TYPE_CHECKING
+from typing import Optional, Union, List, TYPE_CHECKING
 
 from ..base import BaseRequirementRule, Solution, Rule
 from ..result.requirement import RequirementResult
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..claim import ClaimAttempt  # noqa: F401
 
 
 @dataclass(frozen=True)
@@ -25,17 +26,17 @@ class RequirementSolution(Solution, BaseRequirementRule):
             overridden=overridden,
         )
 
-    def state(self):
+    def state(self) -> str:
         if self.audited_by or self.result is None:
             return "solution"
         return self.result.state()
 
-    def claims(self):
+    def claims(self) -> List['ClaimAttempt']:
         if self.audited_by or self.result is None:
             return []
         return self.result.claims()
 
-    def ok(self):
+    def ok(self) -> bool:
         if self.result is None:
             return False
         return self.result.ok()

@@ -30,5 +30,5 @@ class BaseRequirementRule(Base):
             "contract": self.is_contract,
         }
 
-    def type(self):
+    def type(self) -> str:
         return "requirement"

@@ -188,7 +188,7 @@ class SingleClause(_Clause, ResolvedClause):
             at_most=at_most,
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Clause({str_clause(self)})"
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

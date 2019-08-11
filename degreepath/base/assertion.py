@@ -18,5 +18,5 @@ class BaseAssertionRule(Base):
             "where": self.where.to_dict() if self.where else None,
         }
 
-    def type(self):
+    def type(self) -> str:
         return "assertion"
