@@ -22,8 +22,8 @@ def test_from(caplog):
     area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
         course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
         course_from_str("ASIAN 110"),
     ]
 
@@ -32,7 +32,7 @@ def test_from(caplog):
 
     assert len(a.successful_claims) == 1
 
-    assert a.successful_claims[0].claim.clbid == transcript[1].clbid
+    assert a.successful_claims[0].claim.clbid == transcript[0].clbid
 
 
 def test_from_distinct(caplog):
@@ -48,9 +48,9 @@ def test_from_distinct(caplog):
     area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
         course_from_str("CSCI 111", gereqs=['SPM'], term=20071),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
         course_from_str("ASIAN 110"),
     ]
 
@@ -66,9 +66,9 @@ def __get_data(spec):
     area = AreaOfStudy.load(specification=yaml.load(stream=io.StringIO(spec), Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
-        course_from_str("CSCI 112", gereqs=['SPM'], term=20081),
         course_from_str("CSCI 113", gereqs=['SPM'], term=20071),
+        course_from_str("CSCI 112", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
     ]
 
     return (area, transcript)
