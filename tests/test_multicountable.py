@@ -6,7 +6,6 @@ from degreepath.data import course_from_str
 from degreepath.constants import Constants
 from degreepath.rule.course import CourseRule
 import yaml
-import pytest
 import io
 import logging
 
@@ -133,8 +132,8 @@ def test_mc_course_attrs_courserule(caplog):
         ],
     ])
 
-    by_course_rule = CourseRule(course='ECON 385', hidden=False, grade=None, allow_claimed=False)
-    by_course_clause = CourseRule(course='ECON 385', hidden=False, grade=None, allow_claimed=False)
+    by_course_rule = CourseRule(course='ECON 385', hidden=False, grade=None, allow_claimed=False, path=tuple())
+    by_course_clause = CourseRule(course='ECON 385', hidden=False, grade=None, allow_claimed=False, path=tuple())
     by_attr = SingleClause(key='attributes', expected='econ_level_3', expected_verbatim='econ_level_3', operator=Operator.EqualTo)
 
     claim_a = ctx.make_claim(course=course, path=[], clause=by_course_rule, allow_claimed=False)
@@ -449,7 +448,7 @@ def test_mc_spanish_sets(caplog):
         ],
     ])
 
-    by_course = CourseRule(course='SPAN 313', hidden=False, grade=None, allow_claimed=False)
+    by_course = CourseRule(course='SPAN 313', hidden=False, grade=None, allow_claimed=False, path=tuple())
     by_elective = SingleClause(key='attributes', expected='spanish_elective', expected_verbatim='spanish_elective', operator=Operator.EqualTo)
     by_focus = SingleClause(key='attributes', expected='spanish_focus_spain', expected_verbatim='spanish_focus_spain', operator=Operator.EqualTo)
 
