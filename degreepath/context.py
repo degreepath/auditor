@@ -12,6 +12,7 @@ from .operator import Operator
 from .exception import RuleException
 
 logger = logging.getLogger(__name__)
+debug: Optional[bool] = None
 
 
 @dataclass(frozen=False)
@@ -84,7 +85,9 @@ class RequirementContext:
 
         # This function is called often enough that we want to avoid even calling the `logging` module
         # unless we're actually logging things. (On a 90-second audit, this saved nearly 30 seconds.)
-        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+        global debug
+        if debug is None:
+            debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         if clause is None:
             raise TypeError("clause must be provided")
