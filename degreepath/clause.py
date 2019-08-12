@@ -9,6 +9,7 @@ from .constants import Constants
 from .lib import str_to_grade_points
 from .operator import Operator, apply_operator, str_operator
 from .data.course_enums import GradeOption
+from functools import lru_cache
 
 if TYPE_CHECKING:
     from .base.course import BaseCourseRule  # noqa: F401
@@ -197,6 +198,7 @@ class SingleClause(_Clause, ResolvedClause):
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
+    @lru_cache(2048)
     def is_subset(self, other_clause: Union['BaseCourseRule', 'Clause']) -> bool:
         """
         answers the question, "am I a subset of $other"
