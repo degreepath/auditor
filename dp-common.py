@@ -1,14 +1,15 @@
 import json
 import traceback
 import pathlib
+from typing import Iterator
 
 import yaml
 
 from degreepath import load_course, Constants, AreaPointer, load_exception
-from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, Arguments
+from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, Message, Arguments
 
 
-def run(args: Arguments, *, transcript_only=False):
+def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
     if not args.student_files:
         yield NoStudentsMsg()
         return

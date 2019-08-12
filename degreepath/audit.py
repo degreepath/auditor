@@ -1,5 +1,5 @@
 import dataclasses
-from typing import List, Optional, Set, Dict, Tuple, Sequence, Iterator, Any, cast
+from typing import List, Optional, Set, Dict, Tuple, Sequence, Iterator, Any, Union, cast
 from datetime import datetime
 import time
 import decimal
@@ -68,6 +68,9 @@ class EstimateMsg:
     estimate: int
 
 
+Message = Union[EstimateMsg, ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg]
+
+
 def audit(
     *,
     spec: Dict[str, Any],
@@ -78,7 +81,7 @@ def audit(
     print_all: bool,
     other_areas: Sequence[AreaPointer],
     estimate_only: bool,
-) -> Iterator[Any]:  # noqa: C901
+) -> Iterator[Message]:  # noqa: C901
     area = AreaOfStudy.load(specification=spec, c=constants, other_areas=other_areas)
     area.validate()
 

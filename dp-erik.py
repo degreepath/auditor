@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Optional, Any, cast
 
 import dotenv
-import psycopg2
+import psycopg2  # type: ignore
 import sentry_sdk
 
 from degreepath import pretty_ms

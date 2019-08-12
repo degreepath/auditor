@@ -1,4 +1,3 @@
-from typing import Any
 import argparse
 import logging
 import runpy
