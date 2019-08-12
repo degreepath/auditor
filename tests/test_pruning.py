@@ -37,4 +37,4 @@ def test_pruning_on_count_rule(caplog):
     assert result.count == 1
     assert result.ok() is True
     assert result.was_overridden() is False
-    assert result.claims()[0].claim.clbid == course_b.clbid
+    assert result.claims()[0].claim.clbid == course_a.clbid

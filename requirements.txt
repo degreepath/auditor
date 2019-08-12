@@ -1,5 +1,7 @@
 coloredlogs==10.0
 dataclasses==0.6
+fastnumbers==2.2.1
+natsort==6.0.0
 psycopg2-binary==2.8.3
 python-dotenv==0.10.3
 pyyaml==5.1.1

@@ -1,6 +1,8 @@
 import abc
-from typing import Iterator, Dict, Any, Sequence, List, Tuple, TYPE_CHECKING
+from typing import Iterator, Sequence, Dict, Any, List, Tuple, TYPE_CHECKING
 import enum
+
+from natsort import natsorted  # type: ignore
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -17,7 +19,24 @@ class ResultStatus(enum.Enum):
 
 
 class Base(abc.ABC):
-    path: Sequence[str]
+    path: Tuple[str, ...]
+
+    def __lt__(self, other: Any) -> Any:
+        prefixlen = commonprefixlen(self.path, other.path)
+        trimmed_self = self.path[prefixlen:]
+        trimmed_other = other.path[prefixlen:]
+
+        # natsorted properly sorts the `[index]` items
+        lo, hi = natsorted([trimmed_self, trimmed_other])
+
+        if trimmed_self is lo:
+            return True
+
+        # lo, hi = natsorted([self.path, other.path])
+        # if self.path is lo:
+        #     return True
+
+        return False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -98,3 +117,14 @@ class Rule(Base):
     @abc.abstractmethod
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         raise NotImplementedError(f'must define a has_potential() method')
+
+
+def commonprefixlen(a: Sequence[str], b: Sequence[str]) -> int:
+    "Return the longest prefix of all list elements."
+    a, b = min(a, b), max(a, b)
+
+    for i, c in enumerate(a):
+        if c != b[i]:
+            return i
+
+    return 0
