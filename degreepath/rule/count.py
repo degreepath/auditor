@@ -120,8 +120,6 @@ class CountRule(Rule, BaseCountRule):
             rule.validate(ctx=ctx)
 
     def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CountSolution]:
-        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
-
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -154,43 +152,55 @@ class CountRule(Rule, BaseCountRule):
 
             items = tuple([new_rule, *self.items])
 
-        potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
-
-        lo = min(count, len(potential_rules))
+        lo = count
         hi = len(items) + 1 if self.at_most is False else count + 1
 
-        print(self.path, lo, hi)
-
-        all_children = set(items)
-        item_indices = {r: items.index(r) for r in items}
+        potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
+        potential_len = len(potential_rules)
 
         did_yield = False
+
+        logger.debug("%s iterating over combinations between %s..<%s", self.path, lo, hi)
         for r in range(lo, hi):
-            # logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
+            logger.debug("%s %s..<%s, r=%s", self.path, lo, hi, r)
+            for combo in self.make_combinations(items=tuple(potential_rules), all_items=items, r=r, count=count, ctx=ctx):
+                did_yield = True
+                yield combo
 
-            for combo_i, combo in enumerate(itertools.combinations(potential_rules, r)):
-                if debug: logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i)
-
-                selected_children = set(combo)
-                deselected_children = all_children.difference(selected_children)
-                other_children = sorted(deselected_children, key=lambda r: item_indices[r])
-
-                # itertools.product does this internally, so we'll pre-compute the results here
-                # to make it obvious that it's not lazy
-                solutions = [tuple(r.solutions(ctx=ctx)) for r in combo]
-
-                for solset_i, solutionset in enumerate(itertools.product(*solutions)):
-                    did_yield = True
-
-                    if debug and solset_i > 0 and solset_i % 10_000 == 0:
-                        logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i, solset_i)
-
-                    yield CountSolution.from_rule(rule=self, count=count, items=solutionset + tuple(other_children))
+        if not did_yield and potential_len > 0:
+            # didn't have enough potential children to iterate in range(lo, hi)
+            logger.debug("%s only iterating over the %s children with potential", self.path, potential_len)
+            for combo in self.make_combinations(items=tuple(potential_rules), all_items=items, r=potential_len, count=count, ctx=ctx):
+                did_yield = True
+                yield combo
 
         if not did_yield:
             logger.debug("%s did not iterate", self.path)
             # ensure that we always yield something
             yield CountSolution.from_rule(rule=self, count=count, items=items)
+
+    def make_combinations(self, *, ctx: 'RequirementContext', items: Sequence[Rule], all_items: Sequence[Rule], r: int, count: int) -> Iterator[CountSolution]:
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+
+        all_children = set(all_items)
+        item_indices = {r: all_items.index(r) for r in all_items}
+
+        for combo_i, combo in enumerate(itertools.combinations(items, r)):
+            if debug: logger.debug("%s, r=%s, combo=%s: generating product(*solutions)", self.path, r, combo_i)
+
+            selected_children = set(combo)
+            deselected_children = all_children.difference(selected_children)
+            other_children = sorted(deselected_children, key=lambda r: item_indices[r])
+
+            # itertools.product does this internally, so we'll pre-compute the results here
+            # to make it obvious that it's not lazy
+            solutions = [tuple(r.solutions(ctx=ctx)) for r in combo]
+
+            for solset_i, solutionset in enumerate(itertools.product(*solutions)):
+                if debug and solset_i > 0 and solset_i % 10_000 == 0:
+                    logger.debug("%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, r, combo_i, solset_i)
+
+                yield CountSolution.from_rule(rule=self, count=count, items=solutionset + tuple(other_children))
 
     def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('CountRule.estimate')
@@ -228,5 +238,4 @@ class CountRule(Rule, BaseCountRule):
         if ctx.get_exception(self.path):
             return True
 
-        items_with_potential = sum(1 for r in self.items if r.has_potential(ctx=ctx))
-        return items_with_potential >= self.count
+        return any(r.has_potential(ctx=ctx) for r in self.items)
