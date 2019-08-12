@@ -1,64 +1,67 @@
-from dataclasses import dataclass, field
-from typing import Any, Tuple
+from dataclasses import dataclass
+from typing import Tuple, Dict, Any, List
 from .assertion import AssertionResult
+
+from ..base import Result, BaseQueryRule
+from ..claim import ClaimAttempt
 
 
 @dataclass(frozen=True)
-class QueryResult:
-    rule: Any
-    successful_claims: Tuple
-    failed_claims: Tuple
-    success: bool
+class QueryResult(Result, BaseQueryRule):
+    successful_claims: Tuple[ClaimAttempt, ...]
+    failed_claims: Tuple[ClaimAttempt, ...]
     resolved_assertions: Tuple[AssertionResult, ...]
+    success: bool
+    overridden: bool = False
 
-    _ok: bool = field(init=False)
-    _rank: int = field(init=False)
-    _max_rank: int = field(init=False)
+    @staticmethod
+    def from_solution(
+        *,
+        solution: BaseQueryRule,
+        resolved_assertions: Tuple[AssertionResult, ...],
+        successful_claims: Tuple[ClaimAttempt, ...],
+        failed_claims: Tuple[ClaimAttempt, ...],
+        success: bool,
+        overridden: bool = False,
+    ) -> 'QueryResult':
+        return QueryResult(
+            source=solution.source,
+            source_type=solution.source_type,
+            source_repeats=solution.source_repeats,
+            assertions=solution.assertions,
+            limit=solution.limit,
+            where=solution.where,
+            allow_claimed=solution.allow_claimed,
+            attempt_claims=solution.attempt_claims,
+            resolved_assertions=resolved_assertions,
+            successful_claims=successful_claims,
+            failed_claims=failed_claims,
+            success=success,
+            path=solution.path,
+            overridden=overridden,
+        )
 
-    # def __post_init__(self):
-    #     self._ok = self.success == True
-    #
-    #     # TODO: fix this calculation so that it properly handles #154647's audit
-    #     self._rank = len(self.successful_claims) + len(self.failed_claims)
-
-    def __post_init__(self):
-        _ok = self.success is True
-        object.__setattr__(self, '_ok', _ok)
-
-        _rank = len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
-        object.__setattr__(self, '_rank', _rank)
-
-        _max_rank = len(self.successful_claims) + len(self.failed_claims)
-        object.__setattr__(self, '_max_rank', _max_rank)
-
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
-            **self.rule.to_dict(),
-            "state": self.state(),
-            "status": "pass" if self.ok() else "skip",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": [c.to_dict() for c in self.claims()],
+            **super().to_dict(),
             "failures": [c.to_dict() for c in self.failed_claims],
             "assertions": [a.to_dict() for a in self.resolved_assertions],
         }
 
-    def claims(self):
-        return self.successful_claims
+    def claims(self) -> List[ClaimAttempt]:
+        return list(self.successful_claims)
 
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
-    def state(self):
-        return "result"
+    def was_overridden(self) -> bool:
+        return self.overridden
 
     def ok(self) -> bool:
-        return self._ok
+        if self.was_overridden():
+            return True
 
-    def rank(self):
-        return self._rank
+        return self.success is True
 
-    def max_rank(self):
-        return self._max_rank
+    def rank(self) -> int:
+        return len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
+
+    def max_rank(self) -> int:
+        return len(self.successful_claims) + len(self.failed_claims)

@@ -1,73 +1,58 @@
 from dataclasses import dataclass
-from typing import List, Tuple, Any
+from typing import Tuple, Union, TYPE_CHECKING
 import logging
 
+from ..base import Solution, BaseCountRule, Rule, Result
 from ..result.count import CountResult
-from ..rule.assertion import AssertionRule
-from .query import apply_clause_to_query_rule
 from ..result.assertion import AssertionResult
+from .query import apply_clause_to_query_rule
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class CountSolution:
-    count: int
-    items: Tuple
-    audit_clauses: Tuple[AssertionRule, ...]
-
-    def to_dict(self):
-        return {
-            "type": "count",
-            "state": self.state(),
-            "count": self.count,
-            "items": [item.to_dict() for item in self.items],
-            "audit": [c.to_dict() for c in self.audit_clauses],
-            "status": "pending",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": [item for item in self.claims()],
-        }
-
-    def state(self):
-        return "solution"
-
-    def claims(self):
-        return []
-
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def ok(self):
-        return False
+class CountSolution(Solution, BaseCountRule):
+    overridden: bool = False
 
     @staticmethod
-    def from_rule(rule: Any, *, items):
-        return CountSolution(count=rule.count, items=items, audit_clauses=rule.audit_clauses)
+    def from_rule(*, rule: BaseCountRule, count: int, items: Tuple[Union[Rule, Solution, Result], ...], overridden: bool = False) -> 'CountSolution':
+        return CountSolution(
+            count=count,
+            items=items,
+            audit_clauses=rule.audit_clauses,
+            at_most=rule.at_most,
+            path=rule.path,
+            overridden=overridden,
+        )
 
-    def audit(self, *, ctx, path: List):
-        path = [*path, f".of"]
+    def audit(self, *, ctx: 'RequirementContext') -> CountResult:
+        if self.overridden:
+            return CountResult.from_solution(
+                solution=self,
+                items=tuple(self.items),
+                audit_results=tuple(self.audit_clauses),
+                overridden=self.overridden,
+            )
 
-        results = [
-            r.audit(ctx=ctx, path=[*path, i]) if r.state() == "solution" else r
-            for i, r in enumerate(self.items)
-        ]
+        results = [r.audit(ctx=ctx) if isinstance(r, Solution) else r for r in self.items]
 
         audit_results = []
         for clause in self.audit_clauses:
-            matched_items = [
-                item for sol in results
-                # if hasattr(sol, 'matched')
-                for item in sol.matched(ctx=ctx)
-            ]
+            exception = ctx.get_exception(clause.path)
+            if exception and exception.is_pass_override():
+                logger.debug("forced override on %s", self.path)
+                audit_results.append(AssertionResult(
+                    where=clause.where,
+                    assertion=clause.assertion,
+                    path=clause.path,
+                    overridden=True,
+                ))
+                continue
+
+            matched_items = [item for sol in results for item in sol.matched(ctx=ctx)]
 
             if clause.where is not None:
                 matched_items = [
@@ -75,8 +60,19 @@ class CountSolution:
                     if item.apply_clause(clause.where)
                 ]
 
-            result = clause.assertion.compare_and_resolve_with(value=matched_items, map_func=apply_clause_to_query_rule)
+            result = clause.assertion.compare_and_resolve_with(
+                value=matched_items,
+                map_func=apply_clause_to_query_rule,
+            )
 
-            audit_results.append(AssertionResult(where=clause.where, assertion=result))
+            audit_results.append(AssertionResult(
+                where=clause.where,
+                assertion=result,
+                path=clause.path,
+            ))
 
-        return CountResult(count=self.count, items=tuple(results), audit_results=tuple(audit_results))
+        return CountResult.from_solution(
+            solution=self,
+            items=tuple(results),
+            audit_results=tuple(audit_results),
+        )

@@ -1,14 +1,16 @@
 from dataclasses import dataclass
-from typing import Dict, Tuple, Sequence, Optional
+from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List
 import itertools
 from collections import defaultdict
 import logging
 
 from .clause import Clause, str_clause, load_clause
 from .constants import Constants
-from .data.course import CourseInstance
+
+from .data.clausable import Clausable
 
 logger = logging.getLogger(__name__)
+T = TypeVar('T', bound=Clausable)
 
 
 @dataclass(frozen=True)
@@ -16,11 +18,11 @@ class Limit:
     at_most: int
     where: Clause
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {"type": "limit", "at_most": self.at_most, "where": self.where.to_dict()}
 
     @staticmethod
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, c: Constants) -> 'Limit':
         at_most = data.get("at most", data.get("at-most", data.get("at_most", None)))
 
         if at_most is None:
@@ -28,10 +30,10 @@ class Limit:
 
         return Limit(at_most=at_most, where=load_clause(data["where"], c))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"
 
-    def iterate(self, courses):
+    def iterate(self, courses: Sequence[T]) -> Iterator[Tuple[T, ...]]:
         logger.debug("limit/loop/start: limit=%s, matched=%s", self, courses)
 
         for n in range(0, self.at_most + 1):
@@ -45,19 +47,19 @@ class Limit:
 class LimitSet:
     limits: Tuple[Limit, ...]
 
-    def has_limits(self):
+    def has_limits(self) -> bool:
         return len(self.limits) > 0
 
-    def to_dict(self):
+    def to_dict(self) -> List[Dict[str, Any]]:
         return [l.to_dict() for l in self.limits]
 
     @staticmethod
-    def load(data: Optional[Sequence[Dict]], c: Constants):
+    def load(data: Optional[Sequence[Dict]], c: Constants) -> 'LimitSet':
         if data is None:
             return LimitSet(limits=tuple())
         return LimitSet(limits=tuple(Limit.load(l, c) for l in data))
 
-    def apply_limits(self, courses: Tuple[CourseInstance, ...]):
+    def apply_limits(self, courses: Sequence[T]) -> Iterator[T]:
         clause_counters: Dict = defaultdict(int)
 
         logger.debug("limit/before: %s", courses)
@@ -66,13 +68,13 @@ class LimitSet:
             may_yield = True
 
             for l in self.limits:
-                logger.debug("limit/check: checking %s against %s (counter: %s)", c.course(), l, clause_counters[l])
+                logger.debug("limit/check: checking %s against %s (counter: %s)", c, l, clause_counters[l])
                 if c.apply_clause(l.where):
                     if clause_counters[l] < l.at_most:
-                        logger.debug("limit/increment: %s matched %s (counter: %s)", c.course(), l, clause_counters[l])
+                        logger.debug("limit/increment: %s matched %s (counter: %s)", c, l, clause_counters[l])
                         clause_counters[l] += 1
                     else:
-                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c.course(), l, clause_counters[l])
+                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c, l, clause_counters[l])
                         may_yield = False
                         # break out of the loop once we fill up any limit clause
                         break
@@ -82,7 +84,7 @@ class LimitSet:
                 logger.debug("limit/allow: %s", c)
                 yield c
 
-    def limited_transcripts(self, courses: Tuple[CourseInstance, ...]):
+    def limited_transcripts(self, courses: Sequence[T]) -> Iterator[Tuple[T, ...]]:
         """
         We need to iterate over each combination of limited courses.
 
@@ -99,7 +101,7 @@ class LimitSet:
         # skip _everything_ in here if there are no limits to apply
         if not self.limits:
             logger.debug("no limits to apply")
-            yield courses
+            yield tuple(courses)
             return
 
         logger.debug("applying limits")
@@ -110,7 +112,7 @@ class LimitSet:
         matched_items: Dict = defaultdict(set)
         for l in self.limits:
             for c in courses:
-                logger.debug("limit/probe: checking %s against %s", c.course(), l)
+                logger.debug("limit/probe: checking %s against %s", c, l)
                 if c.apply_clause(l.where):
                     matched_items[l].add(c)
 

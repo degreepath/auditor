@@ -1,3 +1,4 @@
+from typing import Any
 import argparse
 import logging
 import runpy
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
@@ -25,6 +26,8 @@ def main():
     parser.add_argument("--raw", action='store_true')
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--estimate", action='store_true')
+    parser.add_argument("--transcript", action='store_true')
+    parser.add_argument("--gpa", action='store_true')
     cli_args = parser.parse_args()
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
@@ -32,7 +35,7 @@ def main():
 
     args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=cli_args.estimate)
 
-    for msg in dp['run'](args):
+    for msg in dp['run'](args, transcript_only=cli_args.transcript):
         if isinstance(msg, NoStudentsMsg):
             logger.critical('no student files provided')
 
@@ -51,18 +54,21 @@ def main():
             print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
-            print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw))
+            print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw, gpa_only=cli_args.gpa))
 
         elif isinstance(msg, EstimateMsg):
-            print(f"estimated iterations: {msg.estimate:,}")
+            print(f"estimated iterations: {msg.estimate:,}", file=sys.stderr)
 
         else:
             logger.critical('unknown message %s', msg)
 
 
-def result_str(msg, *, as_json=False, as_raw=False):
+def result_str(msg: Any, *, as_json: bool = False, as_raw: bool = False, gpa_only: bool = False) -> str:
     if msg.result is None:
         return json.dumps(None)
+
+    if gpa_only:
+        return f"GPA: {msg.gpa}"
 
     dict_result = msg.result.to_dict()
     dict_result['gpa'] = str(msg.gpa)
@@ -71,7 +77,7 @@ def result_str(msg, *, as_json=False, as_raw=False):
         return json.dumps(dict_result)
 
     if as_raw:
-        return msg.result
+        return repr(msg.result)
 
     return "\n" + "".join(summarize(
         result=dict_result, transcript=msg.transcript, gpa=msg.gpa,

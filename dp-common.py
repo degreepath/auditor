@@ -4,11 +4,11 @@ import pathlib
 
 import yaml
 
-from degreepath import load_course, Constants, AreaPointer
+from degreepath import load_course, Constants, AreaPointer, load_exception
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, Arguments
 
 
-def run(args: Arguments):
+def run(args: Arguments, *, transcript_only=False):
     if not args.student_files:
         yield NoStudentsMsg()
         return
@@ -25,6 +25,14 @@ def run(args: Arguments):
         transcript = [load_course(row) for row in student["courses"]]
         constants = Constants(matriculation_year=student['matriculation'])
 
+        if transcript_only:
+            print('\t'.join(['course', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'in_gpa']))
+            for c in transcript:
+                items = [c.course(), str(c.credits), c.name, str(c.year), str(c.term),
+                         c.sub_type.name, ','.join(c.gereqs), str(c.is_in_gpa)]
+                print('\t'.join(items))
+            return
+
         for area_file in args.area_files:
             try:
                 with open(area_file, "r", encoding="utf-8") as infile:
@@ -36,11 +44,18 @@ def run(args: Arguments):
             area_code = pathlib.Path(area_file).stem
             area_catalog = pathlib.Path(area_file).parent.stem
 
+            exceptions = [
+                load_exception(e)
+                for e in student.get("exceptions", [])
+                if e['area_code'] == area_code
+            ]
+
             yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
 
             try:
                 yield from audit(
                     spec=area_spec,
+                    exceptions=exceptions,
                     transcript=transcript,
                     constants=constants,
                     area_pointers=area_pointers,

@@ -1,7 +1,6 @@
 from degreepath.clause import SingleClause, Operator, load_clause, apply_operator
 from degreepath.data import course_from_str
 from degreepath.constants import Constants
-import pytest
 import logging
 
 
@@ -14,9 +13,9 @@ def test_clauses(caplog):
     expected_single = SingleClause(key="attributes", expected="csci_elective", expected_verbatim="csci_elective", operator=Operator.EqualTo)
     assert x == expected_single
 
-    c = course_from_str(s="CSCI 121", attributes=["csci_elective"])
+    crs = course_from_str(s="CSCI 121", attributes=["csci_elective"])
 
-    assert c.apply_clause(x) is True
+    assert crs.apply_clause(x) is True
 
 
 def test_clauses_in(caplog):

@@ -1,19 +1,21 @@
-from typing import Optional, Tuple, List, Dict
+from typing import Optional, Tuple, List, Dict, Any, Iterator, Iterable
 import dataclasses
 import decimal
 import logging
 
-from ..clause import Clause, SingleClause, AndClause, OrClause
+from .clausable import Clausable
 from .course_enums import GradeCode, GradeOption, SubType
+from ..clause import Clause, SingleClause, AndClause, OrClause
+from ..lib import str_to_grade_points
 
 logger = logging.getLogger(__name__)
 Decimal = decimal.Decimal
 
 
 @dataclasses.dataclass(frozen=True, order=True)
-class CourseInstance:
-    attributes: Tuple[str, ...]
+class CourseInstance(Clausable):
     clbid: str
+    attributes: Tuple[str, ...]
     credits: decimal.Decimal
     crsid: str
     gereqs: Tuple[str, ...]
@@ -39,7 +41,7 @@ class CourseInstance:
     _identity: str
     _shorthand: str
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "attributes": list(self.attributes),
             "clbid": self.clbid,
@@ -66,25 +68,25 @@ class CourseInstance:
             "type": "course",
         }
 
-    def attach_attrs(self, attributes=None):
-        if attributes is None:
+    def attach_attrs(self, attributes: Iterable['str'] = tuple()) -> 'CourseInstance':
+        if not attributes:
             attributes = tuple()
 
         return dataclasses.replace(self, attributes=tuple(attributes))
 
-    def course(self):
+    def course(self) -> str:
         return self._identity
 
-    def course_shorthand(self):
+    def course_shorthand(self) -> str:
         return self._shorthand
 
-    def course_with_term(self):
+    def course_with_term(self) -> str:
         return f"{self._shorthand}{self.section or ''} {self.year}-{self.term}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._shorthand
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'Course("{self._shorthand}")'
 
     def apply_clause(self, clause: Clause) -> bool:
@@ -101,7 +103,7 @@ class CourseInstance:
 
         raise TypeError(f"courseinstance: expected a clause; found {type(clause)}")
 
-    def apply_single_clause(self, clause: SingleClause):  # noqa: C901
+    def apply_single_clause(self, clause: SingleClause) -> bool:  # noqa: C901
         logger.debug("clause/compare/key=%s", clause.key)
 
         if clause.key == 'attributes':
@@ -122,6 +124,9 @@ class CourseInstance:
         if clause.key == 'grade':
             return clause.compare(self.grade_points)
 
+        if clause.key == 'credits':
+            return clause.compare(self.credits)
+
         if clause.key == 'level':
             return clause.compare(self.level)
 
@@ -133,6 +138,9 @@ class CourseInstance:
 
         if clause.key == 'p/n':
             return clause.compare(self.grade_option is GradeOption.PN)
+
+        if clause.key == 'type':
+            return clause.compare(self.sub_type.name)
 
         if clause.key == 'lab':
             return clause.compare(self.is_lab)
@@ -155,7 +163,7 @@ class CourseInstance:
         raise TypeError(f'{clause.key} is not a known clause key')
 
 
-def load_course(data: Dict) -> CourseInstance:  # noqa: C901
+def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     attributes = data.get('attributes', tuple())
     clbid = data['clbid']
     course = data['course']
@@ -246,31 +254,34 @@ def load_course(data: Dict) -> CourseInstance:  # noqa: C901
     )
 
 
-def course_from_str(s: str, **kwargs):
+def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
     return load_course({
         "attributes": tuple(),
         "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
         "course": s,
         "credits": '1.00',
         "crsid": f"<crsid={str(hash(s))}>",
+        "flag_gpa": True,
+        "flag_in_progress": False,
+        "flag_incomplete": False,
+        "flag_repeat": False,
+        "flag_stolaf": True,
         "gereqs": tuple(),
-        "grade": 'B',
-        "graded": "Graded",
-        "incomplete": False,
-        "institution": "St. Olaf College",
-        "is_repeat": False,
+        "grade_code": "B",
+        "grade_option": GradeOption.Grade,
+        "grade_points": str_to_grade_points("B"),
         "name": s,
         "number": s.split(' ')[1],
         "section": "",
+        "sub_type": SubType.Normal,
         "subjects": tuple([s.split(' ')[0]]),
-        "subtype": "",
-        "term": 20001,
-        "transcript_code": None,
+        "term": "1",
+        "year": 2000,
         **kwargs,
     })
 
 
-def expand_subjects(subjects: List[str]):
+def expand_subjects(subjects: List[str]) -> Iterator[str]:
     shorthands = {
         "AS": "ASIAN",
         "BI": "BIO",

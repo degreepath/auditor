@@ -1,68 +1,61 @@
 from dataclasses import dataclass
-from typing import List, Any
+from typing import TYPE_CHECKING
 import logging
 
+from ..base import Solution, BaseCourseRule
 from ..result.course import CourseResult
+from ..exception import InsertionException
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
+    from ..data import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class CourseSolution:
-    course: str
-    rule: Any
+class CourseSolution(Solution, BaseCourseRule):
+    overridden: bool = False
 
-    def __repr__(self):
-        return self.course
+    @staticmethod
+    def from_rule(*, rule: BaseCourseRule, overridden: bool = False) -> 'CourseSolution':
+        return CourseSolution(
+            course=rule.course,
+            hidden=rule.hidden,
+            grade=rule.grade,
+            allow_claimed=rule.allow_claimed,
+            path=rule.path,
+            overridden=overridden,
+        )
 
-    def to_dict(self):
-        return {
-            **self.rule.to_dict(),
-            "state": self.state(),
-            "status": "pending",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": self.claims(),
-        }
+    def audit(self, *, ctx: 'RequirementContext') -> CourseResult:
+        if self.overridden:
+            return CourseResult.from_solution(solution=self, overridden=self.overridden)
 
-    def state(self):
-        return "solution"
+        exception = ctx.get_exception(self.path)
+        if exception and isinstance(exception, InsertionException):
+            logger.debug('inserting %s into %s due to override', exception.clbid, self)
+            matched_course = ctx.forced_course_by_clbid(exception.clbid)
 
-    def claims(self):
-        return []
+        else:
+            _matched_course = ctx.find_course(self.course)
 
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
+            if _matched_course is None:
+                logger.debug('%s course "%s" does not exist in the transcript', self.path, self.course)
+                return CourseResult.from_solution(solution=self, claim_attempt=None)
 
-    def rank(self):
-        return 0
+            matched_course = _matched_course
 
-    def max_rank(self):
-        return 0
+            if self.grade is not None and matched_course.grade_points < self.grade:
+                logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.course, matched_course.grade_points, self.grade)
+                return CourseResult.from_solution(solution=self, claim_attempt=None, min_grade_not_met=matched_course)
 
-    def ok(self):
-        return False
-
-    def audit(self, *, ctx: Any, path: List):
-        path = [*path, f"$c->{self.course}"]
-
-        matched_course = ctx.find_course(self.course)
-        if matched_course is None:
-            logger.debug('%s course "%s" does not exist in the transcript', path, self.course)
-            return CourseResult(course=self.course, rule=self.rule, claim_attempt=None)
-
-        if self.rule.grade is not None and matched_course.grade_points < self.rule.grade:
-            logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', path, self.course, matched_course.grade_points, self.rule.grade)
-            return CourseResult(course=self.course, rule=self.rule, claim_attempt=None, min_grade_not_met=matched_course)
-
-        claim = ctx.make_claim(course=matched_course, path=path, clause=self.rule)
+        claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
 
         if claim.failed():
-            logger.debug('%s course "%s" exists, but has already been claimed by %s', path, self.course, claim.conflict_with)
-            return CourseResult(course=self.course, rule=self.rule, claim_attempt=claim)
+            logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, matched_course.course(), claim.conflict_with)
+            return CourseResult.from_solution(solution=self, claim_attempt=claim)
 
-        logger.debug('%s course "%s" exists, and has not been claimed', path, self.course)
+        logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
 
-        return CourseResult(course=self.course, rule=self.rule, claim_attempt=claim)
+        return CourseResult.from_solution(solution=self, claim_attempt=claim)

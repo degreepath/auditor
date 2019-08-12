@@ -1,38 +1,34 @@
 from dataclasses import dataclass
-from typing import Optional
-from ..clause import Clause, ResolvedClause
+from typing import TYPE_CHECKING
+
+from ..base.bases import Result
+from ..base.assertion import BaseAssertionRule
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext  # noqa: F401
 
 
 @dataclass(frozen=True)
-class AssertionResult:
-    where: Optional[Clause]
-    assertion: ResolvedClause
+class AssertionResult(Result, BaseAssertionRule):
+    overridden: bool = False
 
-    def to_dict(self):
-        return {
-            "type": "assertion",
-            "assertion": self.assertion.to_dict() if self.assertion else None,
-            "where": self.where.to_dict() if self.where else None,
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-        }
-
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.where:
             self.where.validate(ctx=ctx)
+
         self.assertion.validate(ctx=ctx)
 
-    def state(self):
-        return "rule"
+    def was_overridden(self) -> bool:
+        return self.overridden
 
-    def ok(self):
+    def ok(self) -> bool:
+        if self.was_overridden():
+            return True
+
         return self.assertion.result is True
 
-    def rank(self):
+    def rank(self) -> int:
         return 0
 
-    def max_rank(self):
+    def max_rank(self) -> int:
         return 0

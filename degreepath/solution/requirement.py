@@ -1,78 +1,58 @@
 from dataclasses import dataclass
-from typing import List, Optional, Any
+from typing import Optional, Union, List, TYPE_CHECKING
 
+from ..base import BaseRequirementRule, Solution, Rule
 from ..result.requirement import RequirementResult
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
+    from ..claim import ClaimAttempt  # noqa: F401
 
 
 @dataclass(frozen=True)
-class RequirementSolution:
-    name: str
-    result: Optional[Any]
-    message: Optional[str] = None
-    audited_by: Optional[str] = None
-    contract: bool = False
+class RequirementSolution(Solution, BaseRequirementRule):
+    result: Optional[Union[Rule, Solution]]
+    overridden: bool = False
 
-    # req: Requirement
     @staticmethod
-    def from_requirement(req: Any, *, solution: Optional[Any]):
+    def from_rule(*, rule: BaseRequirementRule, solution: Optional[Union[Rule, Solution]], overridden: bool = False) -> 'RequirementSolution':
         return RequirementSolution(
             result=solution,
-            name=req.name,
-            message=req.message,
-            audited_by=req.audited_by,
-            contract=req.contract,
+            name=rule.name,
+            message=rule.message,
+            audited_by=rule.audited_by,
+            is_contract=rule.is_contract,
+            path=rule.path,
+            overridden=overridden,
         )
 
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
-    def to_dict(self):
-        return {
-            "type": "requirement",
-            "name": self.name,
-            "message": self.message,
-            "result": self.result.to_dict() if self.result else None,
-            "audited_by": self.audited_by,
-            "contract": self.contract,
-            "state": self.state(),
-            "status": "pending",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-            "claims": self.claims(),
-        }
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def state(self):
-        if self.audited_by:
-            return "solution"
-        if not self.result:
+    def state(self) -> str:
+        if self.audited_by or self.result is None:
             return "solution"
         return self.result.state()
 
-    def claims(self):
-        if self.audited_by:
-            return []
-        if not self.result:
+    def claims(self) -> List['ClaimAttempt']:
+        if self.audited_by or self.result is None:
             return []
         return self.result.claims()
 
-    def ok(self):
-        if not self.result:
+    def ok(self) -> bool:
+        if self.result is None:
             return False
         return self.result.ok()
 
-    def audit(self, *, ctx, path: List):
-        if not self.result:
-            # TODO: return something better
-            return RequirementResult.from_solution(self, result=None)
+    def audit(self, *, ctx: 'RequirementContext') -> RequirementResult:
+        if self.overridden:
+            return RequirementResult.from_solution(
+                solution=self,
+                result=self.result,
+                overridden=self.overridden,
+            )
 
-        result = self.result.audit(ctx=ctx, path=path)
+        if self.result is None:
+            return RequirementResult.from_solution(solution=self, result=None)
 
-        return RequirementResult.from_solution(self, result=result)
+        if isinstance(self.result, Rule):
+            return RequirementResult.from_solution(solution=self, result=self.result)
+
+        return RequirementResult.from_solution(solution=self, result=self.result.audit(ctx=ctx))

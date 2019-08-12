@@ -1,13 +1,15 @@
 from dataclasses import dataclass
-from typing import Dict, List, Any, Tuple, Optional, Sequence
+from typing import Dict, List, Tuple, Optional, Sequence, Iterable
 import logging
 
+from .base import Rule, Solution, Result
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
+from .exception import RuleException
 from .limit import LimitSet
-from .load_rule import Rule, load_rule
+from .load_rule import load_rule
 
 logger = logging.getLogger(__name__)
 
@@ -26,24 +28,17 @@ class AreaOfStudy:
     attributes: Dict
     multicountable: List
 
-    def to_dict(self):
-        return {
-            "type": "area",
-            "limit": [l.to_dict() for l in self.limit],
-            "result": self.result.to_dict(),
-            "attributes": self.attributes,
-        }
-
     @staticmethod
-    def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()):
+    def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
         emphases = specification.get('emphases', {})
-        taken_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
+        declared_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
 
         result = load_rule(
             data=specification["result"],
             c=c,
             children=specification.get("requirements", {}),
-            emphases=[v for k, v in emphases.items() if str(k) in taken_emphases],
+            emphases=[v for k, v in emphases.items() if str(k) in declared_emphases],
+            path=["$"],
         )
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
@@ -73,31 +68,39 @@ class AreaOfStudy:
             limit=limit,
         )
 
-    def validate(self):
+    def validate(self) -> None:
         ctx = RequirementContext()
 
         self.result.validate(ctx=ctx)
 
-    def solutions(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
-        path = ["$root"]
-        logger.debug("%s evaluating area.result", path)
+    def solutions(
+        self, *,
+        transcript: Tuple[CourseInstance, ...],
+        areas: Tuple[AreaPointer, ...],
+        exceptions: Tuple[RuleException, ...],
+    ) -> Iterable['AreaSolution']:
+        logger.debug("evaluating area.result")
+
+        mapped_exceptions = map_exceptions(exceptions)
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            logger.debug("%s evaluating area.result with limited transcript %s", path, limited_transcript)
+            limited_transcript = tuple(sorted(limited_transcript))
 
-            ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
+            logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
-            for sol in self.result.solutions(ctx=ctx, path=path):
+            ctx = RequirementContext(areas=areas, exceptions=mapped_exceptions, multicountable=self.multicountable).with_transcript(limited_transcript)
+
+            for sol in self.result.solutions(ctx=ctx):
                 ctx.reset_claims()
-                yield AreaSolution(solution=sol, area=self)
+                yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx)
 
-        logger.debug("%s all solutions generated", path)
+        logger.debug("all solutions generated")
 
-    def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
+    def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]) -> int:
         iterations = 0
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            ctx = RequirementContext(transcript=limited_transcript, areas=areas, multicountable=self.multicountable)
+            ctx = RequirementContext(areas=areas, multicountable=self.multicountable).with_transcript(limited_transcript)
 
             iterations += self.result.estimate(ctx=ctx)
 
@@ -105,20 +108,37 @@ class AreaOfStudy:
 
 
 @dataclass(frozen=True)
-class AreaSolution:
-    solution: Any
-    area: AreaOfStudy
+class AreaSolution(AreaOfStudy):
+    solution: Solution
+    context: RequirementContext
 
-    def to_dict(self):
-        return {
-            **self.area.to_dict(),
-            "type": "area",
-            "result": self.solution.to_dict(),
-        }
+    def from_area(*, area: AreaOfStudy, solution: Solution, ctx: RequirementContext) -> 'AreaSolution':
+        return AreaSolution(
+            name=area.name,
+            type=area.type,
+            catalog=area.catalog,
+            major=area.major,
+            degree=area.degree,
+            limit=area.limit,
+            result=area.result,
+            attributes=area.attributes,
+            multicountable=area.multicountable,
+            solution=solution,
+            context=ctx,
+        )
 
-    def audit(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]):
-        path = ["$root"]
+    def audit(self) -> Result:
+        return self.solution.audit(ctx=self.context)
 
-        ctx = RequirementContext(transcript=transcript, areas=areas, multicountable=self.area.multicountable)
 
-        return self.solution.audit(ctx=ctx, path=path)
+def map_exceptions(exceptions: Sequence[RuleException]) -> Dict[Tuple[str, ...], RuleException]:
+    mapped_exceptions: Dict[Tuple[str, ...], RuleException] = dict()
+
+    for e in exceptions:
+        path = tuple(e.path)
+        if path in mapped_exceptions:
+            raise ValueError(f'expected only one exception per path: {e}')
+        else:
+            mapped_exceptions[path] = e
+
+    return mapped_exceptions

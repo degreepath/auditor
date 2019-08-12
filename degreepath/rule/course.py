@@ -1,57 +1,21 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Mapping
+from typing import Dict, List, Iterator, TYPE_CHECKING
 import re
-from decimal import Decimal
 import logging
 
+from ..base import Rule, BaseCourseRule
 from ..constants import Constants
 from ..lib import str_to_grade_points
-from ..operator import Operator
 from ..solution.course import CourseSolution
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class CourseRule:
-    course: str
-    hidden: bool
-    grade: Optional[Decimal]
-    allow_claimed: bool
-
-    def to_dict(self):
-        return {
-            "type": "course",
-            "state": self.state(),
-            "course": self.course,
-            "hidden": self.hidden,
-            "grade": str(self.grade) if self.grade is not None else None,
-            "allow_claimed": self.allow_claimed,
-            "status": "skip",
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-        }
-
-    def state(self):
-        return "rule"
-
-    def claims(self):
-        return []
-
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def ok(self):
-        return False
-
+class CourseRule(Rule, BaseCourseRule):
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:
@@ -59,36 +23,38 @@ class CourseRule:
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants, children: Mapping):
+    def load(data: Dict, *, c: Constants, path: List[str]) -> 'CourseRule':
+        course = data['course']
+        min_grade = data.get('grade', None)
+
+        path = [*path, f"*{course}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
+
         return CourseRule(
-            course=data["course"],
+            course=course,
             hidden=data.get("hidden", False),
-            grade=str_to_grade_points(data['grade']) if 'grade' in data else None,
+            grade=str_to_grade_points(min_grade) if min_grade is not None else None,
             allow_claimed=data.get("including claimed", False),
+            path=tuple(path),
         )
 
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
         method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
         method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
 
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, ctx, path: List):
-        logger.debug('%s reference to course "%s"', path, self.course)
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CourseSolution]:
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_pass_override():
+            logger.debug("forced override on %s", self.path)
+            yield CourseSolution.from_rule(rule=self, overridden=True)
+            return
 
-        yield CourseSolution(course=self.course, rule=self)
+        logger.debug('%s reference to course "%s"', self.path, self.course)
 
-    def estimate(self, *, ctx):
+        yield CourseSolution.from_rule(rule=self)
+
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
+        logger.debug('CourseRule.estimate: 1')
         return 1
-
-    def is_equivalent_to_clause(self, clause) -> bool:
-        if clause.key != 'course':
-            return False
-
-        if clause.operator is Operator.EqualTo:
-            return self.course == clause.expected
-        elif clause.operator is Operator.In:
-            return self.course in clause.expected
-        else:
-            return False

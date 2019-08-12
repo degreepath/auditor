@@ -34,7 +34,7 @@ def test_global_limits(caplog):
     bio_302 = course_from_str("BIO 302")
     transcript = [bio_101, bio_201, bio_202, bio_301, bio_302]
 
-    solutions = list(area.solutions(transcript=transcript, areas=[]))
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
     course_sets = set([frozenset(s.solution.output) for s in solutions])
 
     assert course_sets == set([

@@ -1,53 +1,45 @@
-from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Any, Dict, Union, Set
+from dataclasses import dataclass, field, replace
+from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
 import logging
 
 from .data import CourseInstance, AreaPointer
+from .base import BaseCourseRule
 from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
+from .operator import Operator
+from .exception import RuleException
 
 logger = logging.getLogger(__name__)
-
-COMPLETED_COURSES: Dict[Any, List[CourseInstance]] = {}
-COURSE_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
-CLBID_TRANSCRIPT_MAP: Dict[Any, Dict[str, CourseInstance]] = {}
+debug: Optional[bool] = None
 
 
 @dataclass(frozen=False)
 class RequirementContext:
-    transcript: Tuple[CourseInstance, ...] = tuple()
+    _transcript: List[CourseInstance] = field(default_factory=list)
+    _course_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
+    _clbid_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
+
     areas: Tuple[AreaPointer, ...] = tuple()
-    requirements: Dict = field(default_factory=dict)
     multicountable: List[List[SingleClause]] = field(default_factory=list)
     claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
+    exceptions: Dict[Tuple[str, ...], RuleException] = field(default_factory=dict)
 
-    _course_lookup_map: Dict = field(init=False)
-    _clbid_lookup_map: Dict = field(init=False)
-    _completed_courses: Dict = field(init=False)
+    def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
+        transcript = list(transcript)
 
-    def __post_init__(self):
-        tid = id(self.transcript)
+        course_lookup_map = {
+            **{c.course_shorthand(): c for c in transcript},
+            **{c.course(): c for c in transcript},
+        }
 
-        if tid not in COMPLETED_COURSES:
-            COMPLETED_COURSES[tid] = [
-                course
-                for course in self.transcript
-                if not course.is_in_progress
-            ]
-        self._completed_courses = COMPLETED_COURSES[tid]
+        clbid_lookup_map = {c.clbid: c for c in transcript}
 
-        if tid not in COURSE_TRANSCRIPT_MAP:
-            COURSE_TRANSCRIPT_MAP[tid] = {
-                **{c.course_shorthand(): c for c in self._completed_courses},
-                **{c.course(): c for c in self._completed_courses},
-            }
-        self._course_lookup_map = COURSE_TRANSCRIPT_MAP[tid]
+        return replace(self, _transcript=transcript, _course_lookup_map=course_lookup_map, _clbid_lookup_map=clbid_lookup_map)
 
-        if tid not in CLBID_TRANSCRIPT_MAP:
-            CLBID_TRANSCRIPT_MAP[tid] = {c.clbid: c for c in self._completed_courses}
-        self._clbid_lookup_map = CLBID_TRANSCRIPT_MAP[tid]
+    def transcript(self) -> List[CourseInstance]:
+        return self._transcript
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
         return self._course_lookup_map.get(c, None)
@@ -55,40 +47,62 @@ class RequirementContext:
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self._clbid_lookup_map.get(clbid, None)
 
+    def forced_course_by_clbid(self, clbid: str) -> CourseInstance:
+        match = self.find_course_by_clbid(clbid)
+        if not match:
+            raise Exception(f'attempted to use CLBID={clbid}, but it was not found in the transcript')
+        return match
+
     def has_course(self, c: str) -> bool:
         return self.find_course(c) is not None
 
-    def completed_courses(self):
-        return iter(self._completed_courses)
+    def completed_courses(self) -> Iterator[CourseInstance]:
+        return (c for c in self.completed_courses())
 
-    def reset_claims(self):
+    def get_exception(self, path: Sequence[str]) -> Optional[RuleException]:
+        exception = self.exceptions.get(tuple(path), None)
+        if exception:
+            logger.debug("exception found for %s: %s", path, exception)
+        else:
+            logger.debug("no exception for %s", path)
+        return self.exceptions.get(tuple(path), None)
+
+    def reset_claims(self) -> None:
         self.claims = defaultdict(set)
 
-    def make_claim(self, *, course: CourseInstance, path: List, clause: Union[Clause, CourseRule], allow_claimed: bool = False):  # noqa: C901
+    def make_claim(  # noqa: C901
+        self,
+        *,
+        course: CourseInstance,
+        path: Sequence[str],
+        clause: Union[Clause, BaseCourseRule],
+        allow_claimed: bool = False,
+    ) -> ClaimAttempt:
         """
         Make claims against courses, to ensure that they are only used once
         (with exceptions) in an audit.
         """
 
+        # This function is called often enough that we want to avoid even calling the `logging` module
+        # unless we're actually logging things. (On a 90-second audit, this saved nearly 30 seconds.)
+        global debug
+        if debug is None:
+            debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+
         if clause is None:
             raise TypeError("clause must be provided")
 
         if isinstance(clause, tuple):
-            raise TypeError("make_claim only accepts clauses and courserules, not tuples")
+            raise TypeError("make_claim only accepts clauses and course rules, not tuples")
 
-        # coerce courserules to clauses
+        # coerce course rules to clauses
         rule = None
         if isinstance(clause, CourseRule):
             rule = clause
-            clause = SingleClause.from_course_rule(clause)
+            clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
         # build a claim so it can be returned later
-        claim = Claim(
-            crsid=course.crsid,
-            clbid=course.clbid,
-            claimant_path=tuple(path),
-            value=clause,
-        )
+        claim = Claim(crsid=course.crsid, clbid=course.clbid, claimant_path=tuple(path), value=clause)
 
         # > A multicountable set describes the ways in which a course may be
         # > counted.
@@ -105,7 +119,7 @@ class RequirementContext:
 
         # If there are no prior claims, the claim is automatically allowed.
         if not prior_claims:
-            logger.debug('no prior claims for clbid=%s', course.clbid)
+            if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
             self.claims[course.clbid].add(claim)
             return ClaimAttempt(claim, conflict_with=frozenset())
 
@@ -121,10 +135,10 @@ class RequirementContext:
         # is automatically successful.
         if not applicable_clausesets:
             if prior_claims:
-                logger.debug('no multicountable clausesets for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
+                if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
                 return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
             else:
-                logger.debug('no multicountable clausesets for clbid=%s; the claim has no conflicts', course.clbid)
+                if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset())
 
@@ -159,59 +173,65 @@ class RequirementContext:
         prior_clauses = [cl.value for cl in prior_claims]
         clauses_to_cover = prior_clauses + [clause]
 
-        logger.debug('clauses to cover: %s', clauses_to_cover)
-        logger.debug('applicable clausesets: %s', applicable_clausesets)
+        if debug: logger.debug('clauses to cover: %s', clauses_to_cover)
+        if debug: logger.debug('applicable clausesets: %s', applicable_clausesets)
 
         applicable_clauseset = None
 
         for clauseset in applicable_clausesets:
-            logger.debug('checking clauseset %s', clauseset)
+            if debug: logger.debug('checking clauseset %s', clauseset)
 
-            all_are_supersets = True
+            # all_are_supersets = True
+            #
+            # for p_clause in clauses_to_cover:
+            #     # has_subset_clause = False
+            #     #
+            #     # for c in clauseset:
+            #     #     if debug: logger.debug('is_subset: %s; p_clause: %s; c_clause: %s', c.is_subset(p_clause), p_clause, c)
+            #     #     if c.is_subset(p_clause):
+            #     #         has_subset_clause = True
+            #     #     if debug: logger.debug('has_subset_clause: %s', has_subset_clause)
+            #
+            #     has_subset_clause = any(c.is_subset(p_clause) for c in clauseset)
+            #
+            #     all_are_supersets = all_are_supersets and has_subset_clause
+            #     if debug: logger.debug('all_are_supersets: %s', all_are_supersets)
 
-            for p_clause in clauses_to_cover:
-                has_subset_clause = False
-
-                for c in clauseset:
-                    logger.debug('is_subset: %s; p_clause: %s; c_clause: %s', c.is_subset(p_clause), p_clause, c)
-                    if c.is_subset(p_clause):
-                        has_subset_clause = True
-                    logger.debug('has_subset_clause: %s', has_subset_clause)
-
-                all_are_supersets = all_are_supersets and has_subset_clause
-                logger.debug('all_are_supersets: %s', all_are_supersets)
+            all_are_supersets = all(
+                any(c.is_subset(p_clause) for c in clauseset)
+                for p_clause in clauses_to_cover
+            )
 
             if all_are_supersets:
-                logger.debug('done checking clausesets')
+                if debug: logger.debug('done checking clausesets')
                 applicable_clauseset = clauseset
                 break
 
-            logger.debug('done checking clauseset %s; ', clauseset)
+            if debug: logger.debug('done checking clauseset %s; ', clauseset)
 
         if applicable_clauseset is None:
             if prior_claims:
-                logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
+                if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
                 return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
             else:
-                logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim has no conflicts', course.clbid)
+                if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset())
 
         # now limit to just the clauses in the clauseset which have not been used
         available_clauses = [
-            c
-            for c in applicable_clauseset
+            c for c in applicable_clauseset
             if not any(c.is_subset(prior_clause) for prior_clause in prior_clauses)
         ]
 
         if not available_clauses:
-            logger.debug('there was an applicable multicountable clauseset for clbid=%s; however, all of the clauses have already been matched', course.clbid)
+            if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
                 return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
             else:
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset())
 
-        logger.debug('there was an applicable multicountable clauseset for clbid=%s: %s', course.clbid, available_clauses)
+        if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s: %s', course.clbid, available_clauses)
         self.claims[course.clbid].add(claim)
         return ClaimAttempt(claim, conflict_with=frozenset())

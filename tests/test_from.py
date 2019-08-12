@@ -22,17 +22,17 @@ def test_from(caplog):
     area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
         course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
         course_from_str("ASIAN 110"),
     ]
 
-    s = next(area.solutions(transcript=transcript, areas=[]))
-    a = s.audit(transcript=transcript, areas=[])
+    s = next(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    a = s.audit()
 
     assert len(a.successful_claims) == 1
 
-    assert a.successful_claims[0].claim.clbid == transcript[1].clbid
+    assert a.successful_claims[0].claim.clbid == transcript[0].clbid
 
 
 def test_from_distinct(caplog):
@@ -48,14 +48,14 @@ def test_from_distinct(caplog):
     area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
         course_from_str("CSCI 111", gereqs=['SPM'], term=20071),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
         course_from_str("ASIAN 110"),
     ]
 
-    s = next(area.solutions(transcript=transcript, areas=[]))
-    a = s.audit(transcript=transcript, areas=[])
+    s = next(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    a = s.audit()
 
     assert len(a.successful_claims) == 1
 
@@ -66,9 +66,9 @@ def __get_data(spec):
     area = AreaOfStudy.load(specification=yaml.load(stream=io.StringIO(spec), Loader=yaml.SafeLoader), c=c)
 
     transcript = [
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
-        course_from_str("CSCI 112", gereqs=['SPM'], term=20081),
         course_from_str("CSCI 113", gereqs=['SPM'], term=20071),
+        course_from_str("CSCI 112", gereqs=['SPM'], term=20081),
+        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
     ]
 
     return (area, transcript)
@@ -84,7 +84,7 @@ def test_solution_count_exact(caplog):
             assert: {count(courses): {$eq: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[])
+    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 1
@@ -99,7 +99,7 @@ def test_solution_count_exact(caplog):
         next(solutions)
 
 
-def x_test_solution_count_lessthan_3(caplog):
+def test_solution_count_lessthan_3(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
     area, transcript = __get_data("""
@@ -109,12 +109,12 @@ def x_test_solution_count_lessthan_3(caplog):
             assert: {count(courses): {$lt: 3}}
     """)
 
-    count = sum(1 for _ in area.solutions(transcript=transcript, areas=[]))
+    count = sum(1 for _ in area.solutions(transcript=transcript, areas=[], exceptions=[]))
 
     assert count == 7
 
 
-def x_test_solution_count_lessthan_1(caplog):
+def test_solution_count_lessthan_1(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
     area, transcript = __get_data("""
@@ -124,7 +124,7 @@ def x_test_solution_count_lessthan_1(caplog):
             assert: {count(courses): {$lt: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[])
+    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 0
@@ -133,7 +133,7 @@ def x_test_solution_count_lessthan_1(caplog):
         next(solutions)
 
 
-def x_test_solution_count_lessthanequal_1(caplog):
+def test_solution_count_lessthanequal_1(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
     area, transcript = __get_data("""
@@ -143,7 +143,7 @@ def x_test_solution_count_lessthanequal_1(caplog):
             assert: {count(courses): {$lte: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[])
+    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 0
@@ -161,7 +161,7 @@ def x_test_solution_count_lessthanequal_1(caplog):
         next(solutions)
 
 
-def x_test_solution_count_greaterthan_1(caplog):
+def test_solution_count_greaterthan_1(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
     area, transcript = __get_data("""
         result:
@@ -170,7 +170,7 @@ def x_test_solution_count_greaterthan_1(caplog):
             assert: {count(courses): {$gt: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[])
+    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 2
@@ -188,7 +188,7 @@ def x_test_solution_count_greaterthan_1(caplog):
         next(solutions)
 
 
-def x_test_solution_count_always_yield_something(caplog):
+def test_solution_count_always_yield_something(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
     area, transcript = __get_data("""
         result:
@@ -197,7 +197,7 @@ def x_test_solution_count_always_yield_something(caplog):
             assert: {count(courses): {$gt: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[])
+    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 0

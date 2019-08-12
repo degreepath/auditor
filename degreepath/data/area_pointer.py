@@ -1,21 +1,23 @@
+from typing import Dict, Any
 import dataclasses
 import logging
 
 from ..clause import Clause, SingleClause, AndClause, OrClause
 from .area_enums import AreaStatus, AreaType
+from .clausable import Clausable
 
 logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(frozen=True)
-class AreaPointer:
+class AreaPointer(Clausable):
     code: str
     status: AreaStatus
     kind: AreaType
     name: str
     degree: str
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "type": "area",
             "code": self.code,
@@ -26,7 +28,7 @@ class AreaPointer:
         }
 
     @staticmethod
-    def from_dict(*, code, status, kind, name, degree):
+    def from_dict(*, code: str, status: str, kind: str, name: str, degree: str) -> 'AreaPointer':
         return AreaPointer(
             code=code,
             status=AreaStatus(status),

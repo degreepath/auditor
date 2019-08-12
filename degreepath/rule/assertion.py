@@ -1,47 +1,20 @@
 from dataclasses import dataclass
-from typing import Optional, Dict
-from ..clause import Clause, load_clause, str_clause
+from typing import Dict, Sequence, Iterator, TYPE_CHECKING
+import logging
+
+from ..clause import load_clause
 from ..constants import Constants
+from ..base.bases import Rule, Solution
+from ..base.assertion import BaseAssertionRule
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class AssertionRule:
-    where: Optional[Clause]
-    assertion: Clause
-
-    def to_dict(self):
-        return {
-            "type": "assertion",
-            "assertion": self.assertion.to_dict() if self.assertion else None,
-            "where": self.where.to_dict() if self.where else None,
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
-        }
-
-    def validate(self, *, ctx):
-        if self.where:
-            self.where.validate(ctx=ctx)
-        self.assertion.validate(ctx=ctx)
-
-    def state(self):
-        return "rule"
-
-    def ok(self):
-        return False
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def __repr__(self):
-        content = (f"where {str_clause(self.where)}, " if self.where else '') + f"{str_clause(self.assertion)}"
-        return f"AssertionRule({content})"
-
+class AssertionRule(Rule, BaseAssertionRule):
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "assert" in data:
@@ -49,11 +22,25 @@ class AssertionRule:
         return False
 
     @staticmethod
-    def load(data: Dict, c: Constants):
+    def load(data: Dict, *, c: Constants, path: Sequence[str]) -> 'AssertionRule':
+        path = [*path, ".assert"]
+
         where = data.get("where", None)
         if where is not None:
             where = load_clause(where, c)
 
         assertion = load_clause(data["assert"], c)
 
-        return AssertionRule(assertion=assertion, where=where)
+        return AssertionRule(assertion=assertion, where=where, path=tuple(path))
+
+    def validate(self, *, ctx: 'RequirementContext') -> None:
+        if self.where:
+            self.where.validate(ctx=ctx)
+        self.assertion.validate(ctx=ctx)
+
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
+        logger.debug('AssertionRule.estimate: 0')
+        return 0
+
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[Solution]:
+        raise Exception('this method should not be called')

@@ -1,65 +1,58 @@
 from dataclasses import dataclass, replace
-from typing import List, Optional, Any, Mapping
+from typing import Any, Mapping, Optional, List, Iterator, TYPE_CHECKING
 import logging
 
+from ..base import Rule, BaseRequirementRule, ResultStatus
+from ..base.requirement import AuditedBy
+from ..constants import Constants
 from ..solution.requirement import RequirementSolution
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class Requirement:
-    name: str
-    message: Optional[str] = None
-    result: Optional[Any] = None
-    audited_by: Optional[str] = None
-    contract: bool = False
+class RequirementRule(Rule, BaseRequirementRule):
+    result: Optional[Rule]
 
-    def to_dict(self):
-        return {
-            "name": self.name,
-            "message": self.message,
-            "result": self.result.to_dict() if self.result is not None else None,
-            "audited_by": self.audited_by,
-            "contract": self.contract,
-            "type": "requirement",
-            "status": "skip",
-            "state": self.state(),
-            "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.rank(),
-        }
+    def status(self) -> ResultStatus:
+        return ResultStatus.Pending
 
     @staticmethod
-    def load(name: str, data: Mapping[str, Any], c):
+    def can_load(data: Mapping) -> bool:
+        return "requirement" in data
+
+    @staticmethod
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str]) -> 'RequirementRule':
         from ..load_rule import load_rule
+
+        path = [*path, f"%{name}"]
 
         result = data.get("result", None)
         if result is not None:
-            result = load_rule(result, c, data.get("requirements", {}))
+            result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path)
 
         audited_by = None
-        if data.get("department_audited", False):
-            audited_by = "department"
-        if data.get("department-audited", False):
-            audited_by = "department"
-        elif data.get("registrar_audited", False):
-            audited_by = "registrar"
-        elif data.get("registrar-audited", False):
-            audited_by = "registrar"
+        if data.get("department_audited", data.get("department-audited", False)):
+            audited_by = AuditedBy.Department
+        elif data.get("registrar_audited", data.get("registrar-audited", False)):
+            audited_by = AuditedBy.Registrar
 
         if 'audit' in data:
             raise TypeError('you probably meant to indent that audit: key into the result: key')
 
-        return Requirement(
+        return RequirementRule(
             name=name,
             message=data.get("message", None),
             result=result,
-            contract=data.get("contract", False),
+            is_contract=data.get("contract", False),
             audited_by=audited_by,
+            path=tuple(path),
         )
 
-    def validate(self, *, ctx):
+    def validate(self, *, ctx: 'RequirementContext') -> None:
         assert isinstance(self.name, str)
         assert self.name.strip() != ""
 
@@ -72,45 +65,33 @@ class Requirement:
         if self.result is not None:
             self.result.validate(ctx=new_ctx)
 
-    def solutions(self, *, ctx, path: List[str]):
-        path = [*path, f"$r->{self.name}"]
+    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[RequirementSolution]:
+        exception = ctx.get_exception(self.path)
+        if exception and exception.is_pass_override():
+            logger.debug("forced override on %s", self.path)
+            yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
+            return
 
-        logger.debug("%s auditing %s", path, self.name)
+        logger.debug("%s auditing %s", self.path, self.name)
 
         if self.audited_by is not None:
-            logger.debug("%s requirement \"%s\" is audited %s", path, self.name, self.audited_by)
+            logger.debug("%s requirement \"%s\" is audited %s", self.path, self.name, self.audited_by)
 
         if not self.result:
-            logger.debug("%s requirement \"%s\" does not have a result", path, self.name)
-            yield RequirementSolution.from_requirement(self, solution=None)
+            logger.debug("%s requirement \"%s\" does not have a result", self.path, self.name)
+            yield RequirementSolution.from_rule(rule=self, solution=None)
             return
 
         new_ctx = replace(ctx)
 
-        for solution in self.result.solutions(ctx=new_ctx, path=path):
-            yield RequirementSolution.from_requirement(self, solution=solution)
+        for solution in self.result.solutions(ctx=new_ctx):
+            yield RequirementSolution.from_rule(rule=self, solution=solution)
 
-    def estimate(self, *, ctx):
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
         if not self.result:
+            logger.debug('RequirementRule.estimate: 1')
             return 1
 
-        return self.result.estimate(ctx=ctx)
-
-    def state(self):
-        return "rule"
-
-    def ok(self):
-        return False
-
-    def rank(self):
-        return 0
-
-    def max_rank(self):
-        return 0
-
-    def claims(self):
-        return []
-
-    def matched(self, *, ctx):
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
+        estimate = self.result.estimate(ctx=ctx)
+        logger.debug('RequirementRule.estimate: %s', estimate)
+        return estimate
