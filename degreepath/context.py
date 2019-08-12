@@ -69,7 +69,14 @@ class RequirementContext:
     def reset_claims(self) -> None:
         self.claims = defaultdict(set)
 
-    def make_claim(self, *, course: CourseInstance, path: Sequence[str], clause: Union[Clause, BaseCourseRule], allow_claimed: bool = False) -> ClaimAttempt:  # noqa: C901
+    def make_claim(  # noqa: C901
+        self,
+        *,
+        course: CourseInstance,
+        path: Sequence[str],
+        clause: Union[Clause, BaseCourseRule],
+        allow_claimed: bool = False,
+    ) -> ClaimAttempt:
         """
         Make claims against courses, to ensure that they are only used once
         (with exceptions) in an audit.
