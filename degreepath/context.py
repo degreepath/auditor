@@ -181,19 +181,26 @@ class RequirementContext:
         for clauseset in applicable_clausesets:
             if debug: logger.debug('checking clauseset %s', clauseset)
 
-            all_are_supersets = True
+            # all_are_supersets = True
+            #
+            # for p_clause in clauses_to_cover:
+            #     # has_subset_clause = False
+            #     #
+            #     # for c in clauseset:
+            #     #     if debug: logger.debug('is_subset: %s; p_clause: %s; c_clause: %s', c.is_subset(p_clause), p_clause, c)
+            #     #     if c.is_subset(p_clause):
+            #     #         has_subset_clause = True
+            #     #     if debug: logger.debug('has_subset_clause: %s', has_subset_clause)
+            #
+            #     has_subset_clause = any(c.is_subset(p_clause) for c in clauseset)
+            #
+            #     all_are_supersets = all_are_supersets and has_subset_clause
+            #     if debug: logger.debug('all_are_supersets: %s', all_are_supersets)
 
-            for p_clause in clauses_to_cover:
-                has_subset_clause = False
-
-                for c in clauseset:
-                    if debug: logger.debug('is_subset: %s; p_clause: %s; c_clause: %s', c.is_subset(p_clause), p_clause, c)
-                    if c.is_subset(p_clause):
-                        has_subset_clause = True
-                    if debug: logger.debug('has_subset_clause: %s', has_subset_clause)
-
-                all_are_supersets = all_are_supersets and has_subset_clause
-                if debug: logger.debug('all_are_supersets: %s', all_are_supersets)
+            all_are_supersets = all(
+                any(c.is_subset(p_clause) for c in clauseset)
+                for p_clause in clauses_to_cover
+            )
 
             if all_are_supersets:
                 if debug: logger.debug('done checking clausesets')
