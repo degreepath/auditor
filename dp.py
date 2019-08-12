@@ -56,7 +56,7 @@ def main() -> None:
             print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw))
 
         elif isinstance(msg, EstimateMsg):
-            print(f"estimated iterations: {msg.estimate:,}")
+            print(f"estimated iterations: {msg.estimate:,}", file=sys.stderr)
 
         else:
             logger.critical('unknown message %s', msg)
