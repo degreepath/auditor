@@ -111,4 +111,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         if self.audited_by is not None:
             return False
 
-        return self.result.has_potential(ctx=ctx)
+        if self.result:
+            return self.result.has_potential(ctx=ctx)
+
+        return False
