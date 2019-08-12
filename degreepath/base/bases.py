@@ -1,8 +1,6 @@
 import abc
-from typing import Iterator, Sequence, Dict, Any, List, Tuple, TYPE_CHECKING
+from typing import Iterator, Dict, Any, List, Tuple, TYPE_CHECKING
 import enum
-
-from natsort import natsorted  # type: ignore
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -21,22 +19,8 @@ class ResultStatus(enum.Enum):
 class Base(abc.ABC):
     path: Tuple[str, ...]
 
-    def __lt__(self, other: Any) -> Any:
-        prefixlen = commonprefixlen(self.path, other.path)
-        trimmed_self = self.path[prefixlen:]
-        trimmed_other = other.path[prefixlen:]
-
-        # natsorted properly sorts the `[index]` items
-        lo, hi = natsorted([trimmed_self, trimmed_other])
-
-        if trimmed_self is lo:
-            return True
-
-        # lo, hi = natsorted([self.path, other.path])
-        # if self.path is lo:
-        #     return True
-
-        return False
+    def __lt__(self, other: 'Base') -> bool:
+        return compare_path_tuples_a_lt_b(self.path, other.path)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -119,12 +103,43 @@ class Rule(Base):
         raise NotImplementedError(f'must define a has_potential() method')
 
 
-def commonprefixlen(a: Sequence[str], b: Sequence[str]) -> int:
-    "Return the longest prefix of all list elements."
-    a, b = min(a, b), max(a, b)
+def compare_path_tuples_a_lt_b(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
+    """
+    >>> compare_path_tuples_a_lt_b(('$', '.count', '[2]'), ('$', '.count', '[10]'))
+    True
+    >>> compare_path_tuples_a_lt_b(('$', '.count'), ('$', '[10]'))
+    False
+    >>> compare_path_tuples_a_lt_b(('$', '[10]'), ('$', '.count'))
+    True
+    >>> compare_path_tuples_a_lt_b(('$', '.count', '[2]'), ('$', '.count'))
+    False
+    >>> compare_path_tuples_a_lt_b(('$', '.count', '[2]'), ('$', '.count', '[3]', '.count', '[1]'))
+    True
+    """
+    a_len = len(a)
+    b_len = len(b)
 
-    for i, c in enumerate(a):
-        if c != b[i]:
-            return i
+    if a_len < b_len:
+        return True
 
-    return 0
+    if b_len < a_len:
+        return False
+
+    for _1, _2 in zip(a, b):
+        # convert indices to integers
+        if _1 and _1[0] == '[':
+            _1 = int(_1[1:-1])
+
+        if _2 and _2[0] == '[':
+            _2 = int(_2[1:-1])
+
+        if type(_1) == type(_2):
+            if _1 == _2:
+                continue
+            return _1 < _2
+        elif type(_1) == int:
+            return True
+        else:
+            return False
+
+    return True
