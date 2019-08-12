@@ -171,7 +171,9 @@ class CountRule(Rule, BaseCountRule):
                 deselected_children = all_children.difference(selected_children)
                 other_children = sorted(deselected_children, key=lambda r: item_indices[r])
 
-                solutions = [r.solutions(ctx=ctx) for r in combo]
+                # itertools.product does this internally, so we'll pre-compute the results here
+                # to make it obvious that it's not lazy
+                solutions = [tuple(r.solutions(ctx=ctx)) for r in combo]
 
                 for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                     did_yield = True
