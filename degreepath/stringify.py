@@ -11,7 +11,7 @@ def summarize(
     transcript: Sequence[CourseInstance],
     result: Dict[str, Any],
     count: int,
-    elapsed: int,
+    elapsed: str,
     iterations: List[float],
     gpa: decimal.Decimal,
 ) -> Iterator[str]:

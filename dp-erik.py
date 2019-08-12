@@ -3,6 +3,8 @@ import json
 import logging
 import os
 import runpy
+from datetime import datetime
+from typing import Optional, Any, cast
 
 import dotenv
 import psycopg2
@@ -24,7 +26,7 @@ else:
     logger.warn('SENTRY_DSN not set; skipping')
 
 
-def cli():
+def cli() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file", required=True)
     parser.add_argument("--student", dest="student_file", required=True)
@@ -38,7 +40,7 @@ def cli():
     main(student_file=args.student_file, area_file=args.area_file, run_id=args.run)
 
 
-def main(area_file, student_file, run_id=None):
+def main(area_file: str, student_file: str, run_id: Optional[int] = None) -> None:
     conn = psycopg2.connect(
         host=os.environ.get("PG_HOST"),
         database=os.environ.get("PG_DATABASE"),
@@ -151,7 +153,7 @@ def record(*, message, conn, result_id):
         conn.commit()
 
 
-def update_progress(*, conn, start_time, count, result_id):
+def update_progress(*, conn: Any, start_time: datetime, count: int, result_id: Optional[int]) -> None:
     with conn.cursor() as curs:
         curs.execute("""
             UPDATE result
@@ -162,7 +164,7 @@ def update_progress(*, conn, start_time, count, result_id):
         conn.commit()
 
 
-def make_result_id(*, stnum, conn, area_code, catalog, run):
+def make_result_id(*, stnum: str, conn: Any, area_code: str, catalog: str, run: Optional[int]) -> Optional[int]:
     with conn.cursor() as curs:
         curs.execute("""
             INSERT INTO result (student_id, area_code, catalog, in_progress, run)
@@ -173,7 +175,9 @@ def make_result_id(*, stnum, conn, area_code, catalog, run):
         conn.commit()
 
         for record in curs:
-            return record[0]
+            return cast(int, record[0])
+
+    return None
 
 
 if __name__ == "__main__":

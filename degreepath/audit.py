@@ -35,7 +35,7 @@ class AuditStartMsg:
 
 @dataclasses.dataclass
 class ResultMsg:
-    result: Result
+    result: Optional[Result]
     transcript: Tuple[CourseInstance, ...]
     count: int
     elapsed: str
