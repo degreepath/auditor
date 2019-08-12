@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 from collections.abc import Mapping, Iterable
 from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence, Iterator, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
+import attr
 
 from .constants import Constants
 from .lib import str_to_grade_points
@@ -37,13 +37,14 @@ def load_clause(data: Dict[str, Any], c: Constants) -> 'Clause':
     return AndClause(children=tuple(clauses))
 
 
+@attr.s(auto_attribs=True)
 class _Clause(abc.ABC):
     @abc.abstractmethod
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'Clause':
         raise NotImplementedError(f'must define a compare_and_resolve_with() method')
 
 
-@dataclass(frozen=True)
+@attr.s(auto_attribs=True)
 class ResolvedClause:
     resolved_with: Optional[Any] = None
     resolved_items: Sequence[Any] = tuple()
@@ -51,13 +52,13 @@ class ResolvedClause:
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "resolved_with": str(self.resolved_with) if isinstance(self.resolved_with, decimal.Decimal) else self.resolved_with,
+            "resolved_with": str(self.resolved_with) if type(self.resolved_with) is not str else self.resolved_with,
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
             "result": self.result,
         }
 
 
-@dataclass(frozen=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
 class AndClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
@@ -87,7 +88,7 @@ class AndClause(_Clause, ResolvedClause):
         return AndClause(children=children, resolved_with=None, resolved_items=[], result=result)
 
 
-@dataclass(frozen=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
 class OrClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
@@ -117,7 +118,7 @@ class OrClause(_Clause, ResolvedClause):
         return OrClause(children=children, resolved_with=None, resolved_items=[], result=result)
 
 
-@dataclass(frozen=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
 class SingleClause(_Clause, ResolvedClause):
     key: str = "???"
     expected: Any = None
