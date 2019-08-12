@@ -48,6 +48,8 @@ class QuerySolution(Solution, BaseQueryRule):
         }
 
     def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+
         if self.overridden:
             return QueryResult.from_solution(
                 solution=self,
@@ -69,18 +71,18 @@ class QuerySolution(Solution, BaseQueryRule):
                     claim = ctx.make_claim(course=item, path=self.path, clause=clause, allow_claimed=self.allow_claimed)
 
                     if claim.failed():
-                        logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, item.clbid, claim.conflict_with)
+                        if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, item.clbid, claim.conflict_with)
                         failed_claims.append(claim)
                     else:
-                        logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
+                        if debug: logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
                         successful_claims.append(claim)
                         claimed_items.append(item)
                 else:
-                    logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
+                    if debug: logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
                     claimed_items.append(item)
 
             elif isinstance(item, AreaPointer):
-                logger.debug('%s item "%s" exists, and is available', self.path, item)
+                if debug: logger.debug('%s item "%s" exists, and is available', self.path, item)
                 claimed_items.append(item)
 
             else:
@@ -107,10 +109,11 @@ class QuerySolution(Solution, BaseQueryRule):
 
         resolved_result = all(a.ok() for a in resolved_assertions)
 
-        if resolved_result:
-            logger.debug("%s from-rule '%s' might possibly succeed", self.path, self)
-        else:
-            logger.debug("%s from-rule '%s' did not succeed", self.path, self)
+        if debug:
+            if resolved_result:
+                logger.debug("%s from-rule '%s' might possibly succeed", self.path, self)
+            else:
+                logger.debug("%s from-rule '%s' did not succeed", self.path, self)
 
         return QueryResult.from_solution(
             solution=self,

@@ -104,6 +104,8 @@ class QueryRule(Rule, BaseQueryRule):
             return []
 
     def solutions(self, *, ctx: 'RequirementContext') -> Iterator[QuerySolution]:  # noqa: C901
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -139,14 +141,14 @@ class QueryRule(Rule, BaseQueryRule):
 
                 for n in assertion.input_size_range(maximum=len(item_set)):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
+                        if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
                         did_iter = True
                         yield QuerySolution.from_rule(rule=self, output=combo)
             else:
                 logger.debug("not running single assertion mode")
                 for n in range(1, len(item_set) + 1):
                     for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
+                        if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
                         did_iter = True
                         yield QuerySolution.from_rule(rule=self, output=combo)
 

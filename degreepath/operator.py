@@ -44,43 +44,44 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:
     3. If LHS is a sequence, and OP is .EqualTo, OP is changed to .In
     4. If LHS is a sequence, and OP is .NotEqualTo, OP is changed to .NotIn
     """
-    logger.debug("lhs=`%s` op=%s rhs=`%s` (%s, %s)", lhs, op.name, rhs, type(lhs), type(rhs))
+    debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+    if debug: logger.debug("lhs=`%s` op=%s rhs=`%s` (%s, %s)", lhs, op.name, rhs, type(lhs), type(rhs))
 
     if isinstance(lhs, tuple) and isinstance(rhs, tuple):
         if op is not Operator.In:
             raise Exception('both rhs and lhs must not be sequences when using %s; lhs=%s, rhs=%s', op, lhs, rhs)
 
         if len(lhs) == 0 or len(rhs) == 0:
-            logger.debug("either lhs=%s or rhs=%s was empty; returning false", len(lhs), len(rhs))
+            if debug: logger.debug("either lhs=%s or rhs=%s was empty; returning false", len(lhs), len(rhs))
             return False
 
-        logger.debug("converting both %s and %s to sets of strings, and running intersection", lhs, rhs)
+        if debug: logger.debug("converting both %s and %s to sets of strings, and running intersection", lhs, rhs)
         lhs = set(str(s) for s in lhs)
         rhs = set(str(s) for s in rhs)
         intersection = lhs.intersection(rhs)
-        logger.debug("lhs=%s; rhs=%s; intersection=%s", lhs, rhs, intersection)
-        return bool(intersection)
+        if debug: logger.debug("lhs=%s; rhs=%s; intersection=%s", lhs, rhs, intersection)
+        return len(intersection) > 0
 
     if isinstance(lhs, tuple) or isinstance(rhs, tuple):
         if op is Operator.EqualTo:
             if isinstance(lhs, tuple) and len(lhs) == 1:
-                logger.debug("got lhs=%s with one item, lifting out of the tuple", lhs)
+                if debug: logger.debug("got lhs=%s with one item, lifting out of the tuple", lhs)
                 lhs = lhs[0]
             elif isinstance(lhs, tuple) and len(lhs) == 0:
-                logger.debug("got empty lhs, returning False")
+                if debug: logger.debug("got empty lhs, returning False")
                 return False
             elif isinstance(rhs, tuple) and len(rhs) == 1:
-                logger.debug("got rhs=%s with one item, lifting out of the tuple", rhs)
+                if debug: logger.debug("got rhs=%s with one item, lifting out of the tuple", rhs)
                 rhs = rhs[0]
             elif isinstance(rhs, tuple) and len(rhs) == 0:
-                logger.debug("got empty rhs, returning False")
+                if debug: logger.debug("got empty rhs, returning False")
                 return False
             else:
-                logger.debug("got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.In)
+                if debug: logger.debug("got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.In)
                 return apply_operator(op=Operator.In, lhs=lhs, rhs=rhs)
 
         elif op is Operator.NotEqualTo:
-            logger.debug("got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.NotIn)
+            if debug: logger.debug("got lhs=%s / rhs=%s; switching to %s", type(lhs), type(rhs), Operator.NotIn)
             return apply_operator(op=Operator.NotIn, lhs=lhs, rhs=rhs)
 
         elif op is Operator.In:
@@ -107,32 +108,32 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:
 
     if op is Operator.EqualTo:
         result: bool = lhs == rhs
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        if debug: logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
     if op is Operator.NotEqualTo:
         result = lhs != rhs
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        if debug: logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
     if op is Operator.LessThan:
         result = lhs < rhs
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        if debug: logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
     if op is Operator.LessThanOrEqualTo:
         result = lhs <= rhs
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        if debug: logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
     if op is Operator.GreaterThan:
         result = lhs > rhs
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        if debug: logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
     if op is Operator.GreaterThanOrEqualTo:
         result = lhs >= rhs
-        logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
+        if debug: logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
     raise TypeError(f"unknown comparison {op}")

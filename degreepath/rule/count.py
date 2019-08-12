@@ -120,6 +120,8 @@ class CountRule(Rule, BaseCountRule):
             rule.validate(ctx=ctx)
 
     def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CountSolution]:
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -163,7 +165,7 @@ class CountRule(Rule, BaseCountRule):
             # logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
 
             for combo_i, combo in enumerate(itertools.combinations(items, r)):
-                logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i)
+                if debug: logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i)
 
                 selected_children = set(combo)
                 deselected_children = all_children.difference(selected_children)
@@ -174,7 +176,7 @@ class CountRule(Rule, BaseCountRule):
                 for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                     did_yield = True
 
-                    if solset_i > 0 and solset_i % 10_000 == 0:
+                    if debug and solset_i > 0 and solset_i % 10_000 == 0:
                         logger.debug("%s %s..<%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i, solset_i)
 
                     yield CountSolution.from_rule(rule=self, count=count, items=solutionset + tuple(other_children))
