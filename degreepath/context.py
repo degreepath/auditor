@@ -82,6 +82,10 @@ class RequirementContext:
         (with exceptions) in an audit.
         """
 
+        # This function is called often enough that we want to avoid even calling the `logging` module
+        # unless we're actually logging things. (On a 90-second audit, this saved nearly 30 seconds.)
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+
         if clause is None:
             raise TypeError("clause must be provided")
 
@@ -112,7 +116,7 @@ class RequirementContext:
 
         # If there are no prior claims, the claim is automatically allowed.
         if not prior_claims:
-            logger.debug('no prior claims for clbid=%s', course.clbid)
+            if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
             self.claims[course.clbid].add(claim)
             return ClaimAttempt(claim, conflict_with=frozenset())
 
@@ -128,10 +132,10 @@ class RequirementContext:
         # is automatically successful.
         if not applicable_clausesets:
             if prior_claims:
-                logger.debug('no multicountable clausesets for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
+                if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
                 return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
             else:
-                logger.debug('no multicountable clausesets for clbid=%s; the claim has no conflicts', course.clbid)
+                if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset())
 
@@ -166,13 +170,13 @@ class RequirementContext:
         prior_clauses = [cl.value for cl in prior_claims]
         clauses_to_cover = prior_clauses + [clause]
 
-        logger.debug('clauses to cover: %s', clauses_to_cover)
-        logger.debug('applicable clausesets: %s', applicable_clausesets)
+        if debug: logger.debug('clauses to cover: %s', clauses_to_cover)
+        if debug: logger.debug('applicable clausesets: %s', applicable_clausesets)
 
         applicable_clauseset = None
 
         for clauseset in applicable_clausesets:
-            logger.debug('checking clauseset %s', clauseset)
+            if debug: logger.debug('checking clauseset %s', clauseset)
 
             all_are_supersets = True
 
@@ -180,27 +184,27 @@ class RequirementContext:
                 has_subset_clause = False
 
                 for c in clauseset:
-                    logger.debug('is_subset: %s; p_clause: %s; c_clause: %s', c.is_subset(p_clause), p_clause, c)
+                    if debug: logger.debug('is_subset: %s; p_clause: %s; c_clause: %s', c.is_subset(p_clause), p_clause, c)
                     if c.is_subset(p_clause):
                         has_subset_clause = True
-                    logger.debug('has_subset_clause: %s', has_subset_clause)
+                    if debug: logger.debug('has_subset_clause: %s', has_subset_clause)
 
                 all_are_supersets = all_are_supersets and has_subset_clause
-                logger.debug('all_are_supersets: %s', all_are_supersets)
+                if debug: logger.debug('all_are_supersets: %s', all_are_supersets)
 
             if all_are_supersets:
-                logger.debug('done checking clausesets')
+                if debug: logger.debug('done checking clausesets')
                 applicable_clauseset = clauseset
                 break
 
-            logger.debug('done checking clauseset %s; ', clauseset)
+            if debug: logger.debug('done checking clauseset %s; ', clauseset)
 
         if applicable_clauseset is None:
             if prior_claims:
-                logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
+                if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
                 return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
             else:
-                logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim has no conflicts', course.clbid)
+                if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset())
 
@@ -211,13 +215,13 @@ class RequirementContext:
         ]
 
         if not available_clauses:
-            logger.debug('there was an applicable multicountable clauseset for clbid=%s; however, all of the clauses have already been matched', course.clbid)
+            if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
                 return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
             else:
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset())
 
-        logger.debug('there was an applicable multicountable clauseset for clbid=%s: %s', course.clbid, available_clauses)
+        if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s: %s', course.clbid, available_clauses)
         self.claims[course.clbid].add(claim)
         return ClaimAttempt(claim, conflict_with=frozenset())
