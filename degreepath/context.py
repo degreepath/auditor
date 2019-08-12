@@ -90,7 +90,7 @@ class RequirementContext:
             raise TypeError("clause must be provided")
 
         if isinstance(clause, tuple):
-            raise TypeError("make_claim only accepts clauses and courserules, not tuples")
+            raise TypeError("make_claim only accepts clauses and course rules, not tuples")
 
         # coerce course rules to clauses
         rule = None
