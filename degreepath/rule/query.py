@@ -88,10 +88,12 @@ class QueryRule(Rule, BaseQueryRule):
             if self.source_repeats is QuerySourceRepeatMode.First:
                 filtered_courses = []
                 course_identities: Set[str] = set()
+
                 for course in sorted(data, key=lambda c: f"{c.year}{c.term}"):
                     if course.crsid not in course_identities:
                         filtered_courses.append(course)
                         course_identities.add(course.crsid)
+
                 data = filtered_courses
 
             return data
