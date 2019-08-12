@@ -26,8 +26,11 @@ def run(args: Arguments, *, transcript_only=False):
         constants = Constants(matriculation_year=student['matriculation'])
 
         if transcript_only:
+            print('\t'.join(['course', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'in_gpa']))
             for c in transcript:
-                print(repr(c))
+                items = [c.course(), str(c.credits), c.name, str(c.year), str(c.term),
+                         c.sub_type.name, ','.join(c.gereqs), str(c.is_in_gpa)]
+                print('\t'.join(items))
             return
 
         for area_file in args.area_files:
