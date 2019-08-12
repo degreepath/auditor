@@ -1,6 +1,7 @@
 from typing import Any
 import enum
 import logging
+from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,8 @@ class Operator(enum.Enum):
         return str(self)
 
 
-def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:  # noqa: C901
+@lru_cache(2048)  # noqa: C901
+def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:
     """
     Applies two values (lhs and rhs) to an operator.
 
