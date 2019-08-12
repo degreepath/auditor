@@ -85,7 +85,7 @@ def main(area_file: str, student_file: str, run_id: Optional[int] = None) -> Non
                             WHERE id = %(result_id)s
                         """, {
                             "result_id": result_id,
-                            "error": {"error": str(msg.ex)},
+                            "error": json.dumps({"error": str(msg.ex)}),
                         })
                         conn.commit()
 
