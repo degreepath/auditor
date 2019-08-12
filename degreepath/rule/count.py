@@ -147,7 +147,7 @@ class CountRule(Rule, BaseCountRule):
                 hidden=False,
                 grade=None,
                 allow_claimed=False,
-                path=tuple([*self.path, f"*{matched_course.course()}"])
+                path=tuple([*self.path, f"*{matched_course.course()}"]),
             )
 
             logger.debug("new choice at %s is %s", self.path, new_rule)
