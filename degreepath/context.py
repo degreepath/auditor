@@ -81,19 +81,14 @@ class RequirementContext:
         if isinstance(clause, tuple):
             raise TypeError("make_claim only accepts clauses and courserules, not tuples")
 
-        # coerce courserules to clauses
+        # coerce course rules to clauses
         rule = None
         if isinstance(clause, CourseRule):
             rule = clause
             clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
         # build a claim so it can be returned later
-        claim = Claim(
-            crsid=course.crsid,
-            clbid=course.clbid,
-            claimant_path=tuple(path),
-            value=clause,
-        )
+        claim = Claim(crsid=course.crsid, clbid=course.clbid, claimant_path=tuple(path), value=clause)
 
         # > A multicountable set describes the ways in which a course may be
         # > counted.
@@ -204,8 +199,7 @@ class RequirementContext:
 
         # now limit to just the clauses in the clauseset which have not been used
         available_clauses = [
-            c
-            for c in applicable_clauseset
+            c for c in applicable_clauseset
             if not any(c.is_subset(prior_clause) for prior_clause in prior_clauses)
         ]
 
