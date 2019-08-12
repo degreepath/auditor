@@ -27,6 +27,7 @@ def main() -> None:
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--estimate", action='store_true')
     parser.add_argument("--transcript", action='store_true')
+    parser.add_argument("--gpa", action='store_true')
     cli_args = parser.parse_args()
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
@@ -53,7 +54,7 @@ def main() -> None:
             print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
-            print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw))
+            print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw, gpa_only=cli_args.gpa))
 
         elif isinstance(msg, EstimateMsg):
             print(f"estimated iterations: {msg.estimate:,}", file=sys.stderr)
@@ -62,9 +63,12 @@ def main() -> None:
             logger.critical('unknown message %s', msg)
 
 
-def result_str(msg: Any, *, as_json: bool = False, as_raw: bool = False) -> str:
+def result_str(msg: Any, *, as_json: bool = False, as_raw: bool = False, gpa_only: bool = False) -> str:
     if msg.result is None:
         return json.dumps(None)
+
+    if gpa_only:
+        return f"GPA: {msg.gpa}"
 
     dict_result = msg.result.to_dict()
     dict_result['gpa'] = str(msg.gpa)
