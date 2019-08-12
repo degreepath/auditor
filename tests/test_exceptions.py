@@ -91,8 +91,8 @@ def test_insertion_on_count_rule__any(caplog):
     assert [
         [x.course for x in s.solution.items if isinstance(x, CourseSolution)]
         for s in solutions
-    ] == [['OTHER 234'], ['DEPT 123'], ['OTHER 234', 'DEPT 123']]
-    assert len(solutions) == 3
+    ] == [['OTHER 234']]
+    assert len(solutions) == 1
 
     result = solutions[0].audit()
 
