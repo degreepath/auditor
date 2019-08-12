@@ -44,3 +44,6 @@ class AssertionRule(Rule, BaseAssertionRule):
 
     def solutions(self, *, ctx: 'RequirementContext') -> Iterator[Solution]:
         raise Exception('this method should not be called')
+
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        raise Exception('this method should not be called')

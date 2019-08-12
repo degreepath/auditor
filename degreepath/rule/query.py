@@ -189,6 +189,23 @@ class QueryRule(Rule, BaseQueryRule):
 
         return iterations
 
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if self._has_potential(ctx=ctx):
+            logger.debug('%s has potential: yes', self.path)
+            return True
+        else:
+            logger.debug('%s has potential: no', self.path)
+            return False
+
+    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if ctx.get_exception(self.path):
+            return True
+
+        if self.where is None:
+            return len(self.get_data(ctx=ctx)) > 0
+
+        return any(item.apply_clause(self.where) for item in self.get_data(ctx=ctx))
+
 
 def has_simple_count_assertion(assertions: Sequence[AssertionRule]) -> bool:
     if not assertions:

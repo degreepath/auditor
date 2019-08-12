@@ -58,3 +58,20 @@ class CourseRule(Rule, BaseCourseRule):
     def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('CourseRule.estimate: 1')
         return 1
+
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if self._has_potential(ctx=ctx):
+            logger.debug('%s has potential: yes', self.path)
+            return True
+        else:
+            logger.debug('%s has potential: no', self.path)
+            return False
+
+    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if ctx.get_exception(self.path) is not None:
+            return True
+
+        if ctx.find_course(self.course) is not None:
+            return True
+
+        return False

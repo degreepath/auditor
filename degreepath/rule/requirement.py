@@ -95,3 +95,20 @@ class RequirementRule(Rule, BaseRequirementRule):
         estimate = self.result.estimate(ctx=ctx)
         logger.debug('RequirementRule.estimate: %s', estimate)
         return estimate
+
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if self._has_potential(ctx=ctx):
+            logger.debug('%s has potential: yes', self.path)
+            return True
+        else:
+            logger.debug('%s has potential: no', self.path)
+            return False
+
+    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if ctx.get_exception(self.path):
+            return True
+
+        if self.audited_by is not None:
+            return False
+
+        return self.result.has_potential(ctx=ctx)

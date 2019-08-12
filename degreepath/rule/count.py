@@ -154,8 +154,12 @@ class CountRule(Rule, BaseCountRule):
 
             items = tuple([new_rule, *self.items])
 
-        lo = count
+        potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
+
+        lo = min(count, len(potential_rules))
         hi = len(items) + 1 if self.at_most is False else count + 1
+
+        print(self.path, lo, hi)
 
         all_children = set(items)
         item_indices = {r: items.index(r) for r in items}
@@ -164,7 +168,7 @@ class CountRule(Rule, BaseCountRule):
         for r in range(lo, hi):
             # logger.debug("%s %s..<%s, r=%s", path, lo, hi, r)
 
-            for combo_i, combo in enumerate(itertools.combinations(items, r)):
+            for combo_i, combo in enumerate(itertools.combinations(potential_rules, r)):
                 if debug: logger.debug("%s %s..<%s, r=%s, combo=%s: generating product(*solutions)", self.path, lo, hi, r, combo_i)
 
                 selected_children = set(combo)
@@ -211,3 +215,18 @@ class CountRule(Rule, BaseCountRule):
         logger.debug('CountRule.estimate: %s', iterations)
 
         return iterations
+
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if self._has_potential(ctx=ctx):
+            logger.debug('%s has potential: yes', self.path)
+            return True
+        else:
+            logger.debug('%s has potential: no', self.path)
+            return False
+
+    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if ctx.get_exception(self.path):
+            return True
+
+        items_with_potential = sum(1 for r in self.items if r.has_potential(ctx=ctx))
+        return items_with_potential >= self.count
