@@ -140,7 +140,7 @@ class QuerySolution(Solution, BaseQueryRule):
         return AssertionResult(where=clause.where, assertion=result, path=clause.path)
 
 
-def apply_clause_to_query_rule(*, value: Sequence[Union[CourseInstance, AreaPointer]], clause: SingleClause) -> Tuple[Any, Collection[Any]]:
+def apply_clause_to_query_rule(*, value: Sequence[Union[CourseInstance, AreaPointer]], clause: SingleClause) -> Tuple[Union[decimal.Decimal, int], Collection[Any]]:
     # remove the trailing ) with [:-1], then split on the opening ( to get the two parts
     action, kind = clause.key[:-1].split('(', maxsplit=1)
 
