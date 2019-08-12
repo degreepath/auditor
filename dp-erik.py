@@ -108,8 +108,8 @@ def main(area_file: str, student_file: str, run_id: Optional[int] = None) -> Non
         conn.close()
 
 
-def record(*, message, conn, result_id):
-    result = message.result.to_dict() if message.result is not None else None
+def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
+    result = message.result.to_dict()
 
     avg_iter_s = sum(message.iterations) / max(len(message.iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)

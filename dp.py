@@ -63,10 +63,7 @@ def main() -> None:
             logger.critical('unknown message %s', msg)
 
 
-def result_str(msg: Any, *, as_json: bool = False, as_raw: bool = False, gpa_only: bool = False) -> str:
-    if msg.result is None:
-        return json.dumps(None)
-
+def result_str(msg: ResultMsg, *, as_json: bool = False, as_raw: bool = False, gpa_only: bool = False) -> str:
     if gpa_only:
         return f"GPA: {msg.gpa}"
 
