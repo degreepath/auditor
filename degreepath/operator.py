@@ -47,6 +47,9 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:
     debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
     if debug: logger.debug("lhs=`%s` op=%s rhs=`%s` (%s, %s)", lhs, op.name, rhs, type(lhs), type(rhs))
 
+    if lhs is None or rhs is None and lhs != rhs:
+        return False
+
     if isinstance(lhs, tuple) and isinstance(rhs, tuple):
         if op is not Operator.In:
             raise Exception('both rhs and lhs must not be sequences when using %s; lhs=%s, rhs=%s', op, lhs, rhs)
