@@ -25,8 +25,8 @@ class AreaOfStudy:
 
     limit: LimitSet
     result: Rule
-    attributes: Dict
-    multicountable: List
+    attributes: Dict[str, List[str]]
+    multicountable: List[List[SingleClause]]
 
     @staticmethod
     def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
@@ -43,7 +43,7 @@ class AreaOfStudy:
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         attributes = specification.get("attributes", dict())
-        multicountable = []
+        multicountable: List[List[SingleClause]] = []
         for ruleset in attributes.get("multicountable", []):
             clauses = []
             for clause in ruleset:
