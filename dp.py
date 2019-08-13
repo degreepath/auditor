@@ -27,12 +27,18 @@ def main() -> None:
     parser.add_argument("--estimate", action='store_true')
     parser.add_argument("--transcript", action='store_true')
     parser.add_argument("--gpa", action='store_true')
+    parser.add_argument("--tracemalloc-init", action='store_true')
+    parser.add_argument("--tracemalloc-end", action='store_true')
     cli_args = parser.parse_args()
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
     logging.basicConfig(level=loglevel, format=logformat)
 
     args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=cli_args.estimate)
+
+    if cli_args.tracemalloc_init or cli_args.tracemalloc_end:
+        import tracemalloc
+        tracemalloc.start()
 
     for msg in dp['run'](args, transcript_only=cli_args.transcript):
         if isinstance(msg, NoStudentsMsg):
@@ -48,11 +54,21 @@ def main() -> None:
             logger.critical("%s %s", msg.ex, msg.tb)
 
         elif isinstance(msg, ProgressMsg):
+            if cli_args.tracemalloc_init:
+                snapshot = tracemalloc.take_snapshot()
+                display_top(snapshot)
+                return
+
             avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
             avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
             print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
+            if cli_args.tracemalloc_end:
+                snapshot = tracemalloc.take_snapshot()
+                display_top(snapshot)
+                return
+
             print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw, gpa_only=cli_args.gpa))
 
         elif isinstance(msg, EstimateMsg):
@@ -79,6 +95,35 @@ def result_str(msg: ResultMsg, *, as_json: bool = False, as_raw: bool = False, g
         result=dict_result, transcript=msg.transcript, gpa=msg.gpa,
         count=msg.count, elapsed=msg.elapsed, iterations=msg.iterations,
     ))
+
+
+def display_top(snapshot, key_type='lineno', limit=10):
+    import linecache
+    from tracemalloc import Filter
+
+    snapshot = snapshot.filter_traces((
+        Filter(False, "<frozen importlib._bootstrap>"),
+        Filter(False, "<unknown>"),
+    ))
+    top_stats = snapshot.statistics(key_type)
+
+    print("Top %s lines" % limit)
+    for index, stat in enumerate(top_stats[:limit], 1):
+        frame = stat.traceback[0]
+        # replace "/path/to/module/file.py" with "module/file.py"
+        filename = os.sep.join(frame.filename.split(os.sep)[-2:])
+        print("#%s: %s:%s: %.1f KiB" % (index, filename, frame.lineno, stat.size / 1024))
+        line = linecache.getline(frame.filename, frame.lineno).strip()
+        if line:
+            print('    %s' % line)
+
+    other = top_stats[limit:]
+    if other:
+        size = sum(stat.size for stat in other)
+        print("%s other: %.1f KiB" % (len(other), size / 1024))
+
+    total = sum(stat.size for stat in top_stats)
+    print("Total allocated size: %.1f KiB" % (total / 1024))
 
 
 if __name__ == "__main__":
