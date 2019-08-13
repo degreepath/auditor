@@ -107,8 +107,8 @@ def audit(
     iter_start = time.perf_counter()
     startup_time = 0.00
 
-    estimate = area.estimate(transcript=this_transcript, areas=tuple(area_pointers))
-    yield EstimateMsg(estimate=estimate)
+    # estimate = area.estimate(transcript=this_transcript, areas=tuple(area_pointers))
+    # yield EstimateMsg(estimate=estimate)
 
     if estimate_only:
         return
