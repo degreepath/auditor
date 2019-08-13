@@ -88,8 +88,8 @@ def audit(
     _transcript = []
     attributes_to_attach: Dict[str, List[str]] = area.attributes.get("courses", {})
     for c in transcript:
-        if c.is_repeat:
-            continue
+        # We need to leave repeated courses in the transcript, because some majors (THEAT) require repeated courses
+        # for completion.
         attrs_by_course: Set[str] = set(attributes_to_attach.get(c.course(), []))
         attrs_by_shorthand: Set[str] = set(attributes_to_attach.get(c.course_shorthand(), []))
         attrs_by_term: Set[str] = set(attributes_to_attach.get(c.course_with_term(), []))
