@@ -284,18 +284,18 @@ def str_clause(clause: Union[Dict[str, Any], 'Clause']) -> str:
     if clause["type"] == "single-clause":
         resolved_with = clause.get('resolved_with', None)
         if resolved_with is not None:
-            resolved = f" ({resolved_with})"
+            resolved = f" ({repr(resolved_with)})"
         else:
             resolved = ""
 
         if clause['expected'] != clause['expected_verbatim']:
-            postscript = f" (via \"{clause['expected_verbatim']}\")"
+            postscript = f" (via {repr(clause['expected_verbatim'])})"
         else:
             postscript = ""
 
         op = str_operator(clause['operator'])
 
-        return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}"
+        return f'"{clause["key"]}"{resolved} {op} "{clause["expected"]}"{postscript}'
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
