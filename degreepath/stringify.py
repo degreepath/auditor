@@ -56,7 +56,7 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
     rank = rule["rank"]
     path = rule["path"]
 
-    yield f"{prefix}{path}"
+    yield f"{prefix}{json.dumps(path)}"
 
     prefix += f"({rank}|{'t' if rule['ok'] else 'f'}) "
 
