@@ -75,9 +75,9 @@ class AreaOfStudy:
 
     def solutions(
         self, *,
-        transcript: Tuple[CourseInstance, ...],
-        areas: Tuple[AreaPointer, ...],
-        exceptions: Tuple[RuleException, ...],
+        transcript: Sequence[CourseInstance],
+        areas: Sequence[AreaPointer],
+        exceptions: Sequence[RuleException],
     ) -> Iterable['AreaSolution']:
         logger.debug("evaluating area.result")
 
@@ -88,7 +88,11 @@ class AreaOfStudy:
 
             logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
-            ctx = RequirementContext(areas=areas, exceptions=mapped_exceptions, multicountable=self.multicountable).with_transcript(limited_transcript)
+            ctx = RequirementContext(
+                areas=tuple(areas),
+                exceptions=mapped_exceptions,
+                multicountable=self.multicountable,
+            ).with_transcript(limited_transcript)
 
             for sol in self.result.solutions(ctx=ctx):
                 ctx.reset_claims()
@@ -100,7 +104,10 @@ class AreaOfStudy:
         iterations = 0
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            ctx = RequirementContext(areas=areas, multicountable=self.multicountable).with_transcript(limited_transcript)
+            ctx = RequirementContext(
+                areas=areas,
+                multicountable=self.multicountable,
+            ).with_transcript(limited_transcript)
 
             iterations += self.result.estimate(ctx=ctx)
 
@@ -112,6 +119,7 @@ class AreaSolution(AreaOfStudy):
     solution: Solution
     context: RequirementContext
 
+    @staticmethod
     def from_area(*, area: AreaOfStudy, solution: Solution, ctx: RequirementContext) -> 'AreaSolution':
         return AreaSolution(
             name=area.name,
