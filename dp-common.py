@@ -27,10 +27,10 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
         constants = Constants(matriculation_year=student['matriculation'])
 
         if transcript_only:
-            print('\t'.join(['course', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'in_gpa']))
+            print('\t'.join(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa']))
             for c in transcript:
-                items = [c.course(), str(c.credits), c.name, str(c.year), str(c.term),
-                         c.sub_type.name, ','.join(c.gereqs), str(c.is_in_gpa)]
+                items = [c.course(), c.clbid, str(c.credits), c.name, str(c.year), str(c.term),
+                         c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa)]
                 print('\t'.join(items))
             return
 
