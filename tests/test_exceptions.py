@@ -14,7 +14,7 @@ def test_insertion_on_course_rule(caplog):
     area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ["$", "*DEPT 345"],
         "clbid": "1",
     })
@@ -45,7 +45,7 @@ def test_insertion_on_query_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ["$", ".query"],
         "clbid": "0",
     })
@@ -75,7 +75,7 @@ def test_insertion_on_count_rule__any(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ['$', '.count'],
         "clbid": "1",
     })
@@ -115,7 +115,7 @@ def test_insertion_on_count_rule__all(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ['$', '.count'],
         "clbid": "2",
     })
@@ -149,7 +149,7 @@ def test_insertion_on_requirement_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ["$", r"%req"],
         "clbid": "2",
     })
@@ -175,7 +175,7 @@ def test_override_on_course_rule(caplog):
     area = AreaOfStudy.load(specification={"result": {"course": "DEPT 123"}}, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", "*DEPT 123"],
         "status": "pass",
     })
@@ -200,7 +200,7 @@ def test_override_on_query_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", ".query"],
         "status": "pass",
     })
@@ -226,7 +226,7 @@ def test_override_on_count_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", ".count"],
         "status": "pass",
     })
@@ -251,7 +251,7 @@ def test_override_on_requirement_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", r"%req"],
         "status": "pass",
     })
@@ -276,7 +276,7 @@ def test_override_on_count_rule_assertion_clause(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ['$', '.count', '.audit', '[0]', '.assert'],
         "status": "pass",
     })
@@ -306,7 +306,7 @@ def test_override_on_query_rule_audit_clause(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ['$', '.query', '.assertions', '[0]', '.assert'],
         "status": "pass",
     })
