@@ -25,7 +25,7 @@ class AreaOfStudy:
 
     limit: LimitSet
     result: Rule
-    attributes: Dict[str, List[str]]
+    attributes: Dict[str, Dict[str, List[str]]]
     multicountable: List[List[SingleClause]]
 
     @staticmethod

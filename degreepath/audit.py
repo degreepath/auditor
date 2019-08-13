@@ -86,7 +86,7 @@ def audit(
     area.validate()
 
     _transcript = []
-    attributes_to_attach = area.attributes.get("courses", {})
+    attributes_to_attach: Dict[str, List[str]] = area.attributes.get("courses", {})
     for c in transcript:
         if c.is_repeat:
             continue

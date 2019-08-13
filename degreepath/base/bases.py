@@ -132,6 +132,8 @@ def compare_path_tuples_a_lt_b(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
     if b_len < a_len:
         return False
 
+    _1: Any
+    _2: Any
     for _1, _2 in zip(a, b):
         # convert indices to integers
         if _1 and _1[0] == '[':
@@ -143,7 +145,10 @@ def compare_path_tuples_a_lt_b(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
         if type(_1) == type(_2):
             if _1 == _2:
                 continue
-            return _1 < _2
+            if _1 < _2:
+                return True
+            else:
+                return False
         elif type(_1) == int:
             return True
         else:
