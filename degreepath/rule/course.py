@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class CourseRule(Rule, BaseCourseRule):
+    __slots__ = ()
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:

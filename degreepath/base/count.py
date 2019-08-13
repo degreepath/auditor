@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class BaseCountRule(Base):
+    __slots__ = ('count', 'items', 'at_most', 'audit_clauses')
     count: int
     items: Tuple[Union[Rule, Solution, Result], ...]
     at_most: bool

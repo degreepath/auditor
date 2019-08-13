@@ -10,9 +10,10 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class CourseResult(Result, BaseCourseRule):
+    __slots__ = ('claim_attempt', 'min_grade_not_met', 'overridden')
     claim_attempt: Optional['ClaimAttempt']
-    min_grade_not_met: Optional['CourseInstance'] = None
-    overridden: bool = False
+    min_grade_not_met: Optional['CourseInstance']
+    overridden: bool
 
     @staticmethod
     def from_solution(

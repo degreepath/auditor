@@ -7,8 +7,9 @@ from ..claim import ClaimAttempt
 
 @dataclass(frozen=True)
 class CountResult(Result, BaseCountRule):
+    __slots__ = ('audit_results', 'overridden')
     audit_results: Tuple[BaseAssertionRule, ...]
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_solution(

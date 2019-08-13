@@ -14,6 +14,12 @@ Decimal = decimal.Decimal
 
 @dataclasses.dataclass(frozen=True, order=True)
 class CourseInstance(Clausable):
+    __slots__ = (
+        'clbid', 'attributes', 'credits', 'crsid', 'gereqs', 'grade_code', 'grade_option', 'grade_points',
+        'grade_points_gpa', 'is_in_gpa', 'is_in_progress', 'is_incomplete', 'is_repeat', 'is_stolaf', 'is_lab',
+        'level', 'name', 'number', 'section', 'sub_type', 'subject', 'term', 'year', '_identity', '_shorthand',
+    )
+
     clbid: str
     attributes: Tuple[str, ...]
     credits: decimal.Decimal

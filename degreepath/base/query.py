@@ -28,6 +28,7 @@ class QuerySourceRepeatMode(enum.Enum):
 
 @dataclass(frozen=True)
 class BaseQueryRule(Base):
+    __slots__ = ('source', 'source_type', 'source_repeats', 'assertions', 'limit', 'where', 'allow_claimed', 'attempt_claims')
     source: QuerySource
     source_type: QuerySourceType
     source_repeats: QuerySourceRepeatMode

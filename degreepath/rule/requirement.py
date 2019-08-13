@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class RequirementRule(Rule, BaseRequirementRule):
+    __slots__ = ()
+
     result: Optional[Rule]
 
     def status(self) -> ResultStatus:

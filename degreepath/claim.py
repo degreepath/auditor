@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class Claim:
     crsid: str
     clbid: str
@@ -28,7 +28,7 @@ class Claim:
         }
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class ClaimAttempt:
     claim: Claim
     conflict_with: FrozenSet[Claim] = attr.ib(factory=frozenset)

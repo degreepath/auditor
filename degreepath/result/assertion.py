@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class AssertionResult(Result, BaseAssertionRule):
-    overridden: bool = False
+    __slots__ = ('overridden',)
+    overridden: bool
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.where:

@@ -17,6 +17,7 @@ class ResultStatus(enum.Enum):
 
 
 class Base(abc.ABC):
+    __slots__ = ('path',)
     path: Tuple[str, ...]
 
     def __lt__(self, other: 'Base') -> bool:
@@ -69,11 +70,15 @@ class Base(abc.ABC):
 
 
 class Result(Base):
+    __slots__ = ()
+
     def state(self) -> str:
         return "result"
 
 
 class Solution(Base):
+    __slots__ = ()
+
     def state(self) -> str:
         return "solution"
 
@@ -83,6 +88,8 @@ class Solution(Base):
 
 
 class Rule(Base):
+    __slots__ = ()
+
     def state(self) -> str:
         return "rule"
 

@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class BaseCourseRule(Base):
+    __slots__ = ('course', 'hidden', 'grade', 'allow_claimed')
     course: str
     hidden: bool
     grade: Optional[Decimal]

@@ -8,11 +8,12 @@ from ..claim import ClaimAttempt
 
 @dataclass(frozen=True)
 class QueryResult(Result, BaseQueryRule):
+    __slots__ = ('successful_claims', 'failed_claims', 'resolved_assertions', 'success', 'overridden')
     successful_claims: Tuple[ClaimAttempt, ...]
     failed_claims: Tuple[ClaimAttempt, ...]
     resolved_assertions: Tuple[AssertionResult, ...]
     success: bool
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_solution(

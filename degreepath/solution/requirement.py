@@ -11,8 +11,9 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class RequirementSolution(Solution, BaseRequirementRule):
+    __slots__ = ('overridden',)
     result: Optional[Union[Rule, Solution]]
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseRequirementRule, solution: Optional[Union[Rule, Solution]], overridden: bool = False) -> 'RequirementSolution':

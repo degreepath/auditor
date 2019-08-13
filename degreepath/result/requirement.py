@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class RequirementResult(Result, BaseRequirementRule):
-    overridden: bool = False
+    __slots__ = ('overridden',)
+    overridden: bool
 
     @staticmethod
     def from_solution(

@@ -21,6 +21,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class QueryRule(Rule, BaseQueryRule):
+    __slots__ = ()
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "from" in data:

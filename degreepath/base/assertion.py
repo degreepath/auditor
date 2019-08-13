@@ -7,6 +7,7 @@ from .bases import Base
 
 @dataclass(frozen=True)
 class BaseAssertionRule(Base):
+    __slots__ = ('assertion', 'where', 'path')
     assertion: Clause
     where: Optional[Clause]
     path: Tuple[str, ...]

@@ -15,6 +15,7 @@ T = TypeVar('T', bound=Clausable)
 
 @dataclass(frozen=True)
 class Limit:
+    __slots__ = ('at_most', 'where')
     at_most: int
     where: Clause
 
@@ -45,6 +46,7 @@ class Limit:
 
 @dataclass(frozen=True)
 class LimitSet:
+    __slots__ = ('limits',)
     limits: Tuple[Limit, ...]
 
     def has_limits(self) -> bool:

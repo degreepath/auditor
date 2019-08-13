@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class CountRule(Rule, BaseCountRule):
+    __slots__ = ()
+    
     items: Tuple[Rule, ...]
 
     @staticmethod

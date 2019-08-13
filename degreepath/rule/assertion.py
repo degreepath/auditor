@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class AssertionRule(Rule, BaseAssertionRule):
+    __slots__ = ()
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "assert" in data:

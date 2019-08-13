@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class CourseSolution(Solution, BaseCourseRule):
-    overridden: bool = False
+    __slots__ = ('overridden',)
+    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseCourseRule, overridden: bool = False) -> 'CourseSolution':

@@ -13,6 +13,7 @@ class AuditedBy(enum.Enum):
 
 @dataclass(frozen=True)
 class BaseRequirementRule(Base):
+    __slots__ = ('name', 'message', 'result', 'audited_by', 'is_contract')
     name: str
     message: Optional[str]
     result: Optional[Base]

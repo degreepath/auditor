@@ -37,14 +37,14 @@ def load_clause(data: Dict[str, Any], c: Constants) -> 'Clause':
     return AndClause(children=tuple(clauses))
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, slots=True)
 class _Clause(abc.ABC):
     @abc.abstractmethod
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'Clause':
         raise NotImplementedError(f'must define a compare_and_resolve_with() method')
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, slots=True)
 class ResolvedClause:
     resolved_with: Optional[Any] = None
     resolved_items: Sequence[Any] = tuple()
@@ -58,7 +58,7 @@ class ResolvedClause:
         }
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class AndClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
@@ -88,7 +88,7 @@ class AndClause(_Clause, ResolvedClause):
         return AndClause(children=children, resolved_with=None, resolved_items=[], result=result)
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class OrClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
@@ -118,7 +118,7 @@ class OrClause(_Clause, ResolvedClause):
         return OrClause(children=children, resolved_with=None, resolved_items=[], result=result)
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class SingleClause(_Clause, ResolvedClause):
     key: str = "???"
     expected: Any = None

@@ -22,8 +22,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class QuerySolution(Solution, BaseQueryRule):
+    __slots__ = ('output', 'overridden')
     output: Tuple[Clausable, ...]
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseQueryRule, output: Tuple[Clausable, ...], overridden: bool = False) -> 'QuerySolution':
@@ -137,7 +138,7 @@ class QuerySolution(Solution, BaseQueryRule):
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
 
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
-        return AssertionResult(where=clause.where, assertion=result, path=clause.path)
+        return AssertionResult(where=clause.where, assertion=result, path=clause.path, overridden=False)
 
 
 def apply_clause_to_query_rule(*, value: Sequence[Union[CourseInstance, AreaPointer]], clause: SingleClause) -> Tuple[Union[decimal.Decimal, int], Collection[Any]]:
