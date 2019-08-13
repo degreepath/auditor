@@ -6,6 +6,7 @@ from typing import Iterator
 import yaml
 
 from degreepath import load_course, Constants, AreaPointer, load_exception
+from degreepath.data import GradeOption
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, Message, Arguments
 
 
@@ -23,8 +24,13 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
             return
 
         area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
-        transcript = [load_course(row) for row in student["courses"]]
         constants = Constants(matriculation_year=student['matriculation'])
+        # We need to leave repeated courses in the transcript, because some majors (THEAT) require repeated courses
+        # for completion.
+        transcript = [
+            c for c in (load_course(row) for row in student["courses"])
+            if c.grade_option is not GradeOption.Audit
+        ]
 
         if transcript_only:
             print('\t'.join(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa']))
