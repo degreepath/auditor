@@ -54,7 +54,6 @@ class RequirementResult(Result, BaseRequirementRule):
         if self.was_overridden():
             return self.overridden
 
-        # return True if self.audited_by is not None else _ok
         return self.result.ok() if self.result else False
 
     def rank(self) -> int:
