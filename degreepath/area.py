@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CHECKING
+from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, Union, TYPE_CHECKING
 import logging
 import decimal
 
@@ -30,7 +30,7 @@ class AreaOfStudy(Base):
     degree: Optional[str]
 
     limit: LimitSet
-    result: Rule
+    result: Any  # Rule
     attributes: Dict[str, Dict[str, List[str]]]
     multicountable: List[List[SingleClause]]
     path: Tuple[str, ...]
@@ -43,7 +43,7 @@ class AreaOfStudy(Base):
             "catalog": self.catalog,
             "major": self.major,
             "degree": self.degree,
-            "result": self.result.to_dict() if self.result is not None else None,
+            "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
         }
 
@@ -170,6 +170,7 @@ class AreaSolution(AreaOfStudy):
 @dataclass(frozen=True)
 class AreaResult(AreaOfStudy, Result):
     __slots__ = ('result', 'context')
+
     result: Result
     context: RequirementContext
 

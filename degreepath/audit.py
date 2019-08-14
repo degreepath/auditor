@@ -1,5 +1,5 @@
 import dataclasses
-from typing import List, Optional, Set, Dict, Tuple, Sequence, Iterator, Any, Union
+from typing import List, Optional, Set, Dict, Tuple, Sequence, Iterator, Any, Union, cast
 from datetime import datetime
 import time
 
@@ -121,7 +121,7 @@ def audit(
                 count=total_count,
                 recent_iters=iterations[-1_000:],
                 start_time=start_time,
-                best_rank=best_sol.rank(),
+                best_rank=cast(AreaResult, best_sol).rank(),
             )
 
         result = sol.audit()
