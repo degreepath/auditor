@@ -113,7 +113,7 @@ class RequirementContext:
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
         if allow_claimed or getattr(rule, 'allow_claimed', False):
-            return ClaimAttempt(claim)
+            return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         prior_claims = frozenset(self.claims[course.clbid])
 
@@ -121,7 +121,7 @@ class RequirementContext:
         if not prior_claims:
             if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
             self.claims[course.clbid].add(claim)
-            return ClaimAttempt(claim, conflict_with=frozenset())
+            return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         # Find any multicountable sets that may apply to this course
         applicable_clausesets = [
@@ -136,11 +136,11 @@ class RequirementContext:
         if not applicable_clausesets:
             if prior_claims:
                 if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
             else:
                 if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset())
+                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         # > Otherwise, if a course was counted in _this_ fashion, it may also
         # > be counted like _that_ (or _that_, or _that_.)
@@ -212,11 +212,11 @@ class RequirementContext:
         if applicable_clauseset is None:
             if prior_claims:
                 if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
             else:
                 if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset())
+                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         # now limit to just the clauses in the clauseset which have not been used
         available_clauses = [
@@ -227,11 +227,11 @@ class RequirementContext:
         if not available_clauses:
             if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
             else:
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset())
+                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s: %s', course.clbid, available_clauses)
         self.claims[course.clbid].add(claim)
-        return ClaimAttempt(claim, conflict_with=frozenset())
+        return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)

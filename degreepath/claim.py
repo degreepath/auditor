@@ -31,15 +31,17 @@ class Claim:
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class ClaimAttempt:
     claim: Claim
-    conflict_with: FrozenSet[Claim] = attr.ib(factory=frozenset)
+    conflict_with: FrozenSet[Claim]
+    did_fail: bool
 
     def failed(self) -> bool:
-        return len(self.conflict_with) > 0
+        return self.did_fail
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "claim": self.claim.to_dict(),
             "conflict_with": [c.to_dict() for c in self.conflict_with],
+            "failed": self.failed(),
         }
 
     def get_course(self, *, ctx: 'RequirementContext') -> Optional['CourseInstance']:
