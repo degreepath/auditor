@@ -25,6 +25,7 @@ class BaseCourseRule(Base):
             "hidden": self.hidden,
             "grade": str(self.grade) if self.grade is not None else None,
             "allow_claimed": self.allow_claimed,
+            "claims": [c.to_dict() for c in self.claims()],
         }
 
     def type(self) -> str:

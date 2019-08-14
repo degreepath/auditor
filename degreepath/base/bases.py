@@ -32,7 +32,6 @@ class Base(abc.ABC):
             "ok": self.ok(),
             "rank": self.rank(),
             "max_rank": self.max_rank(),
-            "claims": [c.to_dict() for c in self.claims()],
             "overridden": self.was_overridden(),
         }
 
