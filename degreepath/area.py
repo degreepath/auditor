@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, Union, TYPE_CHECKING
+from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
 
-from .base import Rule, Solution, Result, Base
+from .base import Solution, Result, Base
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
