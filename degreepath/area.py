@@ -1,11 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any
+from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
 
 from .base import Rule, Solution, Result, Base
 from .clause import SingleClause
-from .claim import ClaimAttempt
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
@@ -13,6 +12,9 @@ from .exception import RuleException
 from .limit import LimitSet
 from .load_rule import load_rule
 from .lib import grade_point_average
+
+if TYPE_CHECKING:
+    from .claim import ClaimAttempt  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
