@@ -80,10 +80,9 @@ def main() -> None:
 
 def result_str(msg: ResultMsg, *, as_json: bool = False, as_raw: bool = False, gpa_only: bool = False) -> str:
     if gpa_only:
-        return f"GPA: {msg.gpa}"
+        return f"GPA: {msg.result.gpa()}"
 
     dict_result = msg.result.to_dict()
-    dict_result['gpa'] = str(msg.gpa)
 
     if as_json:
         return json.dumps(dict_result)
@@ -91,10 +90,7 @@ def result_str(msg: ResultMsg, *, as_json: bool = False, as_raw: bool = False, g
     if as_raw:
         return repr(msg.result)
 
-    return "\n" + "".join(summarize(
-        result=dict_result, transcript=msg.transcript, gpa=msg.gpa,
-        count=msg.count, elapsed=msg.elapsed, iterations=msg.iterations,
-    ))
+    return "\n" + "".join(summarize(result=dict_result, transcript=msg.transcript, count=msg.count, elapsed=msg.elapsed, iterations=msg.iterations))
 
 
 def display_top(snapshot, key_type='lineno', limit=10):

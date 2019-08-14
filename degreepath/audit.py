@@ -1,15 +1,12 @@
 import dataclasses
-from typing import List, Optional, Set, Dict, Tuple, Sequence, Iterator, Any, Union, cast
+from typing import List, Optional, Set, Dict, Tuple, Sequence, Iterator, Any, Union
 from datetime import datetime
 import time
-import decimal
 
-from .base import Result
 from .constants import Constants
 from .exception import RuleException
-from .area import AreaOfStudy
+from .area import AreaOfStudy, AreaResult
 from .ms import pretty_ms
-from .lib import grade_point_average
 from .data import CourseInstance, AreaPointer
 
 
@@ -35,13 +32,12 @@ class AuditStartMsg:
 
 @dataclasses.dataclass
 class ResultMsg:
-    result: Result
+    result: AreaResult
     transcript: Tuple[CourseInstance, ...]
     count: int
     elapsed: str
     iterations: List[float]
     startup_time: float
-    gpa: decimal.Decimal
 
 
 @dataclasses.dataclass
@@ -99,7 +95,7 @@ def audit(
 
     this_transcript = tuple(_transcript)
 
-    best_sol: Optional[Result] = None
+    best_sol: Optional[AreaResult] = None
     total_count = 0
     iterations: List[float] = []
     start_time = datetime.now()
@@ -125,16 +121,14 @@ def audit(
                 count=total_count,
                 recent_iters=iterations[-1_000:],
                 start_time=start_time,
-                best_rank=cast(Result, best_sol).rank(),
+                best_rank=best_sol.rank(),
             )
 
         result = sol.audit()
 
         if print_all:
-            gpa = gpa_from_solution(result=result, transcript=this_transcript, area=area)
             yield ResultMsg(
                 result=result,
-                gpa=gpa,
                 transcript=this_transcript,
                 count=total_count,
                 elapsed='∞',
@@ -158,34 +152,18 @@ def audit(
         iterations.append(iter_end - iter_start)
         iter_start = time.perf_counter()
 
-    if not iterations:
+    if not best_sol:
         yield NoAuditsCompletedMsg()
         return
 
     end = time.perf_counter()
     elapsed = pretty_ms((end - start) * 1000)
 
-    gpa = gpa_from_solution(area=area, result=best_sol, transcript=this_transcript)
-
     yield ResultMsg(
-        result=cast(Result, best_sol),
-        gpa=gpa,
+        result=best_sol,
         transcript=this_transcript,
         count=total_count,
         elapsed=elapsed,
         iterations=iterations,
         startup_time=startup_time,
     )
-
-
-def gpa_from_solution(*, result: Optional[Result], transcript: Sequence[CourseInstance], area: AreaOfStudy) -> decimal.Decimal:
-    if not result:
-        return decimal.Decimal('0.00')
-
-    transcript_map = {c.clbid: c for c in transcript}
-
-    if area.type == 'degree':
-        return grade_point_average(transcript_map.values())
-
-    claimed_courses = [transcript_map[c.claim.clbid] for c in result.claims() if c.failed() is False]
-    return grade_point_average(claimed_courses)

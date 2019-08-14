@@ -13,17 +13,15 @@ import sentry_sdk
 from degreepath import pretty_ms
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg
 
+logger = logging.getLogger(__name__)
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
-
-
-logger = logging.getLogger(__name__)
 
 dotenv.load_dotenv(verbose=True)
 if os.environ.get('SENTRY_DSN', None):
     sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
 else:
-    logger.warn('SENTRY_DSN not set; skipping')
+    logger.warning('SENTRY_DSN not set; skipping')
 
 
 def cli() -> None:
@@ -114,14 +112,6 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
     avg_iter_s = sum(message.iterations) / max(len(message.iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
-    claims = result["claims"]
-
-    rank = result["rank"]
-    max_rank = result["max_rank"]
-    ok = result["ok"]
-
-    claims = []
-
     with conn.cursor() as curs:
         curs.execute("""
             UPDATE result
@@ -131,7 +121,6 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
               , rank = %(rank)s
               , max_rank = %(max_rank)s
               , result = %(result)s::jsonb
-              , claimed_courses = %(claims)s::jsonb
               , ok = %(ok)s
               , ts = now()
               , gpa = %(gpa)s
@@ -143,11 +132,10 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
             "elapsed": message.elapsed,
             "avg_iter_time": avg_iter_time.strip("~"),
             "result": json.dumps(result),
-            "rank": rank,
-            "max_rank": max_rank,
-            "claims": json.dumps(claims),
-            "gpa": message.gpa,
-            "ok": False if ok is None else ok,
+            "rank": result["rank"],
+            "max_rank": result["max_rank"],
+            "gpa": result["gpa"],
+            "ok": result["ok"],
         })
 
         conn.commit()
@@ -174,8 +162,8 @@ def make_result_id(*, stnum: str, conn: Any, area_code: str, catalog: str, run: 
 
         conn.commit()
 
-        for record in curs:
-            return cast(int, record[0])
+        for row in curs:
+            return cast(int, row[0])
 
     return None
 

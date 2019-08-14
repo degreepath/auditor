@@ -1,24 +1,28 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, Sequence, Iterable
+from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any
 import logging
+import decimal
 
-from .base import Rule, Solution, Result
+from .base import Rule, Solution, Result, Base
 from .clause import SingleClause
+from .claim import ClaimAttempt
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
 from .exception import RuleException
 from .limit import LimitSet
 from .load_rule import load_rule
+from .lib import grade_point_average
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class AreaOfStudy:
+class AreaOfStudy(Base):
     """The overall class for working with an area"""
+    __slots__ = ('name', 'kind', 'catalog', 'major', 'degree', 'limit', 'result', 'attributes', 'multicountable', 'path')
     name: str
-    type: str
+    kind: str
     catalog: str
     major: Optional[str]
     degree: Optional[str]
@@ -27,6 +31,25 @@ class AreaOfStudy:
     result: Rule
     attributes: Dict[str, Dict[str, List[str]]]
     multicountable: List[List[SingleClause]]
+    path: Tuple[str, ...]
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            **super().to_dict(),
+            "name": self.name,
+            "kind": self.kind,
+            "catalog": self.catalog,
+            "major": self.major,
+            "degree": self.degree,
+            "result": self.result.to_dict() if self.result is not None else None,
+            "gpa": str(self.gpa()),
+        }
+
+    def type(self) -> str:
+        return "area"
+
+    def gpa(self) -> decimal.Decimal:
+        return decimal.Decimal('0.00')
 
     @staticmethod
     def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
@@ -58,7 +81,7 @@ class AreaOfStudy:
 
         return AreaOfStudy(
             name=specification.get('name', 'Test'),
-            type=specification.get('type', 'test'),
+            kind=specification.get('type', 'test'),
             catalog=specification.get('catalog', '2000-01'),
             major=specification.get('major', None),
             degree=specification.get('degree', None),
@@ -66,6 +89,7 @@ class AreaOfStudy:
             attributes=attributes,
             multicountable=multicountable,
             limit=limit,
+            path=('$',)
         )
 
     def validate(self) -> None:
@@ -116,6 +140,7 @@ class AreaOfStudy:
 
 @dataclass(frozen=True)
 class AreaSolution(AreaOfStudy):
+    __slots__ = ('solution', 'context')
     solution: Solution
     context: RequirementContext
 
@@ -123,7 +148,7 @@ class AreaSolution(AreaOfStudy):
     def from_area(*, area: AreaOfStudy, solution: Solution, ctx: RequirementContext) -> 'AreaSolution':
         return AreaSolution(
             name=area.name,
-            type=area.type,
+            kind=area.kind,
             catalog=area.catalog,
             major=area.major,
             degree=area.degree,
@@ -131,12 +156,67 @@ class AreaSolution(AreaOfStudy):
             result=area.result,
             attributes=area.attributes,
             multicountable=area.multicountable,
+            path=area.path,
             solution=solution,
             context=ctx,
         )
 
-    def audit(self) -> Result:
-        return self.solution.audit(ctx=self.context)
+    def audit(self) -> 'AreaResult':
+        return AreaResult.from_solution(area=self, result=self.solution.audit(ctx=self.context), ctx=self.context)
+
+
+@dataclass(frozen=True)
+class AreaResult(AreaOfStudy, Result):
+    __slots__ = ('result', 'context')
+    result: Result
+    context: RequirementContext
+
+    @staticmethod
+    def from_solution(*, area: AreaOfStudy, result: Result, ctx: RequirementContext) -> 'AreaResult':
+        return AreaResult(
+            name=area.name,
+            kind=area.kind,
+            catalog=area.catalog,
+            major=area.major,
+            degree=area.degree,
+            limit=area.limit,
+            attributes=area.attributes,
+            multicountable=area.multicountable,
+            path=area.path,
+            context=ctx,
+            result=result,
+        )
+
+    def gpa(self) -> decimal.Decimal:
+        if not self.result:
+            return decimal.Decimal('0.00')
+
+        transcript_map = {c.clbid: c for c in self.context.transcript()}
+
+        if self.kind == 'degree':
+            courses = list(transcript_map.values())
+        else:
+            courses = [transcript_map[c.claim.clbid] for c in self.claims() if c.failed() is False]
+
+        return grade_point_average(courses)
+
+    def ok(self) -> bool:
+        if self.was_overridden():
+            return True
+
+        return self.result.ok()
+
+    def rank(self) -> int:
+        return self.result.rank()
+
+    def max_rank(self) -> int:
+        return self.result.max_rank()
+
+    def claims(self) -> List['ClaimAttempt']:
+        return self.result.claims()
+
+    def was_overridden(self) -> bool:
+        return self.result.was_overridden()
 
 
 def map_exceptions(exceptions: Sequence[RuleException]) -> Dict[Tuple[str, ...], RuleException]:

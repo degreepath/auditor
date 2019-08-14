@@ -3,7 +3,6 @@ from .clause import str_clause, get_resolved_items
 from .data import CourseInstance
 from .ms import pretty_ms
 import json
-import decimal
 
 
 def summarize(
@@ -13,34 +12,14 @@ def summarize(
     count: int,
     elapsed: str,
     iterations: List[float],
-    gpa: decimal.Decimal,
 ) -> Iterator[str]:
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     endl = "\n"
 
-    if result['ok']:
-        yield f"audit was successful."
-    else:
-        yield f"audit failed."
-
-    yield f" (rank {result['rank']} of {result['max_rank']})"
-
-    yield f" (gpa: {gpa})"
-
-    yield endl
-
     word = "attempt" if count == 1 else "attempts"
     yield f"{count:,} {word} in {elapsed} (avg {avg_iter_time} per attempt)"
-    yield endl
-
-    yield endl
-
-    yield "Results"
-    yield endl
-    yield "======="
-
     yield endl
     yield endl
 
@@ -60,7 +39,19 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
 
     prefix += f"({rank}|{'t' if rule['ok'] else 'f'}) "
 
-    if rule_type == "course":
+    if rule_type == "area":
+        if rule['ok']:
+            title = f"{rule['name']!r} audit was successful."
+        else:
+            title = f"{rule['name']!r} audit failed."
+
+        yield f"{title} (rank {rule['rank']} of {rule['max_rank']}; gpa: {rule['gpa']})"
+
+        yield ""
+
+        yield from print_result(rule['result'], transcript)
+
+    elif rule_type == "course":
         status = "🌀      "
         if rule["ok"]:
             if not rule["overridden"]:
