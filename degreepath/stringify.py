@@ -36,7 +36,7 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
     max_rank = rule["max_rank"]
     path = rule["path"]
 
-    yield f"{prefix} {json.dumps(path)}"
+    yield f"{prefix}{json.dumps(path)}"
 
     prefix += f"({rank}|{max_rank}|{'t' if rule['ok'] else 'f'}) "
 
