@@ -1,11 +1,12 @@
 import abc
-from typing import Iterator, Dict, Any, List, Tuple, TYPE_CHECKING
+from typing import Iterator, Dict, Any, List, Tuple, Collection, TYPE_CHECKING
 import enum
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
     from ..claim import ClaimAttempt  # noqa: F401
     from ..data import CourseInstance  # noqa: F401
+    from ..data import Clausable  # noqa: F401
 
 
 @enum.unique
@@ -107,6 +108,10 @@ class Rule(Base):
     @abc.abstractmethod
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         raise NotImplementedError(f'must define a has_potential() method')
+
+    @abc.abstractmethod
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+        raise NotImplementedError(f'must define an all_matches() method')
 
 
 def compare_path_tuples_a_lt_b(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:

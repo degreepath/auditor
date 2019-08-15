@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Iterator, TYPE_CHECKING
+from typing import Dict, List, Iterator, Collection, TYPE_CHECKING
 import re
 import logging
 
@@ -7,9 +7,11 @@ from ..base import Rule, BaseCourseRule
 from ..constants import Constants
 from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
+from ..exception import InsertionException
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -77,3 +79,12 @@ class CourseRule(Rule, BaseCourseRule):
             return True
 
         return False
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+        exception = ctx.get_exception(self.path)
+        if exception and isinstance(exception, InsertionException):
+            match = ctx.find_course_by_clbid(exception.clbid)
+        else:
+            match = ctx.find_course(self.course)
+
+        return [match] if match else []

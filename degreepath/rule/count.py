@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import Dict, List, Sequence, Tuple, Iterator, Set, TYPE_CHECKING
+from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, FrozenSet, Optional, Union, TYPE_CHECKING
 import itertools
 import logging
 
-from ..base import Rule, BaseCountRule
+from ..base import Rule, BaseCountRule, Result, Solution
 from ..constants import Constants
 from ..exception import InsertionException
 from ..solution.count import CountSolution
@@ -13,6 +13,7 @@ from .assertion import AssertionRule
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +158,30 @@ class CountRule(Rule, BaseCountRule):
         lo = count
         hi = len(items) + 1 if self.at_most is False else count + 1
 
-        potential_rules = tuple(sorted(set(rule for rule in items if rule.has_potential(ctx=ctx))))
+        all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
+
+        independent_children, codependent_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
+
+        potential_rules = tuple(sorted(codependent_children))
+
+        independent_rule__results: Dict[Rule, Optional[Result]] = {}
+        for child in independent_children:
+            best_result = None
+
+            for sol in child.solutions(ctx=ctx):
+                result = sol.audit(ctx=ctx)
+
+                if best_result is None:
+                    best_result = result
+
+                if best_result.rank() < result.rank():
+                    best_result = result
+
+            independent_rule__results[child] = best_result
+
+        solved_results: Tuple[Result, ...] = tuple(sorted(r for r in independent_rule__results.values() if r is not None))
+        solved_results__rules: Set[Rule] = set(r for r, result in independent_rule__results.items() if result is not None)
+
         potential_len = len(potential_rules)
         all_children = set(items)
 
@@ -166,39 +190,89 @@ class CountRule(Rule, BaseCountRule):
         logger.debug("%s iterating over combinations between %s..<%s", self.path, lo, hi)
         for r in range(lo, hi):
             logger.debug("%s %s..<%s, r=%s", self.path, lo, hi, r)
-            for combo in self.make_combinations(items=potential_rules, all_children=all_children, r=r, count=count, ctx=ctx):
+            for combo in self.make_combinations(items=potential_rules, results=solved_results, children_with_results=solved_results__rules, all_children=all_children, r=r, count=count, ctx=ctx):
                 did_yield = True
                 yield combo
 
         if not did_yield and potential_len > 0:
             # didn't have enough potential children to iterate in range(lo, hi)
             logger.debug("%s only iterating over the %s children with potential", self.path, potential_len)
-            for combo in self.make_combinations(items=potential_rules, all_children=all_children, r=potential_len, count=count, ctx=ctx):
+            for combo in self.make_combinations(items=potential_rules, results=solved_results, children_with_results=solved_results__rules, all_children=all_children, r=potential_len, count=count, ctx=ctx):
                 did_yield = True
                 yield combo
 
         if not did_yield:
             logger.debug("%s did not iterate", self.path)
             # ensure that we always yield something
-            yield CountSolution.from_rule(rule=self, count=count, items=items)
+            children_with_precomputed_solutions: Set[Union[Rule, Result]] = set(all_children - solved_results__rules)
+            children_with_precomputed_solutions.update(solved_results)
+            to_yield = tuple(sorted(children_with_precomputed_solutions))
+            yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
-    def make_combinations(self, *, ctx: 'RequirementContext', items: Tuple[Rule, ...], all_children: Set[Rule], r: int, count: int) -> Iterator[CountSolution]:
+    def make_combinations(
+        self, *,
+        ctx: 'RequirementContext',
+        items: Tuple[Rule, ...],
+        results: Tuple[Result, ...],
+        children_with_results: Set[Rule],
+        all_children: Set[Rule],
+        r: int,
+        count: int,
+    ) -> Iterator[CountSolution]:
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+
+        # print(self)
 
         for combo_i, selected_children in enumerate(itertools.combinations(items, r)):
             if debug: logger.debug("%s, r=%s, combo=%s: generating product(*solutions)", self.path, r, combo_i)
 
-            deselected_children = tuple(all_children.difference(set(selected_children)))
+            deselected_children = tuple((all_children - children_with_results).difference(set(selected_children)))
 
             # itertools.product does this internally, so we'll pre-compute the results here
             # to make it obvious that it's not lazy
             solutions = [tuple(r.solutions(ctx=ctx)) for r in selected_children]
+            # print(r, [len(s) for s in solutions], len(deselected_children))
+            # print()
 
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                 if debug and solset_i > 0 and solset_i % 10_000 == 0:
                     logger.debug("%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, r, combo_i, solset_i)
 
-                yield CountSolution.from_rule(rule=self, count=count, items=tuple(sorted(solutionset + deselected_children)))
+                yield CountSolution.from_rule(rule=self, count=count, items=tuple(sorted(solutionset + deselected_children + results)))
+
+    def find_independent_children(self, *, items: Collection[Rule], ctx: 'RequirementContext') -> Tuple[Collection[Rule], Collection[Rule]]:
+        all_rule_matches: List[Tuple[Rule, FrozenSet['Clausable']]] = [(r, frozenset(r.all_matches(ctx=ctx))) for r in items]
+
+        independent_rules: Set[Rule] = set()
+        codependent_rules: Set[Rule] = set()
+
+        for (rule_a, a), (rule_b, b) in itertools.combinations(all_rule_matches, 2):
+            # print(a, b)
+            if a.isdisjoint(b):
+                if rule_a in codependent_rules:
+                    pass
+                if rule_b in codependent_rules:
+                    pass
+                independent_rules.add(rule_a)
+                independent_rules.add(rule_b)
+            else:
+                codependent_rules.add(rule_a)
+                codependent_rules.add(rule_b)
+
+                independent_rules.discard(rule_a)
+                independent_rules.discard(rule_b)
+
+        # print(self.path)
+        # print("independent_rules")
+        # for r in independent_rules: print(r)
+        # else: print("end independent_rules")
+        # print("codependent_rules")
+        # for r in codependent_rules: print(r)
+        # else: print("end codependent_rules")
+
+        # print()
+
+        return (independent_rules, codependent_rules)
 
     def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('CountRule.estimate')
@@ -237,3 +311,12 @@ class CountRule(Rule, BaseCountRule):
             return True
 
         return any(r.has_potential(ctx=ctx) for r in self.items)
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+        matches = [c for r in self.items for c in r.all_matches(ctx=ctx)]
+
+        exception = ctx.get_exception(self.path)
+        if exception and isinstance(exception, InsertionException):
+            matches.append(ctx.forced_course_by_clbid(exception.clbid))
+
+        return matches

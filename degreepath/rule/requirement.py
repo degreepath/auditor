@@ -1,5 +1,5 @@
 from dataclasses import dataclass, replace
-from typing import Any, Mapping, Optional, List, Iterator, TYPE_CHECKING
+from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 
 from ..base import Rule, BaseRequirementRule, ResultStatus
@@ -9,6 +9,7 @@ from ..solution.requirement import RequirementSolution
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -117,3 +118,9 @@ class RequirementRule(Rule, BaseRequirementRule):
             return self.result.has_potential(ctx=ctx)
 
         return False
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+        if not self.result:
+            return []
+
+        return self.result.all_matches(ctx=ctx)

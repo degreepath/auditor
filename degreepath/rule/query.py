@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Sequence, Iterator, Any, TYPE_CHECKING
+from typing import Dict, List, Optional, Set, Sequence, Iterator, Collection, Any, TYPE_CHECKING
 import itertools
 import logging
 
@@ -11,6 +11,7 @@ from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..ncr import ncr
 from ..operator import Operator
+from ..exception import InsertionException
 from .assertion import AssertionRule
 
 if TYPE_CHECKING:
@@ -128,7 +129,9 @@ class QueryRule(Rule, BaseQueryRule):
 
             logger.debug("%s after filter: %s item(s)", self.path, len(data))
 
-        simple_count_assertion = get_largest_simple_count_assertion(self.assertions) if has_assertion(self.assertions, key=get_simple_count_clauses) else None
+        simple_count_assertion = None
+        if has_assertion(self.assertions, key=get_simple_count_clauses):
+            simple_count_assertion = get_largest_simple_count_assertion(self.assertions)
 
         did_iter = False
         for item_set in self.limit.limited_transcripts(data):
@@ -215,6 +218,18 @@ class QueryRule(Rule, BaseQueryRule):
 
     def max_rank(self) -> int:
         return len(self.assertions)
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+        matches = list(self.get_data(ctx=ctx))
+
+        if self.where is not None:
+            matches = [item for item in matches if item.apply_clause(self.where)]
+
+        exception = ctx.get_exception(self.path)
+        if exception and isinstance(exception, InsertionException):
+            matches.append(ctx.forced_course_by_clbid(exception.clbid))
+
+        return matches
 
 
 def has_assertion(assertions: Sequence[AssertionRule], key: Any) -> bool:

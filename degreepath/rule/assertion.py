@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Sequence, Iterator, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, Collection, TYPE_CHECKING
 import logging
 
 from ..clause import load_clause
@@ -9,6 +9,7 @@ from ..base.assertion import BaseAssertionRule
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -48,4 +49,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         raise Exception('this method should not be called')
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        raise Exception('this method should not be called')
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         raise Exception('this method should not be called')
