@@ -184,7 +184,7 @@ def count_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -
     if kind == 'terms':
         assert all(isinstance(x, CourseInstance) for x in data)
         data = cast(Tuple[CourseInstance, ...], data)
-        items = frozenset(c.term for c in data)
+        items = frozenset(str(c.year) + str(c.term) for c in data)
         return (len(items), items)
 
     if kind == 'years':
