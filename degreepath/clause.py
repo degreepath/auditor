@@ -55,7 +55,15 @@ class ResolvedClause:
             "resolved_with": str(self.resolved_with) if self.resolved_with is not None and type(self.resolved_with) is not str else self.resolved_with,
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
             "result": self.result,
+            "rank": self.rank(),
+            "max_rank": self.max_rank(),
         }
+
+    def rank(self) -> int:
+        return 1 if self.result else 0
+
+    def max_rank(self) -> int:
+        return 1
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)

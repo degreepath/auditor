@@ -55,10 +55,3 @@ class RequirementResult(Result, BaseRequirementRule):
             return self.overridden
 
         return self.result.ok() if self.result else False
-
-    def rank(self) -> int:
-        boost = 1 if self.ok() else 0
-        return self.result.rank() + boost if self.result else 0
-
-    def max_rank(self) -> int:
-        return self.result.max_rank() + 1 if self.result else 0

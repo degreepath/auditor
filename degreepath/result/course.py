@@ -57,9 +57,3 @@ class CourseResult(Result, BaseCourseRule):
             return True
 
         return self.claim_attempt is not None and self.claim_attempt.failed() is False and self.min_grade_not_met is None
-
-    def rank(self) -> int:
-        return 1 if self.ok() else 0
-
-    def max_rank(self) -> int:
-        return 1

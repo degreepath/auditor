@@ -30,3 +30,14 @@ class BaseCountRule(Base):
 
     def type(self) -> str:
         return "count"
+
+    def rank(self) -> int:
+        return sum(r.rank() for r in self.items)
+
+    def max_rank(self) -> int:
+        ranks = (r.max_rank() for r in self.items)
+        if len(self.items) == 2 and self.count == 2:
+            return sum(sorted(ranks)[:2])
+        if self.count == 1 and self.at_most:
+            return max(ranks)
+        return sum(ranks)

@@ -62,7 +62,7 @@ class QueryResult(Result, BaseQueryRule):
         return self.success is True
 
     def rank(self) -> int:
-        return len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
+        return sum(a.rank() for a in self.resolved_assertions)
 
     def max_rank(self) -> int:
-        return len(self.successful_claims) + len(self.failed_claims)
+        return sum(a.max_rank() for a in self.resolved_assertions)

@@ -21,3 +21,9 @@ class BaseAssertionRule(Base):
 
     def type(self) -> str:
         return "assertion"
+
+    def rank(self) -> int:
+        return self.assertion.rank()
+
+    def max_rank(self) -> int:
+        return self.assertion.max_rank()

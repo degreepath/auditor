@@ -46,3 +46,9 @@ class BaseCourseRule(Base):
             return self.course in clause.expected
         else:
             return False
+
+    def rank(self) -> int:
+        return 1 if self.ok() else 0
+
+    def max_rank(self) -> int:
+        return 1

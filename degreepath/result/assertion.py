@@ -27,9 +27,3 @@ class AssertionResult(Result, BaseAssertionRule):
             return True
 
         return self.assertion.result is True
-
-    def rank(self) -> int:
-        return 0
-
-    def max_rank(self) -> int:
-        return 0
