@@ -95,6 +95,12 @@ class AndClause(_Clause, ResolvedClause):
 
         return AndClause(children=children, resolved_with=None, resolved_items=[], result=result)
 
+    def rank(self) -> int:
+        return sum(c.rank() for c in self.children)
+
+    def max_rank(self) -> int:
+        return sum(c.max_rank() for c in self.children)
+
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class OrClause(_Clause, ResolvedClause):
@@ -124,6 +130,12 @@ class OrClause(_Clause, ResolvedClause):
         result = any(c.result for c in children)
 
         return OrClause(children=children, resolved_with=None, resolved_items=[], result=result)
+
+    def rank(self) -> int:
+        return sum(c.rank() for c in self.children)
+
+    def max_rank(self) -> int:
+        return sum(c.rank() if c.ok else c.max_rank() for c in self.children)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -197,6 +209,20 @@ class SingleClause(_Clause, ResolvedClause):
             expected_verbatim=expected_verbatim,
             at_most=at_most,
         )
+
+    def rank(self) -> int:
+        if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            if self.resolved_with > self.expected:
+                return int(self.expected)
+            return int(self.resolved_with)
+        if self.result is True:
+            return 1
+        return 0
+
+    def max_rank(self) -> int:
+        if type(self.expected) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            return int(self.expected)
+        return 1
 
     def __repr__(self) -> str:
         return f"Clause({str_clause(self)})"
