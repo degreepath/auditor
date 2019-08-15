@@ -33,11 +33,21 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
 
     rule_type = rule["type"]
     rank = rule["rank"]
+    max_rank = rule["max_rank"]
     path = rule["path"]
 
-    yield f"{prefix}{json.dumps(path)}"
+    yield f"{prefix} {json.dumps(path)}"
 
-    prefix += f"({rank}|{'t' if rule['ok'] else 'f'}) "
+    prefix += f"({rank}|{max_rank}|{'t' if rule['ok'] else 'f'}) "
+
+    if rule["overridden"]:
+        emoji = "💜"
+    elif rule["status"] == "pass":
+        emoji = "💚"
+    elif rule["status"] == "skip":
+        emoji = "🌀"
+    else:
+        emoji = "🚫️"
 
     if rule_type == "area":
         if rule['ok']:
@@ -75,15 +85,6 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
         yield f"{prefix}{status} {rule['course']}"
 
     elif rule_type == "count":
-        if rule["overridden"]:
-            emoji = "💜"
-        elif rule["status"] == "pass":
-            emoji = "💚"
-        elif rule["status"] == "skip":
-            emoji = "🌀"
-        else:
-            emoji = "🚫️"
-
         size = len(rule["items"])
         if rule["count"] == 1 and size == 2:
             descr = f"either of (these {size})"
@@ -106,21 +107,7 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
 
             yield f"{prefix} There must be:"
             for a in rule['audit']:
-                if a["overridden"]:
-                    emoji = "💜"
-                elif a["status"] == "pass":
-                    emoji = "💚"
-                elif a["status"] == "skip":
-                    emoji = "🌀"
-                else:
-                    emoji = "🚫️"
-
-                yield f"{prefix} - {emoji} {str_clause(a['assertion'])} {str(a['path'])}"
-                if a['where']:
-                    yield f"{prefix}      where {str_clause(a['where'])}"
-                resolved_items = get_resolved_items(a['assertion'])
-                if resolved_items:
-                    yield f"{prefix}      resolved items: {resolved_items}"
+                yield from print_result(a, transcript, indent=indent + 4)
 
             yield ''
 
@@ -128,15 +115,6 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
             yield from print_result(r, transcript, indent=indent + 4)
 
     elif rule_type == "query":
-        if rule["overridden"]:
-            emoji = "💜"
-        elif rule["status"] == "pass":
-            emoji = "💚"
-        elif rule["status"] == "skip":
-            emoji = "🌀"
-        else:
-            emoji = "🚫️"
-
         if rule['where'] is not None:
             yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
@@ -167,38 +145,23 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
 
         yield f"{prefix} There must be:"
         for a in rule['assertions']:
-            if a["overridden"]:
-                emoji = "💜"
-            elif a["status"] == "pass":
-                emoji = "💚"
-            elif a["status"] == "skip":
-                emoji = "🌀"
-            else:
-                emoji = "🚫️"
-
-            yield f"{prefix} - {emoji} {str_clause(a['assertion'])} {str(a['path'])}"
-            if a['where']:
-                yield f"{prefix}      where {str_clause(a['where'])}"
-            resolved_items = get_resolved_items(a['assertion'])
-            if resolved_items:
-                yield f"{prefix}      resolved items: {resolved_items}"
+            yield from print_result(a, transcript, indent=indent + 4)
 
     elif rule_type == "requirement":
-        if rule["overridden"]:
-            emoji = "💜"
-        elif rule["status"] == "pass":
-            emoji = "💚"
-        elif rule["status"] == "skip":
-            emoji = "🌀"
-        else:
-            emoji = "🚫️"
-
         yield f"{prefix}{emoji} Requirement({rule['name']})"
         if rule["audited_by"] is not None:
             yield f"{prefix}    Audited by: {rule['audited_by']}"
             return
         if rule["result"]:
             yield from print_result(rule["result"], transcript, indent=indent + 4)
+
+    elif rule_type == "assertion":
+        yield f"{prefix} - {emoji} {str_clause(rule['assertion'])}"
+        if rule['where']:
+            yield f"{prefix}      where {str_clause(rule['where'])}"
+        resolved_items = get_resolved_items(rule['assertion'])
+        if resolved_items:
+            yield f"{prefix}      resolved items: {resolved_items}"
 
     else:
         yield json.dumps(rule, indent=2)
