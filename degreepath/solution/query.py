@@ -172,7 +172,7 @@ def count_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -
         counted = Counter(c.crsid for c in data)
         most_common = counted.most_common(1)[0]
         most_common_crsid, _count = most_common
-        items = frozenset(c.term for c in data if c.crsid == most_common_crsid)
+        items = frozenset(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid)
         return (len(items), items)
 
     if kind == 'subjects':
