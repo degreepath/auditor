@@ -1,5 +1,5 @@
 import dataclasses
-from typing import List, Optional, Set, Dict, Tuple, Sequence, Iterator, Any, Union, cast
+from typing import List, Optional, Tuple, Sequence, Iterator, Union, cast
 from datetime import datetime
 import time
 
@@ -69,32 +69,14 @@ Message = Union[EstimateMsg, ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, Re
 
 def audit(
     *,
-    spec: Dict[str, Any],
-    transcript: Sequence[CourseInstance],
+    area: AreaOfStudy,
+    transcript: Tuple[CourseInstance, ...],
     constants: Constants,
     exceptions: Sequence[RuleException],
     area_pointers: Sequence[AreaPointer],
     print_all: bool,
-    other_areas: Sequence[AreaPointer],
     estimate_only: bool,
 ) -> Iterator[Message]:  # noqa: C901
-    area = AreaOfStudy.load(specification=spec, c=constants, other_areas=other_areas)
-    area.validate()
-
-    _transcript = []
-    attributes_to_attach: Dict[str, List[str]] = area.attributes.get("courses", {})
-    for c in transcript:
-        # We need to leave repeated courses in the transcript, because some majors (THEAT) require repeated courses
-        # for completion.
-        attrs_by_course: Set[str] = set(attributes_to_attach.get(c.course(), []))
-        attrs_by_shorthand: Set[str] = set(attributes_to_attach.get(c.course_shorthand(), []))
-        attrs_by_term: Set[str] = set(attributes_to_attach.get(c.course_with_term(), []))
-
-        c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
-        _transcript.append(c)
-
-    this_transcript = tuple(_transcript)
-
     best_sol: Optional[AreaResult] = None
     total_count = 0
     iterations: List[float] = []
@@ -109,7 +91,7 @@ def audit(
     if estimate_only:
         return
 
-    for sol in area.solutions(transcript=this_transcript, areas=tuple(area_pointers), exceptions=tuple(exceptions)):
+    for sol in area.solutions(transcript=transcript, areas=tuple(area_pointers), exceptions=tuple(exceptions)):
         if total_count == 0:
             startup_time = time.perf_counter() - iter_start
             iter_start = time.perf_counter()
@@ -129,7 +111,7 @@ def audit(
         if print_all:
             yield ResultMsg(
                 result=result,
-                transcript=this_transcript,
+                transcript=transcript,
                 count=total_count,
                 elapsed='∞',
                 iterations=[],
@@ -161,7 +143,7 @@ def audit(
 
     yield ResultMsg(
         result=best_sol,
-        transcript=this_transcript,
+        transcript=transcript,
         count=total_count,
         elapsed=elapsed,
         iterations=iterations,

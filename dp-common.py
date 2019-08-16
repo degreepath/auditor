@@ -1,14 +1,14 @@
 import json
 import traceback
 import pathlib
-from typing import Iterator
+from typing import Iterator, Dict, List, Set, Sequence, Tuple
 
 import yaml
 import csv
 import sys
 
-from degreepath import load_course, Constants, AreaPointer, load_exception
-from degreepath.data import GradeOption
+from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
+from degreepath.data import GradeOption, CourseInstance
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, Message, Arguments
 
 
@@ -29,20 +29,10 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
         constants = Constants(matriculation_year=student['matriculation'])
         # We need to leave repeated courses in the transcript, because some majors (THEAT) require repeated courses
         # for completion.
-        transcript = [
+        primary_transcript = [
             c for c in (load_course(row) for row in student["courses"])
             if c.grade_option is not GradeOption.Audit
         ]
-
-        if transcript_only:
-            writer = csv.writer(sys.stdout)
-            writer.writerow(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa'])
-            for c in transcript:
-                writer.writerow([
-                    c.course(), c.clbid, str(c.credits), c.name, str(c.year), str(c.term),
-                    c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
-                ])
-            return
 
         for area_file in args.area_files:
             try:
@@ -61,19 +51,51 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 if e['area_code'] == area_code
             ]
 
+            area = AreaOfStudy.load(specification=area_spec, c=constants, other_areas=area_pointers)
+            area.validate()
+
+            transcript = attach_attributes(area, primary_transcript)
+
+            if transcript_only:
+                writer = csv.writer(sys.stdout)
+                writer.writerow(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
+                for c in transcript:
+                    writer.writerow([
+                        c.course(), c.clbid, str(c.credits), c.name, str(c.year), str(c.term),
+                        c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
+                        ','.join(c.attributes),
+                    ])
+                return
+
             yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
 
             try:
                 yield from audit(
-                    spec=area_spec,
+                    area=area,
                     exceptions=exceptions,
                     transcript=transcript,
                     constants=constants,
                     area_pointers=area_pointers,
                     print_all=args.print_all,
-                    other_areas=area_pointers,
                     estimate_only=args.estimate_only,
                 )
 
             except Exception as ex:
                 yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
+
+
+def attach_attributes(area: AreaOfStudy, courses: Sequence[CourseInstance]) -> Tuple[CourseInstance, ...]:
+    _transcript = []
+    attributes_to_attach: Dict[str, List[str]] = area.attributes.get("courses", {})
+
+    for c in courses:
+        # We need to leave repeated courses in the transcript, because some majors (THEAT) require repeated courses
+        # for completion.
+        attrs_by_course: Set[str] = set(attributes_to_attach.get(c.course(), []))
+        attrs_by_shorthand: Set[str] = set(attributes_to_attach.get(c.course_shorthand(), []))
+        attrs_by_term: Set[str] = set(attributes_to_attach.get(c.course_with_term(), []))
+
+        c = c.attach_attrs(attributes=attrs_by_course | attrs_by_shorthand | attrs_by_term)
+        _transcript.append(c)
+
+    return tuple(_transcript)
