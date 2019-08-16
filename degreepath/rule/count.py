@@ -161,7 +161,7 @@ class CountRule(Rule, BaseCountRule):
         logger.debug('%s discovering children with potential', self.path)
         all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
 
-        if depth == 1 and all_potential_rules:
+        if depth == 1 and all_potential_rules and not self.audit_clauses:
             logger.debug('%s searching for disjoint children', self.path)
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
 
