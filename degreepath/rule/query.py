@@ -109,7 +109,7 @@ class QueryRule(Rule, BaseQueryRule):
             logger.info("%s not yet implemented", self.source_type)
             return []
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[QuerySolution]:  # noqa: C901
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:  # noqa: C901
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         exception = ctx.get_exception(self.path)

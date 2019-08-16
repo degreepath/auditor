@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Iterator, Collection, TYPE_CHECKING
+from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
 import re
 import logging
 
@@ -48,7 +48,7 @@ class CourseRule(Rule, BaseCourseRule):
 
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CourseSolution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)

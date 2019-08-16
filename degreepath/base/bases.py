@@ -1,5 +1,5 @@
 import abc
-from typing import Iterator, Dict, Any, List, Tuple, Collection, TYPE_CHECKING
+from typing import Iterator, Dict, Any, List, Tuple, Collection, Optional, TYPE_CHECKING
 import enum
 
 if TYPE_CHECKING:
@@ -98,7 +98,7 @@ class Rule(Base):
         raise NotImplementedError(f'must define a validate() method')
 
     @abc.abstractmethod
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[Solution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise NotImplementedError(f'must define a solutions() method')
 
     @abc.abstractmethod

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 
@@ -66,7 +66,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         if self.result is not None:
             self.result.validate(ctx=ctx)
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[RequirementSolution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)

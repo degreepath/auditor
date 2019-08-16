@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Sequence, Iterator, Collection, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, Collection, Optional, TYPE_CHECKING
 import logging
 
 from ..clause import load_clause
@@ -45,7 +45,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         logger.debug('AssertionRule.estimate: 0')
         return 0
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[Solution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise Exception('this method should not be called')
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:

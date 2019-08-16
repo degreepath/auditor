@@ -3,7 +3,7 @@ from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, Froze
 import itertools
 import logging
 
-from ..base import Rule, BaseCountRule, Result
+from ..base import Rule, BaseCountRule, Result, Solution
 from ..constants import Constants
 from ..exception import InsertionException
 from ..solution.count import CountSolution
@@ -158,9 +158,11 @@ class CountRule(Rule, BaseCountRule):
         lo = count
         hi = len(items) + 1 if self.at_most is False else count + 1
 
+        logger.debug('%s discovering children with potential', self.path)
         all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
 
-        if depth == 1:
+        if depth == 1 and all_potential_rules:
+            logger.debug('%s searching for disjoint children', self.path)
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
 
             independent_children = separated_children['disjoint']
@@ -175,6 +177,9 @@ class CountRule(Rule, BaseCountRule):
             solved_results = tuple()
             solved_results__rules = set()
             potential_rules = tuple(sorted(all_potential_rules))
+
+        logger.debug('potential rules are %s', [r.path for r in potential_rules])
+        logger.debug('solved rules are %s', [r.path for r in solved_results__rules])
 
         potential_len = len(potential_rules)
         all_children = set(items)
@@ -198,9 +203,18 @@ class CountRule(Rule, BaseCountRule):
         if not did_yield:
             logger.debug("%s did not iterate", self.path)
             # ensure that we always yield something
+            logger.debug('all_children: %s', [r.path for r in all_children])
+            logger.debug('solved_results__rules: %s', [r.path for r in solved_results__rules])
+
             children_with_precomputed_solutions: Set[Union[Rule, Result]] = set(all_children - solved_results__rules)
+            logger.debug('children_with_precomputed_solutions: %s', [r.path for r in children_with_precomputed_solutions])
+
             children_with_precomputed_solutions.update(solved_results)
+            logger.debug('children_with_precomputed_solutions, post-update: %s', [(r.path, r.state()) for r in children_with_precomputed_solutions])
+
             to_yield = tuple(sorted(children_with_precomputed_solutions))
+            logger.debug('to_yield: %s', [(r.path, r.state()) for r in to_yield])
+
             yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
     def make_combinations(
@@ -218,7 +232,8 @@ class CountRule(Rule, BaseCountRule):
         for combo_i, selected_children in enumerate(itertools.combinations(items, r)):
             if debug: logger.debug("%s, r=%s, combo=%s: generating product(*solutions)", self.path, r, combo_i)
 
-            deselected_children = tuple((all_children - children_with_results).difference(set(selected_children)))
+            deselected_children_set = set(all_children - children_with_results).difference(set(selected_children))
+            deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(deselected_children_set)
 
             # itertools.product does this internally, so we'll pre-compute the results here
             # to make it obvious that it's not lazy
@@ -227,14 +242,16 @@ class CountRule(Rule, BaseCountRule):
             lengths = [len(s) for s in solutions]
             logger.debug(f"emitting {mult(lengths):,} solutions (%s)", lengths)
 
+            solutionset: Tuple[Union[Rule, Solution, Result], ...]
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                 if debug and solset_i > 0 and solset_i % 10_000 == 0:
                     logger.debug("%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, r, combo_i, solset_i)
 
-                yield CountSolution.from_rule(rule=self, count=count, items=tuple(sorted(solutionset + deselected_children + results)))
+                to_yield = tuple(sorted(solutionset + deselected_children + results))
+                yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
     def find_independent_children(self, *, items: Collection[Rule], ctx: 'RequirementContext') -> Dict[str, Collection[Rule]]:
-        '''
+        """
         We want to find each child rule that has no claimable overlap with any other child rule.
 
         1. We only run this on a top-level CountRule
@@ -245,13 +262,23 @@ class CountRule(Rule, BaseCountRule):
 
         Please add a benchmark suite in there, and make sure your changes are
         equivalent/faster, or just more correct.
-        '''
-        all_rule_matches: List[Tuple[Rule, FrozenSet['Clausable']]] = [(r, frozenset(r.all_matches(ctx=ctx))) for r in items]
+        """
+
+        logger.debug("%s searching the following for independence %s", self.path, [r.path for r in items])
+
+        all_rule_matches: Dict[Rule, FrozenSet['Clausable']] = {
+            r: frozenset(r.all_matches(ctx=ctx))
+            for r in items
+        }
+
+        if len(all_rule_matches) == 1:
+            logger.debug("%s early-exit because there's only one potential child", self.path)
+            return {'disjoint': set(all_rule_matches.keys()), 'non_disjoint': set()}
 
         non_disjoint_rules: Set[Rule] = set()
         disjoint_rules: Set[Rule] = set()
 
-        for (rule_a, a_matches), (rule_b, b_matches) in itertools.combinations(all_rule_matches, 2):
+        for (rule_a, a_matches), (rule_b, b_matches) in itertools.combinations(all_rule_matches.items(), 2):
             if a_matches.isdisjoint(b_matches):
                 disjoint_rules.add(rule_a)
                 disjoint_rules.add(rule_b)
@@ -262,10 +289,13 @@ class CountRule(Rule, BaseCountRule):
         for s in non_disjoint_rules:
             disjoint_rules.discard(s)
 
+        logger.debug("found disjoint rules: %s", [r.path for r in disjoint_rules])
+        logger.debug("found non-disjoint rules: %s", [r.path for r in non_disjoint_rules])
+
         return {'disjoint': disjoint_rules, 'non_disjoint': non_disjoint_rules}
 
     def solve_independent_children(self, *, ctx: 'RequirementContext', independent_children: Collection[Rule]) -> Dict[Rule, Optional[Result]]:
-        '''
+        """
         We can go ahead and find the "best" solution for each independent
         child rule here, instead of trying them in combination with the
         co-dependent rules.
@@ -273,7 +303,7 @@ class CountRule(Rule, BaseCountRule):
         Also, because these rules are each independent of any other rule, we
         can reset the context between each run, because we've already
         guaranteed that there is no claimable overlap.
-        '''
+        """
 
         claims = ctx.claims
 
@@ -297,6 +327,8 @@ class CountRule(Rule, BaseCountRule):
                     best_result = result
 
                 ctx.reset_claims()
+
+            logger.debug("found solution for %s: %s", child.path, best_result)
 
             independent_rule__results[child] = best_result
 
