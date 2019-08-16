@@ -47,7 +47,7 @@ class _Clause(abc.ABC):
 @attr.s(auto_attribs=True, slots=True)
 class ResolvedClause:
     resolved_with: Optional[Any] = None
-    resolved_items: Sequence[Any] = tuple()
+    resolved_items: Tuple[Any, ...] = tuple()
     result: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
@@ -93,7 +93,7 @@ class AndClause(_Clause, ResolvedClause):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = all(c.result for c in children)
 
-        return AndClause(children=children, resolved_with=None, resolved_items=[], result=result)
+        return AndClause(children=children, resolved_with=None, resolved_items=tuple(), result=result)
 
     def rank(self) -> int:
         return sum(c.rank() for c in self.children)
@@ -129,7 +129,7 @@ class OrClause(_Clause, ResolvedClause):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = any(c.result for c in children)
 
-        return OrClause(children=children, resolved_with=None, resolved_items=[], result=result)
+        return OrClause(children=children, resolved_with=None, resolved_items=tuple(), result=result)
 
     def rank(self) -> int:
         return sum(c.rank() for c in self.children)
