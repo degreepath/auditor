@@ -135,7 +135,7 @@ class OrClause(_Clause, ResolvedClause):
         return sum(c.rank() for c in self.children)
 
     def max_rank(self) -> int:
-        return sum(c.rank() if c.ok else c.max_rank() for c in self.children)
+        return sum(c.rank() if c.result is True else c.max_rank() for c in self.children)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
