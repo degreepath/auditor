@@ -8,6 +8,7 @@ from ..constants import Constants
 from ..exception import InsertionException
 from ..solution.count import CountSolution
 from ..ncr import mult
+from ..stringify import print_result
 from .course import CourseRule
 from .assertion import AssertionRule
 
@@ -122,7 +123,7 @@ class CountRule(Rule, BaseCountRule):
         for rule in self.items:
             rule.validate(ctx=ctx)
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CountSolution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -160,27 +161,21 @@ class CountRule(Rule, BaseCountRule):
 
         all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
 
-        independent_children, codependent_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
+        if depth == 1:
+            separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
 
-        potential_rules = tuple(sorted(codependent_children))
+            independent_children = separated_children['disjoint']
+            codependent_children = separated_children['non_disjoint']
 
-        independent_rule__results: Dict[Rule, Optional[Result]] = {}
-        for child in independent_children:
-            best_result = None
+            independent_rule__results = self.solve_independent_children(ctx=ctx, independent_children=independent_children)
 
-            for sol in child.solutions(ctx=ctx):
-                result = sol.audit(ctx=ctx)
-
-                if best_result is None:
-                    best_result = result
-
-                if best_result.rank() < result.rank():
-                    best_result = result
-
-            independent_rule__results[child] = best_result
-
-        solved_results: Tuple[Result, ...] = tuple(sorted(r for r in independent_rule__results.values() if r is not None))
-        solved_results__rules: Set[Rule] = set(r for r, result in independent_rule__results.items() if result is not None)
+            potential_rules = tuple(sorted(codependent_children))
+            solved_results: Tuple[Result, ...] = tuple(sorted(result for result in independent_rule__results.values() if result is not None))
+            solved_results__rules: Set[Rule] = set(r for r, result in independent_rule__results.items() if result is not None)
+        else:
+            solved_results = tuple()
+            solved_results__rules = set()
+            potential_rules = tuple(sorted(all_potential_rules))
 
         potential_len = len(potential_rules)
         all_children = set(items)
@@ -221,8 +216,6 @@ class CountRule(Rule, BaseCountRule):
     ) -> Iterator[CountSolution]:
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        # print(self)
-
         for combo_i, selected_children in enumerate(itertools.combinations(items, r)):
             if debug: logger.debug("%s, r=%s, combo=%s: generating product(*solutions)", self.path, r, combo_i)
 
@@ -231,8 +224,6 @@ class CountRule(Rule, BaseCountRule):
             # itertools.product does this internally, so we'll pre-compute the results here
             # to make it obvious that it's not lazy
             solutions = [tuple(r.solutions(ctx=ctx)) for r in selected_children]
-            # print(r, [len(s) for s in solutions], len(deselected_children))
-            # print()
 
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                 if debug and solset_i > 0 and solset_i % 10_000 == 0:
@@ -240,39 +231,76 @@ class CountRule(Rule, BaseCountRule):
 
                 yield CountSolution.from_rule(rule=self, count=count, items=tuple(sorted(solutionset + deselected_children + results)))
 
-    def find_independent_children(self, *, items: Collection[Rule], ctx: 'RequirementContext') -> Tuple[Collection[Rule], Collection[Rule]]:
+    def find_independent_children(self, *, items: Collection[Rule], ctx: 'RequirementContext') -> Dict[str, Collection[Rule]]:
+        '''
+        We want to find each child rule that has no claimable overlap with any other child rule.
+
+        1. We only run this on a top-level CountRule
+        2. We collect all of the "matches" of each child rule as sets of courses
+        3. We look for the sets that are disjoint with every other set
+
+        I benchmarked five implementations of this logic; see benchmarks/bench_disjoints.py
+
+        Please add a benchmark suite in there, and make sure your changes are
+        equivalent/faster, or just more correct.
+        '''
         all_rule_matches: List[Tuple[Rule, FrozenSet['Clausable']]] = [(r, frozenset(r.all_matches(ctx=ctx))) for r in items]
 
-        independent_rules: Set[Rule] = set()
-        codependent_rules: Set[Rule] = set()
+        non_disjoint_rules: Set[Rule] = set()
+        disjoint_rules: Set[Rule] = set()
 
-        for (rule_a, a), (rule_b, b) in itertools.combinations(all_rule_matches, 2):
-            # print(a, b)
-            if a.isdisjoint(b):
-                if rule_a in codependent_rules:
-                    pass
-                if rule_b in codependent_rules:
-                    pass
-                independent_rules.add(rule_a)
-                independent_rules.add(rule_b)
+        for (rule_a, a_matches), (rule_b, b_matches) in itertools.combinations(all_rule_matches, 2):
+            if a_matches.isdisjoint(b_matches):
+                disjoint_rules.add(rule_a)
+                disjoint_rules.add(rule_b)
             else:
-                codependent_rules.add(rule_a)
-                codependent_rules.add(rule_b)
+                non_disjoint_rules.add(rule_a)
+                non_disjoint_rules.add(rule_b)
 
-                independent_rules.discard(rule_a)
-                independent_rules.discard(rule_b)
+        for s in non_disjoint_rules:
+            disjoint_rules.discard(s)
 
-        # print(self.path)
-        # print("independent_rules")
-        # for r in independent_rules: print(r)
-        # else: print("end independent_rules")
-        # print("codependent_rules")
-        # for r in codependent_rules: print(r)
-        # else: print("end codependent_rules")
+        return {'disjoint': disjoint_rules, 'non_disjoint': non_disjoint_rules}
 
-        # print()
+    def solve_independent_children(self, *, ctx: 'RequirementContext', independent_children: Collection[Rule]) -> Dict[Rule, Optional[Result]]:
+        '''
+        We can go ahead and find the "best" solution for each independent
+        child rule here, instead of trying them in combination with the
+        co-dependent rules.
 
-        return (independent_rules, codependent_rules)
+        Also, because these rules are each independent of any other rule, we
+        can reset the context between each run, because we've already
+        guaranteed that there is no claimable overlap.
+        '''
+
+        claims = ctx.claims
+
+        independent_rule__results: Dict[Rule, Optional[Result]] = {}
+        for child in independent_children:
+            best_result = None
+
+            ctx.reset_claims()
+
+            for i, sol in enumerate(child.solutions(ctx=ctx)):
+                result = sol.audit(ctx=ctx)
+
+                if best_result is None:
+                    best_result = result
+
+                if result.ok():
+                    best_result = result
+                    break
+
+                if best_result.rank() < result.rank():
+                    best_result = result
+
+                ctx.reset_claims()
+
+            independent_rule__results[child] = best_result
+
+        ctx.set_claims(claims)
+
+        return independent_rule__results
 
     def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('CountRule.estimate')

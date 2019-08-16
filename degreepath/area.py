@@ -120,7 +120,7 @@ class AreaOfStudy(Base):
                 multicountable=self.multicountable,
             ).with_transcript(limited_transcript)
 
-            for sol in self.result.solutions(ctx=ctx):
+            for sol in self.result.solutions(ctx=ctx, depth=1):
                 ctx.reset_claims()
                 yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx)
 

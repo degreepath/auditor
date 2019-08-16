@@ -67,6 +67,9 @@ class RequirementContext:
             logger.debug("no exception for %s", path)
         return self.exceptions.get(tuple(path), None)
 
+    def set_claims(self, claims: Dict[str, Set[Claim]]) -> None:
+        self.claims = defaultdict(set, {k: set(v) for k, v in claims.items()})
+
     def reset_claims(self) -> None:
         self.claims = defaultdict(set)
 
