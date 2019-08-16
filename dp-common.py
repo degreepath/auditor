@@ -4,6 +4,8 @@ import pathlib
 from typing import Iterator
 
 import yaml
+import csv
+import sys
 
 from degreepath import load_course, Constants, AreaPointer, load_exception
 from degreepath.data import GradeOption
@@ -33,11 +35,13 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
         ]
 
         if transcript_only:
-            print('\t'.join(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa']))
+            writer = csv.writer(sys.stdout)
+            writer.writerow(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa'])
             for c in transcript:
-                items = [c.course(), c.clbid, str(c.credits), c.name, str(c.year), str(c.term),
-                         c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa)]
-                print('\t'.join(items))
+                writer.writerow([
+                    c.course(), c.clbid, str(c.credits), c.name, str(c.year), str(c.term),
+                    c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
+                ])
             return
 
         for area_file in args.area_files:
