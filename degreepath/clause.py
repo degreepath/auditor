@@ -212,16 +212,20 @@ class SingleClause(_Clause, ResolvedClause):
 
     def rank(self) -> int:
         if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
-            if self.resolved_with > self.expected:
-                return int(self.expected)
             return int(self.resolved_with)
+
         if self.result is True:
             return 1
+
         return 0
 
     def max_rank(self) -> int:
+        if self.result is True:
+            return self.rank()
+
         if type(self.expected) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
             return int(self.expected)
+
         return 1
 
     def __repr__(self) -> str:
