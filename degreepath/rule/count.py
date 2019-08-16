@@ -241,7 +241,6 @@ class CountRule(Rule, BaseCountRule):
             solutions = tuple(solutions_dict.values())
 
             lengths = {r.path: len(s) for r, s in solutions_dict.items()}
-            print(lengths)
             logger.debug(f"%s emitting {mult(lengths.values()):,} solutions (%s)" % (self.path, lengths))
 
             solutionset: Tuple[Union[Rule, Solution, Result], ...]
