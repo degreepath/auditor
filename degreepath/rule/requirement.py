@@ -63,10 +63,8 @@ class RequirementRule(Rule, BaseRequirementRule):
             assert isinstance(self.message, str)
             assert self.message.strip() != ""
 
-        new_ctx = replace(ctx)
-
         if self.result is not None:
-            self.result.validate(ctx=new_ctx)
+            self.result.validate(ctx=ctx)
 
     def solutions(self, *, ctx: 'RequirementContext') -> Iterator[RequirementSolution]:
         exception = ctx.get_exception(self.path)
@@ -85,9 +83,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             yield RequirementSolution.from_rule(rule=self, solution=None)
             return
 
-        new_ctx = replace(ctx)
-
-        for solution in self.result.solutions(ctx=new_ctx):
+        for solution in self.result.solutions(ctx=ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
 
     def estimate(self, *, ctx: 'RequirementContext') -> int:
