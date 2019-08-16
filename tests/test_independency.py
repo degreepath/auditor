@@ -1,6 +1,7 @@
 from degreepath.data import course_from_str
 from degreepath.area import AreaOfStudy
 from degreepath.constants import Constants
+from degreepath.context import RequirementContext
 from typing import Any
 import logging
 
@@ -9,6 +10,7 @@ c = Constants(matriculation_year=2000)
 
 def test_overlaps(caplog: Any) -> None:
     # caplog.set_level(logging.DEBUG)
+    global c
 
     area = AreaOfStudy.load(c=c, specification={
         "result": {"all": [
@@ -39,17 +41,17 @@ def test_overlaps(caplog: Any) -> None:
         },
     })
 
-    transcript = [course_from_str(c) for c in [
-        "MUSIC 212", "MUSIC 214",
-        "MUSIC 301", "MUSIC 302",
-    ]]
+    transcript = [course_from_str(c) for c in ["MUSIC 212", "MUSIC 214", "MUSIC 301", "MUSIC 302"]]
+    ctx = RequirementContext().with_transcript(transcript)
+
+    area.result.find_independent_children(items=area.result.items, ctx=ctx)
 
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
     assert len(solutions) == 1
 
     result = solutions[0].audit()
 
-    assert result.ok() is False
+    assert result.ok() is True
 
 
 def x_test_overlaps(caplog: Any) -> None:

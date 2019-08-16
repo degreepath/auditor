@@ -1,7 +1,7 @@
 from degreepath.data import course_from_str
 from degreepath.area import AreaOfStudy
 from degreepath.constants import Constants
-from degreepath.solution.course import CourseSolution
+from degreepath.result.course import CourseResult
 from degreepath.exception import load_exception
 import logging
 
@@ -85,11 +85,10 @@ def test_insertion_on_count_rule__any(caplog):
     transcript = [course_a, course_b]
 
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
-    # for s in solutions:
-    #     print(s.solution.items)
+    print([s.solution for s in solutions])
 
     assert [
-        [x.course for x in s.solution.items if isinstance(x, CourseSolution)]
+        [x.course for x in s.solution.items if isinstance(x, CourseResult)]
         for s in solutions
     ] == [['OTHER 234']]
     assert len(solutions) == 1

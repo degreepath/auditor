@@ -2,6 +2,7 @@ from degreepath.data import course_from_str
 from degreepath.area import AreaOfStudy
 from degreepath.constants import Constants
 from degreepath.solution.course import CourseSolution
+from degreepath.result.course import CourseResult
 import logging
 
 c = Constants(matriculation_year=2000)
@@ -27,10 +28,10 @@ def test_pruning_on_count_rule(caplog):
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
 
     assert [
-        [x.course for x in s.solution.items if isinstance(x, CourseSolution)]
+        [x.course for x in s.solution.items if isinstance(x, CourseResult)]
         for s in solutions
-    ] == [['DEPT 123'], ['DEPT 234'], ['DEPT 123', 'DEPT 234']]
-    assert len(solutions) == 3
+    ] == [['DEPT 123', 'DEPT 234']]
+    assert len(solutions) == 1
 
     result = solutions[0].audit()
 
