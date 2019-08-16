@@ -112,9 +112,9 @@ class QuerySolution(Solution, BaseQueryRule):
 
         if debug:
             if resolved_result:
-                logger.debug("%s from-rule '%s' might possibly succeed", self.path, self)
+                logger.debug("%s might possibly succeed", self.path)
             else:
-                logger.debug("%s from-rule '%s' did not succeed", self.path, self)
+                logger.debug("%s did not succeed", self.path)
 
         return QueryResult.from_solution(
             solution=self,
