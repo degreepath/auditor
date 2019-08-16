@@ -1,3 +1,4 @@
+from typing import Any
 import argparse
 import logging
 import runpy
@@ -80,7 +81,6 @@ def main() -> int:
 
             if not cli_args.quiet:
                 print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw, gpa_only=cli_args.gpa))
-                return 0
 
         elif isinstance(msg, EstimateMsg):
             if not cli_args.quiet:
@@ -109,7 +109,7 @@ def result_str(msg: ResultMsg, *, as_json: bool = False, as_raw: bool = False, g
     return "\n" + "".join(summarize(result=dict_result, transcript=msg.transcript, count=msg.count, elapsed=msg.elapsed, iterations=msg.iterations))
 
 
-def display_top(snapshot, key_type='lineno', limit=10):
+def display_top(snapshot: Any, key_type: str = 'lineno', limit: int = 10) -> None:
     import linecache
     from tracemalloc import Filter
 
