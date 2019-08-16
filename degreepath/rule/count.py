@@ -125,7 +125,7 @@ class CountRule(Rule, BaseCountRule):
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
-            logger.debug("forced override on %s", self.path)
+            logger.debug("%s forced override", self.path)
             yield CountSolution.from_rule(rule=self, count=self.count, items=self.items, overridden=True)
             return
 
@@ -134,11 +134,11 @@ class CountRule(Rule, BaseCountRule):
 
         exception = ctx.get_exception(self.path)
         if exception and isinstance(exception, InsertionException):
-            logger.debug("inserting new choice into %s: %s", self.path, exception)
+            logger.debug("%s inserting new choice: %s", self.path, exception)
 
             # if this is an `all` rule, we want to keep it as an `all` rule, so we need to increase `count`
             if count == len(items) and count > 1:
-                logger.debug("incrementing count b/c 'all' rule at %s", self.path)
+                logger.debug("%s incrementing count b/c 'all' rule", self.path)
                 count += 1
 
             matched_course = ctx.forced_course_by_clbid(exception.clbid)
@@ -151,7 +151,7 @@ class CountRule(Rule, BaseCountRule):
                 path=tuple([*self.path, f"[{len(items)}]", f"*{matched_course.course()}"]),
             )
 
-            logger.debug("new choice at %s is %s", self.path, new_rule)
+            logger.debug("%s new choice is %s", self.path, new_rule)
 
             items = tuple([*items, new_rule])
 
@@ -178,8 +178,8 @@ class CountRule(Rule, BaseCountRule):
             solved_results__rules = set()
             potential_rules = tuple(sorted(all_potential_rules))
 
-        logger.debug('potential rules are %s', [r.path for r in potential_rules])
-        logger.debug('solved rules are %s', [r.path for r in solved_results__rules])
+        logger.debug('%s potential rules are %s', self.path, [r.path for r in potential_rules])
+        logger.debug('%s solved rules are %s', self.path, [r.path for r in solved_results__rules])
 
         potential_len = len(potential_rules)
         all_children = set(items)
@@ -237,10 +237,12 @@ class CountRule(Rule, BaseCountRule):
 
             # itertools.product does this internally, so we'll pre-compute the results here
             # to make it obvious that it's not lazy
-            solutions = [tuple(r.solutions(ctx=ctx)) for r in selected_children]
+            solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
+            solutions = tuple(solutions_dict.values())
 
-            lengths = [len(s) for s in solutions]
-            logger.debug(f"%s emitting {mult(lengths):,} solutions (%s)" % (self.path, lengths))
+            lengths = {r.path: len(s) for r, s in solutions_dict.items()}
+            print(lengths)
+            logger.debug(f"%s emitting {mult(lengths.values()):,} solutions (%s)" % (self.path, lengths))
 
             solutionset: Tuple[Union[Rule, Solution, Result], ...]
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
