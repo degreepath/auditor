@@ -240,7 +240,7 @@ class CountRule(Rule, BaseCountRule):
             solutions = [tuple(r.solutions(ctx=ctx)) for r in selected_children]
 
             lengths = [len(s) for s in solutions]
-            logger.debug(f"emitting {mult(lengths):,} solutions (%s)", lengths)
+            logger.debug(f"%s emitting {mult(lengths):,} solutions (%s)" % (self.path, lengths))
 
             solutionset: Tuple[Union[Rule, Solution, Result], ...]
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
