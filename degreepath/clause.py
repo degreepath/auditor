@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence, Iterator, cast, TYPE_CHECKING
+from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Iterator, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
