@@ -3,12 +3,11 @@ from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, Froze
 import itertools
 import logging
 
-from ..base import Rule, BaseCountRule, Result, Solution
+from ..base import Rule, BaseCountRule, Result
 from ..constants import Constants
 from ..exception import InsertionException
 from ..solution.count import CountSolution
 from ..ncr import mult
-from ..stringify import print_result
 from .course import CourseRule
 from .assertion import AssertionRule
 
@@ -224,6 +223,9 @@ class CountRule(Rule, BaseCountRule):
             # itertools.product does this internally, so we'll pre-compute the results here
             # to make it obvious that it's not lazy
             solutions = [tuple(r.solutions(ctx=ctx)) for r in selected_children]
+
+            lengths = [len(s) for s in solutions]
+            logger.debug(f"emitting {mult(lengths):,} solutions (%s)", lengths)
 
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                 if debug and solset_i > 0 and solset_i % 10_000 == 0:
