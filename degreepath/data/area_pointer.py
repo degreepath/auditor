@@ -1,5 +1,5 @@
 from typing import Dict, Any
-import dataclasses
+import attr
 import logging
 
 from ..clause import Clause, SingleClause, AndClause, OrClause
@@ -9,7 +9,7 @@ from .clausable import Clausable
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AreaPointer(Clausable):
     code: str
     status: AreaStatus

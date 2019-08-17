@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import List, Sequence, Any, Tuple, Collection, Union, FrozenSet, Dict, cast, TYPE_CHECKING
 from collections import Counter
 import logging
@@ -20,9 +20,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QuerySolution(Solution, BaseQueryRule):
-    __slots__ = ('output', 'overridden')
     output: Tuple[Clausable, ...]
     overridden: bool
 

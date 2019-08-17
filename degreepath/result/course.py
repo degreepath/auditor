@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, List, Dict, Any, TYPE_CHECKING
 
 from ..base import Result, BaseCourseRule
@@ -8,9 +8,8 @@ if TYPE_CHECKING:
     from ..data import CourseInstance  # noqa: F401
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseResult(Result, BaseCourseRule):
-    __slots__ = ('claim_attempt', 'min_grade_not_met', 'overridden')
     claim_attempt: Optional['ClaimAttempt']
     min_grade_not_met: Optional['CourseInstance']
     overridden: bool

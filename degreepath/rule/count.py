@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+import attr
 from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, FrozenSet, Optional, Union, TYPE_CHECKING
 import itertools
 import logging
 
-from ..base import Rule, BaseCountRule, Result, Solution
+from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
 from ..constants import Constants
 from ..exception import InsertionException
 from ..solution.count import CountSolution
@@ -18,10 +18,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountRule(Rule, BaseCountRule):
-    __slots__ = ()
-
     items: Tuple[Rule, ...]
 
     @staticmethod
@@ -170,13 +168,13 @@ class CountRule(Rule, BaseCountRule):
 
             independent_rule__results = self.solve_independent_children(ctx=ctx, independent_children=independent_children)
 
-            potential_rules = tuple(sorted(codependent_children))
-            solved_results: Tuple[Result, ...] = tuple(sorted(result for result in independent_rule__results.values() if result is not None))
+            potential_rules = tuple(sorted(codependent_children, key=sort_by_path))
+            solved_results: Tuple[Result, ...] = tuple(sorted((result for result in independent_rule__results.values() if result is not None), key=sort_by_path))
             solved_results__rules: Set[Rule] = set(r for r, result in independent_rule__results.items() if result is not None)
         else:
             solved_results = tuple()
             solved_results__rules = set()
-            potential_rules = tuple(sorted(all_potential_rules))
+            potential_rules = tuple(sorted(all_potential_rules, key=sort_by_path))
 
         logger.debug('%s potential rules are %s', self.path, [r.path for r in potential_rules])
         logger.debug('%s solved rules are %s', self.path, [r.path for r in solved_results__rules])
@@ -212,7 +210,7 @@ class CountRule(Rule, BaseCountRule):
             children_with_precomputed_solutions.update(solved_results)
             logger.debug('children_with_precomputed_solutions, post-update: %s', [(r.path, r.state()) for r in children_with_precomputed_solutions])
 
-            to_yield = tuple(sorted(children_with_precomputed_solutions))
+            to_yield = tuple(sorted(children_with_precomputed_solutions, key=sort_by_path))
             logger.debug('to_yield: %s', [(r.path, r.state()) for r in to_yield])
 
             yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
@@ -248,7 +246,7 @@ class CountRule(Rule, BaseCountRule):
                 if debug and solset_i > 0 and solset_i % 10_000 == 0:
                     logger.debug("%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, r, combo_i, solset_i)
 
-                to_yield = tuple(sorted(solutionset + deselected_children + results))
+                to_yield = tuple(sorted(solutionset + deselected_children + results, key=sort_by_path))
                 yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
     def find_independent_children(self, *, items: Collection[Rule], ctx: 'RequirementContext') -> Dict[str, Collection[Rule]]:

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
 import re
 import logging
@@ -16,10 +16,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
-    __slots__ = ()
-
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:

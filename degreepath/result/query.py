@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Dict, Any, List
 from .assertion import AssertionResult
 
@@ -6,9 +6,8 @@ from ..base import Result, BaseQueryRule
 from ..claim import ClaimAttempt
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryResult(Result, BaseQueryRule):
-    __slots__ = ('successful_claims', 'failed_claims', 'resolved_assertions', 'success', 'overridden')
     successful_claims: Tuple[ClaimAttempt, ...]
     failed_claims: Tuple[ClaimAttempt, ...]
     resolved_assertions: Tuple[AssertionResult, ...]

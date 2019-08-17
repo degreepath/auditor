@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Union, Dict, Any, Sequence
 import logging
 
@@ -8,9 +8,8 @@ from .assertion import BaseAssertionRule
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCountRule(Base):
-    __slots__ = ('count', 'items', 'at_most', 'audit_clauses')
     count: int
     items: Tuple[Union[Rule, Solution, Result], ...]
     at_most: bool

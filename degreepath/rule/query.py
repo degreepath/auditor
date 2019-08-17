@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Dict, List, Optional, Set, Sequence, Iterator, Collection, Any, TYPE_CHECKING
 import itertools
 import logging
@@ -21,10 +21,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryRule(Rule, BaseQueryRule):
-    __slots__ = ()
-
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "from" in data:

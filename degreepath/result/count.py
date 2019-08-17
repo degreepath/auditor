@@ -1,13 +1,12 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Union, Sequence, List
 
 from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule
 from ..claim import ClaimAttempt
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountResult(Result, BaseCountRule):
-    __slots__ = ('audit_results', 'overridden')
     audit_results: Tuple[BaseAssertionRule, ...]
     overridden: bool
 

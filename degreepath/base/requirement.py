@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Tuple, Dict, Any
 import enum
 
@@ -11,9 +11,8 @@ class AuditedBy(enum.Enum):
     Registrar = "registrar"
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseRequirementRule(Base):
-    __slots__ = ('name', 'message', 'result', 'audited_by', 'is_contract')
     name: str
     message: Optional[str]
     result: Optional[Base]

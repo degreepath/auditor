@@ -1,5 +1,5 @@
 from typing import Optional, Tuple, List, Dict, Any, Iterator, Iterable
-import dataclasses
+import attr
 import decimal
 import logging
 
@@ -12,14 +12,8 @@ logger = logging.getLogger(__name__)
 Decimal = decimal.Decimal
 
 
-@dataclasses.dataclass(frozen=True, order=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseInstance(Clausable):
-    __slots__ = (
-        'clbid', 'attributes', 'credits', 'crsid', 'gereqs', 'grade_code', 'grade_option', 'grade_points',
-        'grade_points_gpa', 'is_in_gpa', 'is_in_progress', 'is_incomplete', 'is_repeat', 'is_stolaf', 'is_lab',
-        'level', 'name', 'number', 'section', 'sub_type', 'subject', 'term', 'year', '_identity', '_shorthand',
-    )
-
     clbid: str
     attributes: Tuple[str, ...]
     credits: decimal.Decimal
@@ -44,8 +38,8 @@ class CourseInstance(Clausable):
     term: str
     year: int
 
-    _identity: str
-    _shorthand: str
+    identity_: str
+    shorthand_: str
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -78,22 +72,22 @@ class CourseInstance(Clausable):
         if not attributes:
             attributes = tuple()
 
-        return dataclasses.replace(self, attributes=tuple(attributes))
+        return attr.evolve(self, attributes=tuple(attributes))
 
     def course(self) -> str:
-        return self._identity
+        return self.identity_
 
     def course_shorthand(self) -> str:
-        return self._shorthand
+        return self.shorthand_
 
     def course_with_term(self) -> str:
-        return f"{self._shorthand}{self.section or ''} {self.year}-{self.term}"
+        return f"{self.shorthand_}{self.section or ''} {self.year}-{self.term}"
 
     def __str__(self) -> str:
-        return self._shorthand
+        return self.shorthand_
 
     def __repr__(self) -> str:
-        return f'Course("{self._shorthand}")'
+        return f'Course("{self.shorthand_}")'
 
     def apply_clause(self, clause: Clause) -> bool:
         if isinstance(clause, AndClause):
@@ -122,7 +116,7 @@ class CourseInstance(Clausable):
             return clause.compare(self.number)
 
         if clause.key == 'course':
-            return clause.compare(self._identity) or clause.compare(self._shorthand)
+            return clause.compare(self.identity_) or clause.compare(self.shorthand_)
 
         if clause.key == 'subject':
             return clause.compare(self.subject)
@@ -255,8 +249,8 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         subject=subject,
         term=term,
         year=year,
-        _identity=course_identity,
-        _shorthand=course_identity_short,
+        identity_=course_identity,
+        shorthand_=course_identity_short,
     )
 
 

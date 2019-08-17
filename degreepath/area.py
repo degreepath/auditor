@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
@@ -19,10 +19,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AreaOfStudy(Base):
     """The overall class for working with an area"""
-    __slots__ = ('name', 'kind', 'catalog', 'major', 'degree', 'limit', 'result', 'attributes', 'multicountable', 'path')
     name: str
     kind: str
     catalog: str
@@ -140,9 +139,8 @@ class AreaOfStudy(Base):
         return iterations
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AreaSolution(AreaOfStudy):
-    __slots__ = ('solution', 'context')
     solution: Solution
     context: RequirementContext
 
@@ -167,10 +165,8 @@ class AreaSolution(AreaOfStudy):
         return AreaResult.from_solution(area=self, result=self.solution.audit(ctx=self.context), ctx=self.context)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AreaResult(AreaOfStudy, Result):
-    __slots__ = ('result', 'context')
-
     result: Result
     context: RequirementContext
 

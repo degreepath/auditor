@@ -1,6 +1,8 @@
 import abc
 from typing import Iterator, Dict, Any, List, Tuple, Collection, Optional, TYPE_CHECKING
 import enum
+import attr
+from functools import cmp_to_key, lru_cache
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -17,12 +19,9 @@ class ResultStatus(enum.Enum):
     Pending = "pending"
 
 
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Base(abc.ABC):
-    __slots__ = ('path',)
     path: Tuple[str, ...]
-
-    def __lt__(self, other: 'Base') -> bool:
-        return compare_path_tuples_a_lt_b(self.path, other.path)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -114,17 +113,33 @@ class Rule(Base):
         raise NotImplementedError(f'must define an all_matches() method')
 
 
-def compare_path_tuples_a_lt_b(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
+def compare_path_tuples(a: Base, b: Base) -> int:
+    if a.path == b.path:
+        # a equals b
+        return 0
+    elif compare_path_tuples__lt(a.path, b.path):
+        # a is less-than b
+        return -1
+    else:
+        # a is greater than b
+        return 1
+
+
+sort_by_path = cmp_to_key(compare_path_tuples)
+
+
+@lru_cache(2048)
+def compare_path_tuples__lt(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
     """
-    >>> compare_path_tuples_a_lt_b(('$', '.count', '[2]'), ('$', '.count', '[10]'))
+    >>> compare_path_tuples__lt(('$', '.count', '[2]'), ('$', '.count', '[10]'))
     True
-    >>> compare_path_tuples_a_lt_b(('$', '.count'), ('$', '[10]'))
+    >>> compare_path_tuples__lt(('$', '.count'), ('$', '[10]'))
     False
-    >>> compare_path_tuples_a_lt_b(('$', '[10]'), ('$', '.count'))
+    >>> compare_path_tuples__lt(('$', '[10]'), ('$', '.count'))
     True
-    >>> compare_path_tuples_a_lt_b(('$', '.count', '[2]'), ('$', '.count'))
+    >>> compare_path_tuples__lt(('$', '.count', '[2]'), ('$', '.count'))
     False
-    >>> compare_path_tuples_a_lt_b(('$', '.count', '[2]'), ('$', '.count', '[3]', '.count', '[1]'))
+    >>> compare_path_tuples__lt(('$', '.count', '[2]'), ('$', '.count', '[3]', '.count', '[1]'))
     True
     """
     a_len = len(a)

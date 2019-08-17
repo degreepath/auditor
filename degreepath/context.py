@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field, replace
+import attr
 from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
 import logging
@@ -15,16 +15,16 @@ logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
 
 
-@dataclass(frozen=False)
+@attr.s(slots=True, kw_only=True, frozen=False, auto_attribs=True)
 class RequirementContext:
-    _transcript: List[CourseInstance] = field(default_factory=list)
-    _course_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
-    _clbid_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
+    transcript_: List[CourseInstance] = attr.ib(factory=list)
+    course_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
+    clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
 
     areas: Tuple[AreaPointer, ...] = tuple()
-    multicountable: List[List[SingleClause]] = field(default_factory=list)
-    claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
-    exceptions: Dict[Tuple[str, ...], RuleException] = field(default_factory=dict)
+    multicountable: List[List[SingleClause]] = attr.ib(factory=list)
+    claims: Dict[str, Set[Claim]] = attr.ib(factory=lambda: defaultdict(set))
+    exceptions: Dict[Tuple[str, ...], RuleException] = attr.ib(factory=dict)
 
     def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
         transcript = list(transcript)
@@ -36,16 +36,16 @@ class RequirementContext:
 
         clbid_lookup_map = {c.clbid: c for c in transcript}
 
-        return replace(self, _transcript=transcript, _course_lookup_map=course_lookup_map, _clbid_lookup_map=clbid_lookup_map)
+        return attr.evolve(self, transcript_=transcript, course_lookup_map_=course_lookup_map, clbid_lookup_map_=clbid_lookup_map)
 
     def transcript(self) -> List[CourseInstance]:
-        return self._transcript
+        return self.transcript_
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
-        return self._course_lookup_map.get(c, None)
+        return self.course_lookup_map_.get(c, None)
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
-        return self._clbid_lookup_map.get(clbid, None)
+        return self.clbid_lookup_map_.get(clbid, None)
 
     def forced_course_by_clbid(self, clbid: str) -> CourseInstance:
         match = self.find_course_by_clbid(clbid)

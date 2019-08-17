@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Tuple, Dict, Any
 import enum
 
@@ -26,9 +26,8 @@ class QuerySourceRepeatMode(enum.Enum):
     All = "all"
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseQueryRule(Base):
-    __slots__ = ('source', 'source_type', 'source_repeats', 'assertions', 'limit', 'where', 'allow_claimed', 'attempt_claims')
     source: QuerySource
     source_type: QuerySourceType
     source_repeats: QuerySourceRepeatMode

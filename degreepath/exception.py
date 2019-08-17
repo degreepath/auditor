@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Dict, Any
 import logging
 import enum
@@ -13,7 +13,7 @@ class ExceptionAction(enum.Enum):
     Override = "override"
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RuleException:
     path: Tuple[str, ...]
     type: ExceptionAction
@@ -25,7 +25,7 @@ class RuleException:
         return False
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class InsertionException(RuleException):
     clbid: str
 
@@ -33,7 +33,7 @@ class InsertionException(RuleException):
         return {**super().to_dict(), "clbid": self.clbid}
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class OverrideException(RuleException):
     status: ResultStatus
 

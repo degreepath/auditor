@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import TYPE_CHECKING
 
 from ..base.bases import Result
@@ -8,9 +8,8 @@ if TYPE_CHECKING:
     from ..context import RequirementContext  # noqa: F401
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AssertionResult(Result, BaseAssertionRule):
-    __slots__ = ('overridden',)
     overridden: bool
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

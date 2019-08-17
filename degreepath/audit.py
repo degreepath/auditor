@@ -1,4 +1,4 @@
-import dataclasses
+import attr
 from typing import List, Optional, Tuple, Sequence, Iterator, Union, cast
 from datetime import datetime
 import time
@@ -10,7 +10,7 @@ from .ms import pretty_ms
 from .data import CourseInstance, AreaPointer
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class Arguments:
     area_files: List[str]
     student_files: List[str]
@@ -18,19 +18,19 @@ class Arguments:
     estimate_only: bool = False
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class NoStudentsMsg:
     pass
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class AuditStartMsg:
     stnum: str
     area_code: str
     area_catalog: str
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ResultMsg:
     result: AreaResult
     transcript: Tuple[CourseInstance, ...]
@@ -40,18 +40,18 @@ class ResultMsg:
     startup_time: float
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ExceptionMsg:
     ex: Exception
     tb: str
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class NoAuditsCompletedMsg:
     pass
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ProgressMsg:
     count: int
     recent_iters: List[float]
@@ -59,7 +59,7 @@ class ProgressMsg:
     best_rank: int
 
 
-@dataclasses.dataclass
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class EstimateMsg:
     estimate: int
 

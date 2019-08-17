@@ -1,13 +1,12 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Tuple, Dict, Any
 from ..clause import Clause
 
 from .bases import Base
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseAssertionRule(Base):
-    __slots__ = ('assertion', 'where', 'path')
     assertion: Clause
     where: Optional[Clause]
     path: Tuple[str, ...]

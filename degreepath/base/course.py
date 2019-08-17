@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Tuple, Dict, Any, TYPE_CHECKING
 from decimal import Decimal
 
@@ -9,9 +9,8 @@ if TYPE_CHECKING:
     from ..clause import SingleClause
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCourseRule(Base):
-    __slots__ = ('course', 'hidden', 'grade', 'allow_claimed')
     course: str
     hidden: bool
     grade: Optional[Decimal]
