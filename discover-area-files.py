@@ -28,7 +28,7 @@ def main(files: str, area_codes: Sequence[str] = tuple(), root: Optional[str] = 
         with open(student_file, 'r', encoding='utf-8') as infile:
             student = json.load(infile)
 
-        areas = student['areas']
+        areas = [a for a in student['areas'] if a['kind'] != 'emphasis']
         catalog = student['catalog']
         if catalog is None:
             continue
