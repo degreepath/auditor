@@ -174,7 +174,7 @@ class AreaSolution(AreaOfStudy):
             if not isinstance(result, CountResult):
                 raise TypeError()
 
-            result = attr.evolve(result, items=tuple([*result.items, common_req_results]))
+            result = attr.evolve(result, items=tuple([*result.items, common_req_results]), count=result.count + 1)
 
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
