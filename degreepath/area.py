@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CH
 import logging
 import decimal
 
-from .base import Solution, Result, Base, Rule
+from .base import Solution, Result, Base
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
@@ -14,6 +14,7 @@ from .load_rule import load_rule
 from .result.count import CountResult
 from .result.requirement import RequirementResult
 from .lib import grade_point_average
+from .solve import find_best_solution
 
 if TYPE_CHECKING:
     from .claim import ClaimAttempt  # noqa: F401
@@ -314,24 +315,6 @@ class AreaSolution(AreaOfStudy):
                 ]),
             ),
         )
-
-
-def find_best_solution(*, rule: Rule, ctx: RequirementContext) -> Optional[Result]:
-    result = None
-
-    for s in rule.solutions(ctx=ctx):
-        tmp_result = s.audit(ctx=ctx)
-
-        if result is None:
-            result = tmp_result
-
-        if result.rank() < tmp_result.rank():
-            result = tmp_result
-
-        if tmp_result.ok():
-            result = tmp_result
-
-    return result
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
