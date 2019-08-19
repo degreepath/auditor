@@ -79,7 +79,8 @@ def main(area_file: str, student_file: str, run_id: Optional[int] = None) -> Non
                     record_error(result_id=result_id, conn=conn, error={"error": str(msg.ex)})
 
             elif isinstance(msg, AreaFileNotFoundMsg):
-                message = f"Could not load area file {msg.area_file} for student {msg.stnum}"
+                message = "Could not load area file"
+
                 with sentry_sdk.configure_scope() as scope:
                     scope.user = {"id": msg.stnum}
                     scope.set_tag('area_file', msg.area_file)
