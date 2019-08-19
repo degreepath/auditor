@@ -6,10 +6,11 @@ from typing import Iterator, Dict, List, Set, Sequence, Tuple
 import yaml
 import csv
 import sys
+import os
 
 from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
 from degreepath.data import GradeOption, CourseInstance
-from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, Message, Arguments
+from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
 def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
@@ -38,8 +39,8 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
             try:
                 with open(area_file, "r", encoding="utf-8") as infile:
                     area_spec = yaml.load(stream=infile, Loader=yaml.SafeLoader)
-            except FileNotFoundError as ex:
-                yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
+            except FileNotFoundError:
+                yield AreaFileNotFoundMsg(area_file=os.path.basename(area_file), stnum=student['stnum'])
                 return
 
             area_code = pathlib.Path(area_file).stem

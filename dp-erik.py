@@ -4,14 +4,14 @@ import logging
 import os
 import runpy
 from datetime import datetime
-from typing import Optional, Any, cast
+from typing import Optional, Any, Dict, cast
 
 import dotenv
 import psycopg2  # type: ignore
 import sentry_sdk
 
 from degreepath import pretty_ms
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
 logger = logging.getLogger(__name__)
 dirpath = os.path.dirname(os.path.abspath(__file__))
@@ -76,16 +76,17 @@ def main(area_file: str, student_file: str, run_id: Optional[int] = None) -> Non
                 sentry_sdk.capture_exception(msg.ex)
 
                 if result_id:
-                    with conn.cursor() as curs:
-                        curs.execute("""
-                            UPDATE result
-                            SET in_progress = false, error = %(error)s
-                            WHERE id = %(result_id)s
-                        """, {
-                            "result_id": result_id,
-                            "error": json.dumps({"error": str(msg.ex)}),
-                        })
-                        conn.commit()
+                    record_error(result_id=result_id, conn=conn, error={"error": str(msg.ex)})
+
+            elif isinstance(msg, AreaFileNotFoundMsg):
+                message = f"Could not load area file {msg.area_file} for student {msg.stnum}"
+                with sentry_sdk.configure_scope() as scope:
+                    scope.user = {"id": msg.stnum}
+                    scope.set_tag('area_file', msg.area_file)
+                    sentry_sdk.capture_message(message)
+
+                if result_id:
+                    record_error(result_id=result_id, conn=conn, error={"error": message, "stnum": msg.stnum, "area_file": msg.area_file})
 
             elif isinstance(msg, ProgressMsg):
                 avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
@@ -166,6 +167,19 @@ def make_result_id(*, stnum: str, conn: Any, area_code: str, catalog: str, run: 
             return cast(int, row[0])
 
     return None
+
+
+def record_error(*, conn: Any, result_id: int, error: Dict[str, Any]) -> None:
+    with conn.cursor() as curs:
+        curs.execute("""
+            UPDATE result
+            SET in_progress = false, error = %(error)s
+            WHERE id = %(result_id)s
+        """, {
+            "result_id": result_id,
+            "error": json.dumps(error),
+        })
+        conn.commit()
 
 
 if __name__ == "__main__":

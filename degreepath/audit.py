@@ -64,7 +64,13 @@ class EstimateMsg:
     estimate: int
 
 
-Message = Union[EstimateMsg, ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg]
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
+class AreaFileNotFoundMsg:
+    area_file: str
+    stnum: str
+
+
+Message = Union[EstimateMsg, ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg, AreaFileNotFoundMsg]
 
 
 def audit(
