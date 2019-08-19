@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Any
 import logging
 
@@ -12,7 +12,7 @@ VALID_CLAUSE_CONSTANTS = [
 ]
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Constants:
     matriculation_year: int
 

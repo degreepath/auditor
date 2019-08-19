@@ -1,5 +1,5 @@
 from typing import Optional, Union
-import dataclasses
+import attr
 import decimal
 import math
 import re
@@ -9,7 +9,7 @@ def to_zero(dec: decimal.Decimal) -> decimal.Decimal:
     return dec.quantize(decimal.Decimal("1"), rounding=decimal.ROUND_DOWN)
 
 
-@dataclasses.dataclass()
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class Ms:
     days: decimal.Decimal
     hours: decimal.Decimal

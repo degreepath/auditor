@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List
 import itertools
 from collections import defaultdict
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 T = TypeVar('T', bound=Clausable)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Limit:
     at_most: int
     where: Clause
@@ -43,7 +43,7 @@ class Limit:
                 yield combo
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class LimitSet:
     limits: Tuple[Limit, ...]
 

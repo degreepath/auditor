@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, List, TYPE_CHECKING
 import logging
 
@@ -10,9 +10,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementResult(Result, BaseRequirementRule):
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_solution(
@@ -53,12 +53,4 @@ class RequirementResult(Result, BaseRequirementRule):
         if self.was_overridden():
             return self.overridden
 
-        # return True if self.audited_by is not None else _ok
         return self.result.ok() if self.result else False
-
-    def rank(self) -> int:
-        boost = 1 if self.ok() else 0
-        return self.result.rank() + boost if self.result else 0
-
-    def max_rank(self) -> int:
-        return self.result.max_rank() + 1 if self.result else 0

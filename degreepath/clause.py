@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Sequence, Iterator, cast, TYPE_CHECKING
+from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Iterator, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
+import attr
 
 from .constants import Constants
 from .lib import str_to_grade_points
@@ -37,27 +37,36 @@ def load_clause(data: Dict[str, Any], c: Constants) -> 'Clause':
     return AndClause(children=tuple(clauses))
 
 
+@attr.s(auto_attribs=True, slots=True)
 class _Clause(abc.ABC):
     @abc.abstractmethod
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'Clause':
         raise NotImplementedError(f'must define a compare_and_resolve_with() method')
 
 
-@dataclass(frozen=True)
+@attr.s(auto_attribs=True, slots=True)
 class ResolvedClause:
     resolved_with: Optional[Any] = None
-    resolved_items: Sequence[Any] = tuple()
+    resolved_items: Tuple[Any, ...] = tuple()
     result: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "resolved_with": str(self.resolved_with) if isinstance(self.resolved_with, decimal.Decimal) else self.resolved_with,
+            "resolved_with": str(self.resolved_with) if self.resolved_with is not None and type(self.resolved_with) is not str else self.resolved_with,
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
             "result": self.result,
+            "rank": self.rank(),
+            "max_rank": self.max_rank(),
         }
 
+    def rank(self) -> int:
+        return 1 if self.result else 0
 
-@dataclass(frozen=True)
+    def max_rank(self) -> int:
+        return 1
+
+
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class AndClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
@@ -84,10 +93,16 @@ class AndClause(_Clause, ResolvedClause):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = all(c.result for c in children)
 
-        return AndClause(children=children, resolved_with=None, resolved_items=[], result=result)
+        return AndClause(children=children, resolved_with=None, resolved_items=tuple(), result=result)
+
+    def rank(self) -> int:
+        return sum(c.rank() for c in self.children)
+
+    def max_rank(self) -> int:
+        return sum(c.max_rank() for c in self.children)
 
 
-@dataclass(frozen=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class OrClause(_Clause, ResolvedClause):
     children: Tuple = tuple()
 
@@ -114,10 +129,16 @@ class OrClause(_Clause, ResolvedClause):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = any(c.result for c in children)
 
-        return OrClause(children=children, resolved_with=None, resolved_items=[], result=result)
+        return OrClause(children=children, resolved_with=None, resolved_items=tuple(), result=result)
+
+    def rank(self) -> int:
+        return sum(c.rank() for c in self.children)
+
+    def max_rank(self) -> int:
+        return sum(c.rank() if c.result is True else c.max_rank() for c in self.children)
 
 
-@dataclass(frozen=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class SingleClause(_Clause, ResolvedClause):
     key: str = "???"
     expected: Any = None
@@ -188,6 +209,24 @@ class SingleClause(_Clause, ResolvedClause):
             expected_verbatim=expected_verbatim,
             at_most=at_most,
         )
+
+    def rank(self) -> int:
+        if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            return int(self.resolved_with)
+
+        if self.result is True:
+            return 1
+
+        return 0
+
+    def max_rank(self) -> int:
+        if self.result is True:
+            return self.rank()
+
+        if type(self.expected) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            return int(self.expected)
+
+        return 1
 
     def __repr__(self) -> str:
         return f"Clause({str_clause(self)})"
@@ -283,18 +322,18 @@ def str_clause(clause: Union[Dict[str, Any], 'Clause']) -> str:
     if clause["type"] == "single-clause":
         resolved_with = clause.get('resolved_with', None)
         if resolved_with is not None:
-            resolved = f" ({resolved_with})"
+            resolved = f" ({repr(resolved_with)})"
         else:
             resolved = ""
 
         if clause['expected'] != clause['expected_verbatim']:
-            postscript = f" (via \"{clause['expected_verbatim']}\")"
+            postscript = f" (via {repr(clause['expected_verbatim'])})"
         else:
             postscript = ""
 
         op = str_operator(clause['operator'])
 
-        return f"\"{clause['key']}\"{resolved} {op} \"{clause['expected']}\"{postscript}"
+        return f'"{clause["key"]}"{resolved} {op} "{clause["expected"]}"{postscript}'
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":

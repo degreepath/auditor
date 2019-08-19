@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Tuple, Dict, Any, TYPE_CHECKING
 from decimal import Decimal
 
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from ..clause import SingleClause
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCourseRule(Base):
     course: str
     hidden: bool
@@ -24,6 +24,7 @@ class BaseCourseRule(Base):
             "hidden": self.hidden,
             "grade": str(self.grade) if self.grade is not None else None,
             "allow_claimed": self.allow_claimed,
+            "claims": [c.to_dict() for c in self.claims()],
         }
 
     def type(self) -> str:
@@ -44,3 +45,9 @@ class BaseCourseRule(Base):
             return self.course in clause.expected
         else:
             return False
+
+    def rank(self) -> int:
+        return 1 if self.ok() else 0
+
+    def max_rank(self) -> int:
+        return 1

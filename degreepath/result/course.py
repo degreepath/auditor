@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, List, Dict, Any, TYPE_CHECKING
 
 from ..base import Result, BaseCourseRule
@@ -8,11 +8,11 @@ if TYPE_CHECKING:
     from ..data import CourseInstance  # noqa: F401
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseResult(Result, BaseCourseRule):
     claim_attempt: Optional['ClaimAttempt']
-    min_grade_not_met: Optional['CourseInstance'] = None
-    overridden: bool = False
+    min_grade_not_met: Optional['CourseInstance']
+    overridden: bool
 
     @staticmethod
     def from_solution(
@@ -56,9 +56,3 @@ class CourseResult(Result, BaseCourseRule):
             return True
 
         return self.claim_attempt is not None and self.claim_attempt.failed() is False and self.min_grade_not_met is None
-
-    def rank(self) -> int:
-        return 1 if self.ok() else 0
-
-    def max_rank(self) -> int:
-        return 1

@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Tuple, Dict, Any
 from ..clause import Clause
 
 from .bases import Base
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseAssertionRule(Base):
     assertion: Clause
     where: Optional[Clause]
@@ -20,3 +20,9 @@ class BaseAssertionRule(Base):
 
     def type(self) -> str:
         return "assertion"
+
+    def rank(self) -> int:
+        return self.assertion.rank()
+
+    def max_rank(self) -> int:
+        return self.assertion.max_rank()

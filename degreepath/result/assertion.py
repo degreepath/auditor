@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import TYPE_CHECKING
 
 from ..base.bases import Result
@@ -8,9 +8,9 @@ if TYPE_CHECKING:
     from ..context import RequirementContext  # noqa: F401
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AssertionResult(Result, BaseAssertionRule):
-    overridden: bool = False
+    overridden: bool
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.where:
@@ -26,9 +26,3 @@ class AssertionResult(Result, BaseAssertionRule):
             return True
 
         return self.assertion.result is True
-
-    def rank(self) -> int:
-        return 0
-
-    def max_rank(self) -> int:
-        return 0

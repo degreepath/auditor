@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Dict, Any, List
 from .assertion import AssertionResult
 
@@ -6,13 +6,13 @@ from ..base import Result, BaseQueryRule
 from ..claim import ClaimAttempt
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryResult(Result, BaseQueryRule):
     successful_claims: Tuple[ClaimAttempt, ...]
     failed_claims: Tuple[ClaimAttempt, ...]
     resolved_assertions: Tuple[AssertionResult, ...]
     success: bool
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_solution(
@@ -61,7 +61,7 @@ class QueryResult(Result, BaseQueryRule):
         return self.success is True
 
     def rank(self) -> int:
-        return len(self.successful_claims) + int(len(self.failed_claims) * 0.5)
+        return sum(a.rank() for a in self.resolved_assertions)
 
     def max_rank(self) -> int:
-        return len(self.successful_claims) + len(self.failed_claims)
+        return sum(a.max_rank() for a in self.resolved_assertions)

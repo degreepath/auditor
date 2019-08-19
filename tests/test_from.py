@@ -28,7 +28,7 @@ def test_from(caplog):
     ]
 
     s = next(area.solutions(transcript=transcript, areas=[], exceptions=[]))
-    a = s.audit()
+    a = s.audit().result
 
     assert len(a.successful_claims) == 1
 
@@ -55,7 +55,7 @@ def test_from_distinct(caplog):
     ]
 
     s = next(area.solutions(transcript=transcript, areas=[], exceptions=[]))
-    a = s.audit()
+    a = s.audit().result
 
     assert len(a.successful_claims) == 1
 

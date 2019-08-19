@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Union, List, TYPE_CHECKING
 
 from ..base import BaseRequirementRule, Solution, Rule
@@ -9,10 +9,10 @@ if TYPE_CHECKING:
     from ..claim import ClaimAttempt  # noqa: F401
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementSolution(Solution, BaseRequirementRule):
     result: Optional[Union[Rule, Solution]]
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseRequirementRule, solution: Optional[Union[Rule, Solution]], overridden: bool = False) -> 'RequirementSolution':

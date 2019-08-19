@@ -1,4 +1,5 @@
 import enum
+from typing import Any
 
 
 @enum.unique
@@ -22,8 +23,30 @@ class SubType(enum.Enum):
     Normal = ""
 
 
+class OrderedEnum(enum.Enum):
+    def __ge__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value >= other.value
+        return NotImplemented
+
+    def __gt__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value > other.value
+        return NotImplemented
+
+    def __le__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value <= other.value
+        return NotImplemented
+
+    def __lt__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value < other.value
+        return NotImplemented
+
+
 @enum.unique
-class GradeCode(enum.Enum):
+class GradeCode(OrderedEnum):
     A = "A"
     Aplus = "A+"
     Aminus = "A-"

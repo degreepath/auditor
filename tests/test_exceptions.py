@@ -1,7 +1,7 @@
 from degreepath.data import course_from_str
 from degreepath.area import AreaOfStudy
 from degreepath.constants import Constants
-from degreepath.solution.course import CourseSolution
+from degreepath.result.course import CourseResult
 from degreepath.exception import load_exception
 import logging
 
@@ -14,7 +14,7 @@ def test_insertion_on_course_rule(caplog):
     area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ["$", "*DEPT 345"],
         "clbid": "1",
     })
@@ -45,7 +45,7 @@ def test_insertion_on_query_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ["$", ".query"],
         "clbid": "0",
     })
@@ -75,7 +75,7 @@ def test_insertion_on_count_rule__any(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ['$', '.count'],
         "clbid": "1",
     })
@@ -85,18 +85,17 @@ def test_insertion_on_count_rule__any(caplog):
     transcript = [course_a, course_b]
 
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
-    # for s in solutions:
-    #     print(s.solution.items)
+    print([s.solution for s in solutions])
 
     assert [
-        [x.course for x in s.solution.items if isinstance(x, CourseSolution)]
+        [x.course for x in s.solution.items if isinstance(x, CourseResult)]
         for s in solutions
-    ] == [['OTHER 234'], ['DEPT 123'], ['OTHER 234', 'DEPT 123']]
-    assert len(solutions) == 3
+    ] == [['OTHER 234']]
+    assert len(solutions) == 1
 
     result = solutions[0].audit()
 
-    assert result.count == 1
+    assert result.result.count == 1
     assert result.ok() is True
     assert result.was_overridden() is False
     assert result.claims()[0].claim.clbid == course_b.clbid
@@ -115,7 +114,7 @@ def test_insertion_on_count_rule__all(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ['$', '.count'],
         "clbid": "2",
     })
@@ -130,7 +129,7 @@ def test_insertion_on_count_rule__all(caplog):
 
     result = solutions[0].audit()
 
-    assert result.count == 3
+    assert result.result.count == 3
     assert result.ok() is True
     assert result.was_overridden() is False
 
@@ -149,7 +148,7 @@ def test_insertion_on_requirement_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "insert",
+        "type": "insert",
         "path": ["$", r"%req"],
         "clbid": "2",
     })
@@ -175,7 +174,7 @@ def test_override_on_course_rule(caplog):
     area = AreaOfStudy.load(specification={"result": {"course": "DEPT 123"}}, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", "*DEPT 123"],
         "status": "pass",
     })
@@ -200,7 +199,7 @@ def test_override_on_query_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", ".query"],
         "status": "pass",
     })
@@ -226,7 +225,7 @@ def test_override_on_count_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", ".count"],
         "status": "pass",
     })
@@ -251,7 +250,7 @@ def test_override_on_requirement_rule(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ["$", r"%req"],
         "status": "pass",
     })
@@ -276,7 +275,7 @@ def test_override_on_count_rule_assertion_clause(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ['$', '.count', '.audit', '[0]', '.assert'],
         "status": "pass",
     })
@@ -290,7 +289,7 @@ def test_override_on_count_rule_assertion_clause(caplog):
 
     result = solutions[0].audit()
 
-    assert result.audits()[0].was_overridden() is True
+    assert result.result.audits()[0].was_overridden() is True
     assert result.ok() is False
     assert result.was_overridden() is False
 
@@ -306,7 +305,7 @@ def test_override_on_query_rule_audit_clause(caplog):
     }, c=c)
 
     exception = load_exception({
-        "action": "override",
+        "type": "override",
         "path": ['$', '.query', '.assertions', '[0]', '.assert'],
         "status": "pass",
     })
@@ -316,6 +315,6 @@ def test_override_on_query_rule_audit_clause(caplog):
 
     result = solutions[0].audit()
 
-    assert result.resolved_assertions[0].was_overridden() is True
+    assert result.result.resolved_assertions[0].was_overridden() is True
     assert result.ok() is True
     assert result.was_overridden() is False

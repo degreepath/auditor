@@ -1,5 +1,5 @@
-from dataclasses import dataclass, replace
-from typing import Any, Mapping, Optional, List, Iterator, TYPE_CHECKING
+import attr
+from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 
 from ..base import Rule, BaseRequirementRule, ResultStatus
@@ -9,11 +9,12 @@ from ..solution.requirement import RequirementSolution
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementRule(Rule, BaseRequirementRule):
     result: Optional[Rule]
 
@@ -60,12 +61,10 @@ class RequirementRule(Rule, BaseRequirementRule):
             assert isinstance(self.message, str)
             assert self.message.strip() != ""
 
-        new_ctx = replace(ctx)
-
         if self.result is not None:
-            self.result.validate(ctx=new_ctx)
+            self.result.validate(ctx=ctx)
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[RequirementSolution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -82,9 +81,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             yield RequirementSolution.from_rule(rule=self, solution=None)
             return
 
-        new_ctx = replace(ctx)
-
-        for solution in self.result.solutions(ctx=new_ctx):
+        for solution in self.result.solutions(ctx=ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
 
     def estimate(self, *, ctx: 'RequirementContext') -> int:
@@ -95,3 +92,29 @@ class RequirementRule(Rule, BaseRequirementRule):
         estimate = self.result.estimate(ctx=ctx)
         logger.debug('RequirementRule.estimate: %s', estimate)
         return estimate
+
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if self._has_potential(ctx=ctx):
+            logger.debug('%s has potential: yes', self.path)
+            return True
+        else:
+            logger.debug('%s has potential: no', self.path)
+            return False
+
+    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if ctx.get_exception(self.path):
+            return True
+
+        if self.audited_by is not None:
+            return False
+
+        if self.result:
+            return self.result.has_potential(ctx=ctx)
+
+        return False
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+        if not self.result:
+            return []
+
+        return self.result.all_matches(ctx=ctx)

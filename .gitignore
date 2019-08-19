@@ -11,3 +11,4 @@ __pycache__/
 # Ignore IntelliJ files
 /.idea/
 /.vscode/
+*.log

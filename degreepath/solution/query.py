@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import List, Sequence, Any, Tuple, Collection, Union, FrozenSet, Dict, cast, TYPE_CHECKING
 from collections import Counter
 import logging
@@ -20,10 +20,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QuerySolution(Solution, BaseQueryRule):
     output: Tuple[Clausable, ...]
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseQueryRule, output: Tuple[Clausable, ...], overridden: bool = False) -> 'QuerySolution':
@@ -111,9 +111,9 @@ class QuerySolution(Solution, BaseQueryRule):
 
         if debug:
             if resolved_result:
-                logger.debug("%s from-rule '%s' might possibly succeed", self.path, self)
+                logger.debug("%s might possibly succeed", self.path)
             else:
-                logger.debug("%s from-rule '%s' did not succeed", self.path, self)
+                logger.debug("%s did not succeed", self.path)
 
         return QueryResult.from_solution(
             solution=self,
@@ -137,7 +137,7 @@ class QuerySolution(Solution, BaseQueryRule):
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
 
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
-        return AssertionResult(where=clause.where, assertion=result, path=clause.path)
+        return AssertionResult(where=clause.where, assertion=result, path=clause.path, overridden=False)
 
 
 def apply_clause_to_query_rule(*, value: Sequence[Union[CourseInstance, AreaPointer]], clause: SingleClause) -> Tuple[Union[decimal.Decimal, int], Collection[Any]]:
@@ -171,7 +171,7 @@ def count_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -
         counted = Counter(c.crsid for c in data)
         most_common = counted.most_common(1)[0]
         most_common_crsid, _count = most_common
-        items = frozenset(c.term for c in data if c.crsid == most_common_crsid)
+        items = frozenset(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid)
         return (len(items), items)
 
     if kind == 'subjects':
@@ -183,7 +183,7 @@ def count_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -
     if kind == 'terms':
         assert all(isinstance(x, CourseInstance) for x in data)
         data = cast(Tuple[CourseInstance, ...], data)
-        items = frozenset(c.term for c in data)
+        items = frozenset(str(c.year) + str(c.term) for c in data)
         return (len(items), items)
 
     if kind == 'years':

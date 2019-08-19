@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import TYPE_CHECKING
 import logging
 
@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseSolution(Solution, BaseCourseRule):
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseCourseRule, overridden: bool = False) -> 'CourseSolution':

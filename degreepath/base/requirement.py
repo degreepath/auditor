@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Optional, Tuple, Dict, Any
 import enum
 
@@ -11,7 +11,7 @@ class AuditedBy(enum.Enum):
     Registrar = "registrar"
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseRequirementRule(Base):
     name: str
     message: Optional[str]
@@ -32,3 +32,10 @@ class BaseRequirementRule(Base):
 
     def type(self) -> str:
         return "requirement"
+
+    def rank(self) -> int:
+        boost = 1 if self.ok() else 0
+        return self.result.rank() + boost if self.result else 0
+
+    def max_rank(self) -> int:
+        return self.result.max_rank() + 1 if self.result else 0

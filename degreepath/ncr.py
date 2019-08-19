@@ -11,4 +11,4 @@ def ncr(n: int, r: int) -> int:
 
 
 def mult(it: Iterable[int]) -> int:
-    return reduce(op.mul, it, 0)
+    return reduce(op.mul, it, 1)

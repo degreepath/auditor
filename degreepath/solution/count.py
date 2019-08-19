@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Union, TYPE_CHECKING
 import logging
 
@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountSolution(Solution, BaseCountRule):
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseCountRule, count: int, items: Tuple[Union[Rule, Solution, Result], ...], overridden: bool = False) -> 'CountSolution':
@@ -69,6 +69,7 @@ class CountSolution(Solution, BaseCountRule):
                 where=clause.where,
                 assertion=result,
                 path=clause.path,
+                overridden=False,
             ))
 
         return CountResult.from_solution(

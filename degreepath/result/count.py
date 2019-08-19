@@ -1,14 +1,14 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Union, Sequence, List
 
 from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule
 from ..claim import ClaimAttempt
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountResult(Result, BaseCountRule):
     audit_results: Tuple[BaseAssertionRule, ...]
-    overridden: bool = False
+    overridden: bool
 
     @staticmethod
     def from_solution(
@@ -48,8 +48,8 @@ class CountResult(Result, BaseCountRule):
         audit_passed = len(self.audit_results) == 0 or all(a.ok() for a in self.audit_results)
         return passed_count >= self.count and audit_passed
 
-    def rank(self) -> int:
-        return sum(r.rank() for r in self.items)
-
     def max_rank(self) -> int:
-        return sum(r.max_rank() for r in self.items)
+        if self.ok():
+            return self.rank()
+
+        return super().max_rank()

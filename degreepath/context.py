@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field, replace
+import attr
 from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
 import logging
@@ -15,16 +15,16 @@ logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
 
 
-@dataclass(frozen=False)
+@attr.s(slots=True, kw_only=True, frozen=False, auto_attribs=True)
 class RequirementContext:
-    _transcript: List[CourseInstance] = field(default_factory=list)
-    _course_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
-    _clbid_lookup_map: Dict[str, CourseInstance] = field(default_factory=dict)
+    transcript_: List[CourseInstance] = attr.ib(factory=list)
+    course_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
+    clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
 
     areas: Tuple[AreaPointer, ...] = tuple()
-    multicountable: List[List[SingleClause]] = field(default_factory=list)
-    claims: Dict[str, Set[Claim]] = field(default_factory=lambda: defaultdict(set))
-    exceptions: Dict[Tuple[str, ...], RuleException] = field(default_factory=dict)
+    multicountable: List[List[SingleClause]] = attr.ib(factory=list)
+    claims: Dict[str, Set[Claim]] = attr.ib(factory=lambda: defaultdict(set))
+    exceptions: Dict[Tuple[str, ...], RuleException] = attr.ib(factory=dict)
 
     def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
         transcript = list(transcript)
@@ -36,16 +36,16 @@ class RequirementContext:
 
         clbid_lookup_map = {c.clbid: c for c in transcript}
 
-        return replace(self, _transcript=transcript, _course_lookup_map=course_lookup_map, _clbid_lookup_map=clbid_lookup_map)
+        return attr.evolve(self, transcript_=transcript, course_lookup_map_=course_lookup_map, clbid_lookup_map_=clbid_lookup_map)
 
     def transcript(self) -> List[CourseInstance]:
-        return self._transcript
+        return self.transcript_
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
-        return self._course_lookup_map.get(c, None)
+        return self.course_lookup_map_.get(c, None)
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
-        return self._clbid_lookup_map.get(clbid, None)
+        return self.clbid_lookup_map_.get(clbid, None)
 
     def forced_course_by_clbid(self, clbid: str) -> CourseInstance:
         match = self.find_course_by_clbid(clbid)
@@ -66,6 +66,9 @@ class RequirementContext:
         else:
             logger.debug("no exception for %s", path)
         return self.exceptions.get(tuple(path), None)
+
+    def set_claims(self, claims: Dict[str, Set[Claim]]) -> None:
+        self.claims = defaultdict(set, {k: set(v) for k, v in claims.items()})
 
     def reset_claims(self) -> None:
         self.claims = defaultdict(set)
@@ -113,7 +116,7 @@ class RequirementContext:
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
         if allow_claimed or getattr(rule, 'allow_claimed', False):
-            return ClaimAttempt(claim)
+            return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         prior_claims = frozenset(self.claims[course.clbid])
 
@@ -121,7 +124,7 @@ class RequirementContext:
         if not prior_claims:
             if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
             self.claims[course.clbid].add(claim)
-            return ClaimAttempt(claim, conflict_with=frozenset())
+            return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         # Find any multicountable sets that may apply to this course
         applicable_clausesets = [
@@ -136,11 +139,11 @@ class RequirementContext:
         if not applicable_clausesets:
             if prior_claims:
                 if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
             else:
                 if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset())
+                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         # > Otherwise, if a course was counted in _this_ fashion, it may also
         # > be counted like _that_ (or _that_, or _that_.)
@@ -212,11 +215,11 @@ class RequirementContext:
         if applicable_clauseset is None:
             if prior_claims:
                 if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
             else:
                 if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset())
+                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         # now limit to just the clauses in the clauseset which have not been used
         available_clauses = [
@@ -227,11 +230,11 @@ class RequirementContext:
         if not available_clauses:
             if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims))
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
             else:
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset())
+                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s: %s', course.clbid, available_clauses)
         self.claims[course.clbid].add(claim)
-        return ClaimAttempt(claim, conflict_with=frozenset())
+        return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)

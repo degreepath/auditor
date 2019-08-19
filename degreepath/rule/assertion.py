@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Dict, Sequence, Iterator, TYPE_CHECKING
+import attr
+from typing import Dict, Sequence, Iterator, Collection, Optional, TYPE_CHECKING
 import logging
 
 from ..clause import load_clause
@@ -9,11 +9,12 @@ from ..base.assertion import BaseAssertionRule
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AssertionRule(Rule, BaseAssertionRule):
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -42,5 +43,11 @@ class AssertionRule(Rule, BaseAssertionRule):
         logger.debug('AssertionRule.estimate: 0')
         return 0
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[Solution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
+        raise Exception('this method should not be called')
+
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        raise Exception('this method should not be called')
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         raise Exception('this method should not be called')

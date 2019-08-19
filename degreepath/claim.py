@@ -1,6 +1,6 @@
-from dataclasses import dataclass, field
 from typing import Tuple, Union, FrozenSet, Optional, Dict, Any, TYPE_CHECKING
 import logging
+import attr
 
 from .clause import Clause
 from .base.course import BaseCourseRule
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class Claim:
     crsid: str
     clbid: str
@@ -28,18 +28,20 @@ class Claim:
         }
 
 
-@dataclass(frozen=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class ClaimAttempt:
     claim: Claim
-    conflict_with: FrozenSet[Claim] = field(default_factory=frozenset)
+    conflict_with: FrozenSet[Claim]
+    did_fail: bool
 
     def failed(self) -> bool:
-        return len(self.conflict_with) > 0
+        return self.did_fail
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "claim": self.claim.to_dict(),
             "conflict_with": [c.to_dict() for c in self.conflict_with],
+            "failed": self.failed(),
         }
 
     def get_course(self, *, ctx: 'RequirementContext') -> Optional['CourseInstance']:

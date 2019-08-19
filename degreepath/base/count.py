@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Union, Dict, Any, Sequence
 import logging
 
@@ -8,7 +8,7 @@ from .assertion import BaseAssertionRule
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCountRule(Base):
     count: int
     items: Tuple[Union[Rule, Solution, Result], ...]
@@ -29,3 +29,16 @@ class BaseCountRule(Base):
 
     def type(self) -> str:
         return "count"
+
+    def rank(self) -> int:
+        return sum(r.rank() for r in self.items) + sum(c.rank() for c in self.audit_clauses)
+
+    def max_rank(self) -> int:
+        audit_max_rank = sum(c.rank() for c in self.audit_clauses)
+        if len(self.items) == 2 and self.count == 2:
+            return sum(sorted(r.max_rank() for r in self.items)[:2]) + audit_max_rank
+
+        if self.count == 1 and self.at_most:
+            return max(r.max_rank() for r in self.items) + audit_max_rank
+
+        return sum(r.max_rank() for r in self.items) + audit_max_rank

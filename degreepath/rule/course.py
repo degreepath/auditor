@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Dict, List, Iterator, TYPE_CHECKING
+import attr
+from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
 import re
 import logging
 
@@ -7,14 +7,16 @@ from ..base import Rule, BaseCourseRule
 from ..constants import Constants
 from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
+from ..exception import InsertionException
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
+    from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -44,7 +46,7 @@ class CourseRule(Rule, BaseCourseRule):
 
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-    def solutions(self, *, ctx: 'RequirementContext') -> Iterator[CourseSolution]:
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():
             logger.debug("forced override on %s", self.path)
@@ -58,3 +60,29 @@ class CourseRule(Rule, BaseCourseRule):
     def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('CourseRule.estimate: 1')
         return 1
+
+    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if self._has_potential(ctx=ctx):
+            logger.debug('%s has potential: yes', self.path)
+            return True
+        else:
+            logger.debug('%s has potential: no', self.path)
+            return False
+
+    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+        if ctx.get_exception(self.path) is not None:
+            return True
+
+        if ctx.find_course(self.course) is not None:
+            return True
+
+        return False
+
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+        exception = ctx.get_exception(self.path)
+        if exception and isinstance(exception, InsertionException):
+            match = ctx.find_course_by_clbid(exception.clbid)
+        else:
+            match = ctx.find_course(self.course)
+
+        return [match] if match else []

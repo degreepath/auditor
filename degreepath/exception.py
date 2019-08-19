@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import attr
 from typing import Tuple, Dict, Any
 import logging
 import enum
@@ -13,19 +13,19 @@ class ExceptionAction(enum.Enum):
     Override = "override"
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RuleException:
     path: Tuple[str, ...]
-    action: ExceptionAction
+    type: ExceptionAction
 
     def to_dict(self) -> Dict[str, Any]:
-        return {"path": list(self.path), "action": self.action.value}
+        return {"path": list(self.path), "type": self.type.value}
 
     def is_pass_override(self) -> bool:
         return False
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class InsertionException(RuleException):
     clbid: str
 
@@ -33,7 +33,7 @@ class InsertionException(RuleException):
         return {**super().to_dict(), "clbid": self.clbid}
 
 
-@dataclass(frozen=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class OverrideException(RuleException):
     status: ResultStatus
 
@@ -45,9 +45,9 @@ class OverrideException(RuleException):
 
 
 def load_exception(data: Dict[str, Any]) -> RuleException:
-    if data['action'] == 'insert':
-        return InsertionException(clbid=data['clbid'], path=data['path'], action=ExceptionAction.Insert)
-    elif data['action'] == 'override':
-        return OverrideException(status=ResultStatus(data['status']), path=data['path'], action=ExceptionAction.Override)
+    if data['type'] == 'insert':
+        return InsertionException(clbid=data['clbid'], path=data['path'], type=ExceptionAction.Insert)
+    elif data['type'] == 'override':
+        return OverrideException(status=ResultStatus(data['status']), path=data['path'], type=ExceptionAction.Override)
 
-    raise TypeError(f'expected "action" to be "insert" or "override"; got {data["action"]}')
+    raise TypeError(f'expected "type" to be "insert" or "override"; got {data["type"]}')
