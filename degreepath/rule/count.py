@@ -43,43 +43,29 @@ class CountRule(Rule, BaseCountRule):
         children: Dict[str, Dict],
         path: List[str],
         emphases: Sequence[Dict[str, Dict]] = tuple(),
+        ctx: Optional['RequirementContext'] = None,
     ) -> 'CountRule':
         from ..load_rule import load_rule
 
         path = [*path, f".count"]
 
+        if "all" in data:
+            items = data["all"]
+        elif "any" in data:
+            items = data["any"]
+        elif "both" in data:
+            items = data["both"]
+        elif "either" in data:
+            items = data["either"]
+        else:
+            items = data["of"]
+
         children_with_emphases = {**children}
-        extra_items: List = []
         if emphases:
             for r in emphases:
                 emphasis_key = f"Emphasis: {r['name']}"
                 children_with_emphases[emphasis_key] = r
-                extra_items.append({"requirement": emphasis_key})
-
-        if "all" in data:
-            items = data["all"] + extra_items
-            count = len(items)
-        elif "any" in data:
-            items = data["any"] + extra_items
-            count = 1
-        elif "both" in data:
-            items = data["both"] + extra_items
-            count = 2
-            if len(items) != 2:
-                raise Exception(f"expected two items in both; found {len(items)} items")
-        elif "either" in data:
-            items = data["either"] + extra_items
-            count = 1
-            if len(items) != 2:
-                raise Exception(f"expected two items in both; found {len(items)} items")
-        else:
-            items = data["of"] + extra_items
-            if data["count"] == "all":
-                count = len(items)
-            elif data["count"] == "any":
-                count = 1
-            else:
-                count = int(data["count"])
+                items.append({"requirement": emphasis_key})
 
         at_most = data.get('at_most', False)
 
@@ -95,10 +81,30 @@ class CountRule(Rule, BaseCountRule):
             else:
                 audit_clauses = tuple([AssertionRule.load(audit_clause, c=c, path=[*path, ".audit", "[0]"])])
 
-        loaded_items = tuple(
-            load_rule(data=r, c=c, children=children_with_emphases, path=[*path, f"[{i}]"])
+        if len(path) == 2:
+            load_context = ctx
+        else:
+            load_context = None
+
+        loaded_items = tuple(r for r in (
+            load_rule(data=r, c=c, children=children_with_emphases, path=[*path, f"[{i}]"], ctx=load_context)
             for i, r in enumerate(items)
-        )
+        ) if r is not None)
+
+        if "all" in data or ("count" in data and data["count"] == "all"):
+            count = len(loaded_items)
+        elif "any" in data or ("count" in data and data["count"] == "any"):
+            count = 1
+        elif "both" in data:
+            count = 2
+            if len(loaded_items) != 2:
+                raise Exception(f"expected two items in both; found {len(loaded_items)} items")
+        elif "either" in data:
+            count = 1
+            if len(loaded_items) != 2:
+                raise Exception(f"expected two items in both; found {len(loaded_items)} items")
+        else:
+            count = int(data["count"])
 
         return CountRule(
             count=count,

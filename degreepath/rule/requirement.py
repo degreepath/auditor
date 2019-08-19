@@ -6,6 +6,8 @@ from ..base import Rule, BaseRequirementRule, ResultStatus
 from ..base.requirement import AuditedBy
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
+from ..rule.query import QueryRule
+from ..solve import find_best_solution
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -26,14 +28,32 @@ class RequirementRule(Rule, BaseRequirementRule):
         return "requirement" in data
 
     @staticmethod
-    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str]) -> 'RequirementRule':
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: Optional['RequirementContext'] = None) -> Optional['RequirementRule']:
         from ..load_rule import load_rule
 
         path = [*path, f"%{name}"]
 
         result = data.get("result", None)
         if result is not None:
+            # be able to exclude requirements if they shouldn't exist
+            if 'if' in data:
+                if ctx is None:
+                    raise TypeError('conditional requirements are only supported at the top-level')
+
+                rule = QueryRule.load(data['if'], c=c, path=path)
+
+                s = find_best_solution(rule=rule, ctx=ctx)
+                if not s:
+                    return None
+
+                if s.ok():
+                    pass
+                else:
+                    return None
+
             result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path)
+            if result is None:
+                return None
 
         audited_by = None
         if data.get("department_audited", data.get("department-audited", False)):

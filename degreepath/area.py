@@ -56,17 +56,23 @@ class AreaOfStudy(Base):
         return decimal.Decimal('0.00')
 
     @staticmethod
-    def load(*, specification: Dict, c: Constants, other_areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
+    def load(*, specification: Dict, c: Constants, areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
         emphases = specification.get('emphases', {})
-        declared_emphases = set(str(a.code) for a in other_areas if a.kind is AreaType.Emphasis)
+        declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
+
+        ctx = RequirementContext(areas=tuple(areas))
 
         result = load_rule(
             data=specification["result"],
             c=c,
             children=specification.get("requirements", {}),
-            emphases=[v for k, v in emphases.items() if str(k) in declared_emphases],
+            emphases=[v for k, v in emphases.items() if str(k) in declared_emphasis_codes],
             path=["$"],
+            ctx=ctx,
         )
+        if result is None:
+            raise TypeError(f'expected load_rule to process {specification["result"]}')
+
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         attributes = specification.get("attributes", dict())
@@ -236,6 +242,8 @@ class AreaSolution(AreaOfStudy):
             path=['$', '%Common Requirements', '.count', '[0]'],
             c=c,
         )
+        if c_or_better is None:
+            raise TypeError('expected c_or_better to not be None')
 
         s_u_credits = load_rule(
             data={"requirement": "Credits taken S/U"},
@@ -260,6 +268,8 @@ class AreaSolution(AreaOfStudy):
             path=['$', '%Common Requirements', '.count', '[1]'],
             c=c,
         )
+        if s_u_credits is None:
+            raise TypeError('expected s_u_credits to not be None')
 
         outside_the_major = load_rule(
             data={"requirement": "Credits outside the major"},
@@ -278,6 +288,8 @@ class AreaSolution(AreaOfStudy):
             path=['$', '%Common Requirements', '.count', '[2]'],
             c=c,
         )
+        if outside_the_major is None:
+            raise TypeError('expected outside_the_major to not be None')
 
         c_or_better__result = find_best_solution(rule=c_or_better, ctx=claimed_context)
         if c_or_better__result is None:

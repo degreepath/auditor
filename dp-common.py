@@ -52,7 +52,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 if e['area_code'] == area_code
             ]
 
-            area = AreaOfStudy.load(specification=area_spec, c=constants, other_areas=area_pointers)
+            area = AreaOfStudy.load(specification=area_spec, c=constants, areas=area_pointers)
             area.validate()
 
             transcript = attach_attributes(area, primary_transcript)
