@@ -40,7 +40,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 with open(area_file, "r", encoding="utf-8") as infile:
                     area_spec = yaml.load(stream=infile, Loader=yaml.SafeLoader)
             except FileNotFoundError:
-                yield AreaFileNotFoundMsg(area_file=os.path.basename(area_file), stnum=student['stnum'])
+                yield AreaFileNotFoundMsg(area_file=f"{os.path.dirname(area_file)}/{os.path.basename(area_file)}", stnum=student['stnum'])
                 return
 
             area_code = pathlib.Path(area_file).stem
