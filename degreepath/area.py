@@ -89,6 +89,10 @@ class AreaOfStudy(Base):
                 clauses.append(item)
             multicountable.append(clauses)
 
+        extra_keys = set(specification.keys()).difference(['name', 'type', 'catalog', 'major', 'degree', 'emphases', 'result', 'requirements', 'limit', 'attributes'])
+        if extra_keys:
+            raise TypeError(f'expected no extra keys; got {extra_keys}')
+
         return AreaOfStudy(
             name=specification.get('name', 'Test'),
             kind=specification.get('type', 'test'),
