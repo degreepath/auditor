@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, Sequence, Iterator, Collection, Optional, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, List, Collection, Optional, TYPE_CHECKING
 import logging
 
 from ..clause import load_clause
@@ -38,6 +38,9 @@ class AssertionRule(Rule, BaseAssertionRule):
         if self.where:
             self.where.validate(ctx=ctx)
         self.assertion.validate(ctx=ctx)
+
+    def get_requirement_names(self) -> List[str]:
+        return []
 
     def estimate(self, *, ctx: 'RequirementContext') -> int:
         logger.debug('AssertionRule.estimate: 0')

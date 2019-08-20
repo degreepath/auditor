@@ -58,6 +58,11 @@ class AreaOfStudy(Base):
     @staticmethod
     def load(*, specification: Dict, c: Constants, areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
         emphases = specification.get('emphases', {})
+
+        for e in emphases.values():
+            r = AreaOfStudy.load(specification=e, c=c, areas=[])
+            r.validate()
+
         declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
 
         ctx = RequirementContext(areas=tuple(areas))
@@ -72,6 +77,11 @@ class AreaOfStudy(Base):
         )
         if result is None:
             raise TypeError(f'expected load_rule to process {specification["result"]}')
+
+        all_child_names = set(specification.get("requirements", {}).keys())
+        used_child_names = set(result.get_requirement_names())
+        unused_child_names = all_child_names.difference(used_child_names)
+        assert unused_child_names == set(), f"expected {unused_child_names} to be empty"
 
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 

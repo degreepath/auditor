@@ -1,6 +1,7 @@
 import argparse
 import traceback
 import yaml
+import sys
 from degreepath import AreaOfStudy, Constants
 
 
@@ -25,8 +26,10 @@ def main():
             print()
 
             if args.break_on_err:
-                break
+                return 1
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

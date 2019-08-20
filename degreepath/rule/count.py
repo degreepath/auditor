@@ -126,6 +126,9 @@ class CountRule(Rule, BaseCountRule):
         for rule in self.items:
             rule.validate(ctx=ctx)
 
+    def get_requirement_names(self) -> List[str]:
+        return [name for rule in self.items for name in rule.get_requirement_names()]
+
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():

@@ -55,6 +55,11 @@ class RequirementRule(Rule, BaseRequirementRule):
             if result is None:
                 return None
 
+            all_child_names = set(data.get("requirements", {}).keys())
+            used_child_names = set(result.get_requirement_names())
+            unused_child_names = all_child_names.difference(used_child_names)
+            assert unused_child_names == set(), f"expected {unused_child_names} to be empty"
+
         audited_by = None
         if data.get("department_audited", data.get("department-audited", False)):
             audited_by = AuditedBy.Department
@@ -83,6 +88,9 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         if self.result is not None:
             self.result.validate(ctx=ctx)
+
+    def get_requirement_names(self) -> List[str]:
+        return [self.name]
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
         exception = ctx.get_exception(self.path)

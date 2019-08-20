@@ -46,6 +46,9 @@ class CourseRule(Rule, BaseCourseRule):
 
         assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
+    def get_requirement_names(self) -> List[str]:
+        return []
+
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         exception = ctx.get_exception(self.path)
         if exception and exception.is_pass_override():

@@ -97,6 +97,10 @@ class Rule(Base):
         raise NotImplementedError(f'must define a validate() method')
 
     @abc.abstractmethod
+    def get_requirement_names(self) -> List[str]:
+        raise NotImplementedError(f'must define a get_requirement_names() method')
+
+    @abc.abstractmethod
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise NotImplementedError(f'must define a solutions() method')
 

@@ -83,6 +83,9 @@ class QueryRule(Rule, BaseQueryRule):
             for a in self.assertions:
                 a.validate(ctx=ctx)
 
+    def get_requirement_names(self) -> List[str]:
+        return []
+
     def get_data(self, *, ctx: 'RequirementContext') -> Sequence['Clausable']:
         if self.source_type is QuerySourceType.Courses:
             data = ctx.transcript()
