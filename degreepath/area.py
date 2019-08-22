@@ -201,6 +201,15 @@ class AreaSolution(AreaOfStudy):
             credits_message = ""
             credits_outside_major = 21
 
+        if self.degree == 'B.M.':
+            is_bm_major = True
+            su_message = "No courses in a B.M Music major may be taken S/U."
+            allowed_su_credits = 0
+        else:
+            is_bm_major = False
+            su_message = "Only one full-course equivalent (1.00-credit course) taken S/U may count toward the minimum requirements for a major."
+            allowed_su_credits = 1
+
         claimed = set(result.matched(ctx=self.context))
         unclaimed = list(set(self.context.transcript()) - claimed)
         unclaimed_context = RequirementContext().with_transcript(unclaimed)
@@ -211,7 +220,6 @@ class AreaSolution(AreaOfStudy):
             data={"requirement": "Credits at a C or higher"},
             children={
                 "Credits at a C or higher": {
-                    "audited_by": "registrar",
                     "message": "Of the credits counting toward the minimum requirements for a major, a total of six (6.00) must be completed with a grade of C or higher.",
                     "result": {
                         "from": {"student": "courses"},
@@ -232,8 +240,7 @@ class AreaSolution(AreaOfStudy):
             data={"requirement": "Credits taken S/U"},
             children={
                 "Credits taken S/U": {
-                    "audited_by": "registrar",
-                    "message": "Only one full-course equivalent (1.00-credit course) taken S/U may count toward the minimum requirements for a major.",
+                    "message": su_message,
                     "result": {
                         "from": {"student": "courses"},
                         "allow_claimed": True,
@@ -244,7 +251,7 @@ class AreaSolution(AreaOfStudy):
                                 {"credits": {"$eq": 1.00}},
                             ],
                         },
-                        "assert": {"count(courses)": {"$lte": 1}},
+                        "assert": {"count(courses)": {"$lte": allowed_su_credits}},
                     },
                 },
             },
@@ -254,25 +261,32 @@ class AreaSolution(AreaOfStudy):
         if s_u_credits is None:
             raise TypeError('expected s_u_credits to not be None')
 
-        outside_the_major = load_rule(
-            data={"requirement": "Credits outside the major"},
-            children={
-                "Credits outside the major": {
-                    "audited_by": "registrar",
-                    "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major.{credits_message}",
-                    "result": {
-                        "from": {"student": "courses"},
-                        "allow_claimed": True,
-                        "claim": False,
-                        "assert": {"sum(credits)": {"$gte": credits_outside_major}},
+        if not is_bm_major:
+            outside_the_major = load_rule(
+                data={"requirement": "Credits outside the major"},
+                children={
+                    "Credits outside the major": {
+                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major.{credits_message}",
+                        "result": {
+                            "from": {"student": "courses"},
+                            "allow_claimed": True,
+                            "claim": False,
+                            "assert": {"sum(credits)": {"$gte": credits_outside_major}},
+                        },
                     },
                 },
-            },
-            path=['$', '%Common Requirements', '.count', '[2]'],
-            c=c,
-        )
-        if outside_the_major is None:
-            raise TypeError('expected outside_the_major to not be None')
+                path=['$', '%Common Requirements', '.count', '[2]'],
+                c=c,
+            )
+            if outside_the_major is None:
+                raise TypeError('expected outside_the_major to not be None')
+
+            outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=unclaimed_context)
+            if outside_the_major__result is None:
+                raise TypeError('no solutions found for outside_the_major__result rule')
+            unclaimed_context.reset_claims()
+        else:
+            outside_the_major__result = None
 
         c_or_better__result = find_best_solution(rule=c_or_better, ctx=claimed_context)
         if c_or_better__result is None:
@@ -284,10 +298,7 @@ class AreaSolution(AreaOfStudy):
             raise TypeError('no solutions found for s_u_credits__result rule')
         claimed_context.reset_claims()
 
-        outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=unclaimed_context)
-        if outside_the_major__result is None:
-            raise TypeError('no solutions found for outside_the_major__result rule')
-        unclaimed_context.reset_claims()
+        items = [r for r in [c_or_better__result, s_u_credits__result, outside_the_major__result] if r is not None]
 
         return RequirementResult(
             name="Common Requirements",
@@ -298,16 +309,12 @@ class AreaSolution(AreaOfStudy):
             overridden=False,
             result=CountResult(
                 path=('$', '%Common Requirements', '.count'),
-                count=3,
+                count=len(items),
                 at_most=False,
                 audit_clauses=tuple(),
                 audit_results=tuple(),
                 overridden=False,
-                items=tuple([
-                    c_or_better__result,
-                    s_u_credits__result,
-                    outside_the_major__result,
-                ]),
+                items=tuple(items),
             ),
         )
 
