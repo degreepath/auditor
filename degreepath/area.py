@@ -193,30 +193,6 @@ class AreaSolution(AreaOfStudy):
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
     def audit_common_major_requirements(self, result: Result, other_areas: Sequence[AreaPointer] = tuple()) -> RequirementResult:
-        """
-        Of the credits counting toward the minimum requirements for a major, a
-        total of six (6.00) must be completed with a grade of C or higher.
-
-        Only one full-course equivalent (1.00-credit course) taken S/U may
-        count toward the minimum requirements for a major. Some departments
-        have more stringent regulations.
-
-        While the maximum course credits counting toward a major in any one
-        department may vary, 21 total credits must be completed outside of the
-        SIS "department" code of the major. The 21 total credits include
-        Education Department courses attending the major. In order for a
-        student to be certified in a second or third major, 21 credits also
-        must be taken outside of the SIS "department" code of each of those
-        majors as well. If a student has a double major, courses taken in one
-        major count toward the 21 credits outside of the other major. Credits
-        outside the major department or program include full- (1.00) credit
-        courses plus partial- (.25, .50, .75) credit courses. Students who
-        double-major in studio art and art history are required to complete at
-        least 18 full-course credits outside the SIS "ART" department
-        designation.
-
-        """
-
         other_area_codes = set(p.code for p in other_areas)
         if '140' in other_area_codes and '135' in other_area_codes:
             credits_message = " Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART' subject code."
