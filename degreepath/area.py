@@ -33,7 +33,6 @@ class AreaOfStudy(Base):
 
     limit: LimitSet
     result: Any  # Rule
-    attributes: Dict[str, Dict[str, List[str]]]
     multicountable: List[List[SingleClause]]
     path: Tuple[str, ...]
 
@@ -110,7 +109,6 @@ class AreaOfStudy(Base):
             major=specification.get('major', None),
             degree=specification.get('degree', None),
             result=result,
-            attributes=attributes,
             multicountable=multicountable,
             limit=limit,
             path=('$',)
@@ -177,7 +175,6 @@ class AreaSolution(AreaOfStudy):
             degree=area.degree,
             limit=area.limit,
             result=area.result,
-            attributes=area.attributes,
             multicountable=area.multicountable,
             path=area.path,
             solution=solution,
@@ -357,7 +354,6 @@ class AreaResult(AreaOfStudy, Result):
             major=area.major,
             degree=area.degree,
             limit=area.limit,
-            attributes=area.attributes,
             multicountable=area.multicountable,
             path=area.path,
             context=ctx,
