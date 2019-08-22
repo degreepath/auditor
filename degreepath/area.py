@@ -82,9 +82,9 @@ class AreaOfStudy(Base):
 
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
-        attributes = specification.get("attributes", dict())
-        multicountable: List[List[SingleClause]] = []
-        for ruleset in attributes.get("multicountable", []):
+        multicountable_rules = specification.get("attributes", {}).get("multicountable", [])
+        multicountable_clauses: List[List[SingleClause]] = []
+        for ruleset in multicountable_rules:
             clauses = []
             for clause in ruleset:
                 if "course" in clause:
@@ -94,7 +94,7 @@ class AreaOfStudy(Base):
                 else:
                     raise Exception(f"invalid multicountable {clause}")
                 clauses.append(item)
-            multicountable.append(clauses)
+            multicountable_clauses.append(clauses)
 
         extra_keys = set(specification.keys()).difference(['name', 'type', 'catalog', 'major', 'degree', 'emphases', 'result', 'requirements', 'limit', 'attributes'])
         if extra_keys:
@@ -106,7 +106,7 @@ class AreaOfStudy(Base):
             major=specification.get('major', None),
             degree=specification.get('degree', None),
             result=result,
-            multicountable=multicountable,
+            multicountable=multicountable_clauses,
             limit=limit,
             path=('$',)
         )
