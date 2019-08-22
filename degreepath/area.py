@@ -27,7 +27,6 @@ class AreaOfStudy(Base):
     """The overall class for working with an area"""
     name: str
     kind: str
-    catalog: str
     major: Optional[str]
     degree: Optional[str]
 
@@ -41,7 +40,6 @@ class AreaOfStudy(Base):
             **super().to_dict(),
             "name": self.name,
             "kind": self.kind,
-            "catalog": self.catalog,
             "major": self.major,
             "degree": self.degree,
             "result": self.result.to_dict(),
@@ -105,7 +103,6 @@ class AreaOfStudy(Base):
         return AreaOfStudy(
             name=specification.get('name', 'Test'),
             kind=specification.get('type', 'test'),
-            catalog=specification.get('catalog', '2000-01'),
             major=specification.get('major', None),
             degree=specification.get('degree', None),
             result=result,
@@ -170,7 +167,6 @@ class AreaSolution(AreaOfStudy):
         return AreaSolution(
             name=area.name,
             kind=area.kind,
-            catalog=area.catalog,
             major=area.major,
             degree=area.degree,
             limit=area.limit,
@@ -350,7 +346,6 @@ class AreaResult(AreaOfStudy, Result):
         return AreaResult(
             name=area.name,
             kind=area.kind,
-            catalog=area.catalog,
             major=area.major,
             degree=area.degree,
             limit=area.limit,
