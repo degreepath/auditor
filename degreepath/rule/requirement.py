@@ -69,6 +69,9 @@ class RequirementRule(Rule, BaseRequirementRule):
         if 'audit' in data:
             raise TypeError('you probably meant to indent that audit: key into the result: key')
 
+        if not audited_by and not result:
+            raise TypeError(f'requirements need either audited_by or result (at {path})')
+
         return RequirementRule(
             name=name,
             message=data.get("message", None),
