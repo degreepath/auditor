@@ -18,16 +18,19 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def load_clause(data: Dict[str, Any], c: Constants) -> 'Clause':
+def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True) -> 'Clause':
     if not isinstance(data, Mapping):
         raise Exception(f'expected {data} to be a dictionary')
 
+    if not allow_boolean and ('$and' in data or '$or' in data):
+        raise ValueError('$and / $or clauses are not allowed here')
+
     if "$and" in data:
         assert len(data.keys()) == 1
-        return AndClause.load(data["$and"], c)
+        return AndClause.load(data["$and"], c, allow_boolean)
     elif "$or" in data:
         assert len(data.keys()) == 1
-        return OrClause.load(data["$or"], c)
+        return OrClause.load(data["$or"], c, allow_boolean)
 
     clauses = [SingleClause.load(key, value, c) for key, value in data.items()]
 
@@ -78,8 +81,8 @@ class AndClause(_Clause, ResolvedClause):
         }
 
     @staticmethod
-    def load(data: List[Dict], c: Constants) -> 'AndClause':
-        clauses = [load_clause(clause, c) for clause in data]
+    def load(data: List[Dict], c: Constants, allow_boolean: bool = True) -> 'AndClause':
+        clauses = [load_clause(clause, c, allow_boolean) for clause in data]
         return AndClause(children=tuple(clauses))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -114,8 +117,8 @@ class OrClause(_Clause, ResolvedClause):
         }
 
     @staticmethod
-    def load(data: Dict, c: Constants) -> 'OrClause':
-        clauses = [load_clause(clause, c) for clause in data]
+    def load(data: Dict, c: Constants, allow_boolean: bool = True) -> 'OrClause':
+        clauses = [load_clause(clause, c, allow_boolean) for clause in data]
         return OrClause(children=tuple(clauses))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

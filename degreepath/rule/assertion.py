@@ -30,7 +30,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         if where is not None:
             where = load_clause(where, c)
 
-        assertion = load_clause(data["assert"], c)
+        assertion = load_clause(data["assert"], c, allow_boolean=False)
 
         return AssertionRule(assertion=assertion, where=where, path=tuple(path))
 
