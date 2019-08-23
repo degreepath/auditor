@@ -99,66 +99,21 @@ def test_solution_count_exact(caplog):
         next(solutions)
 
 
-def test_solution_count_lessthan_3(caplog):
+def test_solution_count_lessthan(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
-    area, transcript = __get_data("""
-        result:
-            from: {student: courses}
-            where: {gereqs: {$eq: SPM}}
-            assert: {count(courses): {$lt: 3}}
-    """)
+    with pytest.raises(ValueError):
+        area, transcript = __get_data("""
+            result:
+                requirement: Test
 
-    count = sum(1 for _ in area.solutions(transcript=transcript, areas=[], exceptions=[]))
-
-    assert count == 7
-
-
-def test_solution_count_lessthan_1(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
-
-    area, transcript = __get_data("""
-        result:
-            from: {student: courses}
-            where: {gereqs: {$eq: SPM}}
-            assert: {count(courses): {$lt: 1}}
-    """)
-
-    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
-
-    sol = next(solutions)
-    assert len(sol.solution.output) == 0
-
-    with pytest.raises(StopIteration):
-        next(solutions)
-
-
-def test_solution_count_lessthanequal_1(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
-
-    area, transcript = __get_data("""
-        result:
-            from: {student: courses}
-            where: {gereqs: {$eq: SPM}}
-            assert: {count(courses): {$lte: 1}}
-    """)
-
-    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
-
-    sol = next(solutions)
-    assert len(sol.solution.output) == 0
-
-    sol = next(solutions)
-    assert len(sol.solution.output) == 1
-
-    sol = next(solutions)
-    assert len(sol.solution.output) == 1
-
-    sol = next(solutions)
-    assert len(sol.solution.output) == 1
-
-    with pytest.raises(StopIteration):
-        next(solutions)
+            requirements:
+                Test:
+                    result:
+                        from: {student: courses}
+                        where: {gereqs: {$eq: SPM}}
+                        assert: {count(courses): {$lt: 3}}
+        """)
 
 
 def test_solution_count_greaterthan_1(caplog):
