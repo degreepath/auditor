@@ -4,6 +4,7 @@ import logging
 
 from ..clause import load_clause
 from ..constants import Constants
+from ..operator import Operator
 from ..base.bases import Rule, Solution
 from ..base.assertion import BaseAssertionRule
 
@@ -30,7 +31,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         if where is not None:
             where = load_clause(where, c)
 
-        assertion = load_clause(data["assert"], c, allow_boolean=False)
+        assertion = load_clause(data["assert"], c, allow_boolean=False, forbid=[Operator.LessThan])
 
         return AssertionRule(assertion=assertion, where=where, path=tuple(path))
 

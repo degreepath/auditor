@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Iterator, cast, TYPE_CHECKING
+from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True) -> 'Clause':
+def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'Clause':
     if not isinstance(data, Mapping):
         raise Exception(f'expected {data} to be a dictionary')
 
@@ -27,12 +27,12 @@ def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True) 
 
     if "$and" in data:
         assert len(data.keys()) == 1
-        return AndClause.load(data["$and"], c, allow_boolean)
+        return AndClause.load(data["$and"], c, allow_boolean, forbid)
     elif "$or" in data:
         assert len(data.keys()) == 1
-        return OrClause.load(data["$or"], c, allow_boolean)
+        return OrClause.load(data["$or"], c, allow_boolean, forbid)
 
-    clauses = [SingleClause.load(key, value, c) for key, value in data.items()]
+    clauses = [SingleClause.load(key, value, c, forbid) for key, value in data.items()]
 
     if len(clauses) == 1:
         return clauses[0]
@@ -81,8 +81,8 @@ class AndClause(_Clause, ResolvedClause):
         }
 
     @staticmethod
-    def load(data: List[Dict], c: Constants, allow_boolean: bool = True) -> 'AndClause':
-        clauses = [load_clause(clause, c, allow_boolean) for clause in data]
+    def load(data: List[Dict], c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'AndClause':
+        clauses = [load_clause(clause, c, allow_boolean, forbid) for clause in data]
         return AndClause(children=tuple(clauses))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -117,8 +117,8 @@ class OrClause(_Clause, ResolvedClause):
         }
 
     @staticmethod
-    def load(data: Dict, c: Constants, allow_boolean: bool = True) -> 'OrClause':
-        clauses = [load_clause(clause, c, allow_boolean) for clause in data]
+    def load(data: Dict, c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'OrClause':
+        clauses = [load_clause(clause, c, allow_boolean, forbid) for clause in data]
         return OrClause(children=tuple(clauses))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -166,7 +166,7 @@ class SingleClause(_Clause, ResolvedClause):
         }
 
     @staticmethod  # noqa: C901
-    def load(key: str, value: Any, c: Constants) -> 'SingleClause':
+    def load(key: str, value: Any, c: Constants, forbid: Sequence[Operator] = tuple()) -> 'SingleClause':
         if not isinstance(value, Dict):
             raise Exception(f'expected {value} to be a dictionary')
 
@@ -180,6 +180,9 @@ class SingleClause(_Clause, ResolvedClause):
 
         operator = Operator(op)
         expected_value = value[op]
+
+        if operator in forbid:
+            raise ValueError(f'operator {operator} is forbidden here')
 
         if isinstance(expected_value, list):
             expected_value = tuple(expected_value)
