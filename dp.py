@@ -7,7 +7,7 @@ import sys
 import os
 
 from degreepath import pretty_ms, summarize
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
@@ -61,6 +61,9 @@ def main() -> int:
             if not cli_args.quiet:
                 logger.critical("%s %s", msg.ex, msg.tb)
             return 1
+
+        elif isinstance(msg, AreaFileNotFoundMsg):
+            pass
 
         elif isinstance(msg, ProgressMsg):
             if cli_args.tracemalloc_init:
