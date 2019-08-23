@@ -11,7 +11,6 @@ def test_load():
     test_data = io.StringIO(
         """
         name: foo
-        catalog: 2018-19
         type: major
         degree: B.A.
 
@@ -45,7 +44,6 @@ def test_invalid():
         test_data = io.StringIO(
             """
             name: foo
-            catalog: 2018-19
             type: major
             degree: B.A.
 
