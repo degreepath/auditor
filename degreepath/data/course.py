@@ -178,6 +178,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     grade_code = data['grade_code']
     grade_option = data['grade_option']
     grade_points = data['grade_points']
+    level = data['level']
     name = data['name']
     number = data['number']
     section = data['section']
@@ -202,12 +203,6 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     verbatim_subject_field = subjects
     subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
     subject = tuple(expand_subjects(subject))
-
-    try:
-        level = int(number) // 100 * 100
-        level = level if flag_stolaf else 0
-    except Exception:
-        level = 0
 
     attributes = tuple(attributes) if attributes else tuple()
     gereqs = tuple(gereqs) if gereqs else tuple()
@@ -255,6 +250,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
 
 
 def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
+    number = s.split(' ')[1]
     return load_course({
         "attributes": tuple(),
         "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
@@ -270,6 +266,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "grade_code": "B",
         "grade_option": GradeOption.Grade,
         "grade_points": str_to_grade_points("B"),
+        "level": int(number) // 100 * 100,
         "name": s,
         "number": s.split(' ')[1],
         "section": "",
