@@ -253,7 +253,7 @@ def sum_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> 
         items = tuple(c.credits for c in data)
         return (sum(items), items, tuple(c.clbid for c in data))
 
-    if kind == 'credits_from_most_common_subject':
+    if kind == 'credits_from_single_subject':
         assert all(isinstance(x, CourseInstance) for x in data)
         data = cast(Tuple[CourseInstance, ...], data)
         if not data:
@@ -264,14 +264,9 @@ def sum_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> 
         # subject of MUSPF, and therefore they would fail, because it should have chosen the 1.00-credit
         # subject of ART, instead.
 
-        counted = Counter(s for c in data for s in c.subject)
-        highest_count = counted.most_common(1)[0][1]
-
-        most_common_subjects = set(k for k, v in counted.items() if v == highest_count)
-
         by_credits = Counter({
             s: c.credits
-            for c in data if any(s in most_common_subjects for s in c.subject)
+            for c in data
             for s in c.subject
         })
 
