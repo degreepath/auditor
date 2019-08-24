@@ -178,7 +178,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     grade_code = data['grade_code']
     grade_option = data['grade_option']
     grade_points = data['grade_points']
-    level = data['level']
+    level = int(data['level'])
     name = data['name']
     number = data['number']
     section = data['section']
