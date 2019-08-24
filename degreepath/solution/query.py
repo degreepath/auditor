@@ -259,9 +259,24 @@ def sum_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> 
         if not data:
             return (decimal.Decimal(0), tuple([decimal.Decimal(0)]), tuple())
 
+        # There was an issue where, if someone took one MUSPF 0.25-credit course their first year,
+        # and one ART 1.00-credit course their sophomore year, this would pick the 0.25-credit-toting
+        # subject of MUSPF, and therefore they would fail, because it should have chosen the 1.00-credit
+        # subject of ART, instead.
+
         counted = Counter(s for c in data for s in c.subject)
-        most_common = sorted(counted.most_common(1))[0]
-        most_common_subject, _count = most_common
+        highest_count = counted.most_common(1)[0][1]
+
+        most_common_subjects = set(k for k, v in counted.items() if v == highest_count)
+
+        by_credits = Counter({
+            s: c.credits
+            for c in data if any(s in most_common_subjects for s in c.subject)
+            for s in c.subject
+        })
+
+        most_common_subject = by_credits.most_common(1)[0][0]
+
         items = tuple(c.credits for c in data if most_common_subject in c.subject)
         return (sum(items), items, tuple(c.clbid for c in data if most_common_subject in c.subject))
 
