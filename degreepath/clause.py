@@ -51,12 +51,14 @@ class _Clause(abc.ABC):
 class ResolvedClause:
     resolved_with: Optional[Any] = None
     resolved_items: Tuple[Any, ...] = tuple()
+    resolved_clbids: Tuple[str, ...] = tuple()
     result: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "resolved_with": str(self.resolved_with) if self.resolved_with is not None and type(self.resolved_with) is not str else self.resolved_with,
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
+            "resolved_clbids": [x for x in self.resolved_clbids],
             "result": self.result,
             "rank": self.rank(),
             "max_rank": self.max_rank(),
@@ -96,7 +98,7 @@ class AndClause(_Clause, ResolvedClause):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = all(c.result for c in children)
 
-        return AndClause(children=children, resolved_with=None, resolved_items=tuple(), result=result)
+        return AndClause(children=children, resolved_with=None, result=result)
 
     def rank(self) -> int:
         return sum(c.rank() for c in self.children)
@@ -132,7 +134,7 @@ class OrClause(_Clause, ResolvedClause):
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
         result = any(c.result for c in children)
 
-        return OrClause(children=children, resolved_with=None, resolved_items=tuple(), result=result)
+        return OrClause(children=children, resolved_with=None, result=result)
 
     def rank(self) -> int:
         return sum(c.rank() for c in self.children)
@@ -270,7 +272,7 @@ class SingleClause(_Clause, ResolvedClause):
         return str(self.expected) == str(other_clause.expected)
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'SingleClause':
-        reduced_value, value_items = map_func(clause=self, value=value)
+        reduced_value, value_items, clbids = map_func(clause=self, value=value)
         result = apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected)
 
         return SingleClause(
@@ -281,6 +283,7 @@ class SingleClause(_Clause, ResolvedClause):
             at_most=self.at_most,
             resolved_with=reduced_value,
             resolved_items=value_items,
+            resolved_clbids=clbids,
             result=result,
         )
 
@@ -362,6 +365,20 @@ def get_resolved_items(clause: Union[Dict[str, Any], 'Clause']) -> str:
         return f'({" or ".join(get_resolved_items(c) for c in clause["children"])})'
     elif clause["type"] == "and-clause":
         return f'({" and ".join(get_resolved_items(c) for c in clause["children"])})'
+
+    raise Exception('not a clause')
+
+
+def get_resolved_clbids(clause: Union[Dict[str, Any], 'Clause']) -> List[str]:
+    if not isinstance(clause, dict):
+        return get_resolved_clbids(clause.to_dict())
+
+    if clause["type"] == "single-clause":
+        return sorted(clause['resolved_clbids'])
+    elif clause["type"] == "or-clause":
+        return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
+    elif clause["type"] == "and-clause":
+        return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
 
     raise Exception('not a clause')
 

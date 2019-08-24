@@ -1,5 +1,5 @@
 from typing import List, Iterator, Any, Dict, Sequence
-from .clause import str_clause, get_resolved_items
+from .clause import str_clause, get_resolved_items, get_resolved_clbids
 from .data import CourseInstance
 from .ms import pretty_ms
 import json
@@ -159,9 +159,30 @@ def print_result(rule: Dict[str, Any], transcript: List[CourseInstance], indent:
         yield f"{prefix} - {emoji} {str_clause(rule['assertion'])}"
         if rule['where']:
             yield f"{prefix}      where {str_clause(rule['where'])}"
+
         resolved_items = get_resolved_items(rule['assertion'])
         if resolved_items:
             yield f"{prefix}      resolved items: {resolved_items}"
+
+        resolved_clbids = get_resolved_clbids(rule['assertion'])
+        if resolved_clbids:
+            def key(c: CourseInstance) -> str:
+                return ''
+            if rule['assertion']['key'] == 'sum(credits)':
+                def key(c: CourseInstance) -> str:  # noqa F811
+                    return f'credits={c.credits}'
+            elif rule['assertion']['key'] == 'average(grades)':
+                def key(c: CourseInstance) -> str:  # noqa F811
+                    return f'grade={c.grade_points}'
+
+            mapped_trns = {c.clbid: c for c in transcript}
+
+            yield f"{prefix}      resolved courses:"
+
+            for clbid in resolved_clbids:
+                course = mapped_trns[clbid]
+                chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
+                yield f'{prefix}        - Course({", ".join(chunks)})'
 
     else:
         yield json.dumps(rule, indent=2)
