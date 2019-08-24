@@ -253,6 +253,18 @@ def sum_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> 
         items = tuple(c.credits for c in data)
         return (sum(items), items, tuple(c.clbid for c in data))
 
+    if kind == 'credits_from_most_common_subject':
+        assert all(isinstance(x, CourseInstance) for x in data)
+        data = cast(Tuple[CourseInstance, ...], data)
+        if not data:
+            return (decimal.Decimal(0), tuple([decimal.Decimal(0)]), tuple())
+
+        counted = Counter(s for c in data for s in c.subject)
+        most_common = sorted(counted.most_common(1))[0]
+        most_common_subject, _count = most_common
+        items = tuple(c.credits for c in data if most_common_subject in c.subject)
+        return (sum(items), items, tuple(c.clbid for c in data if most_common_subject in c.subject))
+
     raise Exception(f'expected a valid kind; got {kind}')
 
 
