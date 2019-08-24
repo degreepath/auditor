@@ -1,6 +1,6 @@
 import attr
 from typing import List, Sequence, Any, Tuple, Collection, Union, Set, FrozenSet, Dict, cast, TYPE_CHECKING
-from collections import Counter
+from collections import Counter, defaultdict
 import logging
 import decimal
 
@@ -259,21 +259,19 @@ def sum_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> 
         if not data:
             return (decimal.Decimal(0), tuple([decimal.Decimal(0)]), tuple())
 
-        # There was an issue where, if someone took one MUSPF 0.25-credit course their first year,
-        # and one ART 1.00-credit course their sophomore year, this would pick the 0.25-credit-toting
-        # subject of MUSPF, and therefore they would fail, because it should have chosen the 1.00-credit
-        # subject of ART, instead.
+        # This should sort the subjects by the number of credits under that
+        # subject code, then pick the one with the most credits as the "single_subject"
 
-        by_credits = Counter({
-            s: c.credits
-            for c in data
-            for s in c.subject
-        })
+        by_credits: Dict[str, decimal.Decimal] = defaultdict(decimal.Decimal)
 
-        most_common_subject = by_credits.most_common(1)[0][0]
+        for c in data:
+            for s in c.subject:
+                by_credits[s] += c.credits
 
-        items = tuple(c.credits for c in data if most_common_subject in c.subject)
-        return (sum(items), items, tuple(c.clbid for c in data if most_common_subject in c.subject))
+        best_subject = max(by_credits.keys(), key=lambda subject: by_credits[subject])
+
+        items = tuple(c.credits for c in data if best_subject in c.subject)
+        return (sum(items), items, tuple(c.clbid for c in data if best_subject in c.subject))
 
     raise Exception(f'expected a valid kind; got {kind}')
 
