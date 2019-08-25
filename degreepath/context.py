@@ -5,7 +5,6 @@ import logging
 
 from .data import CourseInstance, AreaPointer
 from .base import BaseCourseRule
-from .rule.course import CourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
 from .operator import Operator
