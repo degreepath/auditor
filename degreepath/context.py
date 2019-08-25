@@ -100,7 +100,7 @@ class RequirementContext:
 
         # coerce course rules to clauses
         rule = None
-        if isinstance(clause, CourseRule):
+        if isinstance(clause, BaseCourseRule):
             rule = clause
             clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
@@ -116,6 +116,7 @@ class RequirementContext:
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
         if allow_claimed or getattr(rule, 'allow_claimed', False):
+            if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
             return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
 
         prior_claims = frozenset(self.claims[course.clbid])
