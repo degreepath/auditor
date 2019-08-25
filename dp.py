@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
-def main() -> int:
+def main() -> int:  # noqa: C901
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
@@ -31,6 +31,10 @@ def main() -> int:
     parser.add_argument("-q", "--quiet", action='store_true')
     parser.add_argument("--tracemalloc-init", action='store_true')
     parser.add_argument("--tracemalloc-end", action='store_true')
+    parser.add_argument("--show-paths", dest='show_paths', action='store_const', const=True, default=True)
+    parser.add_argument("--hide-paths", dest='show_paths', action='store_const', const=False)
+    parser.add_argument("--show-ranks", dest='show_ranks', action='store_const', const=True, default=True)
+    parser.add_argument("--hide-ranks", dest='show_ranks', action='store_const', const=False)
     cli_args = parser.parse_args()
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
@@ -83,7 +87,14 @@ def main() -> int:
                 return 0
 
             if not cli_args.quiet:
-                print(result_str(msg, as_json=cli_args.json, as_raw=cli_args.raw, gpa_only=cli_args.gpa))
+                print(result_str(
+                    msg,
+                    as_json=cli_args.json,
+                    as_raw=cli_args.raw,
+                    gpa_only=cli_args.gpa,
+                    show_paths=cli_args.show_paths,
+                    show_ranks=cli_args.show_ranks,
+                ))
 
         elif isinstance(msg, EstimateMsg):
             if not cli_args.quiet:
@@ -97,7 +108,14 @@ def main() -> int:
     return 0
 
 
-def result_str(msg: ResultMsg, *, as_json: bool = False, as_raw: bool = False, gpa_only: bool = False) -> str:
+def result_str(
+    msg: ResultMsg, *,
+    as_json: bool,
+    as_raw: bool,
+    gpa_only: bool,
+    show_paths: bool,
+    show_ranks: bool,
+) -> str:
     if gpa_only:
         return f"GPA: {msg.result.gpa()}"
 
@@ -109,7 +127,15 @@ def result_str(msg: ResultMsg, *, as_json: bool = False, as_raw: bool = False, g
     if as_raw:
         return repr(msg.result)
 
-    return "\n" + "".join(summarize(result=dict_result, transcript=msg.transcript, count=msg.count, elapsed=msg.elapsed, iterations=msg.iterations))
+    return "\n" + "".join(summarize(
+        result=dict_result,
+        transcript=msg.transcript,
+        count=msg.count,
+        elapsed=msg.elapsed,
+        iterations=msg.iterations,
+        show_paths=show_paths,
+        show_ranks=show_ranks,
+    ))
 
 
 def display_top(snapshot: Any, key_type: str = 'lineno', limit: int = 10) -> None:
