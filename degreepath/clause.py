@@ -80,6 +80,7 @@ class AndClause(_Clause, ResolvedClause):
             **super().to_dict(),
             "type": "and-clause",
             "children": [c.to_dict() for c in self.children],
+            "hash": str(hash(self.children)),
         }
 
     @staticmethod
@@ -116,6 +117,7 @@ class OrClause(_Clause, ResolvedClause):
             **super().to_dict(),
             "type": "or-clause",
             "children": [c.to_dict() for c in self.children],
+            "hash": str(hash(self.children)),
         }
 
     @staticmethod
@@ -165,6 +167,7 @@ class SingleClause(_Clause, ResolvedClause):
             "expected": expected,
             "expected_verbatim": self.expected_verbatim,
             "operator": self.operator.name,
+            "hash": str(hash((self.key, self.expected, self.operator))),
         }
 
     @staticmethod  # noqa: C901

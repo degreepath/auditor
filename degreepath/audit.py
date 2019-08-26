@@ -1,5 +1,5 @@
 import attr
-from typing import List, Optional, Tuple, Sequence, Iterator, Union, cast
+from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any, cast
 from datetime import datetime
 import time
 
@@ -8,6 +8,7 @@ from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
 from .ms import pretty_ms
 from .data import CourseInstance, AreaPointer
+from .discover_potentials import discover_clause_potential
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -38,6 +39,7 @@ class ResultMsg:
     elapsed: str
     iterations: List[float]
     startup_time: float
+    potentials_for_all_clauses: Dict[int, Dict[str, Any]]
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -91,6 +93,8 @@ def audit(
     iter_start = time.perf_counter()
     startup_time = 0.00
 
+    potentials_for_all_clauses = discover_clause_potential(area, c=constants)
+
     # estimate = area.estimate(transcript=this_transcript, areas=tuple(area_pointers))
     # yield EstimateMsg(estimate=estimate)
 
@@ -122,6 +126,7 @@ def audit(
                 elapsed='∞',
                 iterations=[],
                 startup_time=startup_time,
+                potentials_for_all_clauses=potentials_for_all_clauses,
             )
 
         if best_sol is None:
@@ -154,4 +159,5 @@ def audit(
         elapsed=elapsed,
         iterations=iterations,
         startup_time=startup_time,
+        potentials_for_all_clauses=potentials_for_all_clauses,
     )
