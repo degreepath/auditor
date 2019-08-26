@@ -43,6 +43,9 @@ class RequirementContext:
     def find_course(self, c: str) -> Optional[CourseInstance]:
         return self.course_lookup_map_.get(c, None)
 
+    def find_all_courses(self, c: str) -> Iterator[CourseInstance]:
+        yield from (crs for crs in self.transcript() if crs.course_shorthand() == c or crs.course() == c)
+
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self.clbid_lookup_map_.get(clbid, None)
 
