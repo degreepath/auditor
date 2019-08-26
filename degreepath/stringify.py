@@ -124,9 +124,9 @@ def print_course(
             elif course.is_incomplete:
                 status = "⛔️ [dnf]"
             elif course.is_in_progress:
-                status = "💚 [ ip]"
+                status = "💙 [ ip]"
             elif course.is_repeat:
-                status = "💚 [rep]"
+                status = "💕 [rep]"
             else:
                 status = "💚 [ ok]"
         else:
