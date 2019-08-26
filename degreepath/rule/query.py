@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryRule(Rule, BaseQueryRule):
+    load_potentials: bool
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "from" in data:
@@ -66,6 +68,8 @@ class QueryRule(Rule, BaseQueryRule):
         source_type = QuerySourceType(source_data["student"])
         source_repeats = QuerySourceRepeatMode(source_data.get('repeats', 'all'))
 
+        load_potentials = data.get('load_potentials', True)
+
         return QueryRule(
             source=source,
             source_type=source_type,
@@ -75,6 +79,7 @@ class QueryRule(Rule, BaseQueryRule):
             where=where,
             allow_claimed=allow_claimed,
             attempt_claims=attempt_claims,
+            load_potentials=load_potentials,
             path=tuple(path),
         )
 
