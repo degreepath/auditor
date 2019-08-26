@@ -301,8 +301,8 @@ class AreaSolution(AreaOfStudy):
         items = [r for r in [c_or_better__result, s_u_credits__result, outside_the_major__result] if r is not None]
 
         return RequirementResult(
-            name="Common Requirements",
-            message="The following requirements are common to all majors offered at St. Olaf College.",
+            name=f"Common {self.degree} Major Requirements",
+            message=None,
             path=('$', '%Common Requirements'),
             audited_by=None,
             is_contract=False,
