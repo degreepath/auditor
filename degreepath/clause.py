@@ -203,6 +203,11 @@ class SingleClause(_Clause, ResolvedClause):
         elif isinstance(expected_value, Iterable):
             expected_value = tuple(c.get_by_name(v) for v in expected_value)
 
+        if operator is Operator.In or operator is Operator.NotIn:
+            assert all(v is not None for v in expected_value)
+        else:
+            assert expected_value is not None
+
         if key == 'grade':
             expected_value = str_to_grade_points(expected_value) if type(expected_value) is str else decimal.Decimal(expected_value)
         elif key == 'grade_option':
