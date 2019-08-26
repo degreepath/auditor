@@ -5,6 +5,7 @@ import runpy
 import json
 import sys
 import os
+import dotenv
 
 from degreepath import pretty_ms, summarize
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
@@ -12,7 +13,6 @@ from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionM
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
 
-import dotenv
 dotenv.load_dotenv(verbose=False)
 
 logger = logging.getLogger(__name__)
