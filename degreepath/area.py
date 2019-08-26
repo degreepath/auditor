@@ -225,7 +225,12 @@ class AreaSolution(AreaOfStudy):
                         "from": {"student": "courses"},
                         "allow_claimed": True,
                         "claim": False,
-                        "where": {"grade": {"$gte": "C"}},
+                        "where": {
+                            "$and": [
+                                {"grade": {"$gte": "C"}},
+                                {"credits": {"$gt": 0}},
+                            ],
+                        },
                         "assert": {"count(courses)": {"$gte": 6}},
                     },
                 },
