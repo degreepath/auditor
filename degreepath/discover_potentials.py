@@ -37,10 +37,8 @@ def discover_clause_potential(area: AreaOfStudy, c: Constants) -> Dict[int, Dict
 
         if 'hash' in parsed and parsed['error'] is False:
             result[parsed['hash']] = {'error': False, 'clbids': parsed['clbids']}
-        elif 'hash' in parsed and parsed['error'] is True:
-            result[parsed['hash']] = {'error': True, 'clbids': []}
         else:
-            result[dict_clause['hash']] = {'error': True, 'clbids': []}
+            raise ValueError(parsed)
 
     return result
 
