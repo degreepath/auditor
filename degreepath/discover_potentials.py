@@ -1,12 +1,14 @@
 from typing import Any, Iterator, Union, Dict
 import requests
 import os
+import attr
 
 from .constants import Constants
 from .area import AreaOfStudy
 
-from .base import Base, BaseRequirementRule, BaseCountRule, BaseQueryRule
+from .base import Base, BaseRequirementRule, BaseCountRule
 from .base.query import QuerySourceType
+from .rule.query import QueryRule
 from .clause import ResolvedClause, AndClause, OrClause, SingleClause
 from .operator import Operator
 import json
@@ -50,12 +52,27 @@ def find_all_clauses(rule: Union[Base, ResolvedClause]) -> Iterator[ResolvedClau
     elif isinstance(rule, BaseCountRule):
         for child in rule.items:
             yield from find_all_clauses(child)
-    elif isinstance(rule, BaseQueryRule):
+    elif isinstance(rule, QueryRule):
         if rule.source_type is QuerySourceType.Courses:
-            if rule.where:
+            if rule.where and rule.load_potentials:
                 yield from find_all_clauses(rule.where)
     elif isinstance(rule, ResolvedClause):
-        yield rule
+        yield from strip_pointless_clauses(rule)
+
+
+def strip_pointless_clauses(clause: ResolvedClause) -> Iterator[ResolvedClause]:
+    if isinstance(clause, (AndClause, OrClause)):
+        children = []
+        for c in clause.children:
+            for good_clause in strip_pointless_clauses(c):
+                children.append(good_clause)
+        yield attr.evolve(clause, children=tuple(children))
+
+    elif isinstance(clause, SingleClause):
+        if clause.key in ('credits', 'grade_option', 's/u', 'is_stolaf'):
+            return
+
+        yield clause
 
 
 def extract_positive_buckets(clause: ResolvedClause) -> Iterator[str]:
