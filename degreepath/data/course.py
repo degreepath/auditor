@@ -151,6 +151,9 @@ class CourseInstance(Clausable):
         if clause.key == 'is_stolaf':
             return clause.compare(self.is_stolaf)
 
+        if clause.key == 'is_in_gpa':
+            return clause.compare(self.is_in_gpa)
+
         if clause.key == 'year':
             return clause.compare(self.year)
 
