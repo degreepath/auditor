@@ -203,6 +203,11 @@ def print_query(
     if rule['where'] is not None:
         yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
+    if rule['limit'] is not None:
+        yield f"{prefix} Subject to these limits:"
+        for limit in rule['limit']:
+            yield f"{prefix} - at most {limit['at_most']} where {str_clause(limit['where'])}"
+
     if rule["status"] in ("pending"):
         yield f'{prefix}[skipped]'
         return
