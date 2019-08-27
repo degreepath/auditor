@@ -217,6 +217,8 @@ class SingleClause(_Clause, ResolvedClause):
             expected_value = GradeOption(expected_value)
         elif key == 'credits':
             expected_value = decimal.Decimal(expected_value)
+        elif key == 'gpa':
+            expected_value = decimal.Decimal(expected_value)
 
         return SingleClause(
             key=key,

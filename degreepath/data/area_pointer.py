@@ -1,6 +1,7 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import attr
 import logging
+import decimal
 
 from ..clause import Clause, SingleClause, AndClause, OrClause
 from .area_enums import AreaStatus, AreaType
@@ -16,6 +17,7 @@ class AreaPointer(Clausable):
     kind: AreaType
     name: str
     degree: str
+    gpa: Optional[decimal.Decimal]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -28,13 +30,14 @@ class AreaPointer(Clausable):
         }
 
     @staticmethod
-    def from_dict(*, code: str, status: str, kind: str, name: str, degree: str) -> 'AreaPointer':
+    def from_dict(*, code: str, status: str, kind: str, name: str, degree: str, gpa: Optional[str] = None) -> 'AreaPointer':
         return AreaPointer(
             code=code,
             status=AreaStatus(status),
             kind=AreaType(kind),
             name=name,
             degree=degree,
+            gpa=decimal.Decimal(gpa) if gpa is not None else None,
         )
 
     def apply_clause(self, clause: Clause) -> bool:
@@ -57,6 +60,11 @@ class AreaPointer(Clausable):
                 return clause.compare(self.name)
             elif clause.key == 'degree':
                 return clause.compare(self.degree)
+            elif clause.key == 'gpa':
+                if self.gpa is not None:
+                    return clause.compare(self.gpa)
+                else:
+                    return False
 
             raise TypeError(f"expected to get one of {list(self.__dict__.keys())}; got {clause.key}")
 
