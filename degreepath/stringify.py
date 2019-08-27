@@ -112,27 +112,31 @@ def print_course(
     if show_ranks:
         prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
 
+    display_course = rule['course']
+
     status = "🌀      "
     if rule["ok"]:
-        if not rule["overridden"]:
-            claim = rule["claims"][0]["claim"]
-            mapped_trns = {c.clbid: c for c in transcript}
-            course = mapped_trns.get(claim["clbid"], None)
+        mapped_trns = {c.clbid: c for c in transcript}
+        claim = rule["claims"][0]["claim"]
+        course = mapped_trns.get(claim["clbid"], None)
 
-            if not course:
-                status = "!!!!!!! "
-            elif course.is_incomplete:
-                status = "⛔️ [dnf]"
-            elif course.is_in_progress:
-                status = "💙 [ ip]"
-            elif course.is_repeat:
-                status = "💕 [rep]"
+        if not rule["overridden"]:
+            if course is not None:
+                if course.is_incomplete:
+                    status = "⛔️ [dnf]"
+                elif course.is_in_progress:
+                    status = "💙 [ ip]"
+                elif course.is_repeat:
+                    status = "💕 [rep]"
+                else:
+                    status = "💚 [ ok]"
             else:
-                status = "💚 [ ok]"
+                status = "!!!!!!! "
         else:
             status = "💜 [ovr]"
+            display_course = course.course() if course else '???!!!'
 
-    yield f"{prefix}{status} {rule['course']}"
+    yield f"{prefix}{status} {display_course}"
 
 
 def print_count(
