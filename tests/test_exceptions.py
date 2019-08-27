@@ -29,7 +29,7 @@ def test_insertion_on_course_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.was_overridden() is True
     assert result.claims()[0].claim.clbid == course_b.clbid
 
 
