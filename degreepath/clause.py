@@ -230,7 +230,7 @@ class SingleClause(_Clause, ResolvedClause):
 
     def rank(self) -> int:
         if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
-            return int(self.resolved_with)
+            return decimal.Decimal(self.resolved_with)
 
         if self.result is True:
             return 1
