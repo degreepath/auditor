@@ -1,6 +1,7 @@
 import attr
 from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any, cast
 from datetime import datetime
+from decimal import Decimal
 import time
 
 from .constants import Constants
@@ -58,7 +59,7 @@ class ProgressMsg:
     count: int
     recent_iters: List[float]
     start_time: datetime
-    best_rank: int
+    best_rank: Union[int, Decimal]
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)

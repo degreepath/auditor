@@ -60,14 +60,14 @@ class ResolvedClause:
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
             "resolved_clbids": [x for x in self.resolved_clbids],
             "result": self.result,
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
+            "rank": str(self.rank()),
+            "max_rank": str(self.max_rank()),
         }
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         return 1 if self.result else 0
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         return 1
 
 
@@ -101,10 +101,10 @@ class AndClause(_Clause, ResolvedClause):
 
         return AndClause(children=children, resolved_with=None, result=result)
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() for c in self.children)
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.max_rank() for c in self.children)
 
 
@@ -138,10 +138,10 @@ class OrClause(_Clause, ResolvedClause):
 
         return OrClause(children=children, resolved_with=None, result=result)
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() for c in self.children)
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() if c.result is True else c.max_rank() for c in self.children)
 
 
@@ -228,7 +228,7 @@ class SingleClause(_Clause, ResolvedClause):
             at_most=at_most,
         )
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
             return decimal.Decimal(self.resolved_with)
 
@@ -237,7 +237,7 @@ class SingleClause(_Clause, ResolvedClause):
 
         return 0
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         if self.result is True:
             return self.rank()
 

@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CH
 import logging
 import decimal
 
-from .base import Solution, Result, Base
+from .base import Solution, Result, Base, Summable
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
@@ -362,10 +362,10 @@ class AreaResult(AreaOfStudy, Result):
 
         return self.result.ok()
 
-    def rank(self) -> int:
+    def rank(self) -> Summable:
         return self.result.rank()
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Summable:
         return self.result.max_rank()
 
     def claims(self) -> List['ClaimAttempt']:

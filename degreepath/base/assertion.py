@@ -2,7 +2,7 @@ import attr
 from typing import Optional, Tuple, Dict, Any
 from ..clause import Clause
 
-from .bases import Base
+from .bases import Base, Summable
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -21,8 +21,8 @@ class BaseAssertionRule(Base):
     def type(self) -> str:
         return "assertion"
 
-    def rank(self) -> int:
+    def rank(self) -> Summable:
         return self.assertion.rank()
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Summable:
         return self.assertion.max_rank()
