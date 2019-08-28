@@ -1,7 +1,7 @@
 import json
 import traceback
 import pathlib
-from typing import Iterator
+from typing import Iterator, List, Dict, Any
 
 import yaml
 import csv
@@ -9,11 +9,11 @@ import sys
 import os
 
 from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
-from degreepath.data import GradeOption
+from degreepath.data import GradeOption, GradeCode, CourseInstance
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
-def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
+def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:  # noqa: C901
     if not args.student_files:
         yield NoStudentsMsg()
         return
@@ -28,12 +28,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
 
         area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
         constants = Constants(matriculation_year=student['matriculation'])
-        # We need to leave repeated courses in the transcript, because some majors (THEAT) require repeated courses
-        # for completion.
-        transcript = tuple(
-            c for c in (load_course(row) for row in student["courses"])
-            if c.grade_option is not GradeOption.Audit
-        )
+        transcript = tuple(load_transcript(student['courses']))
 
         for area_file in args.area_files:
             try:
@@ -81,3 +76,24 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
 
             except Exception as ex:
                 yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
+
+
+def load_transcript(courses: List[Dict[str, Any]]) -> Iterator[CourseInstance]:
+    # We need to leave repeated courses in the transcript, because some majors
+    # (THEAT) require repeated courses for completion (and others )
+    for row in courses:
+        c = load_course(row)
+
+        # excluded Audited courses
+        if c.grade_option is GradeOption.Audit:
+            continue
+
+        # exclude [N]o-Pass, [U]nsuccessful, [UA]nsuccessfulAudit, [WF]ithdrawnFail, [WP]ithdrawnPass, and [Withdrawn]
+        if c.grade_code in (GradeCode._N, GradeCode._U, GradeCode._UA, GradeCode._WF, GradeCode._WP, GradeCode._W):
+            continue
+
+        # exclude courses at grade F
+        if c.grade_code is GradeCode.F:
+            continue
+
+        yield c
