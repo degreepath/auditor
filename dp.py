@@ -122,7 +122,7 @@ def result_str(
     if gpa_only:
         return f"GPA: {msg.result.gpa()}"
 
-    dict_result = msg.result.to_dict()
+    dict_result = json.loads(json.dumps(msg.result.to_dict()))
 
     if as_json:
         return json.dumps(dict_result)
