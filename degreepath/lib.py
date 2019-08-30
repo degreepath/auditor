@@ -28,7 +28,7 @@ def grade_point_average(courses: Iterable['CourseInstance']) -> Decimal:
     return Decimal(gpa).quantize(Decimal('1.00'), rounding=ROUND_DOWN)
 
 
-def grade_to_grade_points(g: GradeCode) -> Decimal:
+def str_to_grade_points(s: str) -> Decimal:
     grades = {
         GradeCode.Aplus: Decimal("4.00"),
         GradeCode.A: Decimal("4.00"),
@@ -45,8 +45,4 @@ def grade_to_grade_points(g: GradeCode) -> Decimal:
         GradeCode.F: Decimal("0.00"),
     }
 
-    return grades.get(g, Decimal("0.00"))
-
-
-def str_to_grade_points(s: str) -> Decimal:
-    return grade_to_grade_points(GradeCode(s))
+    return grades.get(GradeCode(s), Decimal("0.00"))
