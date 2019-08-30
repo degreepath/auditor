@@ -40,7 +40,7 @@ class ResultMsg:
     elapsed: str
     iterations: List[float]
     startup_time: float
-    potentials_for_all_clauses: Dict[int, Dict[str, Any]]
+    potentials_for_all_clauses: Dict[int, List[str]]
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)

@@ -1,7 +1,8 @@
-from typing import Any, Iterator, Union, Dict
+from typing import List, Iterator, Union, Dict
 import requests
 import os
 import attr
+import json
 
 from .constants import Constants
 from .area import AreaOfStudy
@@ -11,10 +12,9 @@ from .base.query import QuerySourceType
 from .rule.query import QueryRule
 from .clause import ResolvedClause, AndClause, OrClause, SingleClause
 from .operator import Operator
-import json
 
 
-def discover_clause_potential(area: AreaOfStudy, c: Constants) -> Dict[int, Dict[str, Any]]:
+def discover_clause_potential(area: AreaOfStudy, c: Constants) -> Dict[int, List[str]]:
     url = os.getenv('POTENTIALS_URL', None)
     if not url:
         return {}
@@ -38,7 +38,7 @@ def discover_clause_potential(area: AreaOfStudy, c: Constants) -> Dict[int, Dict
         parsed = response.json()
 
         if 'hash' in parsed and parsed['error'] is False:
-            result[parsed['hash']] = {'error': False, 'clbids': parsed['clbids']}
+            result[parsed['hash']] = parsed['clbids']
         else:
             raise ValueError(parsed)
 
