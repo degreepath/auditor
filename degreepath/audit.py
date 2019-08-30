@@ -1,5 +1,5 @@
 import attr
-from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any, cast
+from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, cast
 from datetime import datetime
 from decimal import Decimal
 import time
