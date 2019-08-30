@@ -181,6 +181,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     grade_code = data['grade_code']
     grade_option = data['grade_option']
     grade_points = data['grade_points']
+    grade_points_gpa = data['grade_points_gpa']
     level = int(data['level'])
     name = data['name']
     number = data['number']
@@ -197,10 +198,9 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
 
     grade_code = GradeCode(grade_code)
     grade_points = decimal.Decimal(grade_points)
+    grade_points_gpa = decimal.Decimal(grade_points_gpa)
     grade_option = GradeOption(grade_option)
     sub_type = SubType(sub_type)
-
-    grade_points_gpa = grade_points * credits
 
     # we want to keep the original shorthand course identity for matching purposes
     verbatim_subject_field = subjects
