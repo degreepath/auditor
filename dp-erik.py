@@ -127,7 +127,6 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
               , ts = now()
               , gpa = %(gpa)s
               , in_progress = false
-              , potential_clbids = %(potential_clbids)s
             WHERE id = %(result_id)s
         """, {
             "result_id": result_id,
@@ -139,8 +138,17 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
             "max_rank": result["max_rank"],
             "gpa": result["gpa"],
             "ok": result["ok"],
-            "potential_clbids": json.dumps(message.potentials_for_all_clauses),
         })
+
+        for clause_hash, clbids in message.potentials_for_all_clauses.items():
+            curs.execute("""
+                INSERT INTO potential_clbids (result_id, clause_hash, clbids)
+                VALUES (%(result_id)s, %(clause_hash)s, %(clbids)s)
+            """, {
+                "result_id": result_id,
+                "clause_hash": clause_hash,
+                "clbids": clbids,
+            })
 
         conn.commit()
 
