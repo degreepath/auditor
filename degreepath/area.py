@@ -279,7 +279,7 @@ class AreaSolution(AreaOfStudy):
                 data={"requirement": "Credits outside the major"},
                 children={
                     "Credits outside the major": {
-                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major.{credits_message}",
+                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({self.dept}).{credits_message}",
                         "result": {
                             "from": {"student": "courses"},
                             "where": {"subject": {"$neq": self.dept}},
