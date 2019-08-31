@@ -269,6 +269,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "grade_code": "B",
         "grade_option": GradeOption.Grade,
         "grade_points": str_to_grade_points("B"),
+        "grade_points_gpa": str_to_grade_points("B"),
         "level": int(number) // 100 * 100,
         "name": s,
         "number": s.split(' ')[1],

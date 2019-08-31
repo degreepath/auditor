@@ -56,10 +56,10 @@ class AreaOfStudy(Base):
         *,
         specification: Dict,
         c: Constants,
-        area_code: str,
+        area_code: Optional[str] = None,
         areas: Sequence[AreaPointer] = tuple(),
     ) -> 'AreaOfStudy':
-        this_pointer = [p for p in areas if p.code == area_code][0]
+        this_pointer = [p for p in areas if p.code == area_code][0] if areas else None
 
         emphases = specification.get('emphases', {})
 
@@ -111,7 +111,7 @@ class AreaOfStudy(Base):
             name=specification.get('name', 'Test'),
             kind=specification.get('type', 'test'),
             degree=specification.get('degree', None),
-            dept=this_pointer.dept,
+            dept=this_pointer.dept if this_pointer else None,
             result=result,
             multicountable=multicountable_clauses,
             limit=limit,
