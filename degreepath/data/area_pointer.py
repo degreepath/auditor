@@ -17,6 +17,7 @@ class AreaPointer(Clausable):
     kind: AreaType
     name: str
     degree: str
+    dept: Optional[str]
     gpa: Optional[decimal.Decimal]
 
     def to_dict(self) -> Dict[str, Any]:
@@ -26,18 +27,20 @@ class AreaPointer(Clausable):
             "status": self.status.name,
             "kind": self.kind.name,
             "degree": self.degree,
+            "dept": self.dept,
             "name": self.name,
         }
 
     @staticmethod
-    def from_dict(*, code: str, status: str, kind: str, name: str, degree: str, gpa: Optional[str] = None) -> 'AreaPointer':
+    def from_dict(data: Dict) -> 'AreaPointer':
         return AreaPointer(
-            code=code,
-            status=AreaStatus(status),
-            kind=AreaType(kind),
-            name=name,
-            degree=degree,
-            gpa=decimal.Decimal(gpa) if gpa is not None else None,
+            code=data['code'],
+            status=AreaStatus(data['status']),
+            kind=AreaType(data['kind']),
+            name=data['name'],
+            degree=data['degree'],
+            gpa=decimal.Decimal(data['gpa']) if 'gpa' in data else None,
+            dept=data.get('dept', None),
         )
 
     def apply_clause(self, clause: Clause) -> bool:

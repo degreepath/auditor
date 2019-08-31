@@ -26,7 +26,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
             yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
             return
 
-        area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
+        area_pointers = tuple([AreaPointer.from_dict(a) for a in student['areas']])
         constants = Constants(matriculation_year=student['matriculation'])
         transcript = tuple(load_transcript(student['courses']))
 
@@ -47,7 +47,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 if e['area_code'] == area_code
             ]
 
-            area = AreaOfStudy.load(specification=area_spec, c=constants, areas=area_pointers)
+            area = AreaOfStudy.load(specification=area_spec, c=constants, areas=area_pointers, area_code=area_code)
             area.validate()
 
             if transcript_only:

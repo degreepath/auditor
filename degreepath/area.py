@@ -27,8 +27,8 @@ class AreaOfStudy(Base):
     """The overall class for working with an area"""
     name: str
     kind: str
-    major: Optional[str]
     degree: Optional[str]
+    dept: Optional[str]
 
     limit: LimitSet
     result: Any  # Rule
@@ -40,7 +40,6 @@ class AreaOfStudy(Base):
             **super().to_dict(),
             "name": self.name,
             "kind": self.kind,
-            "major": self.major,
             "degree": self.degree,
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
@@ -53,11 +52,19 @@ class AreaOfStudy(Base):
         return decimal.Decimal('0.00')
 
     @staticmethod
-    def load(*, specification: Dict, c: Constants, areas: Sequence[AreaPointer] = tuple()) -> 'AreaOfStudy':
+    def load(
+        *,
+        specification: Dict,
+        c: Constants,
+        area_code: str,
+        areas: Sequence[AreaPointer] = tuple(),
+    ) -> 'AreaOfStudy':
+        this_pointer = [p for p in areas if p.code == area_code][0]
+
         emphases = specification.get('emphases', {})
 
         for e in emphases.values():
-            r = AreaOfStudy.load(specification=e, c=c, areas=[])
+            r = AreaOfStudy.load(specification=e, c=c, areas=[], area_code=area_code)
             r.validate()
 
         declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
@@ -103,8 +110,8 @@ class AreaOfStudy(Base):
         return AreaOfStudy(
             name=specification.get('name', 'Test'),
             kind=specification.get('type', 'test'),
-            major=specification.get('major', None),
             degree=specification.get('degree', None),
+            dept=this_pointer.dept,
             result=result,
             multicountable=multicountable_clauses,
             limit=limit,
@@ -167,7 +174,7 @@ class AreaSolution(AreaOfStudy):
         return AreaSolution(
             name=area.name,
             kind=area.kind,
-            major=area.major,
+            dept=area.dept,
             degree=area.degree,
             limit=area.limit,
             result=area.result,
@@ -211,8 +218,9 @@ class AreaSolution(AreaOfStudy):
             allowed_su_credits = 1
 
         claimed = set(result.matched(ctx=self.context))
-        unclaimed = list(set(self.context.transcript()) - claimed)
-        unclaimed_context = RequirementContext().with_transcript(unclaimed)
+        # unclaimed = list(set(self.context.transcript()) - claimed)
+        # unclaimed_context = RequirementContext().with_transcript(unclaimed)
+        whole_context = attr.evolve(self.context)
         claimed_context = RequirementContext().with_transcript(claimed)
         c = Constants(matriculation_year=0)
 
@@ -274,6 +282,7 @@ class AreaSolution(AreaOfStudy):
                         "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major.{credits_message}",
                         "result": {
                             "from": {"student": "courses"},
+                            "where": {"subject": {"$neq": self.dept}},
                             "allow_claimed": True,
                             "claim": False,
                             "assert": {"sum(credits)": {"$gte": credits_outside_major}},
@@ -286,10 +295,10 @@ class AreaSolution(AreaOfStudy):
             if outside_the_major is None:
                 raise TypeError('expected outside_the_major to not be None')
 
-            outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=unclaimed_context)
+            outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=whole_context)
             if outside_the_major__result is None:
                 raise TypeError('no solutions found for outside_the_major__result rule')
-            unclaimed_context.reset_claims()
+            # unclaimed_context.reset_claims()
         else:
             outside_the_major__result = None
 
@@ -334,7 +343,7 @@ class AreaResult(AreaOfStudy, Result):
         return AreaResult(
             name=area.name,
             kind=area.kind,
-            major=area.major,
+            dept=area.dept,
             degree=area.degree,
             limit=area.limit,
             multicountable=area.multicountable,
