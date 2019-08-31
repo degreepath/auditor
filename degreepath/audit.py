@@ -47,6 +47,8 @@ class ResultMsg:
 class ExceptionMsg:
     ex: Exception
     tb: str
+    stnum: Optional[str]
+    area_code: Optional[str]
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)

@@ -23,7 +23,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
             with open(student_file, "r", encoding="utf-8") as infile:
                 student = json.load(infile)
         except FileNotFoundError as ex:
-            yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
+            yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=None, area_code=None)
             return
 
         area_pointers = tuple([AreaPointer.from_dict(a) for a in student['areas']])
@@ -75,7 +75,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 )
 
             except Exception as ex:
-                yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
+                yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=student['stnum'], area_code=area_code)
 
 
 def load_transcript(courses: List[Dict[str, Any]]) -> Iterator[CourseInstance]:
