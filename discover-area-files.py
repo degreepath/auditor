@@ -2,6 +2,7 @@ import argparse
 import glob
 import json
 import os
+import sys
 from typing import Sequence, Iterator, Tuple, Optional
 from os.path import abspath, join
 
@@ -12,12 +13,18 @@ dotenv.load_dotenv(verbose=True)
 
 def cli() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument('student')
+    parser.add_argument('student', help="use `-` to read from stdin")
     parser.add_argument('area_codes', metavar='CODE', action='store', nargs='*', default=tuple())
     args = parser.parse_args()
 
-    for (name, path) in main(files=args.student, area_codes=args.area_codes):
-        print(name, path)
+    if args.student == '-':
+        student_files = [l.strip() for l in sys.stdin.readlines() if l.strip()]
+    else:
+        student_files = [args.student]
+
+    for file in student_files:
+        for (name, path) in main(files=file, area_codes=args.area_codes):
+            print(name, path)
 
 
 def main(
