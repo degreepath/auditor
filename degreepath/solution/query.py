@@ -11,7 +11,6 @@ from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer, Clausable
 from ..clause import SingleClause, Operator
 from ..lib import grade_point_average_items, grade_point_average
-from ..exception import InsertionException
 
 if TYPE_CHECKING:
     from ..claim import ClaimAttempt  # noqa: F401
@@ -47,7 +46,7 @@ class QuerySolution(Solution, BaseQueryRule):
             "output": [x.to_dict() for x in self.output],
         }
 
-    def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
+    def audit(self, *, ctx: 'RequirementContext') -> QueryResult:  # noqa: C901
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         if self.overridden:
@@ -88,17 +87,16 @@ class QuerySolution(Solution, BaseQueryRule):
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
-        exception = ctx.get_exception(self.path)
-        if exception and isinstance(exception, InsertionException):
-            matched_course = ctx.forced_course_by_clbid(exception.clbid)
-            clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=exception.clbid, expected_verbatim=exception.clbid)
+        for insert in ctx.get_insert_exceptions(self.path):
+            matched_course = ctx.forced_course_by_clbid(insert.clbid)
+            clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=insert.clbid, expected_verbatim=insert.clbid)
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=clause)
 
             if claim.failed():
-                logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, exception.clbid, claim.conflict_with)
+                if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, insert.clbid, claim.conflict_with)
                 failed_claims.append(claim)
             else:
-                logger.debug('%s course "%s" exists, and is available', self.path, exception.clbid)
+                if debug: logger.debug('%s course "%s" exists, and is available', self.path, insert.clbid)
                 successful_claims.append(claim)
                 claimed_items.append(matched_course)
 
@@ -127,14 +125,20 @@ class QuerySolution(Solution, BaseQueryRule):
         if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
-        exception = ctx.get_exception(clause.path)
-        if exception and exception.is_pass_override():
+        exception = ctx.get_waive_exception(clause.path)
+        if exception:
             logger.debug("forced override on %s", self.path)
             return AssertionResult(where=clause.where, assertion=clause.assertion, path=clause.path, overridden=True)
 
-        filtered_output = output
         if clause.where is not None:
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
+        else:
+            filtered_output = list(output)
+
+        for insert in ctx.get_insert_exceptions(clause.path):
+            logger.debug("inserted %s into %s", insert.clbid, self.path)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid)
+            filtered_output.append(matched_course)
 
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
         return AssertionResult(where=clause.where, assertion=result, path=clause.path, overridden=False)

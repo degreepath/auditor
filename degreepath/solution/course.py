@@ -4,7 +4,6 @@ import logging
 
 from ..base import Solution, BaseCourseRule
 from ..result.course import CourseResult
-from ..exception import InsertionException
 from ..claim import ClaimAttempt
 
 if TYPE_CHECKING:
@@ -36,10 +35,9 @@ class CourseSolution(Solution, BaseCourseRule):
 
         claim: Optional[ClaimAttempt] = None
 
-        exception = ctx.get_exception(self.path)
-        if exception and isinstance(exception, InsertionException):
-            logger.debug('inserting %s into %s due to override', exception.clbid, self)
-            matched_course = ctx.forced_course_by_clbid(exception.clbid)
+        for insert in ctx.get_insert_exceptions(self.path):
+            logger.debug('inserting %s into %s due to override', insert.clbid, self)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid)
 
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
 

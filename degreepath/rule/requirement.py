@@ -96,8 +96,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return [self.name]
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
-        exception = ctx.get_exception(self.path)
-        if exception and exception.is_pass_override():
+        if ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
             return
@@ -133,7 +132,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.get_exception(self.path):
+        if ctx.has_exception(self.path):
             return True
 
         if self.audited_by is not None:

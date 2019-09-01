@@ -11,7 +11,6 @@ from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..ncr import ncr
 from ..operator import Operator
-from ..exception import InsertionException
 from .assertion import AssertionRule
 
 if TYPE_CHECKING:
@@ -118,8 +117,7 @@ class QueryRule(Rule, BaseQueryRule):
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:  # noqa: C901
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        exception = ctx.get_exception(self.path)
-        if exception and exception.is_pass_override():
+        if ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple(), overridden=True)
             return
@@ -205,7 +203,7 @@ class QueryRule(Rule, BaseQueryRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.get_exception(self.path):
+        if ctx.has_exception(self.path):
             return True
 
         if has_assertion(self.assertions, key=get_lt_clauses):
@@ -228,9 +226,8 @@ class QueryRule(Rule, BaseQueryRule):
         if self.where is not None:
             matches = [item for item in matches if item.apply_clause(self.where)]
 
-        exception = ctx.get_exception(self.path)
-        if exception and isinstance(exception, InsertionException):
-            matches.append(ctx.forced_course_by_clbid(exception.clbid))
+        for insert in ctx.get_insert_exceptions(self.path):
+            matches.append(ctx.forced_course_by_clbid(insert.clbid))
 
         return matches
 
