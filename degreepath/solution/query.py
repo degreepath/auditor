@@ -135,6 +135,11 @@ class QuerySolution(Solution, BaseQueryRule):
         else:
             filtered_output = list(output)
 
+        for insert in ctx.get_insert_exceptions(clause.path):
+            logger.debug("inserted %s into %s", insert.clbid, self.path)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid)
+            filtered_output.append(matched_course)
+
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
         return AssertionResult(where=clause.where, assertion=result, path=clause.path, overridden=False)
 
