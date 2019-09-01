@@ -1,7 +1,7 @@
 import attr
 from typing import Tuple, Union, Sequence, List
 
-from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule, Summable
+from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule
 from ..claim import ClaimAttempt
 
 
