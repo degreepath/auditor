@@ -1,6 +1,7 @@
 from typing import List, Iterator, Any, Dict, Sequence
 from .clause import str_clause, get_resolved_items, get_resolved_clbids
 from .data import CourseInstance
+from .data.course_enums import CourseType
 from .ms import pretty_ms
 import json
 
@@ -130,6 +131,9 @@ def print_course(
                     status = "💕 [rep]"
                 else:
                     status = "💚 [ ok]"
+
+                if course.course_type in (CourseType.AP, CourseType.IB, CourseType.CAL):
+                    display_course = course.name
             else:
                 status = "!!!!!!! "
         else:

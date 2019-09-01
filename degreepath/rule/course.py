@@ -37,6 +37,9 @@ class CourseRule(Rule, BaseCourseRule):
             grade=str_to_grade_points(min_grade) if min_grade is not None else None,
             allow_claimed=data.get("including claimed", False),
             path=tuple(path),
+            ap=data.get('ap', None),
+            ib=data.get('ib', None),
+            cal=data.get('cal', None),
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -75,6 +78,12 @@ class CourseRule(Rule, BaseCourseRule):
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if ctx.get_exception(self.path) is not None:
             return True
+
+        try:
+            next(ctx.find_other_courses(ap=self.ap, ib=self.ib, cal=self.cal))
+            return True
+        except StopIteration:
+            pass
 
         if ctx.find_course(self.course) is not None:
             return True

@@ -4,7 +4,7 @@ import decimal
 import logging
 
 from .clausable import Clausable
-from .course_enums import GradeCode, GradeOption, SubType
+from .course_enums import GradeCode, GradeOption, SubType, CourseType
 from ..clause import Clause, SingleClause, AndClause, OrClause
 from ..lib import str_to_grade_points
 
@@ -18,6 +18,7 @@ class CourseInstance(Clausable):
     attributes: Tuple[str, ...]
     credits: decimal.Decimal
     crsid: str
+    course_type: CourseType
     gereqs: Tuple[str, ...]
     grade_code: GradeCode
     grade_option: GradeOption
@@ -47,6 +48,7 @@ class CourseInstance(Clausable):
             "clbid": self.clbid,
             "credits": str(self.credits),
             "crsid": self.crsid,
+            "course_type": self.course_type.value,
             "gereqs": list(self.gereqs),
             "grade_code": self.grade_code.value,
             "grade_option": self.grade_option.value,
@@ -170,6 +172,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     attributes = data.get('attributes', tuple())
     clbid = data['clbid']
     course = data['course']
+    course_type = data['course_type']
     credits = data['credits']
     crsid = data['crsid']
     flag_gpa = data['flag_gpa']
@@ -201,6 +204,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     grade_points_gpa = decimal.Decimal(grade_points_gpa)
     grade_option = GradeOption(grade_option)
     sub_type = SubType(sub_type)
+    course_type = CourseType(course_type)
 
     # we want to keep the original shorthand course identity for matching purposes
     verbatim_subject_field = subjects
@@ -228,6 +232,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         clbid=clbid,
         credits=credits,
         crsid=crsid,
+        course_type=course_type,
         gereqs=gereqs,
         grade_code=grade_code,
         grade_option=grade_option,
@@ -258,6 +263,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "attributes": tuple(),
         "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
         "course": s,
+        "course_type": "SE",
         "credits": '1.00',
         "crsid": f"<crsid={str(hash(s))}>",
         "flag_gpa": True,

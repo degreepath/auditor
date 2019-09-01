@@ -4,6 +4,7 @@ from collections import defaultdict
 import logging
 
 from .data import CourseInstance, AreaPointer
+from .data.course_enums import CourseType
 from .base import BaseCourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
@@ -42,6 +43,21 @@ class RequirementContext:
 
     def find_course(self, c: str) -> Optional[CourseInstance]:
         return self.course_lookup_map_.get(c, None)
+
+    def find_other_courses(
+        self,
+        *,
+        ap: Optional[str] = None,
+        ib: Optional[str] = None,
+        cal: Optional[str] = None,
+    ) -> Iterator[CourseInstance]:
+        for c in self.transcript():
+            if c.course_type is CourseType.AP and ap in c.subject:
+                yield c
+            elif c.course_type is CourseType.IB and ib in c.subject:
+                yield c
+            elif c.course_type is CourseType.CAL and cal in c.subject:
+                yield c
 
     def find_all_courses(self, c: str) -> Iterator[CourseInstance]:
         yield from (crs for crs in self.transcript() if crs.course_shorthand() == c or crs.course() == c)

@@ -23,6 +23,24 @@ class SubType(enum.Enum):
     Normal = ""
 
 
+@enum.unique
+class CourseType(enum.Enum):
+    PSEO = "PS"
+    Semester = "SE"
+    Interim = "IN"
+    AP = "AP"
+    IB = "IB"
+    CAL = "CA"
+    GeReq = "GE"
+    Adjustment = "AD"
+    OffCampus = "OC"
+    Summer = "SM"
+    _OP = "OP"
+    _PC = "PC"
+    Transfer = "TR"
+    _IE = "IE"
+
+
 class OrderedEnum(enum.Enum):
     def __ge__(self, other: Any) -> Any:
         if self.__class__ is other.__class__:
