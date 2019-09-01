@@ -41,8 +41,8 @@ class CountSolution(Solution, BaseCountRule):
 
         audit_results = []
         for clause in self.audit_clauses:
-            exception = ctx.get_exception(clause.path)
-            if exception and exception.is_pass_override():
+            exception = ctx.get_waive_exception(clause.path)
+            if exception:
                 logger.debug("forced override on %s", self.path)
                 audit_results.append(AssertionResult(
                     where=clause.where,

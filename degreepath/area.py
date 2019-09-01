@@ -129,11 +129,9 @@ class AreaOfStudy(Base):
         self, *,
         transcript: Sequence[CourseInstance],
         areas: Sequence[AreaPointer],
-        exceptions: Sequence[RuleException],
+        exceptions: List[RuleException],
     ) -> Iterable['AreaSolution']:
         logger.debug("evaluating area.result")
-
-        mapped_exceptions = map_exceptions(exceptions)
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
             limited_transcript = tuple(sorted(limited_transcript))
@@ -142,7 +140,7 @@ class AreaOfStudy(Base):
 
             ctx = RequirementContext(
                 areas=tuple(areas),
-                exceptions=mapped_exceptions,
+                exceptions=exceptions,
                 multicountable=self.multicountable,
             ).with_transcript(limited_transcript)
 
@@ -297,19 +295,6 @@ class AreaResult(AreaOfStudy, Result):
 
     def was_overridden(self) -> bool:
         return self.result.was_overridden()
-
-
-def map_exceptions(exceptions: Sequence[RuleException]) -> Dict[Tuple[str, ...], RuleException]:
-    mapped_exceptions: Dict[Tuple[str, ...], RuleException] = dict()
-
-    for e in exceptions:
-        path = tuple(e.path)
-        if path in mapped_exceptions:
-            raise ValueError(f'expected only one exception per path: {e}')
-        else:
-            mapped_exceptions[path] = e
-
-    return mapped_exceptions
 
 
 @lru_cache(1)

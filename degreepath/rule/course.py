@@ -7,7 +7,6 @@ from ..base import Rule, BaseCourseRule
 from ..constants import Constants
 from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
-from ..exception import InsertionException
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -58,8 +57,7 @@ class CourseRule(Rule, BaseCourseRule):
         return []
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
-        exception = ctx.get_exception(self.path)
-        if exception and exception.is_pass_override():
+        if ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield CourseSolution.from_rule(rule=self, overridden=True)
             return
@@ -81,7 +79,7 @@ class CourseRule(Rule, BaseCourseRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.get_exception(self.path) is not None:
+        if ctx.has_exception(self.path):
             return True
 
         if self.ap:
@@ -94,10 +92,9 @@ class CourseRule(Rule, BaseCourseRule):
         return False
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
-        exception = ctx.get_exception(self.path)
-        if exception and isinstance(exception, InsertionException):
-            match = ctx.find_course_by_clbid(exception.clbid)
-        else:
-            match = ctx.find_course(self.course)
+        for insert in ctx.get_insert_exceptions(self.path):
+            match = ctx.find_course_by_clbid(insert.clbid)
+            return [match] if match else []
 
+        match = ctx.find_course(self.course)
         return [match] if match else []

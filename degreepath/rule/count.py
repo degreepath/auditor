@@ -5,7 +5,6 @@ import logging
 
 from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
 from ..constants import Constants
-from ..exception import InsertionException
 from ..solution.count import CountSolution
 from ..ncr import mult
 from ..solve import find_best_solution
@@ -131,8 +130,7 @@ class CountRule(Rule, BaseCountRule):
         return [name for rule in self.items for name in rule.get_requirement_names()]
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
-        exception = ctx.get_exception(self.path)
-        if exception and exception.is_pass_override():
+        if ctx.get_waive_exception(self.path):
             logger.debug("%s forced override", self.path)
             yield CountSolution.from_rule(rule=self, count=self.count, items=self.items, overridden=True)
             return
@@ -140,16 +138,15 @@ class CountRule(Rule, BaseCountRule):
         items = self.items
         count = self.count
 
-        exception = ctx.get_exception(self.path)
-        if exception and isinstance(exception, InsertionException):
-            logger.debug("%s inserting new choice: %s", self.path, exception)
+        for insert in ctx.get_insert_exceptions(self.path):
+            logger.debug("%s inserting new choice: %s", self.path, insert)
 
             # if this is an `all` rule, we want to keep it as an `all` rule, so we need to increase `count`
             if count == len(items) and count > 1:
                 logger.debug("%s incrementing count b/c 'all' rule", self.path)
                 count += 1
 
-            matched_course = ctx.forced_course_by_clbid(exception.clbid)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid)
 
             new_rule = CourseRule(
                 course=matched_course.course(),
@@ -358,7 +355,7 @@ class CountRule(Rule, BaseCountRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.get_exception(self.path):
+        if ctx.has_exception(self.path):
             return True
 
         return any(r.has_potential(ctx=ctx) for r in self.items)
@@ -366,8 +363,7 @@ class CountRule(Rule, BaseCountRule):
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         matches = [c for r in self.items for c in r.all_matches(ctx=ctx)]
 
-        exception = ctx.get_exception(self.path)
-        if exception and isinstance(exception, InsertionException):
-            matches.append(ctx.forced_course_by_clbid(exception.clbid))
+        for insert in ctx.get_insert_exceptions(self.path):
+            matches.append(ctx.forced_course_by_clbid(insert.clbid))
 
         return matches

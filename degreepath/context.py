@@ -9,7 +9,7 @@ from .base import BaseCourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
 from .operator import Operator
-from .exception import RuleException
+from .exception import RuleException, OverrideException, InsertionException
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
@@ -24,7 +24,7 @@ class RequirementContext:
     areas: Tuple[AreaPointer, ...] = tuple()
     multicountable: List[List[SingleClause]] = attr.ib(factory=list)
     claims: Dict[str, Set[Claim]] = attr.ib(factory=lambda: defaultdict(set))
-    exceptions: Dict[Tuple[str, ...], RuleException] = attr.ib(factory=dict)
+    exceptions: List[RuleException] = attr.ib(factory=dict)
 
     def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
         transcript = list(transcript)
@@ -68,13 +68,35 @@ class RequirementContext:
     def completed_courses(self) -> Iterator[CourseInstance]:
         return (c for c in self.completed_courses())
 
-    def get_exception(self, path: Sequence[str]) -> Optional[RuleException]:
-        exception = self.exceptions.get(tuple(path), None)
+    def has_exception(self, path: Sequence[str]) -> bool:
+        tuple_path = tuple(path)
+        return any(e.path == tuple_path for e in self.exceptions)
+
+    def get_insert_exceptions(self, path: Sequence[str]) -> Iterator[InsertionException]:
+        tuple_path = tuple(path)
+        did_yield = False
+        for exception in self.exceptions:
+            if isinstance(exception, InsertionException) and exception.path == tuple_path:
+                logger.debug("exception found for %s: %s", path, exception)
+                did_yield = True
+                yield exception
+
+        if not did_yield: logger.debug("no exception for %s", path)
+
+    def get_waive_exception(self, path: Sequence[str]) -> Optional[OverrideException]:
+        tuple_path = tuple(path)
+        exception = None
+        for e in self.exceptions:
+            if isinstance(e, OverrideException) and e.path == tuple_path:
+                exception = e
+                break
+
         if exception:
             logger.debug("exception found for %s: %s", path, exception)
         else:
             logger.debug("no exception for %s", path)
-        return self.exceptions.get(tuple(path), None)
+
+        return exception
 
     def set_claims(self, claims: Dict[str, Set[Claim]]) -> None:
         self.claims = defaultdict(set, {k: set(v) for k, v in claims.items()})
