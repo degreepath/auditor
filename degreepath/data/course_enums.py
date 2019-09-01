@@ -29,7 +29,7 @@ class CourseType(enum.Enum):
     Semester = "SE"
     Interim = "IN"
     AP = "AP"
-    CAL = "CA"
+    _CA = "CA"
     GeReq = "GE"
     Adjustment = "AD"
     OffCampus = "OC"
