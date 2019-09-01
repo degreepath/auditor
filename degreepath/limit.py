@@ -84,6 +84,30 @@ class LimitSet:
                 logger.debug("limit/allow: %s", c)
                 yield c
 
+    def check(self, courses: Sequence[T]) -> bool:
+        clause_counters: Dict = defaultdict(int)
+
+        is_ok = True
+
+        for c in courses:
+            for l in self.limits:
+                # logger.debug("limit/check: checking %s against %s (counter: %s)", c, l, clause_counters[l])
+                if c.apply_clause(l.where):
+                    if clause_counters[l] < l.at_most:
+                        # logger.debug("limit/increment: %s matched %s (counter: %s)", c, l, clause_counters[l])
+                        clause_counters[l] += 1
+                    else:
+                        # logger.debug("limit/maximum: %s matched %s (counter: %s)", c, l, clause_counters[l])
+                        is_ok = False
+
+                        # break out of the loop once we fill up any limit clause
+                        break
+
+            if not is_ok:
+                break
+
+        return is_ok
+
     def limited_transcripts(self, courses: Sequence[T]) -> Iterator[Tuple[T, ...]]:
         """
         We need to iterate over each combination of limited courses.
@@ -124,6 +148,11 @@ class LimitSet:
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [limit.iterate(matchset) for limit, matchset in matched_items.items()]
         for results in itertools.product(*clause_iterators):
-            this_combo = tuple(unmatched_items) + tuple(item for group in results for item in group)
+            these_items = tuple(item for group in results for item in group)
+
+            if not self.check(these_items):
+                continue
+
+            this_combo = tuple(unmatched_items) + these_items
             logger.debug("limit/combos: %s", this_combo)
             yield this_combo
