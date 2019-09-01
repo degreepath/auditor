@@ -150,19 +150,16 @@ class QueryRule(Rule, BaseQueryRule):
 
             if simple_count_assertion is not None:
                 logger.debug("%s using simple assertion mode with %s", self.path, simple_count_assertion)
-
-                for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
-                    for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
-                        did_iter = True
-                        yield QuerySolution.from_rule(rule=self, output=combo)
+                range_iter = simple_count_assertion.input_size_range(maximum=len(item_set))
             else:
-                logger.debug("not running single assertion mode")
-                for n in range(1, len(item_set) + 1):
-                    for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
-                        did_iter = True
-                        yield QuerySolution.from_rule(rule=self, output=combo)
+                logger.debug("%s not running single assertion mode", self.path)
+                range_iter = iter(range(1, len(item_set) + 1))
+
+            for n in range_iter:
+                for i, combo in enumerate(itertools.combinations(item_set, n)):
+                    if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
+                    did_iter = True
+                    yield QuerySolution.from_rule(rule=self, output=combo)
 
         if not did_iter:
             # be sure we always yield something
