@@ -383,7 +383,7 @@ def prepare_common_rules(
                 children={
                     "Credits outside the major": {
                         "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
-                        "department_audited": True,
+                        "registrar_audited": True,
                     },
                 },
                 path=['$', '%Common Requirements', '.count', '[2]'],
