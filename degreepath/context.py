@@ -18,7 +18,7 @@ debug: Optional[bool] = None
 @attr.s(slots=True, kw_only=True, frozen=False, auto_attribs=True)
 class RequirementContext:
     transcript_: List[CourseInstance] = attr.ib(factory=list)
-    course_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
+    course_set_: Set[str] = attr.ib(factory=set)
     clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
 
     areas: Tuple[AreaPointer, ...] = tuple()
@@ -28,21 +28,13 @@ class RequirementContext:
 
     def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
         transcript = list(transcript)
-
-        course_lookup_map = {
-            **{c.course_shorthand(): c for c in transcript},
-            **{c.course(): c for c in transcript},
-        }
-
+        course_set = set(cid for c in transcript for cid in (c.course_shorthand(), c.course()))
         clbid_lookup_map = {c.clbid: c for c in transcript}
 
-        return attr.evolve(self, transcript_=transcript, course_lookup_map_=course_lookup_map, clbid_lookup_map_=clbid_lookup_map)
+        return attr.evolve(self, transcript_=transcript, course_set_=course_set, clbid_lookup_map_=clbid_lookup_map)
 
     def transcript(self) -> List[CourseInstance]:
         return self.transcript_
-
-    def find_course(self, c: str) -> Optional[CourseInstance]:
-        return self.course_lookup_map_.get(c, None)
 
     def find_ap_ib_credit_course(self, *, name: str) -> Optional[CourseInstance]:
         for c in self.transcript():
@@ -65,7 +57,7 @@ class RequirementContext:
         return match
 
     def has_course(self, c: str) -> bool:
-        return self.find_course(c) is not None
+        return c in self.course_set_
 
     def has_exception(self, path: Sequence[str]) -> bool:
         tuple_path = tuple(path)
