@@ -144,6 +144,9 @@ class CourseInstance(Clausable):
         if clause.key == 'type':
             return clause.compare(self.sub_type.name)
 
+        if clause.key == 'course_type':
+            return clause.compare(self.course_type.name)
+
         if clause.key == 'lab':
             return clause.compare(self.is_lab)
 
