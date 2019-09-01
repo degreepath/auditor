@@ -30,6 +30,17 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
         constants = Constants(matriculation_year=student['matriculation'])
         transcript = tuple(load_transcript(student['courses']))
 
+        if transcript_only:
+            writer = csv.writer(sys.stdout)
+            writer.writerow(['course', 'clbid', 'course_type', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
+            for c in transcript:
+                writer.writerow([
+                    c.course(), c.clbid, c.course_type.value, str(c.credits), c.name, str(c.year), str(c.term),
+                    c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
+                    ','.join(c.attributes),
+                ])
+            return
+
         for area_file in args.area_files:
             try:
                 with open(area_file, "r", encoding="utf-8") as infile:
@@ -49,17 +60,6 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
 
             area = AreaOfStudy.load(specification=area_spec, c=constants, areas=area_pointers, area_code=area_code)
             area.validate()
-
-            if transcript_only:
-                writer = csv.writer(sys.stdout)
-                writer.writerow(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
-                for c in transcript:
-                    writer.writerow([
-                        c.course(), c.clbid, str(c.credits), c.name, str(c.year), str(c.term),
-                        c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
-                        ','.join(c.attributes),
-                    ])
-                return
 
             yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
 
