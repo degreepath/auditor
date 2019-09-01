@@ -21,9 +21,6 @@ class RuleException:
     def to_dict(self) -> Dict[str, Any]:
         return {"path": list(self.path), "type": self.type.value}
 
-    def is_pass_override(self) -> bool:
-        return False
-
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class InsertionException(RuleException):
@@ -39,9 +36,6 @@ class OverrideException(RuleException):
 
     def to_dict(self) -> Dict[str, Any]:
         return {**super().to_dict(), "status": self.status.value}
-
-    def is_pass_override(self) -> bool:
-        return self.status is ResultStatus.Pass
 
 
 def load_exception(data: Dict[str, Any]) -> RuleException:
