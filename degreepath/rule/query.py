@@ -141,12 +141,12 @@ class QueryRule(Rule, BaseQueryRule):
 
         did_iter = False
         for item_set in self.limit.limited_transcripts(data):
+            item_set = tuple(sorted(item_set))
+
             if self.attempt_claims is False:
                 did_iter = True
                 yield QuerySolution.from_rule(rule=self, output=item_set)
                 continue
-
-            item_set = tuple(sorted(item_set))
 
             if simple_count_assertion is not None:
                 logger.debug("%s using simple assertion mode with %s", self.path, simple_count_assertion)
