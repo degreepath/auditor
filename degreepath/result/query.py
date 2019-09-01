@@ -2,7 +2,7 @@ import attr
 from typing import Tuple, Dict, Any, List
 from .assertion import AssertionResult
 
-from ..base import Result, BaseQueryRule
+from ..base import Result, BaseQueryRule, Summable
 from ..claim import ClaimAttempt
 
 
@@ -60,8 +60,8 @@ class QueryResult(Result, BaseQueryRule):
 
         return self.success is True
 
-    def rank(self) -> int:
+    def rank(self) -> Summable:
         return sum(a.rank() for a in self.resolved_assertions)
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Summable:
         return sum(a.max_rank() for a in self.resolved_assertions)

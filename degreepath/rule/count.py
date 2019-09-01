@@ -8,6 +8,7 @@ from ..constants import Constants
 from ..exception import InsertionException
 from ..solution.count import CountSolution
 from ..ncr import mult
+from ..solve import find_best_solution
 from .course import CourseRule
 from .assertion import AssertionRule
 
@@ -156,6 +157,9 @@ class CountRule(Rule, BaseCountRule):
                 grade=None,
                 allow_claimed=False,
                 path=tuple([*self.path, f"[{len(items)}]", f"*{matched_course.course()}"]),
+                ib=None,
+                ap=None,
+                cal=None,
             )
 
             logger.debug("%s new choice is %s", self.path, new_rule)
@@ -313,34 +317,13 @@ class CountRule(Rule, BaseCountRule):
         guaranteed that there is no claimable overlap.
         """
 
-        claims = ctx.claims
+        logger.debug('%s: %s independent children', self.path, len(independent_children))
 
         independent_rule__results: Dict[Rule, Optional[Result]] = {}
         for child in independent_children:
-            best_result = None
-
-            ctx.reset_claims()
-
-            for i, sol in enumerate(child.solutions(ctx=ctx)):
-                result = sol.audit(ctx=ctx)
-
-                if best_result is None:
-                    best_result = result
-
-                if result.ok():
-                    best_result = result
-                    break
-
-                if best_result.rank() < result.rank():
-                    best_result = result
-
-                ctx.reset_claims()
-
+            best_result = find_best_solution(rule=child, ctx=ctx, reset_claims=True)
             logger.debug("found solution for %s: %s", child.path, best_result)
-
             independent_rule__results[child] = best_result
-
-        ctx.set_claims(claims)
 
         return independent_rule__results
 

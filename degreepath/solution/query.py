@@ -250,17 +250,23 @@ def sum_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> 
     if kind == 'credits':
         assert all(isinstance(x, CourseInstance) for x in data)
         data = cast(Tuple[CourseInstance, ...], data)
+        data = [c for c in data if c.credits > 0]
+        data = cast(Tuple[CourseInstance, ...], data)
         items = tuple(c.credits for c in data)
         return (sum(items), items, tuple(c.clbid for c in data))
 
     if kind == 'credits_from_single_subject':
         assert all(isinstance(x, CourseInstance) for x in data)
         data = cast(Tuple[CourseInstance, ...], data)
+        data = [c for c in data if c.credits > 0]
+        data = cast(Tuple[CourseInstance, ...], data)
+
         if not data:
             return (decimal.Decimal(0), tuple([decimal.Decimal(0)]), tuple())
 
         # This should sort the subjects by the number of credits under that
-        # subject code, then pick the one with the most credits as the "single_subject"
+        # subject code, then pick the one with the most credits as the
+        # "single_subject"
 
         by_credits: Dict[str, decimal.Decimal] = defaultdict(decimal.Decimal)
 

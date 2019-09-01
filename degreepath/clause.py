@@ -60,14 +60,14 @@ class ResolvedClause:
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
             "resolved_clbids": [x for x in self.resolved_clbids],
             "result": self.result,
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
+            "rank": str(self.rank()),
+            "max_rank": str(self.max_rank()),
         }
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         return 1 if self.result else 0
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         return 1
 
 
@@ -80,6 +80,7 @@ class AndClause(_Clause, ResolvedClause):
             **super().to_dict(),
             "type": "and-clause",
             "children": [c.to_dict() for c in self.children],
+            "hash": str(hash(self.children)),
         }
 
     @staticmethod
@@ -100,10 +101,10 @@ class AndClause(_Clause, ResolvedClause):
 
         return AndClause(children=children, resolved_with=None, result=result)
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() for c in self.children)
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.max_rank() for c in self.children)
 
 
@@ -116,6 +117,7 @@ class OrClause(_Clause, ResolvedClause):
             **super().to_dict(),
             "type": "or-clause",
             "children": [c.to_dict() for c in self.children],
+            "hash": str(hash(self.children)),
         }
 
     @staticmethod
@@ -136,10 +138,10 @@ class OrClause(_Clause, ResolvedClause):
 
         return OrClause(children=children, resolved_with=None, result=result)
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() for c in self.children)
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() if c.result is True else c.max_rank() for c in self.children)
 
 
@@ -165,6 +167,7 @@ class SingleClause(_Clause, ResolvedClause):
             "expected": expected,
             "expected_verbatim": self.expected_verbatim,
             "operator": self.operator.name,
+            "hash": str(hash((self.key, self.expected, self.operator))),
         }
 
     @staticmethod  # noqa: C901
@@ -214,6 +217,8 @@ class SingleClause(_Clause, ResolvedClause):
             expected_value = GradeOption(expected_value)
         elif key == 'credits':
             expected_value = decimal.Decimal(expected_value)
+        elif key == 'gpa':
+            expected_value = decimal.Decimal(expected_value)
 
         return SingleClause(
             key=key,
@@ -223,16 +228,16 @@ class SingleClause(_Clause, ResolvedClause):
             at_most=at_most,
         )
 
-    def rank(self) -> int:
+    def rank(self) -> Union[int, decimal.Decimal]:
         if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
-            return int(self.resolved_with)
+            return decimal.Decimal(self.resolved_with)
 
         if self.result is True:
             return 1
 
         return 0
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Union[int, decimal.Decimal]:
         if self.result is True:
             return self.rank()
 

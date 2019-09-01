@@ -1,5 +1,6 @@
 import abc
-from typing import Iterator, Dict, Any, List, Tuple, Collection, Optional, TYPE_CHECKING
+from typing import Iterator, Dict, Any, List, Tuple, Collection, Optional, Union, TYPE_CHECKING
+from decimal import Decimal
 import enum
 import attr
 from functools import cmp_to_key, lru_cache
@@ -9,6 +10,8 @@ if TYPE_CHECKING:
     from ..claim import ClaimAttempt  # noqa: F401
     from ..data import CourseInstance  # noqa: F401
     from ..data import Clausable  # noqa: F401
+
+Summable = Union[int, Decimal]
 
 
 @enum.unique
@@ -30,8 +33,8 @@ class Base(abc.ABC):
             "status": self.status().value,
             "state": self.state(),
             "ok": self.ok(),
-            "rank": self.rank(),
-            "max_rank": self.max_rank(),
+            "rank": str(self.rank()),
+            "max_rank": str(self.max_rank()),
             "overridden": self.was_overridden(),
         }
 
@@ -51,10 +54,10 @@ class Base(abc.ABC):
 
         return False
 
-    def rank(self) -> int:
+    def rank(self) -> Summable:
         return 0
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Summable:
         return 0
 
     def claims(self) -> List['ClaimAttempt']:

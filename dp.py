@@ -5,12 +5,15 @@ import runpy
 import json
 import sys
 import os
+import dotenv
 
 from degreepath import pretty_ms, summarize
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
+
+dotenv.load_dotenv(verbose=False)
 
 logger = logging.getLogger(__name__)
 # logformat = "%(levelname)s:%(name)s:%(message)s"
@@ -48,13 +51,11 @@ def main() -> int:  # noqa: C901
 
     for msg in dp['run'](args, transcript_only=cli_args.transcript):
         if isinstance(msg, NoStudentsMsg):
-            if not cli_args.quiet:
-                logger.critical('no student files provided')
+            logger.critical('no student files provided')
             return 3
 
         elif isinstance(msg, NoAuditsCompletedMsg):
-            if not cli_args.quiet:
-                logger.critical('no audits completed')
+            logger.critical('no audits completed')
             return 2
 
         elif isinstance(msg, AuditStartMsg):
@@ -62,8 +63,7 @@ def main() -> int:  # noqa: C901
                 print(f"auditing #{msg.stnum} against {msg.area_catalog} {msg.area_code}", file=sys.stderr)
 
         elif isinstance(msg, ExceptionMsg):
-            if not cli_args.quiet:
-                logger.critical("%s %s", msg.ex, msg.tb)
+            logger.critical("%s %s\n%s %s", msg.stnum, msg.area_code, msg.ex, msg.tb)
             return 1
 
         elif isinstance(msg, AreaFileNotFoundMsg):
@@ -86,15 +86,14 @@ def main() -> int:  # noqa: C901
                 display_top(snapshot)
                 return 0
 
-            if not cli_args.quiet:
-                print(result_str(
-                    msg,
-                    as_json=cli_args.json,
-                    as_raw=cli_args.raw,
-                    gpa_only=cli_args.gpa,
-                    show_paths=cli_args.show_paths,
-                    show_ranks=cli_args.show_ranks,
-                ))
+            print(result_str(
+                msg,
+                as_json=cli_args.json,
+                as_raw=cli_args.raw,
+                gpa_only=cli_args.gpa,
+                show_paths=cli_args.show_paths,
+                show_ranks=cli_args.show_ranks,
+            ))
 
         elif isinstance(msg, EstimateMsg):
             if not cli_args.quiet:
@@ -119,7 +118,7 @@ def result_str(
     if gpa_only:
         return f"GPA: {msg.result.gpa()}"
 
-    dict_result = msg.result.to_dict()
+    dict_result = json.loads(json.dumps(msg.result.to_dict()))
 
     if as_json:
         return json.dumps(dict_result)

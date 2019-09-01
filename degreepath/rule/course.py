@@ -18,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
+    ap: Optional[str] = None
+    ib: Optional[str] = None
+    cal: Optional[str] = None
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:
@@ -37,6 +41,9 @@ class CourseRule(Rule, BaseCourseRule):
             grade=str_to_grade_points(min_grade) if min_grade is not None else None,
             allow_claimed=data.get("including claimed", False),
             path=tuple(path),
+            ap=data.get('ap', None),
+            ib=data.get('ib', None),
+            cal=data.get('cal', None),
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -75,6 +82,12 @@ class CourseRule(Rule, BaseCourseRule):
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if ctx.get_exception(self.path) is not None:
             return True
+
+        try:
+            next(ctx.find_other_courses(ap=self.ap, ib=self.ib, cal=self.cal))
+            return True
+        except StopIteration:
+            pass
 
         if ctx.find_course(self.course) is not None:
             return True

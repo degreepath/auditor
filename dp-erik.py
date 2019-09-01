@@ -140,6 +140,16 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
             "ok": result["ok"],
         })
 
+        for clause_hash, clbids in message.potentials_for_all_clauses.items():
+            curs.execute("""
+                INSERT INTO potential_clbids (result_id, clause_hash, clbids)
+                VALUES (%(result_id)s, %(clause_hash)s, %(clbids)s)
+            """, {
+                "result_id": result_id,
+                "clause_hash": clause_hash,
+                "clbids": clbids,
+            })
+
         conn.commit()
 
 

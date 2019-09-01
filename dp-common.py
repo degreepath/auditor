@@ -1,7 +1,7 @@
 import json
 import traceback
 import pathlib
-from typing import Iterator
+from typing import Iterator, List, Dict, Any
 
 import yaml
 import csv
@@ -9,11 +9,11 @@ import sys
 import os
 
 from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
-from degreepath.data import GradeOption
+from degreepath.data import GradeOption, GradeCode, CourseInstance
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
-def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
+def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:  # noqa: C901
     if not args.student_files:
         yield NoStudentsMsg()
         return
@@ -23,17 +23,23 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
             with open(student_file, "r", encoding="utf-8") as infile:
                 student = json.load(infile)
         except FileNotFoundError as ex:
-            yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
+            yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=None, area_code=None)
             return
 
-        area_pointers = tuple([AreaPointer.from_dict(**a) for a in student['areas']])
+        area_pointers = tuple([AreaPointer.from_dict(a) for a in student['areas']])
         constants = Constants(matriculation_year=student['matriculation'])
-        # We need to leave repeated courses in the transcript, because some majors (THEAT) require repeated courses
-        # for completion.
-        transcript = tuple(
-            c for c in (load_course(row) for row in student["courses"])
-            if c.grade_option is not GradeOption.Audit
-        )
+        transcript = tuple(load_transcript(student['courses']))
+
+        if transcript_only:
+            writer = csv.writer(sys.stdout)
+            writer.writerow(['course', 'clbid', 'course_type', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
+            for c in transcript:
+                writer.writerow([
+                    c.course(), c.clbid, c.course_type.value, str(c.credits), c.name, str(c.year), str(c.term),
+                    c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
+                    ','.join(c.attributes),
+                ])
+            return
 
         for area_file in args.area_files:
             try:
@@ -52,19 +58,8 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 if e['area_code'] == area_code
             ]
 
-            area = AreaOfStudy.load(specification=area_spec, c=constants, areas=area_pointers)
+            area = AreaOfStudy.load(specification=area_spec, c=constants, areas=area_pointers, area_code=area_code)
             area.validate()
-
-            if transcript_only:
-                writer = csv.writer(sys.stdout)
-                writer.writerow(['course', 'clbid', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
-                for c in transcript:
-                    writer.writerow([
-                        c.course(), c.clbid, str(c.credits), c.name, str(c.year), str(c.term),
-                        c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
-                        ','.join(c.attributes),
-                    ])
-                return
 
             yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
 
@@ -80,4 +75,25 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 )
 
             except Exception as ex:
-                yield ExceptionMsg(ex=ex, tb=traceback.format_exc())
+                yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=student['stnum'], area_code=area_code)
+
+
+def load_transcript(courses: List[Dict[str, Any]]) -> Iterator[CourseInstance]:
+    # We need to leave repeated courses in the transcript, because some majors
+    # (THEAT) require repeated courses for completion (and others )
+    for row in courses:
+        c = load_course(row)
+
+        # excluded Audited courses
+        if c.grade_option is GradeOption.Audit:
+            continue
+
+        # exclude [N]o-Pass, [U]nsuccessful, [UA]nsuccessfulAudit, [WF]ithdrawnFail, [WP]ithdrawnPass, and [Withdrawn]
+        if c.grade_code in (GradeCode._N, GradeCode._U, GradeCode._UA, GradeCode._WF, GradeCode._WP, GradeCode._W):
+            continue
+
+        # exclude courses at grade F
+        if c.grade_code is GradeCode.F:
+            continue
+
+        yield c

@@ -2,6 +2,7 @@ import argparse
 import glob
 import json
 import os
+import sys
 from typing import Sequence, Iterator, Tuple, Optional
 from os.path import abspath, join
 
@@ -12,15 +13,26 @@ dotenv.load_dotenv(verbose=True)
 
 def cli() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument('student')
+    parser.add_argument('student', help="use `-` to read from stdin")
     parser.add_argument('area_codes', metavar='CODE', action='store', nargs='*', default=tuple())
     args = parser.parse_args()
 
-    for (name, path) in main(files=args.student, area_codes=args.area_codes):
-        print(name, path)
+    if args.student == '-':
+        student_files = [l.strip() for l in sys.stdin.readlines() if l.strip()]
+    else:
+        student_files = [args.student]
+
+    for file in student_files:
+        for (name, path) in main(files=file, area_codes=args.area_codes):
+            print(name, path)
 
 
-def main(files: str, area_codes: Sequence[str] = tuple(), root: Optional[str] = os.getenv('AREA_ROOT')) -> Iterator[Tuple[str, str]]:
+def main(
+    files: str,
+    area_codes: Sequence[str] = tuple(),
+    catalog: Optional[int] = None,
+    root: Optional[str] = os.getenv('AREA_ROOT'),
+) -> Iterator[Tuple[str, str]]:
     if not root:
         raise ValueError('the environment variable AREA_ROOT must be set to a path')
 
@@ -29,16 +41,16 @@ def main(files: str, area_codes: Sequence[str] = tuple(), root: Optional[str] = 
             student = json.load(infile)
 
         areas = [a for a in student['areas'] if a['kind'] != 'emphasis']
-        catalog = student['catalog']
-        if catalog is None:
+        stu_catalog = catalog if catalog is not None else student['catalog']
+        if stu_catalog is None:
             continue
-        catalog = str(catalog) + '-' + str(catalog + 1)[2:]
+        stu_catalog = str(stu_catalog) + '-' + str(stu_catalog + 1)[2:]
 
         items = set(a['code'] for a in areas).union(area_codes)
         items = items.intersection(area_codes or items)
 
         for filename in items:
-            file_path = join(root, catalog, filename + '.yaml')
+            file_path = join(root, stu_catalog, filename + '.yaml')
             yield (abspath(student_file), abspath(file_path))
 
 

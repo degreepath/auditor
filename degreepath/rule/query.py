@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryRule(Rule, BaseQueryRule):
+    load_potentials: bool
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "from" in data:
@@ -66,6 +68,8 @@ class QueryRule(Rule, BaseQueryRule):
         source_type = QuerySourceType(source_data["student"])
         source_repeats = QuerySourceRepeatMode(source_data.get('repeats', 'all'))
 
+        load_potentials = data.get('load_potentials', True)
+
         return QueryRule(
             source=source,
             source_type=source_type,
@@ -75,6 +79,7 @@ class QueryRule(Rule, BaseQueryRule):
             where=where,
             allow_claimed=allow_claimed,
             attempt_claims=attempt_claims,
+            load_potentials=load_potentials,
             path=tuple(path),
         )
 
@@ -136,28 +141,25 @@ class QueryRule(Rule, BaseQueryRule):
 
         did_iter = False
         for item_set in self.limit.limited_transcripts(data):
+            item_set = tuple(sorted(item_set))
+
             if self.attempt_claims is False:
                 did_iter = True
                 yield QuerySolution.from_rule(rule=self, output=item_set)
                 continue
 
-            item_set = tuple(sorted(item_set))
-
             if simple_count_assertion is not None:
                 logger.debug("%s using simple assertion mode with %s", self.path, simple_count_assertion)
-
-                for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
-                    for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
-                        did_iter = True
-                        yield QuerySolution.from_rule(rule=self, output=combo)
+                range_iter = simple_count_assertion.input_size_range(maximum=len(item_set))
             else:
-                logger.debug("not running single assertion mode")
-                for n in range(1, len(item_set) + 1):
-                    for i, combo in enumerate(itertools.combinations(item_set, n)):
-                        if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
-                        did_iter = True
-                        yield QuerySolution.from_rule(rule=self, output=combo)
+                logger.debug("%s not running single assertion mode", self.path)
+                range_iter = iter(range(1, len(item_set) + 1))
+
+            for n in range_iter:
+                for i, combo in enumerate(itertools.combinations(item_set, n)):
+                    if debug: logger.debug("%s combo: %s choose %s, round %s", self.path, len(item_set), n, i)
+                    did_iter = True
+                    yield QuerySolution.from_rule(rule=self, output=combo)
 
         if not did_iter:
             # be sure we always yield something

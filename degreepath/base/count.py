@@ -2,7 +2,7 @@ import attr
 from typing import Tuple, Union, Dict, Any, Sequence
 import logging
 
-from .bases import Base, Rule, Solution, Result
+from .bases import Base, Rule, Solution, Result, Summable
 from .assertion import BaseAssertionRule
 
 logger = logging.getLogger(__name__)
@@ -30,10 +30,12 @@ class BaseCountRule(Base):
     def type(self) -> str:
         return "count"
 
-    def rank(self) -> int:
-        return sum(r.rank() for r in self.items) + sum(c.rank() for c in self.audit_clauses)
+    def rank(self) -> Summable:
+        item_rank = sum(r.rank() for r in self.items)
+        post_audit_rank = sum(c.rank() for c in self.audit_clauses)
+        return item_rank + post_audit_rank
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Summable:
         audit_max_rank = sum(c.rank() for c in self.audit_clauses)
         if len(self.items) == 2 and self.count == 2:
             return sum(sorted(r.max_rank() for r in self.items)[:2]) + audit_max_rank

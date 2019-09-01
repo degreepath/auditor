@@ -1,7 +1,7 @@
 import attr
 from typing import Tuple, Union, Sequence, List
 
-from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule
+from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule, Summable
 from ..claim import ClaimAttempt
 
 
@@ -48,7 +48,7 @@ class CountResult(Result, BaseCountRule):
         audit_passed = len(self.audit_results) == 0 or all(a.ok() for a in self.audit_results)
         return passed_count >= self.count and audit_passed
 
-    def max_rank(self) -> int:
+    def max_rank(self) -> Summable:
         if self.ok():
             return self.rank()
 
