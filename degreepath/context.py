@@ -67,9 +67,6 @@ class RequirementContext:
     def has_course(self, c: str) -> bool:
         return self.find_course(c) is not None
 
-    def completed_courses(self) -> Iterator[CourseInstance]:
-        return (c for c in self.completed_courses())
-
     def has_exception(self, path: Sequence[str]) -> bool:
         tuple_path = tuple(path)
         return any(e.path == tuple_path for e in self.exceptions)
