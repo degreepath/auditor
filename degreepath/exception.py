@@ -40,8 +40,8 @@ class OverrideException(RuleException):
 
 def load_exception(data: Dict[str, Any]) -> RuleException:
     if data['type'] == 'insert':
-        return InsertionException(clbid=data['clbid'], path=data['path'], type=ExceptionAction.Insert)
+        return InsertionException(clbid=data['clbid'], path=tuple(data['path']), type=ExceptionAction.Insert)
     elif data['type'] == 'override':
-        return OverrideException(status=ResultStatus(data['status']), path=data['path'], type=ExceptionAction.Override)
+        return OverrideException(status=ResultStatus(data['status']), path=tuple(data['path']), type=ExceptionAction.Override)
 
     raise TypeError(f'expected "type" to be "insert" or "override"; got {data["type"]}')
