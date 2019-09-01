@@ -32,11 +32,16 @@ class BaseCountRule(Base):
 
     def rank(self) -> Summable:
         item_rank = sum(r.rank() for r in self.items)
-        post_audit_rank = sum(c.rank() for c in self.audit_clauses)
+        post_audit_rank = sum(c.rank() for c in self.audits())
+
         return item_rank + post_audit_rank
 
     def max_rank(self) -> Summable:
-        audit_max_rank = sum(c.rank() for c in self.audit_clauses)
+        if self.ok():
+            return self.rank()
+
+        audit_max_rank = sum(c.max_rank() for c in self.audits())
+
         if len(self.items) == 2 and self.count == 2:
             return sum(sorted(r.max_rank() for r in self.items)[:2]) + audit_max_rank
 
