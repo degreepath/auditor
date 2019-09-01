@@ -47,9 +47,3 @@ class CountResult(Result, BaseCountRule):
         passed_count = sum(1 if r.ok() else 0 for r in self.items)
         audit_passed = len(self.audit_results) == 0 or all(a.ok() for a in self.audit_results)
         return passed_count >= self.count and audit_passed
-
-    def max_rank(self) -> Summable:
-        if self.ok():
-            return self.rank()
-
-        return super().max_rank()

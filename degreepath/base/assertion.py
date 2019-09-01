@@ -25,4 +25,10 @@ class BaseAssertionRule(Base):
         return self.assertion.rank()
 
     def max_rank(self) -> Summable:
+        if self.ok():
+            return self.assertion.rank()
+
         return self.assertion.max_rank()
+
+    def ok(self) -> bool:
+        return self.assertion.result is True
