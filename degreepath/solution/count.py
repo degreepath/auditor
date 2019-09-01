@@ -60,6 +60,11 @@ class CountSolution(Solution, BaseCountRule):
                     if item.apply_clause(clause.where)
                 ]
 
+            for insert in ctx.get_insert_exceptions(clause.path):
+                logger.debug("inserted %s into %s", insert.clbid, self.path)
+                matched_course = ctx.forced_course_by_clbid(insert.clbid)
+                matched_items.append(matched_course)
+
             result = clause.assertion.compare_and_resolve_with(
                 value=matched_items,
                 map_func=apply_clause_to_query_rule,
