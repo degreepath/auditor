@@ -2,8 +2,9 @@ import attr
 from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
+from functools import lru_cache
 
-from .base import Solution, Result, Base, Summable
+from .base import Solution, Result, Rule, Base, Summable
 from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
@@ -193,114 +194,20 @@ class AreaSolution(AreaOfStudy):
             common_req_results = self.audit_common_major_requirements(result=result, other_areas=other_areas)
 
             if not isinstance(result, CountResult):
-                raise TypeError()
+                raise TypeError('expected a Count result from common major requirements')
 
             result = attr.evolve(result, items=tuple([*result.items, common_req_results]), count=result.count + 1)
 
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
     def audit_common_major_requirements(self, result: Result, other_areas: Sequence[AreaPointer] = tuple()) -> RequirementResult:
-        other_area_codes = set(p.code for p in other_areas)
-        if '140' in other_area_codes and '135' in other_area_codes:
-            credits_message = " Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART' subject code."
-            credits_outside_major = 18
-        else:
-            credits_message = ""
-            credits_outside_major = 21
-
-        if self.degree == 'B.M.':
-            is_bm_major = True
-            su_message = "No courses in a B.M Music major may be taken S/U."
-            allowed_su_credits = 0
-        else:
-            is_bm_major = False
-            su_message = "Only one full-course equivalent (1.00-credit course) taken S/U may count toward the minimum requirements for a major."
-            allowed_su_credits = 1
-
         claimed = set(result.matched(ctx=self.context))
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
         whole_context = attr.evolve(self.context)
         claimed_context = RequirementContext().with_transcript(claimed)
-        c = Constants(matriculation_year=0)
 
-        c_or_better = load_rule(
-            data={"requirement": "Credits at a C or higher"},
-            children={
-                "Credits at a C or higher": {
-                    "message": "Of the credits counting toward the minimum requirements for a major, a total of six (6.00) must be completed with a grade of C or higher.",
-                    "result": {
-                        "from": {"student": "courses"},
-                        "allow_claimed": True,
-                        "claim": False,
-                        "where": {
-                            "$and": [
-                                {"grade": {"$gte": "C"}},
-                                {"credits": {"$gt": 0}},
-                            ],
-                        },
-                        "assert": {"count(courses)": {"$gte": 6}},
-                    },
-                },
-            },
-            path=['$', '%Common Requirements', '.count', '[0]'],
-            c=c,
-        )
-        if c_or_better is None:
-            raise TypeError('expected c_or_better to not be None')
-
-        s_u_credits = load_rule(
-            data={"requirement": "Credits taken S/U"},
-            children={
-                "Credits taken S/U": {
-                    "message": su_message,
-                    "result": {
-                        "from": {"student": "courses"},
-                        "allow_claimed": True,
-                        "claim": False,
-                        "where": {
-                            "$and": [
-                                {"s/u": {"$eq": True}},
-                                {"credits": {"$eq": 1.00}},
-                            ],
-                        },
-                        "assert": {"count(courses)": {"$lte": allowed_su_credits}},
-                    },
-                },
-            },
-            path=['$', '%Common Requirements', '.count', '[1]'],
-            c=c,
-        )
-        if s_u_credits is None:
-            raise TypeError('expected s_u_credits to not be None')
-
-        if not is_bm_major:
-            outside_the_major = load_rule(
-                data={"requirement": "Credits outside the major"},
-                children={
-                    "Credits outside the major": {
-                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({self.dept}).{credits_message}",
-                        "result": {
-                            "from": {"student": "courses"},
-                            "where": {"subject": {"$neq": self.dept}},
-                            "allow_claimed": True,
-                            "claim": False,
-                            "assert": {"sum(credits)": {"$gte": credits_outside_major}},
-                        },
-                    },
-                },
-                path=['$', '%Common Requirements', '.count', '[2]'],
-                c=c,
-            )
-            if outside_the_major is None:
-                raise TypeError('expected outside_the_major to not be None')
-
-            outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=whole_context)
-            if outside_the_major__result is None:
-                raise TypeError('no solutions found for outside_the_major__result rule')
-            # unclaimed_context.reset_claims()
-        else:
-            outside_the_major__result = None
+        c_or_better, s_u_credits, outside_the_major = prepare_common_rules(other_areas=tuple(other_areas), dept_code=self.dept, degree=self.degree)
 
         c_or_better__result = find_best_solution(rule=c_or_better, ctx=claimed_context)
         if c_or_better__result is None:
@@ -312,7 +219,14 @@ class AreaSolution(AreaOfStudy):
             raise TypeError('no solutions found for s_u_credits__result rule')
         claimed_context.reset_claims()
 
-        items = [r for r in [c_or_better__result, s_u_credits__result, outside_the_major__result] if r is not None]
+        outside_the_major__result = None
+        if outside_the_major:
+            outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=whole_context)
+            if outside_the_major__result is None:
+                raise TypeError('no solutions found for outside_the_major__result rule')
+            # unclaimed_context.reset_claims()
+
+        items = [c_or_better__result, s_u_credits__result] + ([outside_the_major__result] if outside_the_major__result is not None else [])
 
         return RequirementResult(
             name=f"Common {self.degree} Major Requirements",
@@ -395,3 +309,106 @@ def map_exceptions(exceptions: Sequence[RuleException]) -> Dict[Tuple[str, ...],
             mapped_exceptions[path] = e
 
     return mapped_exceptions
+
+
+@lru_cache(1)
+def prepare_common_rules(
+    *,
+    degree: Optional[str],
+    dept_code: Optional[str],
+    other_areas: Tuple[AreaPointer, ...] = tuple(),
+) -> Tuple[Rule, Rule, Optional[Rule]]:
+    c = Constants(matriculation_year=0)
+
+    other_area_codes = set(p.code for p in other_areas)
+    if '140' in other_area_codes and '135' in other_area_codes:
+        credits_message = " Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART' subject code."
+        credits_outside_major = 18
+    else:
+        credits_message = ""
+        credits_outside_major = 21
+
+    if degree == 'B.M.':
+        is_bm_major = True
+        su_message = "No courses in a B.M Music major may be taken S/U."
+        allowed_su_credits = 0
+    else:
+        is_bm_major = False
+        su_message = "Only one full-course equivalent (1.00-credit course) taken S/U may count toward the minimum requirements for a major."
+        allowed_su_credits = 1
+
+    c_or_better = load_rule(
+        data={"requirement": "Credits at a C or higher"},
+        children={
+            "Credits at a C or higher": {
+                "message": "Of the credits counting toward the minimum requirements for a major, a total of six (6.00) must be completed with a grade of C or higher.",
+                "result": {
+                    "from": {"student": "courses"},
+                    "allow_claimed": True,
+                    "claim": False,
+                    "where": {
+                        "$and": [
+                            {"grade": {"$gte": "C"}},
+                            {"credits": {"$gt": 0}},
+                        ],
+                    },
+                    "assert": {"count(courses)": {"$gte": 6}},
+                },
+            },
+        },
+        path=['$', '%Common Requirements', '.count', '[0]'],
+        c=c,
+    )
+
+    if c_or_better is None:
+        raise TypeError('expected c_or_better to not be None')
+
+    s_u_credits = load_rule(
+        data={"requirement": "Credits taken S/U"},
+        children={
+            "Credits taken S/U": {
+                "message": su_message,
+                "result": {
+                    "from": {"student": "courses"},
+                    "allow_claimed": True,
+                    "claim": False,
+                    "where": {
+                        "$and": [
+                            {"s/u": {"$eq": True}},
+                            {"credits": {"$eq": 1.00}},
+                        ],
+                    },
+                    "assert": {"count(courses)": {"$lte": allowed_su_credits}},
+                },
+            },
+        },
+        path=['$', '%Common Requirements', '.count', '[1]'],
+        c=c,
+    )
+
+    if s_u_credits is None:
+        raise TypeError('expected s_u_credits to not be None')
+
+    outside_the_major = None
+    if is_bm_major is False:
+        outside_the_major = load_rule(
+            data={"requirement": "Credits outside the major"},
+            children={
+                "Credits outside the major": {
+                    "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
+                    "result": {
+                        "from": {"student": "courses"},
+                        "where": {"subject": {"$neq": dept_code}},
+                        "allow_claimed": True,
+                        "claim": False,
+                        "assert": {"sum(credits)": {"$gte": credits_outside_major}},
+                    },
+                },
+            },
+            path=['$', '%Common Requirements', '.count', '[2]'],
+            c=c,
+        )
+        if outside_the_major is None:
+            raise TypeError('expected outside_the_major to not be None')
+
+    return c_or_better, s_u_credits, outside_the_major
