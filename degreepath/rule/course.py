@@ -86,7 +86,7 @@ class CourseRule(Rule, BaseCourseRule):
             if ctx.find_ap_ib_credit_course(name=self.ap) is not None:
                 return True
 
-        if ctx.find_course(self.course) is not None:
+        if ctx.has_course(self.course):
             return True
 
         return False
@@ -96,5 +96,4 @@ class CourseRule(Rule, BaseCourseRule):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []
 
-        match = ctx.find_course(self.course)
-        return [match] if match else []
+        return list(ctx.find_all_courses(self.course))
