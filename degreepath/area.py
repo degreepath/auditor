@@ -60,7 +60,8 @@ class AreaOfStudy(Base):
         area_code: Optional[str] = None,
         areas: Sequence[AreaPointer] = tuple(),
     ) -> 'AreaOfStudy':
-        this_pointer = [p for p in areas if p.code == area_code][0] if areas else None
+        pointers = [p for p in areas if p.code == area_code]
+        this_pointer = pointers[0] if pointers else None
 
         emphases = specification.get('emphases', {})
 
@@ -391,23 +392,36 @@ def prepare_common_rules(
 
     outside_the_major = None
     if is_bm_major is False:
-        outside_the_major = load_rule(
-            data={"requirement": "Credits outside the major"},
-            children={
-                "Credits outside the major": {
-                    "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
-                    "result": {
-                        "from": {"student": "courses"},
-                        "where": {"subject": {"$neq": dept_code}},
-                        "allow_claimed": True,
-                        "claim": False,
-                        "assert": {"sum(credits)": {"$gte": credits_outside_major}},
+        if dept_code is None:
+            outside_the_major = load_rule(
+                data={"requirement": "Credits outside the major"},
+                children={
+                    "Credits outside the major": {
+                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
+                        "department_audited": True,
                     },
                 },
-            },
-            path=['$', '%Common Requirements', '.count', '[2]'],
-            c=c,
-        )
+                path=['$', '%Common Requirements', '.count', '[2]'],
+                c=c,
+            )
+        else:
+            outside_the_major = load_rule(
+                data={"requirement": "Credits outside the major"},
+                children={
+                    "Credits outside the major": {
+                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
+                        "result": {
+                            "from": {"student": "courses"},
+                            "where": {"subject": {"$neq": dept_code}},
+                            "allow_claimed": True,
+                            "claim": False,
+                            "assert": {"sum(credits)": {"$gte": credits_outside_major}},
+                        },
+                    },
+                },
+                path=['$', '%Common Requirements', '.count', '[2]'],
+                c=c,
+            )
         if outside_the_major is None:
             raise TypeError('expected outside_the_major to not be None')
 
