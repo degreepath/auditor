@@ -18,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
+    ap: Optional[str] = None
+    ib: Optional[str] = None
+    cal: Optional[str] = None
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:
