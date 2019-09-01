@@ -44,20 +44,11 @@ class RequirementContext:
     def find_course(self, c: str) -> Optional[CourseInstance]:
         return self.course_lookup_map_.get(c, None)
 
-    def find_other_courses(
-        self,
-        *,
-        ap: Optional[str] = None,
-        ib: Optional[str] = None,
-        cal: Optional[str] = None,
-    ) -> Iterator[CourseInstance]:
+    def find_ap_ib_credit_course(self, *, name: str) -> Optional[CourseInstance]:
         for c in self.transcript():
-            if c.course_type is CourseType.AP and ap in c.subject:
-                yield c
-            elif c.course_type is CourseType.IB and ib in c.subject:
-                yield c
-            elif c.course_type is CourseType.CAL and cal in c.subject:
-                yield c
+            if c.course_type is CourseType.AP and c.name == name:
+                return c
+        return None
 
     def find_all_courses(self, c: str) -> Iterator[CourseInstance]:
         yield from (crs for crs in self.transcript() if crs.course_shorthand() == c or crs.course() == c)

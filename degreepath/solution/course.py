@@ -27,9 +27,7 @@ class CourseSolution(Solution, BaseCourseRule):
             allow_claimed=rule.allow_claimed,
             path=rule.path,
             overridden=overridden,
-            ib=rule.ib,
             ap=rule.ap,
-            cal=rule.cal,
         )
 
     def audit(self, *, ctx: 'RequirementContext') -> CourseResult:
@@ -49,14 +47,19 @@ class CourseSolution(Solution, BaseCourseRule):
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
                 return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=True)
 
-        for matched_course in ctx.find_other_courses(ap=self.ap, ib=self.ib, cal=self.cal):
-            claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
+        if self.ap:
+            ap_ib_credit_course = ctx.find_ap_ib_credit_course(name=self.ap)
+            if ap_ib_credit_course:
+                matched_course = ap_ib_credit_course
+                claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
 
-            if not claim.failed():
-                logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
-                return CourseResult.from_solution(solution=self, claim_attempt=claim)
+                if not claim.failed():
+                    logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
+                    return CourseResult.from_solution(solution=self, claim_attempt=claim)
 
-            logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, matched_course.course(), claim.conflict_with)
+                logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, matched_course.course(), claim.conflict_with)
+            else:
+                logger.debug('%s looked for AP/IB/CAL credit for "%s", but found none', self.path, self.ap)
 
         for matched_course in ctx.find_all_courses(self.course):
             if self.grade is not None and matched_course.grade_points < self.grade:

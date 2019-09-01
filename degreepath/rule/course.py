@@ -19,18 +19,18 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
     ap: Optional[str] = None
-    ib: Optional[str] = None
-    cal: Optional[str] = None
 
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:
             return True
+        if "ap" in data:
+            return True
         return False
 
     @staticmethod
     def load(data: Dict, *, c: Constants, path: List[str]) -> 'CourseRule':
-        course = data['course']
+        course = data.get('course', '')
         min_grade = data.get('grade', None)
 
         path = [*path, f"*{course}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
@@ -42,11 +42,12 @@ class CourseRule(Rule, BaseCourseRule):
             allow_claimed=data.get("including claimed", False),
             path=tuple(path),
             ap=data.get('ap', None),
-            ib=data.get('ib', None),
-            cal=data.get('cal', None),
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
+        if self.ap is not None and self.ap != '' and self.course == '':
+            return
+
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
         method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
         method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
@@ -83,11 +84,9 @@ class CourseRule(Rule, BaseCourseRule):
         if ctx.get_exception(self.path) is not None:
             return True
 
-        try:
-            next(ctx.find_other_courses(ap=self.ap, ib=self.ib, cal=self.cal))
-            return True
-        except StopIteration:
-            pass
+        if self.ap:
+            if ctx.find_ap_ib_credit_course(name=self.ap) is not None:
+                return True
 
         if ctx.find_course(self.course) is not None:
             return True

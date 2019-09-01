@@ -114,6 +114,8 @@ def print_course(
         prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
 
     display_course = rule['course']
+    if rule['course'] == '' and rule['ap'] != '':
+        display_course = rule['ap']
 
     status = "🌀      "
     if rule["ok"]:
@@ -132,7 +134,7 @@ def print_course(
                 else:
                     status = "💚 [ ok]"
 
-                if course.course_type in (CourseType.AP, CourseType.IB, CourseType.CAL):
+                if course.course_type is CourseType.AP:
                     display_course = course.name
             else:
                 status = "!!!!!!! "

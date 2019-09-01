@@ -29,7 +29,6 @@ class CourseType(enum.Enum):
     Semester = "SE"
     Interim = "IN"
     AP = "AP"
-    IB = "IB"
     CAL = "CA"
     GeReq = "GE"
     Adjustment = "AD"

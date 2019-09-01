@@ -13,8 +13,6 @@ if TYPE_CHECKING:
 class BaseCourseRule(Base):
     course: str
     ap: Optional[str]
-    ib: Optional[str]
-    cal: Optional[str]
     hidden: bool
     grade: Optional[Decimal]
     allow_claimed: bool
@@ -28,9 +26,7 @@ class BaseCourseRule(Base):
             "grade": str(self.grade) if self.grade is not None else None,
             "allow_claimed": self.allow_claimed,
             "claims": [c.to_dict() for c in self.claims()],
-            "ib": self.ib,
             "ap": self.ap,
-            "cal": self.cal,
         }
 
     def type(self) -> str:

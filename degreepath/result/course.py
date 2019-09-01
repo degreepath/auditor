@@ -31,9 +31,7 @@ class CourseResult(Result, BaseCourseRule):
             min_grade_not_met=min_grade_not_met,
             path=solution.path,
             overridden=overridden,
-            ib=solution.ib,
             ap=solution.ap,
-            cal=solution.cal,
         )
 
     def to_dict(self) -> Dict[str, Any]:
