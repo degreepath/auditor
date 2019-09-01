@@ -33,6 +33,39 @@ def test_insertion_on_course_rule(caplog):
     assert result.claims()[0].claim.clbid == course_b.clbid
 
 
+def test_multi_insertion_on_course_rule(caplog):
+    """We expect the first insertion to take hold"""
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c)
+
+    exception = load_exception({
+        "type": "insert",
+        "path": ["$", "*DEPT 345"],
+        "clbid": "1",
+    })
+    exception2 = load_exception({
+        "type": "insert",
+        "path": ["$", "*DEPT 345"],
+        "clbid": "2",
+    })
+
+    course_a = course_from_str("OTHER 123", clbid="0")
+    course_b = course_from_str("OTHER 234", clbid="1")
+    course_c = course_from_str("OTHER 235", clbid="1")
+    transcript = [course_a, course_b, course_c]
+
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
+    assert len(solutions) == 1
+
+    result = solutions[0].audit()
+
+    assert result.ok() is True
+    assert result.was_overridden() is True
+    assert result.claims()[0].claim.clbid == course_b.clbid
+    assert len(result.claims()) == 1
+
+
 def test_insertion_on_query_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
@@ -61,6 +94,44 @@ def test_insertion_on_query_rule(caplog):
     assert result.ok() is True
     assert result.was_overridden() is False
     assert result.claims()[0].claim.clbid == course_a.clbid
+
+
+def test_multi_insertion_on_query_rule(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": {"student": "courses"},
+            "where": {"subject": {"$eq": "ABC"}},
+            "assert": {"count(courses)": {"$gte": 1}},
+        },
+    }, c=c)
+
+    exception = load_exception({
+        "type": "insert",
+        "path": ["$", ".query"],
+        "clbid": "0",
+    })
+    exception2 = load_exception({
+        "type": "insert",
+        "path": ["$", ".query"],
+        "clbid": "1",
+    })
+
+    course_a = course_from_str("OTHER 123", clbid="0")
+    course_b = course_from_str("OTHER 111", clbid="1")
+    transcript = [course_a, course_b]
+
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
+    assert len(solutions) == 1
+
+    result = solutions[0].audit()
+
+    assert result.ok() is True
+    assert result.was_overridden() is False
+    assert result.claims()[0].claim.clbid == course_a.clbid
+    assert result.claims()[1].claim.clbid == course_b.clbid
+    assert len(result.claims()) == 2
 
 
 def test_insertion_on_count_rule__any(caplog):
@@ -99,6 +170,97 @@ def test_insertion_on_count_rule__any(caplog):
     assert result.ok() is True
     assert result.was_overridden() is False
     assert result.claims()[0].claim.clbid == course_b.clbid
+
+
+def test_multi_insertion_on_count_rule__any(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "any": [
+                {"course": "DEPT 123"},
+            ],
+        },
+    }, c=c)
+
+    exception = load_exception({
+        "type": "insert",
+        "path": ['$', '.count'],
+        "clbid": "1",
+    })
+    exception2 = load_exception({
+        "type": "insert",
+        "path": ['$', '.count'],
+        "clbid": "2",
+    })
+
+    course_a = course_from_str("OTHER 345", clbid="0")
+    course_b = course_from_str("OTHER 234", clbid="1")
+    course_c = course_from_str("OTHER 222", clbid="2")
+    transcript = [course_a, course_b, course_c]
+
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
+    print([s.solution for s in solutions])
+
+    assert [
+        [x.course for x in s.solution.items if isinstance(x, CourseResult)]
+        for s in solutions
+    ] == [['OTHER 234', 'OTHER 222']]
+    assert len(solutions) == 1
+
+    result = solutions[0].audit()
+
+    assert result.result.count == 1
+    assert result.ok() is True
+    assert result.was_overridden() is False
+    assert result.claims()[0].claim.clbid == course_b.clbid
+    assert result.claims()[1].claim.clbid == course_c.clbid
+
+
+def test_multi_insertion_on_count_rule__any_with_natural(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "any": [
+                {"course": "DEPT 123"},
+            ],
+        },
+    }, c=c)
+
+    exception = load_exception({
+        "type": "insert",
+        "path": ['$', '.count'],
+        "clbid": "1",
+    })
+    exception2 = load_exception({
+        "type": "insert",
+        "path": ['$', '.count'],
+        "clbid": "2",
+    })
+
+    course_a = course_from_str("DEPT 123", clbid="0")
+    course_b = course_from_str("OTHER 234", clbid="1")
+    course_c = course_from_str("OTHER 222", clbid="2")
+    transcript = [course_a, course_b, course_c]
+
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
+    print([s.solution for s in solutions])
+
+    assert [
+        [x.course for x in s.solution.items if isinstance(x, CourseResult)]
+        for s in solutions
+    ] == [['DEPT 123', 'OTHER 234', 'OTHER 222']]
+    assert len(solutions) == 1
+
+    result = solutions[0].audit()
+
+    assert result.result.count == 1
+    assert result.ok() is True
+    assert result.was_overridden() is False
+    assert result.claims()[0].claim.clbid == course_a.clbid
+    assert result.claims()[1].claim.clbid == course_b.clbid
+    assert result.claims()[2].claim.clbid == course_c.clbid
 
 
 def test_insertion_on_count_rule__all(caplog):
