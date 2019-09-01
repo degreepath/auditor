@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List
+from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List, Set
 import itertools
 from collections import defaultdict
 import logging
@@ -147,12 +147,19 @@ class LimitSet:
 
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [limit.iterate(matchset) for limit, matchset in matched_items.items()]
+        emitted_solutions: Set[Tuple[T, ...]] = set()
         for results in itertools.product(*clause_iterators):
-            these_items = tuple(item for group in results for item in group)
+            these_items = tuple(sorted(item for group in results for item in group))
 
             if not self.check(these_items):
                 continue
 
+            if these_items in emitted_solutions:
+                continue
+            else:
+                emitted_solutions.add(these_items)
+
             this_combo = tuple(unmatched_items) + these_items
+
             logger.debug("limit/combos: %s", this_combo)
             yield this_combo
