@@ -120,8 +120,12 @@ def print_course(
     status = "🌀      "
     if rule["ok"]:
         mapped_trns = {c.clbid: c for c in transcript}
-        claim = rule["claims"][0]["claim"]
-        course = mapped_trns.get(claim["clbid"], None)
+
+        if len(rule["claims"]):
+            claim = rule["claims"][0]["claim"]
+            course = mapped_trns.get(claim["clbid"], None)
+        else:
+            course = None
 
         if not rule["overridden"]:
             if course is not None:
@@ -139,8 +143,11 @@ def print_course(
             else:
                 status = "!!!!!!! "
         else:
-            status = "💜 [ovr]"
-            display_course = course.course() if course else '???!!!'
+            if course:
+                status = "💜 [ovr]"
+                display_course = f"{course.course().strip()} {course.name}"
+            else:
+                status = "💜 [wvd]"
 
     yield f"{prefix}{status} {display_course}"
 
