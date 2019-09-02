@@ -34,8 +34,12 @@ class BaseRequirementRule(Base):
         return "requirement"
 
     def rank(self) -> Summable:
+        if self.result is None:
+            return 0
         boost = 1 if self.ok() else 0
-        return self.result.rank() + boost if self.result else 0
+        return self.result.rank() + boost
 
     def max_rank(self) -> Summable:
-        return self.result.max_rank() + 1 if self.result else 0
+        if self.result is None:
+            return 1
+        return self.result.max_rank() + 1
