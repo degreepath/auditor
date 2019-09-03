@@ -33,24 +33,24 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         path = [*path, f"%{name}"]
 
+        # be able to exclude requirements if they shouldn't exist
+        if 'if' in data:
+            if ctx is None:
+                raise TypeError('conditional requirements are only supported at the top-level')
+
+            rule = QueryRule.load(data['if'], c=c, path=path)
+
+            s = find_best_solution(rule=rule, ctx=ctx)
+            if not s:
+                return None
+
+            if s.ok():
+                pass
+            else:
+                return None
+
         result = data.get("result", None)
         if result is not None:
-            # be able to exclude requirements if they shouldn't exist
-            if 'if' in data:
-                if ctx is None:
-                    raise TypeError('conditional requirements are only supported at the top-level')
-
-                rule = QueryRule.load(data['if'], c=c, path=path)
-
-                s = find_best_solution(rule=rule, ctx=ctx)
-                if not s:
-                    return None
-
-                if s.ok():
-                    pass
-                else:
-                    return None
-
             result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path)
             if result is None:
                 return None
