@@ -32,11 +32,11 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
 
         if transcript_only:
             writer = csv.writer(sys.stdout)
-            writer.writerow(['course', 'clbid', 'course_type', 'credits', 'name', 'year', 'term', 'type', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
+            writer.writerow(['course', 'clbid', 'course_type', 'credits', 'name', 'year', 'term', 'type', 'grade', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
             for c in transcript:
                 writer.writerow([
                     c.course(), c.clbid, c.course_type.value, str(c.credits), c.name, str(c.year), str(c.term),
-                    c.sub_type.name, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
+                    c.sub_type.name, c.grade_code.value, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
                     ','.join(c.attributes),
                 ])
             return
