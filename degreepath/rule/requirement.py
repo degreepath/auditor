@@ -2,7 +2,7 @@ import attr
 from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 
-from ..base import Rule, BaseRequirementRule, ResultStatus
+from ..base import Rule, BaseRequirementRule
 from ..base.requirement import AuditedBy
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
@@ -19,9 +19,6 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementRule(Rule, BaseRequirementRule):
     result: Optional[Rule]
-
-    def status(self) -> ResultStatus:
-        return ResultStatus.Pending
 
     @staticmethod
     def can_load(data: Mapping) -> bool:

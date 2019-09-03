@@ -1,7 +1,7 @@
 import attr
 from typing import Optional, Union, List, TYPE_CHECKING
 
-from ..base import BaseRequirementRule, Solution, Rule
+from ..base import BaseRequirementRule, Solution, RuleState, Rule
 from ..result.requirement import RequirementResult
 
 if TYPE_CHECKING:
@@ -26,19 +26,22 @@ class RequirementSolution(Solution, BaseRequirementRule):
             overridden=overridden,
         )
 
-    def state(self) -> str:
+    def state(self) -> RuleState:
         if self.audited_by or self.result is None:
-            return "solution"
+            return RuleState.Solution
+
         return self.result.state()
 
     def claims(self) -> List['ClaimAttempt']:
         if self.audited_by or self.result is None:
             return []
+
         return self.result.claims()
 
     def ok(self) -> bool:
         if self.result is None:
             return False
+
         return self.result.ok()
 
     def audit(self, *, ctx: 'RequirementContext') -> RequirementResult:

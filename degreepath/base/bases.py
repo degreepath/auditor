@@ -18,8 +18,14 @@ Summable = Union[int, Decimal]
 class ResultStatus(enum.Enum):
     Pass = "pass"
     Problem = "problem"
-    Skip = "skip"
     Pending = "pending"
+
+
+@enum.unique
+class RuleState(enum.Enum):
+    Rule = "rule"
+    Solution = "solution"
+    Result = "result"
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -31,7 +37,6 @@ class Base(abc.ABC):
             "path": list(self.path),
             "type": self.type(),
             "status": self.status().value,
-            "state": self.state(),
             "ok": self.ok(),
             "rank": str(self.rank()),
             "max_rank": str(self.max_rank()),
@@ -42,11 +47,14 @@ class Base(abc.ABC):
     def type(self) -> str:
         raise NotImplementedError(f'must define a type() method')
 
-    def state(self) -> str:
-        return "rule"
+    def state(self) -> RuleState:
+        return RuleState.Rule
 
     def status(self) -> ResultStatus:
-        return ResultStatus.Pass if self.ok() else ResultStatus.Skip
+        if self.ok():
+            return ResultStatus.Pass
+
+        return ResultStatus.Pending
 
     def ok(self) -> bool:
         if self.was_overridden():
@@ -74,15 +82,15 @@ class Base(abc.ABC):
 class Result(Base):
     __slots__ = ()
 
-    def state(self) -> str:
-        return "result"
+    def state(self) -> RuleState:
+        return RuleState.Result
 
 
 class Solution(Base):
     __slots__ = ()
 
-    def state(self) -> str:
-        return "solution"
+    def state(self) -> RuleState:
+        return RuleState.Solution
 
     @abc.abstractmethod
     def audit(self, *, ctx: 'RequirementContext') -> Result:
@@ -92,8 +100,8 @@ class Solution(Base):
 class Rule(Base):
     __slots__ = ()
 
-    def state(self) -> str:
-        return "rule"
+    def state(self) -> RuleState:
+        return RuleState.Rule
 
     @abc.abstractmethod
     def validate(self, *, ctx: 'RequirementContext') -> None:

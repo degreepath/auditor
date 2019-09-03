@@ -1,7 +1,7 @@
 import attr
 from typing import Tuple, Union, Sequence, List
 
-from ..base import Result, BaseCountRule, Rule, ResultStatus, Solution, BaseAssertionRule
+from ..base import Result, BaseCountRule, Rule, Solution, BaseAssertionRule
 from ..claim import ClaimAttempt
 
 
@@ -30,9 +30,6 @@ class CountResult(Result, BaseCountRule):
 
     def audits(self) -> Sequence[BaseAssertionRule]:
         return self.audit_results
-
-    def status(self) -> ResultStatus:
-        return ResultStatus.Pass if self.ok() else ResultStatus.Problem
 
     def claims(self) -> List[ClaimAttempt]:
         return [claim for item in self.items for claim in item.claims()]

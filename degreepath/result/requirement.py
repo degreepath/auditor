@@ -2,7 +2,7 @@ import attr
 from typing import Optional, List, TYPE_CHECKING
 import logging
 
-from ..base import Base, Result, BaseRequirementRule, ResultStatus
+from ..base import Base, Result, BaseRequirementRule, RuleState
 
 if TYPE_CHECKING:
     from ..claim import ClaimAttempt  # noqa: F401
@@ -31,12 +31,9 @@ class RequirementResult(Result, BaseRequirementRule):
             overridden=overridden,
         )
 
-    def status(self) -> ResultStatus:
-        return ResultStatus.Pass if self.ok() else ResultStatus.Problem
-
-    def state(self) -> str:
+    def state(self) -> RuleState:
         if self.result is None:
-            return "result"
+            return RuleState.Result
 
         return self.result.state()
 

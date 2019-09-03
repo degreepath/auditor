@@ -46,8 +46,6 @@ class CourseResult(Result, BaseCourseRule):
         else:
             return []
 
-    def state(self) -> str:
-        return "result"
 
     def was_overridden(self) -> bool:
         return self.overridden
