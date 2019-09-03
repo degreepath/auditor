@@ -17,6 +17,7 @@ Summable = Union[int, Decimal]
 @enum.unique
 class ResultStatus(enum.Enum):
     Pass = "pass"
+    InProgress = "in-progress"
     Problem = "problem"
     Pending = "pending"
 
@@ -51,6 +52,9 @@ class Base(abc.ABC):
         return RuleState.Rule
 
     def status(self) -> ResultStatus:
+        if self.in_progress():
+            return ResultStatus.InProgress
+
         if self.ok():
             return ResultStatus.Pass
 
@@ -61,6 +65,9 @@ class Base(abc.ABC):
             return True
 
         return False
+
+    def in_progress(self) -> bool:
+        return 0 < self.rank() < self.max_rank() or any(c.is_in_progress for c in self.matched())
 
     def rank(self) -> Summable:
         return 0

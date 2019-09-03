@@ -71,8 +71,10 @@ def calculate_emoji(rule: Dict[str, Any]) -> str:
         return "💜"
     elif rule["status"] == "pass":
         return "💚"
-    elif rule["status"] == "skip":
+    elif rule["status"] == "pending":
         return "🌀"
+    elif rule["status"] == "in-progress":
+        return "💛"
     else:
         return "🚫️"
 
@@ -224,10 +226,6 @@ def print_query(
         yield f"{prefix} Subject to these limits:"
         for limit in rule['limit']:
             yield f"{prefix} - at most {limit['at_most']} where {str_clause(limit['where'])}"
-
-    if rule["status"] in ("pending"):
-        yield f'{prefix}[skipped]'
-        return
 
     mapped_trns = {c.clbid: c for c in transcript}
 
