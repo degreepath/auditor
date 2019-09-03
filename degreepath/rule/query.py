@@ -214,12 +214,6 @@ class QueryRule(Rule, BaseQueryRule):
 
         return any(item.apply_clause(self.where) for item in self.get_data(ctx=ctx))
 
-    def rank(self) -> int:
-        return 0
-
-    def max_rank(self) -> int:
-        return len(self.assertions)
-
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         matches = list(self.get_data(ctx=ctx))
 

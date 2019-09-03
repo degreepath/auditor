@@ -2,7 +2,7 @@ import attr
 from typing import Optional, Tuple, Dict, Any
 import enum
 
-from .bases import Base
+from .bases import Base, Summable
 from ..limit import LimitSet
 from ..clause import Clause
 from ..rule.assertion import AssertionRule
@@ -54,3 +54,9 @@ class BaseQueryRule(Base):
 
     def type(self) -> str:
         return "query"
+
+    def rank(self) -> Summable:
+        return 0
+
+    def max_rank(self) -> Summable:
+        return sum(a.max_rank() for a in self.assertions)
