@@ -25,19 +25,21 @@ class SubType(enum.Enum):
 
 @enum.unique
 class CourseType(enum.Enum):
+    Adjustment = "AD"
+    AP = "AP"
+    Carleton = "CA"
+    ContinuingEducation = "CE"
+    GeReq = "GE"
+    Interim = "IN"
+    InterimExchange = "IE"
+    OffCampusCourse = "OC"
+    OffCampusProgram = "OP"
+    Other = "OT"
+    ParaCollege = "PC"
     PSEO = "PS"
     Semester = "SE"
-    Interim = "IN"
-    AP = "AP"
-    _CA = "CA"
-    GeReq = "GE"
-    Adjustment = "AD"
-    OffCampus = "OC"
     Summer = "SM"
-    _OP = "OP"
-    _PC = "PC"
     Transfer = "TR"
-    _IE = "IE"
 
 
 class OrderedEnum(enum.Enum):
