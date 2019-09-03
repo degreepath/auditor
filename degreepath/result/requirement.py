@@ -50,4 +50,7 @@ class RequirementResult(Result, BaseRequirementRule):
         if self.was_overridden():
             return self.overridden
 
-        return self.result.ok() if self.result else False
+        if self.result is None:
+            return False
+
+        return self.result.ok()

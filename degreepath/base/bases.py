@@ -73,7 +73,9 @@ class Base(abc.ABC):
         return 0
 
     def max_rank(self) -> Summable:
-        return 0
+        if self.ok():
+            return self.rank()
+        return 1
 
     def claims(self) -> List['ClaimAttempt']:
         return []
