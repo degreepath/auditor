@@ -1,7 +1,6 @@
 from degreepath.data import course_from_str
 from degreepath.area import AreaOfStudy
 from degreepath.constants import Constants
-from degreepath.solution.course import CourseSolution
 from degreepath.result.course import CourseResult
 import logging
 
@@ -38,4 +37,4 @@ def test_pruning_on_count_rule(caplog):
     assert result.result.count == 1
     assert result.ok() is True
     assert result.was_overridden() is False
-    assert result.claims()[0].claim.clbid == course_a.clbid
+    assert result.claims()[0].claim.course.clbid == course_a.clbid
