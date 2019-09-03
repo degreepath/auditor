@@ -242,8 +242,11 @@ class SingleClause(_Clause, ResolvedClause):
         )
 
     def rank(self) -> Union[int, decimal.Decimal]:
-        if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
-            return decimal.Decimal(self.resolved_with)
+        if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float):
+                if type(self.expected) in (int, decimal.Decimal, float):
+                    if self.resolved_with != 0:
+                        return decimal.Decimal(self.expected) / decimal.Decimal(self.resolved_with)
 
         if self.result is True:
             return 1
@@ -253,9 +256,6 @@ class SingleClause(_Clause, ResolvedClause):
     def max_rank(self) -> Union[int, decimal.Decimal]:
         if self.result is True:
             return self.rank()
-
-        if type(self.expected) in (int, decimal.Decimal, float) and self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
-            return int(self.expected)
 
         return 1
 
