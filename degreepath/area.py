@@ -44,6 +44,7 @@ class AreaOfStudy(Base):
             "degree": self.degree,
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
+            "limit": self.limit.to_dict(),
         }
 
     def type(self) -> str:
