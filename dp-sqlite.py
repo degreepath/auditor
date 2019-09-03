@@ -180,7 +180,7 @@ def init_tables(*, conn: sqlite3.Connection) -> None:
                 max_rank NUMERIC,
                 result TEXT,
                 ok BOOLEAN,
-                ts TEXT DEFAULT datetime('now'),
+                ts TEXT,
                 gpa NUMERIC
             )
         """)
@@ -207,8 +207,8 @@ def make_result_id(*, stnum: str, conn: sqlite3.Connection, area_code: str, cata
     with cursor(conn) as curs:
         with transaction(conn):
             curs.execute("""
-                INSERT INTO result (student_id, area_code, catalog, in_progress, run)
-                VALUES (:student_id, :area_code, :catalog, true, :run)
+                INSERT INTO result (student_id, area_code, catalog, in_progress, run, ts)
+                VALUES (:student_id, :area_code, :catalog, true, :run, datetime('now'))
             """, {"student_id": stnum, "area_code": area_code, "catalog": catalog, "run": run})
 
         return cast(int, curs.lastrowid)
