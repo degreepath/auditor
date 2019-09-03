@@ -52,7 +52,7 @@ class CountSolution(Solution, BaseCountRule):
                 ))
                 continue
 
-            matched_items = [item for sol in results for item in sol.matched(ctx=ctx)]
+            matched_items = [item for sol in results for item in sol.matched()]
 
             if clause.where is not None:
                 matched_items = [

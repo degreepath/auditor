@@ -71,9 +71,8 @@ class Base(abc.ABC):
     def claims(self) -> List['ClaimAttempt']:
         return []
 
-    def matched(self, *, ctx: 'RequirementContext') -> Tuple['CourseInstance', ...]:
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
+    def matched(self) -> Tuple['CourseInstance', ...]:
+        return tuple(claim.get_course() for claim in self.claims())
 
     def was_overridden(self) -> bool:
         return False

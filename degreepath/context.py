@@ -127,7 +127,7 @@ class RequirementContext:
             clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
         # build a claim so it can be returned later
-        claim = Claim(crsid=course.crsid, clbid=course.clbid, claimant_path=tuple(path), value=clause)
+        claim = Claim(course=course, claimant_path=tuple(path), value=clause)
 
         # > A multicountable set describes the ways in which a course may be
         # > counted.
