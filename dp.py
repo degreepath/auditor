@@ -118,13 +118,15 @@ def result_str(
     if gpa_only:
         return f"GPA: {msg.result.gpa()}"
 
-    dict_result = json.loads(json.dumps(msg.result.to_dict()))
+    dict_result = msg.result.to_dict()
 
     if as_json:
         return json.dumps(dict_result)
 
     if as_raw:
         return repr(msg.result)
+
+    dict_result = json.loads(json.dumps(msg.result.to_dict()))
 
     return "\n" + "".join(summarize(
         result=dict_result,
