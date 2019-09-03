@@ -159,6 +159,11 @@ class SingleClause(_Clause, ResolvedClause):
             expected = self.expected.value
         if isinstance(self.expected, decimal.Decimal):
             expected = str(self.expected)
+        if isinstance(self.expected, tuple):
+            expected = tuple(
+                str(v) if isinstance(v, decimal.Decimal) else v
+                for v in expected
+            )
 
         return {
             **super().to_dict(),
@@ -212,7 +217,15 @@ class SingleClause(_Clause, ResolvedClause):
             assert expected_value is not None
 
         if key == 'grade':
-            expected_value = str_to_grade_points(expected_value) if type(expected_value) is str else decimal.Decimal(expected_value)
+            if type(expected_value) is str:
+                expected_value = str_to_grade_points(expected_value)
+            elif isinstance(expected_value, Iterable):
+                expected_value = tuple(
+                    str_to_grade_points(v) if type(v) is str else decimal.Decimal(v)
+                    for v in expected_value
+                )
+            else:
+                expected_value = decimal.Decimal(expected_value)
         elif key == 'grade_option':
             expected_value = GradeOption(expected_value)
         elif key == 'credits':
