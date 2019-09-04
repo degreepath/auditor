@@ -39,6 +39,7 @@ class QuerySolution(Solution, BaseQueryRule):
             path=rule.path,
             overridden=overridden,
             inserted=rule.inserted,
+            load_potentials=rule.load_potentials,
         )
 
     def to_dict(self) -> Dict[str, Any]:

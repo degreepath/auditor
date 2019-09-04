@@ -40,6 +40,7 @@ class BaseQueryRule(Base):
     attempt_claims: bool
     path: Tuple[str, ...]
     inserted: Tuple[str, ...]
+    load_potentials: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -47,6 +48,7 @@ class BaseQueryRule(Base):
             "source": self.source.value,
             "source_type": self.source_type.value,
             "source_repeats": self.source_repeats.value,
+            "load_potentials": self.load_potentials,
             "limit": self.limit.to_dict(),
             "assertions": [a.to_dict() for a in self.all_assertions()],
             "where": self.where.to_dict() if self.where else None,
