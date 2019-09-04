@@ -17,6 +17,7 @@ class BaseCourseRule(Base):
     grade: Optional[Decimal]
     allow_claimed: bool
     path: Tuple[str, ...]
+    inserted: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {

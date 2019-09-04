@@ -32,6 +32,7 @@ class CourseResult(Result, BaseCourseRule):
             path=solution.path,
             overridden=overridden,
             ap=solution.ap,
+            inserted=solution.inserted,
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -50,7 +51,7 @@ class CourseResult(Result, BaseCourseRule):
         return self.claim_attempt is not None and self.claim_attempt.claim.course.is_in_progress
 
     def was_overridden(self) -> bool:
-        return self.overridden
+        return self.inserted or self.overridden
 
     def ok(self) -> bool:
         if self.was_overridden():

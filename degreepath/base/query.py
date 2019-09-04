@@ -39,6 +39,7 @@ class BaseQueryRule(Base):
     allow_claimed: bool
     attempt_claims: bool
     path: Tuple[str, ...]
+    inserted: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -52,6 +53,7 @@ class BaseQueryRule(Base):
             "allow_claimed": self.allow_claimed,
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.only_failed_claims()],
+            "inserted": list(self.inserted),
         }
 
     def only_failed_claims(self) -> Sequence[ClaimAttempt]:
