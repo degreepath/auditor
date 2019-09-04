@@ -61,7 +61,7 @@ class RequirementContext:
 
     def has_exception(self, path: Sequence[str]) -> bool:
         tuple_path = tuple(path)
-        return any(e.path == tuple_path for e in self.exceptions)
+        return any(e.path[:len(path)] == tuple_path for e in self.exceptions)
 
     def get_insert_exceptions(self, path: Sequence[str]) -> Iterator[InsertionException]:
         tuple_path = tuple(path)
