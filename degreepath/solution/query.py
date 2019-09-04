@@ -38,6 +38,7 @@ class QuerySolution(Solution, BaseQueryRule):
             output=output,
             path=rule.path,
             overridden=overridden,
+            inserted=rule.inserted,
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -87,6 +88,7 @@ class QuerySolution(Solution, BaseQueryRule):
             else:
                 raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
 
+        inserted_clbids = []
         for insert in ctx.get_insert_exceptions(self.path):
             matched_course = ctx.forced_course_by_clbid(insert.clbid)
             clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=insert.clbid, expected_verbatim=insert.clbid)
@@ -99,6 +101,7 @@ class QuerySolution(Solution, BaseQueryRule):
                 if debug: logger.debug('%s course "%s" exists, and is available', self.path, insert.clbid)
                 successful_claims.append(claim)
                 claimed_items.append(matched_course)
+                inserted_clbids.append(matched_course.clbid)
 
         resolved_assertions = tuple(
             self.apply_assertion(a, ctx=ctx, output=claimed_items)
@@ -119,6 +122,7 @@ class QuerySolution(Solution, BaseQueryRule):
             successful_claims=tuple(successful_claims),
             failed_claims=tuple(failed_claims),
             success=resolved_result,
+            inserted=tuple(inserted_clbids),
         )
 
     def apply_assertion(self, clause: AssertionRule, *, ctx: 'RequirementContext', output: Sequence[Clausable] = tuple()) -> AssertionResult:
@@ -128,20 +132,22 @@ class QuerySolution(Solution, BaseQueryRule):
         exception = ctx.get_waive_exception(clause.path)
         if exception:
             logger.debug("forced override on %s", self.path)
-            return AssertionResult(where=clause.where, assertion=clause.assertion, path=clause.path, overridden=True)
+            return AssertionResult(where=clause.where, assertion=clause.assertion, path=clause.path, overridden=True, inserted=tuple())
 
         if clause.where is not None:
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
         else:
             filtered_output = list(output)
 
+        inserted_clbids = []
         for insert in ctx.get_insert_exceptions(clause.path):
             logger.debug("inserted %s into %s", insert.clbid, self.path)
             matched_course = ctx.forced_course_by_clbid(insert.clbid)
             filtered_output.append(matched_course)
+            inserted_clbids.append(matched_course.clbid)
 
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
-        return AssertionResult(where=clause.where, assertion=result, path=clause.path, overridden=False)
+        return AssertionResult(where=clause.where, assertion=result, path=clause.path, overridden=False, inserted=tuple(inserted_clbids))
 
 
 def apply_clause_to_query_rule(*, value: Sequence[Union[CourseInstance, AreaPointer]], clause: SingleClause) -> Tuple[Union[decimal.Decimal, int], Collection[Any], Tuple[str, ...]]:

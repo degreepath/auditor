@@ -71,8 +71,10 @@ def calculate_emoji(rule: Dict[str, Any]) -> str:
         return "💜"
     elif rule["status"] == "pass":
         return "💚"
-    elif rule["status"] == "skip":
+    elif rule["status"] == "pending":
         return "🌀"
+    elif rule["status"] == "in-progress":
+        return "💛"
     else:
         return "🚫️"
 
@@ -225,10 +227,6 @@ def print_query(
         for limit in rule['limit']:
             yield f"{prefix} - at most {limit['at_most']} where {str_clause(limit['where'])}"
 
-    if rule["status"] in ("pending"):
-        yield f'{prefix}[skipped]'
-        return
-
     mapped_trns = {c.clbid: c for c in transcript}
 
     if rule["claims"]:
@@ -236,7 +234,8 @@ def print_query(
         for clm in rule["claims"]:
             course = mapped_trns.get(clm['claim']["clbid"], None)
             if course:
-                yield f"{prefix}    {course.course_shorthand()} \"{course.name}\" ({course.clbid})"
+                inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
+                yield f"{prefix}    {inserted_msg}{course.course_shorthand()} \"{course.name}\" ({course.clbid})"
             else:
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
@@ -252,7 +251,7 @@ def print_query(
 
     yield f"{prefix} There must be:"
     for a in rule['assertions']:
-        yield from print_result(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
+        yield from print_assertion(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, inserted=rule["inserted"])
 
 
 def print_requirement(
@@ -285,6 +284,7 @@ def print_assertion(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    inserted: Sequence[str] = tuple(),
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
@@ -322,6 +322,7 @@ def print_assertion(
         yield f"{prefix}resolved courses:"
 
         for clbid in resolved_clbids:
+            inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
             course = mapped_trns[clbid]
             chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
-            yield f'{prefix}  - Course({", ".join(chunks)})'
+            yield f'{prefix}  -{inserted_msg} Course({", ".join(chunks)})'

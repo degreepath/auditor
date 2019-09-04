@@ -17,9 +17,16 @@ Summable = Union[int, Decimal]
 @enum.unique
 class ResultStatus(enum.Enum):
     Pass = "pass"
+    InProgress = "in-progress"
     Problem = "problem"
-    Skip = "skip"
     Pending = "pending"
+
+
+@enum.unique
+class RuleState(enum.Enum):
+    Rule = "rule"
+    Solution = "solution"
+    Result = "result"
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -31,7 +38,6 @@ class Base(abc.ABC):
             "path": list(self.path),
             "type": self.type(),
             "status": self.status().value,
-            "state": self.state(),
             "ok": self.ok(),
             "rank": str(self.rank()),
             "max_rank": str(self.max_rank()),
@@ -42,11 +48,17 @@ class Base(abc.ABC):
     def type(self) -> str:
         raise NotImplementedError(f'must define a type() method')
 
-    def state(self) -> str:
-        return "rule"
+    def state(self) -> RuleState:
+        return RuleState.Rule
 
     def status(self) -> ResultStatus:
-        return ResultStatus.Pass if self.ok() else ResultStatus.Skip
+        if self.in_progress():
+            return ResultStatus.InProgress
+
+        if self.ok():
+            return ResultStatus.Pass
+
+        return ResultStatus.Pending
 
     def ok(self) -> bool:
         if self.was_overridden():
@@ -54,18 +66,22 @@ class Base(abc.ABC):
 
         return False
 
+    def in_progress(self) -> bool:
+        return 0 < self.rank() < self.max_rank() or any(c.is_in_progress for c in self.matched())
+
     def rank(self) -> Summable:
         return 0
 
     def max_rank(self) -> Summable:
-        return 0
+        if self.ok():
+            return self.rank()
+        return 1
 
     def claims(self) -> List['ClaimAttempt']:
         return []
 
-    def matched(self, *, ctx: 'RequirementContext') -> Tuple['CourseInstance', ...]:
-        claimed_courses = (claim.get_course(ctx=ctx) for claim in self.claims())
-        return tuple(c for c in claimed_courses if c)
+    def matched(self) -> Tuple['CourseInstance', ...]:
+        return tuple(claim.get_course() for claim in self.claims())
 
     def was_overridden(self) -> bool:
         return False
@@ -74,15 +90,15 @@ class Base(abc.ABC):
 class Result(Base):
     __slots__ = ()
 
-    def state(self) -> str:
-        return "result"
+    def state(self) -> RuleState:
+        return RuleState.Result
 
 
 class Solution(Base):
     __slots__ = ()
 
-    def state(self) -> str:
-        return "solution"
+    def state(self) -> RuleState:
+        return RuleState.Solution
 
     @abc.abstractmethod
     def audit(self, *, ctx: 'RequirementContext') -> Result:
@@ -92,8 +108,8 @@ class Solution(Base):
 class Rule(Base):
     __slots__ = ()
 
-    def state(self) -> str:
-        return "rule"
+    def state(self) -> RuleState:
+        return RuleState.Rule
 
     @abc.abstractmethod
     def validate(self, *, ctx: 'RequirementContext') -> None:

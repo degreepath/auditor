@@ -80,6 +80,7 @@ class QueryRule(Rule, BaseQueryRule):
             attempt_claims=attempt_claims,
             load_potentials=load_potentials,
             path=tuple(path),
+            inserted=tuple(),
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

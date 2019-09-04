@@ -1,11 +1,13 @@
 import attr
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Tuple, Dict, Any, Sequence
 import enum
 
 from .bases import Base, Summable
 from ..limit import LimitSet
 from ..clause import Clause
+from ..claim import ClaimAttempt
 from ..rule.assertion import AssertionRule
+from .assertion import BaseAssertionRule
 
 
 @enum.unique
@@ -37,6 +39,7 @@ class BaseQueryRule(Base):
     allow_claimed: bool
     attempt_claims: bool
     path: Tuple[str, ...]
+    inserted: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -45,12 +48,19 @@ class BaseQueryRule(Base):
             "source_type": self.source_type.value,
             "source_repeats": self.source_repeats.value,
             "limit": self.limit.to_dict(),
-            "assertions": [a.to_dict() for a in self.assertions],
+            "assertions": [a.to_dict() for a in self.all_assertions()],
             "where": self.where.to_dict() if self.where else None,
             "allow_claimed": self.allow_claimed,
             "claims": [c.to_dict() for c in self.claims()],
-            "failures": [],
+            "failures": [c.to_dict() for c in self.only_failed_claims()],
+            "inserted": list(self.inserted),
         }
+
+    def only_failed_claims(self) -> Sequence[ClaimAttempt]:
+        return []
+
+    def all_assertions(self) -> Sequence[BaseAssertionRule]:
+        return self.assertions
 
     def type(self) -> str:
         return "query"

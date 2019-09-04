@@ -49,10 +49,11 @@ class CountSolution(Solution, BaseCountRule):
                     assertion=clause.assertion,
                     path=clause.path,
                     overridden=True,
+                    inserted=(),
                 ))
                 continue
 
-            matched_items = [item for sol in results for item in sol.matched(ctx=ctx)]
+            matched_items = [item for sol in results for item in sol.matched()]
 
             if clause.where is not None:
                 matched_items = [
@@ -60,10 +61,12 @@ class CountSolution(Solution, BaseCountRule):
                     if item.apply_clause(clause.where)
                 ]
 
+            inserted_clbids = []
             for insert in ctx.get_insert_exceptions(clause.path):
                 logger.debug("inserted %s into %s", insert.clbid, self.path)
                 matched_course = ctx.forced_course_by_clbid(insert.clbid)
                 matched_items.append(matched_course)
+                inserted_clbids.append(matched_course.clbid)
 
             result = clause.assertion.compare_and_resolve_with(
                 value=matched_items,
@@ -75,6 +78,7 @@ class CountSolution(Solution, BaseCountRule):
                 assertion=result,
                 path=clause.path,
                 overridden=False,
+                inserted=tuple(inserted_clbids),
             ))
 
         return CountResult.from_solution(

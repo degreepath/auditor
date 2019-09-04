@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
     ap: Optional[str] = None
+    inserted: bool = False
 
     @staticmethod
     def can_load(data: Dict) -> bool:

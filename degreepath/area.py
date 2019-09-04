@@ -201,7 +201,7 @@ class AreaSolution(AreaOfStudy):
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
     def audit_common_major_requirements(self, result: Result, other_areas: Sequence[AreaPointer] = tuple()) -> RequirementResult:
-        claimed = set(result.matched(ctx=self.context))
+        claimed = set(result.matched())
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
         whole_context = attr.evolve(self.context)
@@ -275,7 +275,7 @@ class AreaResult(AreaOfStudy, Result):
         if self.kind == 'degree':
             courses = list(transcript_map.values())
         else:
-            courses = [transcript_map[c.claim.clbid] for c in self.claims() if c.failed() is False]
+            courses = [transcript_map[c.claim.course.clbid] for c in self.claims() if c.failed() is False]
 
         return grade_point_average(courses)
 

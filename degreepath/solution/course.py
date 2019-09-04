@@ -27,6 +27,7 @@ class CourseSolution(Solution, BaseCourseRule):
             path=rule.path,
             overridden=overridden,
             ap=rule.ap,
+            inserted=rule.inserted,
         )
 
     def audit(self, *, ctx: 'RequirementContext') -> CourseResult:
