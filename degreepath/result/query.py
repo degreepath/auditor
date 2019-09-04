@@ -1,8 +1,8 @@
 import attr
-from typing import Tuple, Dict, Any, List
-from .assertion import AssertionResult
+from typing import Tuple, Sequence, List
 
-from ..base import Result, BaseQueryRule, Summable
+from .assertion import AssertionResult
+from ..base import Result, BaseQueryRule, Summable, BaseAssertionRule
 from ..claim import ClaimAttempt
 
 
@@ -41,12 +41,11 @@ class QueryResult(Result, BaseQueryRule):
             overridden=overridden,
         )
 
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            **super().to_dict(),
-            "failures": [c.to_dict() for c in self.failed_claims],
-            "assertions": [a.to_dict() for a in self.resolved_assertions],
-        }
+    def only_failed_claims(self) -> Sequence[ClaimAttempt]:
+        return self.failed_claims
+
+    def all_assertions(self) -> Sequence[BaseAssertionRule]:
+        return self.resolved_assertions
 
     def claims(self) -> List[ClaimAttempt]:
         return list(self.successful_claims)
