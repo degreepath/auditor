@@ -80,8 +80,8 @@ class Base(abc.ABC):
     def claims(self) -> List['ClaimAttempt']:
         return []
 
-    def matched(self) -> Tuple['CourseInstance', ...]:
-        return tuple(claim.get_course() for claim in self.claims())
+    def matched(self) -> Iterator['CourseInstance']:
+        return (claim.get_course() for claim in self.claims())
 
     def was_overridden(self) -> bool:
         return False
