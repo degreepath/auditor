@@ -270,12 +270,10 @@ class AreaResult(AreaOfStudy, Result):
         if not self.result:
             return decimal.Decimal('0.00')
 
-        transcript_map = {c.clbid: c for c in self.context.transcript()}
-
         if self.kind == 'degree':
-            courses = list(transcript_map.values())
+            courses = self.context.transcript()
         else:
-            courses = [transcript_map[c.claim.course.clbid] for c in self.claims() if c.failed() is False]
+            courses = list(self.matched())
 
         return grade_point_average(courses)
 
