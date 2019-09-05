@@ -81,7 +81,7 @@ class Base(abc.ABC):
         return []
 
     def matched(self) -> Iterator['CourseInstance']:
-        return (claim.get_course() for claim in self.claims())
+        return (claim.get_course() for claim in self.claims() if claim.failed() is False)
 
     def was_overridden(self) -> bool:
         return False
