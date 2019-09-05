@@ -1,5 +1,5 @@
 import abc
-from typing import Iterator, Dict, Any, List, Tuple, Collection, Optional, Union, TYPE_CHECKING
+from typing import Iterator, Dict, Set, Any, List, Tuple, Collection, Optional, Union, TYPE_CHECKING
 from decimal import Decimal
 import enum
 import attr
@@ -80,8 +80,8 @@ class Base(abc.ABC):
     def claims(self) -> List['ClaimAttempt']:
         return []
 
-    def matched(self) -> Iterator['CourseInstance']:
-        return (claim.get_course() for claim in self.claims() if claim.failed() is False)
+    def matched(self) -> Set['CourseInstance']:
+        return set(claim.get_course() for claim in self.claims() if claim.failed() is False)
 
     def was_overridden(self) -> bool:
         return False
