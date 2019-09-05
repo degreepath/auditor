@@ -11,7 +11,8 @@ def filter_transcript(courses: Iterable['CourseInstance']) -> Iterable['CourseIn
 
 
 def grade_point_average_items(courses: Iterable['CourseInstance']) -> Iterable['CourseInstance']:
-    return (c for c in courses if c.is_in_gpa)
+    # return a set here to remove multi-claimed courses from the data
+    return set(c for c in courses if c.is_in_gpa)
 
 
 def grade_point_average(courses: Iterable['CourseInstance']) -> Decimal:
