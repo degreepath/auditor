@@ -126,7 +126,7 @@ def result_str(
     if as_raw:
         return repr(msg.result)
 
-    dict_result = json.loads(json.dumps(msg.result.to_dict()))
+    dict_result = json.loads(json.dumps(dict_result))
 
     return "\n" + "".join(summarize(
         result=dict_result,

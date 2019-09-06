@@ -35,4 +35,10 @@ class BaseAssertionRule(Base):
         return self.assertion.max_rank()
 
     def ok(self) -> bool:
-        return self.assertion.result is True
+        if self.was_overridden():
+            return True
+
+        return self.assertion.ok()
+
+    def in_progress(self) -> bool:
+        return self.assertion.in_progress()

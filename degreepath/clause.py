@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, cast, TYPE_CHECKING
+from typing import Union, List, Set, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
@@ -9,6 +9,7 @@ from .constants import Constants
 from .lib import str_to_grade_points
 from .operator import Operator, apply_operator, str_operator
 from .data.course_enums import GradeOption
+from .status import ResultStatus
 from functools import lru_cache
 
 if TYPE_CHECKING:
@@ -52,23 +53,48 @@ class ResolvedClause:
     resolved_with: Optional[Any] = None
     resolved_items: Tuple[Any, ...] = tuple()
     resolved_clbids: Tuple[str, ...] = tuple()
-    result: bool = False
+    in_progress_clbids: Tuple[str, ...] = tuple()
+    result: ResultStatus = ResultStatus.Pending
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "resolved_with": str(self.resolved_with) if self.resolved_with is not None and type(self.resolved_with) is not str else self.resolved_with,
             "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
             "resolved_clbids": [x for x in self.resolved_clbids],
-            "result": self.result,
+            "in_progress_clbids": [x for x in self.in_progress_clbids],
+            "result": self.result.value,
             "rank": str(self.rank()),
             "max_rank": str(self.max_rank()),
         }
 
     def rank(self) -> Union[int, decimal.Decimal]:
-        return 1 if self.result else 0
+        if self.ok():
+            return 1
+
+        return 0
 
     def max_rank(self) -> Union[int, decimal.Decimal]:
+        if self.ok():
+            return self.rank()
+
         return 1
+
+    @abc.abstractmethod
+    def in_progress(self) -> bool:
+        raise NotImplementedError(f'must define an in_progress() method')
+
+    @abc.abstractmethod
+    def ok(self) -> bool:
+        raise NotImplementedError(f'must define an ok() method')
+
+    def status(self) -> ResultStatus:
+        if self.in_progress():
+            return ResultStatus.InProgress
+
+        if self.ok():
+            return ResultStatus.Pass
+
+        return ResultStatus.Pending
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -97,14 +123,35 @@ class AndClause(_Clause, ResolvedClause):
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'AndClause':
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
-        result = all(c.result for c in children)
+
+        if any(c.result is ResultStatus.InProgress for c in children):
+            # if there are any in-progress children
+            result = ResultStatus.InProgress
+        elif all(c.result is ResultStatus.Pass for c in children):
+            # if all children are OK
+            result = ResultStatus.Pass
+        elif 1 <= len([c.result is ResultStatus.Pass for c in children]) < len(self.children):
+            # if the number of done items is not fully complete
+            result = ResultStatus.InProgress
+        else:
+            # otherwise
+            result = ResultStatus.Pending
 
         return AndClause(children=children, resolved_with=None, result=result)
+
+    def ok(self) -> bool:
+        return all(c.ok() for c in self.children)
+
+    def in_progress(self) -> bool:
+        return any(c.in_progress() for c in self.children)
 
     def rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() for c in self.children)
 
     def max_rank(self) -> Union[int, decimal.Decimal]:
+        if self.ok():
+            return self.rank()
+
         return sum(c.max_rank() for c in self.children)
 
 
@@ -134,15 +181,33 @@ class OrClause(_Clause, ResolvedClause):
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'OrClause':
         children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
-        result = any(c.result for c in children)
+
+        if any(c.result is ResultStatus.InProgress for c in children):
+            # if there are any in-progress children
+            result = ResultStatus.InProgress
+        elif any(c.result is ResultStatus.Pass for c in children):
+            # if any children are OK
+            result = ResultStatus.Pass
+        else:
+            # otherwise
+            result = ResultStatus.Pending
 
         return OrClause(children=children, resolved_with=None, result=result)
+
+    def ok(self) -> bool:
+        return any(c.ok() for c in self.children)
+
+    def in_progress(self) -> bool:
+        return any(c.in_progress() for c in self.children)
 
     def rank(self) -> Union[int, decimal.Decimal]:
         return sum(c.rank() for c in self.children)
 
     def max_rank(self) -> Union[int, decimal.Decimal]:
-        return sum(c.rank() if c.result is True else c.max_rank() for c in self.children)
+        if self.ok():
+            return self.rank()
+
+        return sum(c.rank() if c.ok() else c.max_rank() for c in self.children)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -241,7 +306,16 @@ class SingleClause(_Clause, ResolvedClause):
             at_most=at_most,
         )
 
+    def ok(self) -> bool:
+        return self.result is ResultStatus.Pass
+
+    def in_progress(self) -> bool:
+        return self.result is ResultStatus.InProgress
+
     def rank(self) -> Union[int, decimal.Decimal]:
+        if self.result is ResultStatus.Pass:
+            return 1
+
         if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
             if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float):
                 if type(self.expected) in (int, decimal.Decimal, float):
@@ -249,13 +323,10 @@ class SingleClause(_Clause, ResolvedClause):
                         resolved = decimal.Decimal(self.resolved_with) / decimal.Decimal(self.expected)
                         return min(decimal.Decimal(1), resolved)
 
-        if self.result is True:
-            return 1
-
         return 0
 
     def max_rank(self) -> Union[int, decimal.Decimal]:
-        if self.result is True:
+        if self.ok():
             return self.rank()
 
         return 1
@@ -296,8 +367,17 @@ class SingleClause(_Clause, ResolvedClause):
         return str(self.expected) == str(other_clause.expected)
 
     def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'SingleClause':
-        reduced_value, value_items, clbids = map_func(clause=self, value=value)
-        result = apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected)
+        reduced_value, value_items, courses = map_func(clause=self, value=value)
+
+        clbids = tuple(c.clbid for c in courses)
+        ip_clbids = tuple(c.clbid for c in courses if c.is_in_progress)
+
+        if ip_clbids:
+            result = ResultStatus.InProgress
+        elif apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected) is True:
+            result = ResultStatus.Pass
+        else:
+            result = ResultStatus.Pending
 
         return SingleClause(
             key=self.key,
@@ -308,6 +388,7 @@ class SingleClause(_Clause, ResolvedClause):
             resolved_with=reduced_value,
             resolved_items=value_items,
             resolved_clbids=clbids,
+            in_progress_clbids=ip_clbids,
             result=result,
         )
 
@@ -403,6 +484,20 @@ def get_resolved_clbids(clause: Union[Dict[str, Any], 'Clause']) -> List[str]:
         return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
     elif clause["type"] == "and-clause":
         return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
+
+    raise Exception('not a clause')
+
+
+def get_in_progress_clbids(clause: Union[Dict[str, Any], 'Clause']) -> Set[str]:
+    if not isinstance(clause, dict):
+        return get_in_progress_clbids(clause.to_dict())
+
+    if clause["type"] == "single-clause":
+        return set(clause['in_progress_clbids'])
+    elif clause["type"] == "or-clause":
+        return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
+    elif clause["type"] == "and-clause":
+        return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
 
     raise Exception('not a clause')
 

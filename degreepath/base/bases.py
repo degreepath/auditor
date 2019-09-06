@@ -4,6 +4,7 @@ from decimal import Decimal
 import enum
 import attr
 from functools import cmp_to_key, lru_cache
+from ..status import ResultStatus
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -12,14 +13,6 @@ if TYPE_CHECKING:
     from ..data import Clausable  # noqa: F401
 
 Summable = Union[int, Decimal]
-
-
-@enum.unique
-class ResultStatus(enum.Enum):
-    Pass = "pass"
-    InProgress = "in-progress"
-    Problem = "problem"
-    Pending = "pending"
 
 
 @enum.unique
