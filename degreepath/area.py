@@ -106,9 +106,9 @@ class AreaOfStudy(Base):
                 clauses.append(item)
             multicountable_clauses.append(clauses)
 
-        extra_keys = set(specification.keys()).difference(['name', 'type', 'major', 'degree', 'emphases', 'result', 'requirements', 'limit', 'attributes'])
-        if extra_keys:
-            raise TypeError(f'expected no extra keys; got {extra_keys}')
+        allowed_keys = set(['name', 'type', 'major', 'degree', 'emphases', 'result', 'requirements', 'limit', 'attributes'])
+        given_keys = set(specification.keys())
+        assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
         return AreaOfStudy(
             name=specification.get('name', 'Test'),

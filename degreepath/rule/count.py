@@ -106,6 +106,10 @@ class CountRule(Rule, BaseCountRule):
         else:
             count = int(data["count"])
 
+        allowed_keys = set(['of', 'all', 'count', 'any', 'either', 'both', 'at_most', 'audit'])
+        given_keys = set(data.keys())
+        assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
+
         return CountRule(
             count=count,
             items=loaded_items,

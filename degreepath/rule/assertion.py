@@ -35,6 +35,10 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         message = data.get("message", None)
 
+        allowed_keys = set(['where', 'assert', 'message'])
+        given_keys = set(data.keys())
+        assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
+
         return AssertionRule(assertion=assertion, where=where, path=tuple(path), inserted=tuple(), message=message)
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

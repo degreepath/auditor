@@ -67,6 +67,10 @@ class QueryRule(Rule, BaseQueryRule):
 
         load_potentials = data.get('load_potentials', True)
 
+        allowed_keys = set(['where', 'limit', 'claim', 'assert', 'all', 'allow_claimed', 'from', 'load_potentials'])
+        given_keys = set(data.keys())
+        assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
+
         return QueryRule(
             source=source,
             source_type=source_type,
