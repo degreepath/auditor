@@ -17,9 +17,15 @@ T = TypeVar('T', bound=Clausable)
 class Limit:
     at_most: int
     where: Clause
+    message: Optional[str]
 
     def to_dict(self) -> Dict[str, Any]:
-        return {"type": "limit", "at_most": self.at_most, "where": self.where.to_dict()}
+        return {
+            "type": "limit",
+            "at_most": self.at_most,
+            "where": self.where.to_dict(),
+            "message": self.message,
+        }
 
     @staticmethod
     def load(data: Dict, c: Constants) -> 'Limit':
@@ -28,7 +34,15 @@ class Limit:
         if at_most is None:
             raise Exception(f'expected an at-most key; got {data}')
 
-        return Limit(at_most=at_most, where=load_clause(data["where"], c))
+        allowed_keys = set(['at most', 'at-most', 'at_most', 'where', 'message'])
+        given_keys = set(data.keys())
+        assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty"
+
+        return Limit(
+            at_most=at_most,
+            where=load_clause(data["where"], c),
+            message=data.get('message', None),
+        )
 
     def __str__(self) -> str:
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"
