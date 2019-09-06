@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Set, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, cast, TYPE_CHECKING
+from typing import Union, List, Set, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, TypeVar, Generic, FrozenSet, Collection, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
@@ -15,8 +15,21 @@ from functools import lru_cache
 if TYPE_CHECKING:
     from .base.course import BaseCourseRule  # noqa: F401
     from .context import RequirementContext
+    from .data import CourseInstance, Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
+
+
+T = TypeVar('T', str, decimal.Decimal)
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
+class AppliedClauseResult(Generic[T]):
+    value: Union[int, decimal.Decimal]
+    data: Union[FrozenSet[T], Tuple[T, ...]] = frozenset()
+    courses: Collection['CourseInstance'] = tuple()
+
+
+ClauseApplicationInput = Sequence['Clausable']
+ClauseApplicationFunction = Callable[['SingleClause', ClauseApplicationInput], AppliedClauseResult]
 
 
 def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'Clause':
@@ -366,8 +379,12 @@ class SingleClause(_Clause, ResolvedClause):
 
         return str(self.expected) == str(other_clause.expected)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'SingleClause':
-        reduced_value, value_items, courses = map_func(clause=self, value=value)
+    def compare_and_resolve_with(self, *, value: ClauseApplicationInput, map_func: ClauseApplicationFunction) -> 'SingleClause':
+        calculated_result = map_func(self, value)
+
+        reduced_value = calculated_result.value
+        value_items = calculated_result.data
+        courses = calculated_result.courses
 
         clbids = tuple(c.clbid for c in courses)
         ip_clbids = tuple(c.clbid for c in courses if c.is_in_progress)
@@ -386,7 +403,7 @@ class SingleClause(_Clause, ResolvedClause):
             operator=self.operator,
             at_most=self.at_most,
             resolved_with=reduced_value,
-            resolved_items=value_items,
+            resolved_items=tuple(value_items),
             resolved_clbids=clbids,
             in_progress_clbids=ip_clbids,
             result=result,
