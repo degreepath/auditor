@@ -48,6 +48,7 @@ class CountSolution(Solution, BaseCountRule):
                     where=clause.where,
                     assertion=clause.assertion,
                     path=clause.path,
+                    message=clause.message,
                     overridden=True,
                     inserted=(),
                 ))
@@ -77,6 +78,7 @@ class CountSolution(Solution, BaseCountRule):
                 where=clause.where,
                 assertion=result,
                 path=clause.path,
+                message=clause.message,
                 overridden=False,
                 inserted=tuple(inserted_clbids),
             ))

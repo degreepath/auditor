@@ -33,7 +33,9 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         assertion = load_clause(data["assert"], c, allow_boolean=False, forbid=[Operator.LessThan])
 
-        return AssertionRule(assertion=assertion, where=where, path=tuple(path), inserted=tuple())
+        message = data.get("message", None)
+
+        return AssertionRule(assertion=assertion, where=where, path=tuple(path), inserted=tuple(), message=message)
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.where:

@@ -11,12 +11,14 @@ class BaseAssertionRule(Base):
     where: Optional[Clause]
     path: Tuple[str, ...]
     inserted: Tuple[str, ...]
+    message: Optional[str]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "assertion": self.assertion.to_dict() if self.assertion else None,
             "where": self.where.to_dict() if self.where else None,
+            "message": self.message,
             "inserted": list(self.inserted),
         }
 

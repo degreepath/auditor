@@ -133,7 +133,14 @@ class QuerySolution(Solution, BaseQueryRule):
         exception = ctx.get_waive_exception(clause.path)
         if exception:
             logger.debug("forced override on %s", self.path)
-            return AssertionResult(where=clause.where, assertion=clause.assertion, path=clause.path, overridden=True, inserted=tuple())
+            return AssertionResult(
+                where=clause.where,
+                assertion=clause.assertion,
+                path=clause.path,
+                message=clause.message,
+                overridden=True,
+                inserted=tuple(),
+            )
 
         if clause.where is not None:
             filtered_output = [item for item in output if item.apply_clause(clause.where)]
@@ -148,7 +155,14 @@ class QuerySolution(Solution, BaseQueryRule):
             inserted_clbids.append(matched_course.clbid)
 
         result = clause.assertion.compare_and_resolve_with(value=filtered_output, map_func=apply_clause_to_query_rule)
-        return AssertionResult(where=clause.where, assertion=result, path=clause.path, overridden=False, inserted=tuple(inserted_clbids))
+        return AssertionResult(
+            where=clause.where,
+            assertion=result,
+            path=clause.path,
+            message=clause.message,
+            overridden=False,
+            inserted=tuple(inserted_clbids),
+        )
 
 
 def apply_clause_to_query_rule(*, value: Sequence[Union[CourseInstance, AreaPointer]], clause: SingleClause) -> Tuple[Union[decimal.Decimal, int], Collection[Any], Tuple[str, ...]]:
