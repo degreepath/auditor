@@ -69,7 +69,8 @@ class RequirementRule(Rule, BaseRequirementRule):
         if not audited_by and not result:
             raise TypeError(f'requirements need either audited_by or result (at {path})')
 
-        allowed_keys = set(['if', 'result', 'message', 'contract', 'requirements', 'department_audited', 'department-audited', 'registrar-audited', 'registrar_audited', 'audit'])
+        # "name" is allowed due to emphasis requirements
+        allowed_keys = set(['if', 'name', 'result', 'message', 'contract', 'requirements', 'department_audited', 'department-audited', 'registrar-audited', 'registrar_audited', 'audit'])
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
