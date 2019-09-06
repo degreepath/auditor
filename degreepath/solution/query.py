@@ -373,4 +373,4 @@ def avg_or_0(items: Sequence[decimal.Decimal]) -> decimal.Decimal:
     if not items:
         return decimal.Decimal('0.00')
 
-    return decimal.Decimal(sum(items) / len(items))
+    return sum(items) / decimal.Decimal(len(items))
