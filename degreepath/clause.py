@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Set, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, TypeVar, Generic, FrozenSet, Collection, cast, TYPE_CHECKING
+from typing import Union, List, Set, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, FrozenSet, Collection, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
@@ -20,11 +20,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-T = TypeVar('T', str, decimal.Decimal)
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
-class AppliedClauseResult(Generic[T]):
+class AppliedClauseResult:
     value: Union[int, decimal.Decimal]
-    data: Union[FrozenSet[T], Tuple[T, ...]] = frozenset()
+    data: Union[FrozenSet[Union[str, decimal.Decimal]], Tuple[Union[str, decimal.Decimal], ...]] = frozenset()
     courses: Collection['CourseInstance'] = tuple()
 
 

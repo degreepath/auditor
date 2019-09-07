@@ -9,7 +9,7 @@ from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer, Clausable
-from ..clause import SingleClause, Operator, AppliedClauseResult, ClauseApplicationFunction, ClauseApplicationInput
+from ..clause import SingleClause, Operator, AppliedClauseResult, ClauseApplicationInput
 from ..lib import grade_point_average_items, grade_point_average
 
 if TYPE_CHECKING:
@@ -165,7 +165,7 @@ class QuerySolution(Solution, BaseQueryRule):
         )
 
 
-def count_courses(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_courses(data: ClauseApplicationInput) -> AppliedClauseResult:
     # if TYPE_CHECKING:
     assert all(isinstance(x, CourseInstance) for x in data)
 
@@ -178,7 +178,7 @@ def count_courses(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
     return AppliedClauseResult(value=len(items), data=clbids, courses=courses)
 
 
-def count_terms_from_most_common_course(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_terms_from_most_common_course(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -196,7 +196,7 @@ def count_terms_from_most_common_course(data: ClauseApplicationInput) -> Applied
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
 
-def count_subjects(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_subjects(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -212,7 +212,7 @@ def count_subjects(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
     return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
 
 
-def count_terms(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_terms(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -228,7 +228,7 @@ def count_terms(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
     return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
 
 
-def count_years(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_years(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -244,7 +244,7 @@ def count_years(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
     return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
 
 
-def count_distinct_courses(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_distinct_courses(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -259,7 +259,7 @@ def count_distinct_courses(data: ClauseApplicationInput) -> AppliedClauseResult[
     return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
 
 
-def count_areas(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_areas(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, AreaPointer) for x in data)
 
     areas: Tuple[AreaPointer, ...] = cast(Tuple[AreaPointer, ...], data)
@@ -268,17 +268,17 @@ def count_areas(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
     return AppliedClauseResult(value=len(area_codes), data=frozenset(area_codes))
 
 
-def count_performances(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_performances(data: ClauseApplicationInput) -> AppliedClauseResult:
     # TODO
     raise TypeError('count(performances) is not yet implemented')
 
 
-def count_seminars(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+def count_seminars(data: ClauseApplicationInput) -> AppliedClauseResult:
     # TODO
     raise TypeError('count(seminars) is not yet implemented')
 
 
-def sum_grades(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+def sum_grades(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -288,7 +288,7 @@ def sum_grades(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Deci
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
 
-def sum_credits(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+def sum_credits(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -300,7 +300,7 @@ def sum_credits(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Dec
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
 
-def sum_credits_from_single_subject(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+def sum_credits_from_single_subject(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -328,7 +328,7 @@ def sum_credits_from_single_subject(data: ClauseApplicationInput) -> AppliedClau
     return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
 
 
-def average_grades(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+def average_grades(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
@@ -339,7 +339,7 @@ def average_grades(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.
     return AppliedClauseResult(value=avg, data=items, courses=courses)
 
 
-def average_credits(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+def average_credits(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
     data = cast(Tuple[CourseInstance, ...], data)
 
