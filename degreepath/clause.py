@@ -330,8 +330,8 @@ class SingleClause(_Clause, ResolvedClause):
             return 1
 
         if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
-            if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal, float):
-                if type(self.expected) in (int, decimal.Decimal, float):
+            if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal):
+                if type(self.expected) in (int, decimal.Decimal):
                     if self.expected != 0:
                         resolved = decimal.Decimal(self.resolved_with) / decimal.Decimal(self.expected)
                         return min(decimal.Decimal(1), resolved)
