@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class AppliedClauseResult:
     value: Union[int, decimal.Decimal]
-    data: Union[FrozenSet[Union[str, decimal.Decimal]], Tuple[Union[str, decimal.Decimal], ...]] = frozenset()
+    data: Union[FrozenSet[str], FrozenSet[decimal.Decimal], Tuple[str, ...], Tuple[decimal.Decimal, ...]] = tuple()
     courses: Collection['CourseInstance'] = tuple()
 
 
