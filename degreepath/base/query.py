@@ -72,3 +72,15 @@ class BaseQueryRule(Base):
 
     def max_rank(self) -> Summable:
         return sum(a.max_rank() for a in self.assertions)
+
+    def in_progress(self) -> bool:
+        if 0 < self.rank() < self.max_rank():
+            return True
+
+        if any(c.is_in_progress for c in self.matched()):
+            return True
+
+        if any(c.in_progress() for c in self.all_assertions()):
+            return True
+
+        return False

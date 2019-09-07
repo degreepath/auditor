@@ -12,17 +12,5 @@ if TYPE_CHECKING:
 class AssertionResult(Result, BaseAssertionRule):
     overridden: bool
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        if self.where:
-            self.where.validate(ctx=ctx)
-
-        self.assertion.validate(ctx=ctx)
-
     def was_overridden(self) -> bool:
         return self.overridden
-
-    def ok(self) -> bool:
-        if self.was_overridden():
-            return True
-
-        return self.assertion.result is True

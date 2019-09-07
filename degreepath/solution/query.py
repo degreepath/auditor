@@ -1,5 +1,5 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Collection, Union, Set, FrozenSet, Dict, cast, TYPE_CHECKING
+from typing import List, Sequence, Any, Tuple, Set, Dict, Mapping, Callable, cast, TYPE_CHECKING
 from collections import Counter, defaultdict
 import logging
 import decimal
@@ -9,7 +9,7 @@ from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer, Clausable
-from ..clause import SingleClause, Operator
+from ..clause import SingleClause, Operator, AppliedClauseResult, ClauseApplicationFunction, ClauseApplicationInput
 from ..lib import grade_point_average_items, grade_point_average
 
 if TYPE_CHECKING:
@@ -165,167 +165,222 @@ class QuerySolution(Solution, BaseQueryRule):
         )
 
 
-def apply_clause_to_query_rule(*, value: Sequence[Union[CourseInstance, AreaPointer]], clause: SingleClause) -> Tuple[Union[decimal.Decimal, int], Collection[Any], Tuple[str, ...]]:
-    # remove the trailing ) with [:-1], then split on the opening ( to get the two parts
-    action, kind = clause.key[:-1].split('(', maxsplit=1)
+def count_courses(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    # if TYPE_CHECKING:
+    assert all(isinstance(x, CourseInstance) for x in data)
 
-    if action == 'count':
-        return count_items(kind=kind, data=value)
+    data = cast(Tuple[CourseInstance, ...], data)
 
-    elif action == 'sum':
-        return sum_items(kind=kind, data=value)
+    items = frozenset(c for c in data)
+    clbids = tuple(c.clbid for c in items)
+    courses = tuple(items)
 
-    elif action == 'average':
-        return avg_items(kind=kind, data=value)
-
-    raise Exception(f'expected a valid clause key; got {clause.key}')
+    return AppliedClauseResult(value=len(items), data=clbids, courses=courses)
 
 
-def count_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> Tuple[int, FrozenSet[Union[str]], Tuple[str, ...]]:  # noqa: C901
-    if kind == 'courses':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        items = frozenset(c.clbid for c in data)
-        return (len(items), items, tuple(items))
+def count_terms_from_most_common_course(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    assert all(isinstance(x, CourseInstance) for x in data)
 
-    if kind == 'terms_from_most_common_course':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        if not data:
-            return (0, frozenset(), tuple())
-        counted = Counter(c.crsid for c in data)
-        most_common = counted.most_common(1)[0]
-        most_common_crsid, _count = most_common
-        items = frozenset(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid)
-        return (len(items), items, tuple(c.clbid for c in data if c.crsid == most_common_crsid))
+    data = cast(Tuple[CourseInstance, ...], data)
 
-    if kind == 'subjects':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        _items: Set[str] = set()
-        _clbids = set()
-        for c in data:
-            for s in c.subject:
-                if s not in _items:
-                    _items.add(s)
-                    _clbids.add(c.clbid)
-        return (len(_items), frozenset(_items), tuple(_clbids))
+    if not data:
+        return AppliedClauseResult(value=0)
 
-    if kind == 'terms':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        _items = set()
-        _clbids = set()
-        for c in data:
-            str_value = str(c.year) + str(c.term)
-            if str_value not in _items:
-                _items.add(str_value)
-                _clbids.add(c.clbid)
-        return (len(_items), frozenset(_items), tuple(_clbids))
+    counted = Counter(c.crsid for c in data)
+    most_common = counted.most_common(1)[0]
+    most_common_crsid, _count = most_common
 
-    if kind == 'years':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        _items = set()
-        _clbids = set()
-        for c in data:
-            str_year = str(c.year)
-            if str_year not in _items:
-                _items.add(str_year)
-                _clbids.add(c.clbid)
-        return (len(_items), frozenset(_items), tuple(_clbids))
+    items = frozenset(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid)
+    courses = tuple(c for c in data if c.crsid == most_common_crsid)
 
-    if kind == 'distinct_courses':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        _items = set()
-        _clbids = set()
-        for c in data:
-            if c.crsid not in _items:
-                _items.add(c.crsid)
-                _clbids.add(c.clbid)
-        return (len(_items), frozenset(_items), tuple(_clbids))
-
-    if kind == 'areas':
-        assert all(isinstance(x, AreaPointer) for x in data)
-        data = cast(Tuple[AreaPointer, ...], data)
-        items = frozenset(c.code for c in data)
-        return (len(items), items, tuple())
-
-    if kind == 'performances':
-        # TODO
-        logger.info('count(performances) is not yet implemented')
-        return (0, frozenset(), tuple())
-
-    if kind == 'seminars':
-        # TODO
-        logger.info('count(seminars) is not yet implemented')
-        return (0, frozenset(), tuple())
-
-    raise Exception(f'expected a valid kind; got {kind}')
+    return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
 
-def sum_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> Tuple[Union[decimal.Decimal, int], Tuple[decimal.Decimal, ...], Tuple[str, ...]]:
-    if kind == 'grades':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        items = tuple(c.grade_points for c in data if c.is_in_gpa)
-        return (sum(items), items, tuple(c.clbid for c in data if c.is_in_gpa))
+def count_subjects(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    assert all(isinstance(x, CourseInstance) for x in data)
 
-    if kind == 'credits':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        data = [c for c in data if c.credits > 0]
-        data = cast(Tuple[CourseInstance, ...], data)
-        items = tuple(c.credits for c in data)
-        return (sum(items), items, tuple(c.clbid for c in data))
+    data = cast(Tuple[CourseInstance, ...], data)
+    items: Set[str] = set()
+    courses = set()
 
-    if kind == 'credits_from_single_subject':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        data = [c for c in data if c.credits > 0]
-        data = cast(Tuple[CourseInstance, ...], data)
+    for c in data:
+        for s in c.subject:
+            if s not in items:
+                items.add(s)
+                courses.add(c)
 
-        if not data:
-            return (decimal.Decimal(0), tuple([decimal.Decimal(0)]), tuple())
-
-        # This should sort the subjects by the number of credits under that
-        # subject code, then pick the one with the most credits as the
-        # "single_subject"
-
-        by_credits: Dict[str, decimal.Decimal] = defaultdict(decimal.Decimal)
-
-        for c in data:
-            for s in c.subject:
-                by_credits[s] += c.credits
-
-        best_subject = max(by_credits.keys(), key=lambda subject: by_credits[subject])
-
-        items = tuple(c.credits for c in data if best_subject in c.subject)
-        return (sum(items), items, tuple(c.clbid for c in data if best_subject in c.subject))
-
-    raise Exception(f'expected a valid kind; got {kind}')
+    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
 
 
-def avg_items(data: Sequence[Union[CourseInstance, AreaPointer]], kind: str) -> Tuple[decimal.Decimal, Tuple[decimal.Decimal, ...], Tuple[str, ...]]:
-    if kind == 'grades':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        avg = grade_point_average(data)
-        items = tuple(c.grade_points for c in grade_point_average_items(data))
-        return (avg, items, tuple(c.clbid for c in grade_point_average_items(data)))
+def count_terms(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    assert all(isinstance(x, CourseInstance) for x in data)
 
-    if kind == 'credits':
-        assert all(isinstance(x, CourseInstance) for x in data)
-        data = cast(Tuple[CourseInstance, ...], data)
-        items = tuple(c.credits for c in data)
-        return (avg_or_0(items), items, tuple(c.clbid for c in data))
+    data = cast(Tuple[CourseInstance, ...], data)
+    items: Set[str] = set()
+    courses = set()
 
-    raise Exception(f'expected a valid kind; got {kind}')
+    for c in data:
+        str_value = str(c.year) + str(c.term)
+        if str_value not in items:
+            items.add(str_value)
+            courses.add(c)
+
+    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+
+
+def count_years(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    assert all(isinstance(x, CourseInstance) for x in data)
+
+    data = cast(Tuple[CourseInstance, ...], data)
+    items: Set[str] = set()
+    courses = set()
+
+    for c in data:
+        str_year = str(c.year)
+        if str_year not in items:
+            items.add(str_year)
+            courses.add(c)
+
+    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+
+
+def count_distinct_courses(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    assert all(isinstance(x, CourseInstance) for x in data)
+
+    data = cast(Tuple[CourseInstance, ...], data)
+    items: Set[str] = set()
+    courses = set()
+
+    for c in data:
+        if c.crsid not in items:
+            items.add(c.crsid)
+            courses.add(c)
+
+    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+
+
+def count_areas(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    assert all(isinstance(x, AreaPointer) for x in data)
+
+    areas: Tuple[AreaPointer, ...] = cast(Tuple[AreaPointer, ...], data)
+    area_codes = frozenset(a.code for a in areas)
+
+    return AppliedClauseResult(value=len(area_codes), data=frozenset(area_codes))
+
+
+def count_performances(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    # TODO
+    raise TypeError('count(performances) is not yet implemented')
+
+
+def count_seminars(data: ClauseApplicationInput) -> AppliedClauseResult[str]:
+    # TODO
+    raise TypeError('count(seminars) is not yet implemented')
+
+
+def sum_grades(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+    assert all(isinstance(x, CourseInstance) for x in data)
+
+    data = cast(Tuple[CourseInstance, ...], data)
+    items = tuple(c.grade_points for c in data if c.is_in_gpa)
+    courses = tuple(c for c in data if c.is_in_gpa)
+
+    return AppliedClauseResult(value=sum(items), data=items, courses=courses)
+
+
+def sum_credits(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+    assert all(isinstance(x, CourseInstance) for x in data)
+
+    data = cast(Tuple[CourseInstance, ...], data)
+    data = [c for c in data if c.credits > 0]
+    data = cast(Tuple[CourseInstance, ...], data)
+    items = tuple(c.credits for c in data)
+    courses = tuple(data)
+
+    return AppliedClauseResult(value=sum(items), data=items, courses=courses)
+
+
+def sum_credits_from_single_subject(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+    assert all(isinstance(x, CourseInstance) for x in data)
+
+    data = cast(Tuple[CourseInstance, ...], data)
+    data = [c for c in data if c.credits > 0]
+    data = cast(Tuple[CourseInstance, ...], data)
+
+    if not data:
+        return AppliedClauseResult(value=0, data=tuple([decimal.Decimal(0)]))
+
+    # This should sort the subjects by the number of credits under that
+    # subject code, then pick the one with the most credits as the
+    # "single_subject"
+
+    by_credits: Dict[str, decimal.Decimal] = defaultdict(decimal.Decimal)
+
+    for c in data:
+        for s in c.subject:
+            by_credits[s] += c.credits
+
+    best_subject = max(by_credits.keys(), key=lambda subject: by_credits[subject])
+
+    items = tuple(c.credits for c in data if best_subject in c.subject)
+    courses = tuple(c for c in data if best_subject in c.subject)
+
+    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+
+
+def average_grades(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+    assert all(isinstance(x, CourseInstance) for x in data)
+
+    data = cast(Tuple[CourseInstance, ...], data)
+    avg = grade_point_average(data)
+    courses = tuple(grade_point_average_items(data))
+    items = tuple(c.grade_points for c in courses)
+
+    return AppliedClauseResult(value=avg, data=items, courses=courses)
+
+
+def average_credits(data: ClauseApplicationInput) -> AppliedClauseResult[decimal.Decimal]:
+    assert all(isinstance(x, CourseInstance) for x in data)
+    data = cast(Tuple[CourseInstance, ...], data)
+
+    items = tuple(c.credits for c in data)
+    courses = tuple(data)
+    avg = avg_or_0(items)
+
+    return AppliedClauseResult(value=avg, data=items, courses=courses)
+
+
+actions: Mapping[str, Callable[[ClauseApplicationInput], AppliedClauseResult]] = {
+    'count(courses)': count_courses,
+    'count(terms_from_most_common_course)': count_terms_from_most_common_course,
+    'count(subjects)': count_subjects,
+    'count(terms)': count_terms,
+    'count(years)': count_years,
+    'count(distinct_courses)': count_distinct_courses,
+    'count(areas)': count_areas,
+    'count(performances)': count_performances,
+    'count(seminars)': count_seminars,
+
+    'sum(grades)': sum_grades,
+    'sum(credits)': sum_credits,
+    'sum(credits_from_single_subject)': sum_credits_from_single_subject,
+
+    'average(grades)': average_grades,
+    'average(credits)': average_credits,
+}
+
+
+def apply_clause_to_query_rule(clause: SingleClause, value: ClauseApplicationInput) -> AppliedClauseResult:
+    action = actions.get(clause.key, None)
+
+    if action is None:
+        raise Exception(f'got {clause.key}; expected one of {sorted(actions.keys())}')
+
+    return action(value)
 
 
 def avg_or_0(items: Sequence[decimal.Decimal]) -> decimal.Decimal:
     if not items:
         return decimal.Decimal('0.00')
 
-    return decimal.Decimal(sum(items) / len(items))
+    return sum(items) / decimal.Decimal(len(items))

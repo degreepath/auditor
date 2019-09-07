@@ -6,13 +6,16 @@ import json
 import sys
 import os
 import dotenv
+import prettyprinter
 
 from degreepath import pretty_ms, summarize
+from degreepath.area import AreaResult
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
 
+prettyprinter.install_extras(['attrs', 'dataclasses'])
 dotenv.load_dotenv(verbose=False)
 
 logger = logging.getLogger(__name__)
@@ -124,9 +127,10 @@ def result_str(
         return json.dumps(dict_result)
 
     if as_raw:
-        return repr(msg.result)
+        prettyprinter.cpprint(dict_result)
+        return ''
 
-    dict_result = json.loads(json.dumps(msg.result.to_dict()))
+    dict_result = json.loads(json.dumps(dict_result))
 
     return "\n" + "".join(summarize(
         result=dict_result,
@@ -166,6 +170,11 @@ def display_top(snapshot: Any, key_type: str = 'lineno', limit: int = 10) -> Non
 
     total = sum(stat.size for stat in top_stats)
     print("Total allocated size: %.1f KiB" % (total / 1024))
+
+
+@prettyprinter.register_pretty(AreaResult)
+def pretty_arearesult(value: Any, ctx: Any) -> Any:
+    return prettyprinter.pretty_call(ctx, AreaResult, result=value.result)
 
 
 if __name__ == "__main__":

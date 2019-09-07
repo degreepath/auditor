@@ -1,4 +1,4 @@
-from degreepath.clause import SingleClause, Operator, load_clause, apply_operator
+from degreepath.clause import SingleClause, Operator, load_clause, apply_operator, AppliedClauseResult
 from degreepath.data import course_from_str
 from degreepath.constants import Constants
 import logging
@@ -130,8 +130,8 @@ def test_resolution(caplog):
     expected_single = SingleClause(key="@xyz", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
     assert x == expected_single
 
-    result = x.compare_and_resolve_with(value=1, map_func=lambda clause, value: (value, tuple([value]), tuple([value])))
-    assert result.result is True
+    result = x.compare_and_resolve_with(value=1, map_func=lambda clause, value: AppliedClauseResult(value=value, data=tuple([value])))
+    assert result.ok() is True
 
 
 def test_ranges_eq(caplog):

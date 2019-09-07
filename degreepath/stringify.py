@@ -1,5 +1,5 @@
 from typing import List, Iterator, Any, Dict, Sequence
-from .clause import str_clause, get_resolved_items, get_resolved_clbids
+from .clause import str_clause, get_resolved_items, get_resolved_clbids, get_in_progress_clbids
 from .data import CourseInstance
 from .data.course_enums import CourseType
 from .ms import pretty_ms
@@ -307,6 +307,7 @@ def print_assertion(
         yield f"{prefix}resolved items: {resolved_items}"
 
     resolved_clbids = get_resolved_clbids(rule['assertion'])
+    ip_clbids = get_in_progress_clbids(rule['assertion'])
     if resolved_clbids:
         def key(c: CourseInstance) -> str:
             return ''
@@ -323,6 +324,7 @@ def print_assertion(
 
         for clbid in resolved_clbids:
             inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
+            ip_msg = " [ip]" if clbid in ip_clbids else ""
             course = mapped_trns[clbid]
             chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
-            yield f'{prefix}  -{inserted_msg} Course({", ".join(chunks)})'
+            yield f'{prefix}  -{ip_msg}{inserted_msg} Course({", ".join(chunks)})'
