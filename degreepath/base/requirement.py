@@ -36,6 +36,7 @@ class BaseRequirementRule(Base):
     def rank(self) -> Summable:
         if self.result is None:
             return 0
+
         boost = 1 if self.ok() else 0
         return self.result.rank() + boost
 

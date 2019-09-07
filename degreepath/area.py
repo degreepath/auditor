@@ -335,6 +335,7 @@ def prepare_common_rules(
                         "$and": [
                             {"grade": {"$gte": "C"}},
                             {"credits": {"$gt": 0}},
+                            {"is_in_progress": {"$eq": False}},
                         ],
                     },
                     "assert": {"count(courses)": {"$gte": 6}},
@@ -396,7 +397,12 @@ def prepare_common_rules(
                         "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
                         "result": {
                             "from": {"student": "courses"},
-                            "where": {"subject": {"$neq": dept_code}},
+                            "where": {
+                                "$and": [
+                                    {"subject": {"$neq": dept_code}},
+                                    {"is_in_progress": {"$eq": False}},
+                                ]
+                            },
                             "allow_claimed": True,
                             "claim": False,
                             "assert": {"sum(credits)": {"$gte": credits_outside_major}},
