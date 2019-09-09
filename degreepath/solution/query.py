@@ -325,7 +325,7 @@ def sum_credits_from_single_subject(data: ClauseApplicationInput) -> AppliedClau
     items = tuple(c.credits for c in data if best_subject in c.subject)
     courses = tuple(c for c in data if best_subject in c.subject)
 
-    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+    return AppliedClauseResult(value=sum(items), data=items, courses=tuple(courses))
 
 
 def average_grades(data: ClauseApplicationInput) -> AppliedClauseResult:
