@@ -1,7 +1,7 @@
 from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 import attr
-import markdown
+import markdown  # type: ignore
 
 from ..base import Rule, BaseRequirementRule
 from ..base.requirement import AuditedBy
