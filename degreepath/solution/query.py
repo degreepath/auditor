@@ -172,7 +172,7 @@ def count_courses(data: ClauseApplicationInput) -> AppliedClauseResult:
     data = cast(Tuple[CourseInstance, ...], data)
 
     items = frozenset(c for c in data)
-    clbids = tuple(c.clbid for c in items)
+    clbids = tuple(sorted(c.clbid for c in items))
     courses = tuple(items)
 
     return AppliedClauseResult(value=len(items), data=clbids, courses=courses)
@@ -190,7 +190,7 @@ def count_terms_from_most_common_course(data: ClauseApplicationInput) -> Applied
     most_common = counted.most_common(1)[0]
     most_common_crsid, _count = most_common
 
-    items = frozenset(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid)
+    items = tuple(sorted(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid))
     courses = tuple(c for c in data if c.crsid == most_common_crsid)
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
@@ -209,7 +209,7 @@ def count_subjects(data: ClauseApplicationInput) -> AppliedClauseResult:
                 items.add(s)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
 def count_terms(data: ClauseApplicationInput) -> AppliedClauseResult:
@@ -225,7 +225,7 @@ def count_terms(data: ClauseApplicationInput) -> AppliedClauseResult:
             items.add(str_value)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
 def count_years(data: ClauseApplicationInput) -> AppliedClauseResult:
@@ -241,7 +241,7 @@ def count_years(data: ClauseApplicationInput) -> AppliedClauseResult:
             items.add(str_year)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
 def count_distinct_courses(data: ClauseApplicationInput) -> AppliedClauseResult:
@@ -256,14 +256,14 @@ def count_distinct_courses(data: ClauseApplicationInput) -> AppliedClauseResult:
             items.add(c.crsid)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=frozenset(items), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
 def count_areas(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, AreaPointer) for x in data)
 
     areas: Tuple[AreaPointer, ...] = cast(Tuple[AreaPointer, ...], data)
-    area_codes = frozenset(a.code for a in areas)
+    area_codes = tuple(sorted(set(a.code for a in areas)))
 
     return AppliedClauseResult(value=len(area_codes), data=frozenset(area_codes))
 
@@ -282,7 +282,7 @@ def sum_grades(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
 
     data = cast(Tuple[CourseInstance, ...], data)
-    items = tuple(c.grade_points for c in data if c.is_in_gpa)
+    items = tuple(sorted(c.grade_points for c in data if c.is_in_gpa))
     courses = tuple(c for c in data if c.is_in_gpa)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
@@ -294,7 +294,7 @@ def sum_credits(data: ClauseApplicationInput) -> AppliedClauseResult:
     data = cast(Tuple[CourseInstance, ...], data)
     data = [c for c in data if c.credits > 0]
     data = cast(Tuple[CourseInstance, ...], data)
-    items = tuple(c.credits for c in data)
+    items = tuple(sorted(c.credits for c in data))
     courses = tuple(data)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
@@ -322,7 +322,7 @@ def sum_credits_from_single_subject(data: ClauseApplicationInput) -> AppliedClau
 
     best_subject = max(by_credits.keys(), key=lambda subject: by_credits[subject])
 
-    items = tuple(c.credits for c in data if best_subject in c.subject)
+    items = tuple(sorted(c.credits for c in data if best_subject in c.subject))
     courses = tuple(c for c in data if best_subject in c.subject)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=tuple(courses))
@@ -334,7 +334,7 @@ def average_grades(data: ClauseApplicationInput) -> AppliedClauseResult:
     data = cast(Tuple[CourseInstance, ...], data)
     avg = grade_point_average(data)
     courses = tuple(grade_point_average_items(data))
-    items = tuple(c.grade_points for c in courses)
+    items = tuple(sorted(c.grade_points for c in courses))
 
     return AppliedClauseResult(value=avg, data=items, courses=courses)
 
@@ -343,7 +343,7 @@ def average_credits(data: ClauseApplicationInput) -> AppliedClauseResult:
     assert all(isinstance(x, CourseInstance) for x in data)
     data = cast(Tuple[CourseInstance, ...], data)
 
-    items = tuple(c.credits for c in data)
+    items = tuple(sorted(c.credits for c in data))
     courses = tuple(data)
     avg = avg_or_0(items)
 

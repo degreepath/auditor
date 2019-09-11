@@ -385,8 +385,8 @@ class SingleClause(_Clause, ResolvedClause):
         value_items = calculated_result.data
         courses = calculated_result.courses
 
-        clbids = tuple(c.clbid for c in courses)
-        ip_clbids = tuple(c.clbid for c in courses if c.is_in_progress)
+        clbids = tuple(sorted(c.clbid for c in courses))
+        ip_clbids = tuple(sorted(c.clbid for c in courses if c.is_in_progress))
 
         if ip_clbids:
             result = ResultStatus.InProgress
