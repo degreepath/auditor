@@ -1,4 +1,5 @@
 attrs==19.1.0
+markdown==3.1
 prettyprinter==0.18
 psycopg2-binary==2.8.3
 python-dotenv==0.10.3

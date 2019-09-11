@@ -1,6 +1,7 @@
-import attr
 from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
+import attr
+import markdown
 
 from ..base import Rule, BaseRequirementRule
 from ..base.requirement import AuditedBy
@@ -69,6 +70,10 @@ class RequirementRule(Rule, BaseRequirementRule):
         if not audited_by and not result:
             raise TypeError(f'requirements need either audited_by or result (at {path})')
 
+        message = data.get("message", None)
+        if message:
+            message = markdown.markdown(message, extensions=['sane_lists', 'smarty'])
+
         # "name" is allowed due to emphasis requirements
         allowed_keys = set(['if', 'name', 'result', 'message', 'contract', 'requirements', 'department_audited', 'department-audited', 'registrar-audited', 'registrar_audited'])
         given_keys = set(data.keys())
@@ -76,7 +81,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         return RequirementRule(
             name=name,
-            message=data.get("message", None),
+            message=message,
             result=result,
             is_contract=data.get("contract", False),
             audited_by=audited_by,
