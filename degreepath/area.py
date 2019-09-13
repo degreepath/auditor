@@ -338,7 +338,7 @@ def prepare_common_rules(
                             {"is_in_progress": {"$eq": False}},
                         ],
                     },
-                    "assert": {"count(courses)": {"$gte": 6}},
+                    "assert": {"sum(credits)": {"$gte": 6}},
                 },
             },
         },
