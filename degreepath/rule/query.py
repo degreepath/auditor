@@ -212,6 +212,9 @@ class QueryRule(Rule, BaseQueryRule):
         if has_assertion(self.assertions, key=get_lt_clauses):
             return True
 
+        if has_assertion(self.assertions, key=get_at_least_0_clauses):
+            return True
+
         if self.where is None:
             return len(self.get_data(ctx=ctx)) > 0
 
@@ -264,6 +267,14 @@ def get_lt_clauses(clause: Clause) -> Iterator[SingleClause]:
     elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
         for c in clause.children:
             yield from get_lt_clauses(c)
+
+
+def get_at_least_0_clauses(clause: Clause) -> Iterator[SingleClause]:
+    if isinstance(clause, SingleClause) and clause.operator is Operator.GreaterThanOrEqualTo and clause.expected == 0:
+        yield clause
+    elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
+        for c in clause.children:
+            yield from get_at_least_0_clauses(c)
 
 
 def get_largest_simple_count_assertion(assertions: Sequence[AssertionRule]) -> Optional[SingleClause]:
