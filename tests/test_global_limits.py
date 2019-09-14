@@ -1,7 +1,7 @@
 from degreepath.area import AreaOfStudy
 from degreepath.data import course_from_str
 from degreepath.constants import Constants
-import pytest
+import pytest  # type: ignore
 import io
 import yaml
 import logging
