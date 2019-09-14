@@ -59,16 +59,31 @@ def test_global_limits(caplog):
     ])
 
 
-def x_test_limits_asian(caplog):
-    """
+def test_limits_esth(caplog):
+    spec = """
     result:
       from: {student: courses}
       limit:
-        - at_most: 2
-          where: {level: {$eq: 100}}
-        - at_most: 4
-          where: {attributes: {$eq: asian_region_china}}
-        - at_most: 4
-          where: {attributes: {$eq: asian_region_japan}}
-      assert: {count(courses): {$gte: 6}}
+        - at_most: 1
+          where:
+            $or:
+              - course: {$in: ['STAT 110', 'STAT 212', 'STAT 214']}
+              - ap: {$eq: AP Statistics}
+      assert: {count(courses): {$gte: 2}}
     """
+
+    area = AreaOfStudy.load(specification=yaml.load(stream=spec, Loader=yaml.SafeLoader), c=c)
+
+    psych_241 = course_from_str("PSYCH 241", clbid="0")
+    stat_212 = course_from_str("STAT 212", clbid="1")
+    ap_stat = course_from_str("STAT 0", name="AP Statistics", course_type="AP", clbid="2")
+    transcript = [psych_241, stat_212, ap_stat]
+
+    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    course_sets = [list(s.solution.output) for s in solutions]
+
+    assert course_sets == [
+        [psych_241],
+        [psych_241, stat_212],
+        [psych_241, ap_stat],
+    ]
