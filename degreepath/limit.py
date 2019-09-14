@@ -48,6 +48,11 @@ class Limit:
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"
 
     def iterate(self, courses: Sequence[T]) -> Iterator[Tuple[T, ...]]:
+        # Be sure to sort the input, so that the output from the iterator is
+        # sorted the same way each time. We need this because our input may
+        # be a set, in which case there is no inherent ordering.
+        courses = sorted(courses)
+
         logger.debug("limit/loop/start: limit=%s, matched=%s", self, courses)
 
         for n in range(0, self.at_most + 1):
@@ -161,9 +166,7 @@ class LimitSet:
 
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [
-            # be sure to sort the matchset, so that the output from
-            # the iterator is sorted the same way each time
-            limit.iterate(sorted(matchset))
+            limit.iterate(matchset)
             for limit, matchset in matched_items.items()
         ]
 
