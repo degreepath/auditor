@@ -160,7 +160,13 @@ class LimitSet:
         logger.debug("limit: unmatched items: %s", unmatched_items)
 
         # we need to attach _a_ combo from each limit clause
-        clause_iterators = [limit.iterate(matchset) for limit, matchset in matched_items.items()]
+        clause_iterators = [
+            # be sure to sort the matchset, so that the output from
+            # the iterator is sorted the same way each time
+            limit.iterate(sorted(matchset))
+            for limit, matchset in matched_items.items()
+        ]
+
         emitted_solutions: Set[Tuple[T, ...]] = set()
         for results in itertools.product(*clause_iterators):
             these_items = tuple(sorted(item for group in results for item in group))
