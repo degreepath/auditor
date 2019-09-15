@@ -88,7 +88,7 @@ class LimitSet:
 
             for l in self.limits:
                 logger.debug("limit/check: checking %s against %s (counter: %s)", c, l, clause_counters[l])
-                if c.apply_clause(l.where):
+                if l.where.apply(c):
                     if clause_counters[l] < l.at_most:
                         logger.debug("limit/increment: %s matched %s (counter: %s)", c, l, clause_counters[l])
                         clause_counters[l] += 1
@@ -111,7 +111,7 @@ class LimitSet:
         for c in courses:
             for l in self.limits:
                 # logger.debug("limit/check: checking %s against %s (counter: %s)", c, l, clause_counters[l])
-                if c.apply_clause(l.where):
+                if l.where.apply(c):
                     if clause_counters[l] < l.at_most:
                         # logger.debug("limit/increment: %s matched %s (counter: %s)", c, l, clause_counters[l])
                         clause_counters[l] += 1
@@ -156,7 +156,7 @@ class LimitSet:
         for l in self.limits:
             for c in courses:
                 logger.debug("limit/probe: checking %s against %s", c, l)
-                if c.apply_clause(l.where):
+                if l.where.apply(c):
                     matched_items[l].add(c)
 
         all_matched_items = set(item for matchset in matched_items.values() for item in matchset)

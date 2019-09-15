@@ -58,7 +58,7 @@ class CountSolution(Solution, BaseCountRule):
             if clause.where is not None:
                 matched_items = [
                     item for item in matched_items
-                    if item.apply_clause(clause.where)
+                    if clause.where.apply(item)
                 ]
 
             inserted_clbids = []

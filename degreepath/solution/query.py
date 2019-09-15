@@ -140,7 +140,7 @@ class QuerySolution(Solution, BaseQueryRule):
             )
 
         if clause.where is not None:
-            filtered_output = [item for item in output if item.apply_clause(clause.where)]
+            filtered_output = [item for item in output if clause.where.apply(item)]
         else:
             filtered_output = list(output)
 

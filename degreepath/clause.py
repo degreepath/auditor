@@ -47,7 +47,11 @@ def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True, 
 class _Clause(abc.ABC):
     @abc.abstractmethod
     def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'Clause':
-        raise NotImplementedError(f'must define a compare_and_resolve_with() method')
+        raise NotImplementedError(f'must define a compare_and_resolve_with(value) method')
+
+    @abc.abstractmethod
+    def apply(self, to: 'Clausable') -> bool:
+        raise NotImplementedError(f'must define an apply(to=) method')
 
 
 @attr.s(auto_attribs=True, slots=True)
@@ -123,6 +127,9 @@ class AndClause(_Clause, ResolvedClause):
     def is_subset(self, other_clause: 'Clause') -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
 
+    def apply(self, to: 'Clausable') -> bool:
+        return all(subclause.apply(to) for subclause in self.children)
+
     def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'AndClause':
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
@@ -180,6 +187,9 @@ class OrClause(_Clause, ResolvedClause):
 
     def is_subset(self, other_clause: 'Clause') -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
+
+    def apply(self, to: 'Clausable') -> bool:
+        return any(subclause.apply(to) for subclause in self.children)
 
     def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'OrClause':
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
@@ -338,6 +348,9 @@ class SingleClause(_Clause, ResolvedClause):
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
+
+    def apply(self, to: 'Clausable') -> bool:
+        return to.apply_single_clause(self)
 
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)

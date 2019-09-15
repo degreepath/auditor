@@ -15,7 +15,7 @@ def test_clauses(caplog):
 
     crs = course_from_str(s="CSCI 121", attributes=["csci_elective"])
 
-    assert crs.apply_clause(x) is True
+    assert x.apply(crs) is True
 
 
 def test_clauses_in(caplog):
@@ -29,7 +29,7 @@ def test_clauses_in(caplog):
     expected_single = SingleClause(key="number", expected=values, expected_verbatim=values, operator=Operator.In)
     assert x == expected_single
 
-    assert course.apply_clause(x) is True
+    assert x.apply(course) is True
 
 
 def test_operator_eq(caplog):
@@ -127,7 +127,7 @@ def test_resolution(caplog):
     c = Constants(matriculation_year=2000)
 
     class IntThing(Clausable):
-        def apply_clause(self):
+        def apply_single_clause(self):
             pass
         def to_dict(self):
             pass
