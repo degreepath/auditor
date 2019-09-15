@@ -1,13 +1,13 @@
-from typing import Sequence, Tuple, Set, Dict, Mapping, FrozenSet, Callable, Collection, Union, cast, TYPE_CHECKING
+from typing import Any, Sequence, Tuple, Set, Dict, Mapping, FrozenSet, Callable, Collection, Union, cast, TYPE_CHECKING
 from collections import Counter, defaultdict
 from decimal import Decimal
 
 import attr
 
+from .data import CourseInstance, AreaPointer, Clausable
 from .lib import grade_point_average_items, grade_point_average
 
 if TYPE_CHECKING:
-    from .data import CourseInstance, AreaPointer, Clausable  # noqa: F401
     from .clause import SingleClause
 
 
@@ -15,21 +15,16 @@ if TYPE_CHECKING:
 class AppliedClauseResult:
     value: Union[int, Decimal]
     data: Union[FrozenSet[str], FrozenSet[Decimal], Tuple[str, ...], Tuple[Decimal, ...]] = tuple()
-    courses: Collection['CourseInstance'] = tuple()
+    courses: Collection[CourseInstance] = tuple()
 
 
-def count_items_test(data: Sequence['Clausable']) -> AppliedClauseResult:
+def count_items_test(data: Sequence[Any]) -> AppliedClauseResult:
     items = frozenset(repr(c) for c in data)
 
-    return AppliedClauseResult(value=len(items), data=items, courses=tuple())
+    return AppliedClauseResult(value=len(items), data=items)
 
 
-def count_courses(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
-
+def count_courses(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items = frozenset(c for c in data)
     clbids = tuple(sorted(c.clbid for c in items))
     courses = tuple(items)
@@ -37,12 +32,7 @@ def count_courses(data: Sequence['Clausable']) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(items), data=clbids, courses=courses)
 
 
-def count_terms_from_most_common_course(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
-
+def count_terms_from_most_common_course(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     if not data:
         return AppliedClauseResult(value=0)
 
@@ -56,11 +46,7 @@ def count_terms_from_most_common_course(data: Sequence['Clausable']) -> AppliedC
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
 
-def count_subjects(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def count_subjects(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items: Set[str] = set()
     courses = set()
 
@@ -73,11 +59,7 @@ def count_subjects(data: Sequence['Clausable']) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
-def count_terms(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def count_terms(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items: Set[str] = set()
     courses = set()
 
@@ -90,11 +72,7 @@ def count_terms(data: Sequence['Clausable']) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
-def count_years(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def count_years(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items: Set[str] = set()
     courses = set()
 
@@ -107,11 +85,7 @@ def count_years(data: Sequence['Clausable']) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
-def count_distinct_courses(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def count_distinct_courses(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items: Set[str] = set()
     courses = set()
 
@@ -123,57 +97,39 @@ def count_distinct_courses(data: Sequence['Clausable']) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
-def count_areas(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, AreaPointer) for x in data)
-
-    areas: Tuple['AreaPointer', ...] = cast(Tuple['AreaPointer', ...], data)
-    area_codes = tuple(sorted(set(a.code for a in areas)))
+def count_areas(data: Sequence[AreaPointer]) -> AppliedClauseResult:
+    area_codes = tuple(sorted(set(a.code for a in data)))
 
     return AppliedClauseResult(value=len(area_codes), data=frozenset(area_codes))
 
 
-def count_performances(data: Sequence['Clausable']) -> AppliedClauseResult:
+def count_performances(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     # TODO
     raise TypeError('count(performances) is not yet implemented')
 
 
-def count_seminars(data: Sequence['Clausable']) -> AppliedClauseResult:
+def count_seminars(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     # TODO
     raise TypeError('count(seminars) is not yet implemented')
 
 
-def sum_grades(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def sum_grades(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items = tuple(sorted(c.grade_points for c in data if c.is_in_gpa))
     courses = tuple(c for c in data if c.is_in_gpa)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
 
-def sum_credits(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def sum_credits(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     data = [c for c in data if c.credits > 0]
-    data = cast(Tuple['CourseInstance', ...], data)
     items = tuple(sorted(c.credits for c in data))
     courses = tuple(data)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
 
-def sum_credits_from_single_subject(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def sum_credits_from_single_subject(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     data = [c for c in data if c.credits > 0]
-    data = cast(Tuple['CourseInstance', ...], data)
 
     if not data:
         return AppliedClauseResult(value=0, data=tuple([Decimal(0)]))
@@ -196,11 +152,7 @@ def sum_credits_from_single_subject(data: Sequence['Clausable']) -> AppliedClaus
     return AppliedClauseResult(value=sum(items), data=items, courses=tuple(courses))
 
 
-def average_grades(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-
-    data = cast(Tuple['CourseInstance', ...], data)
+def average_grades(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     avg = grade_point_average(data)
     courses = tuple(grade_point_average_items(data))
     items = tuple(sorted(c.grade_points for c in courses))
@@ -208,11 +160,7 @@ def average_grades(data: Sequence['Clausable']) -> AppliedClauseResult:
     return AppliedClauseResult(value=avg, data=items, courses=courses)
 
 
-def average_credits(data: Sequence['Clausable']) -> AppliedClauseResult:
-    if TYPE_CHECKING:
-        assert all(isinstance(x, CourseInstance) for x in data)
-    data = cast(Tuple['CourseInstance', ...], data)
-
+def average_credits(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items = tuple(sorted(c.credits for c in data))
     courses = tuple(data)
     avg = avg_or_0(items)
@@ -220,18 +168,16 @@ def average_credits(data: Sequence['Clausable']) -> AppliedClauseResult:
     return AppliedClauseResult(value=avg, data=items, courses=courses)
 
 
-actions: Mapping[str, Callable[[Sequence['Clausable']], AppliedClauseResult]] = {
-    'count(items)': count_items_test,
+###
 
+
+course_actions: Mapping[str, Callable[[Sequence[CourseInstance]], AppliedClauseResult]] = {
     'count(courses)': count_courses,
     'count(terms_from_most_common_course)': count_terms_from_most_common_course,
     'count(subjects)': count_subjects,
     'count(terms)': count_terms,
     'count(years)': count_years,
     'count(distinct_courses)': count_distinct_courses,
-    'count(areas)': count_areas,
-    'count(performances)': count_performances,
-    'count(seminars)': count_seminars,
 
     'sum(grades)': sum_grades,
     'sum(credits)': sum_credits,
@@ -241,14 +187,58 @@ actions: Mapping[str, Callable[[Sequence['Clausable']], AppliedClauseResult]] = 
     'average(credits)': average_credits,
 }
 
+area_actions: Mapping[str, Callable[[Sequence[AreaPointer]], AppliedClauseResult]] = {
+    'count(areas)': count_areas,
+}
 
-def apply_clause_to_assertion(clause: 'SingleClause', value: Sequence['Clausable']) -> AppliedClauseResult:
-    action = actions.get(clause.key, None)
+other_actions: Mapping[str, Callable[[Sequence[Any]], AppliedClauseResult]] = {
+    'count(items)': count_items_test,
+    'count(performances)': count_performances,
+    'count(seminars)': count_seminars,
+}
+
+
+def apply_clause_to_assertion(clause: 'SingleClause', value: Sequence[Clausable]) -> AppliedClauseResult:
+    if not value:
+        return AppliedClauseResult(value=0, data=tuple(), courses=tuple())
+
+    if isinstance(value[0], CourseInstance):
+        return apply_clause_to_assertion_with_courses(clause, cast(Sequence[CourseInstance], value))
+
+    if isinstance(value[0], AreaPointer):
+        return apply_clause_to_assertion_with_areas(clause, cast(Sequence[AreaPointer], value))
+
+    return apply_clause_to_assertion_with_data(clause, cast(Sequence[Any], value))
+
+
+def apply_clause_to_assertion_with_courses(clause: 'SingleClause', value: Sequence[CourseInstance]) -> AppliedClauseResult:
+    action = course_actions.get(clause.key, None)
 
     if action is None:
-        raise Exception(f'got {clause.key}; expected one of {sorted(actions.keys())}')
+        raise Exception(f'got {clause.key}; expected one of {sorted(course_actions.keys())}')
 
     return action(value)
+
+
+def apply_clause_to_assertion_with_areas(clause: 'SingleClause', value: Sequence[AreaPointer]) -> AppliedClauseResult:
+    action = area_actions.get(clause.key, None)
+
+    if action is None:
+        raise Exception(f'got {clause.key}; expected one of {sorted(area_actions.keys())}')
+
+    return action(value)
+
+
+def apply_clause_to_assertion_with_data(clause: 'SingleClause', value: Sequence[Any]) -> AppliedClauseResult:
+    action = other_actions.get(clause.key, None)
+
+    if action is None:
+        raise Exception(f'got {clause.key}; expected one of {sorted(other_actions.keys())}')
+
+    return action(value)
+
+
+###
 
 
 def avg_or_0(items: Sequence[Decimal]) -> Decimal:
