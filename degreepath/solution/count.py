@@ -5,7 +5,6 @@ import logging
 from ..base import Solution, BaseCountRule, Rule, Result
 from ..result.count import CountResult
 from ..result.assertion import AssertionResult
-from .query import apply_clause_to_query_rule
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -69,10 +68,7 @@ class CountSolution(Solution, BaseCountRule):
                 matched_items.append(matched_course)
                 inserted_clbids.append(matched_course.clbid)
 
-            result = clause.assertion.compare_and_resolve_with(
-                value=matched_items,
-                map_func=apply_clause_to_query_rule,
-            )
+            result = clause.assertion.compare_and_resolve_with(matched_items)
 
             audit_results.append(AssertionResult(
                 where=clause.where,
