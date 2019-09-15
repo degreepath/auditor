@@ -132,7 +132,7 @@ class QueryRule(Rule, BaseQueryRule):
             logger.debug("%s clause: %s", self.path, self.where)
             logger.debug("%s before filter: %s item(s)", self.path, len(data))
 
-            data = [item for item in data if item.apply_clause(self.where)]
+            data = [item for item in data if self.where.apply(item)]
 
             logger.debug("%s after filter: %s item(s)", self.path, len(data))
 
@@ -171,7 +171,7 @@ class QueryRule(Rule, BaseQueryRule):
         data = self.get_data(ctx=ctx)
 
         if self.where is not None:
-            data = [item for item in data if item.apply_clause(self.where)]
+            data = [item for item in data if self.where.apply(item)]
 
         did_iter = False
         iterations = 0
@@ -218,13 +218,13 @@ class QueryRule(Rule, BaseQueryRule):
         if self.where is None:
             return len(self.get_data(ctx=ctx)) > 0
 
-        return any(item.apply_clause(self.where) for item in self.get_data(ctx=ctx))
+        return any(self.where.apply(item) for item in self.get_data(ctx=ctx))
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         matches = list(self.get_data(ctx=ctx))
 
         if self.where is not None:
-            matches = [item for item in matches if item.apply_clause(self.where)]
+            matches = [item for item in matches if self.where.apply(item)]
 
         for insert in ctx.get_insert_exceptions(self.path):
             matches.append(ctx.forced_course_by_clbid(insert.clbid))

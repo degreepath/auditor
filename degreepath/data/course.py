@@ -1,12 +1,14 @@
-from typing import Optional, Tuple, List, Dict, Any, Iterator, Iterable
+from typing import Optional, Tuple, List, Dict, Any, Iterator, Iterable, TYPE_CHECKING
 import attr
 import decimal
 import logging
 
 from .clausable import Clausable
 from .course_enums import GradeCode, GradeOption, SubType, CourseType
-from ..clause import Clause, SingleClause, AndClause, OrClause
 from ..lib import str_to_grade_points
+
+if TYPE_CHECKING:
+    from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)
 Decimal = decimal.Decimal
@@ -91,21 +93,7 @@ class CourseInstance(Clausable):
     def __repr__(self) -> str:
         return f'Course("{self.shorthand_}")'
 
-    def apply_clause(self, clause: Clause) -> bool:
-        if isinstance(clause, AndClause):
-            logger.debug("clause/and/compare %s", clause)
-            return all(self.apply_clause(subclause) for subclause in clause.children)
-
-        elif isinstance(clause, OrClause):
-            logger.debug("clause/or/compare %s", clause)
-            return any(self.apply_clause(subclause) for subclause in clause.children)
-
-        elif isinstance(clause, SingleClause):
-            return self.apply_single_clause(clause)
-
-        raise TypeError(f"courseinstance: expected a clause; found {type(clause)}")
-
-    def apply_single_clause(self, clause: SingleClause) -> bool:  # noqa: C901
+    def apply_single_clause(self, clause: 'SingleClause') -> bool:  # noqa: C901
         logger.debug("clause/compare/key=%s", clause.key)
 
         if clause.key == 'attributes':
@@ -224,17 +212,16 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     gereqs = tuple(gereqs) if gereqs else tuple()
 
     if sub_type is SubType.Lab:
-        course_identity = f"{'/'.join(subject)} {number}.L"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.L"
+        suffix = ".L"
     elif sub_type is SubType.Flac:
-        course_identity = f"{'/'.join(subject)} {number}.F"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.F"
+        suffix = ".F"
     elif sub_type is SubType.Discussion:
-        course_identity = f"{'/'.join(subject)} {number}.D"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.D"
+        suffix = ".D"
     else:
-        course_identity = f"{'/'.join(subject)} {number}"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}"
+        suffix = ""
+
+    course_identity = f"{'/'.join(subject)} {number}{suffix}"
+    course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}{suffix}"
 
     return CourseInstance(
         attributes=attributes,

@@ -1,5 +1,5 @@
-from degreepath.clause import SingleClause, Operator, load_clause, apply_operator, AppliedClauseResult
-from degreepath.data import course_from_str
+from degreepath.clause import SingleClause, Operator, load_clause, apply_operator
+from degreepath.data import course_from_str, Clausable
 from degreepath.constants import Constants
 import logging
 
@@ -15,7 +15,7 @@ def test_clauses(caplog):
 
     crs = course_from_str(s="CSCI 121", attributes=["csci_elective"])
 
-    assert crs.apply_clause(x) is True
+    assert x.apply(crs) is True
 
 
 def test_clauses_in(caplog):
@@ -29,7 +29,7 @@ def test_clauses_in(caplog):
     expected_single = SingleClause(key="number", expected=values, expected_verbatim=values, operator=Operator.In)
     assert x == expected_single
 
-    assert course.apply_clause(x) is True
+    assert x.apply(course) is True
 
 
 def test_operator_eq(caplog):
@@ -126,12 +126,21 @@ def test_resolution(caplog):
 
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"@xyz": {"$eq": 1}}, c=c)
-    expected_single = SingleClause(key="@xyz", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
+    class IntThing(Clausable):
+        def apply_single_clause(self):
+            pass
+        def to_dict(self):
+            pass
+
+    x = load_clause({"count(items)": {"$eq": 1}}, c=c)
+    expected_single = SingleClause(key="count(items)", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
     assert x == expected_single
 
-    result = x.compare_and_resolve_with(value=1, map_func=lambda clause, value: AppliedClauseResult(value=value, data=tuple([value])))
+    result = x.compare_and_resolve_with([IntThing()])
     assert result.ok() is True
+
+    result = x.compare_and_resolve_with([IntThing(), IntThing()])
+    assert result.ok() is False
 
 
 def test_ranges_eq(caplog):

@@ -1,11 +1,13 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, TYPE_CHECKING
 import attr
 import logging
 import decimal
 
-from ..clause import Clause, SingleClause, AndClause, OrClause
 from .area_enums import AreaStatus, AreaType
 from .clausable import Clausable
+
+if TYPE_CHECKING:
+    from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)
 
@@ -43,32 +45,26 @@ class AreaPointer(Clausable):
             dept=data.get('dept', None),
         )
 
-    def apply_clause(self, clause: Clause) -> bool:
-        if isinstance(clause, AndClause):
-            logger.debug("clause/and/compare %s", clause)
-            return all(self.apply_clause(subclause) for subclause in clause.children)
+    def apply_single_clause(self, clause: 'SingleClause') -> bool:  # noqa: C901
+        if clause.key == 'code':
+            return clause.compare(self.code)
 
-        elif isinstance(clause, OrClause):
-            logger.debug("clause/or/compare %s", clause)
-            return any(self.apply_clause(subclause) for subclause in clause.children)
+        if clause.key == 'status':
+            return clause.compare(self.status.name)
 
-        elif isinstance(clause, SingleClause):
-            if clause.key == 'code':
-                return clause.compare(self.code)
-            elif clause.key == 'status':
-                return clause.compare(self.status.name)
-            elif clause.key in ('kind', 'type'):
-                return clause.compare(self.kind.name)
-            elif clause.key == 'name':
-                return clause.compare(self.name)
-            elif clause.key == 'degree':
-                return clause.compare(self.degree)
-            elif clause.key == 'gpa':
-                if self.gpa is not None:
-                    return clause.compare(self.gpa)
-                else:
-                    return False
+        if clause.key in ('kind', 'type'):
+            return clause.compare(self.kind.name)
 
-            raise TypeError(f"expected to get one of {list(self.__dict__.keys())}; got {clause.key}")
+        if clause.key == 'name':
+            return clause.compare(self.name)
 
-        raise TypeError(f"areapointer: expected a clause; found {type(clause)}")
+        if clause.key == 'degree':
+            return clause.compare(self.degree)
+
+        if clause.key == 'gpa':
+            if self.gpa is not None:
+                return clause.compare(self.gpa)
+            else:
+                return False
+
+        raise TypeError(f"expected got unknown key {clause.key}")

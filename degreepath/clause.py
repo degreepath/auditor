@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Set, Tuple, Dict, Any, Callable, Optional, Iterator, Sequence, FrozenSet, Collection, cast, TYPE_CHECKING
+from typing import Union, List, Set, Tuple, Dict, Any, Optional, Iterator, Sequence, cast, TYPE_CHECKING
 import logging
 import decimal
 import abc
@@ -10,25 +10,15 @@ from .lib import str_to_grade_points
 from .operator import Operator, apply_operator, str_operator
 from .data.course_enums import GradeOption
 from .status import ResultStatus
+from .apply_clause import apply_clause_to_assertion
 from functools import lru_cache
 
 if TYPE_CHECKING:
     from .base.course import BaseCourseRule  # noqa: F401
     from .context import RequirementContext
-    from .data import CourseInstance, Clausable  # noqa: F401
+    from .data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
-
-
-@attr.s(slots=True, kw_only=True, auto_attribs=True)
-class AppliedClauseResult:
-    value: Union[int, decimal.Decimal]
-    data: Union[FrozenSet[str], FrozenSet[decimal.Decimal], Tuple[str, ...], Tuple[decimal.Decimal, ...]] = tuple()
-    courses: Collection['CourseInstance'] = tuple()
-
-
-ClauseApplicationInput = Sequence['Clausable']
-ClauseApplicationFunction = Callable[['SingleClause', ClauseApplicationInput], AppliedClauseResult]
 
 
 def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'Clause':
@@ -56,8 +46,12 @@ def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True, 
 @attr.s(auto_attribs=True, slots=True)
 class _Clause(abc.ABC):
     @abc.abstractmethod
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'Clause':
-        raise NotImplementedError(f'must define a compare_and_resolve_with() method')
+    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'Clause':
+        raise NotImplementedError(f'must define a compare_and_resolve_with(value) method')
+
+    @abc.abstractmethod
+    def apply(self, to: 'Clausable') -> bool:
+        raise NotImplementedError(f'must define an apply(to=) method')
 
 
 @attr.s(auto_attribs=True, slots=True)
@@ -133,8 +127,11 @@ class AndClause(_Clause, ResolvedClause):
     def is_subset(self, other_clause: 'Clause') -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'AndClause':
-        children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
+    def apply(self, to: 'Clausable') -> bool:
+        return all(subclause.apply(to) for subclause in self.children)
+
+    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'AndClause':
+        children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
         if any(c.result is ResultStatus.InProgress for c in children):
             # if there are any in-progress children
@@ -191,8 +188,11 @@ class OrClause(_Clause, ResolvedClause):
     def is_subset(self, other_clause: 'Clause') -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
 
-    def compare_and_resolve_with(self, *, value: Any, map_func: Callable) -> 'OrClause':
-        children = tuple(c.compare_and_resolve_with(value=value, map_func=map_func) for c in self.children)
+    def apply(self, to: 'Clausable') -> bool:
+        return any(subclause.apply(to) for subclause in self.children)
+
+    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'OrClause':
+        children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
         if any(c.result is ResultStatus.InProgress for c in children):
             # if there are any in-progress children
@@ -349,6 +349,9 @@ class SingleClause(_Clause, ResolvedClause):
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
 
+    def apply(self, to: 'Clausable') -> bool:
+        return to.apply_single_clause(self)
+
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
@@ -378,8 +381,8 @@ class SingleClause(_Clause, ResolvedClause):
 
         return str(self.expected) == str(other_clause.expected)
 
-    def compare_and_resolve_with(self, *, value: ClauseApplicationInput, map_func: ClauseApplicationFunction) -> 'SingleClause':
-        calculated_result = map_func(self, value)
+    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'SingleClause':
+        calculated_result = apply_clause_to_assertion(self, value)
 
         reduced_value = calculated_result.value
         value_items = calculated_result.data
