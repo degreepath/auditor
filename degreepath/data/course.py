@@ -212,17 +212,16 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     gereqs = tuple(gereqs) if gereqs else tuple()
 
     if sub_type is SubType.Lab:
-        course_identity = f"{'/'.join(subject)} {number}.L"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.L"
+        suffix = ".L"
     elif sub_type is SubType.Flac:
-        course_identity = f"{'/'.join(subject)} {number}.F"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.F"
+        suffix = ".F"
     elif sub_type is SubType.Discussion:
-        course_identity = f"{'/'.join(subject)} {number}.D"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}.D"
+        suffix = ".D"
     else:
-        course_identity = f"{'/'.join(subject)} {number}"
-        course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}"
+        suffix = ""
+
+    course_identity = f"{'/'.join(subject)} {number}{suffix}"
+    course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}{suffix}"
 
     return CourseInstance(
         attributes=attributes,
