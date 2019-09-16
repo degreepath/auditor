@@ -8,7 +8,8 @@ import os
 import dotenv
 import prettyprinter  # type: ignore
 
-from degreepath import pretty_ms, summarize
+from degreepath.ms import pretty_ms
+from degreepath.stringify import summarize
 from degreepath.area import AreaResult
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
