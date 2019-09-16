@@ -10,6 +10,7 @@ import prettyprinter  # type: ignore
 
 from degreepath.ms import pretty_ms
 from degreepath.stringify import summarize
+from degreepath.stringify_csv import to_csv
 from degreepath.area import AreaResult
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
@@ -30,6 +31,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
+    parser.add_argument("--csv", action='store_true')
     parser.add_argument("--raw", action='store_true')
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--estimate", action='store_true')
@@ -94,6 +96,7 @@ def main() -> int:  # noqa: C901
                 msg,
                 as_json=cli_args.json,
                 as_raw=cli_args.raw,
+                as_csv=cli_args.csv,
                 gpa_only=cli_args.gpa,
                 show_paths=cli_args.show_paths,
                 show_ranks=cli_args.show_ranks,
@@ -115,6 +118,7 @@ def result_str(
     msg: ResultMsg, *,
     as_json: bool,
     as_raw: bool,
+    as_csv: bool,
     gpa_only: bool,
     show_paths: bool,
     show_ranks: bool,
@@ -123,6 +127,9 @@ def result_str(
         return f"GPA: {msg.result.gpa()}"
 
     dict_result = msg.result.to_dict()
+
+    if as_csv:
+        return to_csv(dict_result, transcript=msg.transcript)
 
     if as_json:
         return json.dumps(dict_result)
