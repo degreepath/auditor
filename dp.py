@@ -6,7 +6,7 @@ import json
 import sys
 import os
 import dotenv
-import prettyprinter
+import prettyprinter  # type: ignore
 
 from degreepath import pretty_ms, summarize
 from degreepath.area import AreaResult
