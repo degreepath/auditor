@@ -10,7 +10,7 @@ import dotenv
 import psycopg2  # type: ignore
 import sentry_sdk
 
-from degreepath import pretty_ms
+from degreepath.ms import pretty_ms
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
 logger = logging.getLogger(__name__)
