@@ -49,8 +49,17 @@ class BaseCourseRule(Base):
         else:
             return False
 
-    def rank(self) -> int:
-        return 1 if self.ok() else 0
+    def rank(self) -> Decimal:
+        if self.in_progress():
+            return Decimal('0.5')
+
+        if self.ok():
+            return Decimal('1')
+
+        return Decimal('0')
+
+    def in_progress(self) -> bool:
+        return any(c.is_in_progress for c in self.matched())
 
     def max_rank(self) -> int:
         return 1
