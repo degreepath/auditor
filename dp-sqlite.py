@@ -10,7 +10,7 @@ import sqlite3
 import time
 import random
 
-from degreepath import pretty_ms
+from degreepath.ms import pretty_ms
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
 
 logger = logging.getLogger(__name__)
@@ -185,12 +185,12 @@ def init_tables(*, conn: sqlite3.Connection) -> None:
             )
         """)
 
-        conn.execute("""CREATE INDEX result_area_code_index ON result (area_code)""")
-        conn.execute("""CREATE INDEX result_catalog_index ON result (catalog)""")
-        conn.execute("""CREATE INDEX result_ok_index ON result (ok)""")
-        conn.execute("""CREATE INDEX result_run_index ON result (run)""")
-        conn.execute("""CREATE INDEX result_student_id_index ON result (student_id)""")
-        conn.execute("""CREATE INDEX result_multi_index ON result (student_id, area_code, run)""")
+        conn.execute("""CREATE INDEX IF NOT EXISTS result_area_code_index ON result (area_code)""")
+        conn.execute("""CREATE INDEX IF NOT EXISTS result_catalog_index ON result (catalog)""")
+        conn.execute("""CREATE INDEX IF NOT EXISTS result_ok_index ON result (ok)""")
+        conn.execute("""CREATE INDEX IF NOT EXISTS result_run_index ON result (run)""")
+        conn.execute("""CREATE INDEX IF NOT EXISTS result_student_id_index ON result (student_id)""")
+        conn.execute("""CREATE INDEX IF NOT EXISTS result_multi_index ON result (student_id, area_code, run)""")
 
         conn.execute("""
             CREATE TABLE IF NOT EXISTS potential_clbids (
