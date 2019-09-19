@@ -38,7 +38,9 @@ class RequirementRule(Rule, BaseRequirementRule):
 
             rule = QueryRule.load(data['if'], c=c, path=path)
 
-            s = find_best_solution(rule=rule, ctx=ctx)
+            with ctx.fresh_claims():
+                s = find_best_solution(rule=rule, ctx=ctx)
+
             if not s:
                 return None
 
