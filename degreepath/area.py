@@ -60,7 +60,7 @@ class AreaOfStudy(Base):
         c: Constants,
         area_code: Optional[str] = None,
         areas: Sequence[AreaPointer] = tuple(),
-        transcript: Sequence[CourseInstance],
+        transcript: Sequence[CourseInstance] = tuple(),
     ) -> 'AreaOfStudy':
         pointers = [p for p in areas if p.code == area_code]
         this_pointer = pointers[0] if pointers else None
@@ -68,7 +68,7 @@ class AreaOfStudy(Base):
         emphases = specification.get('emphases', {})
 
         for e in emphases.values():
-            r = AreaOfStudy.load(specification=e, c=c, areas=[], area_code=area_code)
+            r = AreaOfStudy.load(specification=e, c=c, areas=[], area_code=area_code, transcript=transcript)
             r.validate()
 
         declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
