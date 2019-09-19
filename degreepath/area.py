@@ -60,6 +60,7 @@ class AreaOfStudy(Base):
         c: Constants,
         area_code: Optional[str] = None,
         areas: Sequence[AreaPointer] = tuple(),
+        transcript: Sequence[CourseInstance],
     ) -> 'AreaOfStudy':
         pointers = [p for p in areas if p.code == area_code]
         this_pointer = pointers[0] if pointers else None
@@ -72,7 +73,7 @@ class AreaOfStudy(Base):
 
         declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
 
-        ctx = RequirementContext(areas=tuple(areas))
+        ctx = RequirementContext(areas=tuple(areas)).with_transcript(transcript)
 
         result = load_rule(
             data=specification["result"],

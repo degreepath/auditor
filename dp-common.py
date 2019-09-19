@@ -58,7 +58,13 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 if e['area_code'] == area_code
             ]
 
-            area = AreaOfStudy.load(specification=area_spec, c=constants, areas=area_pointers, area_code=area_code)
+            area = AreaOfStudy.load(
+                specification=area_spec,
+                c=constants,
+                areas=area_pointers,
+                area_code=area_code,
+                transcript=transcript,
+            )
             area.validate()
 
             yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
