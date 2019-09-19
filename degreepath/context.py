@@ -1,6 +1,7 @@
 import attr
 from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
+from contextlib import contextmanager
 import logging
 
 from .data import CourseInstance, AreaPointer
@@ -88,6 +89,16 @@ class RequirementContext:
             logger.debug("no exception for %s", path)
 
         return exception
+
+    @contextmanager
+    def fresh_claims(self) -> Iterator[None]:
+        claims = self.claims
+        self.reset_claims()
+
+        try:
+            yield
+        finally:
+            self.set_claims(claims)
 
     def set_claims(self, claims: Dict[str, Set[Claim]]) -> None:
         self.claims = defaultdict(set, {k: set(v) for k, v in claims.items()})
