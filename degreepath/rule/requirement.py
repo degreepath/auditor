@@ -36,6 +36,8 @@ class RequirementRule(Rule, BaseRequirementRule):
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
+        result = data.get("result", None)
+
         # be able to exclude requirements if they shouldn't exist
         if 'if' in data:
             if ctx is None:
@@ -49,12 +51,18 @@ class RequirementRule(Rule, BaseRequirementRule):
             if not s:
                 return None
 
-            if s.ok():
+            if 'then' in data and 'else' in data:
+                if s.ok():
+                    result = data['then']
+                else:
+                    result = data['else']
+            elif ('then' in data and 'else' not in data) or ('then' not in data and 'else' in data):
+                raise TypeError(f'{path} in an if:, with one of then: or else:; expected both then: and else:')
+            elif s.ok():
                 pass
             else:
                 return None
 
-        result = data.get("result", None)
         if result is not None:
             result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path)
             if result is None:
