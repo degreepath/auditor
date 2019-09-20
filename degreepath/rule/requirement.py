@@ -31,6 +31,11 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         path = [*path, f"%{name}"]
 
+        # "name" is allowed due to emphasis requirements
+        allowed_keys = set(['if', 'name', 'result', 'message', 'contract', 'requirements', 'department_audited', 'department-audited', 'registrar-audited', 'registrar_audited'])
+        given_keys = set(data.keys())
+        assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
+
         # be able to exclude requirements if they shouldn't exist
         if 'if' in data:
             if ctx is None:
@@ -75,11 +80,6 @@ class RequirementRule(Rule, BaseRequirementRule):
         message = data.get("message", None)
         if message:
             message = markdown.markdown(message, extensions=['sane_lists', 'smarty'])
-
-        # "name" is allowed due to emphasis requirements
-        allowed_keys = set(['if', 'name', 'result', 'message', 'contract', 'requirements', 'department_audited', 'department-audited', 'registrar-audited', 'registrar_audited'])
-        given_keys = set(data.keys())
-        assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
         return RequirementRule(
             name=name,
