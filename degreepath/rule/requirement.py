@@ -32,7 +32,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         path = [*path, f"%{name}"]
 
         # "name" is allowed due to emphasis requirements
-        allowed_keys = set(['if', 'name', 'result', 'message', 'contract', 'requirements', 'department_audited', 'department-audited', 'registrar-audited', 'registrar_audited'])
+        allowed_keys = set(['if', 'name', 'else', 'then', 'result', 'message', 'contract', 'requirements', 'department_audited', 'department-audited', 'registrar-audited', 'registrar_audited'])
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
