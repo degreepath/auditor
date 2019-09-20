@@ -45,7 +45,7 @@ def main(
         stu_catalog: Optional[Union[str, int]] = None
         if catalog is not None:
             stu_catalog = catalog
-        elif student['catalog'] == '':
+        elif student['catalog'] == '' or student['catalog'] == 'None':
             stu_catalog = None
         else:
             stu_catalog = int(student['catalog'])
