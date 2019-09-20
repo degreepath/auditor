@@ -3,7 +3,7 @@ import glob
 import json
 import os
 import sys
-from typing import Sequence, Iterator, Tuple, Optional
+from typing import Sequence, Iterator, Tuple, Optional, Union
 from os.path import abspath, join
 
 import dotenv
@@ -41,9 +41,18 @@ def main(
             student = json.load(infile)
 
         areas = [a for a in student['areas'] if a['kind'] != 'emphasis']
-        stu_catalog = catalog if catalog is not None else student['catalog']
+
+        stu_catalog: Optional[Union[str, int]] = None
+        if catalog is not None:
+            stu_catalog = catalog
+        elif student['catalog'] == '':
+            stu_catalog = None
+        else:
+            stu_catalog = int(student['catalog'])
+
         if stu_catalog is None:
             continue
+
         stu_catalog = str(stu_catalog) + '-' + str(stu_catalog + 1)[2:]
 
         items = set(a['code'] for a in areas).union(area_codes)

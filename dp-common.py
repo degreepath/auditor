@@ -27,7 +27,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
             return
 
         area_pointers = tuple([AreaPointer.from_dict(a) for a in student['areas']])
-        constants = Constants(matriculation_year=student['matriculation'])
+        constants = Constants(matriculation_year=0 if student['matriculation'] == '' else int(student['matriculation']))
         transcript = tuple(load_transcript(student['courses']))
 
         if transcript_only:
