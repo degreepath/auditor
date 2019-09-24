@@ -401,6 +401,7 @@ def prepare_common_rules(
                             "where": {
                                 "$and": [
                                     {"subject": {"$neq": dept_code}},
+                                    {"subject": {"$neq": "REG"}},
                                     {"is_in_progress": {"$eq": False}},
                                 ]
                             },
