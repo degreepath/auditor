@@ -127,6 +127,7 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
               , ts = now()
               , gpa = %(gpa)s
               , in_progress = false
+              , claimed_courses = %(claimed_courses)s::jsonb
             WHERE id = %(result_id)s
         """, {
             "result_id": result_id,
@@ -134,6 +135,7 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
             "elapsed": message.elapsed,
             "avg_iter_time": avg_iter_time.strip("~"),
             "result": json.dumps(result),
+            "claimed_courses": json.dumps(message.result.keyed_claims()),
             "rank": result["rank"],
             "max_rank": result["max_rank"],
             "gpa": result["gpa"],

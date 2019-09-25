@@ -73,6 +73,9 @@ class Base(abc.ABC):
     def claims(self) -> List['ClaimAttempt']:
         return []
 
+    def keyed_claims(self) -> Dict[str, List[str]]:
+        return {c.claim.course.clbid: list(c.claim.claimant_path) for c in self.claims()}
+
     def matched(self) -> Set['CourseInstance']:
         return set(claim.get_course() for claim in self.claims() if claim.failed() is False)
 

@@ -148,6 +148,7 @@ def result_str(
         iterations=msg.iterations,
         show_paths=show_paths,
         show_ranks=show_ranks,
+        claims=msg.result.keyed_claims(),
     ))
 
 
