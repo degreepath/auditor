@@ -90,7 +90,7 @@ class QuerySolution(Solution, BaseQueryRule):
         for insert in ctx.get_insert_exceptions(self.path):
             matched_course = ctx.forced_course_by_clbid(insert.clbid)
             clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=insert.clbid, expected_verbatim=insert.clbid)
-            claim = ctx.make_claim(course=matched_course, path=self.path, clause=clause)
+            claim = ctx.make_claim(course=matched_course, path=self.path, clause=clause, allow_claimed=insert.forced)
 
             if claim.failed():
                 if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, insert.clbid, claim.conflict_with)

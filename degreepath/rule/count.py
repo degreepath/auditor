@@ -142,6 +142,8 @@ class CountRule(Rule, BaseCountRule):
         items = self.items
         count = self.count
 
+        items_with_inserts = list(items)
+
         for insert in ctx.get_insert_exceptions(self.path):
             logger.debug("%s inserting new choice: %s", self.path, insert)
 
@@ -156,7 +158,7 @@ class CountRule(Rule, BaseCountRule):
                 course=matched_course.course(),
                 hidden=False,
                 grade=None,
-                allow_claimed=False,
+                allow_claimed=insert.forced,
                 path=tuple([*self.path, f"[{len(items)}]", f"*{matched_course.course()}"]),
                 ap=None,
                 inserted=True,
@@ -164,7 +166,9 @@ class CountRule(Rule, BaseCountRule):
 
             logger.debug("%s new choice is %s", self.path, new_rule)
 
-            items = tuple([*items, new_rule])
+            items_with_inserts.append(new_rule)
+
+        items = tuple(items_with_inserts)
 
         lo = count
         hi = len(items) + 1 if self.at_most is False else count + 1

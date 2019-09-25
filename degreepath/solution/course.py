@@ -40,7 +40,7 @@ class CourseSolution(Solution, BaseCourseRule):
             logger.debug('inserting %s into %s due to override', insert.clbid, self)
             matched_course = ctx.forced_course_by_clbid(insert.clbid)
 
-            claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
+            claim = ctx.make_claim(course=matched_course, path=self.path, clause=self, allow_claimed=insert.forced)
 
             if not claim.failed():
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
