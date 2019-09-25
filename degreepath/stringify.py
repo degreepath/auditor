@@ -18,7 +18,7 @@ def summarize(
 ) -> Iterator[str]:
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
-
+    mapped_transcript = {c.clbid: c for c in transcript}
     endl = "\n"
 
     word = "attempt" if count == 1 else "attempts"
@@ -26,14 +26,14 @@ def summarize(
     yield endl
     yield endl
 
-    yield endl.join(print_result(result, list(transcript), show_paths=show_paths, show_ranks=show_ranks))
+    yield endl.join(print_result(result, transcript=mapped_transcript, show_paths=show_paths, show_ranks=show_ranks))
 
     yield endl
 
 
 def print_result(
     rule: Dict[str, Any],
-    transcript: List[CourseInstance],
+    transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
@@ -81,7 +81,7 @@ def calculate_emoji(rule: Dict[str, Any]) -> str:
 
 def print_area(
     rule: Dict[str, Any],
-    transcript: List[CourseInstance],
+    transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
@@ -103,7 +103,7 @@ def print_area(
 
 def print_course(
     rule: Dict[str, Any],
-    transcript: List[CourseInstance],
+    transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
@@ -121,11 +121,9 @@ def print_course(
 
     status = "🌀      "
     if rule["ok"]:
-        mapped_trns = {c.clbid: c for c in transcript}
-
         if len(rule["claims"]):
             claim = rule["claims"][0]["claim"]
-            course = mapped_trns.get(claim["clbid"], None)
+            course = transcript.get(claim["clbid"], None)
         else:
             course = None
 
@@ -156,7 +154,7 @@ def print_course(
 
 def print_count(
     rule: Dict[str, Any],
-    transcript: List[CourseInstance],
+    transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
@@ -205,7 +203,7 @@ def print_count(
 
 def print_query(
     rule: Dict[str, Any],
-    transcript: List[CourseInstance],
+    transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
@@ -227,12 +225,10 @@ def print_query(
         for limit in rule['limit']:
             yield f"{prefix} - at most {limit['at_most']} where {str_clause(limit['where'])}"
 
-    mapped_trns = {c.clbid: c for c in transcript}
-
     if rule["claims"]:
         yield f"{prefix} Matching courses:"
         for clm in rule["claims"]:
-            course = mapped_trns.get(clm['claim']["clbid"], None)
+            course = transcript.get(clm['claim']["clbid"], None)
             if course:
                 inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
                 yield f"{prefix}    {inserted_msg}{course.course_shorthand()} \"{course.name}\" ({course.clbid})"
@@ -242,7 +238,7 @@ def print_query(
     if rule["failures"]:
         yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
         for clm in rule["failures"]:
-            course = mapped_trns.get(clm['claim']["clbid"], None)
+            course = transcript.get(clm['claim']["clbid"], None)
             if course:
                 conflicts = [x['claimant_path'] for x in clm['conflict_with']]
                 yield f"{prefix}    {course.course_shorthand()} \"{course.name}\" ({course.clbid}) [{conflicts}]"
@@ -256,7 +252,7 @@ def print_query(
 
 def print_requirement(
     rule: Dict[str, Any],
-    transcript: List[CourseInstance],
+    transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
@@ -280,7 +276,7 @@ def print_requirement(
 
 def print_assertion(
     rule: Dict[str, Any],
-    transcript: List[CourseInstance],
+    transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
@@ -318,13 +314,11 @@ def print_assertion(
             def key(c: CourseInstance) -> str:  # noqa F811
                 return f'grade={c.grade_points}'
 
-        mapped_trns = {c.clbid: c for c in transcript}
-
         yield f"{prefix}resolved courses:"
 
         for clbid in resolved_clbids:
             inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
             ip_msg = " [ip]" if clbid in ip_clbids else ""
-            course = mapped_trns[clbid]
+            course = transcript[clbid]
             chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
             yield f'{prefix}  -{ip_msg}{inserted_msg} Course({", ".join(chunks)})'
