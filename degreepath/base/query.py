@@ -52,7 +52,6 @@ class BaseQueryRule(Base):
             "limit": self.limit.to_dict(),
             "assertions": [a.to_dict() for a in self.all_assertions()],
             "where": self.where.to_dict() if self.where else None,
-            "allow_claimed": self.allow_claimed,
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.only_failed_claims()],
             "inserted": list(self.inserted),
