@@ -30,7 +30,7 @@ def cli() -> None:
 def main(
     files: str,
     area_codes: Sequence[str] = tuple(),
-    catalog: Optional[int] = None,
+    catalog: Optional[Union[str, int]] = None,
     root: Optional[str] = os.getenv('AREA_ROOT'),
 ) -> Iterator[Tuple[str, str]]:
     if not root:
@@ -41,26 +41,33 @@ def main(
             student = json.load(infile)
 
         areas = [a for a in student['areas'] if a['kind'] != 'emphasis']
+        area_dict = {a['code']: a for a in student['areas']}
 
-        stu_catalog: Optional[Union[str, int]] = None
         if catalog is not None:
-            stu_catalog = catalog
+            catalog = catalog
         elif student['catalog'] == '' or student['catalog'] == 'None':
-            stu_catalog = None
+            catalog = None
         else:
-            stu_catalog = int(student['catalog'])
+            catalog = int(student['catalog'])
 
-        if stu_catalog is None:
+        if catalog is None:
             continue
-
-        stu_catalog = str(stu_catalog) + '-' + str(stu_catalog + 1)[2:]
 
         items = set(a['code'] for a in areas).union(area_codes)
         items = items.intersection(area_codes or items)
 
-        for filename in items:
-            file_path = join(root, stu_catalog, filename + '.yaml')
+        for area_code in items:
+            area = area_dict.get(area_code, {'code': area_code, 'catalog': catalog})
+            area_catalog = area.get('catalog', catalog)
+            if '-' not in str(area_catalog):
+                area_catalog = fmt_catalog(area.get('catalog', catalog))
+
+            file_path = join(root, area_catalog, area_code + '.yaml')
             yield (abspath(student_file), abspath(file_path))
+
+
+def fmt_catalog(catalog: int) -> str:
+    return str(catalog) + '-' + str(catalog + 1)[2:]
 
 
 if __name__ == '__main__':
