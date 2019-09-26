@@ -1,4 +1,4 @@
-from typing import List, Iterator, Union, Dict
+from typing import List, Iterator, Union, Dict, Optional
 import requests
 import os
 import attr
@@ -14,8 +14,12 @@ from .clause import ResolvedClause, AndClause, OrClause, SingleClause
 from .operator import Operator
 
 
-def discover_clause_potential(area: AreaOfStudy, c: Constants) -> Dict[int, List[str]]:
-    url = os.getenv('POTENTIALS_URL', None)
+def discover_clause_potential(
+    area: AreaOfStudy,
+    c: Constants,
+    *,
+    url: Optional[str] = os.getenv('POTENTIALS_URL', None),
+) -> Dict[int, List[str]]:
     if not url:
         return {}
 
