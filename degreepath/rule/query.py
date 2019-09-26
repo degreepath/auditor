@@ -11,6 +11,7 @@ from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..ncr import ncr
 from ..operator import Operator
+from ..data import CourseInstance
 from .assertion import AssertionRule
 
 if TYPE_CHECKING:
@@ -146,6 +147,10 @@ class QueryRule(Rule, BaseQueryRule):
 
             if self.attempt_claims is False:
                 did_iter = True
+                if self.source_type is QuerySourceType.Courses:
+                    only_completed = tuple(c for c in item_set if isinstance(c, CourseInstance) and c.is_in_progress is False)
+                    yield QuerySolution.from_rule(rule=self, output=only_completed)
+
                 yield QuerySolution.from_rule(rule=self, output=item_set)
                 continue
 
