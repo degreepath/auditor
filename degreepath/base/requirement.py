@@ -44,3 +44,9 @@ class BaseRequirementRule(Base):
         if self.result is None:
             return 1
         return self.result.max_rank() + 1
+
+    def is_always_disjoint(self) -> bool:
+        if self.result is None:
+            return False
+
+        return self.result.is_always_disjoint()

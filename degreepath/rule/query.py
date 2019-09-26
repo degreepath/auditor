@@ -231,6 +231,9 @@ class QueryRule(Rule, BaseQueryRule):
 
         return matches
 
+    def is_always_disjoint(self) -> bool:
+        return self.allow_claimed is True and self.attempt_claims is False
+
 
 def has_assertion(assertions: Sequence[AssertionRule], key: Any) -> bool:
     if not assertions:

@@ -82,6 +82,9 @@ class Base(abc.ABC):
     def was_overridden(self) -> bool:
         return False
 
+    def is_always_disjoint(self) -> bool:
+        return False
+
 
 class Result(Base):
     __slots__ = ()
