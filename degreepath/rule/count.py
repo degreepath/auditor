@@ -291,6 +291,11 @@ class CountRule(Rule, BaseCountRule):
         disjoint_rules: Set[Rule] = set()
 
         for (rule_a, a_matches), (rule_b, b_matches) in itertools.combinations(all_rule_matches.items(), 2):
+            if rule_a.is_always_disjoint() and rule_b.is_always_disjoint():
+                disjoint_rules.add(rule_a)
+                disjoint_rules.add(rule_b)
+                continue
+
             if a_matches.isdisjoint(b_matches):
                 disjoint_rules.add(rule_a)
                 disjoint_rules.add(rule_b)
