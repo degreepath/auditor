@@ -42,8 +42,6 @@ class QueryRule(Rule, BaseQueryRule):
         if 'limits' in data:
             raise ValueError(f'the key is "limit", not "limits": {data}')
 
-        attempt_claims = data.get('claim', True)
-
         assertions: List[AssertionRule] = []
         if "assert" in data:
             assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, ".assertions", "[0]"])]
@@ -55,8 +53,6 @@ class QueryRule(Rule, BaseQueryRule):
         if 'assert' in data and 'all' in data:
             raise ValueError(f'you cannot have both assert: and all: keys; {data}')
 
-        allow_claimed = data.get('allow_claimed', False)
-
         source_data = data['from']
 
         if "student" not in source_data:
@@ -65,8 +61,6 @@ class QueryRule(Rule, BaseQueryRule):
         source = QuerySource.Student
         source_type = QuerySourceType(source_data["student"])
         source_repeats = QuerySourceRepeatMode(source_data.get('repeats', 'all'))
-
-        load_potentials = data.get('load_potentials', True)
 
         allowed_keys = set(['where', 'limit', 'claim', 'assert', 'all', 'allow_claimed', 'from', 'load_potentials'])
         given_keys = set(data.keys())
@@ -79,9 +73,9 @@ class QueryRule(Rule, BaseQueryRule):
             assertions=tuple(assertions),
             limit=limit,
             where=where,
-            allow_claimed=allow_claimed,
-            attempt_claims=attempt_claims,
-            load_potentials=load_potentials,
+            allow_claimed=data.get('allow_claimed', False),
+            attempt_claims=data.get('claim', True),
+            load_potentials=data.get('load_potentials', True),
             path=tuple(path),
             inserted=tuple(),
         )
