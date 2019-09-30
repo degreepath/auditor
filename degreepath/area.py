@@ -206,7 +206,7 @@ class AreaSolution(AreaOfStudy):
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
         whole_context = attr.evolve(self.context)
-        claimed_context = RequirementContext().with_transcript(claimed)
+        claimed_context = whole_context.with_transcript(claimed)
 
         c_or_better, s_u_credits, outside_the_major = prepare_common_rules(other_areas=tuple(other_areas), dept_code=self.dept, degree=self.degree)
 
