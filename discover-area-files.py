@@ -37,33 +37,43 @@ def main(
         raise ValueError('the environment variable AREA_ROOT must be set to a path')
 
     for student_file in glob.iglob(files):
-        with open(student_file, 'r', encoding='utf-8') as infile:
-            student = json.load(infile)
+        yield from run_student(student_file=student_file, area_codes=area_codes, catalog=catalog, root=root)
 
-        areas = [a for a in student['areas'] if a['kind'] != 'emphasis']
-        area_dict = {a['code']: a for a in student['areas']}
 
-        if catalog is not None:
-            catalog = catalog
-        elif student['catalog'] == '' or student['catalog'] == 'None':
-            catalog = None
-        else:
-            catalog = int(student['catalog'])
+def run_student(
+    *,
+    student_file: str,
+    area_codes: Sequence[str] = tuple(),
+    catalog: Optional[Union[str, int]] = None,
+    root: str,
+) -> Iterator[Tuple[str, str]]:
+    with open(student_file, 'r', encoding='utf-8') as infile:
+        student = json.load(infile)
 
-        if catalog is None:
-            continue
+    areas = [a for a in student['areas'] if a['kind'] != 'emphasis']
+    area_dict = {a['code']: a for a in student['areas']}
 
-        items = set(a['code'] for a in areas).union(area_codes)
-        items = items.intersection(area_codes or items)
+    if catalog is not None:
+        catalog = catalog
+    elif student['catalog'] == '' or student['catalog'] == 'None':
+        catalog = None
+    else:
+        catalog = int(student['catalog'])
 
-        for area_code in items:
-            area = area_dict.get(area_code, {'code': area_code, 'catalog': catalog})
-            area_catalog = area.get('catalog', catalog)
-            if '-' not in str(area_catalog):
-                area_catalog = fmt_catalog(area.get('catalog', catalog))
+    if catalog is None:
+        return
 
-            file_path = join(root, area_catalog, area_code + '.yaml')
-            yield (abspath(student_file), abspath(file_path))
+    items = set(a['code'] for a in areas).union(area_codes)
+    items = items.intersection(area_codes or items)
+
+    for area_code in items:
+        area_pointer = area_dict.get(area_code, {'code': area_code, 'catalog': catalog})
+        area_catalog = area_pointer.get('catalog', catalog)
+        if '-' not in str(area_catalog):
+            area_catalog = fmt_catalog(area_pointer.get('catalog', catalog))
+
+        file_path = join(root, area_catalog, area_code + '.yaml')
+        yield (abspath(student_file), abspath(file_path))
 
 
 def fmt_catalog(catalog: int) -> str:
