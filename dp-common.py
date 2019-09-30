@@ -9,7 +9,7 @@ import sys
 import os
 
 from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
-from degreepath.data import GradeOption, GradeCode, CourseInstance
+from degreepath.data import GradeOption, GradeCode, CourseInstance, TranscriptCode
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
@@ -94,8 +94,12 @@ def load_transcript(courses: List[Dict[str, Any]]) -> Iterator[CourseInstance]:
         if c.grade_option is GradeOption.Audit:
             continue
 
-        # exclude [N]o-Pass, [U]nsuccessful, [UA]nsuccessfulAudit, [WF]ithdrawnFail, [WP]ithdrawnPass, and [Withdrawn]
-        if c.grade_code in (GradeCode._N, GradeCode._U, GradeCode._UA, GradeCode._WF, GradeCode._WP, GradeCode._W):
+        # excluded repeated courses
+        if c.transcript_code in (TranscriptCode.RepeatedLater, TranscriptCode.RepeatInProgress):
+            continue
+
+        # exclude [N]o-Pass, [U]nsuccessful, [AU]dit, [UA]nsuccessfulAudit, [WF]ithdrawnFail, [WP]ithdrawnPass, and [Withdrawn]
+        if c.grade_code in (GradeCode._N, GradeCode._U, GradeCode._AU, GradeCode._UA, GradeCode._WF, GradeCode._WP, GradeCode._W):
             continue
 
         # exclude courses at grade F

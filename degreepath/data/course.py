@@ -4,7 +4,7 @@ import decimal
 import logging
 
 from .clausable import Clausable
-from .course_enums import GradeCode, GradeOption, SubType, CourseType
+from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode
 from ..lib import str_to_grade_points
 
 if TYPE_CHECKING:
@@ -39,6 +39,7 @@ class CourseInstance(Clausable):
     sub_type: SubType
     subject: Tuple[str, ...]
     term: str
+    transcript_code: TranscriptCode
     year: int
 
     identity_: str
@@ -69,6 +70,7 @@ class CourseInstance(Clausable):
             "subject": list(self.subject),
             "sub_type": self.sub_type.value,
             "term": self.term,
+            "transcript_code": self.transcript_code.value,
             "type": "course",
         }
 
@@ -189,6 +191,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     sub_type = data['sub_type']
     subjects = data['subjects']
     term = data['term']
+    transcript_code = data['transcript_code']
     year = data['year']
 
     clbid = clbid
@@ -202,6 +205,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     grade_option = GradeOption(grade_option)
     sub_type = SubType(sub_type)
     course_type = CourseType(course_type)
+    transcript_code = TranscriptCode(transcript_code)
 
     # we want to keep the original shorthand course identity for matching purposes
     verbatim_subject_field = subjects
@@ -247,6 +251,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         sub_type=sub_type,
         subject=subject,
         term=term,
+        transcript_code=transcript_code,
         year=year,
         identity_=course_identity,
         shorthand_=course_identity_short,

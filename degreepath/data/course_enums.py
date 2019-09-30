@@ -12,6 +12,15 @@ class GradeOption(enum.Enum):
 
 
 @enum.unique
+class TranscriptCode(enum.Enum):
+    Empty = ""
+    Carleton = "#"
+    WasIncomplete = "*"
+    RepeatedLater = "R"
+    RepeatInProgress = "Z"
+
+
+@enum.unique
 class SubType(enum.Enum):
     Discussion = "discussion"
     Ensemble = "ensemble"
