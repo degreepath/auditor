@@ -302,7 +302,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "number": s.split(' ')[1],
         "section": "",
         "sub_type": SubType.Normal,
-        "subjects": tuple([s.split(' ')[0]]),
+        "subjects": s.split(' ')[0],
         "term": "1",
         "transcript_code": "",
         "year": 2000,
