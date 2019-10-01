@@ -43,6 +43,7 @@ class CourseInstance(Clausable):
     year: int
 
     identity_: str
+    is_chbi_: Optional[int]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -121,7 +122,15 @@ class CourseInstance(Clausable):
             return clause.compare(self.identity_)
 
         if clause.key == 'subject':
-            return clause.compare(self.subject)
+            # CH/BI 125 and 126 are "CHEM" courses, while 127/227 are "BIO".
+            # So we pretend that that is the case, but only when checking subject codes.
+            if self.is_chbi_ is not None:
+                if self.is_chbi_ in (125, 126):
+                    return clause.compare('CHEM')
+                else:
+                    return clause.compare('BIO')
+            else:
+                return clause.compare(self.subject)
 
         if clause.key == 'grade':
             return clause.compare(self.grade_points)
@@ -228,6 +237,15 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         suffix = ""
 
     course_identity = f"{subject} {number}{suffix}"
+    is_chbi = None
+    if course_identity == 'CH/BI 125':
+        is_chbi = 125
+    elif course_identity == 'CH/BI 126':
+        is_chbi = 126
+    elif course_identity == 'CH/BI 127':
+        is_chbi = 127
+    elif course_identity == 'CH/BI 227':
+        is_chbi = 227
 
     return CourseInstance(
         attributes=attributes,
@@ -256,6 +274,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         transcript_code=transcript_code,
         year=year,
         identity_=course_identity,
+        is_chbi_=is_chbi,
     )
 
 
