@@ -29,7 +29,7 @@ class RequirementContext:
 
     def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
         transcript = list(transcript)
-        course_set = set(cid for c in transcript for cid in c.course())
+        course_set = set(c.course() for c in transcript)
         clbid_lookup_map = {c.clbid: c for c in transcript}
 
         return attr.evolve(self, transcript_=transcript, course_set_=course_set, clbid_lookup_map_=clbid_lookup_map)
