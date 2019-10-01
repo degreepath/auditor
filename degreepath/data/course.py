@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, List, Dict, Any, Iterator, Iterable, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Any, Iterable, TYPE_CHECKING
 import attr
 import decimal
 import logging
@@ -37,13 +37,12 @@ class CourseInstance(Clausable):
     number: str
     section: Optional[str]
     sub_type: SubType
-    subject: Tuple[str, ...]
+    subject: str
     term: str
     transcript_code: TranscriptCode
     year: int
 
     identity_: str
-    shorthand_: str
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -67,7 +66,7 @@ class CourseInstance(Clausable):
             "name": self.name,
             "number": self.number,
             "section": self.section,
-            "subject": list(self.subject),
+            "subject": self.subject,
             "sub_type": self.sub_type.value,
             "term": self.term,
             "transcript_code": self.transcript_code.value,
@@ -83,17 +82,14 @@ class CourseInstance(Clausable):
     def course(self) -> str:
         return self.identity_
 
-    def course_shorthand(self) -> str:
-        return self.shorthand_
-
     def course_with_term(self) -> str:
-        return f"{self.shorthand_}{self.section or ''} {self.year}-{self.term}"
+        return f"{self.identity_}{self.section or ''} {self.year}-{self.term}"
 
     def __str__(self) -> str:
-        return self.shorthand_
+        return self.identity_
 
     def __repr__(self) -> str:
-        return f'Course("{self.shorthand_}")'
+        return f'Course("{self.identity_}")'
 
     def apply_single_clause(self, clause: 'SingleClause') -> bool:  # noqa: C901
         logger.debug("clause/compare/key=%s", clause.key)
@@ -111,7 +107,7 @@ class CourseInstance(Clausable):
             return clause.compare(self.number)
 
         if clause.key == 'course':
-            return clause.compare(self.identity_) or clause.compare(self.shorthand_)
+            return clause.compare(self.identity_)
 
         if clause.key == 'subject':
             return clause.compare(self.subject)
@@ -170,7 +166,6 @@ class CourseInstance(Clausable):
 def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     attributes = data.get('attributes', tuple())
     clbid = data['clbid']
-    course = data['course']
     course_type = data['course_type']
     credits = data['credits']
     crsid = data['crsid']
@@ -189,7 +184,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     number = data['number']
     section = data['section']
     sub_type = data['sub_type']
-    subjects = data['subjects']
+    subject: str = data['subjects']
     term = data['term']
     transcript_code = data['transcript_code']
     year = data['year']
@@ -207,11 +202,6 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
 
-    # we want to keep the original shorthand course identity for matching purposes
-    verbatim_subject_field = subjects
-    subject = subjects if subjects is not None else tuple([course.split(" ")[0]])
-    subject = tuple(expand_subjects(subject))
-
     attributes = tuple(attributes) if attributes else tuple()
     gereqs = tuple(gereqs) if gereqs else tuple()
 
@@ -224,8 +214,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     else:
         suffix = ""
 
-    course_identity = f"{'/'.join(subject)} {number}{suffix}"
-    course_identity_short = f"{'/'.join(verbatim_subject_field)} {number}{suffix}"
+    course_identity = f"{subject} {number}{suffix}"
 
     return CourseInstance(
         attributes=attributes,
@@ -254,7 +243,6 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         transcript_code=transcript_code,
         year=year,
         identity_=course_identity,
-        shorthand_=course_identity_short,
     )
 
 
@@ -288,18 +276,3 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "year": 2000,
         **kwargs,
     })
-
-
-def expand_subjects(subjects: List[str]) -> Iterator[str]:
-    shorthands = {
-        "AS": "ASIAN",
-        "BI": "BIO",
-        "CH": "CHEM",
-        "ES": "ENVST",
-        "PS": "PSCI",
-        "RE": "REL",
-    }
-
-    for subject in subjects:
-        for code in subject.split("/"):
-            yield shorthands.get(code, code)

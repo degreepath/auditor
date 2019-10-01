@@ -245,7 +245,7 @@ def print_query(
             course = transcript.get(clm['claim']["clbid"], None)
             if course:
                 inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
-                yield f"{prefix}    {inserted_msg}{course.course_shorthand()} \"{course.name}\" ({course.clbid})"
+                yield f"{prefix}    {inserted_msg}{course.course()} \"{course.name}\" ({course.clbid})"
             else:
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 
@@ -255,7 +255,7 @@ def print_query(
             course = transcript.get(clm['claim']["clbid"], None)
             if course:
                 conflicts = [x['claimant_path'] for x in clm['conflict_with']]
-                yield f"{prefix}    {course.course_shorthand()} \"{course.name}\" ({course.clbid}) [{conflicts}]"
+                yield f"{prefix}    {course.course()} \"{course.name}\" ({course.clbid}) [{conflicts}]"
             else:
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
 

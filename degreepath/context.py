@@ -29,7 +29,7 @@ class RequirementContext:
 
     def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
         transcript = list(transcript)
-        course_set = set(cid for c in transcript for cid in (c.course_shorthand(), c.course()))
+        course_set = set(cid for c in transcript for cid in c.course())
         clbid_lookup_map = {c.clbid: c for c in transcript}
 
         return attr.evolve(self, transcript_=transcript, course_set_=course_set, clbid_lookup_map_=clbid_lookup_map)
@@ -45,7 +45,7 @@ class RequirementContext:
 
     def find_all_courses(self, c: str) -> Iterator[CourseInstance]:
         for crs in self.transcript():
-            if crs.shorthand_ == c or crs.identity_ == c:
+            if crs.identity_ == c:
                 yield crs
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
