@@ -30,6 +30,7 @@ class AreaOfStudy(Base):
     kind: str
     degree: Optional[str]
     dept: Optional[str]
+    code: str
 
     limit: LimitSet
     result: Any  # Rule
@@ -41,6 +42,7 @@ class AreaOfStudy(Base):
             **super().to_dict(),
             "name": self.name,
             "kind": self.kind,
+            "code": self.code,
             "degree": self.degree,
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
@@ -58,17 +60,17 @@ class AreaOfStudy(Base):
         *,
         specification: Dict,
         c: Constants,
-        area_code: Optional[str] = None,
         areas: Sequence[AreaPointer] = tuple(),
         transcript: Sequence[CourseInstance] = tuple(),
     ) -> 'AreaOfStudy':
-        pointers = [p for p in areas if p.code == area_code]
-        this_pointer = pointers[0] if pointers else None
+        this_code = specification.get('code', '<null>')
+        pointers = {p.code: p for p in areas}
+        this_pointer = pointers.get(this_code, None)
 
         emphases = specification.get('emphases', {})
 
         for e in emphases.values():
-            r = AreaOfStudy.load(specification=e, c=c, areas=[], area_code=area_code, transcript=transcript)
+            r = AreaOfStudy.load(specification=e, c=c, areas=[], transcript=transcript)
             r.validate()
 
         declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
@@ -107,7 +109,7 @@ class AreaOfStudy(Base):
                 clauses.append(item)
             multicountable_clauses.append(clauses)
 
-        allowed_keys = set(['name', 'type', 'major', 'degree', 'emphases', 'result', 'requirements', 'limit', 'attributes'])
+        allowed_keys = set(['name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'attributes'])
         given_keys = set(specification.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
@@ -119,7 +121,8 @@ class AreaOfStudy(Base):
             result=result,
             multicountable=multicountable_clauses,
             limit=limit,
-            path=('$',)
+            path=('$',),
+            code=this_code,
         )
 
     def validate(self) -> None:
@@ -177,6 +180,7 @@ class AreaSolution(AreaOfStudy):
             name=area.name,
             kind=area.kind,
             dept=area.dept,
+            code=area.code,
             degree=area.degree,
             limit=area.limit,
             result=area.result,
@@ -186,13 +190,13 @@ class AreaSolution(AreaOfStudy):
             context=ctx,
         )
 
-    def audit(self, other_areas: Sequence[AreaPointer] = tuple()) -> 'AreaResult':
+    def audit(self, areas: Sequence[AreaPointer] = tuple()) -> 'AreaResult':
         result = self.solution.audit(ctx=self.context)
 
         # Append the "common" major requirements, if we've audited a major.
         common_req_results = None
         if self.kind == 'major':
-            common_req_results = self.audit_common_major_requirements(result=result, other_areas=other_areas)
+            common_req_results = self.audit_common_major_requirements(result=result, areas=areas)
 
             if not isinstance(result, CountResult):
                 raise TypeError('expected a Count result from common major requirements')
@@ -201,30 +205,32 @@ class AreaSolution(AreaOfStudy):
 
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
-    def audit_common_major_requirements(self, result: Result, other_areas: Sequence[AreaPointer] = tuple()) -> RequirementResult:
+    def audit_common_major_requirements(self, result: Result, areas: Sequence[AreaPointer] = tuple()) -> RequirementResult:
         claimed = set(result.matched())
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
         whole_context = attr.evolve(self.context)
         claimed_context = whole_context.with_transcript(claimed)
 
-        c_or_better, s_u_credits, outside_the_major = prepare_common_rules(other_areas=tuple(other_areas), dept_code=self.dept, degree=self.degree)
+        c_or_better, s_u_credits, outside_the_major = prepare_common_rules(
+            other_areas=tuple(areas),
+            dept_code=self.dept,
+            degree=self.degree,
+            area_code=self.code,
+        )
 
         c_or_better__result = find_best_solution(rule=c_or_better, ctx=claimed_context)
-        if c_or_better__result is None:
-            raise TypeError('no solutions found for c_or_better rule')
+        assert c_or_better__result is not None, TypeError('no solutions found for c_or_better rule')
         claimed_context.reset_claims()
 
         s_u_credits__result = find_best_solution(rule=s_u_credits, ctx=claimed_context)
-        if s_u_credits__result is None:
-            raise TypeError('no solutions found for s_u_credits__result rule')
+        assert s_u_credits__result is not None, TypeError('no solutions found for s_u_credits__result rule')
         claimed_context.reset_claims()
 
         outside_the_major__result = None
         if outside_the_major:
             outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=whole_context)
-            if outside_the_major__result is None:
-                raise TypeError('no solutions found for outside_the_major__result rule')
+            assert outside_the_major__result is not None, TypeError('no solutions found for outside_the_major__result rule')
             # unclaimed_context.reset_claims()
 
         items = [c_or_better__result, s_u_credits__result] + ([outside_the_major__result] if outside_the_major__result is not None else [])
@@ -259,6 +265,7 @@ class AreaResult(AreaOfStudy, Result):
             name=area.name,
             kind=area.kind,
             dept=area.dept,
+            code=area.code,
             degree=area.degree,
             limit=area.limit,
             multicountable=area.multicountable,
@@ -303,11 +310,19 @@ def prepare_common_rules(
     degree: Optional[str],
     dept_code: Optional[str],
     other_areas: Tuple[AreaPointer, ...] = tuple(),
+    area_code: str,
 ) -> Tuple[Rule, Rule, Optional[Rule]]:
     c = Constants(matriculation_year=0)
 
-    other_area_codes = set(p.code for p in other_areas)
-    if '140' in other_area_codes and '135' in other_area_codes:
+    other_area_codes = set(p.code for p in other_areas if p.code != area_code)
+
+    studio_art_code = '140'
+    art_history_code = '135'
+    is_history_and_studio = \
+        (area_code == studio_art_code and art_history_code in other_area_codes)\
+        or (area_code == art_history_code and studio_art_code in other_area_codes)
+
+    if is_history_and_studio:
         credits_message = " Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART' subject code."
         credits_outside_major = 18
     else:
@@ -316,12 +331,8 @@ def prepare_common_rules(
 
     if degree == 'B.M.':
         is_bm_major = True
-        su_message = "No courses in a B.M Music major may be taken S/U."
-        allowed_su_credits = 0
     else:
         is_bm_major = False
-        su_message = "Only one full-course equivalent (1.00-credit course) taken S/U may count toward the minimum requirements for a major."
-        allowed_su_credits = 1
 
     c_or_better = load_rule(
         data={"requirement": "Credits at a C or higher"},
@@ -347,34 +358,44 @@ def prepare_common_rules(
         c=c,
     )
 
-    if c_or_better is None:
-        raise TypeError('expected c_or_better to not be None')
+    assert c_or_better is not None, TypeError('expected c_or_better to not be None')
+
+    if is_bm_major:
+        s_u_detail = {
+            "message": "No courses in a B.M Music major may be taken S/U.",
+            "result": {
+                "from": {"student": "courses"},
+                "allow_claimed": True,
+                "claim": False,
+                "where": {"s/u": {"$eq": True}},
+                "assert": {"count(courses)": {"$eq": 0}},
+            },
+        }
+    else:
+        s_u_detail = {
+            "message": "Only one full-course equivalent (1.00-credit course) taken S/U may count toward the minimum requirements for a major.",
+            "result": {
+                "from": {"student": "courses"},
+                "allow_claimed": True,
+                "claim": False,
+                "where": {
+                    "$and": [
+                        {"s/u": {"$eq": True}},
+                        {"credits": {"$eq": 1}},
+                    ],
+                },
+                "assert": {"count(courses)": {"$lte": 1}},
+            },
+        }
 
     s_u_credits = load_rule(
         data={"requirement": "Credits taken S/U"},
-        children={
-            "Credits taken S/U": {
-                "message": su_message,
-                "result": {
-                    "from": {"student": "courses"},
-                    "allow_claimed": True,
-                    "claim": False,
-                    "where": {
-                        "$and": [
-                            {"s/u": {"$eq": True}},
-                            {"credits": {"$eq": 1.00}},
-                        ],
-                    },
-                    "assert": {"count(courses)": {"$lte": allowed_su_credits}},
-                },
-            },
-        },
+        children={"Credits taken S/U": s_u_detail},
         path=['$', '%Common Requirements', '.count', '[1]'],
         c=c,
     )
 
-    if s_u_credits is None:
-        raise TypeError('expected s_u_credits to not be None')
+    assert s_u_credits is not None, TypeError('expected s_u_credits to not be None')
 
     outside_the_major = None
     if is_bm_major is False:
@@ -402,8 +423,7 @@ def prepare_common_rules(
                                 "$and": [
                                     {"subject": {"$neq": dept_code}},
                                     {"subject": {"$neq": "REG"}},
-                                    {"is_in_progress": {"$eq": False}},
-                                ]
+                                ],
                             },
                             "allow_claimed": True,
                             "claim": False,
@@ -414,7 +434,6 @@ def prepare_common_rules(
                 path=['$', '%Common Requirements', '.count', '[2]'],
                 c=c,
             )
-        if outside_the_major is None:
-            raise TypeError('expected outside_the_major to not be None')
+        assert outside_the_major is not None, TypeError('expected outside_the_major to not be None')
 
     return c_or_better, s_u_credits, outside_the_major

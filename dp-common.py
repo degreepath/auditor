@@ -49,7 +49,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 yield AreaFileNotFoundMsg(area_file=f"{os.path.dirname(area_file)}/{os.path.basename(area_file)}", stnum=student['stnum'])
                 return
 
-            area_code = pathlib.Path(area_file).stem
+            area_code = area_spec['code']
             area_catalog = pathlib.Path(area_file).parent.stem
 
             exceptions = [
@@ -62,7 +62,6 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 specification=area_spec,
                 c=constants,
                 areas=area_pointers,
-                area_code=area_code,
                 transcript=transcript,
             )
             area.validate()
