@@ -74,6 +74,8 @@ class CourseInstance(Clausable):
         }
 
     def attach_attrs(self, attributes: Iterable['str'] = tuple()) -> 'CourseInstance':
+        attributes = tuple(attributes)
+
         if not attributes:
             attributes = tuple()
 
@@ -83,7 +85,16 @@ class CourseInstance(Clausable):
         return self.identity_
 
     def course_with_term(self) -> str:
-        return f"{self.identity_}{self.section or ''} {self.year}-{self.term}"
+        if self.sub_type is SubType.Lab:
+            suffix = ".L"
+        elif self.sub_type is SubType.Flac:
+            suffix = ".F"
+        elif self.sub_type is SubType.Discussion:
+            suffix = ".D"
+        else:
+            suffix = ""
+
+        return f"{self.subject} {self.number}{self.section or ''}{suffix} {self.year}-{self.term}"
 
     def __str__(self) -> str:
         return self.identity_
@@ -184,7 +195,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     number = data['number']
     section = data['section']
     sub_type = data['sub_type']
-    subject: str = data['subjects']
+    subject = data.get('subject', data['subjects'])
     term = data['term']
     transcript_code = data['transcript_code']
     year = data['year']
@@ -193,6 +204,8 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     term = int(term)
     credits = decimal.Decimal(credits)
     section = section or None
+
+    subject = subject[0] if isinstance(subject, list) else subject
 
     grade_code = GradeCode(grade_code)
     grade_points = decimal.Decimal(grade_points)
