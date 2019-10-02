@@ -20,7 +20,7 @@ def test_global_limits(caplog):
             where: {level: {$eq: 300}}
 
         result:
-          from: {student: courses}
+          from: courses
           where: {subject: {$eq: BIO}}
           assert: {count(courses): {$gte: 1}}
     """)
@@ -62,7 +62,7 @@ def test_global_limits(caplog):
 def test_limits_esth(caplog):
     spec = """
     result:
-      from: {student: courses}
+      from: courses
       limit:
         - at_most: 1
           where:

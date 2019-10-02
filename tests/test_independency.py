@@ -26,7 +26,7 @@ def test_overlaps(caplog: Any) -> None:
             },
             "Electives": {
                 "result": {
-                    "from": {"student": "courses"},
+                    "from": "courses",
                     "where": {
                         "$and": [
                             {"subject": {"$eq": "MUSIC"}},
@@ -76,7 +76,7 @@ def x_test_overlaps(caplog: Any) -> None:
             },
             "Electives": {
                 "result": {
-                    "from": {"student": "courses"},
+                    "from": "courses",
                     "where": {
                         "$and": [
                             {"subject": {"$eq": "MUSIC"}},
@@ -94,7 +94,7 @@ def x_test_overlaps(caplog: Any) -> None:
             },
             "Lessons": {
                 "result": {
-                    "from": {"student": "courses"},
+                    "from": "courses",
                     "where": {"subject": {"$eq": "MUSPF"}},
                     "all": [
                         {"assert": {"count(terms)": {"$gte": 6}}},

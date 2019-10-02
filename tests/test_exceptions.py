@@ -71,7 +71,7 @@ def test_insertion_on_query_rule(caplog):
 
     area = AreaOfStudy.load(specification={
         "result": {
-            "from": {"student": "courses"},
+            "from": "courses",
             "where": {"subject": {"$eq": "ABC"}},
             "assert": {"count(courses)": {"$gte": 1}},
         },
@@ -101,7 +101,7 @@ def test_multi_insertion_on_query_rule(caplog):
 
     area = AreaOfStudy.load(specification={
         "result": {
-            "from": {"student": "courses"},
+            "from": "courses",
             "where": {"subject": {"$eq": "ABC"}},
             "assert": {"count(courses)": {"$gte": 1}},
         },
@@ -355,7 +355,7 @@ def test_override_on_query_rule(caplog):
 
     area = AreaOfStudy.load(specification={
         "result": {
-            "from": {"student": "courses"},
+            "from": "courses",
             "assert": {"count(courses)": {"$gte": 1}},
         },
     }, c=c)
@@ -535,7 +535,7 @@ def test_override_on_query_rule_audit_clause(caplog):
 
     area = AreaOfStudy.load(specification={
         "result": {
-            "from": {"student": "courses"},
+            "from": "courses",
             "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
         },
     }, c=c)
@@ -561,7 +561,7 @@ def test_insertion_on_query_rule_audit_clause(caplog):
 
     area = AreaOfStudy.load(specification={
         "result": {
-            "from": {"student": "courses"},
+            "from": "courses",
             "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
         },
     }, c=c)
@@ -598,7 +598,7 @@ def test_multi_insertion_on_query_rule_audit_clause(caplog):
 
     area = AreaOfStudy.load(specification={
         "result": {
-            "from": {"student": "courses"},
+            "from": "courses",
             "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
         },
     }, c=c)

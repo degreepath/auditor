@@ -14,7 +14,7 @@ def test_from(caplog):
 
     test_data = io.StringIO("""
         result:
-            from: {student: courses, repeats: first}
+            from: courses
             where: {gereqs: {$eq: SPM}}
             assert: {count(courses): {$gte: 1}}
     """)
@@ -23,34 +23,6 @@ def test_from(caplog):
 
     transcript = [
         course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
-        course_from_str("ASIAN 110"),
-    ]
-
-    s = next(area.solutions(transcript=transcript, areas=[], exceptions=[]))
-    a = s.audit().result
-
-    assert len(a.successful_claims) == 1
-
-    assert a.successful_claims[0].claim.course.clbid == transcript[0].clbid
-
-
-def test_from_distinct(caplog):
-    caplog.set_level(logging.DEBUG)
-
-    test_data = io.StringIO("""
-        result:
-            from: {student: courses}
-            where: {gereqs: {$eq: SPM}}
-            assert: {count(distinct_courses): {$gte: 1}}
-    """)
-
-    area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
-
-    transcript = [
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20071),
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20081),
-        course_from_str("CSCI 111", gereqs=['SPM'], term=20091),
         course_from_str("ASIAN 110"),
     ]
 
@@ -79,7 +51,7 @@ def test_solution_count_exact(caplog):
 
     area, transcript = __get_data("""
         result:
-            from: {student: courses}
+            from: courses
             where: {gereqs: {$eq: SPM}}
             assert: {count(courses): {$eq: 1}}
     """)
@@ -110,7 +82,7 @@ def test_solution_count_lessthan(caplog):
             requirements:
                 Test:
                     result:
-                        from: {student: courses}
+                        from: courses
                         where: {gereqs: {$eq: SPM}}
                         assert: {count(courses): {$lt: 3}}
         """)
@@ -120,7 +92,7 @@ def test_solution_count_greaterthan_1(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
     area, transcript = __get_data("""
         result:
-            from: {student: courses}
+            from: courses
             where: {gereqs: {$eq: SPM}}
             assert: {count(courses): {$gt: 1}}
     """)
@@ -147,7 +119,7 @@ def test_solution_count_always_yield_something(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
     area, transcript = __get_data("""
         result:
-            from: {student: courses}
+            from: courses
             where: {gereqs: {$eq: FOOBAR}}
             assert: {count(courses): {$gt: 1}}
     """)

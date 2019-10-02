@@ -340,7 +340,7 @@ def prepare_common_rules(
             "Credits at a C or higher": {
                 "message": "Of the credits counting toward the minimum requirements for a major, a total of six (6.00) must be completed with a grade of C or higher.",
                 "result": {
-                    "from": {"student": "courses"},
+                    "from": "courses",
                     "allow_claimed": True,
                     "claim": False,
                     "where": {
@@ -364,7 +364,7 @@ def prepare_common_rules(
         s_u_detail = {
             "message": "No courses in a B.M Music major may be taken S/U.",
             "result": {
-                "from": {"student": "courses"},
+                "from": "courses",
                 "allow_claimed": True,
                 "claim": False,
                 "where": {"s/u": {"$eq": True}},
@@ -375,7 +375,7 @@ def prepare_common_rules(
         s_u_detail = {
             "message": "Only one full-course equivalent (1.00-credit course) taken S/U may count toward the minimum requirements for a major.",
             "result": {
-                "from": {"student": "courses"},
+                "from": "courses",
                 "allow_claimed": True,
                 "claim": False,
                 "where": {
@@ -418,7 +418,7 @@ def prepare_common_rules(
                     "Credits outside the major": {
                         "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
                         "result": {
-                            "from": {"student": "courses"},
+                            "from": "courses",
                             "where": {
                                 "$and": [
                                     {"subject": {"$neq": dept_code}},
