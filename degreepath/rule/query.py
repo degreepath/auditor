@@ -1,10 +1,10 @@
 import attr
-from typing import Dict, List, Optional, Set, Sequence, Iterator, Collection, Any, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Collection, Any, TYPE_CHECKING
 import itertools
 import logging
 
 from ..base import Rule, BaseQueryRule
-from ..base.query import QuerySource, QuerySourceType, QuerySourceRepeatMode
+from ..base.query import QuerySource
 from ..limit import LimitSet
 from ..clause import Clause, load_clause, SingleClause, OrClause, AndClause
 from ..solution.query import QuerySolution
@@ -53,23 +53,12 @@ class QueryRule(Rule, BaseQueryRule):
         if 'assert' in data and 'all' in data:
             raise ValueError(f'you cannot have both assert: and all: keys; {data}')
 
-        source_data = data['from']
-
-        if "student" not in source_data:
-            raise KeyError(f"expected from:student; got {list(source_data.keys())}")
-
-        source = QuerySource.Student
-        source_type = QuerySourceType(source_data["student"])
-        source_repeats = QuerySourceRepeatMode(source_data.get('repeats', 'all'))
-
         allowed_keys = set(['where', 'limit', 'claim', 'assert', 'all', 'allow_claimed', 'from', 'load_potentials'])
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
         return QueryRule(
-            source=source,
-            source_type=source_type,
-            source_repeats=source_repeats,
+            source=QuerySource(data['from']),
             assertions=tuple(assertions),
             limit=limit,
             where=where,
@@ -89,27 +78,14 @@ class QueryRule(Rule, BaseQueryRule):
         return []
 
     def get_data(self, *, ctx: 'RequirementContext') -> Sequence['Clausable']:
-        if self.source_type is QuerySourceType.Courses:
-            data = ctx.transcript()
+        if self.source is QuerySource.Courses:
+            return ctx.transcript()
 
-            if self.source_repeats is QuerySourceRepeatMode.First:
-                filtered_courses = []
-                course_identities: Set[str] = set()
-
-                for course in sorted(data, key=lambda c: f"{c.year}{c.term}"):
-                    if course.crsid not in course_identities:
-                        filtered_courses.append(course)
-                        course_identities.add(course.crsid)
-
-                data = filtered_courses
-
-            return data
-
-        elif self.source_type is QuerySourceType.Areas:
+        elif self.source is QuerySource.Areas:
             return list(ctx.areas)
 
         else:
-            logger.info("%s not yet implemented", self.source_type)
+            logger.info("%s not yet implemented", self.source)
             return []
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:  # noqa: C901
@@ -141,7 +117,7 @@ class QueryRule(Rule, BaseQueryRule):
 
             if self.attempt_claims is False:
                 did_iter = True
-                if self.source_type is QuerySourceType.Courses:
+                if self.source is QuerySource.Courses:
                     only_completed = tuple(c for c in item_set if isinstance(c, CourseInstance) and c.is_in_progress is False)
                     yield QuerySolution.from_rule(rule=self, output=only_completed)
 

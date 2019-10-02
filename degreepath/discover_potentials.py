@@ -8,7 +8,7 @@ from .constants import Constants
 from .area import AreaOfStudy
 
 from .base import Base, BaseRequirementRule, BaseCountRule
-from .base.query import QuerySourceType
+from .base.query import QuerySource
 from .rule.query import QueryRule
 from .clause import ResolvedClause, AndClause, OrClause, SingleClause
 from .operator import Operator
@@ -57,7 +57,7 @@ def find_all_clauses(rule: Union[Base, ResolvedClause]) -> Iterator[ResolvedClau
         for child in rule.items:
             yield from find_all_clauses(child)
     elif isinstance(rule, QueryRule):
-        if rule.source_type is QuerySourceType.Courses:
+        if rule.source is QuerySource.Courses:
             if rule.where and rule.load_potentials:
                 yield from find_all_clauses(rule.where)
     elif isinstance(rule, ResolvedClause):
