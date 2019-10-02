@@ -51,10 +51,9 @@ def count_subjects(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     courses = set()
 
     for c in data:
-        for s in c.subject:
-            if s not in items:
-                items.add(s)
-                courses.add(c)
+        if c.subject not in items:
+            items.add(c.subject)
+            courses.add(c)
 
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
@@ -141,13 +140,12 @@ def sum_credits_from_single_subject(data: Sequence[CourseInstance]) -> AppliedCl
     by_credits: Dict[str, Decimal] = defaultdict(Decimal)
 
     for c in data:
-        for s in c.subject:
-            by_credits[s] += c.credits
+        by_credits[c.subject] += c.credits
 
     best_subject = max(by_credits.keys(), key=lambda subject: by_credits[subject])
 
-    items = tuple(sorted(c.credits for c in data if best_subject in c.subject))
-    courses = tuple(c for c in data if best_subject in c.subject)
+    items = tuple(sorted(c.credits for c in data if best_subject == c.subject))
+    courses = tuple(c for c in data if best_subject == c.subject)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=tuple(courses))
 
