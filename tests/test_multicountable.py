@@ -19,7 +19,7 @@ def test_load_mc(caplog):
 
     test_data = io.StringIO("""
         result:
-            from: {student: courses}
+            from: courses
             where: {attributes: {$eq: 'elective'}}
             assert: {count(courses): {$gte: 1}}
 

@@ -25,8 +25,6 @@ class QuerySolution(Solution, BaseQueryRule):
     def from_rule(*, rule: BaseQueryRule, output: Tuple[Clausable, ...], overridden: bool = False) -> 'QuerySolution':
         return QuerySolution(
             source=rule.source,
-            source_type=rule.source_type,
-            source_repeats=rule.source_repeats,
             assertions=rule.assertions,
             limit=rule.limit,
             where=rule.where,

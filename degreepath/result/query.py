@@ -27,8 +27,6 @@ class QueryResult(Result, BaseQueryRule):
     ) -> 'QueryResult':
         return QueryResult(
             source=solution.source,
-            source_type=solution.source_type,
-            source_repeats=solution.source_repeats,
             assertions=solution.assertions,
             limit=solution.limit,
             where=solution.where,
