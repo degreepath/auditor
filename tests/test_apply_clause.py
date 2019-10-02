@@ -12,6 +12,18 @@ def test_count_subjects__one_course():
     assert len(result.courses) == 1
 
 
+def test_count_subjects__chbi():
+    result = funcs.count_subjects([
+        course_from_str("CH/BI 125"),
+        course_from_str("CH/BI 126"),
+        course_from_str("CH/BI 227"),
+    ])
+
+    assert result.value == 2
+    assert result.data == ('BIO', 'CHEM')
+    assert len(result.courses) == 2
+
+
 def test_count_subjects__several_courses_same_dept():
     result = funcs.count_subjects([
         course_from_str("ECON 123"),

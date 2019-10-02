@@ -51,8 +51,15 @@ def count_subjects(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     courses = set()
 
     for c in data:
-        if c.subject not in items:
-            items.add(c.subject)
+        subject = c.subject
+        if subject == 'CH/BI':
+            if c.number in ('125', '126'):
+                subject = 'CHEM'
+            else:
+                subject = 'BIO'
+
+        if subject not in items:
+            items.add(subject)
             courses.add(c)
 
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
