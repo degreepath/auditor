@@ -40,7 +40,7 @@ def count_terms_from_most_common_course(data: Sequence[CourseInstance]) -> Appli
     most_common = counted.most_common(1)[0]
     most_common_crsid, _count = most_common
 
-    items = tuple(sorted(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid))
+    items = tuple(sorted(set(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid)))
     courses = tuple(c for c in data if c.crsid == most_common_crsid)
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
