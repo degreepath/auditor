@@ -130,7 +130,7 @@ def sum_credits_from_single_subject(data: Sequence[CourseInstance]) -> AppliedCl
     for c in data:
         by_credits[c.subject] += c.credits
 
-    best_subject = max(by_credits.keys(), key=lambda subject: by_credits[subject])
+    _credits, best_subject = max((credits, subject) for subject, credits in by_credits.items())
 
     items = tuple(sorted(c.credits for c in data if best_subject == c.subject))
     courses = tuple(c for c in data if best_subject == c.subject)
