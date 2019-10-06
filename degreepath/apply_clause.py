@@ -141,7 +141,7 @@ def sum_credits_from_single_subject(data: Sequence[CourseInstance]) -> AppliedCl
 def average_grades(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     avg = grade_point_average(data)
     courses = tuple(grade_point_average_items(data))
-    items = tuple(sorted(c.grade_points for c in courses))
+    items = tuple(sorted(c.grade_points_gpa for c in courses))
 
     return AppliedClauseResult(value=avg, data=items, courses=courses)
 
