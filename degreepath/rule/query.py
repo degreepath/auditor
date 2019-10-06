@@ -195,7 +195,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         return any(self.where.apply(item) for item in self.get_data(ctx=ctx))
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection[Clausable]:
         matches = list(self.get_data(ctx=ctx))
 
         if self.where is not None:
@@ -210,7 +210,7 @@ class QueryRule(Rule, BaseQueryRule):
         return self.allow_claimed is True and self.attempt_claims is False
 
 
-def has_assertion(assertions: Sequence[AssertionRule], key: Any) -> bool:
+def has_assertion(assertions: Sequence[AssertionRule], key: Callable[[SingleClause], Iterator[Clause]]) -> bool:
     if not assertions:
         return False
 
@@ -223,12 +223,15 @@ def has_assertion(assertions: Sequence[AssertionRule], key: Any) -> bool:
     return False
 
 
-def has_clause(clause: Clause, key: Any) -> bool:
-    try:
-        next(key(clause))
-        return True
-    except StopIteration:
-        return False
+def has_clause(clause: Clause, key: Callable[[SingleClause], Iterator[Clause]]) -> bool:
+    if isinstance(clause, SingleClause):
+        try:
+            next(key(clause))
+            return True
+        except StopIteration:
+            return False
+    elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
+        return any(has_clause(c, key) for c in clause.children)
 
 
 def get_clause_by(clause: Clause, key: Callable[[SingleClause], bool]) -> Iterator[SingleClause]:
