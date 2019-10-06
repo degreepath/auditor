@@ -107,13 +107,6 @@ def count_seminars(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     raise TypeError('count(seminars) is not yet implemented')
 
 
-def sum_grades(data: Sequence[CourseInstance]) -> AppliedClauseResult:
-    items = tuple(sorted(c.grade_points for c in data if c.is_in_gpa))
-    courses = tuple(c for c in data if c.is_in_gpa)
-
-    return AppliedClauseResult(value=sum(items), data=items, courses=courses)
-
-
 def sum_credits(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     data = [c for c in data if c.credits > 0]
     items = tuple(sorted(c.credits for c in data))
@@ -171,7 +164,6 @@ course_actions: Mapping[str, Callable[[Sequence[CourseInstance]], AppliedClauseR
     'count(terms)': count_terms,
     'count(years)': count_years,
 
-    'sum(grades)': sum_grades,
     'sum(credits)': sum_credits,
     'sum(credits_from_single_subject)': sum_credits_from_single_subject,
 
