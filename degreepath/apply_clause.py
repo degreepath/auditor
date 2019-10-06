@@ -91,18 +91,6 @@ def count_years(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
 
 
-def count_distinct_courses(data: Sequence[CourseInstance]) -> AppliedClauseResult:
-    items: Set[str] = set()
-    courses = set()
-
-    for c in data:
-        if c.crsid not in items:
-            items.add(c.crsid)
-            courses.add(c)
-
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
-
-
 def count_areas(data: Sequence[AreaPointer]) -> AppliedClauseResult:
     area_codes = tuple(sorted(set(a.code for a in data)))
 
@@ -182,7 +170,6 @@ course_actions: Mapping[str, Callable[[Sequence[CourseInstance]], AppliedClauseR
     'count(subjects)': count_subjects,
     'count(terms)': count_terms,
     'count(years)': count_years,
-    'count(distinct_courses)': count_distinct_courses,
 
     'sum(grades)': sum_grades,
     'sum(credits)': sum_credits,
