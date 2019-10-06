@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Collection, Any, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, Any, TYPE_CHECKING
 import itertools
 import logging
 
@@ -231,28 +231,24 @@ def has_clause(clause: Clause, key: Any) -> bool:
         return False
 
 
-def get_simple_count_clauses(clause: Clause) -> Iterator[SingleClause]:
-    if isinstance(clause, SingleClause) and clause.key in ('count(courses)', 'count(terms)'):
+def get_clause_by(clause: Clause, key: Callable[[SingleClause], bool]) -> Iterator[SingleClause]:
+    if isinstance(clause, SingleClause) and key(clause):
         yield clause
     elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
         for c in clause.children:
-            yield from get_simple_count_clauses(c)
+            yield from get_clause_by(c, key)
+
+
+def get_simple_count_clauses(clause: Clause) -> Iterator[SingleClause]:
+    yield from get_clause_by(clause, lambda c: c.key in ('count(courses)', 'count(terms)'))
 
 
 def get_lt_clauses(clause: Clause) -> Iterator[SingleClause]:
-    if isinstance(clause, SingleClause) and clause.operator in (Operator.LessThan, Operator.LessThanOrEqualTo):
-        yield clause
-    elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
-        for c in clause.children:
-            yield from get_lt_clauses(c)
+    yield from get_clause_by(clause, lambda c: c.operator in (Operator.LessThan, Operator.LessThanOrEqualTo))
 
 
 def get_at_least_0_clauses(clause: Clause) -> Iterator[SingleClause]:
-    if isinstance(clause, SingleClause) and clause.operator is Operator.GreaterThanOrEqualTo and clause.expected == 0:
-        yield clause
-    elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
-        for c in clause.children:
-            yield from get_at_least_0_clauses(c)
+    yield from get_clause_by(clause, lambda c: c.operator is Operator.GreaterThanOrEqualTo and c.expected == 0)
 
 
 def get_largest_simple_count_assertion(assertions: Sequence[AssertionRule]) -> Optional[SingleClause]:
