@@ -6,10 +6,6 @@ if TYPE_CHECKING:
     from .data import CourseInstance  # noqa: F401
 
 
-def filter_transcript(courses: Iterable['CourseInstance']) -> Iterable['CourseInstance']:
-    return (c for c in courses if not c.is_in_progress)
-
-
 def grade_point_average_items(courses: Iterable['CourseInstance']) -> Iterable['CourseInstance']:
     return (c for c in courses if c.is_in_gpa)
 
