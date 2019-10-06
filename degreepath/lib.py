@@ -13,11 +13,12 @@ def grade_point_average_items(courses: Iterable['CourseInstance']) -> Iterable['
 def grade_point_average(courses: Iterable['CourseInstance']) -> Decimal:
     allowed = list(grade_point_average_items(courses))
 
-    if not allowed:
-        return Decimal('0.00')
-
     summed = sum(c.grade_points_gpa for c in allowed)
     credits = sum(c.credits for c in allowed)
+
+    if credits == 0:
+        return Decimal('0.00')
+
     gpa = summed / credits
 
     # GPA is _truncated_ to two decimal places, not rounded
