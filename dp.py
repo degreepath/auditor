@@ -181,7 +181,7 @@ def display_top(snapshot: Any, key_type: str = 'lineno', limit: int = 10) -> Non
     print("Total allocated size: %.1f KiB" % (total / 1024))
 
 
-@prettyprinter.register_pretty(AreaResult)
+@prettyprinter.register_pretty(AreaResult)  # type: ignore
 def pretty_arearesult(value: Any, ctx: Any) -> Any:
     return prettyprinter.pretty_call(ctx, AreaResult, result=value.result)
 

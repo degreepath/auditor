@@ -5,7 +5,7 @@ from degreepath.stringify import print_result
 from degreepath import load_course
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("json_output", action='store')
     parser.add_argument("student_file", action='store')
@@ -17,7 +17,10 @@ def main():
     with open(args.student_file, 'r', encoding="utf-8") as infile:
         student = json.load(infile)
 
-    transcript = [load_course(row) for row in student["courses"]]
+    transcript = {
+        c.clbid: c
+        for c in (load_course(row) for row in student["courses"])
+    }
 
     summary = "\n".join(print_result(data, transcript=transcript))
     print(summary)

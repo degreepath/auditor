@@ -5,7 +5,7 @@ import sys
 from degreepath import AreaOfStudy, Constants
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("areas", nargs="+")
     parser.add_argument("--break", dest="break_on_err", action="store_true")
