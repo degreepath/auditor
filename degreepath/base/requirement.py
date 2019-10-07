@@ -1,5 +1,5 @@
 import attr
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Dict, Any
 import enum
 
 from .bases import Base, Summable
@@ -18,7 +18,6 @@ class BaseRequirementRule(Base):
     result: Optional[Base]
     audited_by: Optional[AuditedBy]
     is_contract: bool
-    path: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
