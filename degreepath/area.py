@@ -240,6 +240,7 @@ class AreaSolution(AreaOfStudy):
             message=None,
             path=('$', '%Common Requirements'),
             audited_by=None,
+            in_gpa=False,
             is_contract=False,
             overridden=False,
             result=CountResult(
@@ -281,7 +282,7 @@ class AreaResult(AreaOfStudy, Result):
         if self.kind == 'degree':
             courses = self.context.transcript()
         else:
-            courses = list(self.matched())
+            courses = list(self.matched_for_gpa())
 
         return grade_point_average(courses)
 
@@ -299,6 +300,9 @@ class AreaResult(AreaOfStudy, Result):
 
     def claims(self) -> List['ClaimAttempt']:
         return self.result.claims()
+
+    def claims_for_gpa(self) -> List['ClaimAttempt']:
+        return self.result.claims_for_gpa()
 
     def was_overridden(self) -> bool:
         return self.result.was_overridden()

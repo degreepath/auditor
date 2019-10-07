@@ -1,8 +1,7 @@
 import attr
-from typing import Tuple, Union, Sequence, List
+from typing import Tuple, Union, Sequence
 
 from ..base import Result, BaseCountRule, Rule, Solution, BaseAssertionRule
-from ..claim import ClaimAttempt
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -30,9 +29,6 @@ class CountResult(Result, BaseCountRule):
 
     def audits(self) -> Sequence[BaseAssertionRule]:
         return self.audit_results
-
-    def claims(self) -> List[ClaimAttempt]:
-        return [claim for item in self.items for claim in item.claims()]
 
     def was_overridden(self) -> bool:
         return self.overridden

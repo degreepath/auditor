@@ -1,11 +1,8 @@
 import attr
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional
 import logging
 
 from ..base import Base, Result, BaseRequirementRule, RuleState
-
-if TYPE_CHECKING:
-    from ..claim import ClaimAttempt  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +24,7 @@ class RequirementResult(Result, BaseRequirementRule):
             audited_by=solution.audited_by,
             is_contract=solution.is_contract,
             path=solution.path,
+            in_gpa=solution.in_gpa,
             result=result,
             overridden=overridden,
         )
@@ -36,12 +34,6 @@ class RequirementResult(Result, BaseRequirementRule):
             return RuleState.Result
 
         return self.result.state()
-
-    def claims(self) -> List['ClaimAttempt']:
-        if self.result is None:
-            return []
-
-        return self.result.claims()
 
     def was_overridden(self) -> bool:
         return self.overridden
