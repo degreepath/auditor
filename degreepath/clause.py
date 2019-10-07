@@ -411,7 +411,7 @@ class SingleClause(_Clause, ResolvedClause):
             result=result,
         )
 
-    def input_size_range(self, *, maximum: int) -> Iterator[int]:
+    def input_size_range(self, *, maximum: int) -> Sequence[int]:
         if type(self.expected) is not int:
             raise TypeError('cannot find a range of values for a non-integer clause: %s', type(self.expected))
 
