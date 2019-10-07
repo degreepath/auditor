@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, Any, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, TYPE_CHECKING
 import itertools
 import logging
 
@@ -195,7 +195,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         return any(self.where.apply(item) for item in self.get_data(ctx=ctx))
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection[Clausable]:
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         matches = list(self.get_data(ctx=ctx))
 
         if self.where is not None:
