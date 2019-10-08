@@ -16,7 +16,9 @@ class CountResult(Result, BaseCountRule):
         items: Tuple[Union[Rule, Result, Solution, BaseCourseRule], ...],
         audit_results: Tuple[BaseAssertionRule, ...],
         overridden: bool = False,
-    ) -> Union['CountResult', BaseCourseRule]:
+    ) -> 'CountResult':
+        # filtered = items
+
         filtered: List[Union[Rule, Result, Solution, BaseCourseRule]] = []
 
         for item in items:
@@ -40,9 +42,6 @@ class CountResult(Result, BaseCountRule):
             count = len(casted)
         else:
             count = solution.count
-
-        if not overridden and not solution.audit_clauses and count == 1 and len(filtered) == 1 and isinstance(filtered[0], BaseCourseRule):
-            return cast(Union['CountResult', BaseCourseRule], casted[0])
 
         return CountResult(
             count=count,

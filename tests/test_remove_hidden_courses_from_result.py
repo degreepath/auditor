@@ -2,8 +2,6 @@ from degreepath import AreaOfStudy
 from degreepath.data import course_from_str
 from degreepath.constants import Constants
 from decimal import Decimal
-from degreepath.rule.course import CourseRule
-from degreepath.result.course import CourseResult
 
 c = Constants(matriculation_year=2000)
 
@@ -99,8 +97,8 @@ def test_hidden_and_taken_so_shown_3():
 
     assert result.matched() == set(transcript)
 
-    assert isinstance(result.result, CourseResult)
-    assert result.result.course == 'ART 101'
+    assert len(result.result.items) == 1
+    assert [r.course for r in result.result.items] == ['ART 101']
 
 
 def test_hidden_and_taken_so_shown_4():
@@ -128,8 +126,8 @@ def test_hidden_and_taken_so_shown_4():
 
     assert result.matched() == set(transcript)
 
-    assert isinstance(result.result, CourseRule)
-    assert result.result.course == 'ART 101'
+    assert len(result.result.items) == 1
+    assert [r.course for r in result.result.items] == ['ART 101']
 
 
 def test_hidden_and_taken_so_shown_5():
