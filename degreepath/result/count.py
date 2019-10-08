@@ -1,7 +1,7 @@
 import attr
-from typing import Tuple, Union, Sequence, List, cast
+from typing import Tuple, Union, Sequence
 
-from ..base import Result, BaseCountRule, BaseCourseRule, Rule, Solution, BaseAssertionRule
+from ..base import Result, BaseCountRule, Rule, Solution, BaseAssertionRule
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -13,39 +13,13 @@ class CountResult(Result, BaseCountRule):
     def from_solution(
         *,
         solution: BaseCountRule,
-        items: Tuple[Union[Rule, Result, Solution, BaseCourseRule], ...],
+        items: Tuple[Union[Rule, Result, Solution], ...],
         audit_results: Tuple[BaseAssertionRule, ...],
         overridden: bool = False,
     ) -> 'CountResult':
-        # filtered = items
-
-        filtered: List[Union[Rule, Result, Solution, BaseCourseRule]] = []
-
-        for item in items:
-            if not isinstance(item, BaseCourseRule):
-                filtered.append(item)
-                continue
-
-            if item.ok() is True:
-                filtered.append(item)
-                continue
-
-            if item.hidden is False:
-                filtered.append(item)
-                continue
-
-        casted = cast(List[Union[Rule, Result, Solution]], filtered)
-
-        if solution.count == len(items):
-            count = len(casted)
-        elif solution.count > len(casted):
-            count = len(casted)
-        else:
-            count = solution.count
-
         return CountResult(
-            count=count,
-            items=tuple(casted),
+            count=solution.count,
+            items=tuple(items),
             audit_clauses=solution.audit_clauses,
             at_most=solution.at_most,
             audit_results=audit_results,
