@@ -9,7 +9,7 @@ from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
-from .exception import RuleException
+from .exception import RuleException, InsertionException
 from .limit import LimitSet
 from .load_rule import load_rule
 from .result.count import CountResult
@@ -138,6 +138,9 @@ class AreaOfStudy(Base):
     ) -> Iterable['AreaSolution']:
         logger.debug("evaluating area.result")
 
+        forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)
+        forced_courses = {c.clbid: c for c in transcript if c.clbid in forced_clbids}
+
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
             limited_transcript = tuple(sorted(limited_transcript))
 
@@ -147,7 +150,7 @@ class AreaOfStudy(Base):
                 areas=tuple(areas),
                 exceptions=exceptions,
                 multicountable=self.multicountable,
-            ).with_transcript(limited_transcript)
+            ).with_transcript(limited_transcript, forced=forced_courses)
 
             for sol in self.result.solutions(ctx=ctx, depth=1):
                 ctx.reset_claims()
