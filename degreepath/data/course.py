@@ -280,6 +280,11 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
 
 def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
     number = s.split(' ')[1]
+
+    grade_code = kwargs.get('grade_code', 'B')
+    grade_points = kwargs.get('grade_points', str_to_grade_points(grade_code))
+    grade_points_gpa = kwargs.get('grade_points_gpa', grade_points)
+
     return load_course({
         "attributes": tuple(),
         "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
@@ -293,10 +298,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "flag_repeat": False,
         "flag_stolaf": True,
         "gereqs": tuple(),
-        "grade_code": "B",
         "grade_option": GradeOption.Grade,
-        "grade_points": str_to_grade_points("B"),
-        "grade_points_gpa": str_to_grade_points("B"),
         "level": int(number) // 100 * 100,
         "name": s,
         "number": s.split(' ')[1],
@@ -307,4 +309,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "transcript_code": "",
         "year": 2000,
         **kwargs,
+        "grade_code": grade_code,
+        "grade_points": grade_points,
+        "grade_points_gpa": grade_points_gpa,
     })
