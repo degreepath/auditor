@@ -295,7 +295,10 @@ class SingleClause(_Clause, ResolvedClause):
 
         if key == 'grade':
             if type(expected_value) is str:
-                expected_value = str_to_grade_points(expected_value)
+                try:
+                    expected_value = decimal.Decimal(expected_value)
+                except decimal.InvalidOperation:
+                    expected_value = str_to_grade_points(expected_value)
             elif isinstance(expected_value, Iterable):
                 expected_value = tuple(
                     str_to_grade_points(v) if type(v) is str else decimal.Decimal(v)
