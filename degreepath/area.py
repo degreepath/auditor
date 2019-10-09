@@ -208,7 +208,7 @@ class AreaSolution(AreaOfStudy):
 
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
-    def audit_common_major_requirements(self, result: Result, areas: Sequence[AreaPointer] = tuple()) -> RequirementResult:
+    def audit_common_major_requirements(self, result: Result, areas: Sequence[AreaPointer]) -> RequirementResult:
         claimed = set(result.matched())
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
