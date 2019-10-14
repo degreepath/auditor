@@ -73,11 +73,20 @@ class Base(abc.ABC):
     def claims(self) -> List['ClaimAttempt']:
         return []
 
+    def claims_for_gpa(self) -> List['ClaimAttempt']:
+        return self.claims()
+
     def keyed_claims(self) -> Dict[str, List[str]]:
         return {c.claim.course.clbid: list(c.claim.claimant_path) for c in self.claims()}
 
     def matched(self) -> Set['CourseInstance']:
         return set(claim.get_course() for claim in self.claims() if claim.failed() is False)
+
+    def matched_for_gpa(self) -> Set['CourseInstance']:
+        return set(claim.get_course() for claim in self.claims_for_gpa() if claim.failed() is False)
+
+    def is_in_gpa(self) -> bool:
+        return True
 
     def was_overridden(self) -> bool:
         return False

@@ -49,7 +49,7 @@ class CourseRule(Rule, BaseCourseRule):
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
-        if self.ap is not None and self.ap != '' and self.course == '':
+        if self.ap != '' and self.course == '':
             return
 
         method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)

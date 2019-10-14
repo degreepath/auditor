@@ -21,18 +21,25 @@ class RequirementContext:
     transcript_: List[CourseInstance] = attr.ib(factory=list)
     course_set_: Set[str] = attr.ib(factory=set)
     clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
+    forced_clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
 
     areas: Tuple[AreaPointer, ...] = tuple()
     multicountable: List[List[SingleClause]] = attr.ib(factory=list)
     claims: Dict[str, Set[Claim]] = attr.ib(factory=lambda: defaultdict(set))
     exceptions: List[RuleException] = attr.ib(factory=dict)
 
-    def with_transcript(self, transcript: Iterable[CourseInstance]) -> 'RequirementContext':
+    def with_transcript(self, transcript: Iterable[CourseInstance], forced: Optional[Dict[str, CourseInstance]] = None) -> 'RequirementContext':
         transcript = list(transcript)
         course_set = set(c.course() for c in transcript)
         clbid_lookup_map = {c.clbid: c for c in transcript}
 
-        return attr.evolve(self, transcript_=transcript, course_set_=course_set, clbid_lookup_map_=clbid_lookup_map)
+        return attr.evolve(
+            self,
+            transcript_=transcript,
+            course_set_=course_set,
+            clbid_lookup_map_=clbid_lookup_map,
+            forced_clbid_lookup_map_=forced or {},
+        )
 
     def transcript(self) -> List[CourseInstance]:
         return self.transcript_
@@ -53,6 +60,8 @@ class RequirementContext:
 
     def forced_course_by_clbid(self, clbid: str) -> CourseInstance:
         match = self.find_course_by_clbid(clbid)
+        if not match:
+            match = self.forced_clbid_lookup_map_.get(clbid, None)
         if not match:
             raise Exception(f'attempted to use CLBID={clbid}, but it was not found in the transcript')
         return match

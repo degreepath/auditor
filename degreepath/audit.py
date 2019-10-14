@@ -119,7 +119,7 @@ def audit(
                 best_rank=cast(AreaResult, best_sol).rank(),
             )
 
-        result = sol.audit()
+        result = sol.audit(areas=tuple(area_pointers))
 
         if print_all:
             yield ResultMsg(

@@ -1,8 +1,11 @@
 import attr
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Dict, Any, List, TYPE_CHECKING
 import enum
 
 from .bases import Base, Summable
+
+if TYPE_CHECKING:
+    from ..claim import ClaimAttempt  # noqa: F401
 
 
 @enum.unique
@@ -18,7 +21,7 @@ class BaseRequirementRule(Base):
     result: Optional[Base]
     audited_by: Optional[AuditedBy]
     is_contract: bool
-    path: Tuple[str, ...]
+    in_gpa: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -50,3 +53,18 @@ class BaseRequirementRule(Base):
             return False
 
         return self.result.is_always_disjoint()
+
+    def is_in_gpa(self) -> bool:
+        return self.in_gpa
+
+    def claims(self) -> List['ClaimAttempt']:
+        if self.audited_by or self.result is None:
+            return []
+
+        return self.result.claims()
+
+    def claims_for_gpa(self) -> List['ClaimAttempt']:
+        if self.is_in_gpa() and self.result is not None and not self.audited_by:
+            return self.result.claims_for_gpa()
+
+        return []

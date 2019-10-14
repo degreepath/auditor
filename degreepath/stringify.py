@@ -110,6 +110,11 @@ def print_area(
 
     yield f"{title} (rank {rule['rank']} of {rule['max_rank']}; gpa: {rule['gpa']})"
 
+    if rule['limit']:
+        yield f"Subject to these limits:"
+        for limit in rule['limit']:
+            yield f"- at most {limit['at_most']} where {str_clause(limit['where'])}"
+
     yield ""
 
     yield from print_result(rule['result'], transcript, show_ranks=show_ranks, show_paths=show_paths)

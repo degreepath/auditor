@@ -8,7 +8,7 @@ import attr
 from .constants import Constants
 from .lib import str_to_grade_points
 from .operator import Operator, apply_operator, str_operator
-from .data.course_enums import GradeOption
+from .data.course_enums import GradeOption, GradeCode
 from .status import ResultStatus
 from .apply_clause import apply_clause_to_assertion
 from functools import lru_cache
@@ -222,6 +222,19 @@ class OrClause(_Clause, ResolvedClause):
         return sum(c.rank() if c.ok() else c.max_rank() for c in self.children)
 
 
+def stringify_expected(expected: Any) -> Any:
+    if isinstance(expected, tuple):
+        return tuple(stringify_expected(e) for e in expected)
+
+    if isinstance(expected, (GradeOption, GradeCode)):
+        return expected.value
+
+    elif isinstance(expected, decimal.Decimal):
+        return str(expected)
+
+    return expected
+
+
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class SingleClause(_Clause, ResolvedClause):
     key: str = "???"
@@ -231,16 +244,7 @@ class SingleClause(_Clause, ResolvedClause):
     at_most: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
-        expected = self.expected
-        if isinstance(self.expected, GradeOption):
-            expected = self.expected.value
-        if isinstance(self.expected, decimal.Decimal):
-            expected = str(self.expected)
-        if isinstance(self.expected, tuple):
-            expected = tuple(
-                str(v) if isinstance(v, decimal.Decimal) else v
-                for v in expected
-            )
+        expected = stringify_expected(self.expected)
 
         return {
             **super().to_dict(),
@@ -295,7 +299,10 @@ class SingleClause(_Clause, ResolvedClause):
 
         if key == 'grade':
             if type(expected_value) is str:
-                expected_value = str_to_grade_points(expected_value)
+                try:
+                    expected_value = decimal.Decimal(expected_value)
+                except decimal.InvalidOperation:
+                    expected_value = str_to_grade_points(expected_value)
             elif isinstance(expected_value, Iterable):
                 expected_value = tuple(
                     str_to_grade_points(v) if type(v) is str else decimal.Decimal(v)

@@ -16,6 +16,7 @@ class TranscriptCode(enum.Enum):
     Empty = ""
     Carleton = "#"
     WasIncomplete = "*"
+    IndividualMajor = "+"
     RepeatedLater = "R"
     RepeatInProgress = "Z"
 

@@ -9,7 +9,7 @@ from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
-from .exception import RuleException
+from .exception import RuleException, InsertionException
 from .limit import LimitSet
 from .load_rule import load_rule
 from .result.count import CountResult
@@ -138,6 +138,9 @@ class AreaOfStudy(Base):
     ) -> Iterable['AreaSolution']:
         logger.debug("evaluating area.result")
 
+        forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)
+        forced_courses = {c.clbid: c for c in transcript if c.clbid in forced_clbids}
+
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
             limited_transcript = tuple(sorted(limited_transcript))
 
@@ -147,7 +150,7 @@ class AreaOfStudy(Base):
                 areas=tuple(areas),
                 exceptions=exceptions,
                 multicountable=self.multicountable,
-            ).with_transcript(limited_transcript)
+            ).with_transcript(limited_transcript, forced=forced_courses)
 
             for sol in self.result.solutions(ctx=ctx, depth=1):
                 ctx.reset_claims()
@@ -205,7 +208,7 @@ class AreaSolution(AreaOfStudy):
 
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
-    def audit_common_major_requirements(self, result: Result, areas: Sequence[AreaPointer] = tuple()) -> RequirementResult:
+    def audit_common_major_requirements(self, result: Result, areas: Sequence[AreaPointer]) -> RequirementResult:
         claimed = set(result.matched())
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
@@ -240,6 +243,7 @@ class AreaSolution(AreaOfStudy):
             message=None,
             path=('$', '%Common Requirements'),
             audited_by=None,
+            in_gpa=False,
             is_contract=False,
             overridden=False,
             result=CountResult(
@@ -281,7 +285,7 @@ class AreaResult(AreaOfStudy, Result):
         if self.kind == 'degree':
             courses = self.context.transcript()
         else:
-            courses = list(self.matched())
+            courses = list(self.matched_for_gpa())
 
         return grade_point_average(courses)
 
@@ -299,6 +303,9 @@ class AreaResult(AreaOfStudy, Result):
 
     def claims(self) -> List['ClaimAttempt']:
         return self.result.claims()
+
+    def claims_for_gpa(self) -> List['ClaimAttempt']:
+        return self.result.claims_for_gpa()
 
     def was_overridden(self) -> bool:
         return self.result.was_overridden()

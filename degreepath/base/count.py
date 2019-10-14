@@ -1,9 +1,10 @@
 import attr
-from typing import Tuple, Union, Dict, Any, Sequence
+from typing import Tuple, Union, Dict, Any, Sequence, List
 import logging
 
 from .bases import Base, Rule, Solution, Result, Summable
 from .assertion import BaseAssertionRule
+from ..claim import ClaimAttempt
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,12 @@ class BaseCountRule(Base):
 
     def type(self) -> str:
         return "count"
+
+    def claims(self) -> List[ClaimAttempt]:
+        return [claim for item in self.items for claim in item.claims()]
+
+    def claims_for_gpa(self) -> List[ClaimAttempt]:
+        return [claim for item in self.items for claim in item.claims_for_gpa()]
 
     def rank(self) -> Summable:
         item_rank = sum(r.rank() for r in self.items)
