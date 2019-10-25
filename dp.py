@@ -83,7 +83,7 @@ def main() -> int:  # noqa: C901
 
             if not cli_args.quiet:
                 avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
-                avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
+                avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
                 print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
