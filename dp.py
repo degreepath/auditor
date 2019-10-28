@@ -49,7 +49,10 @@ def main() -> int:  # noqa: C901
     loglevel = getattr(logging, cli_args.loglevel.upper())
     logging.basicConfig(level=loglevel, format=logformat)
 
-    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=cli_args.estimate)
+    if cli_args.estimate:
+        os.environ['DP_ESTIMATE'] = '1'
+
+    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=False)
 
     if cli_args.tracemalloc_init or cli_args.tracemalloc_end:
         import tracemalloc
