@@ -49,6 +49,9 @@ def main() -> int:
         for i, stnum in enumerate(to_index):
             if i % 100 == 0:
                 print(f'\rindexing {i}/{len(to_index)} items', end='')
+            elif (i + 1 == len(to_index)):
+                print(f'\rindexing {i + 1}/{len(to_index)} items', end='')
+
             with open(os.path.join(args.dir, f"{stnum}.json"), 'r', encoding='utf-8') as infile:
                 data = json.load(infile)
 

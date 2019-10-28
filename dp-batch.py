@@ -24,6 +24,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument('--areas-dir', default=os.path.expanduser('~/Projects/degreepath-areas'))
     parser.add_argument("--estimate", action='store_true')
     parser.add_argument("--transcript", action='store_true')
+    parser.add_argument("--invocation", action='store_true')
     parser.add_argument("-q", "--quiet", action='store_true')
     parser.add_argument("--paths", dest='show_paths', action='store_const', const=True, default=True)
     parser.add_argument("--no-paths", dest='show_paths', action='store_const', const=False)
@@ -42,12 +43,19 @@ def main() -> int:  # noqa: C901
         print('stnum,catalog,area_code,gpa,rank,max', flush=True)
 
     for stnum, catalog, area_code in data:
+        student_file = os.path.join(cli_args.dir, f"{stnum}.json")
+        area_file = os.path.join(cli_args.areas_dir, catalog, f"{area_code}.yaml")
+
         args = Arguments(
-            area_files=[os.path.join(cli_args.areas_dir, catalog, f"{area_code}.yaml")],
-            student_files=[os.path.join(cli_args.dir, f"{stnum}.json")],
+            area_files=[area_file],
+            student_files=[student_file],
             print_all=False,
             estimate_only=cli_args.estimate,
         )
+
+        if cli_args.invocation:
+            print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
+            return 0
 
         for msg in dp['run'](args, transcript_only=cli_args.transcript):
             if isinstance(msg, NoStudentsMsg):
