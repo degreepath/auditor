@@ -250,6 +250,7 @@ class SingleClause(_Clause, ResolvedClause):
     expected_verbatim: Any = None
     operator: Operator = Operator.EqualTo
     at_most: bool = False
+    treat_in_progress_as_pass: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         expected = stringify_expected(self.expected)
@@ -261,6 +262,7 @@ class SingleClause(_Clause, ResolvedClause):
             "expected": expected,
             "expected_verbatim": self.expected_verbatim,
             "operator": self.operator.name,
+            "ip_as_passing": self.treat_in_progress_as_pass,
             "hash": str(hash((self.key, self.expected, self.operator))),
         }
 
@@ -331,6 +333,7 @@ class SingleClause(_Clause, ResolvedClause):
             operator=operator,
             expected_verbatim=expected_verbatim,
             at_most=at_most,
+            treat_in_progress_as_pass=value.get('treat_in_progress_as_pass', False),
         )
 
     def ok(self) -> bool:
@@ -406,7 +409,8 @@ class SingleClause(_Clause, ResolvedClause):
         clbids = tuple(sorted(c.clbid for c in courses))
         ip_clbids = tuple(sorted(c.clbid for c in courses if c.is_in_progress))
 
-        if ip_clbids:
+        # if we have `treat_in_progress_as_pass` set, we skip the ip_clbids check entirely
+        if ip_clbids and self.treat_in_progress_as_pass is False:
             result = ResultStatus.InProgress
         elif apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected) is True:
             result = ResultStatus.Pass
@@ -428,6 +432,7 @@ class SingleClause(_Clause, ResolvedClause):
             resolved_clbids=clbids,
             in_progress_clbids=ip_clbids,
             result=result,
+            treat_in_progress_as_pass=self.treat_in_progress_as_pass,
         )
 
     def input_size_range(self, *, maximum: int) -> Iterator[int]:
