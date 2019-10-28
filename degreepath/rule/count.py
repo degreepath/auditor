@@ -2,6 +2,8 @@ import attr
 from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, FrozenSet, Optional, Union, TYPE_CHECKING
 import itertools
 import logging
+import sys
+import os
 
 from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
 from ..constants import Constants
@@ -16,6 +18,7 @@ if TYPE_CHECKING:
     from ..data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
+SHOW_ESTIMATES = False if int(os.getenv('DP_ESTIMATE', default='0')) == 0 else True
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -251,8 +254,12 @@ class CountRule(Rule, BaseCountRule):
             solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
             solutions = tuple(solutions_dict.values())
 
-            lengths = {r.path: len(s) for r, s in solutions_dict.items()}
-            logger.debug(f"%s emitting {mult(lengths.values()):,} solutions (%s)" % (self.path, lengths))
+            if SHOW_ESTIMATES:
+                lengths = {r.path: len(s) for r, s in solutions_dict.items()}
+                ppath = ' → '.join(self.path)
+                lines = [': '.join([' → '.join(k), str(v)]) for k, v in lengths.items()]
+                body = '\n\t'.join(lines)
+                print(f"\nemitting {mult(lengths.values()):,} solutions at {ppath}\n\t{body}", file=sys.stderr)
 
             solutionset: Tuple[Union[Rule, Solution, Result], ...]
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):

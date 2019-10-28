@@ -40,16 +40,19 @@ def main() -> int:  # noqa: C901
     parser.add_argument("-q", "--quiet", action='store_true')
     parser.add_argument("--tracemalloc-init", action='store_true')
     parser.add_argument("--tracemalloc-end", action='store_true')
-    parser.add_argument("--show-paths", dest='show_paths', action='store_const', const=True, default=True)
-    parser.add_argument("--hide-paths", dest='show_paths', action='store_const', const=False)
-    parser.add_argument("--show-ranks", dest='show_ranks', action='store_const', const=True, default=True)
-    parser.add_argument("--hide-ranks", dest='show_ranks', action='store_const', const=False)
+    parser.add_argument("--paths", dest='show_paths', action='store_const', const=True, default=True)
+    parser.add_argument("--no-paths", dest='show_paths', action='store_const', const=False)
+    parser.add_argument("--ranks", dest='show_ranks', action='store_const', const=True, default=True)
+    parser.add_argument("--no-ranks", dest='show_ranks', action='store_const', const=False)
     cli_args = parser.parse_args()
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
     logging.basicConfig(level=loglevel, format=logformat)
 
-    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=cli_args.estimate)
+    if cli_args.estimate:
+        os.environ['DP_ESTIMATE'] = '1'
+
+    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=False)
 
     if cli_args.tracemalloc_init or cli_args.tracemalloc_end:
         import tracemalloc
@@ -83,7 +86,7 @@ def main() -> int:  # noqa: C901
 
             if not cli_args.quiet:
                 avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
-                avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
+                avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
                 print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):

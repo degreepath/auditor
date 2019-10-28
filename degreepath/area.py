@@ -1,8 +1,7 @@
 import attr
-from typing import Dict, List, Tuple, Optional, Sequence, Iterable, Any, TYPE_CHECKING
+from typing import Dict, List, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
-from functools import lru_cache
 
 from .base import Solution, Result, Rule, Base, Summable
 from .clause import SingleClause
@@ -36,6 +35,8 @@ class AreaOfStudy(Base):
     result: Any  # Rule
     multicountable: List[List[SingleClause]]
     path: Tuple[str, ...]
+
+    common_rules: Tuple[Rule, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -113,16 +114,25 @@ class AreaOfStudy(Base):
         given_keys = set(specification.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
+        dept = this_pointer.dept if this_pointer else None
+        degree = specification.get('degree', None)
+
         return AreaOfStudy(
             name=specification.get('name', 'Test'),
             kind=specification.get('type', 'test'),
-            degree=specification.get('degree', None),
-            dept=this_pointer.dept if this_pointer else None,
+            degree=degree,
+            dept=dept,
             result=result,
             multicountable=multicountable_clauses,
             limit=limit,
             path=('$',),
             code=this_code,
+            common_rules=tuple(prepare_common_rules(
+                other_areas=tuple(areas),
+                dept_code=dept,
+                degree=degree,
+                area_code=this_code,
+            ))
         )
 
     def validate(self) -> None:
@@ -191,6 +201,7 @@ class AreaSolution(AreaOfStudy):
             path=area.path,
             solution=solution,
             context=ctx,
+            common_rules=area.common_rules,
         )
 
     def audit(self, areas: Sequence[AreaPointer] = tuple()) -> 'AreaResult':
@@ -215,12 +226,9 @@ class AreaSolution(AreaOfStudy):
         whole_context = attr.evolve(self.context)
         claimed_context = whole_context.with_transcript(claimed)
 
-        c_or_better, s_u_credits, outside_the_major = prepare_common_rules(
-            other_areas=tuple(areas),
-            dept_code=self.dept,
-            degree=self.degree,
-            area_code=self.code,
-        )
+        c_or_better = self.common_rules[0]
+        s_u_credits = self.common_rules[1]
+        outside_the_major = self.common_rules[2] if len(self.common_rules) > 2 else None
 
         c_or_better__result = find_best_solution(rule=c_or_better, ctx=claimed_context)
         assert c_or_better__result is not None, TypeError('no solutions found for c_or_better rule')
@@ -276,6 +284,7 @@ class AreaResult(AreaOfStudy, Result):
             path=area.path,
             context=ctx,
             result=result,
+            common_rules=area.common_rules,
         )
 
     def gpa(self) -> decimal.Decimal:
@@ -311,14 +320,13 @@ class AreaResult(AreaOfStudy, Result):
         return self.result.was_overridden()
 
 
-@lru_cache(1)
 def prepare_common_rules(
     *,
     degree: Optional[str],
     dept_code: Optional[str],
     other_areas: Tuple[AreaPointer, ...] = tuple(),
     area_code: str,
-) -> Tuple[Rule, Rule, Optional[Rule]]:
+) -> Iterator[Rule]:
     c = Constants(matriculation_year=0)
 
     other_area_codes = set(p.code for p in other_areas if p.code != area_code)
@@ -367,6 +375,8 @@ def prepare_common_rules(
 
     assert c_or_better is not None, TypeError('expected c_or_better to not be None')
 
+    yield c_or_better
+
     if is_bm_major:
         s_u_detail = {
             "message": "No courses in a B.M Music major may be taken S/U.",
@@ -403,6 +413,8 @@ def prepare_common_rules(
     )
 
     assert s_u_credits is not None, TypeError('expected s_u_credits to not be None')
+
+    yield s_u_credits
 
     outside_the_major = None
     if is_bm_major is False:
@@ -443,4 +455,4 @@ def prepare_common_rules(
             )
         assert outside_the_major is not None, TypeError('expected outside_the_major to not be None')
 
-    return c_or_better, s_u_credits, outside_the_major
+        yield outside_the_major

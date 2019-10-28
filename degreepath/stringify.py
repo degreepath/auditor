@@ -18,7 +18,7 @@ def summarize(
     claims: Dict[str, List[str]],
 ) -> Iterator[str]:
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
-    avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
+    avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
     mapped_transcript = {c.clbid: c for c in transcript}
     endl = "\n"
 
