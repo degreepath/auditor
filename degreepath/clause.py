@@ -41,6 +41,8 @@ def load_clause(
         assert len(data.keys()) == 1
         return OrClause.load(data["$or"], c, allow_boolean, forbid)
 
+    assert len(data.keys()) == 1, "only one key allowed in single-clauses"
+
     clauses = tuple(SingleClause.load(key, value, c, forbid) for key, value in data.items())
 
     if len(clauses) == 1:
