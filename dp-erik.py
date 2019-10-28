@@ -179,7 +179,7 @@ def make_result_id(*, stnum: str, conn: Any, student: Dict[str, Any], area_code:
             INSERT INTO result (student_id, area_code, catalog, in_progress, run, input_data)
             VALUES (%(student_id)s, %(area_code)s, %(catalog)s, true, %(run)s, %(student)s)
             RETURNING id
-        """, {"student_id": stnum, "area_code": area_code, "catalog": catalog, "run": run, "student": student})
+        """, {"student_id": stnum, "area_code": area_code, "catalog": catalog, "run": run, "student": json.dumps(student)})
 
         conn.commit()
 
