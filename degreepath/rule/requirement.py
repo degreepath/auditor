@@ -87,7 +87,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         message = data.get("message", None)
         if message:
-            message = markdown.markdown(message, extensions=['sane_lists', 'smarty'])
+            message = markdown.markdown(message, extensions=['markdown.extensions.sane_lists', 'markdown.extensions.smarty'])
 
         return RequirementRule(
             name=name,
