@@ -21,7 +21,12 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'Clause':
+def load_clause(
+    data: Dict[str, Any],
+    c: Constants,
+    allow_boolean: bool = True,
+    forbid: Sequence[Operator] = tuple(),
+) -> 'Clause':
     if not isinstance(data, Mapping):
         raise Exception(f'expected {data} to be a dictionary')
 
@@ -35,12 +40,12 @@ def load_clause(data: Dict[str, Any], c: Constants, allow_boolean: bool = True, 
         assert len(data.keys()) == 1
         return OrClause.load(data["$or"], c, allow_boolean, forbid)
 
-    clauses = [SingleClause.load(key, value, c, forbid) for key, value in data.items()]
+    clauses = tuple(SingleClause.load(key, value, c, forbid) for key, value in data.items())
 
     if len(clauses) == 1:
         return clauses[0]
 
-    return AndClause(children=tuple(clauses))
+    return AndClause(children=clauses)
 
 
 @attr.s(auto_attribs=True, slots=True)
@@ -264,7 +269,7 @@ class SingleClause(_Clause, ResolvedClause):
         operators = [k for k in value.keys() if k.startswith('$')]
 
         assert len(operators) == 1, f"{value}"
-        op = list(operators)[0]
+        op = operators[0]
 
         at_most = value.get('at_most', False)
         assert type(at_most) is bool
