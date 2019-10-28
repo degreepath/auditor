@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 def load_clause(
     data: Dict[str, Any],
+    *,
     c: Constants,
     allow_boolean: bool = True,
     forbid: Sequence[Operator] = tuple(),
@@ -122,7 +123,7 @@ class AndClause(_Clause, ResolvedClause):
 
     @staticmethod
     def load(data: List[Dict], c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'AndClause':
-        clauses = [load_clause(clause, c, allow_boolean, forbid) for clause in data]
+        clauses = [load_clause(clause, c=c, allow_boolean=allow_boolean, forbid=forbid) for clause in data]
         return AndClause(children=tuple(clauses))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -183,7 +184,7 @@ class OrClause(_Clause, ResolvedClause):
 
     @staticmethod
     def load(data: Dict, c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'OrClause':
-        clauses = [load_clause(clause, c, allow_boolean, forbid) for clause in data]
+        clauses = [load_clause(clause, c=c, allow_boolean=allow_boolean, forbid=forbid) for clause in data]
         return OrClause(children=tuple(clauses))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

@@ -36,7 +36,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         where = data.get("where", None)
         if where is not None:
-            where = load_clause(where, c)
+            where = load_clause(where, c=c)
 
         limit = LimitSet.load(data=data.get("limit", None), c=c)
 

@@ -40,7 +40,7 @@ class Limit:
 
         return Limit(
             at_most=at_most,
-            where=load_clause(data["where"], c),
+            where=load_clause(data["where"], c=c),
             message=data.get('message', None),
         )
 
