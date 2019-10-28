@@ -66,7 +66,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
             )
             area.validate()
 
-            yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog)
+            yield AuditStartMsg(stnum=student['stnum'], area_code=area_code, area_catalog=area_catalog, student=student)
 
             try:
                 yield from audit(

@@ -1,5 +1,5 @@
 import attr
-from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, cast
+from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any, cast
 from datetime import datetime
 from decimal import Decimal
 import time
@@ -30,6 +30,7 @@ class AuditStartMsg:
     stnum: str
     area_code: str
     area_catalog: str
+    student: Dict[str, Any]
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
