@@ -402,6 +402,10 @@ class SingleClause(_Clause, ResolvedClause):
             result = ResultStatus.InProgress
         elif apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected) is True:
             result = ResultStatus.Pass
+        elif clbids:
+            # we aren't "passing", but we've also got at least something
+            # counting towards this clause, so we'll mark it as in-progress.
+            result = ResultStatus.InProgress
         else:
             result = ResultStatus.Pending
 
