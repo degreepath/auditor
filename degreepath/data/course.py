@@ -136,7 +136,7 @@ class CourseInstance(Clausable):
             return clause.compare(self.grade_points)
 
         if clause.key == 'grade_code':
-            return clause.compare(self.grade_code)
+            return clause.compare(self.grade_code.value)
 
         if clause.key == 'credits':
             return clause.compare(self.credits)

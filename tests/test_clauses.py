@@ -267,3 +267,15 @@ def test_subsets_simple_4(caplog):
     y = load_clause({"attributes": {"$eq": "electives"}}, c=c)
     assert x.is_subset(y) is False
     assert y.is_subset(x) is True
+
+
+def test_clause__grade_code():
+    c = Constants(matriculation_year=2000)
+
+    clause = load_clause({"grade_code": {"$in": ["P", "IP", "S"]}}, c=c)
+
+    y_course = course_from_str(s="CSCI 296", grade_code="P")
+    n_course = course_from_str(s="CSCI 296", grade_code="F")
+
+    assert clause.apply(y_course) is True
+    assert clause.apply(n_course) is False
