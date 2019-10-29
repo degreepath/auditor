@@ -244,7 +244,9 @@ class AreaSolution(AreaOfStudy):
             assert outside_the_major__result is not None, TypeError('no solutions found for outside_the_major__result rule')
             # unclaimed_context.reset_claims()
 
-        items = [c_or_better__result, s_u_credits__result] + ([outside_the_major__result] if outside_the_major__result is not None else [])
+        items = [c_or_better__result, s_u_credits__result]
+        if outside_the_major__result is not None:
+            items.append(outside_the_major__result)
 
         return RequirementResult(
             name=f"Common {self.degree} Major Requirements",
