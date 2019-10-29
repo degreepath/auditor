@@ -37,7 +37,7 @@ def summarize(
 
     for clbid, path in claims.items():
         path = [f"%{result['name']}", *path]
-        yield f"  - {mapped_transcript[clbid].course_with_term()} at {claimed_path(path)}"
+        yield f"  - {mapped_transcript[clbid].course_with_term()} \"{mapped_transcript[clbid].name}\" at {claimed_path(path)}"
         yield endl
 
 
