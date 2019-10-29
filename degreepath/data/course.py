@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, Any, Iterable, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Any, Iterable, Callable, TYPE_CHECKING
 import attr
 import decimal
 import logging
@@ -103,87 +103,138 @@ class CourseInstance(Clausable):
     def __repr__(self) -> str:
         return f'Course("{self.identity_}")'
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:  # noqa: C901
+    def apply_single_clause(self, clause: 'SingleClause') -> bool:
         logger.debug("clause/compare/key=%s", clause.key)
+        applicator = clause_application_lookup.get(clause.key, None)
+        assert applicator is not None, TypeError(f'{clause.key} is not a known clause key')
+        return applicator(self, clause)
 
-        if clause.key == 'attributes':
-            return clause.compare(self.attributes)
 
-        if clause.key == 'gereqs':
-            return clause.compare(self.gereqs)
+def apply_single_clause__attributes(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.attributes)
 
-        if clause.key == 'ap':
-            return self.course_type is CourseType.AP and clause.compare(self.name)
 
-        if clause.key == 'number':
-            return clause.compare(self.number)
+def apply_single_clause__gereqs(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.gereqs)
 
-        if clause.key == 'course':
-            return clause.compare(self.identity_)
 
-        if clause.key == 'subject':
-            # CH/BI 125 and 126 are "CHEM" courses, while 127/227 are "BIO".
-            # So we pretend that that is the case, but only when checking subject codes.
-            if self.is_chbi_ is not None:
-                if self.is_chbi_ in (125, 126):
-                    return clause.compare('CHEM')
-                else:
-                    return clause.compare('BIO')
-            else:
-                return clause.compare(self.subject)
+def apply_single_clause__ap(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return course.course_type is CourseType.AP and clause.compare(course.name)
 
-        if clause.key == 'grade':
-            return clause.compare(self.grade_points)
 
-        if clause.key == 'grade_code':
-            return clause.compare(self.grade_code.value)
+def apply_single_clause__number(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.number)
 
-        if clause.key == 'credits':
-            return clause.compare(self.credits)
 
-        if clause.key == 'level':
-            return clause.compare(self.level)
+def apply_single_clause__course(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.identity_)
 
-        if clause.key == 'semester':
-            return clause.compare(self.term)
 
-        if clause.key == 's/u':
-            return clause.compare(self.grade_option is GradeOption.SU)
+def apply_single_clause__subject(course: CourseInstance, clause: 'SingleClause') -> bool:
+    # CH/BI 125 and 126 are "CHEM" courses, while 127/227 are "BIO".
+    # So we pretend that that is the case, but only when checking subject codes.
+    if course.is_chbi_ is not None:
+        if course.is_chbi_ in (125, 126):
+            return clause.compare('CHEM')
+        else:
+            return clause.compare('BIO')
+    else:
+        return clause.compare(course.subject)
 
-        if clause.key == 'p/n':
-            return clause.compare(self.grade_option is GradeOption.PN)
 
-        if clause.key == 'type':
-            return clause.compare(self.sub_type.name)
+def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.grade_points)
 
-        if clause.key == 'course_type':
-            return clause.compare(self.course_type.name)
 
-        if clause.key == 'lab':
-            return clause.compare(self.is_lab)
+def apply_single_clause__grade_code(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.grade_code.value)
 
-        if clause.key == 'grade_option':
-            return clause.compare(self.grade_option)
 
-        if clause.key == 'is_stolaf':
-            return clause.compare(self.is_stolaf)
+def apply_single_clause__credits(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.credits)
 
-        if clause.key == 'is_in_gpa':
-            return clause.compare(self.is_in_gpa)
 
-        if clause.key == 'is_in_progress':
-            return clause.compare(self.is_in_progress)
+def apply_single_clause__level(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.level)
 
-        if clause.key == 'year':
-            return clause.compare(self.year)
 
-        if clause.key == 'clbid':
-            return clause.compare(self.clbid)
+def apply_single_clause__semester(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.term)
 
-        if clause.key == 'crsid':
-            return clause.compare(self.crsid)
 
-        raise TypeError(f'{clause.key} is not a known clause key')
+def apply_single_clause__su(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.grade_option is GradeOption.SU)
+
+
+def apply_single_clause__pn(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.grade_option is GradeOption.PN)
+
+
+def apply_single_clause__type(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.sub_type.name)
+
+
+def apply_single_clause__course_type(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.course_type.name)
+
+
+def apply_single_clause__lab(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.is_lab)
+
+
+def apply_single_clause__grade_option(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.grade_option)
+
+
+def apply_single_clause__is_stolaf(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.is_stolaf)
+
+
+def apply_single_clause__is_in_gpa(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.is_in_gpa)
+
+
+def apply_single_clause__is_in_progress(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.is_in_progress)
+
+
+def apply_single_clause__year(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.year)
+
+
+def apply_single_clause__clbid(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.clbid)
+
+
+def apply_single_clause__crsid(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.crsid)
+
+
+clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], bool]] = {
+    'attributes': apply_single_clause__attributes,
+    'gereqs': apply_single_clause__gereqs,
+    'ap': apply_single_clause__ap,
+    'number': apply_single_clause__number,
+    'course': apply_single_clause__course,
+    'subject': apply_single_clause__subject,
+    'grade': apply_single_clause__grade,
+    'grade_code': apply_single_clause__grade_code,
+    'credits': apply_single_clause__credits,
+    'level': apply_single_clause__level,
+    'semester': apply_single_clause__semester,
+    's/u': apply_single_clause__su,
+    'p/n': apply_single_clause__pn,
+    'type': apply_single_clause__type,
+    'course_type': apply_single_clause__course_type,
+    'lab': apply_single_clause__lab,
+    'grade_option': apply_single_clause__grade_option,
+    'is_stolaf': apply_single_clause__is_stolaf,
+    'is_in_gpa': apply_single_clause__is_in_gpa,
+    'is_in_progress': apply_single_clause__is_in_progress,
+    'year': apply_single_clause__year,
+    'clbid': apply_single_clause__clbid,
+    'crsid': apply_single_clause__crsid,
+}
 
 
 def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
