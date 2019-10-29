@@ -16,6 +16,7 @@ from .discover_potentials import discover_clause_potential
 class Arguments:
     area_files: List[str]
     student_files: List[str]
+    archive_file: Optional[str]
     print_all: bool = False
     estimate_only: bool = False
 

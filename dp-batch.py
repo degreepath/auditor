@@ -51,6 +51,7 @@ def main() -> int:  # noqa: C901
             student_files=[student_file],
             print_all=False,
             estimate_only=cli_args.estimate,
+            archive_file=None,
         )
 
         if cli_args.invocation:

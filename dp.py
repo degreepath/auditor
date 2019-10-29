@@ -29,6 +29,7 @@ def main() -> int:  # noqa: C901
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
+    parser.add_argument("--archive", dest="archive_file")
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--csv", action='store_true')
@@ -52,7 +53,13 @@ def main() -> int:  # noqa: C901
     if cli_args.estimate:
         os.environ['DP_ESTIMATE'] = '1'
 
-    args = Arguments(area_files=cli_args.area_files, student_files=cli_args.student_files, print_all=cli_args.print_all, estimate_only=False)
+    args = Arguments(
+        area_files=cli_args.area_files,
+        student_files=cli_args.student_files,
+        print_all=cli_args.print_all,
+        estimate_only=False,
+        archive_file=cli_args.archive_file,
+    )
 
     if cli_args.tracemalloc_init or cli_args.tracemalloc_end:
         import tracemalloc
@@ -95,15 +102,16 @@ def main() -> int:  # noqa: C901
                 display_top(snapshot)
                 return 0
 
-            print(result_str(
-                msg,
-                as_json=cli_args.json,
-                as_raw=cli_args.raw,
-                as_csv=cli_args.csv,
-                gpa_only=cli_args.gpa,
-                show_paths=cli_args.show_paths,
-                show_ranks=cli_args.show_ranks,
-            ))
+            if not cli_args.quiet:
+                print(result_str(
+                    msg,
+                    as_json=cli_args.json,
+                    as_raw=cli_args.raw,
+                    as_csv=cli_args.csv,
+                    gpa_only=cli_args.gpa,
+                    show_paths=cli_args.show_paths,
+                    show_ranks=cli_args.show_ranks,
+                ))
 
         elif isinstance(msg, EstimateMsg):
             if not cli_args.quiet:

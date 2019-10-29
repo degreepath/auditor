@@ -1,6 +1,7 @@
 import json
 import traceback
 import pathlib
+import tarfile
 from typing import Iterator, List, Dict, Any
 
 import yaml
@@ -18,14 +19,24 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
         yield NoStudentsMsg()
         return
 
-    for student_file in args.student_files:
-        try:
-            with open(student_file, "r", encoding="utf-8") as infile:
-                student = json.load(infile)
-        except FileNotFoundError as ex:
-            yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=None, area_code=None)
-            return
+    file_data = []
 
+    try:
+        if args.archive_file:
+            with tarfile.open(args.archive_file, 'r') as tarball:
+                for student_file in args.student_files:
+                    data = tarball.extractfile(student_file)
+                    assert data is not None
+                    file_data.append(json.load(data))
+        else:
+            for student_file in args.student_files:
+                with open(student_file, "r", encoding="utf-8") as infile:
+                    file_data.append(json.load(infile))
+    except FileNotFoundError as ex:
+        yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=None, area_code=None)
+        return
+
+    for student in file_data:
         area_pointers = tuple([AreaPointer.from_dict(a) for a in student['areas']])
         constants = Constants(matriculation_year=0 if student['matriculation'] == '' else int(student['matriculation']))
         transcript = tuple(load_transcript(student['courses']))
