@@ -188,7 +188,7 @@ class QueryRule(Rule, BaseQueryRule):
             matches = [item for item in matches if self.where.apply(item)]
 
         for insert in ctx.get_insert_exceptions(self.path):
-            matches.append(ctx.forced_course_by_clbid(insert.clbid))
+            matches.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
 
         return matches
 

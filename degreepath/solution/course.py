@@ -38,7 +38,7 @@ class CourseSolution(Solution, BaseCourseRule):
 
         for insert in ctx.get_insert_exceptions(self.path):
             logger.debug('inserting %s into %s due to override', insert.clbid, self)
-            matched_course = ctx.forced_course_by_clbid(insert.clbid)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
 
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=self, allow_claimed=insert.forced)
 

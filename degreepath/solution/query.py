@@ -86,7 +86,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(self.path):
-            matched_course = ctx.forced_course_by_clbid(insert.clbid)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=insert.clbid, expected_verbatim=insert.clbid)
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=clause, allow_claimed=insert.forced)
 
@@ -145,7 +145,7 @@ class QuerySolution(Solution, BaseQueryRule):
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(clause.path):
             logger.debug("inserted %s into %s", insert.clbid, self.path)
-            matched_course = ctx.forced_course_by_clbid(insert.clbid)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             filtered_output.append(matched_course)
             inserted_clbids.append(matched_course.clbid)
 

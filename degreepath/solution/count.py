@@ -64,7 +64,7 @@ class CountSolution(Solution, BaseCountRule):
             inserted_clbids = []
             for insert in ctx.get_insert_exceptions(clause.path):
                 logger.debug("inserted %s into %s", insert.clbid, self.path)
-                matched_course = ctx.forced_course_by_clbid(insert.clbid)
+                matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
                 matched_items.append(matched_course)
                 inserted_clbids.append(matched_course.clbid)
 

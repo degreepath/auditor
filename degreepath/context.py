@@ -58,12 +58,12 @@ class RequirementContext:
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self.clbid_lookup_map_.get(clbid, None)
 
-    def forced_course_by_clbid(self, clbid: str) -> CourseInstance:
+    def forced_course_by_clbid(self, clbid: str, path: Sequence[str]) -> CourseInstance:
         match = self.find_course_by_clbid(clbid)
         if not match:
             match = self.forced_clbid_lookup_map_.get(clbid, None)
         if not match:
-            raise Exception(f'attempted to use CLBID={clbid}, but it was not found in the transcript')
+            raise Exception(f'attempted to use CLBID={clbid} at {list(path)}, but it was not found in the transcript')
         return match
 
     def has_course(self, c: str) -> bool:

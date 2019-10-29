@@ -153,7 +153,7 @@ class CountRule(Rule, BaseCountRule):
                 logger.debug("%s incrementing count b/c 'all' rule", self.path)
                 count += 1
 
-            matched_course = ctx.forced_course_by_clbid(insert.clbid)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
 
             new_rule = CourseRule(
                 course=matched_course.course(),
@@ -381,6 +381,6 @@ class CountRule(Rule, BaseCountRule):
         matches = [c for r in self.items for c in r.all_matches(ctx=ctx)]
 
         for insert in ctx.get_insert_exceptions(self.path):
-            matches.append(ctx.forced_course_by_clbid(insert.clbid))
+            matches.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
 
         return matches
