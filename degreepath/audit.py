@@ -84,7 +84,7 @@ def audit(
     *,
     area: AreaOfStudy,
     transcript: Tuple[CourseInstance, ...],
-    transcript_with_failed: Tuple[CourseInstance, ...],
+    transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
     constants: Constants,
     exceptions: List[RuleException],
     area_pointers: Sequence[AreaPointer],
