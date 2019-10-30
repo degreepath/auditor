@@ -7,6 +7,7 @@ from ..base import Rule, BaseCourseRule
 from ..constants import Constants
 from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
+from ..data.course_enums import GradeOption
 
 if TYPE_CHECKING:
     from ..context import RequirementContext
@@ -32,10 +33,11 @@ class CourseRule(Rule, BaseCourseRule):
     def load(data: Dict, *, c: Constants, path: List[str]) -> 'CourseRule':
         course = data.get('course', '')
         min_grade = data.get('grade', None)
+        grade_option = data.get('grade_option', None)
 
         path = [*path, f"*{course}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
 
-        allowed_keys = set(['course', 'grade', 'including claimed', 'hidden', 'ap'])
+        allowed_keys = set(['course', 'grade', 'including claimed', 'hidden', 'ap', 'grade_option'])
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -43,6 +45,7 @@ class CourseRule(Rule, BaseCourseRule):
             course=course,
             hidden=data.get("hidden", False),
             grade=str_to_grade_points(min_grade) if min_grade is not None else None,
+            grade_option=GradeOption(grade_option) if grade_option else None,
             allow_claimed=data.get("including claimed", False),
             path=tuple(path),
             ap=data.get('ap', None),

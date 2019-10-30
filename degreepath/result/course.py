@@ -26,6 +26,7 @@ class CourseResult(Result, BaseCourseRule):
             course=solution.course,
             hidden=solution.hidden,
             grade=solution.grade,
+            grade_option=solution.grade_option,
             allow_claimed=solution.allow_claimed,
             claim_attempt=claim_attempt,
             min_grade_not_met=min_grade_not_met,

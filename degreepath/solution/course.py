@@ -28,6 +28,7 @@ class CourseSolution(Solution, BaseCourseRule):
             overridden=overridden,
             ap=rule.ap,
             inserted=rule.inserted,
+            grade_option=rule.grade_option,
         )
 
     def audit(self, *, ctx: 'RequirementContext') -> CourseResult:
@@ -63,6 +64,10 @@ class CourseSolution(Solution, BaseCourseRule):
         for matched_course in ctx.find_all_courses(self.course):
             if self.grade is not None and matched_course.grade_points < self.grade:
                 logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.course, matched_course.grade_points, self.grade)
+                continue
+
+            if self.grade_option is not None and matched_course.grade_option != self.grade_option:
+                logger.debug('%s course "%s" exists, but the course was taken %s, and the area requires that it be taken %s', self.path, self.course, matched_course.grade_option, self.grade_option)
                 continue
 
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)

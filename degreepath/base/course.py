@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from .bases import Base
 from ..operator import Operator
+from ..data.course_enums import GradeOption
 
 if TYPE_CHECKING:
     from ..clause import SingleClause
@@ -15,6 +16,7 @@ class BaseCourseRule(Base):
     ap: Optional[str]
     hidden: bool
     grade: Optional[Decimal]
+    grade_option: Optional[GradeOption]
     allow_claimed: bool
     path: Tuple[str, ...]
     inserted: bool
