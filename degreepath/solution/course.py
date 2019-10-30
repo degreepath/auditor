@@ -43,7 +43,7 @@ class CourseSolution(Solution, BaseCourseRule):
 
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=self, allow_claimed=insert.forced)
 
-            if not claim.failed():
+            if not claim.failed:
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
                 return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=True)
 
@@ -53,7 +53,7 @@ class CourseSolution(Solution, BaseCourseRule):
                 matched_course = ap_ib_credit_course
                 claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
 
-                if not claim.failed():
+                if not claim.failed:
                     logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
                     return CourseResult.from_solution(solution=self, claim_attempt=claim)
 
@@ -72,7 +72,7 @@ class CourseSolution(Solution, BaseCourseRule):
 
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=self)
 
-            if not claim.failed():
+            if not claim.failed:
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
                 return CourseResult.from_solution(solution=self, claim_attempt=claim)
 

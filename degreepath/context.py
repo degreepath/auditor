@@ -11,6 +11,8 @@ from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
 from .operator import Operator
 from .exception import RuleException, OverrideException, InsertionException
+from .rule.course import CourseRule
+
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
@@ -25,7 +27,7 @@ class RequirementContext:
     transcript_with_failed_: List[CourseInstance] = attr.ib(factory=list)
 
     areas: Tuple[AreaPointer, ...] = tuple()
-    multicountable: List[List[SingleClause]] = attr.ib(factory=list)
+    multicountable: Dict[str, List[Tuple[str, ...]]] = attr.ib(factory=list)
     claims: Dict[str, Set[Claim]] = attr.ib(factory=lambda: defaultdict(set))
     exceptions: List[RuleException] = attr.ib(factory=dict)
 
@@ -156,8 +158,10 @@ class RequirementContext:
             rule = clause
             clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
+        path_reqs_only = tuple(r for r in path if r.startswith('%'))
+
         # build a claim so it can be returned later
-        claim = Claim(course=course, claimant_path=tuple(path), value=clause)
+        claim = Claim(course=course, claimant_path=tuple(path), claimant_requirements=path_reqs_only)
 
         # > A multicountable set describes the ways in which a course may be
         # > counted.
@@ -167,9 +171,9 @@ class RequirementContext:
 
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
-        if allow_claimed or getattr(rule, 'allow_claimed', False):
+        if allow_claimed or (isinstance(rule, CourseRule) and rule.allow_claimed):
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
-            return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
+            return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
         prior_claims = frozenset(self.claims[course.clbid])
 
@@ -177,117 +181,80 @@ class RequirementContext:
         if not prior_claims:
             if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
             self.claims[course.clbid].add(claim)
-            return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
+            return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
         # Find any multicountable sets that may apply to this course
-        applicable_clausesets = [
-            clauseset
-            for clauseset in self.multicountable
-            if any(c.is_subset(clause) for c in clauseset)
-        ]
+        applicable_reqpaths: List[Tuple[str, ...]] = self.multicountable.get(course.course(), [])
 
         # If there are no applicable multicountable sets, return a claim
         # attempt against the prior claims. If there are no prior claims, it
         # is automatically successful.
-        if not applicable_clausesets:
+        if not applicable_reqpaths:
             if prior_claims:
-                if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
+                if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
             else:
-                if debug: logger.debug('no multicountable clausesets for clbid=%s; the claim has no conflicts', course.clbid)
+                if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
+                return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
-        # > Otherwise, if a course was counted in _this_ fashion, it may also
-        # > be counted like _that_ (or _that_, or _that_.)
+        # We can allow a course to be claimed by multiple requirements, if
+        # that's what is required by the department.
         #
-        # > Something may only be used as part of a single multicountable set.
-        # > If it matches multiple, the first set which covers both the prior
-        # > claims and the current one will be chosen.
+        # A `multicountable` attribute is a dictionary of {DEPTNUM: List[RequirementPath]}.
         #
-        # > Otherwise, it may only be counted once.
-
-        # Assume following multicountable.
+        # That is, it looks like the following:
         #
-        # ```python
-        # [
-        #   [{attributes: elective}, {attributes: post1800}],
-        #   [{attributes: elective}, {attributes: warBetweenWorlds}],
-        # ]
-        # ```
+        # multicountable: [
+        #   "DEPT 123": [
+        #     ["Requirement Name"],
+        #     ["A", "Nested", "Requirement"],
+        #   ],
+        # }
         #
-        # A courses with `{attributes: [elective]}` _could_ be claimed under
-        # both clausesets. Because we don't want to allow _three_ claims for
-        # the course, though -- we only want elective/post1800 and
-        # elective/warBetweenWorlds as our claim pairs -- we need to figure
-        # out which clauseset covers both all previous claims and the current
-        # claim.
-        #
-        # If there are no clausesets which cover both all previous claims and
-        # the current one, the claim is denied.
+        # where each of the RequirementPath is a list of strings that match up
+        # to a requirement defined somewhere in the file.
 
-        prior_clauses = [cl.value for cl in prior_claims]
-        clauses_to_cover = prior_clauses + [clause]
+        prior_claimers = set(cl.claimant_requirements for cl in prior_claims)
 
-        if debug: logger.debug('clauses to cover: %s', clauses_to_cover)
-        if debug: logger.debug('applicable clausesets: %s', applicable_clausesets)
+        if debug: logger.debug('applicable reqpaths: %s', applicable_reqpaths)
 
-        applicable_clauseset = None
+        applicable_reqpath = None
 
-        for clauseset in applicable_clausesets:
-            if debug: logger.debug('checking clauseset %s', clauseset)
+        for reqpath in applicable_reqpaths:
+            if debug: logger.debug('checking reqpath %s', reqpath)
 
-            # all_are_supersets = True
-            #
-            # for p_clause in clauses_to_cover:
-            #     # has_subset_clause = False
-            #     #
-            #     # for c in clauseset:
-            #     #     if debug: logger.debug('is_subset: %s; p_clause: %s; c_clause: %s', c.is_subset(p_clause), p_clause, c)
-            #     #     if c.is_subset(p_clause):
-            #     #         has_subset_clause = True
-            #     #     if debug: logger.debug('has_subset_clause: %s', has_subset_clause)
-            #
-            #     has_subset_clause = any(c.is_subset(p_clause) for c in clauseset)
-            #
-            #     all_are_supersets = all_are_supersets and has_subset_clause
-            #     if debug: logger.debug('all_are_supersets: %s', all_are_supersets)
-
-            all_are_supersets = all(
-                any(c.is_subset(p_clause) for c in clauseset)
-                for p_clause in clauses_to_cover
-            )
-
-            if all_are_supersets:
-                if debug: logger.debug('done checking clausesets')
-                applicable_clauseset = clauseset
+            if reqpath == path_reqs_only:
+                if debug: logger.debug('done checking reqpaths')
+                applicable_reqpath = reqpath
                 break
 
-            if debug: logger.debug('done checking clauseset %s; ', clauseset)
+            if debug: logger.debug('done checking reqpath %s; ', reqpath)
 
-        if applicable_clauseset is None:
+        if applicable_reqpath is None:
             if prior_claims:
-                if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
+                if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
             else:
-                if debug: logger.debug('no applicable multicountable clauseset was found for clbid=%s; the claim has no conflicts', course.clbid)
+                if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
+                return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
-        # now limit to just the clauses in the clauseset which have not been used
-        available_clauses = [
-            c for c in applicable_clauseset
-            if not any(c.is_subset(prior_clause) for prior_clause in prior_clauses)
+        # now limit to just the clauses in the reqpath which have not been used
+        available_reqpaths = [
+            reqpath
+            for reqpath in applicable_reqpath
+            if reqpath not in prior_claimers
         ]
 
-        if not available_clauses:
-            if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s; however, all of the clauses have already been matched', course.clbid)
+        if not available_reqpaths:
+            if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), did_fail=True)
+                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
             else:
                 self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
+                return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
-        if debug: logger.debug('there was an applicable multicountable clauseset for clbid=%s: %s', course.clbid, available_clauses)
+        if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s: %s', course.clbid, available_reqpaths)
         self.claims[course.clbid].add(claim)
-        return ClaimAttempt(claim, conflict_with=frozenset(), did_fail=False)
+        return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)

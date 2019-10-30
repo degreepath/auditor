@@ -66,7 +66,7 @@ class QuerySolution(Solution, BaseQueryRule):
                     clause = self.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
                     claim = ctx.make_claim(course=item, path=self.path, clause=clause, allow_claimed=self.allow_claimed)
 
-                    if claim.failed():
+                    if claim.failed:
                         if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, item.clbid, claim.conflict_with)
                         failed_claims.append(claim)
                     else:
@@ -90,7 +90,7 @@ class QuerySolution(Solution, BaseQueryRule):
             clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=insert.clbid, expected_verbatim=insert.clbid)
             claim = ctx.make_claim(course=matched_course, path=self.path, clause=clause, allow_claimed=insert.forced)
 
-            if claim.failed():
+            if claim.failed:
                 if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, insert.clbid, claim.conflict_with)
                 failed_claims.append(claim)
             else:
