@@ -10,11 +10,12 @@ import sys
 import os
 
 from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
+from degreepath.lib import grade_point_average_items, grade_point_average
 from degreepath.data import GradeOption, GradeCode, CourseInstance, TranscriptCode
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
-def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:  # noqa: C901
+def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = False) -> Iterator[Message]:  # noqa: C901
     if not args.student_files:
         yield NoStudentsMsg()
         return
@@ -51,6 +52,12 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                     c.sub_type.name, c.grade_code.value, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
                     ','.join(c.attributes),
                 ])
+            return
+
+        if gpa_only:
+            for c in grade_point_average_items(transcript_with_failed):
+                print(c.course(), c.grade_code.value, c.grade_points)
+            print(grade_point_average(transcript_with_failed))
             return
 
         for area_file in args.area_files:
@@ -96,7 +103,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                 yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=student['stnum'], area_code=area_code)
 
 
-def load_transcript(courses: List[Dict[str, Any]]) -> Iterator[CourseInstance]:
+def load_transcript(courses: List[Dict[str, Any]], *, include_failed: bool = False) -> Iterator[CourseInstance]:
     # We need to leave repeated courses in the transcript, because some majors
     # (THEAT) require repeated courses for completion (and others )
     for row in courses:
@@ -116,6 +123,9 @@ def load_transcript(courses: List[Dict[str, Any]]) -> Iterator[CourseInstance]:
 
         # exclude courses at grade F
         if c.grade_code is GradeCode.F:
-            continue
+            if include_failed is True:
+                pass
+            else:
+                continue
 
         yield c

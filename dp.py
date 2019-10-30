@@ -65,7 +65,7 @@ def main() -> int:  # noqa: C901
         import tracemalloc
         tracemalloc.start()
 
-    for msg in dp['run'](args, transcript_only=cli_args.transcript):
+    for msg in dp['run'](args, transcript_only=cli_args.transcript, gpa_only=cli_args.gpa):
         if isinstance(msg, NoStudentsMsg):
             logger.critical('no student files provided')
             return 3
