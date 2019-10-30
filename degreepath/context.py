@@ -60,6 +60,8 @@ class RequirementContext:
 
     def find_all_courses(self, c: str) -> Iterator[CourseInstance]:
         for crs in self.transcript():
+            if not crs.is_stolaf:
+                continue
             if crs.identity_ == c:
                 yield crs
 
