@@ -39,7 +39,7 @@ def cli() -> None:
     main(student_file=args.student_file, archive_file=args.archive_file, area_file=args.area_file, run_id=args.run)
 
 
-def main(*, area_file: str, archive_file: Optional[str], student_file: str, run_id: Optional[int] = None) -> None:
+def main(*, area_file: str, archive_file: Optional[str] = None, student_file: str, run_id: Optional[int] = None) -> None:
     conn = psycopg2.connect(
         host=os.environ.get("PG_HOST"),
         database=os.environ.get("PG_DATABASE"),
