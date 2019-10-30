@@ -1,9 +1,6 @@
-from typing import Tuple, Union, FrozenSet, Dict, Any, TYPE_CHECKING
+from typing import Tuple, FrozenSet, Dict, Any, TYPE_CHECKING
 import logging
 import attr
-
-from .clause import Clause
-from .base.course import BaseCourseRule
 
 if TYPE_CHECKING:
     from .data import CourseInstance  # noqa: F401
@@ -15,14 +12,13 @@ logger = logging.getLogger(__name__)
 class Claim:
     course: 'CourseInstance'
     claimant_path: Tuple[str, ...]
-    value: Union[Clause, BaseCourseRule]
+    claimant_requirements: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "crsid": self.course.crsid,
             "clbid": self.course.clbid,
             "claimant_path": self.claimant_path,
-            "value": self.value.to_dict(),
         }
 
 
@@ -30,16 +26,13 @@ class Claim:
 class ClaimAttempt:
     claim: Claim
     conflict_with: FrozenSet[Claim]
-    did_fail: bool
-
-    def failed(self) -> bool:
-        return self.did_fail
+    failed: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "claim": self.claim.to_dict(),
             "conflict_with": [c.to_dict() for c in self.conflict_with],
-            "failed": self.failed(),
+            "failed": self.failed,
         }
 
     def get_course(self) -> 'CourseInstance':

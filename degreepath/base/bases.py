@@ -80,10 +80,10 @@ class Base(abc.ABC):
         return {c.claim.course.clbid: list(c.claim.claimant_path) for c in self.claims()}
 
     def matched(self) -> Set['CourseInstance']:
-        return set(claim.get_course() for claim in self.claims() if claim.failed() is False)
+        return set(claim.get_course() for claim in self.claims() if claim.failed is False)
 
     def matched_for_gpa(self) -> Set['CourseInstance']:
-        return set(claim.get_course() for claim in self.claims_for_gpa() if claim.failed() is False)
+        return set(claim.get_course() for claim in self.claims_for_gpa() if claim.failed is False)
 
     def is_in_gpa(self) -> bool:
         return True

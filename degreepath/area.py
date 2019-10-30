@@ -4,7 +4,6 @@ import logging
 import decimal
 
 from .base import Solution, Result, Rule, Base, Summable
-from .clause import SingleClause
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType
@@ -33,7 +32,7 @@ class AreaOfStudy(Base):
 
     limit: LimitSet
     result: Any  # Rule
-    multicountable: List[List[SingleClause]]
+    multicountable: Dict[str, List[Tuple[str, ...]]]
     path: Tuple[str, ...]
 
     common_rules: Tuple[Rule, ...]
@@ -96,21 +95,15 @@ class AreaOfStudy(Base):
 
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
-        multicountable_rules = specification.get("attributes", {}).get("multicountable", [])
-        multicountable_clauses: List[List[SingleClause]] = []
-        for ruleset in multicountable_rules:
-            clauses = []
-            for clause in ruleset:
-                if "course" in clause:
-                    item = SingleClause.load('course', clause['course'], c)
-                elif "attributes" in clause:
-                    item = SingleClause.load("attributes", clause["attributes"], c)
-                else:
-                    raise Exception(f"invalid multicountable {clause}")
-                clauses.append(item)
-            multicountable_clauses.append(clauses)
+        multicountable_rules: Dict[str, List[Tuple[str, ...]]] = {
+            course: [
+                tuple(f"%{segment}" for segment in path)
+                for path in paths
+            ]
+            for course, paths in specification.get("multicountable", {}).items()
+        }
 
-        allowed_keys = set(['name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'attributes'])
+        allowed_keys = set(['name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable'])
         given_keys = set(specification.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
@@ -123,7 +116,7 @@ class AreaOfStudy(Base):
             degree=degree,
             dept=dept,
             result=result,
-            multicountable=multicountable_clauses,
+            multicountable=multicountable_rules,
             limit=limit,
             path=('$',),
             code=this_code,

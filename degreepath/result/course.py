@@ -58,4 +58,4 @@ class CourseResult(Result, BaseCourseRule):
         if self.was_overridden():
             return True
 
-        return self.claim_attempt is not None and self.claim_attempt.failed() is False and self.min_grade_not_met is None
+        return self.claim_attempt is not None and self.claim_attempt.failed is False and self.min_grade_not_met is None
