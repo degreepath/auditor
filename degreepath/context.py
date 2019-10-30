@@ -22,13 +22,20 @@ class RequirementContext:
     course_set_: Set[str] = attr.ib(factory=set)
     clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
     forced_clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
+    transcript_with_failed_: List[CourseInstance] = attr.ib(factory=list)
 
     areas: Tuple[AreaPointer, ...] = tuple()
     multicountable: List[List[SingleClause]] = attr.ib(factory=list)
     claims: Dict[str, Set[Claim]] = attr.ib(factory=lambda: defaultdict(set))
     exceptions: List[RuleException] = attr.ib(factory=dict)
 
-    def with_transcript(self, transcript: Iterable[CourseInstance], forced: Optional[Dict[str, CourseInstance]] = None) -> 'RequirementContext':
+    def with_transcript(
+        self,
+        transcript: Iterable[CourseInstance],
+        *,
+        forced: Optional[Dict[str, CourseInstance]] = None,
+        including_failed: Iterable[CourseInstance] = tuple(),
+    ) -> 'RequirementContext':
         transcript = list(transcript)
         course_set = set(c.course() for c in transcript)
         clbid_lookup_map = {c.clbid: c for c in transcript}
@@ -36,6 +43,7 @@ class RequirementContext:
         return attr.evolve(
             self,
             transcript_=transcript,
+            transcript_with_failed_=list(including_failed),
             course_set_=course_set,
             clbid_lookup_map_=clbid_lookup_map,
             forced_clbid_lookup_map_=forced or {},

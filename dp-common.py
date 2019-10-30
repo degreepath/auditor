@@ -40,6 +40,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
         area_pointers = tuple([AreaPointer.from_dict(a) for a in student['areas']])
         constants = Constants(matriculation_year=0 if student['matriculation'] == '' else int(student['matriculation']))
         transcript = tuple(load_transcript(student['courses']))
+        transcript_with_failed = tuple(load_transcript(student['courses'], include_failed=True))
 
         if transcript_only:
             writer = csv.writer(sys.stdout)
@@ -84,6 +85,7 @@ def run(args: Arguments, *, transcript_only: bool = False) -> Iterator[Message]:
                     area=area,
                     exceptions=exceptions,
                     transcript=transcript,
+                    transcript_with_failed=transcript_with_failed,
                     constants=constants,
                     area_pointers=area_pointers,
                     print_all=args.print_all,

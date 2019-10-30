@@ -84,6 +84,7 @@ def audit(
     *,
     area: AreaOfStudy,
     transcript: Tuple[CourseInstance, ...],
+    transcript_with_failed: Tuple[CourseInstance, ...],
     constants: Constants,
     exceptions: List[RuleException],
     area_pointers: Sequence[AreaPointer],
@@ -106,7 +107,12 @@ def audit(
     if estimate_only:
         return
 
-    for sol in area.solutions(transcript=transcript, areas=tuple(area_pointers), exceptions=exceptions):
+    for sol in area.solutions(
+        transcript=transcript,
+        areas=tuple(area_pointers),
+        exceptions=exceptions,
+        transcript_with_failed=transcript_with_failed,
+    ):
         if total_count == 0:
             startup_time = time.perf_counter() - iter_start
             iter_start = time.perf_counter()

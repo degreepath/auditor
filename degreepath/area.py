@@ -143,6 +143,7 @@ class AreaOfStudy(Base):
     def solutions(
         self, *,
         transcript: Sequence[CourseInstance],
+        transcript_with_failed: Sequence[CourseInstance] = tuple(),
         areas: Sequence[AreaPointer],
         exceptions: List[RuleException],
     ) -> Iterable['AreaSolution']:
@@ -160,7 +161,7 @@ class AreaOfStudy(Base):
                 areas=tuple(areas),
                 exceptions=exceptions,
                 multicountable=self.multicountable,
-            ).with_transcript(limited_transcript, forced=forced_courses)
+            ).with_transcript(limited_transcript, forced=forced_courses, including_failed=transcript_with_failed)
 
             for sol in self.result.solutions(ctx=ctx, depth=1):
                 ctx.reset_claims()
@@ -294,7 +295,7 @@ class AreaResult(AreaOfStudy, Result):
             return decimal.Decimal('0.00')
 
         if self.kind == 'degree':
-            courses = self.context.transcript()
+            courses = self.context.transcript_with_failed_
         else:
             courses = list(self.matched_for_gpa())
 
