@@ -38,7 +38,7 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
         return
 
     for student in file_data:
-        area_pointers = tuple([AreaPointer.from_dict(a) for a in student['areas']])
+        area_pointers = tuple(AreaPointer.from_dict(a) for a in student['areas'])
         constants = Constants(matriculation_year=0 if student['matriculation'] == '' else int(student['matriculation']))
         transcript = tuple(load_transcript(student['courses']))
         transcript_with_failed = tuple(load_transcript(student['courses'], include_failed=True))
