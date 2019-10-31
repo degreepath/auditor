@@ -39,6 +39,8 @@ class AssertionRule(Rule, BaseAssertionRule):
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
+        assert isinstance(assertion, SingleClause), "assertions may only be single clauses"
+
         return AssertionRule(assertion=assertion, where=where, path=tuple(path), inserted=tuple(), message=message)
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

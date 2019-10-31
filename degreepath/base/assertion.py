@@ -1,13 +1,13 @@
 import attr
 from typing import Optional, Tuple, Dict, Any
-from ..clause import Clause
+from ..clause import Clause, SingleClause
 
 from .bases import Base, Summable
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseAssertionRule(Base):
-    assertion: Clause
+    assertion: SingleClause
     where: Optional[Clause]
     path: Tuple[str, ...]
     inserted: Tuple[str, ...]
