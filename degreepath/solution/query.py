@@ -101,7 +101,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         resolved_assertions = tuple(
             self.apply_assertion(a, ctx=ctx, output=claimed_items)
-            for i, a in enumerate(self.assertions)
+            for a in self.assertions
         )
 
         resolved_result = all(a.ok() for a in resolved_assertions)
