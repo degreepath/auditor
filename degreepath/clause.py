@@ -336,6 +336,9 @@ class SingleClause(_Clause, ResolvedClause):
             treat_in_progress_as_pass=value.get('treat_in_progress_as_pass', False),
         )
 
+    def override_expected(self, value: Decimal) -> 'SingleClause':
+        return attr.evolve(self, expected=value, expected_verbatim=str(value))
+
     def ok(self) -> bool:
         return self.result is ResultStatus.Pass
 

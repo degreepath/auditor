@@ -10,7 +10,7 @@ from .base import BaseCourseRule
 from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
 from .operator import Operator
-from .exception import RuleException, OverrideException, InsertionException
+from .exception import RuleException, OverrideException, InsertionException, ValueException
 from .rule.course import CourseRule
 
 
@@ -100,6 +100,16 @@ class RequirementContext:
         tuple_path = tuple(path)
         for e in self.exceptions:
             if isinstance(e, OverrideException) and e.path == tuple_path:
+                logger.debug("exception found for %s: %s", path, e)
+                return e
+
+        logger.debug("no exception for %s", path)
+        return None
+
+    def get_value_exception(self, path: Sequence[str]) -> Optional[ValueException]:
+        tuple_path = tuple(path)
+        for e in self.exceptions:
+            if isinstance(e, ValueException) and e.path == tuple_path:
                 logger.debug("exception found for %s: %s", path, e)
                 return e
 

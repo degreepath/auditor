@@ -125,8 +125,8 @@ class QuerySolution(Solution, BaseQueryRule):
         if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
-        exception = ctx.get_waive_exception(clause.path)
-        if exception:
+        waive = ctx.get_waive_exception(clause.path)
+        if waive:
             logger.debug("forced override on %s", self.path)
             return AssertionResult(
                 where=clause.where,
@@ -136,6 +136,11 @@ class QuerySolution(Solution, BaseQueryRule):
                 overridden=True,
                 inserted=tuple(),
             )
+
+        override_value = ctx.get_value_exception(clause.path)
+        if override_value:
+            logger.debug("override: new value on %s", self.path)
+            clause = clause.override_expected_value(override_value.value)
 
         if clause.where is not None:
             filtered_output = [item for item in output if clause.where.apply(item)]

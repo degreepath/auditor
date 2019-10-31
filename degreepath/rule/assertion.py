@@ -1,8 +1,9 @@
 import attr
 from typing import Dict, Sequence, Iterator, List, Collection, Optional, TYPE_CHECKING
 import logging
+from decimal import Decimal
 
-from ..clause import load_clause
+from ..clause import load_clause, SingleClause
 from ..constants import Constants
 from ..operator import Operator
 from ..base.bases import Rule, Solution
@@ -63,3 +64,8 @@ class AssertionRule(Rule, BaseAssertionRule):
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         raise Exception('this method should not be called')
+
+    def override_expected_value(self, value: Decimal) -> 'AssertionRule':
+        clause = self.assertion.override_expected(value)
+
+        return attr.evolve(self, assertion=clause)
