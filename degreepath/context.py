@@ -98,18 +98,13 @@ class RequirementContext:
 
     def get_waive_exception(self, path: Sequence[str]) -> Optional[OverrideException]:
         tuple_path = tuple(path)
-        exception = None
         for e in self.exceptions:
             if isinstance(e, OverrideException) and e.path == tuple_path:
-                exception = e
-                break
+                logger.debug("exception found for %s: %s", path, e)
+                return e
 
-        if exception:
-            logger.debug("exception found for %s: %s", path, exception)
-        else:
-            logger.debug("no exception for %s", path)
-
-        return exception
+        logger.debug("no exception for %s", path)
+        return None
 
     @contextmanager
     def fresh_claims(self) -> Iterator[None]:
