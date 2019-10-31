@@ -1,7 +1,7 @@
 from collections.abc import Mapping, Iterable
 from typing import Union, List, Set, Tuple, Dict, Any, Optional, Iterator, Sequence, cast, TYPE_CHECKING
 import logging
-import decimal
+from decimal import Decimal, InvalidOperation
 import abc
 import attr
 
@@ -73,7 +73,7 @@ class ResolvedClause:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "resolved_with": str(self.resolved_with) if self.resolved_with is not None and type(self.resolved_with) is not str else self.resolved_with,
-            "resolved_items": [str(x) if isinstance(x, decimal.Decimal) else x for x in self.resolved_items],
+            "resolved_items": [str(x) if isinstance(x, Decimal) else x for x in self.resolved_items],
             "resolved_clbids": [x for x in self.resolved_clbids],
             "in_progress_clbids": [x for x in self.in_progress_clbids],
             "result": self.result.value,
@@ -81,13 +81,13 @@ class ResolvedClause:
             "max_rank": str(self.max_rank()),
         }
 
-    def rank(self) -> Union[int, decimal.Decimal]:
+    def rank(self) -> Union[int, Decimal]:
         if self.ok():
             return 1
 
         return 0
 
-    def max_rank(self) -> Union[int, decimal.Decimal]:
+    def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
 
@@ -162,10 +162,10 @@ class AndClause(_Clause, ResolvedClause):
     def in_progress(self) -> bool:
         return any(c.in_progress() for c in self.children)
 
-    def rank(self) -> Union[int, decimal.Decimal]:
+    def rank(self) -> Union[int, Decimal]:
         return sum(c.rank() for c in self.children)
 
-    def max_rank(self) -> Union[int, decimal.Decimal]:
+    def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
 
@@ -220,10 +220,10 @@ class OrClause(_Clause, ResolvedClause):
     def in_progress(self) -> bool:
         return any(c.in_progress() for c in self.children)
 
-    def rank(self) -> Union[int, decimal.Decimal]:
+    def rank(self) -> Union[int, Decimal]:
         return sum(c.rank() for c in self.children)
 
-    def max_rank(self) -> Union[int, decimal.Decimal]:
+    def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
 
@@ -237,7 +237,7 @@ def stringify_expected(expected: Any) -> Any:
     if isinstance(expected, (GradeOption, GradeCode)):
         return expected.value
 
-    elif isinstance(expected, decimal.Decimal):
+    elif isinstance(expected, Decimal):
         return str(expected)
 
     return expected
@@ -310,22 +310,22 @@ class SingleClause(_Clause, ResolvedClause):
         if key == 'grade':
             if type(expected_value) is str:
                 try:
-                    expected_value = decimal.Decimal(expected_value)
-                except decimal.InvalidOperation:
+                    expected_value = Decimal(expected_value)
+                except InvalidOperation:
                     expected_value = str_to_grade_points(expected_value)
             elif isinstance(expected_value, Iterable):
                 expected_value = tuple(
-                    str_to_grade_points(v) if type(v) is str else decimal.Decimal(v)
+                    str_to_grade_points(v) if type(v) is str else Decimal(v)
                     for v in expected_value
                 )
             else:
-                expected_value = decimal.Decimal(expected_value)
+                expected_value = Decimal(expected_value)
         elif key == 'grade_option':
             expected_value = GradeOption(expected_value)
         elif key == 'credits':
-            expected_value = decimal.Decimal(expected_value)
+            expected_value = Decimal(expected_value)
         elif key == 'gpa':
-            expected_value = decimal.Decimal(expected_value)
+            expected_value = Decimal(expected_value)
 
         return SingleClause(
             key=key,
@@ -342,20 +342,20 @@ class SingleClause(_Clause, ResolvedClause):
     def in_progress(self) -> bool:
         return self.result is ResultStatus.InProgress
 
-    def rank(self) -> Union[int, decimal.Decimal]:
+    def rank(self) -> Union[int, Decimal]:
         if self.result is ResultStatus.Pass:
             return 1
 
         if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
-            if self.resolved_with is not None and type(self.resolved_with) in (int, decimal.Decimal):
-                if type(self.expected) in (int, decimal.Decimal):
+            if self.resolved_with is not None and type(self.resolved_with) in (int, Decimal):
+                if type(self.expected) in (int, Decimal):
                     if self.expected != 0:
-                        resolved = decimal.Decimal(self.resolved_with) / decimal.Decimal(self.expected)
-                        return min(decimal.Decimal(1), resolved)
+                        resolved = Decimal(self.resolved_with) / Decimal(self.expected)
+                        return min(Decimal(1), resolved)
 
         return 0
 
-    def max_rank(self) -> Union[int, decimal.Decimal]:
+    def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
 
