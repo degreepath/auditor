@@ -31,9 +31,12 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--ranks", dest='show_ranks', action='store_const', const=True, default=True)
     parser.add_argument("--no-ranks", dest='show_ranks', action='store_const', const=False)
     parser.add_argument("--table", action='store_true')
+    parser.add_argument("-n", default=1, type=int)
+
     cli_args = parser.parse_args()
 
-    data = sorted({tuple(stnum_code.strip().split()) for stnum_code in sys.stdin})
+    # deduplicate, then duplicate if requested
+    data = sorted(set(tuple(stnum_code.strip().split()) for stnum_code in sys.stdin)) * cli_args.n
 
     if not data:
         print('expects a list of "stnum catalog-year areacode" to stdin', file=sys.stderr)
