@@ -112,9 +112,11 @@ class QueryRule(Rule, BaseQueryRule):
 
             if self.attempt_claims is False:
                 did_iter = True
-                if self.source is QuerySource.Courses:
-                    only_completed = tuple(c for c in item_set if isinstance(c, CourseInstance) and c.is_in_progress is False)
-                    yield QuerySolution.from_rule(rule=self, output=only_completed)
+
+                # If we want to make things go green sooner, turn this on
+                # if self.source is QuerySource.Courses:
+                #     only_completed = tuple(c for c in item_set if isinstance(c, CourseInstance) and c.is_in_progress is False)
+                #     yield QuerySolution.from_rule(rule=self, output=only_completed)
 
                 yield QuerySolution.from_rule(rule=self, output=item_set)
                 continue
