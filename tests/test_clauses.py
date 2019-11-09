@@ -131,6 +131,8 @@ def test_resolution(caplog):
             pass
         def to_dict(self):
             pass
+        def sort_order(self):
+            return (hash(self))
 
     x = load_clause({"count(items)": {"$eq": 1}}, c=c)
     expected_single = SingleClause(key="count(items)", expected=1, expected_verbatim=1, operator=Operator.EqualTo)

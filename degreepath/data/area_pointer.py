@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, TYPE_CHECKING
+from typing import Dict, Any, Optional, Tuple, TYPE_CHECKING
 import attr
 import logging
 import decimal
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, eq=False, order=False, hash=True)
 class AreaPointer(Clausable):
     code: str
     status: AreaStatus
@@ -68,3 +68,18 @@ class AreaPointer(Clausable):
                 return False
 
         raise TypeError(f"expected got unknown key {clause.key}")
+
+    def __eq__(self, other: Any) -> bool:
+        if other.__class__ is self.__class__:
+            return hash(self) == hash(other)
+
+        return NotImplemented
+
+    def __ne__(self, other: Any) -> bool:
+        if other.__class__ is self.__class__:
+            return hash(self) != hash(other)
+
+        return NotImplemented
+
+    def sort_order(self) -> Tuple[str, str]:
+        return (self.kind.value, self.code)

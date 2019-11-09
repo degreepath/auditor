@@ -40,7 +40,7 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
     for student in file_data:
         area_pointers = tuple(AreaPointer.from_dict(a) for a in student['areas'])
         constants = Constants(matriculation_year=0 if student['matriculation'] == '' else int(student['matriculation']))
-        transcript = tuple(load_transcript(student['courses']))
+        transcript = tuple(sorted(load_transcript(student['courses']), key=lambda c: c.sort_order()))
         transcript_with_failed = tuple(load_transcript(student['courses'], include_failed=True))
 
         if transcript_only:

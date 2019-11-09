@@ -51,7 +51,7 @@ class Limit:
         # Be sure to sort the input, so that the output from the iterator is
         # sorted the same way each time. We need this because our input may
         # be a set, in which case there is no inherent ordering.
-        courses = sorted(courses)
+        courses = sorted(courses, key=lambda c: c.sort_order())
 
         logger.debug("limit/loop/start: limit=%s, matched=%s", self, courses)
 
@@ -172,7 +172,7 @@ class LimitSet:
 
         emitted_solutions: Set[Tuple[T, ...]] = set()
         for results in itertools.product(*clause_iterators):
-            these_items = tuple(sorted(item for group in results for item in group))
+            these_items = tuple(sorted((item for group in results for item in group), key=lambda c: c.sort_order()))
 
             if not self.check(these_items):
                 continue

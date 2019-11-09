@@ -1,5 +1,5 @@
 import abc
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Dict, Tuple, Any, TYPE_CHECKING
 import logging
 
 if TYPE_CHECKING:
@@ -15,4 +15,8 @@ class Clausable(abc.ABC):
 
     @abc.abstractmethod
     def apply_single_clause(self, clause: 'SingleClause') -> bool:
+        ...
+
+    @abc.abstractmethod
+    def sort_order(self) -> Tuple:
         ...
