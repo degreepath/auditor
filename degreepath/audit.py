@@ -143,7 +143,7 @@ def audit(
         if best_sol is None:
             best_sol = result
 
-        if result.rank() > best_sol.rank():
+        if best_sol != result and result.rank() > best_sol.rank():
             best_sol = result
 
         if result.ok():
