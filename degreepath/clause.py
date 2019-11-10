@@ -135,9 +135,11 @@ class AndClause(_Clause, ResolvedClause):
     def is_subset(self, other_clause: 'Clause') -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
 
+    @lru_cache(2048)
     def apply(self, to: 'Clausable') -> bool:
         return all(subclause.apply(to) for subclause in self.children)
 
+    @lru_cache(2048)
     def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'AndClause':
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
@@ -196,9 +198,11 @@ class OrClause(_Clause, ResolvedClause):
     def is_subset(self, other_clause: 'Clause') -> bool:
         return any(c.is_subset(other_clause) for c in self.children)
 
+    @lru_cache(2048)
     def apply(self, to: 'Clausable') -> bool:
         return any(subclause.apply(to) for subclause in self.children)
 
+    @lru_cache(2048)
     def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'OrClause':
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
@@ -345,6 +349,7 @@ class SingleClause(_Clause, ResolvedClause):
     def in_progress(self) -> bool:
         return self.result is ResultStatus.InProgress
 
+    @lru_cache(2048)
     def rank(self) -> Union[int, Decimal]:
         if self.result is ResultStatus.Pass:
             return 1
@@ -370,9 +375,11 @@ class SingleClause(_Clause, ResolvedClause):
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
 
+    @lru_cache(2048)
     def apply(self, to: 'Clausable') -> bool:
         return to.apply_single_clause(self)
 
+    @lru_cache(2048)
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
@@ -402,6 +409,7 @@ class SingleClause(_Clause, ResolvedClause):
 
         return str(self.expected) == str(other_clause.expected)
 
+    @lru_cache(2048)
     def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'SingleClause':
         calculated_result = apply_clause_to_assertion(self, value)
 
