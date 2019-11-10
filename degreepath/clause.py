@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Iterable
-from typing import Union, List, Set, Tuple, Dict, Any, Optional, Iterator, Sequence, cast, TYPE_CHECKING
+from typing import Union, List, Set, Tuple, Dict, Any, Optional, Iterator, Sequence, TYPE_CHECKING
 import logging
 from decimal import Decimal, InvalidOperation
 import abc
@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from .data import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
+CACHE_SIZE = 2048
 
 
 def load_clause(
@@ -53,11 +54,11 @@ def load_clause(
 
 @attr.s(auto_attribs=True, slots=True)
 class _Clause(abc.ABC):
-    @abc.abstractmethod
+    @lru_cache(CACHE_SIZE)
     def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'Clause':
         raise NotImplementedError(f'must define a compare_and_resolve_with(value) method')
 
-    @abc.abstractmethod
+    @lru_cache(CACHE_SIZE)
     def apply(self, to: 'Clausable') -> bool:
         raise NotImplementedError(f'must define an apply(to=) method')
 
@@ -81,26 +82,29 @@ class ResolvedClause:
             "max_rank": str(self.max_rank()),
         }
 
+    @lru_cache(CACHE_SIZE)
     def rank(self) -> Union[int, Decimal]:
         if self.ok():
             return 1
 
         return 0
 
+    @lru_cache(CACHE_SIZE)
     def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
 
         return 1
 
-    @abc.abstractmethod
+    @lru_cache(CACHE_SIZE)
     def in_progress(self) -> bool:
         raise NotImplementedError(f'must define an in_progress() method')
 
-    @abc.abstractmethod
+    @lru_cache(CACHE_SIZE)
     def ok(self) -> bool:
         raise NotImplementedError(f'must define an ok() method')
 
+    @lru_cache(CACHE_SIZE)
     def status(self) -> ResultStatus:
         if self.in_progress():
             return ResultStatus.InProgress
@@ -132,12 +136,12 @@ class AndClause(_Clause, ResolvedClause):
         for c in self.children:
             c.validate(ctx=ctx)
 
-    @lru_cache(2048)
+    @lru_cache(CACHE_SIZE)
     def apply(self, to: 'Clausable') -> bool:
         return all(subclause.apply(to) for subclause in self.children)
 
-    @lru_cache(2048)
-    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'AndClause':
+    @lru_cache(CACHE_SIZE)
+    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'AndClause':  # type: ignore
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
         if any(c.result is ResultStatus.InProgress for c in children):
@@ -155,15 +159,19 @@ class AndClause(_Clause, ResolvedClause):
 
         return AndClause(children=children, resolved_with=None, result=result)
 
+    @lru_cache(CACHE_SIZE)
     def ok(self) -> bool:
         return all(c.ok() for c in self.children)
 
+    @lru_cache(CACHE_SIZE)
     def in_progress(self) -> bool:
         return any(c.in_progress() for c in self.children)
 
+    @lru_cache(CACHE_SIZE)
     def rank(self) -> Union[int, Decimal]:
         return sum(c.rank() for c in self.children)
 
+    @lru_cache(CACHE_SIZE)
     def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
@@ -192,12 +200,12 @@ class OrClause(_Clause, ResolvedClause):
         for c in self.children:
             c.validate(ctx=ctx)
 
-    @lru_cache(2048)
+    @lru_cache(CACHE_SIZE)
     def apply(self, to: 'Clausable') -> bool:
         return any(subclause.apply(to) for subclause in self.children)
 
-    @lru_cache(2048)
-    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'OrClause':
+    @lru_cache(CACHE_SIZE)
+    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'OrClause':  # type: ignore
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
         if any(c.result is ResultStatus.InProgress for c in children):
@@ -212,15 +220,19 @@ class OrClause(_Clause, ResolvedClause):
 
         return OrClause(children=children, resolved_with=None, result=result)
 
+    @lru_cache(CACHE_SIZE)
     def ok(self) -> bool:
         return any(c.ok() for c in self.children)
 
+    @lru_cache(CACHE_SIZE)
     def in_progress(self) -> bool:
         return any(c.in_progress() for c in self.children)
 
+    @lru_cache(CACHE_SIZE)
     def rank(self) -> Union[int, Decimal]:
         return sum(c.rank() for c in self.children)
 
+    @lru_cache(CACHE_SIZE)
     def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
@@ -337,13 +349,15 @@ class SingleClause(_Clause, ResolvedClause):
     def override_expected(self, value: Decimal) -> 'SingleClause':
         return attr.evolve(self, expected=value, expected_verbatim=str(value))
 
+    @lru_cache(CACHE_SIZE)
     def ok(self) -> bool:
         return self.result is ResultStatus.Pass
 
+    @lru_cache(CACHE_SIZE)
     def in_progress(self) -> bool:
         return self.result is ResultStatus.InProgress
 
-    @lru_cache(2048)
+    @lru_cache(CACHE_SIZE)
     def rank(self) -> Union[int, Decimal]:
         if self.result is ResultStatus.Pass:
             return 1
@@ -357,6 +371,7 @@ class SingleClause(_Clause, ResolvedClause):
 
         return 0
 
+    @lru_cache(CACHE_SIZE)
     def max_rank(self) -> Union[int, Decimal]:
         if self.ok():
             return self.rank()
@@ -369,16 +384,16 @@ class SingleClause(_Clause, ResolvedClause):
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
 
-    @lru_cache(2048)
+    @lru_cache(CACHE_SIZE)
     def apply(self, to: 'Clausable') -> bool:
         return to.apply_single_clause(self)
 
-    @lru_cache(2048)
+    @lru_cache(CACHE_SIZE)
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
-    @lru_cache(2048)
-    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'SingleClause':
+    @lru_cache(CACHE_SIZE)
+    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'SingleClause':  # type: ignore
         calculated_result = apply_clause_to_assertion(self, value)
 
         reduced_value = calculated_result.value
