@@ -13,7 +13,6 @@ from .operator import Operator
 from .exception import RuleException, OverrideException, InsertionException, ValueException
 from .rule.course import CourseRule
 
-
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
 
