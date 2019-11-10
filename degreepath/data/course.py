@@ -94,7 +94,7 @@ class CourseInstance(Clausable):
         else:
             suffix = ""
 
-        return f"{self.subject} {self.number}{self.section or ''}{suffix} {self.year}-{self.term}"
+        return f"{self.subject} {self.number}{self.section or ' '}{suffix} {self.year}-{self.term}"
 
     def __str__(self) -> str:
         return self.identity_
