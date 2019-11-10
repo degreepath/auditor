@@ -230,45 +230,6 @@ def test_ranges_lte(caplog):
     assert list(result) == [0, 1, 2, 3, 4, 5]
 
 
-def test_subsets_simple_1(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    y = load_clause({"attributes": {"$eq": "doggie"}}, c=c)
-    assert x.is_subset(y) is False
-
-
-def test_subsets_simple_2(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"attributes": {"$in": ["electives"]}}, c=c)
-    y = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    assert x.is_subset(y) is False
-    assert y.is_subset(x) is True
-
-
-def test_subsets_simple_3(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"$or": [{"attributes": {"$in": ["electives"]}}]}, c=c)
-    y = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    assert x.is_subset(y) is False
-    assert y.is_subset(x) is True
-
-
-def test_subsets_simple_4(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"$and": [{"attributes": {"$in": ["electives"]}}]}, c=c)
-    y = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    assert x.is_subset(y) is False
-    assert y.is_subset(x) is True
-
-
 def test_clause__grade_code():
     c = Constants(matriculation_year=2000)
 

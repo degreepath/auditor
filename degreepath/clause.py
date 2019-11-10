@@ -132,9 +132,6 @@ class AndClause(_Clause, ResolvedClause):
         for c in self.children:
             c.validate(ctx=ctx)
 
-    def is_subset(self, other_clause: 'Clause') -> bool:
-        return any(c.is_subset(other_clause) for c in self.children)
-
     @lru_cache(2048)
     def apply(self, to: 'Clausable') -> bool:
         return all(subclause.apply(to) for subclause in self.children)
@@ -194,9 +191,6 @@ class OrClause(_Clause, ResolvedClause):
     def validate(self, *, ctx: 'RequirementContext') -> None:
         for c in self.children:
             c.validate(ctx=ctx)
-
-    def is_subset(self, other_clause: 'Clause') -> bool:
-        return any(c.is_subset(other_clause) for c in self.children)
 
     @lru_cache(2048)
     def apply(self, to: 'Clausable') -> bool:
@@ -382,32 +376,6 @@ class SingleClause(_Clause, ResolvedClause):
     @lru_cache(2048)
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
-
-    @lru_cache(2048)
-    def is_subset(self, other_clause: Union['BaseCourseRule', 'Clause']) -> bool:
-        """
-        answers the question, "am I a subset of $other"
-        """
-
-        if isinstance(other_clause, AndClause):
-            return any(self.is_subset(c) for c in other_clause.children)
-
-        elif isinstance(other_clause, OrClause):
-            return any(self.is_subset(c) for c in other_clause.children)
-
-        elif hasattr(other_clause, 'is_equivalent_to_clause'):
-            return cast('BaseCourseRule', other_clause).is_equivalent_to_clause(self)
-
-        elif not isinstance(other_clause, type(self)):
-            raise TypeError(f'unsupported value {type(other_clause)}')
-
-        if self.key != other_clause.key:
-            return False
-
-        if self.operator == Operator.EqualTo and other_clause.operator == Operator.In:
-            return any(v == self.expected for v in other_clause.expected)
-
-        return str(self.expected) == str(other_clause.expected)
 
     @lru_cache(2048)
     def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'SingleClause':
