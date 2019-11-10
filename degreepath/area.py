@@ -14,6 +14,7 @@ from .result.count import CountResult
 from .result.requirement import RequirementResult
 from .lib import grade_point_average
 from .solve import find_best_solution
+from .group_by import group_by
 
 if TYPE_CHECKING:
     from .claim import ClaimAttempt  # noqa: F401
@@ -308,6 +309,19 @@ class AreaResult(AreaOfStudy, Result):
 
     def claims(self) -> List['ClaimAttempt']:
         return self.result.claims()
+
+    def keyed_claims(self) -> Dict[str, List[List[str]]]:
+        def sort_claims_by_time(cl: 'ClaimAttempt') -> Tuple:
+            c = cl.claim.course
+            return (c.subject, c.number, c.section, c.sub_type, c.year, c.term)
+
+        claims = sorted((c for c in self.claims() if not c.failed), key=sort_claims_by_time)
+        group = group_by(claims, key=lambda c: c.claim.course.clbid)
+
+        return {
+            k: [list(c.claim.claimant_path) for c in v]
+            for k, v in group.items()
+        }
 
     def claims_for_gpa(self) -> List['ClaimAttempt']:
         return self.result.claims_for_gpa()
