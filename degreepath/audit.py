@@ -92,6 +92,7 @@ def audit(
     estimate_only: bool,
 ) -> Iterator[Message]:  # noqa: C901
     best_sol: Optional[AreaResult] = None
+    best_rank: Union[int, Decimal] = 0
     total_count = 0
     iterations: List[float] = []
     start_time = datetime.now()
@@ -128,6 +129,7 @@ def audit(
             )
 
         result = sol.audit(areas=tuple(area_pointers))
+        result_rank = result.rank()
 
         if print_all:
             yield ResultMsg(
@@ -141,13 +143,12 @@ def audit(
             )
 
         if best_sol is None:
-            best_sol = result
-
-        if best_sol != result and result.rank() > best_sol.rank():
-            best_sol = result
+            best_sol, best_rank = result, result_rank
+        elif result_rank > best_rank:
+            best_sol, best_rank = result, result_rank
 
         if result.ok():
-            best_sol = result
+            best_sol, best_rank = result, result_rank
             iter_end = time.perf_counter()
             iterations.append(iter_end - iter_start)
             break
