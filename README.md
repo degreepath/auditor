@@ -8,7 +8,7 @@ Degreepath is a tool to perform automated, comprehensive, and fast degree audits
 
 **Comprehensive**: Just checking degree audits? Nah. How about running graduation, general education, major, and concentration/minor audits, all at once?
 
-**Fast**: (eventually) And of course, this only makes sense to run if it's faster than doing the checks by hand. Luckily, computers are fast, and the can do lots of things at once!
+**Fast**: (eventually) And of course, this only makes sense to run if it's faster than doing the checks by hand. Luckily, computers are fast, and they can do lots of things at once!
 
 ---
 
