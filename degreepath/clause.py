@@ -54,7 +54,7 @@ def load_clause(
 @attr.s(auto_attribs=True, slots=True)
 class _Clause(abc.ABC):
     @abc.abstractmethod
-    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'Clause':
+    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'Clause':
         raise NotImplementedError(f'must define a compare_and_resolve_with(value) method')
 
     @abc.abstractmethod
@@ -140,7 +140,7 @@ class AndClause(_Clause, ResolvedClause):
         return all(subclause.apply(to) for subclause in self.children)
 
     @lru_cache(2048)
-    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'AndClause':
+    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'AndClause':
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
         if any(c.result is ResultStatus.InProgress for c in children):
@@ -203,7 +203,7 @@ class OrClause(_Clause, ResolvedClause):
         return any(subclause.apply(to) for subclause in self.children)
 
     @lru_cache(2048)
-    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'OrClause':
+    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'OrClause':
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
         if any(c.result is ResultStatus.InProgress for c in children):
@@ -410,7 +410,7 @@ class SingleClause(_Clause, ResolvedClause):
         return str(self.expected) == str(other_clause.expected)
 
     @lru_cache(2048)
-    def compare_and_resolve_with(self, value: Sequence['Clausable']) -> 'SingleClause':
+    def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'SingleClause':
         calculated_result = apply_clause_to_assertion(self, value)
 
         reduced_value = calculated_result.value

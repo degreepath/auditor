@@ -68,7 +68,7 @@ class CountSolution(Solution, BaseCountRule):
                 matched_items.append(matched_course)
                 inserted_clbids.append(matched_course.clbid)
 
-            result = clause.assertion.compare_and_resolve_with(matched_items)
+            result = clause.assertion.compare_and_resolve_with(tuple(matched_items))
 
             audit_results.append(AssertionResult(
                 where=clause.where,

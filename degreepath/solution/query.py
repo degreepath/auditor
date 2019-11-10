@@ -154,7 +154,7 @@ class QuerySolution(Solution, BaseQueryRule):
             filtered_output.append(matched_course)
             inserted_clbids.append(matched_course.clbid)
 
-        result = clause.assertion.compare_and_resolve_with(filtered_output)
+        result = clause.assertion.compare_and_resolve_with(tuple(filtered_output))
         return AssertionResult(
             where=clause.where,
             assertion=result,

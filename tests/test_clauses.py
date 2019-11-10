@@ -136,10 +136,10 @@ def test_resolution(caplog):
     expected_single = SingleClause(key="count(items)", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
     assert x == expected_single
 
-    result = x.compare_and_resolve_with([IntThing()])
+    result = x.compare_and_resolve_with(tuple([IntThing()]))
     assert result.ok() is True
 
-    result = x.compare_and_resolve_with([IntThing(), IntThing()])
+    result = x.compare_and_resolve_with(tuple([IntThing(), IntThing()]))
     assert result.ok() is False
 
 
