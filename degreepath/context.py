@@ -1,17 +1,13 @@
 import attr
-from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable, Iterator
+from typing import List, Optional, Tuple, Dict, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
 from contextlib import contextmanager
 import logging
 
 from .data import CourseInstance, AreaPointer
 from .data.course_enums import CourseType
-from .base import BaseCourseRule
-from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
-from .operator import Operator
 from .exception import RuleException, OverrideException, InsertionException, ValueException
-from .rule.course import CourseRule
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
