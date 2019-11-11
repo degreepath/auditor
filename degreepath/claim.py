@@ -1,11 +1,9 @@
 from typing import Tuple, FrozenSet, Dict, Any, TYPE_CHECKING
-import logging
 import attr
 
 if TYPE_CHECKING:
     from .data import CourseInstance  # noqa: F401
 
-logger = logging.getLogger(__name__)
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, eq=False, order=False, hash=True)
 class Claim:
