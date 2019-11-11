@@ -32,10 +32,11 @@ class CourseRule(Rule, BaseCourseRule):
     @staticmethod
     def load(data: Dict, *, c: Constants, path: List[str]) -> 'CourseRule':
         course = data.get('course', '')
+        ap = data.get('ap', None)
         min_grade = data.get('grade', None)
         grade_option = data.get('grade_option', None)
 
-        path = [*path, f"*{course}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
+        path = [*path, f"*{course or ap}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
 
         allowed_keys = set(['course', 'grade', 'including claimed', 'hidden', 'ap', 'grade_option'])
         given_keys = set(data.keys())
@@ -48,7 +49,7 @@ class CourseRule(Rule, BaseCourseRule):
             grade_option=GradeOption(grade_option) if grade_option else None,
             allow_claimed=data.get("including claimed", False),
             path=tuple(path),
-            ap=data.get('ap', None),
+            ap=ap,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
