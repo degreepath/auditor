@@ -135,7 +135,7 @@ class RequirementContext:
         self,
         *,
         course: CourseInstance,
-        path: Sequence[str],
+        path: Tuple[str, ...],
         allow_claimed: bool = False,
     ) -> ClaimAttempt:
         """
@@ -152,7 +152,7 @@ class RequirementContext:
         path_reqs_only = tuple(r for r in path if r.startswith('%'))
 
         # build a claim so it can be returned later
-        claim = Claim(course=course, claimant_path=tuple(path), claimant_requirements=path_reqs_only)
+        claim = Claim(course=course, claimant_path=path, claimant_requirements=path_reqs_only)
 
         # > A multicountable set describes the ways in which a course may be
         # > counted.
