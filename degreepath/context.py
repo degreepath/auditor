@@ -156,7 +156,7 @@ class RequirementContext:
 
         # > A multicountable set describes the ways in which a course may be
         # > counted.
-
+        #
         # > If no multicountable set describes the course, it may only be
         # > counted once.
 
