@@ -7,7 +7,6 @@ from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer, Clausable
-from ..clause import SingleClause, Operator
 
 if TYPE_CHECKING:
     from ..claim import ClaimAttempt  # noqa: F401
@@ -63,8 +62,7 @@ class QuerySolution(Solution, BaseQueryRule):
         for item in self.output:
             if isinstance(item, CourseInstance):
                 if self.attempt_claims:
-                    clause = self.where or SingleClause(key='crsid', operator=Operator.NotEqualTo, expected='', expected_verbatim='')
-                    claim = ctx.make_claim(course=item, path=self.path, clause=clause, allow_claimed=self.allow_claimed)
+                    claim = ctx.make_claim(course=item, path=self.path, allow_claimed=self.allow_claimed)
 
                     if claim.failed:
                         if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, item.clbid, claim.conflict_with)
@@ -87,8 +85,7 @@ class QuerySolution(Solution, BaseQueryRule):
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(self.path):
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-            clause = SingleClause(key='clbid', operator=Operator.EqualTo, expected=insert.clbid, expected_verbatim=insert.clbid)
-            claim = ctx.make_claim(course=matched_course, path=self.path, clause=clause, allow_claimed=insert.forced)
+            claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=insert.forced)
 
             if claim.failed:
                 if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, insert.clbid, claim.conflict_with)

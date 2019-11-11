@@ -136,7 +136,6 @@ class RequirementContext:
         *,
         course: CourseInstance,
         path: Sequence[str],
-        clause: Union[Clause, BaseCourseRule],
         allow_claimed: bool = False,
     ) -> ClaimAttempt:
         """
@@ -149,18 +148,6 @@ class RequirementContext:
         global debug
         if debug is None:
             debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
-
-        if clause is None:
-            raise TypeError("clause must be provided")
-
-        if isinstance(clause, tuple):
-            raise TypeError("make_claim only accepts clauses and course rules, not tuples")
-
-        # coerce course rules to clauses
-        rule = None
-        if isinstance(clause, BaseCourseRule):
-            rule = clause
-            clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
 
         path_reqs_only = tuple(r for r in path if r.startswith('%'))
 
@@ -175,7 +162,7 @@ class RequirementContext:
 
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
-        if allow_claimed or (isinstance(rule, BaseCourseRule) and rule.allow_claimed):
+        if allow_claimed:
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
             return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
