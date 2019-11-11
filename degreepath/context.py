@@ -175,7 +175,7 @@ class RequirementContext:
 
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
-        if allow_claimed or (isinstance(rule, CourseRule) and rule.allow_claimed):
+        if allow_claimed or (isinstance(rule, BaseCourseRule) and rule.allow_claimed):
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
             return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
