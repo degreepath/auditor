@@ -145,7 +145,7 @@ class RequirementContext:
         if debug is None:
             debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        path_reqs_only = tuple(r for r in path if r.startswith('%'))
+        path_reqs_only = tuple(r for r in path if r[0] == '%')
 
         # build a claim so it can be returned later
         claim = Claim(course=course, claimant_path=path, claimant_requirements=path_reqs_only)
