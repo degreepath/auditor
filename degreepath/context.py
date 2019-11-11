@@ -183,7 +183,7 @@ class RequirementContext:
         if not applicable_reqpaths:
             if prior_claims:
                 if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
+                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
             else:
                 if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
@@ -225,7 +225,7 @@ class RequirementContext:
         if applicable_reqpath is None:
             if prior_claims:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
+                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
             else:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
@@ -241,7 +241,7 @@ class RequirementContext:
         if not available_reqpaths:
             if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
+                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
             else:
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
