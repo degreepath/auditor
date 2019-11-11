@@ -7,8 +7,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, eq=False, order=False, hash=True)
 class Claim:
     course: 'CourseInstance'
     claimant_path: Tuple[str, ...]
@@ -22,7 +21,7 @@ class Claim:
         }
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, eq=False, order=False, hash=True)
 class ClaimAttempt:
     claim: Claim
     conflict_with: FrozenSet[Claim]
