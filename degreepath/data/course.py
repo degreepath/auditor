@@ -1,6 +1,6 @@
 from typing import Optional, Tuple, Dict, Any, Iterable, Callable, TYPE_CHECKING
 import attr
-import decimal
+from decimal import Decimal
 import logging
 
 from .clausable import Clausable
@@ -11,21 +11,20 @@ if TYPE_CHECKING:
     from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)
-Decimal = decimal.Decimal
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseInstance(Clausable):
     clbid: str
     attributes: Tuple[str, ...]
-    credits: decimal.Decimal
+    credits: Decimal
     crsid: str
     course_type: CourseType
     gereqs: Tuple[str, ...]
     grade_code: GradeCode
     grade_option: GradeOption
-    grade_points: decimal.Decimal
-    grade_points_gpa: decimal.Decimal
+    grade_points: Decimal
+    grade_points_gpa: Decimal
     is_in_gpa: bool
     is_in_progress: bool
     is_incomplete: bool
@@ -95,7 +94,7 @@ class CourseInstance(Clausable):
         else:
             suffix = ""
 
-        return f"{self.subject} {self.number}{self.section or ''}{suffix} {self.year}-{self.term}"
+        return f"{self.subject} {self.number}{self.section or ' '}{suffix} {self.year}-{self.term}"
 
     def __str__(self) -> str:
         return self.identity_
@@ -265,14 +264,14 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
 
     clbid = clbid
     term = int(term)
-    credits = decimal.Decimal(credits)
+    credits = Decimal(credits)
     section = section or None
 
     subject = subject[0] if isinstance(subject, list) else subject
 
     grade_code = GradeCode(grade_code)
-    grade_points = decimal.Decimal(grade_points)
-    grade_points_gpa = decimal.Decimal(grade_points_gpa)
+    grade_points = Decimal(grade_points)
+    grade_points_gpa = Decimal(grade_points_gpa)
     grade_option = GradeOption(grade_option)
     sub_type = SubType(sub_type)
     course_type = CourseType(course_type)

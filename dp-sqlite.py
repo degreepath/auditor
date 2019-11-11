@@ -33,12 +33,12 @@ def cli() -> None:
 
 
 def main(area_file: str, student_file: str, run_id: int) -> None:
-    with connect('degreepath.db') as conn:
+    with connect('result.db') as conn:
         init_tables(conn=conn)
 
         result_id = None
 
-        args = Arguments(area_files=[area_file], student_files=[student_file])
+        args = Arguments(area_files=[area_file], student_files=[student_file], archive_file=None)
 
         for msg in dp['run'](args):
             if isinstance(msg, NoStudentsMsg):

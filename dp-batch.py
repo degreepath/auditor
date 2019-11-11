@@ -59,7 +59,7 @@ def main() -> int:  # noqa: C901
 
         if cli_args.invocation:
             print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
-            return 0
+            continue
 
         for msg in dp['run'](args, transcript_only=cli_args.transcript):
             if isinstance(msg, NoStudentsMsg):

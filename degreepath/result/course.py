@@ -48,9 +48,6 @@ class CourseResult(Result, BaseCourseRule):
         else:
             return []
 
-    def in_progress(self) -> bool:
-        return self.claim_attempt is not None and self.claim_attempt.claim.course.is_in_progress
-
     def was_overridden(self) -> bool:
         return self.inserted or self.overridden
 
