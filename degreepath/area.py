@@ -203,12 +203,10 @@ class AreaSolution(AreaOfStudy):
         result = self.solution.audit(ctx=self.context)
 
         # Append the "common" major requirements, if we've audited a major.
-        common_req_results = None
         if self.kind == 'major':
             common_req_results = self.audit_common_major_requirements(result=result)
 
-            if not isinstance(result, CountResult):
-                raise TypeError('expected a Count result from common major requirements')
+            assert isinstance(result, CountResult), TypeError('expected a Count result from common major requirements')
 
             result = attr.evolve(result, items=tuple([*result.items, common_req_results]), count=result.count + 1)
 
