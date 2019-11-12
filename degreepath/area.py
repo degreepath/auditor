@@ -199,13 +199,13 @@ class AreaSolution(AreaOfStudy):
             common_rules=area.common_rules,
         )
 
-    def audit(self, areas: Sequence[AreaPointer] = tuple()) -> 'AreaResult':
+    def audit(self) -> 'AreaResult':
         result = self.solution.audit(ctx=self.context)
 
         # Append the "common" major requirements, if we've audited a major.
         common_req_results = None
         if self.kind == 'major':
-            common_req_results = self.audit_common_major_requirements(result=result, areas=areas)
+            common_req_results = self.audit_common_major_requirements(result=result)
 
             if not isinstance(result, CountResult):
                 raise TypeError('expected a Count result from common major requirements')
@@ -214,7 +214,7 @@ class AreaSolution(AreaOfStudy):
 
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
-    def audit_common_major_requirements(self, result: Result, areas: Sequence[AreaPointer]) -> RequirementResult:
+    def audit_common_major_requirements(self, result: Result) -> RequirementResult:
         claimed = set(result.matched())
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)

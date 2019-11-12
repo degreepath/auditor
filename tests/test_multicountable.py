@@ -35,7 +35,7 @@ def test_mc__none(caplog):
 
     solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
 
-    results = [s.audit(areas=[]) for s in solutions]
+    results = [s.audit() for s in solutions]
     assert len(results) == 3
 
     result_a, result_b, result_c = results
@@ -78,7 +78,7 @@ def test_mc__none_2(caplog):
 
     solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
 
-    results = [s.audit(areas=[]) for s in solutions]
+    results = [s.audit() for s in solutions]
     assert len(results) == 3
 
     result_a, result_b, result_c = results
@@ -122,7 +122,7 @@ def test_mc__only_course_references(caplog):
 
     solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
 
-    results = [s.audit(areas=[]) for s in solutions]
+    results = [s.audit() for s in solutions]
     assert len(results) == 1
 
     result_a = results[0]
@@ -166,7 +166,7 @@ def test_mc__only_query_references(caplog):
 
     solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
 
-    results = [s.audit(areas=[]) for s in solutions]
+    results = [s.audit() for s in solutions]
     assert len(results) == 1
 
     result_a = results[0]
@@ -206,7 +206,7 @@ def x_test_mc__mixed_course_query_references(caplog):
 
     solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
 
-    results = [s.audit(areas=[]) for s in solutions]
+    results = [s.audit() for s in solutions]
     assert len(results) == 1
 
     result_a = results[0]
