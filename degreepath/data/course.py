@@ -104,7 +104,7 @@ class CourseInstance(Clausable):
         else:
             suffix = ""
 
-        return f"{self.subject} {self.number}{self.section or ' '}{suffix} {self.year}-{self.term}"
+        return f"{self.subject} {self.number}{self.section or ''}{suffix} {self.year}-{self.term}"
 
     def apply_single_clause(self, clause: 'SingleClause') -> bool:
         logger.debug("clause/compare/key=%s", clause.key)
