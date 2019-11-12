@@ -16,7 +16,7 @@ from ..operator import Operator
 from ..data import CourseInstance
 from .assertion import AssertionRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)

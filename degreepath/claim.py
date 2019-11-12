@@ -1,7 +1,7 @@
 from typing import Tuple, FrozenSet, Dict, Any, TYPE_CHECKING
 import attr
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .data import CourseInstance  # noqa: F401
 
 

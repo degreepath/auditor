@@ -2,7 +2,7 @@ import abc
 from typing import Dict, Tuple, Any, TYPE_CHECKING
 import logging
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)

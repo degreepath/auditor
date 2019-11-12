@@ -13,7 +13,7 @@ from .status import ResultStatus
 from .apply_clause import apply_clause_to_assertion
 from functools import lru_cache
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .base.course import BaseCourseRule  # noqa: F401
     from .context import RequirementContext
     from .data import Clausable  # noqa: F401

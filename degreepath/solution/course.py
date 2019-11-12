@@ -6,7 +6,7 @@ from ..base import Solution, BaseCourseRule
 from ..result.course import CourseResult
 from ..claim import ClaimAttempt
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import CourseInstance  # noqa: F401
 

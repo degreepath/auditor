@@ -16,7 +16,7 @@ from .lib import grade_point_average
 from .solve import find_best_solution
 from .group_by import group_by
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .claim import ClaimAttempt  # noqa: F401
 
 logger = logging.getLogger(__name__)

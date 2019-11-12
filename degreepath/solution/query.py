@@ -8,7 +8,7 @@ from ..rule.assertion import AssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer, Clausable
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..claim import ClaimAttempt  # noqa: F401
     from ..context import RequirementContext
 

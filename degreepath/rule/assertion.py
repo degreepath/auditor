@@ -9,7 +9,7 @@ from ..operator import Operator
 from ..base.bases import Rule, Solution
 from ..base.assertion import BaseAssertionRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import Clausable  # noqa: F401
 

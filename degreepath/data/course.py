@@ -7,7 +7,7 @@ from .clausable import Clausable
 from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
 from ..lib import str_to_grade_points
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)

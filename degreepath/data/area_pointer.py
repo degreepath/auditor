@@ -6,7 +6,7 @@ import decimal
 from .area_enums import AreaStatus, AreaType
 from .clausable import Clausable
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)

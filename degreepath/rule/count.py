@@ -13,7 +13,7 @@ from ..solve import find_best_solution
 from .course import CourseRule
 from .assertion import AssertionRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import Clausable  # noqa: F401
 

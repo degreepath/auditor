@@ -6,7 +6,7 @@ import attr
 from functools import cmp_to_key, lru_cache
 from ..status import ResultStatus
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..claim import ClaimAttempt  # noqa: F401
     from ..data import CourseInstance  # noqa: F401

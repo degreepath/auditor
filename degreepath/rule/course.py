@@ -9,7 +9,7 @@ from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
 from ..data.course_enums import GradeOption
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import Clausable  # noqa: F401
 

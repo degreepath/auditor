@@ -1,7 +1,7 @@
 from typing import Optional, Dict, Set, TYPE_CHECKING
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .claim import Claim  # noqa: F401
     from .base import Result, Rule  # noqa: F401
     from .context import RequirementContext

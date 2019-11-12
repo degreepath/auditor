@@ -7,7 +7,7 @@ from .rule.course import CourseRule
 from .rule.query import QueryRule
 from .rule.requirement import RequirementRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext  # noqa: F401
 
 

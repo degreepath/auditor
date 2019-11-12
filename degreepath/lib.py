@@ -2,7 +2,7 @@ from decimal import Decimal, ROUND_DOWN
 from typing import Iterable, TYPE_CHECKING
 from .data.course_enums import GradeCode
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .data import CourseInstance  # noqa: F401
 
 

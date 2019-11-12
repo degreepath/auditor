@@ -4,7 +4,7 @@ import enum
 
 from .bases import Base, Summable
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..claim import ClaimAttempt  # noqa: F401
 
 

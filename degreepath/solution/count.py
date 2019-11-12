@@ -6,7 +6,7 @@ from ..base import Solution, BaseCountRule, Rule, Result
 from ..result.count import CountResult
 from ..result.assertion import AssertionResult
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
