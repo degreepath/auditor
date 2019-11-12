@@ -34,7 +34,7 @@ class Limit:
         if at_most is None:
             raise Exception(f'expected an at-most key; got {data}')
 
-        allowed_keys = set(['at most', 'at-most', 'at_most', 'where', 'message'])
+        allowed_keys = {'at most', 'at-most', 'at_most', 'where', 'message'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty"
 
@@ -51,7 +51,7 @@ class Limit:
         # Be sure to sort the input, so that the output from the iterator is
         # sorted the same way each time. We need this because our input may
         # be a set, in which case there is no inherent ordering.
-        courses = sorted(courses, key=lambda c: c.sort_order())
+        courses = sorted(courses, key=lambda item: item.sort_order())
 
         logger.debug("limit/loop/start: limit=%s, matched=%s", self, courses)
 
@@ -70,33 +70,32 @@ class LimitSet:
         return len(self.limits) > 0
 
     def to_dict(self) -> List[Dict[str, Any]]:
-        return [l.to_dict() for l in self.limits]
+        return [limit.to_dict() for limit in self.limits]
 
     @staticmethod
     def load(data: Optional[Sequence[Dict]], c: Constants) -> 'LimitSet':
         if data is None:
             return LimitSet(limits=tuple())
-        return LimitSet(limits=tuple(Limit.load(l, c) for l in data))
+        return LimitSet(limits=tuple(Limit.load(limit, c) for limit in data))
 
     def apply_limits(self, courses: Sequence[T]) -> Iterator[T]:
         clause_counters: Dict = defaultdict(int)
-
         logger.debug("limit/before: %s", courses)
 
         for c in courses:
             may_yield = True
 
-            for l in self.limits:
-                logger.debug("limit/check: checking %s against %s (counter: %s)", c, l, clause_counters[l])
-                if l.where.apply(c):
-                    if clause_counters[l] < l.at_most:
-                        logger.debug("limit/increment: %s matched %s (counter: %s)", c, l, clause_counters[l])
-                        clause_counters[l] += 1
-                    else:
-                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c, l, clause_counters[l])
+            for limit in self.limits:
+                logger.debug("limit/check: checking %s against %s (counter: %s)", c, limit, clause_counters[limit])
+                if limit.where.apply(c):
+                    if clause_counters[limit] >= limit.at_most:
+                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c, limit, clause_counters[limit])
                         may_yield = False
                         # break out of the loop once we fill up any limit clause
                         break
+
+                    logger.debug("limit/increment: %s matched %s (counter: %s)", c, limit, clause_counters[limit])
+                    clause_counters[limit] += 1
 
             if may_yield is True:
                 logger.debug("limit/state: %s", clause_counters)
@@ -106,26 +105,16 @@ class LimitSet:
     def check(self, courses: Sequence[T]) -> bool:
         clause_counters: Dict = defaultdict(int)
 
-        is_ok = True
-
         for c in courses:
-            for l in self.limits:
-                # logger.debug("limit/check: checking %s against %s (counter: %s)", c, l, clause_counters[l])
-                if l.where.apply(c):
-                    if clause_counters[l] < l.at_most:
-                        # logger.debug("limit/increment: %s matched %s (counter: %s)", c, l, clause_counters[l])
-                        clause_counters[l] += 1
-                    else:
-                        # logger.debug("limit/maximum: %s matched %s (counter: %s)", c, l, clause_counters[l])
-                        is_ok = False
-
+            for limit in self.limits:
+                if limit.where.apply(c):
+                    if clause_counters[limit] >= limit.at_most:
                         # break out of the loop once we fill up any limit clause
-                        break
+                        return False
 
-            if not is_ok:
-                break
+                    clause_counters[limit] += 1
 
-        return is_ok
+        return True
 
     def limited_transcripts(self, courses: Sequence[T]) -> Iterator[Tuple[T, ...]]:
         """
@@ -153,26 +142,26 @@ class LimitSet:
 
         # step 1: find the number of extra iterations we will need for each limiting clause
         matched_items: Dict = defaultdict(set)
-        for l in self.limits:
+        for limit in self.limits:
             for c in courses:
-                logger.debug("limit/probe: checking %s against %s", c, l)
-                if l.where.apply(c):
-                    matched_items[l].add(c)
+                logger.debug("limit/probe: checking %s against %s", c, limit)
+                if limit.where.apply(c):
+                    matched_items[limit].add(c)
 
-        all_matched_items = set(item for matchset in matched_items.values() for item in matchset)
+        all_matched_items = set(item for match_set in matched_items.values() for item in match_set)
         unmatched_items = list(all_courses.difference(all_matched_items))
 
         logger.debug("limit: unmatched items: %s", unmatched_items)
 
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [
-            limit.iterate(matchset)
-            for limit, matchset in matched_items.items()
+            limit.iterate(match_set)
+            for limit, match_set in matched_items.items()
         ]
 
         emitted_solutions: Set[Tuple[T, ...]] = set()
         for results in itertools.product(*clause_iterators):
-            these_items = tuple(sorted((item for group in results for item in group), key=lambda c: c.sort_order()))
+            these_items = tuple(sorted((item for group in results for item in group), key=lambda item: item.sort_order()))
 
             if not self.check(these_items):
                 continue
