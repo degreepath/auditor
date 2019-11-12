@@ -53,7 +53,7 @@ class CourseType(enum.Enum):
     ParaCollege = "PC"
 
 
-# We want AP courses to be superceded by St. Olaf courses, if possible.
+# We want AP courses to be superseded by St. Olaf courses, if possible.
 # Because most rules will take the first item out of the transcript that they can,
 # we can accomplish this by grouping St. Olaf courses before pre-St. Olaf courses.
 CourseTypeSortOrder = {
