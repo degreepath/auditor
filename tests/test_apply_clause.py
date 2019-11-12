@@ -39,6 +39,14 @@ def test_count_terms_from_most_common_course():
     assert len(result.courses) == 2
 
 
+def test_count_terms_from_most_common_course__empty():
+    result = funcs.count_terms_from_most_common_course([])
+
+    assert result.value == 0
+    assert result.data == ()
+    assert len(result.courses) == 0
+
+
 def test_count_terms_from_most_common_course__two_sections_same_term():
     result = funcs.count_terms_from_most_common_course([
         course_from_str("ECON 123", section='A', clbid='123', crsid='1', year='2009', term='3'),
@@ -120,6 +128,18 @@ def test_count_years():
     assert result.value == 2
     assert result.data == ('2007', '2009')
     assert len(result.courses) == 2
+
+
+def test_count_math_perspectives():
+    result = funcs.count_math_perspectives([
+        course_from_str("MUSIC 111", attributes=('math_perspective_a',)),
+        course_from_str("ECON 123", attributes=('math_perspective_a',)),
+        course_from_str("ECON 125", attributes=('math_perspective_c',)),
+    ])
+
+    assert result.value == 2
+    assert result.data == ('math_perspective_a', 'math_perspective_c')
+    assert len(result.courses) == 3
 
 
 def test_sum_credits():
