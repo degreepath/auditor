@@ -13,8 +13,7 @@ def to_csv(result: Dict[str, Any], *, transcript: Sequence[CourseInstance]) -> s
 
         writer.writerow(['key', 'student'])
         for key, val in Csvify(transcript={c.clbid: c for c in transcript}).csvify(result):
-            key = ' > '.join(k for k in key if k)
-            writer.writerow([key, val])
+            writer.writerow([' > '.join(k for k in key if k), val])
 
         return f.getvalue()
 
@@ -23,16 +22,10 @@ def to_csv(result: Dict[str, Any], *, transcript: Sequence[CourseInstance]) -> s
 class Csvify:
     transcript: Dict[str, CourseInstance]
 
-    def csvify(self, root: Dict[str, Any]):
+    def csvify(self, root: Dict[str, Any]) -> Iterator[Tuple[Sequence[str], str]]:
         yield from self.result(root, path=[], overridden=False)
 
-    def result(
-        self,
-        rule: Dict[str, Any],
-        *,
-        path: Sequence[str],
-        overridden: bool,
-    ) -> Iterator[Tuple[List[str], str]]:
+    def result(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
         if rule["type"] == "area":
             yield from self.area(rule, path=path)
         elif rule["type"] == "course":
@@ -48,12 +41,12 @@ class Csvify:
         else:
             raise Exception(f'unknown type {rule["type"]}')
 
-    def area(self, rule: Dict[str, Any], *, path: Sequence[str]) -> Iterator[Tuple[List[str], str]]:
+    def area(self, rule: Dict[str, Any], *, path: Sequence[str]) -> Iterator[Tuple[Sequence[str], str]]:
         yield (['progress'], f"{round(float(rule['rank']) / float(rule['max_rank'])):.2%}")
         yield (['gpa'], rule['gpa'])
         yield from self.result(rule['result'], path=path, overridden=rule['overridden'])
 
-    def course(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[List[str], str]]:
+    def course(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
         if overridden:
             yield (path, '[overridden]')
             return
@@ -74,7 +67,7 @@ class Csvify:
 
         yield (path, '-')
 
-    def count(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[List[str], str]]:
+    def count(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
         overridden = overridden or rule['overridden']
 
         for i, r in enumerate(rule["items"]):
@@ -97,12 +90,12 @@ class Csvify:
                     continue
                 yield (k, v)
 
-    def query(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[List[str], str]]:
+    def query(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
         for a in rule['assertions']:
             if a['assertion']['operator'] not in ('LessThan', 'LessThanOrEqualTo'):
                 yield from self.assertion(a, path=path, overridden=overridden or rule['overridden'])
 
-    def requirement(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[List[str], str]]:
+    def requirement(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
         if rule["name"].startswith('Common ') and rule["name"].endswith(' Major Requirements'):
             return
 
@@ -113,7 +106,7 @@ class Csvify:
         if rule["result"]:
             yield from self.result(rule["result"], path=[*path, rule["name"]], overridden=overridden or rule['overridden'])
 
-    def assertion(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[List[str], str]]:
+    def assertion(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
         where = f"{str_clause(rule['where'])}, " if rule['where'] else ''
 
         kind_lookup = {
