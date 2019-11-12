@@ -9,7 +9,7 @@ import os
 
 from degreepath.ms import pretty_ms
 from degreepath.stringify import summarize
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
@@ -22,7 +22,6 @@ def main() -> int:  # noqa: C901
     parser.add_argument('-w', '--workers', help="the number of worker processes to spawn", default=os.cpu_count())
     parser.add_argument('--dir', default=DEFAULT_DIR)
     parser.add_argument('--areas-dir', default=os.path.expanduser('~/Projects/degreepath-areas'))
-    parser.add_argument("--estimate", action='store_true')
     parser.add_argument("--transcript", action='store_true')
     parser.add_argument("--invocation", action='store_true')
     parser.add_argument("-q", "--quiet", action='store_true')
@@ -53,7 +52,6 @@ def main() -> int:  # noqa: C901
             area_files=[area_file],
             student_files=[student_file],
             print_all=False,
-            estimate_only=cli_args.estimate,
             archive_file=None,
         )
 
@@ -114,10 +112,6 @@ def main() -> int:  # noqa: C901
                         show_ranks=cli_args.show_ranks,
                         claims=msg.result.keyed_claims(),
                     )))
-
-            elif isinstance(msg, EstimateMsg):
-                if not cli_args.quiet and not cli_args.table:
-                    print(f"estimated iterations: {msg.estimate:,}", file=sys.stderr)
 
             else:
                 if not cli_args.quiet:

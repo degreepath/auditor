@@ -129,10 +129,6 @@ class Rule(Base):
         raise NotImplementedError(f'must define a solutions() method')
 
     @abc.abstractmethod
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        raise NotImplementedError(f'must define an estimate() method')
-
-    @abc.abstractmethod
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         raise NotImplementedError(f'must define a has_potential() method')
 

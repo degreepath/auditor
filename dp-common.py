@@ -96,7 +96,6 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
                     constants=constants,
                     area_pointers=area_pointers,
                     print_all=args.print_all,
-                    estimate_only=args.estimate_only,
                 )
 
             except Exception as ex:

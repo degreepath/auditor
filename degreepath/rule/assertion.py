@@ -52,10 +52,6 @@ class AssertionRule(Rule, BaseAssertionRule):
     def get_requirement_names(self) -> List[str]:
         return []
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        logger.debug('AssertionRule.estimate: 0')
-        return 0
-
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise Exception('this method should not be called')
 

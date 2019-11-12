@@ -11,7 +11,6 @@ from ..clause import load_clause, Clause, SingleClause, OrClause, AndClause
 from ..data.clausable import Clausable
 from ..solution.query import QuerySolution
 from ..constants import Constants
-from ..ncr import ncr
 from ..operator import Operator
 from ..data import CourseInstance
 from .assertion import AssertionRule
@@ -129,36 +128,6 @@ class QueryRule(Rule, BaseQueryRule):
             # be sure we always yield something
             logger.debug("%s did not yield anything; yielding empty collection", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple())
-
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        data = self.get_data(ctx=ctx)
-
-        if self.where is not None:
-            data = [item for item in data if self.where.apply(item)]
-
-        did_iter = False
-        iterations = 0
-        for item_set in self.limit.limited_transcripts(data):
-            if self.attempt_claims is False:
-                iterations += 1
-                continue
-
-            if has_assertion(self.assertions, key=get_simple_count_clauses):
-                assertion = get_largest_simple_count_assertion(self.assertions)
-                if assertion is None:
-                    raise Exception('has_simple_count_assertion and get_largest_simple_count_assertion disagreed')
-                for n in assertion.input_size_range(maximum=len(item_set)):
-                    iterations += ncr(len(item_set), n)
-            else:
-                for n in range(1, len(item_set) + 1):
-                    iterations += ncr(len(item_set), n)
-
-        if not did_iter:
-            iterations += 1
-
-        logger.debug('QueryRule.estimate: %s', iterations)
-
-        return iterations
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):

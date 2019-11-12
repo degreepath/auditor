@@ -11,7 +11,7 @@ import psycopg2  # type: ignore
 import sentry_sdk
 
 from degreepath.ms import pretty_ms
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 logger = logging.getLogger(__name__)
 dirpath = os.path.dirname(os.path.abspath(__file__))
@@ -105,9 +105,6 @@ def main(*, area_file: str, archive_file: Optional[str] = None, student_file: st
 
             elif isinstance(msg, ResultMsg):
                 record(conn=conn, result_id=result_id, message=msg)
-
-            elif isinstance(msg, EstimateMsg):
-                pass
 
             else:
                 logger.critical('unknown message %s', msg)

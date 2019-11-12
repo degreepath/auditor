@@ -12,7 +12,7 @@ from degreepath.ms import pretty_ms
 from degreepath.stringify import summarize
 from degreepath.stringify_csv import to_csv
 from degreepath.area import AreaResult
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 dp = runpy.run_path(dirpath + '/dp-common.py')
@@ -57,7 +57,6 @@ def main() -> int:  # noqa: C901
         area_files=cli_args.area_files,
         student_files=cli_args.student_files,
         print_all=cli_args.print_all,
-        estimate_only=False,
         archive_file=cli_args.archive_file,
     )
 
@@ -112,10 +111,6 @@ def main() -> int:  # noqa: C901
                     show_paths=cli_args.show_paths,
                     show_ranks=cli_args.show_ranks,
                 ))
-
-        elif isinstance(msg, EstimateMsg):
-            if not cli_args.quiet:
-                print(f"estimated iterations: {msg.estimate:,}", file=sys.stderr)
 
         else:
             if not cli_args.quiet:

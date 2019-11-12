@@ -340,30 +340,6 @@ class CountRule(Rule, BaseCountRule):
 
         return independent_rule__results
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        logger.debug('CountRule.estimate')
-
-        lo = self.count
-        hi = len(self.items) + 1 if self.at_most is False else self.count + 1
-
-        did_yield = False
-        iterations = 0
-        for r in range(lo, hi):
-            for combo in itertools.combinations(self.items, r):
-                estimates = [rule.estimate(ctx=ctx) for rule in combo]
-                product = mult(estimates)
-                if product == 0 or product == 1:
-                    iterations += sum(estimates)
-                else:
-                    iterations += product
-
-        if not did_yield:
-            iterations += 1
-
-        logger.debug('CountRule.estimate: %s', iterations)
-
-        return iterations
-
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):
             logger.debug('%s has potential: yes', self.path)

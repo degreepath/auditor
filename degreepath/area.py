@@ -163,19 +163,6 @@ class AreaOfStudy(Base):
 
         logger.debug("all solutions generated")
 
-    def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]) -> int:
-        iterations = 0
-
-        for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            ctx = RequirementContext(
-                areas=areas,
-                multicountable=self.multicountable,
-            ).with_transcript(limited_transcript)
-
-            iterations += self.result.estimate(ctx=ctx)
-
-        return iterations
-
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AreaSolution(AreaOfStudy):

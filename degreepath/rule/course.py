@@ -75,10 +75,6 @@ class CourseRule(Rule, BaseCourseRule):
 
         yield CourseSolution.from_rule(rule=self)
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        logger.debug('CourseRule.estimate: 1')
-        return 1
-
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):
             logger.debug('%s has potential: yes', self.path)
