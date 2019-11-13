@@ -32,6 +32,18 @@ def count_courses(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(items), data=clbids, courses=courses)
 
 
+def count_distinct_courses(data: Sequence[CourseInstance]) -> AppliedClauseResult:
+    items: Set[str] = set()
+    courses = set()
+
+    for c in data:
+        if c.crsid not in items:
+            items.add(c.crsid)
+            courses.add(c)
+
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
+
+
 def count_terms_from_most_common_course(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     if not data:
         return AppliedClauseResult(value=0)
@@ -172,6 +184,7 @@ def average_credits(data: Sequence[CourseInstance]) -> AppliedClauseResult:
 
 course_actions: Mapping[str, Callable[[Sequence[CourseInstance]], AppliedClauseResult]] = {
     'count(courses)': count_courses,
+    'count(distinct_courses)': count_distinct_courses,
     'count(terms_from_most_common_course)': count_terms_from_most_common_course,
     'count(math_perspectives)': count_math_perspectives,
     'count(subjects)': count_subjects,
