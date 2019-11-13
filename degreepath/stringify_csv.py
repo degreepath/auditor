@@ -1,4 +1,4 @@
-from typing import List, Iterator, Any, Dict, Sequence, Tuple
+from typing import Iterator, Any, Dict, Sequence, Tuple
 from io import StringIO
 import attr
 import csv
