@@ -258,7 +258,7 @@ class CountRule(Rule, BaseCountRule):
             if SHOW_ESTIMATES:
                 lengths = {r.path: len(s) for r, s in solutions_dict.items()}
                 ppath = ' → '.join(self.path)
-                lines = [': '.join([' → '.join(k), str(v)]) for k, v in lengths.items()]
+                lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
                 body = '\n\t'.join(lines)
                 print(f"\nemitting {mult(lengths.values()):,} solutions at {ppath}\n\t{body}", file=sys.stderr)
 
