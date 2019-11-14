@@ -92,7 +92,7 @@ class Base(abc.ABC):
         return False
 
 
-class Result(Base):
+class Result(Base, abc.ABC):
     __slots__ = ()
 
     def state(self) -> RuleState:
