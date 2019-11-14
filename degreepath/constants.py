@@ -1,15 +1,16 @@
 import attr
 from typing import Any
 import logging
+from enum import Enum
 
 logger = logging.getLogger(__name__)
 
-VALID_CLAUSE_CONSTANTS = [
-    '$senior-year',
-    '$junior-year',
-    '$major-declaration',
-    '$matriculation-year',
-]
+
+class KnownConstants(Enum):
+    SeniorYear = "$senior-year"
+    JuniorYear = "$junior-year"
+    MajorDeclarationDate = "$major-declaration"
+    MatriculationYear = "$matriculation-year"
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -23,22 +24,12 @@ class Constants:
         if not v.startswith('$'):
             return v
 
-        if v == '$matriculation-year':
+        key = KnownConstants(v)
+        if key is KnownConstants.MatriculationYear:
             return self.matriculation_year
-
-        if v == '$senior-year':
-            logger.critical("TODO: support constant value %s", v)
+        else:
+            logger.critical(f"TODO: support constant value `{v}`")
             return 0
-
-        if v == '$junior-year':
-            logger.critical("TODO: support constant value %s", v)
-            return 0
-
-        if v == '$major-declaration':
-            logger.critical("TODO: support constant value %s", v)
-            return 0
-
-        raise Exception('value constants must be one of {}; got {} ({})'.format(VALID_CLAUSE_CONSTANTS, v, type(v)))
 
     @staticmethod
     def validate(v: Any) -> bool:
@@ -48,4 +39,4 @@ class Constants:
         if not v.startswith('$'):
             return True
 
-        return v in VALID_CLAUSE_CONSTANTS
+        assert KnownConstants(v)
