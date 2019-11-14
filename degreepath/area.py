@@ -411,7 +411,6 @@ def prepare_common_rules(
 
     yield s_u_credits
 
-    outside_the_major = None
     if is_bm_major is False:
         if dept_code is None:
             outside_the_major = load_rule(
