@@ -64,7 +64,7 @@ def main() -> int:
                 db.execute('''
                     insert into area (stnum, name, type, code, dept, status, degree, catalog)
                     values (?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (str(data['stnum']), area['name'], area['kind'], area['code'], area.get('dept', ''), area['status'], area['degree'], area.get('catalog', data['catalog'])))
+                ''', (str(data['stnum']), area['name'], area['kind'], area['code'], area.get('dept', ''), area['status'], area['degree'], area.get('catalog', data['catalog']).split('-')[0]))
 
         if to_index:
             print()
