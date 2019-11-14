@@ -64,10 +64,21 @@ class CountRule(Rule, BaseCountRule):
             items = data["of"]
 
         children_with_emphases = {**children}
-        if emphases:
-            for r in emphases:
-                emphasis_key = f"Emphasis: {r['name']}"
-                children_with_emphases[emphasis_key] = r
+        for emph in emphases:
+            emphasis_key = f"Emphasis: {emph['name']}"
+
+            # If an emphasis starts with an all-of rule, we can optimize it by
+            # inserting each of its children as top-level rules, and just
+            # prefixing their names with the name of the emphasis. This allows
+            # us to find any disjoint emphasis requirements with the normal
+            # logic, and do independent solutions for anything that we can.
+            if 'all' in emph['result']:
+                for emph_req_name, emph_req_body in emph['requirements'].items():
+                    key = f"{emphasis_key} → {emph_req_name}"
+                    children_with_emphases[key] = emph_req_body
+                    items.append({"requirement": key})
+            else:
+                children_with_emphases[emphasis_key] = emph
                 items.append({"requirement": emphasis_key})
 
         at_most = data.get('at_most', False)
