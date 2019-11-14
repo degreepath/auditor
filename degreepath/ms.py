@@ -26,7 +26,7 @@ def parse_ms(ms: decimal.Decimal) -> Ms:
         hours=to_zero((ms / 3_600_000) % 24),
         minutes=to_zero((ms / 60_000) % 60),
         seconds=to_zero((ms / 1_000) % 60),
-        milliseconds=to_zero((ms) % 1_000),
+        milliseconds=to_zero(ms % 1_000),
         microseconds=to_zero((ms * 1_000) % 1_000),
         nanoseconds=to_zero((ms * 1_000_000) % 1_000),
     )
