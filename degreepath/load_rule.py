@@ -36,7 +36,7 @@ def load_rule(
         return CountRule.load(data, c=c, children=children, path=path, emphases=emphases, ctx=ctx)
 
     elif RequirementRule.can_load(data):
-        reqname = data["requirement"]
-        return RequirementRule.load(children[reqname], name=reqname, c=c, path=path, ctx=ctx)
+        req_name = data["requirement"]
+        return RequirementRule.load(children[req_name], name=req_name, c=c, path=path, ctx=ctx)
 
     raise ValueError(f"expected Course, Query, Count, or Reference; found none of those (in {data}, {type(data)})")
