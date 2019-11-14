@@ -298,7 +298,7 @@ class AreaResult(AreaOfStudy, Result):
     def keyed_claims(self) -> Dict[str, List[List[str]]]:
         def sort_claims_by_time(cl: 'ClaimAttempt') -> Tuple:
             c = cl.claim.course
-            return (c.subject, c.number, c.section, c.sub_type, c.year, c.term)
+            return (c.subject, c.number, c.section or '', c.sub_type, c.year, c.term)
 
         claims = sorted((c for c in self.claims() if not c.failed), key=sort_claims_by_time)
         by_clbid = group_by(claims, key=lambda c: c.claim.course.clbid)
