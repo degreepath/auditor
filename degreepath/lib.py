@@ -1,6 +1,6 @@
 from decimal import Decimal, ROUND_DOWN
 from typing import Iterable, TYPE_CHECKING
-from .data.course_enums import GradeCode
+from .data.course_enums import GradeCode, grade_code_to_points
 
 if TYPE_CHECKING:  # pragma: no cover
     from .data import CourseInstance  # noqa: F401
@@ -26,20 +26,4 @@ def grade_point_average(courses: Iterable['CourseInstance']) -> Decimal:
 
 
 def str_to_grade_points(s: str) -> Decimal:
-    grades = {
-        GradeCode.Aplus: Decimal("4.00"),
-        GradeCode.A: Decimal("4.00"),
-        GradeCode.Aminus: Decimal("3.70"),
-        GradeCode.Bplus: Decimal("3.30"),
-        GradeCode.B: Decimal("3.00"),
-        GradeCode.Bminus: Decimal("2.70"),
-        GradeCode.Cplus: Decimal("2.30"),
-        GradeCode.C: Decimal("2.00"),
-        GradeCode.Cminus: Decimal("1.70"),
-        GradeCode.Dplus: Decimal("1.30"),
-        GradeCode.D: Decimal("1.00"),
-        GradeCode.Dminus: Decimal("0.70"),
-        GradeCode.F: Decimal("0.00"),
-    }
-
-    return grades.get(GradeCode(s), Decimal("0.00"))
+    return grade_code_to_points.get(GradeCode(s), Decimal("0.00"))
