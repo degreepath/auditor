@@ -250,8 +250,8 @@ class CountRule(Rule, BaseCountRule):
             deselected_children_set = set(all_children - children_with_results).difference(set(selected_children))
             deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(deselected_children_set)
 
-            # itertools.product does this internally, so we'll pre-compute the results here
-            # to make it obvious that it's not lazy
+            # itertools.product does this internally, so we'll pre-compute the
+            # results here to make it obvious that it's not lazy
             solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
             solutions = tuple(solutions_dict.values())
 
