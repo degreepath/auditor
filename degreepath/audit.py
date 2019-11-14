@@ -18,7 +18,6 @@ class Arguments:
     student_files: List[str]
     archive_file: Optional[str]
     print_all: bool = False
-    estimate_only: bool = False
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -67,17 +66,12 @@ class ProgressMsg:
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
-class EstimateMsg:
-    estimate: int
-
-
-@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class AreaFileNotFoundMsg:
     area_file: str
     stnum: str
 
 
-Message = Union[EstimateMsg, ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg, AreaFileNotFoundMsg]
+Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg, AreaFileNotFoundMsg]
 
 
 def audit(
@@ -89,9 +83,9 @@ def audit(
     exceptions: List[RuleException],
     area_pointers: Sequence[AreaPointer],
     print_all: bool,
-    estimate_only: bool,
 ) -> Iterator[Message]:  # noqa: C901
     best_sol: Optional[AreaResult] = None
+    best_rank: Union[int, Decimal] = 0
     total_count = 0
     iterations: List[float] = []
     start_time = datetime.now()
@@ -100,12 +94,6 @@ def audit(
     startup_time = 0.00
 
     potentials_for_all_clauses = discover_clause_potential(area, c=constants)
-
-    # estimate = area.estimate(transcript=this_transcript, areas=tuple(area_pointers))
-    # yield EstimateMsg(estimate=estimate)
-
-    if estimate_only:
-        return
 
     for sol in area.solutions(
         transcript=transcript,
@@ -127,7 +115,8 @@ def audit(
                 best_rank=cast(AreaResult, best_sol).rank(),
             )
 
-        result = sol.audit(areas=tuple(area_pointers))
+        result = sol.audit()
+        result_rank = result.rank()
 
         if print_all:
             yield ResultMsg(
@@ -141,13 +130,12 @@ def audit(
             )
 
         if best_sol is None:
-            best_sol = result
-
-        if result.rank() > best_sol.rank():
-            best_sol = result
+            best_sol, best_rank = result, result_rank
+        elif result_rank > best_rank:
+            best_sol, best_rank = result, result_rank
 
         if result.ok():
-            best_sol = result
+            best_sol, best_rank = result, result_rank
             iter_end = time.perf_counter()
             iterations.append(iter_end - iter_start)
             break

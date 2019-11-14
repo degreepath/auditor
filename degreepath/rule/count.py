@@ -13,7 +13,7 @@ from ..solve import find_best_solution
 from .course import CourseRule
 from .assertion import AssertionRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import Clausable  # noqa: F401
 
@@ -250,15 +250,15 @@ class CountRule(Rule, BaseCountRule):
             deselected_children_set = set(all_children - children_with_results).difference(set(selected_children))
             deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(deselected_children_set)
 
-            # itertools.product does this internally, so we'll pre-compute the results here
-            # to make it obvious that it's not lazy
+            # itertools.product does this internally, so we'll pre-compute the
+            # results here to make it obvious that it's not lazy
             solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
             solutions = tuple(solutions_dict.values())
 
             if SHOW_ESTIMATES:
                 lengths = {r.path: len(s) for r, s in solutions_dict.items()}
                 ppath = ' → '.join(self.path)
-                lines = [': '.join([' → '.join(k), str(v)]) for k, v in lengths.items()]
+                lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
                 body = '\n\t'.join(lines)
                 print(f"\nemitting {mult(lengths.values()):,} solutions at {ppath}\n\t{body}", file=sys.stderr)
 
@@ -339,30 +339,6 @@ class CountRule(Rule, BaseCountRule):
             independent_rule__results[child] = best_result
 
         return independent_rule__results
-
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        logger.debug('CountRule.estimate')
-
-        lo = self.count
-        hi = len(self.items) + 1 if self.at_most is False else self.count + 1
-
-        did_yield = False
-        iterations = 0
-        for r in range(lo, hi):
-            for combo in itertools.combinations(self.items, r):
-                estimates = [rule.estimate(ctx=ctx) for rule in combo]
-                product = mult(estimates)
-                if product == 0 or product == 1:
-                    iterations += sum(estimates)
-                else:
-                    iterations += product
-
-        if not did_yield:
-            iterations += 1
-
-        logger.debug('CountRule.estimate: %s', iterations)
-
-        return iterations
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):

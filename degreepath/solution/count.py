@@ -6,7 +6,7 @@ from ..base import Solution, BaseCountRule, Rule, Result
 from ..result.count import CountResult
 from ..result.assertion import AssertionResult
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ class CountSolution(Solution, BaseCountRule):
                 matched_items.append(matched_course)
                 inserted_clbids.append(matched_course.clbid)
 
-            result = clause.assertion.compare_and_resolve_with(matched_items)
+            result = clause.assertion.compare_and_resolve_with(tuple(matched_items))
 
             audit_results.append(AssertionResult(
                 where=clause.where,

@@ -4,16 +4,16 @@ from decimal import Decimal
 import logging
 
 from .clausable import Clausable
-from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode
+from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
 from ..lib import str_to_grade_points
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)
 
 
-@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, order=False, hash=True)
 class CourseInstance(Clausable):
     clbid: str
     attributes: Tuple[str, ...]
@@ -43,6 +43,16 @@ class CourseInstance(Clausable):
 
     identity_: str
     is_chbi_: Optional[int]
+
+    def __str__(self) -> str:
+        return self.identity_
+
+    def __repr__(self) -> str:
+        return f'Course("{self.identity_}")'
+
+    def sort_order(self) -> Tuple[int, int, str, str]:
+        key = CourseTypeSortOrder[self.course_type]
+        return (key, self.year, self.term, self.clbid)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -94,13 +104,7 @@ class CourseInstance(Clausable):
         else:
             suffix = ""
 
-        return f"{self.subject} {self.number}{self.section or ' '}{suffix} {self.year}-{self.term}"
-
-    def __str__(self) -> str:
-        return self.identity_
-
-    def __repr__(self) -> str:
-        return f'Course("{self.identity_}")'
+        return f"{self.subject} {self.number}{self.section or ''}{suffix} {self.year}-{self.term}"
 
     def apply_single_clause(self, clause: 'SingleClause') -> bool:
         logger.debug("clause/compare/key=%s", clause.key)

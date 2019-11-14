@@ -3,7 +3,7 @@ from typing import Optional, List, Dict, Any, TYPE_CHECKING
 
 from ..base import Result, BaseCourseRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..claim import ClaimAttempt  # noqa: F401
     from ..data import CourseInstance  # noqa: F401
 

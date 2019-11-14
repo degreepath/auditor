@@ -14,8 +14,9 @@ from .result.count import CountResult
 from .result.requirement import RequirementResult
 from .lib import grade_point_average
 from .solve import find_best_solution
+from .group_by import group_by
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .claim import ClaimAttempt  # noqa: F401
 
 logger = logging.getLogger(__name__)
@@ -103,7 +104,7 @@ class AreaOfStudy(Base):
             for course, paths in specification.get("multicountable", {}).items()
         }
 
-        allowed_keys = set(['name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable'])
+        allowed_keys = {'name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable'}
         given_keys = set(specification.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
@@ -146,7 +147,7 @@ class AreaOfStudy(Base):
         forced_courses = {c.clbid: c for c in transcript if c.clbid in forced_clbids}
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            limited_transcript = tuple(sorted(limited_transcript))
+            limited_transcript = tuple(sorted(limited_transcript, key=lambda c: c.sort_order()))
 
             logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
@@ -161,19 +162,6 @@ class AreaOfStudy(Base):
                 yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx)
 
         logger.debug("all solutions generated")
-
-    def estimate(self, *, transcript: Tuple[CourseInstance, ...], areas: Tuple[AreaPointer, ...]) -> int:
-        iterations = 0
-
-        for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            ctx = RequirementContext(
-                areas=areas,
-                multicountable=self.multicountable,
-            ).with_transcript(limited_transcript)
-
-            iterations += self.result.estimate(ctx=ctx)
-
-        return iterations
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -198,22 +186,20 @@ class AreaSolution(AreaOfStudy):
             common_rules=area.common_rules,
         )
 
-    def audit(self, areas: Sequence[AreaPointer] = tuple()) -> 'AreaResult':
+    def audit(self) -> 'AreaResult':
         result = self.solution.audit(ctx=self.context)
 
         # Append the "common" major requirements, if we've audited a major.
-        common_req_results = None
         if self.kind == 'major':
-            common_req_results = self.audit_common_major_requirements(result=result, areas=areas)
+            common_req_results = self.audit_common_major_requirements(result=result)
 
-            if not isinstance(result, CountResult):
-                raise TypeError('expected a Count result from common major requirements')
+            assert isinstance(result, CountResult), TypeError('expected a Count result from common major requirements')
 
             result = attr.evolve(result, items=tuple([*result.items, common_req_results]), count=result.count + 1)
 
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
-    def audit_common_major_requirements(self, result: Result, areas: Sequence[AreaPointer]) -> RequirementResult:
+    def audit_common_major_requirements(self, result: Result) -> RequirementResult:
         claimed = set(result.matched())
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
@@ -308,6 +294,19 @@ class AreaResult(AreaOfStudy, Result):
 
     def claims(self) -> List['ClaimAttempt']:
         return self.result.claims()
+
+    def keyed_claims(self) -> Dict[str, List[List[str]]]:
+        def sort_claims_by_time(cl: 'ClaimAttempt') -> Tuple:
+            c = cl.claim.course
+            return (c.subject, c.number, c.section or '', c.sub_type.value, c.year, c.term)
+
+        claims = sorted((c for c in self.claims() if not c.failed), key=sort_claims_by_time)
+        by_clbid = group_by(claims, key=lambda c: c.claim.course.clbid)
+
+        return {
+            clbid: [list(attempt.claim.claimant_path) for attempt in claim_attempts]
+            for clbid, claim_attempts in by_clbid.items()
+        }
 
     def claims_for_gpa(self) -> List['ClaimAttempt']:
         return self.result.claims_for_gpa()
@@ -412,7 +411,6 @@ def prepare_common_rules(
 
     yield s_u_credits
 
-    outside_the_major = None
     if is_bm_major is False:
         if dept_code is None:
             outside_the_major = load_rule(

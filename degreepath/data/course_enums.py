@@ -1,5 +1,6 @@
 import enum
-from typing import Any
+from typing import Any, Dict
+from decimal import Decimal
 
 
 @enum.unique
@@ -35,21 +36,45 @@ class SubType(enum.Enum):
 
 @enum.unique
 class CourseType(enum.Enum):
-    Adjustment = "AD"
-    AP = "AP"
-    Carleton = "CA"
-    ContinuingEducation = "CE"
-    GeReq = "GE"
+    Semester = "SE"
     Interim = "IN"
+    Summer = "SM"
+    Carleton = "CA"
     InterimExchange = "IE"
     OffCampusCourse = "OC"
     OffCampusProgram = "OP"
-    Other = "OT"
-    ParaCollege = "PC"
+    ContinuingEducation = "CE"
+
+    AP = "AP"
     PSEO = "PS"
-    Semester = "SE"
-    Summer = "SM"
+    Adjustment = "AD"
+    GeReq = "GE"
+    Other = "OT"
     Transfer = "TR"
+    ParaCollege = "PC"
+
+
+# We want AP courses to be superseded by St. Olaf courses, if possible.
+# Because most rules will take the first item out of the transcript that they can,
+# we can accomplish this by grouping St. Olaf courses before pre-St. Olaf courses.
+CourseTypeSortOrder = {
+    CourseType.Semester: 1,
+    CourseType.Interim: 1,
+    CourseType.Summer: 1,
+    CourseType.Carleton: 1,
+    CourseType.InterimExchange: 1,
+    CourseType.OffCampusCourse: 1,
+    CourseType.OffCampusProgram: 1,
+    CourseType.ContinuingEducation: 1,
+
+    CourseType.AP: 2,
+    CourseType.PSEO: 2,
+    CourseType.Adjustment: 2,
+    CourseType.GeReq: 2,
+    CourseType.Other: 2,
+    CourseType.Transfer: 2,
+    CourseType.ParaCollege: 2,
+}
 
 
 class OrderedEnum(enum.Enum):
@@ -77,17 +102,17 @@ class OrderedEnum(enum.Enum):
 @enum.unique
 class GradeCode(OrderedEnum):
     A = "A"
-    Aplus = "A+"
-    Aminus = "A-"
+    A_plus = "A+"
+    A_minus = "A-"
     B = "B"
-    Bplus = "B+"
-    Bminus = "B-"
+    B_plus = "B+"
+    B_minus = "B-"
     C = "C"
-    Cplus = "C+"
-    Cminus = "C-"
+    C_plus = "C+"
+    C_minus = "C-"
     D = "D"
-    Dplus = "D+"
-    Dminus = "D-"
+    D_plus = "D+"
+    D_minus = "D-"
     F = "F"
 
     _BC = "BC"
@@ -104,3 +129,20 @@ class GradeCode(OrderedEnum):
     _WF = "WF"
     _WP = "WP"
     _W = "W"
+
+
+grade_code_to_points: Dict[GradeCode, Decimal] = {
+    GradeCode.A_plus: Decimal("4.00"),
+    GradeCode.A: Decimal("4.00"),
+    GradeCode.A_minus: Decimal("3.70"),
+    GradeCode.B_plus: Decimal("3.30"),
+    GradeCode.B: Decimal("3.00"),
+    GradeCode.B_minus: Decimal("2.70"),
+    GradeCode.C_plus: Decimal("2.30"),
+    GradeCode.C: Decimal("2.00"),
+    GradeCode.C_minus: Decimal("1.70"),
+    GradeCode.D_plus: Decimal("1.30"),
+    GradeCode.D: Decimal("1.00"),
+    GradeCode.D_minus: Decimal("0.70"),
+    GradeCode.F: Decimal("0.00"),
+}

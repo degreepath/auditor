@@ -15,7 +15,7 @@ def summarize(
     iterations: List[float],
     show_paths: bool = True,
     show_ranks: bool = True,
-    claims: Dict[str, List[str]],
+    claims: Dict[str, List[List[str]]],
 ) -> Iterator[str]:
     avg_iter_s = sum(iterations) / max(len(iterations), 1)
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
@@ -35,10 +35,12 @@ def summarize(
     yield "Claimed courses:"
     yield endl
 
-    for clbid, path in claims.items():
-        path = [f"%{result['name']}", *path]
-        yield f"  - {mapped_transcript[clbid].course_with_term()} \"{mapped_transcript[clbid].name}\" at {claimed_path(path)}"
-        yield endl
+    for clbid, claimant_paths in claims.items():
+        for path in claimant_paths:
+            path = [f"%{result['name']}", *path]
+            label = f'{mapped_transcript[clbid].course_with_term()} "{mapped_transcript[clbid].name}"'
+            yield f"  - {label} at {claimed_path(path)}"
+            yield endl
 
 
 def claimed_path(path: List[str]) -> str:

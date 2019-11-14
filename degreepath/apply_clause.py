@@ -7,7 +7,7 @@ import attr
 from .data import CourseInstance, AreaPointer, Clausable
 from .lib import grade_point_average_items, grade_point_average
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .clause import SingleClause
 
 

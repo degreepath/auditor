@@ -6,7 +6,7 @@ import attr
 from functools import cmp_to_key, lru_cache
 from ..status import ResultStatus
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..claim import ClaimAttempt  # noqa: F401
     from ..data import CourseInstance  # noqa: F401
@@ -76,9 +76,6 @@ class Base(abc.ABC):
     def claims_for_gpa(self) -> List['ClaimAttempt']:
         return self.claims()
 
-    def keyed_claims(self) -> Dict[str, List[str]]:
-        return {c.claim.course.clbid: list(c.claim.claimant_path) for c in self.claims()}
-
     def matched(self) -> Set['CourseInstance']:
         return set(claim.get_course() for claim in self.claims() if claim.failed is False)
 
@@ -95,7 +92,7 @@ class Base(abc.ABC):
         return False
 
 
-class Result(Base):
+class Result(Base, abc.ABC):
     __slots__ = ()
 
     def state(self) -> RuleState:
@@ -130,10 +127,6 @@ class Rule(Base):
     @abc.abstractmethod
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise NotImplementedError(f'must define a solutions() method')
-
-    @abc.abstractmethod
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        raise NotImplementedError(f'must define an estimate() method')
 
     @abc.abstractmethod
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:

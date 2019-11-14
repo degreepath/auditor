@@ -9,7 +9,7 @@ from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
 from ..data.course_enums import GradeOption
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import Clausable  # noqa: F401
 
@@ -74,10 +74,6 @@ class CourseRule(Rule, BaseCourseRule):
         logger.debug('%s reference to course "%s"', self.path, self.course)
 
         yield CourseSolution.from_rule(rule=self)
-
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        logger.debug('CourseRule.estimate: 1')
-        return 1
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):

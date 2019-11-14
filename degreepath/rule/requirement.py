@@ -10,7 +10,7 @@ from ..solution.requirement import RequirementSolution
 from ..rule.query import QueryRule
 from ..solve import find_best_solution
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import Clausable  # noqa: F401
 
@@ -131,15 +131,6 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         for solution in self.result.solutions(ctx=ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
-
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        if not self.result:
-            logger.debug('RequirementRule.estimate: 1')
-            return 1
-
-        estimate = self.result.estimate(ctx=ctx)
-        logger.debug('RequirementRule.estimate: %s', estimate)
-        return estimate
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):

@@ -40,17 +40,16 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
     for student in file_data:
         area_pointers = tuple(AreaPointer.from_dict(a) for a in student['areas'])
         constants = Constants(matriculation_year=0 if student['matriculation'] == '' else int(student['matriculation']))
-        transcript = tuple(load_transcript(student['courses']))
-        transcript_with_failed = tuple(load_transcript(student['courses'], include_failed=True))
+        transcript = tuple(sorted(load_transcript(student['courses']), key=lambda course: course.sort_order()))
+        transcript_with_failed = tuple(sorted(load_transcript(student['courses'], include_failed=True), key=lambda course: course.sort_order()))
 
         if transcript_only:
             writer = csv.writer(sys.stdout)
-            writer.writerow(['course', 'clbid', 'course_type', 'credits', 'name', 'year', 'term', 'type', 'grade', 'gereqs', 'is_repeat', 'in_gpa', 'attributes'])
+            writer.writerow(['course', 'clbid', 'course_type', 'credits', 'name', 'year', 'term', 'type', 'grade', 'is_repeat', 'in_gpa'])
             for c in transcript:
                 writer.writerow([
                     c.course(), c.clbid, c.course_type.value, str(c.credits), c.name, str(c.year), str(c.term),
-                    c.sub_type.name, c.grade_code.value, ','.join(c.gereqs), str(c.is_repeat), str(c.is_in_gpa),
-                    ','.join(c.attributes),
+                    c.sub_type.name, c.grade_code.value, str(c.is_repeat), str(c.is_in_gpa),
                 ])
             return
 
@@ -96,7 +95,6 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
                     constants=constants,
                     area_pointers=area_pointers,
                     print_all=args.print_all,
-                    estimate_only=args.estimate_only,
                 )
 
             except Exception as ex:

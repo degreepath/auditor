@@ -1,17 +1,13 @@
 import attr
-from typing import List, Optional, Tuple, Dict, Union, Set, Sequence, Iterable, Iterator
+from typing import List, Optional, Tuple, Dict, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
 from contextlib import contextmanager
 import logging
 
 from .data import CourseInstance, AreaPointer
 from .data.course_enums import CourseType
-from .base import BaseCourseRule
-from .clause import Clause, SingleClause
 from .claim import ClaimAttempt, Claim
-from .operator import Operator
 from .exception import RuleException, OverrideException, InsertionException, ValueException
-from .rule.course import CourseRule
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
@@ -135,8 +131,7 @@ class RequirementContext:
         self,
         *,
         course: CourseInstance,
-        path: Sequence[str],
-        clause: Union[Clause, BaseCourseRule],
+        path: Tuple[str, ...],
         allow_claimed: bool = False,
     ) -> ClaimAttempt:
         """
@@ -150,32 +145,20 @@ class RequirementContext:
         if debug is None:
             debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        if clause is None:
-            raise TypeError("clause must be provided")
-
-        if isinstance(clause, tuple):
-            raise TypeError("make_claim only accepts clauses and course rules, not tuples")
-
-        # coerce course rules to clauses
-        rule = None
-        if isinstance(clause, BaseCourseRule):
-            rule = clause
-            clause = SingleClause(key='course', expected=rule.course, expected_verbatim=rule.course, operator=Operator.EqualTo)
-
-        path_reqs_only = tuple(r for r in path if r.startswith('%'))
+        path_reqs_only = tuple(r for r in path if r[0] == '%')
 
         # build a claim so it can be returned later
-        claim = Claim(course=course, claimant_path=tuple(path), claimant_requirements=path_reqs_only)
+        claim = Claim(course=course, claimant_path=path, claimant_requirements=path_reqs_only)
 
         # > A multicountable set describes the ways in which a course may be
         # > counted.
-
+        #
         # > If no multicountable set describes the course, it may only be
         # > counted once.
 
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
-        if allow_claimed or (isinstance(rule, CourseRule) and rule.allow_claimed):
+        if allow_claimed:
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
             return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
 
@@ -196,7 +179,7 @@ class RequirementContext:
         if not applicable_reqpaths:
             if prior_claims:
                 if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
+                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
             else:
                 if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
@@ -238,7 +221,7 @@ class RequirementContext:
         if applicable_reqpath is None:
             if prior_claims:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
+                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
             else:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim has no conflicts', course.clbid)
                 self.claims[course.clbid].add(claim)
@@ -254,7 +237,7 @@ class RequirementContext:
         if not available_reqpaths:
             if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
-                return ClaimAttempt(claim, conflict_with=frozenset(prior_claims), failed=True)
+                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
             else:
                 self.claims[course.clbid].add(claim)
                 return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)

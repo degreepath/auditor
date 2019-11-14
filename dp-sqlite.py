@@ -11,7 +11,7 @@ import time
 import random
 
 from degreepath.ms import pretty_ms
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg, AreaFileNotFoundMsg
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 logger = logging.getLogger(__name__)
 dirpath = os.path.dirname(os.path.abspath(__file__))
@@ -70,9 +70,6 @@ def main(area_file: str, student_file: str, run_id: int) -> None:
 
             elif isinstance(msg, ResultMsg):
                 record(conn=conn, result_id=result_id, message=msg)
-
-            elif isinstance(msg, EstimateMsg):
-                pass
 
             else:
                 logger.critical('unknown message %s', msg)

@@ -131,15 +131,17 @@ def test_resolution(caplog):
             pass
         def to_dict(self):
             pass
+        def sort_order(self):
+            return (hash(self))
 
     x = load_clause({"count(items)": {"$eq": 1}}, c=c)
     expected_single = SingleClause(key="count(items)", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
     assert x == expected_single
 
-    result = x.compare_and_resolve_with([IntThing()])
+    result = x.compare_and_resolve_with(tuple([IntThing()]))
     assert result.ok() is True
 
-    result = x.compare_and_resolve_with([IntThing(), IntThing()])
+    result = x.compare_and_resolve_with(tuple([IntThing(), IntThing()]))
     assert result.ok() is False
 
 
@@ -228,45 +230,6 @@ def test_ranges_lte(caplog):
     x = load_clause({"count(courses)": {"$lte": 5}}, c=c)
     result = x.input_size_range(maximum=7)
     assert list(result) == [0, 1, 2, 3, 4, 5]
-
-
-def test_subsets_simple_1(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    y = load_clause({"attributes": {"$eq": "doggie"}}, c=c)
-    assert x.is_subset(y) is False
-
-
-def test_subsets_simple_2(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"attributes": {"$in": ["electives"]}}, c=c)
-    y = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    assert x.is_subset(y) is False
-    assert y.is_subset(x) is True
-
-
-def test_subsets_simple_3(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"$or": [{"attributes": {"$in": ["electives"]}}]}, c=c)
-    y = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    assert x.is_subset(y) is False
-    assert y.is_subset(x) is True
-
-
-def test_subsets_simple_4(caplog):
-    caplog.set_level(logging.DEBUG)
-    c = Constants(matriculation_year=2000)
-
-    x = load_clause({"$and": [{"attributes": {"$in": ["electives"]}}]}, c=c)
-    y = load_clause({"attributes": {"$eq": "electives"}}, c=c)
-    assert x.is_subset(y) is False
-    assert y.is_subset(x) is True
 
 
 def test_clause__grade_code():

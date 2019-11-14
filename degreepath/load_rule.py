@@ -7,7 +7,7 @@ from .rule.course import CourseRule
 from .rule.query import QueryRule
 from .rule.requirement import RequirementRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext  # noqa: F401
 
 
@@ -15,8 +15,8 @@ def load_rule(
     *,
     data: Dict,
     c: Constants,
-    path: List[str] = [],
-    children: Dict[str, Dict] = {},
+    path: List[str],
+    children: Dict[str, Dict],
     emphases: Sequence[Dict[str, Dict]] = tuple(),
     ctx: Optional['RequirementContext'] = None,
 ) -> Optional[Rule]:
@@ -36,7 +36,7 @@ def load_rule(
         return CountRule.load(data, c=c, children=children, path=path, emphases=emphases, ctx=ctx)
 
     elif RequirementRule.can_load(data):
-        reqname = data["requirement"]
-        return RequirementRule.load(children[reqname], name=reqname, c=c, path=path, ctx=ctx)
+        req_name = data["requirement"]
+        return RequirementRule.load(children[req_name], name=req_name, c=c, path=path, ctx=ctx)
 
     raise ValueError(f"expected Course, Query, Count, or Reference; found none of those (in {data}, {type(data)})")

@@ -6,7 +6,7 @@ from .bases import Base
 from ..operator import Operator
 from ..data.course_enums import GradeOption
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause
 
 

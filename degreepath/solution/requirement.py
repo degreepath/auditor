@@ -4,9 +4,8 @@ from typing import Optional, Union, TYPE_CHECKING
 from ..base import BaseRequirementRule, Solution, RuleState, Rule
 from ..result.requirement import RequirementResult
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..claim import ClaimAttempt  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

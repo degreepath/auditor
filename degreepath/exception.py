@@ -51,16 +51,16 @@ class ValueException(RuleException):
 
 
 def load_exception(data: Dict[str, Any]) -> RuleException:
-    type = ExceptionAction(data['type'])
-    path = tuple(data['path'])
+    ex_type = ExceptionAction(data['type'])
+    ex_path = tuple(data['path'])
 
-    if type is ExceptionAction.Insert:
-        return InsertionException(clbid=data['clbid'], path=path, type=type, forced=False)
-    elif type is ExceptionAction.ForceInsert:
-        return InsertionException(clbid=data['clbid'], path=path, type=type, forced=True)
-    elif type is ExceptionAction.Override:
-        return OverrideException(status=ResultStatus(data['status']), path=path, type=type)
-    elif type is ExceptionAction.Value:
-        return ValueException(value=Decimal(data['value']), path=path, type=type)
+    if ex_type is ExceptionAction.Insert:
+        return InsertionException(clbid=data['clbid'], path=ex_path, type=ex_type, forced=False)
+    elif ex_type is ExceptionAction.ForceInsert:
+        return InsertionException(clbid=data['clbid'], path=ex_path, type=ex_type, forced=True)
+    elif ex_type is ExceptionAction.Override:
+        return OverrideException(status=ResultStatus(data['status']), path=ex_path, type=ex_type)
+    elif ex_type is ExceptionAction.Value:
+        return ValueException(value=Decimal(data['value']), path=ex_path, type=ex_type)
 
     raise TypeError(f'expected a known "type"; got {data["type"]}')

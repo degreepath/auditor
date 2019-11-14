@@ -9,7 +9,7 @@ from ..operator import Operator
 from ..base.bases import Rule, Solution
 from ..base.assertion import BaseAssertionRule
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..data import Clausable  # noqa: F401
 
@@ -51,10 +51,6 @@ class AssertionRule(Rule, BaseAssertionRule):
 
     def get_requirement_names(self) -> List[str]:
         return []
-
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
-        logger.debug('AssertionRule.estimate: 0')
-        return 0
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise Exception('this method should not be called')
