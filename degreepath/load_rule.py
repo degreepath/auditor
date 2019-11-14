@@ -15,8 +15,8 @@ def load_rule(
     *,
     data: Dict,
     c: Constants,
-    path: List[str] = [],
-    children: Dict[str, Dict] = {},
+    path: List[str],
+    children: Dict[str, Dict],
     emphases: Sequence[Dict[str, Dict]] = tuple(),
     ctx: Optional['RequirementContext'] = None,
 ) -> Optional[Rule]:
