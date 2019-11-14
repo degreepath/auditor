@@ -15,11 +15,16 @@ def main() -> int:
     parser.add_argument('--clean', action='store_true')
     parser.add_argument('--more', action='store_true')
     parser.add_argument('--print', action='store_true')
+    parser.add_argument('--print-file', action='store_true')
     parser.add_argument('query')
 
     args = parser.parse_args()
 
     index_path = os.path.join(args.dir, 'index.sqlite3')
+    if args.print_file:
+        print(index_path)
+        return 0
+
     if args.clean:
         os.unlink(index_path)
 
