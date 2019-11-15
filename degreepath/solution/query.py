@@ -1,5 +1,5 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, TYPE_CHECKING
+from typing import List, Sequence, Any, Tuple, Dict, cast, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseQueryRule
@@ -137,7 +137,8 @@ class QuerySolution(Solution, BaseQueryRule):
         override_value = ctx.get_value_exception(clause.path)
         if override_value:
             logger.debug("override: new value on %s", self.path)
-            clause = clause.override_expected_value(override_value.value)
+            _clause = clause.override_expected_value(override_value.value)
+            clause = cast(AssertionRule, _clause)
 
         if clause.where is not None:
             filtered_output = [item for item in output if clause.where.apply(item)]

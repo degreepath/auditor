@@ -55,6 +55,11 @@ class CountSolution(Solution, BaseCountRule):
 
             matched_items = [item for sol in results for item in sol.matched()]
 
+            override_value = ctx.get_value_exception(clause.path)
+            if override_value:
+                logger.debug("override: new value on %s", self.path)
+                clause = clause.override_expected_value(override_value.value)
+
             if clause.where is not None:
                 matched_items = [
                     item for item in matched_items

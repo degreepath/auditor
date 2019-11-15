@@ -60,8 +60,3 @@ class AssertionRule(Rule, BaseAssertionRule):
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         raise Exception('this method should not be called')
-
-    def override_expected_value(self, value: Decimal) -> 'AssertionRule':
-        clause = self.assertion.override_expected(value)
-
-        return attr.evolve(self, assertion=clause)
