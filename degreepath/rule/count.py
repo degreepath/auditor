@@ -67,14 +67,21 @@ class CountRule(Rule, BaseCountRule):
         for emph in emphases:
             emphasis_key = f"Emphasis: {emph['name']}"
 
-            # If an emphasis starts with an all-of rule, we can optimize it by
-            # inserting each of its children as top-level rules, and just
-            # prefixing their names with the name of the emphasis. This allows
-            # us to find any disjoint emphasis requirements with the normal
-            # logic, and do independent solutions for anything that we can. We
-            # also can't do any short-circuiting if there's a post-audit
-            # clause on the emphasis.
-            if 'all' in emph['result'] and 'requirements' in emph and 'audit' not in emph['result']:
+            # If an emphasis starts with an all-of rule, of which all refer to
+            # requirements, we can optimize it by inserting each of its
+            # children as top-level rules, and just prefixing their names with
+            # the name of the emphasis. This allows us to find any disjoint
+            # emphasis requirements with the normal logic, and do independent
+            # solutions for anything that we can. We also can't do any
+            # short-circuiting if there's a post-audit clause on the
+            # emphasis.
+
+            is_all_rule = 'all' in emph['result']
+            has_requirements = 'requirements' in emph
+            no_post_audit = 'audit' not in emph['result']
+            all_rules_are_requirements = is_all_rule and all('requirement' in r for r in emph['result']['all'])
+
+            if is_all_rule and has_requirements and no_post_audit and all_rules_are_requirements:
                 for emph_req_name, emph_req_body in emph['requirements'].items():
                     key = f"{emphasis_key} → {emph_req_name}"
                     children_with_emphases[key] = emph_req_body
