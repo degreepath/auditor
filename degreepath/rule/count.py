@@ -271,7 +271,9 @@ class CountRule(Rule, BaseCountRule):
                 ppath = ' → '.join(self.path)
                 lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
                 body = '\n\t'.join(lines)
-                print(f"\nemitting {mult(lengths.values()):,} solutions at {ppath}\n\t{body}", file=sys.stderr)
+                estimated_count = mult(lengths.values())
+                word = 'solution' if estimated_count == 1 else 'solutions'
+                print(f"\nemitting {estimated_count:,} {word} at {ppath}\n\t{body}", file=sys.stderr)
 
             solutionset: Tuple[Union[Rule, Solution, Result], ...]
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
