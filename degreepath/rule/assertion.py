@@ -1,7 +1,6 @@
 import attr
 from typing import Dict, Sequence, Iterator, List, Collection, Optional, TYPE_CHECKING
 import logging
-from decimal import Decimal
 
 from ..clause import load_clause, SingleClause
 from ..constants import Constants
