@@ -40,3 +40,5 @@ class Constants:
             return True
 
         assert KnownConstants(v)
+
+        return True
