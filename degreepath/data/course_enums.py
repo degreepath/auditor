@@ -57,7 +57,7 @@ class CourseType(enum.Enum):
 # We want AP courses to be superseded by St. Olaf courses, if possible.
 # Because most rules will take the first item out of the transcript that they can,
 # we can accomplish this by grouping St. Olaf courses before pre-St. Olaf courses.
-CourseTypeSortOrder = {
+CourseTypeSortOrder: Dict[CourseType, int] = {
     CourseType.Semester: 1,
     CourseType.Interim: 1,
     CourseType.Summer: 1,
