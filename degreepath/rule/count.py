@@ -71,8 +71,10 @@ class CountRule(Rule, BaseCountRule):
             # inserting each of its children as top-level rules, and just
             # prefixing their names with the name of the emphasis. This allows
             # us to find any disjoint emphasis requirements with the normal
-            # logic, and do independent solutions for anything that we can.
-            if 'all' in emph['result']:
+            # logic, and do independent solutions for anything that we can. We
+            # also can't do any short-circuiting if there's a post-audit
+            # clause on the emphasis.
+            if 'all' in emph['result'] and 'requirements' in emph and 'audit' not in emph['result']:
                 for emph_req_name, emph_req_body in emph['requirements'].items():
                     key = f"{emphasis_key} → {emph_req_name}"
                     children_with_emphases[key] = emph_req_body
