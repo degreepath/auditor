@@ -15,11 +15,16 @@ def main() -> int:
     parser.add_argument('--clean', action='store_true')
     parser.add_argument('--more', action='store_true')
     parser.add_argument('--print', action='store_true')
+    parser.add_argument('--print-file', action='store_true')
     parser.add_argument('query')
 
     args = parser.parse_args()
 
     index_path = os.path.join(args.dir, 'index.sqlite3')
+    if args.print_file:
+        print(index_path)
+        return 0
+
     if args.clean:
         os.unlink(index_path)
 
@@ -59,7 +64,7 @@ def main() -> int:
                 db.execute('''
                     insert into area (stnum, name, type, code, dept, status, degree, catalog)
                     values (?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (str(data['stnum']), area['name'], area['kind'], area['code'], area.get('dept', ''), area['status'], area['degree'], area.get('catalog', data['catalog'])))
+                ''', (str(data['stnum']), area['name'], area['kind'], area['code'], area.get('dept', ''), area['status'], area['degree'], area.get('catalog', data['catalog']).split('-')[0]))
 
         if to_index:
             print()

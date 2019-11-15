@@ -64,10 +64,30 @@ class CountRule(Rule, BaseCountRule):
             items = data["of"]
 
         children_with_emphases = {**children}
-        if emphases:
-            for r in emphases:
-                emphasis_key = f"Emphasis: {r['name']}"
-                children_with_emphases[emphasis_key] = r
+        for emph in emphases:
+            emphasis_key = f"Emphasis: {emph['name']}"
+
+            # If an emphasis starts with an all-of rule, of which all refer to
+            # requirements, we can optimize it by inserting each of its
+            # children as top-level rules, and just prefixing their names with
+            # the name of the emphasis. This allows us to find any disjoint
+            # emphasis requirements with the normal logic, and do independent
+            # solutions for anything that we can. We also can't do any
+            # short-circuiting if there's a post-audit clause on the
+            # emphasis.
+
+            is_all_rule = 'all' in emph['result']
+            has_requirements = 'requirements' in emph
+            no_post_audit = 'audit' not in emph['result']
+            all_rules_are_requirements = is_all_rule and all('requirement' in r for r in emph['result']['all'])
+
+            if is_all_rule and has_requirements and no_post_audit and all_rules_are_requirements:
+                for emph_req_name, emph_req_body in emph['requirements'].items():
+                    key = f"{emphasis_key} → {emph_req_name}"
+                    children_with_emphases[key] = emph_req_body
+                    items.append({"requirement": key})
+            else:
+                children_with_emphases[emphasis_key] = emph
                 items.append({"requirement": emphasis_key})
 
         at_most = data.get('at_most', False)
@@ -260,7 +280,9 @@ class CountRule(Rule, BaseCountRule):
                 ppath = ' → '.join(self.path)
                 lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
                 body = '\n\t'.join(lines)
-                print(f"\nemitting {mult(lengths.values()):,} solutions at {ppath}\n\t{body}", file=sys.stderr)
+                estimated_count = mult(lengths.values())
+                word = 'solution' if estimated_count == 1 else 'solutions'
+                print(f"\nemitting {estimated_count:,} {word} at {ppath}\n\t{body}", file=sys.stderr)
 
             solutionset: Tuple[Union[Rule, Solution, Result], ...]
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
