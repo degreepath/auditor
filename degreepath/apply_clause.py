@@ -58,6 +58,20 @@ def count_terms_from_most_common_course(data: Sequence[CourseInstance]) -> Appli
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
 
+def count_terms_from_most_common_course_by_name(data: Sequence[CourseInstance]) -> AppliedClauseResult:
+    if not data:
+        return AppliedClauseResult(value=0)
+
+    counted = Counter(f"{c.subject}: {c.name}" for c in data)
+    most_common = counted.most_common(1)[0]
+    most_common_crsid, _count = most_common
+
+    items = tuple(sorted(set(str(c.year) + str(c.term) for c in data if f"{c.subject}: {c.name}" == most_common_crsid)))
+    courses = tuple(c for c in data if f"{c.subject}: {c.name}" == most_common_crsid)
+
+    return AppliedClauseResult(value=len(items), data=items, courses=courses)
+
+
 def count_subjects(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items: Set[str] = set()
     courses = set()
@@ -186,6 +200,7 @@ course_actions: Mapping[str, Callable[[Sequence[CourseInstance]], AppliedClauseR
     'count(courses)': count_courses,
     'count(distinct_courses)': count_distinct_courses,
     'count(terms_from_most_common_course)': count_terms_from_most_common_course,
+    'count(terms_from_most_common_course_by_name)': count_terms_from_most_common_course_by_name,
     'count(math_perspectives)': count_math_perspectives,
     'count(subjects)': count_subjects,
     'count(terms)': count_terms,
