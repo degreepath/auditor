@@ -54,9 +54,14 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
             return
 
         if gpa_only:
-            for c in grade_point_average_items(transcript_with_failed):
-                print(c.course(), c.grade_code.value, c.grade_points)
-            print(grade_point_average(transcript_with_failed))
+            writer = csv.writer(sys.stdout)
+            writer.writerow(['course', 'grade', 'points'])
+
+            applicable = sorted(grade_point_average_items(transcript_with_failed), key=lambda c: (c.year, c.term, c.course(), c.clbid))
+            for c in applicable:
+                writer.writerow([c.course(), c.grade_code.value, str(c.grade_points)])
+
+            writer.writerow(['---', 'gpa:', str(grade_point_average(transcript_with_failed))])
             return
 
         for area_file in args.area_files:
