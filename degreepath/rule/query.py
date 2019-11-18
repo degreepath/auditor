@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, Tuple, cast, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, Union, Tuple, cast, TYPE_CHECKING
 import itertools
 import logging
 import decimal
@@ -13,7 +13,7 @@ from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..operator import Operator
 from ..data import CourseInstance
-from .assertion import AssertionRule
+from .assertion import AssertionRule, ConditionalAssertionRule, BaseAssertionRule
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -42,11 +42,11 @@ class QueryRule(Rule, BaseQueryRule):
         if 'limits' in data:
             raise ValueError(f'the key is "limit", not "limits": {data}')
 
-        assertions: List[AssertionRule] = []
+        assertions: List[Union[AssertionRule, ConditionalAssertionRule]] = []
         if "assert" in data:
             assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, ".assertions", "[0]"])]
         elif "all" in data:
-            assertions = [AssertionRule.load(d, c=c, path=[*path, ".assertions", f"[{i}]"]) for i, d in enumerate(data["all"])]
+            assertions = [ConditionalAssertionRule.load(d, c=c, path=[*path, ".assertions", f"[{i}]"]) for i, d in enumerate(data["all"])]
         else:
             raise ValueError(f'you must have either an assert: or an all: key in {data}')
 
@@ -167,17 +167,29 @@ class QueryRule(Rule, BaseQueryRule):
         return self.allow_claimed is True and self.attempt_claims is False
 
 
-def has_assertion(assertions: Sequence[AssertionRule], key: Callable[[SingleClause], Iterator[Clause]]) -> bool:
+def has_assertion(assertions: Sequence[Union[AssertionRule, ConditionalAssertionRule]], key: Callable[[SingleClause], Iterator[Clause]]) -> bool:
     if not assertions:
         return False
 
     for assertion in assertions:
-        if assertion.where is not None:
-            continue
-        if has_clause(assertion.assertion, key=key):
+        if isinstance(assertion, ConditionalAssertionRule):
+            if check_assertion(assertion.when_yes, key) or check_assertion(assertion.when_no, key):
+                return True
+
+        elif check_assertion(assertion, key):
             return True
 
     return False
+
+
+def check_assertion(assertion: Optional[AssertionRule], key: Callable[[SingleClause], Iterator[Clause]]) -> Optional[bool]:
+    if not assertion:
+        return None
+    if assertion.where is not None:
+        return None
+    if has_clause(assertion.assertion, key=key):
+        return True
+    return None
 
 
 def has_clause(clause: Clause, key: Callable[[SingleClause], Iterator[Clause]]) -> bool:
@@ -215,7 +227,7 @@ def get_at_least_0_clauses(clause: Clause) -> Iterator[SingleClause]:
     yield from get_clause_by(clause, lambda c: c.operator is Operator.GreaterThanOrEqualTo and c.expected == 0)
 
 
-def get_largest_simple_count_assertion(assertions: Sequence[AssertionRule]) -> Optional[SingleClause]:
+def get_largest_simple_count_assertion(assertions: Sequence[BaseAssertionRule]) -> Optional[SingleClause]:
     if not assertions:
         return None
 
@@ -231,7 +243,7 @@ def get_largest_simple_count_assertion(assertions: Sequence[AssertionRule]) -> O
     return largest_clause
 
 
-def get_largest_simple_sum_assertion(assertions: Sequence[AssertionRule]) -> Optional[SingleClause]:
+def get_largest_simple_sum_assertion(assertions: Sequence[BaseAssertionRule]) -> Optional[SingleClause]:
     if not assertions:
         return None
 
@@ -248,14 +260,24 @@ def get_largest_simple_sum_assertion(assertions: Sequence[AssertionRule]) -> Opt
 
 
 def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Iterator[Tuple[Clausable, ...]]:
-    simple_count_assertion = get_largest_simple_count_assertion(rule.assertions)
+    assertions = []
+
+    for a in rule.all_assertions():
+        if isinstance(a, BaseAssertionRule):
+            assertions.append(a)
+        else:
+            assertions.append(a.when_yes)
+            if a.when_no:
+                assertions.append(a.when_no)
+
+    simple_count_assertion = get_largest_simple_count_assertion(assertions)
     if simple_count_assertion is not None:
         logger.debug("%s using simple assertion mode with %s", rule.path, simple_count_assertion)
         for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
             yield from itertools.combinations(item_set, n)
         return
 
-    simple_sum_assertion = get_largest_simple_sum_assertion(rule.assertions)
+    simple_sum_assertion = get_largest_simple_sum_assertion(assertions)
     if simple_sum_assertion is not None:
         logger.debug("%s using simple-sum assertion mode with %s", rule.path, simple_sum_assertion)
         item_set_courses = cast(Sequence[CourseInstance], item_set)
