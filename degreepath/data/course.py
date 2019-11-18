@@ -1,6 +1,6 @@
 from typing import Optional, Tuple, Dict, Any, Iterable, Callable, TYPE_CHECKING
 import attr
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 import logging
 
 from .clausable import Clausable
@@ -21,10 +21,10 @@ class CourseInstance(Clausable):
     crsid: str
     course_type: CourseType
     gereqs: Tuple[str, ...]
+    gpa_points: Decimal
     grade_code: GradeCode
     grade_option: GradeOption
     grade_points: Decimal
-    grade_points_gpa: Decimal
     is_in_gpa: bool
     is_in_progress: bool
     is_incomplete: bool
@@ -62,10 +62,10 @@ class CourseInstance(Clausable):
             "crsid": self.crsid,
             "course_type": self.course_type.value,
             "gereqs": list(self.gereqs),
+            "gpa_points": str(self.gpa_points),
             "grade_code": self.grade_code.value,
             "grade_option": self.grade_option.value,
             "grade_points": str(self.grade_points),
-            "grade_points_gpa": str(self.grade_points_gpa),
             "is_in_gpa": self.is_in_gpa,
             "is_in_progress": self.is_in_progress,
             "is_incomplete": self.is_incomplete,
@@ -255,7 +255,6 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     grade_code = data['grade_code']
     grade_option = data['grade_option']
     grade_points = data['grade_points']
-    grade_points_gpa = data['grade_points_gpa']
     level = int(data['level'])
     name = data['name']
     number = data['number']
@@ -275,11 +274,16 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
 
     grade_code = GradeCode(grade_code)
     grade_points = Decimal(grade_points)
-    grade_points_gpa = Decimal(grade_points_gpa)
     grade_option = GradeOption(grade_option)
     sub_type = SubType(sub_type)
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
+
+    # GPA points are the (truncated to two decimal places!) result of GP * credits.
+    # If someone gets an A- in a 0.25-credit course, they are supposed to
+    # receive 0.92 gpa points, because `0.25 * 3.7 => 0.925` but we truncate
+    # everything to do with GPA at 2 decimal places.
+    gpa_points = Decimal(grade_points * credits).quantize(Decimal('1.00'), rounding=ROUND_DOWN)
 
     attributes = tuple(attributes) if attributes else tuple()
     gereqs = tuple(gereqs) if gereqs else tuple()
@@ -311,10 +315,10 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         crsid=crsid,
         course_type=course_type,
         gereqs=gereqs,
+        gpa_points=gpa_points,
         grade_code=grade_code,
         grade_option=grade_option,
         grade_points=grade_points,
-        grade_points_gpa=grade_points_gpa,
         is_in_gpa=flag_gpa,
         is_in_progress=flag_in_progress,
         is_incomplete=flag_incomplete,
