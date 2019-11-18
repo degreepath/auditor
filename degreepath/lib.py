@@ -11,15 +11,17 @@ def grade_point_average_items(courses: Iterable['CourseInstance']) -> Iterable['
 
 
 def grade_point_average(courses: Iterable['CourseInstance']) -> Decimal:
-    allowed = list(grade_point_average_items(courses))
+    gp_sum = Decimal('0')
+    credit_sum = Decimal('0')
 
-    summed = sum(c.grade_points_gpa for c in allowed)
-    credits = sum(c.credits for c in allowed)
+    for c in grade_point_average_items(courses):
+        gp_sum += c.gpa_points
+        credit_sum += c.credits
 
-    if credits == 0:
+    if credit_sum == 0:
         return Decimal('0.00')
 
-    gpa = summed / credits
+    gpa = gp_sum / credit_sum
 
     # GPA is _truncated_ to two decimal places, not rounded
     return Decimal(gpa).quantize(Decimal('1.00'), rounding=ROUND_DOWN)
