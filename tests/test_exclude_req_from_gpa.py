@@ -8,9 +8,9 @@ c = Constants(matriculation_year=2000)
 
 def trns():
     return [
-        course_from_str('CSCI 251', grade_points_gpa=Decimal('3.0')),
-        course_from_str('CSCI 275', grade_points_gpa=Decimal('2.0')),
-        course_from_str('ART 101', grade_points_gpa=Decimal('1.0')),
+        course_from_str('CSCI 251', grade_points=Decimal('3.0'), credits=Decimal('1.0')),
+        course_from_str('CSCI 275', grade_points=Decimal('2.0'), credits=Decimal('1.0')),
+        course_from_str('ART 101', grade_points=Decimal('1.0'), credits=Decimal('1.0')),
     ]
 
 
