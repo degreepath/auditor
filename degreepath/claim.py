@@ -1,4 +1,4 @@
-from typing import Tuple, FrozenSet, Dict, Any, TYPE_CHECKING
+from typing import Tuple, Dict, Any, TYPE_CHECKING
 import attr
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -22,7 +22,7 @@ class Claim:
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, eq=False, order=False, hash=True)
 class ClaimAttempt:
     claim: Claim
-    conflict_with: FrozenSet[Claim]
+    conflict_with: Tuple[Claim, ...]
     failed: bool
 
     def to_dict(self) -> Dict[str, Any]:

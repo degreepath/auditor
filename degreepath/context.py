@@ -23,7 +23,7 @@ class RequirementContext:
 
     areas: Tuple[AreaPointer, ...] = tuple()
     multicountable: Dict[str, List[Tuple[str, ...]]] = attr.ib(factory=list)
-    claims: Dict[str, Set[Claim]] = attr.ib(factory=lambda: defaultdict(set))
+    claims: Dict[str, List[Claim]] = attr.ib(factory=lambda: defaultdict(list))
     exceptions: List[RuleException] = attr.ib(factory=dict)
 
     def with_transcript(
@@ -121,11 +121,11 @@ class RequirementContext:
         finally:
             self.set_claims(claims)
 
-    def set_claims(self, claims: Dict[str, Set[Claim]]) -> None:
-        self.claims = defaultdict(set, {k: set(v) for k, v in claims.items()})
+    def set_claims(self, claims: Dict[str, List[Claim]]) -> None:
+        self.claims = defaultdict(list, {k: list(v) for k, v in claims.items()})
 
     def reset_claims(self) -> None:
-        self.claims = defaultdict(set)
+        self.claims = defaultdict(list)
 
     def make_claim(  # noqa: C901
         self,
@@ -139,8 +139,9 @@ class RequirementContext:
         (with exceptions) in an audit.
         """
 
-        # This function is called often enough that we want to avoid even calling the `logging` module
-        # unless we're actually logging things. (On a 90-second audit, this saved nearly 30 seconds.)
+        # This function is called often enough that we want to avoid even
+        # calling the `logging` module unless we're actually logging things.
+        # (On a 90-second audit, this saved nearly 30 seconds.)
         global debug
         if debug is None:
             debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
@@ -160,15 +161,15 @@ class RequirementContext:
         # option, the claim succeeds (and is not recorded).
         if allow_claimed:
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
-            return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
+            return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
 
-        prior_claims = frozenset(self.claims[course.clbid])
+        prior_claims = self.claims[course.clbid]
 
         # If there are no prior claims, the claim is automatically allowed.
         if not prior_claims:
             if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
-            self.claims[course.clbid].add(claim)
-            return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
+            self.claims[course.clbid].append(claim)
+            return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
 
         # Find any multicountable sets that may apply to this course
         applicable_reqpaths: List[Tuple[str, ...]] = self.multicountable.get(course.course(), [])
@@ -179,11 +180,11 @@ class RequirementContext:
         if not applicable_reqpaths:
             if prior_claims:
                 if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
+                return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
             else:
                 if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim has no conflicts', course.clbid)
-                self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
+                self.claims[course.clbid].append(claim)
+                return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
 
         # We can allow a course to be claimed by multiple requirements, if
         # that's what is required by the department.
@@ -202,7 +203,7 @@ class RequirementContext:
         # where each of the RequirementPath is a list of strings that match up
         # to a requirement defined somewhere in the file.
 
-        prior_claimers = set(cl.claimant_requirements for cl in prior_claims)
+        prior_claimers = list(set(cl.claimant_requirements for cl in prior_claims))
 
         if debug: logger.debug('applicable reqpaths: %s', applicable_reqpaths)
 
@@ -221,11 +222,11 @@ class RequirementContext:
         if applicable_reqpath is None:
             if prior_claims:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
+                return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
             else:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim has no conflicts', course.clbid)
-                self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
+                self.claims[course.clbid].append(claim)
+                return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
 
         # now limit to just the clauses in the reqpath which have not been used
         available_reqpaths = [
@@ -237,11 +238,11 @@ class RequirementContext:
         if not available_reqpaths:
             if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
-                return ClaimAttempt(claim, conflict_with=prior_claims, failed=True)
+                return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
             else:
-                self.claims[course.clbid].add(claim)
-                return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
+                self.claims[course.clbid].append(claim)
+                return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
 
         if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s: %s', course.clbid, available_reqpaths)
-        self.claims[course.clbid].add(claim)
-        return ClaimAttempt(claim, conflict_with=frozenset(), failed=False)
+        self.claims[course.clbid].append(claim)
+        return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
