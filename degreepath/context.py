@@ -24,7 +24,7 @@ class RequirementContext:
     areas: Tuple[AreaPointer, ...] = tuple()
     multicountable: Dict[str, List[Tuple[str, ...]]] = attr.ib(factory=list)
     claims: Dict[str, List[Claim]] = attr.ib(factory=lambda: defaultdict(list))
-    exceptions: List[RuleException] = attr.ib(factory=dict)
+    exceptions: List[RuleException] = attr.ib(factory=list)
 
     def with_transcript(
         self,
