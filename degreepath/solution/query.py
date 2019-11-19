@@ -1,10 +1,10 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, cast, TYPE_CHECKING
+from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, cast, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseQueryRule
 from ..result.query import QueryResult
-from ..rule.assertion import AssertionRule
+from ..rule.assertion import AssertionRule, ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, AreaPointer, Clausable
 
@@ -96,11 +96,14 @@ class QuerySolution(Solution, BaseQueryRule):
                 claimed_items.append(matched_course)
                 inserted_clbids.append(matched_course.clbid)
 
-        resolved_assertions = tuple(
-            self.apply_assertion(a, ctx=ctx, output=claimed_items)
-            for a in self.assertions
-        )
+        resolved_assertions_list = []
 
+        for a in self.assertions:
+            a_result = self.apply_assertion(a, ctx=ctx, output=claimed_items)
+            if a_result:
+                resolved_assertions_list.append(a_result)
+
+        resolved_assertions = tuple(resolved_assertions_list)
         resolved_result = all(a.ok() for a in resolved_assertions)
 
         if debug:
@@ -118,7 +121,11 @@ class QuerySolution(Solution, BaseQueryRule):
             inserted=tuple(inserted_clbids),
         )
 
-    def apply_assertion(self, clause: AssertionRule, *, ctx: 'RequirementContext', output: Sequence[Clausable] = tuple()) -> AssertionResult:
+    def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', output: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
+        clause = resolve_assertion(asrt, input=output)
+        if clause is None:
+            return None
+
         if not isinstance(clause, AssertionRule):
             raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
@@ -161,3 +168,10 @@ class QuerySolution(Solution, BaseQueryRule):
             overridden=False,
             inserted=tuple(inserted_clbids),
         )
+
+
+def resolve_assertion(asrt: Union[AssertionRule, ConditionalAssertionRule], *, input: Sequence[Clausable]) -> Optional[AssertionRule]:
+    if isinstance(asrt, ConditionalAssertionRule):
+        return asrt.resolve(input)
+    else:
+        return asrt

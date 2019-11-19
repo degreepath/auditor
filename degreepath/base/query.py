@@ -1,12 +1,12 @@
 import attr
-from typing import Optional, Tuple, Dict, Any, Sequence
+from typing import Optional, Tuple, Dict, Any, Sequence, Union
 import enum
 
 from .bases import Base, Summable
 from ..limit import LimitSet
 from ..clause import Clause
 from ..claim import ClaimAttempt
-from ..rule.assertion import AssertionRule
+from ..rule.assertion import AssertionRule, ConditionalAssertionRule
 from .assertion import BaseAssertionRule
 
 
@@ -20,7 +20,7 @@ class QuerySource(enum.Enum):
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseQueryRule(Base):
     source: QuerySource
-    assertions: Tuple[AssertionRule, ...]
+    assertions: Tuple[Union[AssertionRule, ConditionalAssertionRule], ...]
     limit: LimitSet
     where: Optional[Clause]
     allow_claimed: bool
@@ -44,7 +44,7 @@ class BaseQueryRule(Base):
     def only_failed_claims(self) -> Sequence[ClaimAttempt]:
         return []
 
-    def all_assertions(self) -> Sequence[BaseAssertionRule]:
+    def all_assertions(self) -> Sequence[Union[BaseAssertionRule, ConditionalAssertionRule]]:
         return self.assertions
 
     def type(self) -> str:
