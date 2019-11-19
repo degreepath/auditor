@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Set, TYPE_CHECKING
+from typing import Optional, Dict, List, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import Claim  # noqa: F401
@@ -9,7 +9,7 @@ if TYPE_CHECKING:  # pragma: no cover
 def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', reset_claims: bool = False) -> Optional['Result']:
     result = None
 
-    claims: Dict[str, Set['Claim']] = dict()
+    claims: Dict[str, List['Claim']] = dict()
     if reset_claims:
         claims = ctx.claims
         ctx.reset_claims()
