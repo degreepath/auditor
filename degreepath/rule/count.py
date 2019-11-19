@@ -133,13 +133,20 @@ class CountRule(Rule, BaseCountRule):
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
-        return CountRule(
+        rule = CountRule(
             count=count,
             items=loaded_items,
             at_most=at_most,
             audit_clauses=audit_clauses,
             path=tuple(path),
         )
+
+        all_child_names = set(r for r, k in data.get("requirements", {}).items() if 'if' not in k)
+        used_child_names = set(rule.get_requirement_names())
+        unused_child_names = all_child_names.difference(used_child_names)
+        assert unused_child_names == set(), f"expected {unused_child_names} to be empty"
+
+        return rule
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         assert isinstance(self.count, int), f"{self.count} should be an integer"

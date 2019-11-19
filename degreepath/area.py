@@ -89,11 +89,6 @@ class AreaOfStudy(Base):
         if result is None:
             raise TypeError(f'expected load_rule to process {specification["result"]}')
 
-        all_child_names = set(r for r, k in specification.get("requirements", {}).items() if 'if' not in k)
-        used_child_names = set(result.get_requirement_names())
-        unused_child_names = all_child_names.difference(used_child_names)
-        assert unused_child_names == set(), f"expected {unused_child_names} to be empty"
-
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         multicountable_rules: Dict[str, List[Tuple[str, ...]]] = {
