@@ -147,7 +147,7 @@ class QuerySolution(Solution, BaseQueryRule):
             _clause = clause.override_expected_value(override_value.value)
             clause = cast(AssertionRule, _clause)
 
-        if clause.where is not None:
+        if clause.where:
             filtered_output = [item for item in output if clause.where.apply(item)]
         else:
             filtered_output = list(output)
