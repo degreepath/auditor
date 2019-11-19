@@ -43,7 +43,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             if ctx is None:
                 raise TypeError('conditional requirements are only supported at the top-level')
 
-            rule = QueryRule.load(data['if'], c=c, path=path)
+            rule = QueryRule.load(data['if'], c=c, path=path, ctx=ctx)
 
             with ctx.fresh_claims():
                 s = find_best_solution(rule=rule, ctx=ctx)
@@ -64,7 +64,7 @@ class RequirementRule(Rule, BaseRequirementRule):
                 return None
 
         if result is not None:
-            result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path)
+            result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path, ctx=ctx)
             if result is None:
                 return None
 

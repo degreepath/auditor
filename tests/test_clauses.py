@@ -1,4 +1,5 @@
-from degreepath.clause import SingleClause, Operator, load_clause, apply_operator
+from degreepath.clause import SingleClause, Operator, apply_operator
+from degreepath.load_clause import load_clause
 from degreepath.data import course_from_str, Clausable
 from degreepath.constants import Constants
 import logging

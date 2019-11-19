@@ -1,4 +1,4 @@
-from collections.abc import Mapping, Iterable
+from collections.abc import Iterable
 from typing import Union, List, Set, Tuple, Dict, Any, Optional, Iterator, Sequence, TYPE_CHECKING
 import logging
 from decimal import Decimal, InvalidOperation
@@ -19,36 +19,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 logger = logging.getLogger(__name__)
 CACHE_SIZE = 2048
-
-
-def load_clause(
-    data: Dict[str, Any],
-    *,
-    c: Constants,
-    allow_boolean: bool = True,
-    forbid: Sequence[Operator] = tuple(),
-) -> 'Clause':
-    if not isinstance(data, Mapping):
-        raise Exception(f'expected {data} to be a dictionary')
-
-    if not allow_boolean and ('$and' in data or '$or' in data):
-        raise ValueError('$and / $or clauses are not allowed here')
-
-    if "$and" in data:
-        assert len(data.keys()) == 1
-        return AndClause.load(data["$and"], c, allow_boolean, forbid)
-    elif "$or" in data:
-        assert len(data.keys()) == 1
-        return OrClause.load(data["$or"], c, allow_boolean, forbid)
-
-    assert len(data.keys()) == 1, "only one key allowed in single-clauses"
-
-    clauses = tuple(SingleClause.load(key, value, c, forbid) for key, value in data.items())
-
-    if len(clauses) == 1:
-        return clauses[0]
-
-    return AndClause(children=clauses)
 
 
 @attr.s(auto_attribs=True, slots=True)
@@ -126,11 +96,6 @@ class AndClause(_Clause, ResolvedClause):
             "hash": str(hash(self.children)),
         }
 
-    @staticmethod
-    def load(data: List[Dict], c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'AndClause':
-        clauses = [load_clause(clause, c=c, allow_boolean=allow_boolean, forbid=forbid) for clause in data]
-        return AndClause(children=tuple(clauses))
-
     def validate(self, *, ctx: 'RequirementContext') -> None:
         for c in self.children:
             c.validate(ctx=ctx)
@@ -189,11 +154,6 @@ class OrClause(_Clause, ResolvedClause):
             "children": [c.to_dict() for c in self.children],
             "hash": str(hash(self.children)),
         }
-
-    @staticmethod
-    def load(data: Dict, c: Constants, allow_boolean: bool = True, forbid: Sequence[Operator] = tuple()) -> 'OrClause':
-        clauses = [load_clause(clause, c=c, allow_boolean=allow_boolean, forbid=forbid) for clause in data]
-        return OrClause(children=tuple(clauses))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         for c in self.children:

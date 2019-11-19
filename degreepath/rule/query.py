@@ -7,7 +7,8 @@ import decimal
 from ..base import Rule, BaseQueryRule
 from ..base.query import QuerySource
 from ..limit import LimitSet
-from ..clause import load_clause, Clause, SingleClause, OrClause, AndClause
+from ..clause import Clause, SingleClause, OrClause, AndClause
+from ..load_clause import load_clause
 from ..data.clausable import Clausable
 from ..solution.query import QuerySolution
 from ..constants import Constants
@@ -30,12 +31,12 @@ class QueryRule(Rule, BaseQueryRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: List[str]) -> 'QueryRule':
+    def load(data: Dict, *, c: Constants, path: List[str], ctx: Optional['RequirementContext'] = None) -> 'QueryRule':
         path = [*path, f".query"]
 
         where = data.get("where", None)
         if where is not None:
-            where = load_clause(where, c=c)
+            where = load_clause(where, c=c, ctx=ctx)
 
         limit = LimitSet.load(data=data.get("limit", None), c=c)
 

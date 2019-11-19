@@ -30,7 +30,7 @@ def load_rule(
         return CourseRule.load(data, c=c, path=path)
 
     elif QueryRule.can_load(data):
-        return QueryRule.load(data, c=c, path=path)
+        return QueryRule.load(data, c=c, path=path, ctx=ctx)
 
     elif CountRule.can_load(data):
         return CountRule.load(data, c=c, children=children, path=path, emphases=emphases, ctx=ctx)

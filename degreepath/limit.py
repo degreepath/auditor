@@ -4,7 +4,8 @@ import itertools
 from collections import defaultdict
 import logging
 
-from .clause import Clause, str_clause, load_clause
+from .clause import Clause, str_clause
+from .load_clause import load_clause
 from .constants import Constants
 
 from .data.clausable import Clausable
@@ -38,11 +39,10 @@ class Limit:
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty"
 
-        return Limit(
-            at_most=at_most,
-            where=load_clause(data["where"], c=c),
-            message=data.get('message', None),
-        )
+        clause = load_clause(data["where"], c=c)
+        assert clause, 'limits are not allowed to have conditional clauses'
+
+        return Limit(at_most=at_most, where=clause, message=data.get('message', None))
 
     def __str__(self) -> str:
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"

@@ -2,7 +2,8 @@ import attr
 from typing import Dict, Sequence, Iterator, List, Collection, Optional, Union, TYPE_CHECKING
 import logging
 
-from ..clause import load_clause, SingleClause
+from ..clause import SingleClause
+from ..load_clause import load_clause
 from ..constants import Constants
 from ..operator import Operator
 from ..base.bases import Rule, Solution

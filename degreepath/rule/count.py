@@ -104,13 +104,8 @@ class CountRule(Rule, BaseCountRule):
             else:
                 audit_clauses = tuple([AssertionRule.load(audit_clause, c=c, path=[*path, ".audit", "[0]"])])
 
-        if len(path) == 2:
-            load_context = ctx
-        else:
-            load_context = None
-
         loaded_items = tuple(r for r in (
-            load_rule(data=r, c=c, children=children_with_emphases, path=[*path, f"[{i}]"], ctx=load_context)
+            load_rule(data=r, c=c, children=children_with_emphases, path=[*path, f"[{i}]"], ctx=ctx)
             for i, r in enumerate(items)
         ) if r is not None)
 
