@@ -38,7 +38,7 @@ class CourseRule(Rule, BaseCourseRule):
 
         path = [*path, f"*{course or ap}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
 
-        allowed_keys = set(['course', 'grade', 'including claimed', 'hidden', 'ap', 'grade_option'])
+        allowed_keys = set(['course', 'grade', 'allow_claimed', 'including claimed', 'hidden', 'ap', 'grade_option'])
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -47,7 +47,7 @@ class CourseRule(Rule, BaseCourseRule):
             hidden=data.get("hidden", False),
             grade=str_to_grade_points(min_grade) if min_grade is not None else None,
             grade_option=GradeOption(grade_option) if grade_option else None,
-            allow_claimed=data.get("including claimed", False),
+            allow_claimed=data.get("including claimed", data.get("allow_claimed", False)),
             path=tuple(path),
             ap=ap,
         )
