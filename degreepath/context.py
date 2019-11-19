@@ -25,6 +25,11 @@ class RequirementContext:
     multicountable: Dict[str, List[Tuple[str, ...]]] = attr.ib(factory=list)
     claims: Dict[str, List[Claim]] = attr.ib(factory=lambda: defaultdict(list))
     exceptions: List[RuleException] = attr.ib(factory=list)
+    exception_paths_: List[Tuple[str, ...]] = attr.ib(init=False)
+
+    def __attrs_post_init__(self) -> None:
+        exception_paths = list({e.path for e in self.exceptions})
+        object.__setattr__(self, "exception_paths_", exception_paths)
 
     def with_transcript(
         self,
@@ -82,6 +87,10 @@ class RequirementContext:
 
     def get_insert_exceptions(self, path: Sequence[str]) -> Iterator[InsertionException]:
         tuple_path = tuple(path)
+
+        if tuple_path not in self.exception_paths_:
+            return
+
         did_yield = False
         for exception in self.exceptions:
             if isinstance(exception, InsertionException) and exception.path == tuple_path:
@@ -89,10 +98,15 @@ class RequirementContext:
                 did_yield = True
                 yield exception
 
-        if not did_yield: logger.debug("no exception for %s", path)
+        if not did_yield:
+            logger.debug("no exception for %s", path)
 
     def get_waive_exception(self, path: Sequence[str]) -> Optional[OverrideException]:
         tuple_path = tuple(path)
+
+        if tuple_path not in self.exception_paths_:
+            return None
+
         for e in self.exceptions:
             if isinstance(e, OverrideException) and e.path == tuple_path:
                 logger.debug("exception found for %s: %s", path, e)
@@ -103,6 +117,10 @@ class RequirementContext:
 
     def get_value_exception(self, path: Sequence[str]) -> Optional[ValueException]:
         tuple_path = tuple(path)
+
+        if tuple_path not in self.exception_paths_:
+            return None
+
         for e in self.exceptions:
             if isinstance(e, ValueException) and e.path == tuple_path:
                 logger.debug("exception found for %s: %s", path, e)
