@@ -218,7 +218,7 @@ def print_count(
     for i, r in enumerate(rule["items"]):
         yield from print_result(r, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
 
-        if i < len(rule['items']) - 1:
+        if size != 2 and i < len(rule['items']) - 1:
             yield ''
 
 
