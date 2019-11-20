@@ -328,7 +328,6 @@ def print_assertion(
         yield f"{prefix}resolved items: {resolved_items}"
 
     resolved_clbids = get_resolved_clbids(rule['assertion'])
-    ip_clbids = get_in_progress_clbids(rule['assertion'])
     if resolved_clbids:
         def key(c: CourseInstance) -> str:
             return ''
@@ -340,6 +339,8 @@ def print_assertion(
                 return f'grade={c.grade_points}'
 
         yield f"{prefix}resolved courses:"
+
+        ip_clbids = get_in_progress_clbids(rule['assertion'])
 
         for clbid in resolved_clbids:
             inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
