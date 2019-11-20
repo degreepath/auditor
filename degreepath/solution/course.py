@@ -50,11 +50,11 @@ class CourseSolution(Solution, BaseCourseRule):
         # don't forget to update the callsite in rule.course#all_matches when updating this
         for matched_course in ctx.find_all_courses(course=self.course, ap=self.ap, institution=self.institution, name=self.name):
             if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
-                logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.course, matched_course.grade_points, self.grade)
+                logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.identifier(), matched_course.grade_points, self.grade)
                 continue
 
             if self.grade_option is not None and matched_course.grade_option != self.grade_option:
-                logger.debug('%s course "%s" exists, but the course was taken %s, and the area requires that it be taken %s', self.path, self.course, matched_course.grade_option, self.grade_option)
+                logger.debug('%s course "%s" exists, but the course was taken %s, and the area requires that it be taken %s', self.path, self.identifier(), matched_course.grade_option, self.grade_option)
                 continue
 
             claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=self.allow_claimed)
@@ -65,5 +65,5 @@ class CourseSolution(Solution, BaseCourseRule):
 
             logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, matched_course.course(), claim.conflict_with)
 
-        logger.debug('%s course "%s" could not be claimed', self.path, self.course)
+        logger.debug('%s course "%s" could not be claimed', self.path, self.identifier())
         return CourseResult.from_solution(solution=self, claim_attempt=claim)

@@ -49,3 +49,7 @@ class BaseCourseRule(Base):
 
     def max_rank(self) -> int:
         return 1
+
+    def identifier(self) -> str:
+        items = {'course': self.course, 'ap': self.ap, 'name': self.name, 'institution': self.institution}
+        return ' '.join(f"{k}:{v}" for k, v in items.items())
