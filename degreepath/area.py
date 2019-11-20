@@ -142,8 +142,6 @@ class AreaOfStudy(Base):
         forced_courses = {c.clbid: c for c in transcript if c.clbid in forced_clbids}
 
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
-            limited_transcript = tuple(sorted(limited_transcript, key=lambda c: c.sort_order()))
-
             logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
             ctx = RequirementContext(

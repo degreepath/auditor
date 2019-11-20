@@ -171,7 +171,8 @@ class LimitSet:
             else:
                 emitted_solutions.add(these_items)
 
-            this_combo = tuple(unmatched_items) + these_items
+            this_combo = unmatched_items + list(these_items)
+            this_combo.sort(key=lambda c: c.sort_order())
 
             logger.debug("limit/combos: %s", this_combo)
-            yield this_combo
+            yield tuple(this_combo)

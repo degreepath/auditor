@@ -108,8 +108,6 @@ class QueryRule(Rule, BaseQueryRule):
 
         did_iter = False
         for item_set in self.limit.limited_transcripts(data):
-            item_set = tuple(sorted(item_set, key=lambda c: c.sort_order()))
-
             if self.attempt_claims is False:
                 did_iter = True
 
