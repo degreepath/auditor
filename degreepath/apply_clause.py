@@ -17,6 +17,12 @@ class AppliedClauseResult:
     data: Union[FrozenSet[str], FrozenSet[Decimal], Tuple[str, ...], Tuple[Decimal, ...]] = tuple()
     courses: Collection[CourseInstance] = tuple()
 
+    def clbids(self) -> Tuple[str, ...]:
+        return tuple(c.clbid for c in self.courses)
+
+    def ip_clbids(self) -> Tuple[str, ...]:
+        return tuple(c.clbid for c in self.courses if c.is_in_progress)
+
 
 def count_items_test(data: Sequence[Any]) -> AppliedClauseResult:
     items = frozenset(repr(c) for c in data)

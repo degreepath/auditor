@@ -357,10 +357,8 @@ class SingleClause(_Clause, ResolvedClause):
 
         reduced_value = calculated_result.value
         value_items = calculated_result.data
-        courses = calculated_result.courses
-
-        clbids = tuple(c.clbid for c in courses)
-        ip_clbids = tuple(c.clbid for c in courses if c.is_in_progress)
+        clbids = calculated_result.clbids()
+        ip_clbids = calculated_result.ip_clbids()
 
         # if we have `treat_in_progress_as_pass` set, we skip the ip_clbids check entirely
         if ip_clbids and self.treat_in_progress_as_pass is False:
