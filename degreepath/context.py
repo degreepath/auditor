@@ -60,6 +60,31 @@ class RequirementContext:
     def transcript_with_excluded(self) -> List[CourseInstance]:
         return self.transcript_with_excluded_
 
+    def find_courses(
+        self,
+        *,
+        course: Optional[str] = None,
+        name: Optional[str] = None,
+        ap: Optional[str] = None,
+        institution: Optional[str] = None,
+    ) -> Iterator[CourseInstance]:
+        query = (course, name, ap, institution, True if ap else None)
+
+        for c in self.transcript():
+            if not c.is_stolaf and institution is None and ap is None:
+                continue
+
+            matcher = (
+                c.identity_ if course else None,
+                c.name if name else None,
+                c.name if ap else None,
+                c.institution if institution else None,
+                c.course_type is CourseType.AP if ap else None,
+            )
+
+            if query == matcher:
+                yield c
+
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self.clbid_lookup_map_.get(clbid, None)
 

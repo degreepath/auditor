@@ -92,7 +92,7 @@ class CourseRule(Rule, BaseCourseRule):
             return True
 
         try:
-            next(ctx.find_all_courses(course=self.course, ap=self.ap, institution=self.institution))
+            next(ctx.find_courses(course=self.course, ap=self.ap, institution=self.institution))
             return True
         except StopIteration:
             return False
@@ -102,4 +102,4 @@ class CourseRule(Rule, BaseCourseRule):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []
 
-        return list(ctx.find_all_courses(course=self.course, ap=self.ap, institution=self.institution))
+        return list(ctx.find_courses(course=self.course, ap=self.ap, institution=self.institution))
