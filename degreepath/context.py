@@ -60,19 +60,6 @@ class RequirementContext:
     def transcript_with_excluded(self) -> List[CourseInstance]:
         return self.transcript_with_excluded_
 
-    def find_ap_ib_credit_course(self, *, name: str) -> Optional[CourseInstance]:
-        for c in self.transcript():
-            if c.course_type is CourseType.AP and c.name == name:
-                return c
-        return None
-
-    def find_all_courses(self, c: str) -> Iterator[CourseInstance]:
-        for crs in self.transcript():
-            if not crs.is_stolaf:
-                continue
-            if crs.identity_ == c:
-                yield crs
-
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self.clbid_lookup_map_.get(clbid, None)
 
