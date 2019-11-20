@@ -12,14 +12,15 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCourseRule(Base):
-    course: str
-    ap: Optional[str]
-    hidden: bool
-    grade: Optional[Decimal]
-    grade_option: Optional[GradeOption]
-    allow_claimed: bool
-    path: Tuple[str, ...]
-    inserted: bool
+    course: Optional[str] = None
+    ap: Optional[str] = None
+    hidden: bool = False
+    grade: Optional[Decimal] = None
+    grade_option: Optional[GradeOption] = None
+    allow_claimed: bool = False
+    path: Tuple[str, ...] = tuple()
+    inserted: bool = False
+    overridden: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {

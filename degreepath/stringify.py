@@ -170,7 +170,11 @@ def print_course(
             else:
                 status = "💜 [wvd]"
 
-    yield f"{prefix}{status} {display_course}"
+    institution = ""
+    if rule['institution']:
+        institution = f" [{rule['institution']}]"
+
+    yield f"{prefix}{status} {display_course}{institution}"
 
 
 def print_count(

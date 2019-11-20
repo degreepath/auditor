@@ -15,8 +15,6 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseSolution(Solution, BaseCourseRule):
-    overridden: bool
-
     @staticmethod
     def from_rule(*, rule: BaseCourseRule, overridden: bool = False) -> 'CourseSolution':
         return CourseSolution(

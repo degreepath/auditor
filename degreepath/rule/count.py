@@ -179,12 +179,8 @@ class CountRule(Rule, BaseCountRule):
 
             new_rule = CourseRule(
                 course=matched_course.course(),
-                hidden=False,
-                grade=None,
-                grade_option=None,
                 allow_claimed=insert.forced,
                 path=tuple([*self.path, f"[{len(items)}]", f"*{matched_course.course()}"]),
-                ap=None,
                 inserted=True,
             )
 
