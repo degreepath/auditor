@@ -42,7 +42,7 @@ class ResolvedClause:
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "resolved_with": str(self.resolved_with) if self.resolved_with is not None and type(self.resolved_with) is not str else self.resolved_with,
+            "resolved_with": str(self.resolved_with) if self.resolved_with is not None else self.resolved_with,
             "resolved_items": [str(x) if isinstance(x, Decimal) else x for x in self.resolved_items],
             "resolved_clbids": [x for x in self.resolved_clbids],
             "in_progress_clbids": [x for x in self.in_progress_clbids],
