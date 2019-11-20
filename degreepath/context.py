@@ -16,6 +16,7 @@ debug: Optional[bool] = None
 @attr.s(slots=True, kw_only=True, frozen=False, auto_attribs=True)
 class RequirementContext:
     transcript_: List[CourseInstance] = attr.ib(factory=list)
+    transcript_with_excluded_: List[CourseInstance] = attr.ib(factory=list)
     course_set_: Set[str] = attr.ib(factory=set)
     clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
     forced_clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
@@ -36,6 +37,7 @@ class RequirementContext:
         transcript: Iterable[CourseInstance],
         *,
         forced: Optional[Dict[str, CourseInstance]] = None,
+        full: Iterable[CourseInstance] = tuple(),
         including_failed: Iterable[CourseInstance] = tuple(),
     ) -> 'RequirementContext':
         transcript = list(transcript)
@@ -46,6 +48,7 @@ class RequirementContext:
             self,
             transcript_=transcript,
             transcript_with_failed_=list(including_failed),
+            transcript_with_excluded_=list(full),
             course_set_=course_set,
             clbid_lookup_map_=clbid_lookup_map,
             forced_clbid_lookup_map_=forced or {},
@@ -53,6 +56,9 @@ class RequirementContext:
 
     def transcript(self) -> List[CourseInstance]:
         return self.transcript_
+
+    def transcript_with_excluded(self) -> List[CourseInstance]:
+        return self.transcript_with_excluded_
 
     def find_ap_ib_credit_course(self, *, name: str) -> Optional[CourseInstance]:
         for c in self.transcript():
