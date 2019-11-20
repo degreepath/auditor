@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
+from typing import Dict, List, Set, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
 
@@ -193,7 +193,7 @@ class AreaSolution(AreaOfStudy):
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
     def audit_common_major_requirements(self, result: Result) -> RequirementResult:
-        claimed = set(result.matched())
+        claimed: Set[CourseInstance] = result.matched()
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
         fresh_context = attr.evolve(self.context)
