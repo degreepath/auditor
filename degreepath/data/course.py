@@ -364,6 +364,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "flag_stolaf": True,
         "gereqs": tuple(),
         "grade_option": GradeOption.Grade,
+        "institution_short": "STOLAF",
         "level": int(number) // 100 * 100,
         "name": s,
         "number": s.split(' ')[1],
