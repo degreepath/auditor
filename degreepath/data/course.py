@@ -25,6 +25,7 @@ class CourseInstance(Clausable):
     grade_code: GradeCode
     grade_option: GradeOption
     grade_points: Decimal
+    institution: str
     is_in_gpa: bool
     is_in_progress: bool
     is_incomplete: bool
@@ -66,6 +67,7 @@ class CourseInstance(Clausable):
             "grade_code": self.grade_code.value,
             "grade_option": self.grade_option.value,
             "grade_points": str(self.grade_points),
+            "institution": self.institution,
             "is_in_gpa": self.is_in_gpa,
             "is_in_progress": self.is_in_progress,
             "is_incomplete": self.is_incomplete,
@@ -255,6 +257,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     grade_code = data['grade_code']
     grade_option = data['grade_option']
     grade_points = data['grade_points']
+    institution = data['institution_short']
     level = int(data['level'])
     name = data['name']
     number = data['number']
@@ -319,6 +322,7 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
         grade_code=grade_code,
         grade_option=grade_option,
         grade_points=grade_points,
+        institution=institution,
         is_in_gpa=flag_gpa,
         is_in_progress=flag_in_progress,
         is_incomplete=flag_incomplete,
