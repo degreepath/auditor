@@ -10,6 +10,8 @@ from ..data.course_enums import GradeOption
 class BaseCourseRule(Base):
     course: Optional[str] = None
     ap: Optional[str] = None
+    institution: Optional[str] = None
+    name: Optional[str] = None
     hidden: bool = False
     grade: Optional[Decimal] = None
     grade_option: Optional[GradeOption] = None
@@ -26,6 +28,8 @@ class BaseCourseRule(Base):
             "grade": str(self.grade) if self.grade is not None else None,
             "claims": [c.to_dict() for c in self.claims()],
             "ap": self.ap,
+            "institution": self.institution,
+            "name": self.name,
         }
 
     def type(self) -> str:

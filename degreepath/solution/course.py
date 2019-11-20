@@ -25,6 +25,8 @@ class CourseSolution(Solution, BaseCourseRule):
             path=rule.path,
             overridden=overridden,
             ap=rule.ap,
+            institution=rule.institution,
+            name=rule.name,
             inserted=rule.inserted,
             grade_option=rule.grade_option,
         )
@@ -45,21 +47,8 @@ class CourseSolution(Solution, BaseCourseRule):
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
                 return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=True)
 
-        if self.ap:
-            ap_ib_credit_course = ctx.find_ap_ib_credit_course(name=self.ap)
-            if ap_ib_credit_course:
-                matched_course = ap_ib_credit_course
-                claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=self.allow_claimed)
-
-                if not claim.failed:
-                    logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
-                    return CourseResult.from_solution(solution=self, claim_attempt=claim)
-
-                logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, matched_course.course(), claim.conflict_with)
-            else:
-                logger.debug('%s looked for AP/IB/CAL credit for "%s", but found none', self.path, self.ap)
-
-        for matched_course in ctx.find_all_courses(self.course):
+        # don't forget to update the callsite in rule.course#all_matches when updating this
+        for matched_course in ctx.find_all_courses(course=self.course, ap=self.ap, institution=self.institution, name=self.name):
             if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
                 logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.course, matched_course.grade_points, self.grade)
                 continue

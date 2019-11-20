@@ -33,6 +33,8 @@ class CourseResult(Result, BaseCourseRule):
             path=solution.path,
             overridden=overridden,
             ap=solution.ap,
+            institution=solution.institution,
+            name=solution.name,
             inserted=solution.inserted,
         )
 

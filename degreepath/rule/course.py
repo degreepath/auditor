@@ -28,14 +28,19 @@ class CourseRule(Rule, BaseCourseRule):
 
     @staticmethod
     def load(data: Dict, *, c: Constants, path: List[str]) -> 'CourseRule':
-        course = data.get('course', '')
+        course = data.get('course', None)
         ap = data.get('ap', None)
+        name = data.get('name', None)
+        institution = data.get('institution', None)
         min_grade = data.get('grade', None)
         grade_option = data.get('grade_option', None)
 
-        path = [*path, f"*{course or ap}" + (f"(grade >= {min_grade})" if min_grade is not None else "")]
+        path_name = f"*{course or ap}"
+        path_inst = f"(institution={institution})" if institution else ""
+        path_grade = f"(grade >= {min_grade})" if min_grade else ""
+        path = [*path, f"{path_name}{path_inst}{path_grade}"]
 
-        allowed_keys = set(['course', 'grade', 'allow_claimed', 'including claimed', 'hidden', 'ap', 'grade_option'])
+        allowed_keys = {'course', 'grade', 'allow_claimed', 'including claimed', 'hidden', 'ap', 'grade_option', 'institution', 'name'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -46,18 +51,20 @@ class CourseRule(Rule, BaseCourseRule):
             grade_option=GradeOption(grade_option) if grade_option else None,
             allow_claimed=data.get("including claimed", data.get("allow_claimed", False)),
             path=tuple(path),
+            institution=institution,
+            name=name,
             ap=ap,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
-        if self.ap != '' and self.course == '':
-            return
+        if self.course:
+            method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
+            method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
+            method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
 
-        method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
-        method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
-        method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
+            assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
 
-        assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
+        assert self.course or self.ap or (self.institution and self.name)
 
     def get_requirement_names(self) -> List[str]:
         return []
@@ -84,18 +91,15 @@ class CourseRule(Rule, BaseCourseRule):
         if ctx.has_exception(self.path):
             return True
 
-        if self.ap:
-            if ctx.find_ap_ib_credit_course(name=self.ap) is not None:
-                return True
-
-        if ctx.has_course(self.course):
+        try:
+            next(ctx.find_all_courses(course=self.course, ap=self.ap, institution=self.institution))
             return True
-
-        return False
+        except StopIteration:
+            return False
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         for insert in ctx.get_insert_exceptions(self.path):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []
 
-        return list(ctx.find_all_courses(self.course))
+        return list(ctx.find_all_courses(course=self.course, ap=self.ap, institution=self.institution))
