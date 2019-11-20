@@ -1,13 +1,9 @@
 import attr
-from typing import Optional, Tuple, Dict, Any, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Any
 from decimal import Decimal
 
 from .bases import Base
-from ..operator import Operator
 from ..data.course_enums import GradeOption
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -34,22 +30,6 @@ class BaseCourseRule(Base):
 
     def type(self) -> str:
         return "course"
-
-    def is_equivalent_to_clause(self, clause: 'SingleClause') -> bool:
-        if clause.key != 'course':
-            return False
-
-        if not hasattr(clause, 'operator'):
-            return False
-
-        if clause.operator is Operator.EqualTo:
-            if not isinstance(clause.expected, str):
-                return False
-            return self.course == clause.expected
-        elif clause.operator is Operator.In:
-            return self.course in clause.expected
-        else:
-            return False
 
     def rank(self) -> Decimal:
         if self.in_progress():
