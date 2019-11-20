@@ -62,7 +62,7 @@ class CourseSolution(Solution, BaseCourseRule):
                 logger.debug('%s looked for AP/IB/CAL credit for "%s", but found none', self.path, self.ap)
 
         for matched_course in ctx.find_all_courses(self.course):
-            if self.grade is not None and matched_course.grade_points < self.grade:
+            if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
                 logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.course, matched_course.grade_points, self.grade)
                 continue
 
