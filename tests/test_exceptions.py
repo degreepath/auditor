@@ -11,8 +11,6 @@ c = Constants(matriculation_year=2000)
 def test_insertion_on_course_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ["$", "*DEPT 345"],
@@ -23,6 +21,7 @@ def test_insertion_on_course_rule(caplog):
     course_b = course_from_str("OTHER 234", clbid="1")
     transcript = [course_a, course_b]
 
+    area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c, transcript=transcript, exceptions=[exception])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -36,8 +35,6 @@ def test_insertion_on_course_rule(caplog):
 def test_multi_insertion_on_course_rule(caplog):
     """We expect the first insertion to take hold"""
     caplog.set_level(logging.DEBUG)
-
-    area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c)
 
     exception = load_exception({
         "type": "insert",
@@ -55,6 +52,7 @@ def test_multi_insertion_on_course_rule(caplog):
     course_c = course_from_str("OTHER 235", clbid="1")
     transcript = [course_a, course_b, course_c]
 
+    area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c, transcript=transcript, exceptions=[exception, exception2])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
     assert len(solutions) == 1
 
@@ -69,14 +67,6 @@ def test_multi_insertion_on_course_rule(caplog):
 def test_insertion_on_query_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "from": "courses",
-            "where": {"subject": {"$eq": "ABC"}},
-            "assert": {"count(courses)": {"$gte": 1}},
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ["$", ".query"],
@@ -86,6 +76,13 @@ def test_insertion_on_query_rule(caplog):
     course_a = course_from_str("OTHER 123", clbid="0")
     transcript = [course_a]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": "courses",
+            "where": {"subject": {"$eq": "ABC"}},
+            "assert": {"count(courses)": {"$gte": 1}},
+        },
+    }, c=c, transcript=transcript, exceptions=[exception])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -98,14 +95,6 @@ def test_insertion_on_query_rule(caplog):
 
 def test_multi_insertion_on_query_rule(caplog):
     caplog.set_level(logging.DEBUG)
-
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "from": "courses",
-            "where": {"subject": {"$eq": "ABC"}},
-            "assert": {"count(courses)": {"$gte": 1}},
-        },
-    }, c=c)
 
     exception = load_exception({
         "type": "insert",
@@ -122,6 +111,13 @@ def test_multi_insertion_on_query_rule(caplog):
     course_b = course_from_str("OTHER 111", clbid="1")
     transcript = [course_a, course_b]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": "courses",
+            "where": {"subject": {"$eq": "ABC"}},
+            "assert": {"count(courses)": {"$gte": 1}},
+        },
+    }, c=c, transcript=transcript, exceptions=[exception, exception2])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
     assert len(solutions) == 1
 
@@ -137,14 +133,6 @@ def test_multi_insertion_on_query_rule(caplog):
 def test_insertion_on_count_rule__any(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "any": [
-                {"course": "DEPT 123"},
-            ],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.count'],
@@ -155,6 +143,13 @@ def test_insertion_on_count_rule__any(caplog):
     course_b = course_from_str("OTHER 234", clbid="1")
     transcript = [course_a, course_b]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "any": [
+                {"course": "DEPT 123"},
+            ],
+        },
+    }, c=c, transcript=transcript, exceptions=[exception])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     print([s.solution for s in solutions])
 
@@ -175,14 +170,6 @@ def test_insertion_on_count_rule__any(caplog):
 def test_multi_insertion_on_count_rule__any(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "any": [
-                {"course": "DEPT 123"},
-            ],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.count'],
@@ -199,6 +186,13 @@ def test_multi_insertion_on_count_rule__any(caplog):
     course_c = course_from_str("OTHER 222", clbid="2")
     transcript = [course_a, course_b, course_c]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "any": [
+                {"course": "DEPT 123"},
+            ],
+        },
+    }, c=c, transcript=transcript, exceptions=[exception, exception2])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
     print([s.solution for s in solutions])
 
@@ -220,14 +214,6 @@ def test_multi_insertion_on_count_rule__any(caplog):
 def test_multi_insertion_on_count_rule__any_with_natural(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "any": [
-                {"course": "DEPT 123"},
-            ],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.count'],
@@ -244,6 +230,13 @@ def test_multi_insertion_on_count_rule__any_with_natural(caplog):
     course_c = course_from_str("OTHER 222", clbid="2")
     transcript = [course_a, course_b, course_c]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "any": [
+                {"course": "DEPT 123"},
+            ],
+        },
+    }, c=c, transcript=transcript, exceptions=[exception, exception2])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
     print([s.solution for s in solutions])
 
@@ -266,15 +259,6 @@ def test_multi_insertion_on_count_rule__any_with_natural(caplog):
 def test_insertion_on_count_rule__all(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "all": [
-                {"course": "DEPT 123"},
-                {"course": "DEPT 234"},
-            ],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.count'],
@@ -286,6 +270,14 @@ def test_insertion_on_count_rule__all(caplog):
     course_c = course_from_str("DEPT 345", clbid="2")
     transcript = [course_a, course_b, course_c]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "all": [
+                {"course": "DEPT 123"},
+                {"course": "DEPT 234"},
+            ],
+        },
+    }, c=c, transcript=transcript, exceptions=[exception])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -302,13 +294,6 @@ def test_insertion_on_requirement_rule(caplog):
 
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {"requirement": "req"},
-        "requirements": {
-            "req": {"result": {"course": "DEPT 123"}},
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ["$", r"%req"],
@@ -317,6 +302,12 @@ def test_insertion_on_requirement_rule(caplog):
 
     print('start')
 
+    area = AreaOfStudy.load(specification={
+        "result": {"requirement": "req"},
+        "requirements": {
+            "req": {"result": {"course": "DEPT 123"}},
+        },
+    }, c=c, transcript=[], exceptions=[exception])
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -333,14 +324,13 @@ def test_insertion_on_requirement_rule(caplog):
 def test_override_on_course_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={"result": {"course": "DEPT 123"}}, c=c)
-
     exception = load_exception({
         "type": "override",
         "path": ["$", "*DEPT 123"],
         "status": "pass",
     })
 
+    area = AreaOfStudy.load(specification={"result": {"course": "DEPT 123"}}, c=c, transcript=[], exceptions=[exception])
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -353,19 +343,18 @@ def test_override_on_course_rule(caplog):
 def test_override_on_query_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "from": "courses",
-            "assert": {"count(courses)": {"$gte": 1}},
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "override",
         "path": ["$", ".query"],
         "status": "pass",
     })
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": "courses",
+            "assert": {"count(courses)": {"$gte": 1}},
+        },
+    }, c=c, transcript=[], exceptions=[exception])
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -378,20 +367,19 @@ def test_override_on_query_rule(caplog):
 def test_override_on_count_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "any": [
-                {"course": "DEPT 123"},
-            ],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "override",
         "path": ["$", ".count"],
         "status": "pass",
     })
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "any": [
+                {"course": "DEPT 123"},
+            ],
+        },
+    }, c=c, transcript=[], exceptions=[exception])
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -404,19 +392,18 @@ def test_override_on_count_rule(caplog):
 def test_override_on_requirement_rule(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {"requirement": "req"},
-        "requirements": {
-            "req": {"department_audited": True},
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "override",
         "path": ["$", r"%req"],
         "status": "pass",
     })
 
+    area = AreaOfStudy.load(specification={
+        "result": {"requirement": "req"},
+        "requirements": {
+            "req": {"department_audited": True},
+        },
+    }, c=c, transcript=[], exceptions=[exception])
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -429,13 +416,6 @@ def test_override_on_requirement_rule(caplog):
 def test_override_on_count_rule_assertion_clause(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "all": [{"course": "DEPT 123"}],
-            "audit": {"assert": {"count(courses)": {"$gte": 1}}},
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "override",
         "path": ['$', '.count', '.audit', '[0]', '.assert'],
@@ -446,6 +426,12 @@ def test_override_on_count_rule_assertion_clause(caplog):
     course_b = course_from_str("DEPT 345", clbid="1")
     transcript = [course_a, course_b]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "all": [{"course": "DEPT 123"}],
+            "audit": {"assert": {"count(courses)": {"$gte": 1}}},
+        },
+    }, c=c, transcript=transcript, exceptions=[exception])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -459,13 +445,6 @@ def test_override_on_count_rule_assertion_clause(caplog):
 def test_insertion_on_count_rule_assertion_clause(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "all": [{"course": "DEPT 123"}],
-            "audit": {"assert": {"count(courses)": {"$gte": 1}}},
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.count', '.audit', '[0]', '.assert'],
@@ -476,6 +455,12 @@ def test_insertion_on_count_rule_assertion_clause(caplog):
     course_b = course_from_str("DEPT 345", clbid="1")
     transcript = [course_a, course_b]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "all": [{"course": "DEPT 123"}],
+            "audit": {"assert": {"count(courses)": {"$gte": 1}}},
+        },
+    }, c=c, transcript=transcript, exceptions=[exception])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -493,13 +478,6 @@ def test_insertion_on_count_rule_assertion_clause(caplog):
 def test_multi_insertion_on_count_rule_assertion_clause(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "all": [{"course": "DEPT 123"}],
-            "audit": {"assert": {"count(courses)": {"$gte": 1}}},
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.count', '.audit', '[0]', '.assert'],
@@ -516,6 +494,12 @@ def test_multi_insertion_on_count_rule_assertion_clause(caplog):
     course_c = course_from_str("DEPT 234", clbid="2")
     transcript = [course_a, course_b, course_c]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "all": [{"course": "DEPT 123"}],
+            "audit": {"assert": {"count(courses)": {"$gte": 1}}},
+        },
+    }, c=c, transcript=transcript, exceptions=[exception, exception2])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
     assert len(solutions) == 1
 
@@ -533,19 +517,18 @@ def test_multi_insertion_on_count_rule_assertion_clause(caplog):
 def test_override_on_query_rule_audit_clause(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "from": "courses",
-            "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "override",
         "path": ['$', '.query', '.assertions', '[0]', '.assert'],
         "status": "pass",
     })
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": "courses",
+            "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
+        },
+    }, c=c, exceptions=[exception])
     solutions = list(area.solutions(transcript=[], areas=[], exceptions=[exception]))
     assert len(solutions) == 1
 
@@ -559,13 +542,6 @@ def test_override_on_query_rule_audit_clause(caplog):
 def test_insertion_on_query_rule_audit_clause(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "from": "courses",
-            "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.query', '.assertions', '[0]', '.assert'],
@@ -576,6 +552,12 @@ def test_insertion_on_query_rule_audit_clause(caplog):
     course_b = course_from_str("DEPT 345", clbid="1")
     transcript = [course_a, course_b]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": "courses",
+            "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
+        },
+    }, c=c, transcript=transcript, exceptions=[exception])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception]))
     assert len(solutions) == 3
 
@@ -596,13 +578,6 @@ def test_insertion_on_query_rule_audit_clause(caplog):
 def test_multi_insertion_on_query_rule_audit_clause(caplog):
     caplog.set_level(logging.DEBUG)
 
-    area = AreaOfStudy.load(specification={
-        "result": {
-            "from": "courses",
-            "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
-        },
-    }, c=c)
-
     exception = load_exception({
         "type": "insert",
         "path": ['$', '.query', '.assertions', '[0]', '.assert'],
@@ -619,6 +594,12 @@ def test_multi_insertion_on_query_rule_audit_clause(caplog):
     course_c = course_from_str("DEPT 234", clbid="2")
     transcript = [course_a, course_b, course_c]
 
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": "courses",
+            "all": [{"assert": {"count(courses)": {"$gte": 1}}}],
+        },
+    }, c=c, transcript=transcript, exceptions=[exception, exception2])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
     assert len(solutions) == 7
 
