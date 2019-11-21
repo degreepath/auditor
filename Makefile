@@ -14,3 +14,6 @@ watch:
 
 push: lint
 	git push
+
+validate:
+	python3 dp-validate.py ../degreepath-areas/*/**.yaml --break
