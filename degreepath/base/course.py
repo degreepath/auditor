@@ -9,6 +9,7 @@ from ..data.course_enums import GradeOption
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCourseRule(Base):
     course: Optional[str] = None
+    clbid: Optional[str] = None
     ap: Optional[str] = None
     institution: Optional[str] = None
     name: Optional[str] = None
@@ -24,6 +25,7 @@ class BaseCourseRule(Base):
         return {
             **super().to_dict(),
             "course": self.course,
+            "clbid": self.clbid,
             "hidden": self.hidden,
             "grade": str(self.grade) if self.grade is not None else None,
             "claims": [c.to_dict() for c in self.claims()],

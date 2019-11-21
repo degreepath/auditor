@@ -34,13 +34,15 @@ class CourseRule(Rule, BaseCourseRule):
         institution = data.get('institution', None)
         min_grade = data.get('grade', None)
         grade_option = data.get('grade_option', None)
+        clbid = data.get('clbid', None)
+        inserted = data.get('inserted', False)
 
         path_name = f"*{course or ap}"
         path_inst = f"(institution={institution})" if institution else ""
         path_grade = f"(grade >= {min_grade})" if min_grade else ""
         path = [*path, f"{path_name}{path_inst}{path_grade}"]
 
-        allowed_keys = {'course', 'grade', 'allow_claimed', 'including claimed', 'hidden', 'ap', 'grade_option', 'institution', 'name'}
+        allowed_keys = {'course', 'grade', 'allow_claimed', 'including claimed', 'hidden', 'ap', 'grade_option', 'institution', 'name', 'clbid', 'inserted'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -54,6 +56,8 @@ class CourseRule(Rule, BaseCourseRule):
             institution=institution,
             name=name,
             ap=ap,
+            clbid=clbid,
+            inserted=inserted,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

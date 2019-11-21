@@ -19,6 +19,7 @@ class CourseSolution(Solution, BaseCourseRule):
     def from_rule(*, rule: BaseCourseRule, overridden: bool = False) -> 'CourseSolution':
         return CourseSolution(
             course=rule.course,
+            clbid=rule.clbid,
             hidden=rule.hidden,
             grade=rule.grade,
             allow_claimed=rule.allow_claimed,

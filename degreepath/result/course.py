@@ -24,6 +24,7 @@ class CourseResult(Result, BaseCourseRule):
     ) -> 'CourseResult':
         return CourseResult(
             course=solution.course,
+            clbid=solution.clbid,
             hidden=solution.hidden,
             grade=solution.grade,
             grade_option=solution.grade_option,
