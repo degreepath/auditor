@@ -22,7 +22,7 @@ CACHE_SIZE = 2048
 
 
 @attr.s(auto_attribs=True, slots=True)
-class _Clause(abc.ABC):
+class BaseClause(abc.ABC):
     @lru_cache(CACHE_SIZE)
     def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'Clause':
         raise NotImplementedError(f'must define a compare_and_resolve_with(value) method')
@@ -94,7 +94,7 @@ class ResolvedClause(ClauseWithResult):
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
-class AndClause(_Clause, ClauseWithResult):
+class AndClause(BaseClause, ClauseWithResult):
     children: Tuple = tuple()
 
     def to_dict(self) -> Dict[str, Any]:
@@ -153,7 +153,7 @@ class AndClause(_Clause, ClauseWithResult):
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
-class OrClause(_Clause, ClauseWithResult):
+class OrClause(BaseClause, ClauseWithResult):
     children: Tuple = tuple()
 
     def to_dict(self) -> Dict[str, Any]:
@@ -222,7 +222,7 @@ def stringify_expected(expected: Any) -> Any:
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
-class SingleClause(_Clause, ResolvedClause):
+class SingleClause(BaseClause, ResolvedClause):
     key: str = "???"
     expected: Any = None
     expected_verbatim: Any = None
