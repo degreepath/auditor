@@ -18,7 +18,7 @@ def load_rule(
     path: List[str],
     children: Dict[str, Dict],
     emphases: Sequence[Dict[str, Dict]] = tuple(),
-    ctx: Optional['RequirementContext'] = None,
+    ctx: 'RequirementContext',
 ) -> Optional[Rule]:
     # This only runs at the top level of an area, because we don't ass
     # emphases down below that. This is how we attach the requirements

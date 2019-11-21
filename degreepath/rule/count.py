@@ -46,7 +46,7 @@ class CountRule(Rule, BaseCountRule):
         children: Dict[str, Dict],
         path: List[str],
         emphases: Sequence[Dict[str, Dict]] = tuple(),
-        ctx: Optional['RequirementContext'] = None,
+        ctx: 'RequirementContext',
     ) -> 'CountRule':
         from ..load_rule import load_rule
 

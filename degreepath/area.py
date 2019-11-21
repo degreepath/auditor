@@ -364,6 +364,7 @@ def prepare_common_rules(
         },
         path=['$', '%Common Requirements', '.count', '[0]'],
         c=c,
+        ctx=RequirementContext(),
     )
 
     assert c_or_better is not None, TypeError('expected c_or_better to not be None')
@@ -403,6 +404,7 @@ def prepare_common_rules(
         children={"Credits taken S/U": s_u_detail},
         path=['$', '%Common Requirements', '.count', '[1]'],
         c=c,
+        ctx=RequirementContext(),
     )
 
     assert s_u_credits is not None, TypeError('expected s_u_credits to not be None')
@@ -437,6 +439,7 @@ def prepare_common_rules(
             children={"Credits outside the major": outside_rule},
             path=['$', '%Common Requirements', '.count', '[2]'],
             c=c,
+            ctx=RequirementContext(),
         )
         assert outside_the_major is not None, TypeError('expected outside_the_major to not be None')
 
