@@ -77,9 +77,9 @@ Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, Audi
 def audit(
     *,
     area: AreaOfStudy,
-    music_performances: Tuple[MusicPerformance, ...],
-    music_attendances: Tuple[MusicAttendance, ...],
-    music_proficiencies: MusicProficiencies,
+    music_performances: Tuple[MusicPerformance, ...] = tuple(),
+    music_attendances: Tuple[MusicAttendance, ...] = tuple(),
+    music_proficiencies: MusicProficiencies = MusicProficiencies(),
     transcript: Tuple[CourseInstance, ...],
     transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
     constants: Constants,
