@@ -453,7 +453,8 @@ def str_clause(clause: Union[Dict[str, Any], 'Clause']) -> str:
             postscript = ""
 
         label = clause['label']
-        postscript += f' [label: "{label}"]'
+        if label:
+            postscript += f' [label: "{label}"]'
 
         op = str_operator(clause['operator'])
 
