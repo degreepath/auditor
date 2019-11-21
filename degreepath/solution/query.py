@@ -3,6 +3,7 @@ from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, cast, TYPE
 import logging
 
 from ..base import Solution, BaseQueryRule
+from ..base.query import QuerySource
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule, ConditionalAssertionRule
 from ..result.assertion import AssertionResult
@@ -59,28 +60,30 @@ class QuerySolution(Solution, BaseQueryRule):
         successful_claims: List['ClaimAttempt'] = []
         failed_claims: List['ClaimAttempt'] = []
 
-        for item in self.output:
-            if isinstance(item, CourseInstance):
+        output: Sequence[Clausable] = self.output
+        if self.source is QuerySource.Courses:
+            for course in cast(Sequence[CourseInstance], output):
                 if self.attempt_claims:
-                    claim = ctx.make_claim(course=item, path=self.path, allow_claimed=self.allow_claimed)
+                    claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed)
 
                     if claim.failed:
-                        if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, item.clbid, claim.conflict_with)
+                        if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, course.clbid, claim.conflict_with)
                         failed_claims.append(claim)
                     else:
-                        if debug: logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
+                        if debug: logger.debug('%s course "%s" exists, and is available', self.path, course.clbid)
                         successful_claims.append(claim)
-                        claimed_items.append(item)
+                        claimed_items.append(course)
                 else:
-                    if debug: logger.debug('%s course "%s" exists, and is available', self.path, item.clbid)
-                    claimed_items.append(item)
+                    if debug: logger.debug('%s course "%s" exists, and is available', self.path, course.clbid)
+                    claimed_items.append(course)
 
-            elif isinstance(item, AreaPointer):
-                if debug: logger.debug('%s item "%s" exists, and is available', self.path, item)
-                claimed_items.append(item)
+        elif self.source is QuerySource.Areas:
+            for area in cast(Sequence[AreaPointer], output):
+                if debug: logger.debug('%s area "%s" exists, and is available', self.path, area)
+                claimed_items.append(area)
 
-            else:
-                raise TypeError(f'expected CourseInstance or AreaPointer; got {type(item)}')
+        else:
+            raise TypeError(f'unknown type of data for query, {self.source}')
 
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(self.path):
