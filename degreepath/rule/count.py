@@ -90,6 +90,12 @@ class CountRule(Rule, BaseCountRule):
                 children_with_emphases[emphasis_key] = emph
                 items.append({"requirement": emphasis_key})
 
+        for insert in ctx.get_insert_exceptions(path):
+            logger.debug("%s inserting new choice: %s", path, insert)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=path)
+            new_rule = {"course": matched_course.course(), "clbid": matched_course.clbid, "allow_claimed": insert.forced, "inserted": True}
+            items.append(new_rule)
+
         at_most = data.get('at_most', False)
 
         audit_clause = data.get('audit', None)
@@ -166,27 +172,6 @@ class CountRule(Rule, BaseCountRule):
 
         items = self.items
         count = self.count
-
-        for insert in ctx.get_insert_exceptions(self.path):
-            logger.debug("%s inserting new choice: %s", self.path, insert)
-
-            # if this is an `all` rule, we want to keep it as an `all` rule, so we need to increase `count`
-            if count == len(items) and count > 1:
-                logger.debug("%s incrementing count b/c 'all' rule", self.path)
-                count += 1
-
-            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-
-            new_rule = CourseRule(
-                course=matched_course.course(),
-                allow_claimed=insert.forced,
-                path=tuple([*self.path, f"[{len(items)}]", f"*{matched_course.course()}"]),
-                inserted=True,
-            )
-
-            logger.debug("%s new choice is %s", self.path, new_rule)
-
-            items = tuple([*items, new_rule])
 
         lo = count
         hi = len(items) + 1 if self.at_most is False else count + 1
