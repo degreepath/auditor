@@ -11,3 +11,6 @@ test:
 
 watch:
 	ptw
+
+push: lint
+	git push
