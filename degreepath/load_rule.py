@@ -6,6 +6,7 @@ from .rule.count import CountRule
 from .rule.course import CourseRule
 from .rule.query import QueryRule
 from .rule.requirement import RequirementRule
+from .rule.proficiency import ProficiencyRule
 
 if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext  # noqa: F401
@@ -26,7 +27,10 @@ def load_rule(
     if emphases:
         assert CountRule.can_load(data)
 
-    if CourseRule.can_load(data):
+    if ProficiencyRule.can_load(data):
+        return ProficiencyRule.load(data, c=c, path=path)
+
+    elif CourseRule.can_load(data):
         return CourseRule.load(data, c=c, path=path)
 
     elif QueryRule.can_load(data):

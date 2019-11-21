@@ -72,6 +72,9 @@ def print_result(
     elif rule["type"] == "assertion":
         yield from print_assertion(rule, transcript, indent, show_paths, show_ranks)
 
+    elif rule["type"] == "proficiency":
+        yield from print_proficiency(rule, transcript, indent, show_paths, show_ranks)
+
     else:
         yield json.dumps(rule, indent=2)
 
@@ -175,6 +178,33 @@ def print_course(
         institution = f" [{rule['institution']}]"
 
     yield f"{prefix}{status} {display_course}{institution}"
+
+
+def print_proficiency(
+    rule: Dict[str, Any],
+    transcript: Dict[str, CourseInstance],
+    indent: int = 0,
+    show_paths: bool = True,
+    show_ranks: bool = True,
+) -> Iterator[str]:
+    if show_paths:
+        yield from print_path(rule, indent)
+
+    prefix = " " * indent
+    if show_ranks:
+        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+
+    status = "🌀      "
+    if rule["ok"]:
+        if rule["overridden"]:
+            status = "💜 [wvd]"
+        else:
+            status = "💚 [ ok]"
+
+    yield f"{prefix}{status} Proficiency={rule['proficiency']}"
+
+    if rule['course']['ok']:
+        yield from print_course(rule['course'], transcript, indent + 4, show_paths, show_ranks)
 
 
 def print_count(
