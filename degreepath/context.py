@@ -67,7 +67,14 @@ class RequirementContext:
         name: Optional[str] = None,
         ap: Optional[str] = None,
         institution: Optional[str] = None,
+        clbid: Optional[str] = None,
     ) -> Iterator[CourseInstance]:
+        if clbid:
+            match_by_clbid = self.find_course_by_clbid(clbid)
+            if match_by_clbid:
+                yield match_by_clbid
+            return
+
         query = (course, name, ap, institution, True if ap else None)
 
         for c in self.transcript():
