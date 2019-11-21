@@ -85,9 +85,14 @@ class QueryRule(Rule, BaseQueryRule):
         elif self.source is QuerySource.Areas:
             return list(ctx.areas)
 
+        elif self.source is QuerySource.MusicPerformances:
+            return list(ctx.music_performances)
+
+        elif self.source is QuerySource.MusicAttendances:
+            return list(ctx.music_attendances)
+
         else:
-            logger.info("%s not yet implemented", self.source)
-            return []
+            raise TypeError(f'unknown type of data for query, {self.source}')
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:  # noqa: C901
         if ctx.get_waive_exception(self.path):
@@ -269,27 +274,31 @@ def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Ite
             if a.when_no:
                 assertions.append(a.when_no)
 
-    simple_count_assertion = get_largest_simple_count_assertion(assertions)
-    if simple_count_assertion is not None:
-        logger.debug("%s using simple assertion mode with %s", rule.path, simple_count_assertion)
-        for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
-            yield from itertools.combinations(item_set, n)
-        return
-
-    simple_sum_assertion = get_largest_simple_sum_assertion(assertions)
-    if simple_sum_assertion is not None:
-        logger.debug("%s using simple-sum assertion mode with %s", rule.path, simple_sum_assertion)
-        item_set_courses = cast(Sequence[CourseInstance], item_set)
-
-        if sum(c.credits for c in item_set_courses) < simple_sum_assertion.expected:
+    if rule.source is QuerySource.Courses:
+        simple_count_assertion = get_largest_simple_count_assertion(assertions)
+        if simple_count_assertion is not None:
+            logger.debug("%s using simple assertion mode with %s", rule.path, simple_count_assertion)
+            for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
+                yield from itertools.combinations(item_set, n)
             return
 
-        for n in range(1, len(item_set_courses) + 1):
-            for combo in itertools.combinations(item_set_courses, n):
-                if sum(c.credits for c in combo) >= simple_sum_assertion.expected:
-                    yield combo
-        return
+        simple_sum_assertion = get_largest_simple_sum_assertion(assertions)
+        if simple_sum_assertion is not None:
+            logger.debug("%s using simple-sum assertion mode with %s", rule.path, simple_sum_assertion)
+            item_set_courses = cast(Sequence[CourseInstance], item_set)
 
-    logger.debug("%s not running single assertion mode", rule.path)
-    for n in range(1, len(item_set) + 1):
-        yield from itertools.combinations(item_set, n)
+            if sum(c.credits for c in item_set_courses) < simple_sum_assertion.expected:
+                return
+
+            for n in range(1, len(item_set_courses) + 1):
+                for combo in itertools.combinations(item_set_courses, n):
+                    if sum(c.credits for c in combo) >= simple_sum_assertion.expected:
+                        yield combo
+            return
+
+        logger.debug("%s not running single assertion mode", rule.path)
+        for n in range(1, len(item_set) + 1):
+            yield from itertools.combinations(item_set, n)
+
+    else:
+        yield tuple(item_set)

@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import attr
 
-from .data import CourseInstance, AreaPointer, Clausable
+from .data import CourseInstance, AreaPointer, Clausable, MusicAttendance, MusicPerformance
 from .lib import grade_point_average_items, grade_point_average
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -142,9 +142,14 @@ def count_areas(data: Sequence[AreaPointer]) -> AppliedClauseResult:
     return AppliedClauseResult(value=len(area_codes), data=frozenset(area_codes))
 
 
-def count_performances(data: Sequence[CourseInstance]) -> AppliedClauseResult:
-    # TODO
-    raise TypeError('count(performances) is not yet implemented')
+def count_recitals(data: Sequence[MusicAttendance]) -> AppliedClauseResult:
+    uniques = tuple(sorted(set(a.id for a in data)))
+    return AppliedClauseResult(value=len(uniques), data=frozenset(uniques))
+
+
+def count_performances(data: Sequence[MusicPerformance]) -> AppliedClauseResult:
+    uniques = tuple(sorted(set(a.id for a in data)))
+    return AppliedClauseResult(value=len(uniques), data=frozenset(uniques))
 
 
 def count_seminars(data: Sequence[CourseInstance]) -> AppliedClauseResult:
@@ -227,6 +232,7 @@ other_actions: Mapping[str, Callable[[Sequence[Any]], AppliedClauseResult]] = {
     'count(items)': count_items_test,
     'count(performances)': count_performances,
     'count(seminars)': count_seminars,
+    'count(recitals)': count_recitals,
 }
 
 

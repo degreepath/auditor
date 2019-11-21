@@ -8,7 +8,7 @@ from .constants import Constants
 from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
 from .ms import pretty_ms
-from .data import CourseInstance, AreaPointer
+from .data import CourseInstance, AreaPointer, MusicAttendance, MusicPerformance, MusicProficiencies
 from .discover_potentials import discover_clause_potential
 
 
@@ -77,6 +77,9 @@ Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, Audi
 def audit(
     *,
     area: AreaOfStudy,
+    music_performances: Tuple[MusicPerformance, ...],
+    music_attendances: Tuple[MusicAttendance, ...],
+    music_proficiencies: MusicProficiencies,
     transcript: Tuple[CourseInstance, ...],
     transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
     constants: Constants,
@@ -98,6 +101,9 @@ def audit(
     for sol in area.solutions(
         transcript=transcript,
         areas=tuple(area_pointers),
+        music_performances=music_performances,
+        music_attendances=music_attendances,
+        music_proficiencies=music_proficiencies,
         exceptions=exceptions,
         transcript_with_failed=transcript_with_failed,
     ):

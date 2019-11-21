@@ -6,7 +6,7 @@ import decimal
 from .base import Solution, Result, Rule, Base, Summable
 from .constants import Constants
 from .context import RequirementContext
-from .data import CourseInstance, AreaPointer, AreaType
+from .data import CourseInstance, AreaPointer, AreaType, MusicPerformance, MusicAttendance, MusicProficiencies
 from .exception import RuleException, InsertionException
 from .limit import LimitSet
 from .load_rule import load_rule
@@ -138,6 +138,9 @@ class AreaOfStudy(Base):
         transcript: Sequence[CourseInstance],
         transcript_with_failed: Sequence[CourseInstance] = tuple(),
         areas: Sequence[AreaPointer],
+        music_performances: Sequence[MusicPerformance] = tuple(),
+        music_attendances: Sequence[MusicAttendance] = tuple(),
+        music_proficiencies: MusicProficiencies = MusicProficiencies(),
         exceptions: List[RuleException],
     ) -> Iterable['AreaSolution']:
         logger.debug("evaluating area.result")
@@ -150,6 +153,9 @@ class AreaOfStudy(Base):
 
             ctx = RequirementContext(
                 areas=tuple(areas),
+                music_performances=tuple(music_performances),
+                music_attendances=tuple(music_attendances),
+                music_proficiencies=music_proficiencies,
                 exceptions=exceptions,
                 multicountable=self.multicountable,
             ).with_transcript(limited_transcript, full=transcript, forced=forced_courses, including_failed=transcript_with_failed)

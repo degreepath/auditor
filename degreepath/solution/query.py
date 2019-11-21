@@ -7,7 +7,7 @@ from ..base.query import QuerySource
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule, ConditionalAssertionRule
 from ..result.assertion import AssertionResult
-from ..data import CourseInstance, AreaPointer, Clausable
+from ..data import CourseInstance, AreaPointer, Clausable, MusicAttendance, MusicPerformance
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..claim import ClaimAttempt  # noqa: F401
@@ -81,6 +81,16 @@ class QuerySolution(Solution, BaseQueryRule):
             for area in cast(Sequence[AreaPointer], output):
                 if debug: logger.debug('%s area "%s" exists, and is available', self.path, area)
                 claimed_items.append(area)
+
+        elif self.source is QuerySource.MusicPerformances:
+            for performance in cast(Sequence[MusicPerformance], output):
+                if debug: logger.debug('%s performance "%s" exists, and is available', self.path, performance)
+                claimed_items.append(performance)
+
+        elif self.source is QuerySource.MusicAttendances:
+            for recital in cast(Sequence[MusicAttendance], output):
+                if debug: logger.debug('%s recital "%s" exists, and is available', self.path, recital)
+                claimed_items.append(recital)
 
         else:
             raise TypeError(f'unknown type of data for query, {self.source}')

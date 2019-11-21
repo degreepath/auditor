@@ -4,7 +4,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 import logging
 
-from .data import CourseInstance, AreaPointer
+from .data import CourseInstance, AreaPointer, MusicPerformance, MusicAttendance, MusicProficiencies
 from .data.course_enums import CourseType
 from .claim import ClaimAttempt, Claim
 from .exception import RuleException, OverrideException, InsertionException, ValueException
@@ -27,6 +27,10 @@ class RequirementContext:
     claims: Dict[str, List[Claim]] = attr.ib(factory=lambda: defaultdict(list))
     exceptions: List[RuleException] = attr.ib(factory=list)
     exception_paths_: List[Tuple[str, ...]] = attr.ib(init=False)
+
+    music_performances: Tuple[MusicPerformance, ...] = tuple()
+    music_attendances: Tuple[MusicAttendance, ...] = tuple()
+    music_proficiencies: MusicProficiencies = MusicProficiencies()
 
     def __attrs_post_init__(self) -> None:
         exception_paths = list({e.path for e in self.exceptions})
