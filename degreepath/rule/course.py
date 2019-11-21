@@ -37,7 +37,7 @@ class CourseRule(Rule, BaseCourseRule):
         clbid = data.get('clbid', None)
         inserted = data.get('inserted', False)
 
-        path_name = f"*{course or ap}"
+        path_name = f"*{course or ap or name}"
         path_inst = f"(institution={institution})" if institution else ""
         path_grade = f"(grade >= {min_grade})" if min_grade else ""
         path = [*path, f"{path_name}{path_inst}{path_grade}"]
