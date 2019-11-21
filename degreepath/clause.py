@@ -33,19 +33,11 @@ class _Clause(abc.ABC):
 
 
 @attr.s(auto_attribs=True, slots=True)
-class ResolvedClause:
-    resolved_with: Optional[Any] = None
-    resolved_items: Tuple[Any, ...] = tuple()
-    resolved_clbids: Tuple[str, ...] = tuple()
-    in_progress_clbids: Tuple[str, ...] = tuple()
+class ClauseWithResult:
     result: ResultStatus = ResultStatus.Pending
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "resolved_with": str(self.resolved_with) if self.resolved_with is not None else self.resolved_with,
-            "resolved_items": [str(x) if isinstance(x, Decimal) else x for x in self.resolved_items],
-            "resolved_clbids": [x for x in self.resolved_clbids],
-            "in_progress_clbids": [x for x in self.in_progress_clbids],
             "result": self.result.value,
             "rank": str(self.rank()),
             "max_rank": str(self.max_rank()),
@@ -84,8 +76,25 @@ class ResolvedClause:
         return ResultStatus.Pending
 
 
+@attr.s(auto_attribs=True, slots=True)
+class ResolvedClause(ClauseWithResult):
+    resolved_with: Optional[Any] = None
+    resolved_items: Tuple[Any, ...] = tuple()
+    resolved_clbids: Tuple[str, ...] = tuple()
+    in_progress_clbids: Tuple[str, ...] = tuple()
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            **super().to_dict(),
+            "resolved_with": str(self.resolved_with) if self.resolved_with is not None else self.resolved_with,
+            "resolved_items": [str(x) if isinstance(x, Decimal) else x for x in self.resolved_items],
+            "resolved_clbids": [x for x in self.resolved_clbids],
+            "in_progress_clbids": [x for x in self.in_progress_clbids],
+        }
+
+
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
-class AndClause(_Clause, ResolvedClause):
+class AndClause(_Clause, ClauseWithResult):
     children: Tuple = tuple()
 
     def to_dict(self) -> Dict[str, Any]:
@@ -121,7 +130,7 @@ class AndClause(_Clause, ResolvedClause):
             # otherwise
             result = ResultStatus.Pending
 
-        return AndClause(children=children, resolved_with=None, result=result)
+        return AndClause(children=children, result=result)
 
     @lru_cache(CACHE_SIZE)
     def ok(self) -> bool:
@@ -144,7 +153,7 @@ class AndClause(_Clause, ResolvedClause):
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
-class OrClause(_Clause, ResolvedClause):
+class OrClause(_Clause, ClauseWithResult):
     children: Tuple = tuple()
 
     def to_dict(self) -> Dict[str, Any]:
@@ -177,7 +186,7 @@ class OrClause(_Clause, ResolvedClause):
             # otherwise
             result = ResultStatus.Pending
 
-        return OrClause(children=children, resolved_with=None, result=result)
+        return OrClause(children=children, result=result)
 
     @lru_cache(CACHE_SIZE)
     def ok(self) -> bool:
