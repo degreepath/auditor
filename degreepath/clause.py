@@ -117,13 +117,13 @@ class AndClause(BaseClause, ClauseWithResult):
     def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'AndClause':  # type: ignore
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
-        if any(c.result is ResultStatus.InProgress for c in children):
+        if any(c.in_progress() for c in children):
             # if there are any in-progress children
             result = ResultStatus.InProgress
-        elif all(c.result is ResultStatus.Pass for c in children):
+        elif all(c.ok() for c in children):
             # if all children are OK
             result = ResultStatus.Pass
-        elif 1 <= len([c.result is ResultStatus.Pass for c in children]) < len(self.children):
+        elif any(c.ok() for c in children):
             # if the number of done items is not fully complete
             result = ResultStatus.InProgress
         else:
@@ -176,10 +176,10 @@ class OrClause(BaseClause, ClauseWithResult):
     def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'OrClause':  # type: ignore
         children = tuple(c.compare_and_resolve_with(value=value) for c in self.children)
 
-        if any(c.result is ResultStatus.InProgress for c in children):
+        if any(c.in_progress() for c in children):
             # if there are any in-progress children
             result = ResultStatus.InProgress
-        elif any(c.result is ResultStatus.Pass for c in children):
+        elif any(c.ok() for c in children):
             # if any children are OK
             result = ResultStatus.Pass
         else:
