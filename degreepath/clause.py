@@ -227,6 +227,7 @@ class SingleClause(_Clause, ResolvedClause):
     expected: Any = None
     expected_verbatim: Any = None
     operator: Operator = Operator.EqualTo
+    label: Optional[str] = None
     at_most: bool = False
     treat_in_progress_as_pass: bool = False
 
@@ -240,6 +241,7 @@ class SingleClause(_Clause, ResolvedClause):
             "expected": expected,
             "expected_verbatim": self.expected_verbatim,
             "operator": self.operator.name,
+            "label": self.label,
             "ip_as_passing": self.treat_in_progress_as_pass,
             "hash": str(hash((self.key, self.expected, self.operator))),
         }
@@ -311,6 +313,7 @@ class SingleClause(_Clause, ResolvedClause):
             operator=operator,
             expected_verbatim=expected_verbatim,
             at_most=at_most,
+            label=value.get('label', None),
             treat_in_progress_as_pass=value.get('treat_in_progress_as_pass', False),
         )
 
@@ -387,6 +390,7 @@ class SingleClause(_Clause, ResolvedClause):
             expected_verbatim=self.expected_verbatim,
             operator=self.operator,
             at_most=self.at_most,
+            label=self.label,
             resolved_with=reduced_value,
             resolved_items=tuple(value_items),
             resolved_clbids=clbids,
@@ -447,6 +451,9 @@ def str_clause(clause: Union[Dict[str, Any], 'Clause']) -> str:
             postscript = f" (via {repr(clause['expected_verbatim'])})"
         else:
             postscript = ""
+
+        label = clause['label']
+        postscript += f' [label: "{label}"]'
 
         op = str_operator(clause['operator'])
 
