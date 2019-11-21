@@ -86,6 +86,7 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
                 c=constants,
                 areas=area_pointers,
                 transcript=transcript,
+                exceptions=exceptions,
             )
             area.validate()
 

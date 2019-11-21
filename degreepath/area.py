@@ -63,6 +63,7 @@ class AreaOfStudy(Base):
         c: Constants,
         areas: Sequence[AreaPointer] = tuple(),
         transcript: Sequence[CourseInstance] = tuple(),
+        exceptions: Sequence[RuleException] = tuple(),
     ) -> 'AreaOfStudy':
         this_code = specification.get('code', '<null>')
         pointers = {p.code: p for p in areas}
@@ -76,7 +77,10 @@ class AreaOfStudy(Base):
 
         declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
 
-        ctx = RequirementContext(areas=tuple(areas)).with_transcript(transcript)
+        ctx = RequirementContext(
+            areas=tuple(areas),
+            exceptions=list(exceptions),
+        ).with_transcript(transcript)
 
         result = load_rule(
             data=specification["result"],
