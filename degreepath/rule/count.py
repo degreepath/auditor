@@ -10,7 +10,6 @@ from ..constants import Constants
 from ..solution.count import CountSolution
 from ..ncr import mult
 from ..solve import find_best_solution
-from .course import CourseRule
 from .assertion import AssertionRule
 
 if TYPE_CHECKING:  # pragma: no cover

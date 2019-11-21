@@ -26,7 +26,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return "requirement" in data
 
     @staticmethod
-    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: Optional['RequirementContext'] = None) -> Optional['RequirementRule']:
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: 'RequirementContext') -> Optional['RequirementRule']:
         from ..load_rule import load_rule
 
         path = [*path, f"%{name}"]
