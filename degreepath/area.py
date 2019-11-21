@@ -411,40 +411,33 @@ def prepare_common_rules(
 
     if is_bm_major is False:
         if dept_code is None:
-            outside_the_major = load_rule(
-                data={"requirement": "Credits outside the major"},
-                children={
-                    "Credits outside the major": {
-                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
-                        "registrar_audited": True,
-                    },
-                },
-                path=['$', '%Common Requirements', '.count', '[2]'],
-                c=c,
-            )
+            outside_rule = {
+                "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
+                "registrar_audited": True,
+            }
         else:
-            outside_the_major = load_rule(
-                data={"requirement": "Credits outside the major"},
-                children={
-                    "Credits outside the major": {
-                        "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
-                        "result": {
-                            "from": "courses",
-                            "where": {
-                                "$and": [
-                                    {"subject": {"$neq": dept_code}},
-                                    {"subject": {"$neq": "REG"}},
-                                ],
-                            },
-                            "allow_claimed": True,
-                            "claim": False,
-                            "assert": {"sum(credits)": {"$gte": credits_outside_major}},
-                        },
+            outside_rule = {
+                "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
+                "result": {
+                    "from": "courses",
+                    "where": {
+                        "$and": [
+                            {"subject": {"$neq": dept_code}},
+                            {"subject": {"$neq": "REG"}},
+                        ],
                     },
+                    "allow_claimed": True,
+                    "claim": False,
+                    "assert": {"sum(credits)": {"$gte": credits_outside_major}},
                 },
-                path=['$', '%Common Requirements', '.count', '[2]'],
-                c=c,
-            )
+            }
+
+        outside_the_major = load_rule(
+            data={"requirement": "Credits outside the major"},
+            children={"Credits outside the major": outside_rule},
+            path=['$', '%Common Requirements', '.count', '[2]'],
+            c=c,
+        )
         assert outside_the_major is not None, TypeError('expected outside_the_major to not be None')
 
         yield outside_the_major
