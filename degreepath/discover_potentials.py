@@ -10,7 +10,7 @@ from .area import AreaOfStudy
 from .base import Base, BaseRequirementRule, BaseCountRule
 from .base.query import QuerySource
 from .rule.query import QueryRule
-from .clause import ResolvedClause, AndClause, OrClause, SingleClause
+from .clause import ClauseWithResult, AndClause, OrClause, SingleClause
 from .operator import Operator
 
 
@@ -49,7 +49,7 @@ def discover_clause_potential(
     return result
 
 
-def find_all_clauses(rule: Union[Base, ResolvedClause]) -> Iterator[ResolvedClause]:
+def find_all_clauses(rule: Union[Base, ClauseWithResult]) -> Iterator[ClauseWithResult]:
     if isinstance(rule, (AreaOfStudy, BaseRequirementRule)):
         if rule.result:
             yield from find_all_clauses(rule.result)
@@ -60,11 +60,11 @@ def find_all_clauses(rule: Union[Base, ResolvedClause]) -> Iterator[ResolvedClau
         if rule.source is QuerySource.Courses:
             if rule.where and rule.load_potentials:
                 yield from find_all_clauses(rule.where)
-    elif isinstance(rule, ResolvedClause):
+    elif isinstance(rule, ClauseWithResult):
         yield from strip_pointless_clauses(rule)
 
 
-def strip_pointless_clauses(clause: ResolvedClause) -> Iterator[ResolvedClause]:
+def strip_pointless_clauses(clause: ClauseWithResult) -> Iterator[ClauseWithResult]:
     if isinstance(clause, (AndClause, OrClause)):
         children = []
         for c in clause.children:
@@ -79,7 +79,7 @@ def strip_pointless_clauses(clause: ResolvedClause) -> Iterator[ResolvedClause]:
         yield clause
 
 
-def extract_positive_buckets(clause: ResolvedClause) -> Iterator[str]:
+def extract_positive_buckets(clause: ClauseWithResult) -> Iterator[str]:
     if isinstance(clause, (AndClause, OrClause)):
         for child in clause.children:
             yield from extract_positive_buckets(child)
@@ -92,7 +92,7 @@ def extract_positive_buckets(clause: ResolvedClause) -> Iterator[str]:
                 yield from clause.expected
 
 
-def extract_negative_buckets(clause: ResolvedClause) -> Iterator[str]:
+def extract_negative_buckets(clause: ClauseWithResult) -> Iterator[str]:
     if isinstance(clause, (AndClause, OrClause)):
         for child in clause.children:
             yield from extract_negative_buckets(child)
