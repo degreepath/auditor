@@ -15,6 +15,7 @@ class QuerySource(enum.Enum):
     Courses = "courses"
     Areas = "areas"
     MusicPerformances = "music performances"
+    MusicAttendances = "music recitals"
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

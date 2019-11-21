@@ -11,7 +11,7 @@ import os
 
 from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
 from degreepath.lib import grade_point_average_items, grade_point_average
-from degreepath.data import GradeOption, GradeCode, CourseInstance, TranscriptCode
+from degreepath.data import GradeOption, GradeCode, CourseInstance, TranscriptCode, MusicPerformance, MusicAttendance, MusicProficiencies
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
@@ -64,6 +64,10 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
             writer.writerow(['---', 'gpa:', str(grade_point_average(transcript_with_failed))])
             return
 
+        music_performances = tuple(sorted((MusicPerformance.from_dict(d) for d in student['performances']), key=lambda p: p.sort_order()))
+        music_attendances = tuple(sorted((MusicAttendance.from_dict(d) for d in student['performance_attendances']), key=lambda a: a.sort_order()))
+        music_proficiencies = MusicProficiencies.from_dict(student['proficiencies'])
+
         for area_file in args.area_files:
             try:
                 with open(area_file, "r", encoding="utf-8") as infile:
@@ -95,6 +99,9 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
             try:
                 yield from audit(
                     area=area,
+                    music_performances=music_performances,
+                    music_attendances=music_attendances,
+                    music_proficiencies=music_proficiencies,
                     exceptions=exceptions,
                     transcript=transcript,
                     transcript_with_failed=transcript_with_failed,
