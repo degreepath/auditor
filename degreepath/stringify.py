@@ -137,7 +137,7 @@ def print_course(
         prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
 
     display_course = rule['course']
-    if rule['course'] == '' and rule['ap'] != '':
+    if not rule['course'] and rule['ap'] != '':
         display_course = rule['ap']
 
     status = "🌀      "
