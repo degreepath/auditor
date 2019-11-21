@@ -74,7 +74,7 @@ def test_solution_count_exact(caplog):
 def test_solution_count_lessthan(caplog):
     caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(AssertionError):
         area, transcript = __get_data("""
             result:
                 requirement: Test

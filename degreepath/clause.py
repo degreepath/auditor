@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import Union, List, Set, Tuple, Dict, Any, Optional, Iterator, Sequence, TYPE_CHECKING
+from typing import Union, List, Set, Tuple, Dict, Any, Mapping, Callable, Optional, Iterator, Sequence, TYPE_CHECKING
 import logging
 from decimal import Decimal, InvalidOperation
 import abc
@@ -246,66 +246,43 @@ class SingleClause(BaseClause, ResolvedClause):
             "hash": str(hash((self.key, self.expected, self.operator))),
         }
 
-    @staticmethod  # noqa: C901
+    @staticmethod
     def load(key: str, value: Any, c: Constants, forbid: Sequence[Operator] = tuple()) -> 'SingleClause':
-        if not isinstance(value, Dict):
-            raise Exception(f'expected {value} to be a dictionary')
+        assert isinstance(value, Dict), Exception(f'expected {value} to be a dictionary')
 
         operators = [k for k in value.keys() if k.startswith('$')]
-
         assert len(operators) == 1, f"{value}"
         op = operators[0]
-
-        at_most = value.get('at_most', False)
-        assert type(at_most) is bool
-
         operator = Operator(op)
+        assert operator not in forbid, ValueError(f'operator {operator} is forbidden here - {forbid}')
+
         expected_value = value[op]
-
-        if operator in forbid:
-            raise ValueError(f'operator {operator} is forbidden here')
-
         if isinstance(expected_value, list):
             expected_value = tuple(expected_value)
 
         expected_verbatim = expected_value
 
-        if key == "subjects":
-            key = "subject"
-        if key == "attribute":
-            key = "attributes"
-        if key == "gereq":
-            key = "gereqs"
+        key_lookup = {
+            "subjects": "subject",
+            "attribute": "attributes",
+            "gereq": "gereqs",
+        }
+        key = key_lookup.get(key, key)
 
         if type(expected_value) == str:
             expected_value = c.get_by_name(expected_value)
         elif isinstance(expected_value, Iterable):
             expected_value = tuple(c.get_by_name(v) for v in expected_value)
 
+        expected_value = process_clause_value(expected_value, key=key)
+
         if operator is Operator.In or operator is Operator.NotIn:
             assert all(v is not None for v in expected_value)
         else:
             assert expected_value is not None
 
-        if key == 'grade':
-            if type(expected_value) is str:
-                try:
-                    expected_value = Decimal(expected_value)
-                except InvalidOperation:
-                    expected_value = str_to_grade_points(expected_value)
-            elif isinstance(expected_value, Iterable):
-                expected_value = tuple(
-                    str_to_grade_points(v) if type(v) is str else Decimal(v)
-                    for v in expected_value
-                )
-            else:
-                expected_value = Decimal(expected_value)
-        elif key == 'grade_option':
-            expected_value = GradeOption(expected_value)
-        elif key == 'credits':
-            expected_value = Decimal(expected_value)
-        elif key == 'gpa':
-            expected_value = Decimal(expected_value)
+        at_most = value.get('at_most', False)
+        assert type(at_most) is bool
 
         return SingleClause(
             key=key,
@@ -434,6 +411,48 @@ class SingleClause(BaseClause, ResolvedClause):
 
         else:
             raise TypeError('unsupported operator for ranges %s', self.operator)
+
+
+def process_clause__grade(expected_value: Any) -> Union[Decimal, Tuple[Decimal, ...]]:
+    if type(expected_value) is str:
+        try:
+            return Decimal(expected_value)
+        except InvalidOperation:
+            return str_to_grade_points(expected_value)
+    elif isinstance(expected_value, Iterable):
+        return tuple(
+            str_to_grade_points(v) if type(v) is str else Decimal(v)
+            for v in expected_value
+        )
+    else:
+        return Decimal(expected_value)
+
+
+def process_clause__grade_option(expected_value: Any) -> GradeOption:
+    return GradeOption(expected_value)
+
+
+def process_clause__credits(expected_value: Any) -> Decimal:
+    return Decimal(expected_value)
+
+
+def process_clause__gpa(expected_value: Any) -> Decimal:
+    return Decimal(expected_value)
+
+
+clause_value_process: Mapping[str, Callable[[Sequence[Any]], Union[GradeOption, Decimal, Tuple[Decimal, ...]]]] = {
+    'grade': process_clause__grade,
+    'grade_option': process_clause__grade_option,
+    'credits': process_clause__credits,
+    'gpa': process_clause__gpa,
+}
+
+
+def process_clause_value(expected_value: Any, *, key: str) -> Union[Any, GradeOption, Decimal, Tuple[Decimal, ...]]:
+    if key in clause_value_process:
+        return clause_value_process[key](expected_value)
+
+    return expected_value
 
 
 def str_clause(clause: Union[Dict[str, Any], 'Clause']) -> str:
