@@ -276,7 +276,7 @@ class SingleClause(BaseClause, ResolvedClause):
 
         expected_value = process_clause_value(expected_value, key=key)
 
-        if operator is Operator.In or operator is Operator.NotIn:
+        if operator in (Operator.In, Operator.NotIn):
             assert all(v is not None for v in expected_value)
         else:
             assert expected_value is not None
