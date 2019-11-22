@@ -61,7 +61,7 @@ class CourseRule(Rule, BaseCourseRule):
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
-        if self.course:
+        if self.course and not self.inserted:
             method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
             method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
             method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
