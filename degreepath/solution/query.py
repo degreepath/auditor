@@ -139,8 +139,7 @@ class QuerySolution(Solution, BaseQueryRule):
         if clause is None:
             return None
 
-        if not isinstance(clause, AssertionRule):
-            raise TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
+        assert isinstance(clause, AssertionRule), TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
 
         waive = ctx.get_waive_exception(clause.path)
         if waive:

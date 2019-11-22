@@ -40,8 +40,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         # be able to exclude requirements if they shouldn't exist
         if 'if' in data:
-            if ctx is None:
-                raise TypeError('conditional requirements are only supported at the top-level')
+            assert ctx, TypeError('conditional requirements are only supported at the top-level')
 
             rule = QueryRule.load(data['if'], c=c, path=path, ctx=ctx)
 
