@@ -42,7 +42,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         if 'if' in data:
             assert ctx, TypeError('conditional requirements are only supported at the top-level')
 
-            rule = QueryRule.load(data['if'], c=c, path=path, ctx=ctx)
+            rule = QueryRule.load(data['if'], c=c, path=[*path, '#if'], ctx=ctx)
 
             with ctx.fresh_claims():
                 s = find_best_solution(rule=rule, ctx=ctx)
