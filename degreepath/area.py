@@ -359,9 +359,13 @@ def prepare_common_rules(
                     "claim": False,
                     "where": {
                         "$and": [
-                            {"grade": {"$gte": "C"}},
+                            {
+                                "$or": [
+                                    {"grade": {"$gte": "C"}},
+                                    {"is_in_progress": {"$eq": True}},
+                                ]
+                            },
                             {"credits": {"$gt": 0}},
-                            {"is_in_progress": {"$eq": False}},
                         ],
                     },
                     "assert": {"sum(credits)": {"$gte": 6}},
