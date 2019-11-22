@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
+    waived: bool = False
+
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:
@@ -36,13 +38,18 @@ class CourseRule(Rule, BaseCourseRule):
         grade_option = data.get('grade_option', None)
         clbid = data.get('clbid', None)
         inserted = data.get('inserted', False)
+        waived = data.get('waived', False)
 
         path_name = f"*{course or ap or name}"
         path_inst = f"(institution={institution})" if institution else ""
         path_grade = f"(grade >= {min_grade})" if min_grade else ""
         path = [*path, f"{path_name}{path_inst}{path_grade}"]
 
-        allowed_keys = {'course', 'grade', 'allow_claimed', 'including claimed', 'hidden', 'ap', 'grade_option', 'institution', 'name', 'clbid', 'inserted'}
+        allowed_keys = {
+            'course', 'grade', 'allow_claimed', 'including claimed',
+            'hidden', 'ap', 'grade_option', 'institution',
+            'name', 'clbid', 'inserted', 'waived',
+        }
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -58,6 +65,7 @@ class CourseRule(Rule, BaseCourseRule):
             ap=ap,
             clbid=clbid,
             inserted=inserted,
+            waived=waived,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -74,7 +82,7 @@ class CourseRule(Rule, BaseCourseRule):
         return []
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
-        if ctx.get_waive_exception(self.path):
+        if self.waived or ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield CourseSolution.from_rule(rule=self, overridden=True)
             return
@@ -92,7 +100,7 @@ class CourseRule(Rule, BaseCourseRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.has_exception(self.path):
+        if self.waived or ctx.has_exception(self.path):
             return True
 
         try:
