@@ -131,6 +131,10 @@ def apply_single_clause__number(course: CourseInstance, clause: 'SingleClause') 
     return clause.compare(course.number)
 
 
+def apply_single_clause__institution(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.institution)
+
+
 def apply_single_clause__course(course: CourseInstance, clause: 'SingleClause') -> bool:
     return clause.compare(course.identity_)
 
@@ -227,6 +231,7 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
     'grade': apply_single_clause__grade,
     'grade_code': apply_single_clause__grade_code,
     'grade_option': apply_single_clause__grade_option,
+    'institution': apply_single_clause__institution,
     'is_in_gpa': apply_single_clause__is_in_gpa,
     'is_in_progress': apply_single_clause__is_in_progress,
     'is_stolaf': apply_single_clause__is_stolaf,
