@@ -89,11 +89,13 @@ class CountRule(Rule, BaseCountRule):
                 children_with_emphases[emphasis_key] = emph
                 items.append({"requirement": emphasis_key})
 
+        did_insert = False
         for insert in ctx.get_insert_exceptions(path):
             logger.debug("%s inserting new choice: %s", path, insert)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=path)
             new_rule = {"course": matched_course.course(), "clbid": matched_course.clbid, "allow_claimed": insert.forced, "inserted": True}
             items.append(new_rule)
+            did_insert = True
 
         at_most = data.get('at_most', False)
 
@@ -120,12 +122,14 @@ class CountRule(Rule, BaseCountRule):
             count = 1
         elif "both" in data:
             count = 2
-            if len(loaded_items) != 2:
-                raise Exception(f"expected two items in both; found {len(loaded_items)} items")
+            if did_insert:
+                count = len(loaded_items)
+            else:
+                assert len(loaded_items) == 2, Exception(f"expected two items in both; found {len(loaded_items)} items")
         elif "either" in data:
             count = 1
-            if len(loaded_items) != 2:
-                raise Exception(f"expected two items in both; found {len(loaded_items)} items")
+            if not did_insert:
+                assert len(loaded_items) == 2, Exception(f"expected two items in either; found {len(loaded_items)} items")
         else:
             count = int(data["count"])
 
