@@ -1,5 +1,5 @@
 import attr
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseProficiencyRule
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class ProficiencySolution(Solution, BaseProficiencyRule):
     @staticmethod
-    def from_rule(*, rule: BaseProficiencyRule, course_solution: CourseSolution, overridden: bool = False) -> 'ProficiencySolution':
+    def from_rule(*, rule: BaseProficiencyRule, course_solution: Optional[CourseSolution], overridden: bool = False) -> 'ProficiencySolution':
         return ProficiencySolution(
             proficiency=rule.proficiency,
             course=course_solution,

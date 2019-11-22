@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class ProficiencyRule(Rule, BaseProficiencyRule):
-    course: CourseRule
+    course: Optional[CourseRule]
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -36,7 +36,7 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
 
         return ProficiencyRule(
             proficiency=proficiency,
-            course=CourseRule.load(data['course'], c=c, path=path),
+            course=CourseRule.load(data['course'], c=c, path=path) if 'course' in data else None,
             path=tuple(path),
         )
 
@@ -53,7 +53,7 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
             return
 
         logger.debug('%s reference to proficiency "%s"', self.path, self.proficiency)
-        course_solution = next(self.course.solutions(ctx=ctx))
+        course_solution = next(self.course.solutions(ctx=ctx)) if self.course else None
 
         yield ProficiencySolution.from_rule(rule=self, course_solution=course_solution)
 
@@ -61,4 +61,4 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
         return True
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
-        return self.course.all_matches(ctx=ctx)
+        return self.course.all_matches(ctx=ctx) if self.course else []

@@ -1,5 +1,5 @@
 import attr
-from typing import List, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 
 from ..base import Result, BaseProficiencyRule, BaseCourseRule
 from ..status import ResultStatus
@@ -18,7 +18,7 @@ class ProficiencyResult(Result, BaseProficiencyRule):
         *,
         solution: BaseProficiencyRule,
         status: ResultStatus,
-        course_result: BaseCourseRule,
+        course_result: Optional[BaseCourseRule],
         overridden: bool = False,
     ) -> 'ProficiencyResult':
         return ProficiencyResult(
@@ -40,10 +40,10 @@ class ProficiencyResult(Result, BaseProficiencyRule):
         )
 
     def claims(self) -> List['ClaimAttempt']:
-        return self.course.claims()
+        return self.course.claims() if self.course else []
 
     def was_overridden(self) -> bool:
         return self.overridden
 
     def ok(self) -> bool:
-        return self.proficiency_status is ResultStatus.Pass or self.course.ok()
+        return self.proficiency_status is ResultStatus.Pass or (self.course.ok() if self.course else False)
