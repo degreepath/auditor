@@ -59,7 +59,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             elif ('then' in data and 'else' not in data) or ('then' not in data and 'else' in data):
                 raise TypeError(f'{path} in an if:, with one of then: or else:; expected both then: and else:')
             elif s.ok():
-                pass
+                result = data['result']
             else:
                 return None
 
