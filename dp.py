@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Iterator, Tuple, Dict
 import argparse
 import logging
 import runpy
@@ -7,6 +7,7 @@ import sys
 import os
 import dotenv
 import prettyprinter  # type: ignore
+from collections import defaultdict
 
 from degreepath.ms import pretty_ms
 from degreepath.stringify import summarize
@@ -41,6 +42,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("-q", "--quiet", action='store_true')
     parser.add_argument("--tracemalloc-init", action='store_true')
     parser.add_argument("--tracemalloc-end", action='store_true')
+    parser.add_argument("--tracemalloc-each", action='store_true')
     parser.add_argument("--paths", dest='show_paths', action='store_const', const=True, default=True)
     parser.add_argument("--no-paths", dest='show_paths', action='store_const', const=False)
     parser.add_argument("--ranks", dest='show_ranks', action='store_const', const=True, default=True)
@@ -53,6 +55,8 @@ def main() -> int:  # noqa: C901
     if cli_args.estimate:
         os.environ['DP_ESTIMATE'] = '1'
 
+    has_tracemalloc = cli_args.tracemalloc_init or cli_args.tracemalloc_end or cli_args.tracemalloc_each
+
     args = Arguments(
         area_files=cli_args.area_files,
         student_files=cli_args.student_files,
@@ -60,9 +64,14 @@ def main() -> int:  # noqa: C901
         archive_file=cli_args.archive_file,
     )
 
-    if cli_args.tracemalloc_init or cli_args.tracemalloc_end:
+    if has_tracemalloc:
         import tracemalloc
         tracemalloc.start()
+
+    first_progress_message = True
+
+    top_mem_items: Dict[str, Dict[int, float]] = defaultdict(dict)
+    tracemalloc_index = 0
 
     for msg in dp['run'](args, transcript_only=cli_args.transcript, gpa_only=cli_args.gpa):
         if isinstance(msg, NoStudentsMsg):
@@ -85,22 +94,20 @@ def main() -> int:  # noqa: C901
             pass
 
         elif isinstance(msg, ProgressMsg):
-            if cli_args.tracemalloc_init:
+            if (cli_args.tracemalloc_init and first_progress_message) or cli_args.tracemalloc_each:
                 snapshot = tracemalloc.take_snapshot()
-                display_top(snapshot)
-                return 0
+                for k, v in process_top(snapshot):
+                    top_mem_items[k][tracemalloc_index] = v
+                tracemalloc_index += 1
 
-            if not cli_args.quiet:
+            first_progress_message = False
+
+            if not cli_args.quiet or (cli_args.tracemalloc_init or cli_args.tracemalloc_each):
                 avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
                 avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
                 print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
-            if cli_args.tracemalloc_end:
-                snapshot = tracemalloc.take_snapshot()
-                display_top(snapshot)
-                return 0
-
             if not cli_args.quiet:
                 print(result_str(
                     msg,
@@ -116,6 +123,22 @@ def main() -> int:  # noqa: C901
             if not cli_args.quiet:
                 logger.critical('unknown message %s', msg)
             return 1
+
+    if cli_args.tracemalloc_end:
+        snapshot = tracemalloc.take_snapshot()
+        for k, v in process_top(snapshot):
+            top_mem_items[k][tracemalloc_index] = v
+
+    if has_tracemalloc:
+        longest = max(index for item in top_mem_items.values() for index, datapoint in item.items())
+        for tracemalloc_index in range(0, longest + 1):
+            print(tracemalloc_index * 10_000, end='\t')
+
+        for file, datapoints in top_mem_items.items():
+            print(file, end='\t')
+            for i in range(0, longest + 1):
+                print(f"{datapoints.get(i, 0):.1f}", end='\t')
+            print()
 
     return 0
 
@@ -156,6 +179,30 @@ def result_str(
         show_ranks=show_ranks,
         claims=msg.result.keyed_claims(),
     ))
+
+
+def process_top(snapshot: Any, key_type: str = 'lineno', limit: int = 10) -> Iterator[Tuple[str, float]]:
+    from tracemalloc import Filter
+
+    snapshot = snapshot.filter_traces((
+        Filter(False, "<frozen importlib._bootstrap>"),
+        Filter(False, "<unknown>"),
+    ))
+    top_stats = snapshot.statistics(key_type)
+
+    for index, stat in enumerate(top_stats[:limit], 1):
+        frame = stat.traceback[0]
+        # replace "/path/to/module/file.py" with "module/file.py"
+        filename = os.sep.join(frame.filename.split(os.sep)[-2:])
+        yield (f"{filename}:{frame.lineno}", stat.size / 1024)
+
+    other = top_stats[limit:]
+    if other:
+        size = sum(stat.size for stat in other)
+        yield ("other", size / 1024)
+
+    total = sum(stat.size for stat in top_stats)
+    yield ("total", total / 1024)
 
 
 def display_top(snapshot: Any, key_type: str = 'lineno', limit: int = 10) -> None:
