@@ -112,7 +112,7 @@ class QuerySolution(Solution, BaseQueryRule):
         resolved_assertions_list = []
 
         for a in self.assertions:
-            a_result = self.apply_assertion(a, ctx=ctx, output=claimed_items)
+            a_result = self.apply_assertion(a, ctx=ctx, input=claimed_items)
             if a_result:
                 resolved_assertions_list.append(a_result)
 
@@ -134,8 +134,8 @@ class QuerySolution(Solution, BaseQueryRule):
             inserted=tuple(inserted_clbids),
         )
 
-    def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', output: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
-        clause = resolve_assertion(asrt, input=output)
+    def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', input: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
+        clause = resolve_assertion(asrt, input=input)
         if clause is None:
             return None
 
@@ -160,9 +160,9 @@ class QuerySolution(Solution, BaseQueryRule):
             clause = cast(AssertionRule, _clause)
 
         if clause.where:
-            filtered_output = [item for item in output if clause.where.apply(item)]
+            filtered_output = [item for item in input if clause.where.apply(item)]
         else:
-            filtered_output = list(output)
+            filtered_output = list(input)
 
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(clause.path):
