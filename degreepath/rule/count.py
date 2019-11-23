@@ -94,9 +94,9 @@ class CountRule(Rule, BaseCountRule):
             logger.debug("%s inserting new choice: %s", path, insert)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=path)
             items.append({
-                "course": matched_course.course(), 
-                "clbid": matched_course.clbid, 
-                "allow_claimed": insert.forced, 
+                "course": matched_course.course(),
+                "clbid": matched_course.clbid,
+                "allow_claimed": insert.forced,
                 "inserted": True,
             })
             did_insert = True
