@@ -272,10 +272,10 @@ def print_query(
 
     emoji = calculate_emoji(rule)
 
-    if rule['where'] is not None:
+    if rule['where']:
         yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
 
-    if rule['limit'] is not None:
+    if rule['limit']:
         yield f"{prefix} Subject to these limits:"
         for limit in rule['limit']:
             yield f"{prefix} - at most {limit['at_most']} where {str_clause(limit['where'])}"
