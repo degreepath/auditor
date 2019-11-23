@@ -155,6 +155,8 @@ class QuerySolution(Solution, BaseQueryRule):
                 yield assertion_result
 
     def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', input: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
+        debug = self.is_debug()
+
         clause = resolve_assertion(asrt, input=input)
         if clause is None:
             return None
@@ -163,7 +165,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         waive = ctx.get_waive_exception(clause.path)
         if waive:
-            logger.debug("forced override on %s", self.path)
+            if debug: logger.debug("forced override on %s", self.path)
             return AssertionResult(
                 where=clause.where,
                 assertion=clause.assertion,
@@ -175,7 +177,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         override_value = ctx.get_value_exception(clause.path)
         if override_value:
-            logger.debug("override: new value on %s", self.path)
+            if debug: logger.debug("override: new value on %s", self.path)
             _clause = clause.override_expected_value(override_value.value)
             clause = cast(AssertionRule, _clause)
 
@@ -186,7 +188,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(clause.path):
-            logger.debug("inserted %s into %s", insert.clbid, self.path)
+            if debug: logger.debug("inserted %s into %s", insert.clbid, self.path)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             filtered_output.append(matched_course)
             inserted_clbids.append(matched_course.clbid)
