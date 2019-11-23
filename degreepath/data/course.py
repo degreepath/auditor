@@ -219,6 +219,10 @@ def apply_single_clause__crsid(course: CourseInstance, clause: 'SingleClause') -
     return clause.compare(course.crsid)
 
 
+def apply_single_clause__name(course: CourseInstance, clause: 'SingleClause') -> bool:
+    return clause.compare(course.name)
+
+
 clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], bool]] = {
     'ap': apply_single_clause__ap,
     'attributes': apply_single_clause__attributes,
@@ -237,6 +241,7 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
     'is_stolaf': apply_single_clause__is_stolaf,
     'lab': apply_single_clause__lab,
     'level': apply_single_clause__level,
+    'name': apply_single_clause__name,
     'number': apply_single_clause__number,
     'p/n': apply_single_clause__pn,
     's/u': apply_single_clause__su,
