@@ -1,5 +1,5 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, cast, TYPE_CHECKING
+from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Callable, Iterator, cast, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseQueryRule
@@ -7,13 +7,21 @@ from ..base.query import QuerySource
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule, ConditionalAssertionRule
 from ..result.assertion import AssertionResult
-from ..data import CourseInstance, AreaPointer, Clausable, MusicAttendance, MusicPerformance
+from ..data import CourseInstance, Clausable
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..claim import ClaimAttempt  # noqa: F401
     from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
+
+
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
+class AuditResult:
+    claimed_items: Tuple[Clausable, ...] = tuple()
+    successful_claims: Tuple['ClaimAttempt', ...] = tuple()
+    failed_claims: Tuple['ClaimAttempt', ...] = tuple()
+    inserted_clbids: Tuple[str, ...] = tuple()
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -43,8 +51,12 @@ class QuerySolution(Solution, BaseQueryRule):
             "output": [x.to_dict() for x in self.output],
         }
 
-    def audit(self, *, ctx: 'RequirementContext') -> QueryResult:  # noqa: C901
-        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+    @classmethod
+    def is_debug(cls) -> bool:
+        return __debug__ and logger.isEnabledFor(logging.DEBUG)
+
+    def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
+        debug = self.is_debug()
 
         if self.overridden:
             return QueryResult.from_solution(
@@ -56,44 +68,55 @@ class QuerySolution(Solution, BaseQueryRule):
                 overridden=self.overridden,
             )
 
+        audit_mode: Dict[QuerySource, Callable[['RequirementContext'], AuditResult]] = {
+            QuerySource.Courses: self.audit_courses,
+            QuerySource.Areas: self.audit_areas,
+            QuerySource.MusicPerformances: self.audit_music_performances,
+            QuerySource.MusicAttendances: self.audit_music_attendances,
+        }
+
+        audit_result = audit_mode[self.source](ctx)
+
+        resolved_assertions = tuple(self.apply_assertions(ctx=ctx, input=audit_result.claimed_items))
+        resolved_result = all(a.ok() for a in resolved_assertions)
+
+        if debug:
+            if resolved_result:
+                logger.debug("%s might possibly succeed", self.path)
+            else:
+                logger.debug("%s did not succeed", self.path)
+
+        return QueryResult.from_solution(
+            solution=self,
+            resolved_assertions=resolved_assertions,
+            successful_claims=audit_result.successful_claims,
+            failed_claims=audit_result.failed_claims,
+            success=resolved_result,
+            inserted=audit_result.inserted_clbids,
+        )
+
+    def audit_courses(self, ctx: 'RequirementContext') -> AuditResult:
+        debug = self.is_debug()
+
         claimed_items: List[Clausable] = []
         successful_claims: List['ClaimAttempt'] = []
         failed_claims: List['ClaimAttempt'] = []
 
         output: Sequence[Clausable] = self.output
-        if self.source is QuerySource.Courses:
+        if self.attempt_claims:
             for course in cast(Sequence[CourseInstance], output):
-                if self.attempt_claims:
-                    claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed)
+                claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed)
 
-                    if claim.failed:
-                        if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, course.clbid, claim.conflict_with)
-                        failed_claims.append(claim)
-                    else:
-                        if debug: logger.debug('%s course "%s" exists, and is available', self.path, course.clbid)
-                        successful_claims.append(claim)
-                        claimed_items.append(course)
+                if claim.failed:
+                    if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, course.clbid, claim.conflict_with)
+                    failed_claims.append(claim)
                 else:
                     if debug: logger.debug('%s course "%s" exists, and is available', self.path, course.clbid)
+                    successful_claims.append(claim)
                     claimed_items.append(course)
-
-        elif self.source is QuerySource.Areas:
-            for area in cast(Sequence[AreaPointer], output):
-                if debug: logger.debug('%s area "%s" exists, and is available', self.path, area)
-                claimed_items.append(area)
-
-        elif self.source is QuerySource.MusicPerformances:
-            for performance in cast(Sequence[MusicPerformance], output):
-                if debug: logger.debug('%s performance "%s" exists, and is available', self.path, performance)
-                claimed_items.append(performance)
-
-        elif self.source is QuerySource.MusicAttendances:
-            for recital in cast(Sequence[MusicAttendance], output):
-                if debug: logger.debug('%s recital "%s" exists, and is available', self.path, recital)
-                claimed_items.append(recital)
-
         else:
-            raise TypeError(f'unknown type of data for query, {self.source}')
+            if debug: logger.debug('%s courses "%s" exist, and is available', self.path, output)
+            claimed_items = list(output)
 
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(self.path):
@@ -109,30 +132,27 @@ class QuerySolution(Solution, BaseQueryRule):
                 claimed_items.append(matched_course)
                 inserted_clbids.append(matched_course.clbid)
 
-        resolved_assertions_list = []
-
-        for a in self.assertions:
-            a_result = self.apply_assertion(a, ctx=ctx, input=claimed_items)
-            if a_result:
-                resolved_assertions_list.append(a_result)
-
-        resolved_assertions = tuple(resolved_assertions_list)
-        resolved_result = all(a.ok() for a in resolved_assertions)
-
-        if debug:
-            if resolved_result:
-                logger.debug("%s might possibly succeed", self.path)
-            else:
-                logger.debug("%s did not succeed", self.path)
-
-        return QueryResult.from_solution(
-            solution=self,
-            resolved_assertions=resolved_assertions,
+        return AuditResult(
+            claimed_items=tuple(claimed_items),
             successful_claims=tuple(successful_claims),
             failed_claims=tuple(failed_claims),
-            success=resolved_result,
-            inserted=tuple(inserted_clbids),
+            inserted_clbids=tuple(inserted_clbids),
         )
+
+    def audit_areas(self, ctx: 'RequirementContext') -> AuditResult:
+        return AuditResult(claimed_items=tuple(self.output))
+
+    def audit_music_performances(self, ctx: 'RequirementContext') -> AuditResult:
+        return AuditResult(claimed_items=tuple(self.output))
+
+    def audit_music_attendances(self, ctx: 'RequirementContext') -> AuditResult:
+        return AuditResult(claimed_items=tuple(self.output))
+
+    def apply_assertions(self, *, ctx: 'RequirementContext', input: Sequence[Clausable]) -> Iterator[AssertionResult]:
+        for a in self.assertions:
+            assertion_result = self.apply_assertion(a, ctx=ctx, input=input)
+            if assertion_result:
+                yield assertion_result
 
     def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', input: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
         clause = resolve_assertion(asrt, input=input)
