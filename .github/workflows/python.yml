@@ -36,7 +36,8 @@ jobs:
 
       - name: Check with mypy
         run: |
-          mypy degreepath/
+          mypy --pretty degreepath/
+          mypy --pretty *.py
 
       - name: Test with pytest
         run: |
