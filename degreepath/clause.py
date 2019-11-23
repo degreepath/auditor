@@ -95,7 +95,7 @@ class ResolvedClause(ClauseWithResult):
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class AndClause(BaseClause, ClauseWithResult):
-    children: Tuple = tuple()
+    children: Tuple['Clause', ...] = tuple()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -154,7 +154,7 @@ class AndClause(BaseClause, ClauseWithResult):
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class OrClause(BaseClause, ClauseWithResult):
-    children: Tuple = tuple()
+    children: Tuple['Clause', ...] = tuple()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
