@@ -42,7 +42,6 @@ class QueryResult(Result, BaseQueryRule):
             path=solution.path,
             overridden=overridden,
             inserted=inserted,
-            load_potentials=solution.load_potentials,
         )
 
     def only_failed_claims(self) -> Sequence[ClaimAttempt]:

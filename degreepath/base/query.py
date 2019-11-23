@@ -28,7 +28,6 @@ class BaseQueryRule(Base):
     attempt_claims: bool
     path: Tuple[str, ...]
     inserted: Tuple[str, ...]
-    load_potentials: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {
