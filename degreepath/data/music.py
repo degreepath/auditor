@@ -1,6 +1,7 @@
-from typing import Dict, Any, Tuple, TYPE_CHECKING
+from typing import Dict, Any, Tuple, Optional, TYPE_CHECKING
 import attr
 import logging
+import enum
 import abc
 
 from .clausable import Clausable
@@ -59,8 +60,23 @@ class MusicSlip(Clausable):
         return (self.year, self.term, self.name, self.id)
 
 
+class MusicPerformanceStatus(enum.Enum):
+    Entrance = 'entrance'
+    Continuance = 'continuance'
+
+
+muspf_status_lookup = {
+    'e': MusicPerformanceStatus.Entrance,
+    'c': MusicPerformanceStatus.Continuance,
+    '': None,
+}
+
+
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, eq=False, order=False, hash=True)
 class MusicPerformance(MusicSlip):
+    # TODO: make this be non-optional and look up the proper field to pull this data from
+    status: Optional[MusicPerformanceStatus]
+
     @staticmethod
     def from_dict(data: Dict) -> 'MusicPerformance':
         return MusicPerformance(
@@ -68,6 +84,7 @@ class MusicPerformance(MusicSlip):
             id=data['id'],
             year=int(data['year']),
             term=int(data['term']),
+            status=muspf_status_lookup[data.get('status', '')],
         )
 
     def type(self) -> str:
