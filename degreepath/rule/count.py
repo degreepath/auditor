@@ -90,7 +90,7 @@ class CountRule(Rule, BaseCountRule):
                 items.append({"requirement": emphasis_key})
 
         did_insert = False
-        for insert in ctx.get_insert_exceptions(path):
+        for insert in ctx.get_insert_exceptions(tuple(path)):
             logger.debug("%s inserting new choice: %s", path, insert)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=path)
             items.append({

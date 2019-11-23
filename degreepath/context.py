@@ -111,19 +111,16 @@ class RequirementContext:
     def has_course(self, c: str) -> bool:
         return c in self.course_set_
 
-    def has_exception(self, path: Sequence[str]) -> bool:
-        tuple_path = tuple(path)
-        return any(e.path[:len(path)] == tuple_path for e in self.exceptions)
+    def has_exception(self, path: Tuple[str, ...]) -> bool:
+        return any(e.path[:len(path)] == path for e in self.exceptions)
 
-    def get_insert_exceptions(self, path: Sequence[str]) -> Iterator[InsertionException]:
-        tuple_path = tuple(path)
-
-        if tuple_path not in self.exception_paths_:
+    def get_insert_exceptions(self, path: Tuple[str, ...]) -> Iterator[InsertionException]:
+        if path not in self.exception_paths_:
             return
 
         did_yield = False
         for exception in self.exceptions:
-            if isinstance(exception, InsertionException) and exception.path == tuple_path:
+            if isinstance(exception, InsertionException) and exception.path == path:
                 logger.debug("exception found for %s: %s", path, exception)
                 did_yield = True
                 yield exception
@@ -131,28 +128,24 @@ class RequirementContext:
         if not did_yield:
             logger.debug("no exception for %s", path)
 
-    def get_waive_exception(self, path: Sequence[str]) -> Optional[OverrideException]:
-        tuple_path = tuple(path)
-
-        if tuple_path not in self.exception_paths_:
+    def get_waive_exception(self, path: Tuple[str, ...]) -> Optional[OverrideException]:
+        if path not in self.exception_paths_:
             return None
 
         for e in self.exceptions:
-            if isinstance(e, OverrideException) and e.path == tuple_path:
+            if isinstance(e, OverrideException) and e.path == path:
                 logger.debug("exception found for %s: %s", path, e)
                 return e
 
         logger.debug("no exception for %s", path)
         return None
 
-    def get_value_exception(self, path: Sequence[str]) -> Optional[ValueException]:
-        tuple_path = tuple(path)
-
-        if tuple_path not in self.exception_paths_:
+    def get_value_exception(self, path: Tuple[str, ...]) -> Optional[ValueException]:
+        if path not in self.exception_paths_:
             return None
 
         for e in self.exceptions:
-            if isinstance(e, ValueException) and e.path == tuple_path:
+            if isinstance(e, ValueException) and e.path == path:
                 logger.debug("exception found for %s: %s", path, e)
                 return e
 
