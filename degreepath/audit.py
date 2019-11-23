@@ -14,9 +14,13 @@ from .discover_potentials import discover_clause_potential
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class Arguments:
-    area_files: List[str]
-    student_files: List[str]
-    archive_file: Optional[str]
+    area_files: Sequence[str] = tuple()
+    student_files: Sequence[str] = tuple()
+    archive_file: Optional[str] = None
+
+    transcript_only: bool = False
+    gpa_only: bool = False
+
     print_all: bool = False
 
 
@@ -86,7 +90,6 @@ def audit(
     music_proficiencies: MusicProficiencies = MusicProficiencies(),
     transcript: Tuple[CourseInstance, ...] = tuple(),
     transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
-    print_all: bool,
 ) -> Iterator[Message]:  # noqa: C901
     best_sol: Optional[AreaResult] = None
     best_rank: Union[int, Decimal] = 0
@@ -125,7 +128,7 @@ def audit(
         result = sol.audit()
         result_rank = result.rank()
 
-        if print_all:
+        if args.print_all:
             yield ResultMsg(
                 result=result,
                 transcript=transcript,

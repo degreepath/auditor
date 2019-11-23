@@ -53,13 +53,14 @@ def main() -> int:  # noqa: C901
             student_files=[student_file],
             print_all=False,
             archive_file=None,
+            transcript_only=cli_args.transcript,
         )
 
         if cli_args.invocation:
             print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
             continue
 
-        for msg in dp['run'](args, transcript_only=cli_args.transcript):
+        for msg in dp['run'](args):
             if isinstance(msg, NoStudentsMsg):
                 print('no student files provided', file=sys.stderr)
                 return 3

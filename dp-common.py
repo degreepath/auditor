@@ -15,7 +15,7 @@ from degreepath.data import GradeOption, GradeCode, CourseInstance, TranscriptCo
 from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
-def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = False) -> Iterator[Message]:  # noqa: C901
+def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
     if not args.student_files:
         yield NoStudentsMsg()
         return
@@ -43,7 +43,7 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
         transcript = tuple(sorted(load_transcript(student['courses']), key=lambda course: course.sort_order()))
         transcript_with_failed = tuple(sorted(load_transcript(student['courses'], include_failed=True), key=lambda course: course.sort_order()))
 
-        if transcript_only:
+        if args.transcript_only:
             writer = csv.writer(sys.stdout)
             writer.writerow(['course', 'name', 'clbid', 'type', 'credits', 'term', 'type', 'grade', 'in_gpa'])
             for c in transcript:
@@ -53,7 +53,7 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
                 ])
             return
 
-        if gpa_only:
+        if args.gpa_only:
             writer = csv.writer(sys.stdout)
             writer.writerow(['course', 'grade', 'points'])
 
@@ -107,7 +107,7 @@ def run(args: Arguments, *, transcript_only: bool = False, gpa_only: bool = Fals
                     transcript_with_failed=transcript_with_failed,
                     constants=constants,
                     area_pointers=area_pointers,
-                    print_all=args.print_all,
+                    args=args,
                 )
 
             except Exception as ex:
