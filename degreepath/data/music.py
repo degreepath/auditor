@@ -42,7 +42,7 @@ class MusicSlip(Clausable):
         if clause.key == 'term':
             return clause.compare(self.term)
 
-        raise TypeError(f"expected got unknown key {clause.key}")
+        raise TypeError(f"got unknown key {clause.key}")
 
     def __eq__(self, other: Any) -> bool:
         if other.__class__ is self.__class__:
