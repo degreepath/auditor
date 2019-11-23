@@ -209,19 +209,21 @@ class CountRule(Rule, BaseCountRule):
         potential_len = len(potential_rules)
         all_children = set(items)
 
+        all_but_results = set(all_children - solved_results__rules)
+
         did_yield = False
 
         logger.debug("%s iterating over combinations between %s..<%s", self.path, lo, hi)
-        for r in range(lo, hi):
-            logger.debug("%s %s..<%s, r=%s", self.path, lo, hi, r)
-            for combo in self.make_combinations(items=potential_rules, results=solved_results, children_with_results=solved_results__rules, all_children=all_children, r=r, count=count, ctx=ctx):
+        for size in range(lo, hi):
+            logger.debug("%s %s..<%s, size=%s", self.path, lo, hi, size)
+            for combo in self.make_combinations(items=potential_rules, results=solved_results, other_children=all_but_results, size=size, count=count, ctx=ctx):
                 did_yield = True
                 yield combo
 
         if not did_yield and potential_len > 0:
             # didn't have enough potential children to iterate in range(lo, hi)
             logger.debug("%s only iterating over the %s children with potential", self.path, potential_len)
-            for combo in self.make_combinations(items=potential_rules, results=solved_results, children_with_results=solved_results__rules, all_children=all_children, r=potential_len, count=count, ctx=ctx):
+            for combo in self.make_combinations(items=potential_rules, results=solved_results, other_children=all_but_results, size=potential_len, count=count, ctx=ctx):
                 did_yield = True
                 yield combo
 
@@ -231,7 +233,7 @@ class CountRule(Rule, BaseCountRule):
             logger.debug('all_children: %s', [r.path for r in all_children])
             logger.debug('solved_results__rules: %s', [r.path for r in solved_results__rules])
 
-            children_with_precomputed_solutions: Set[Union[Rule, Result]] = set(all_children - solved_results__rules)
+            children_with_precomputed_solutions: Set[Union[Rule, Result]] = set(all_but_results)
             logger.debug('children_with_precomputed_solutions: %s', [r.path for r in children_with_precomputed_solutions])
 
             children_with_precomputed_solutions.update(solved_results)
@@ -247,18 +249,16 @@ class CountRule(Rule, BaseCountRule):
         ctx: 'RequirementContext',
         items: Tuple[Rule, ...],
         results: Tuple[Result, ...],
-        children_with_results: Set[Rule],
-        all_children: Set[Rule],
-        r: int,
+        other_children: Set[Rule],
+        size: int,
         count: int,
     ) -> Iterator[CountSolution]:
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        for combo_i, selected_children in enumerate(itertools.combinations(items, r)):
-            if debug: logger.debug("%s, r=%s, combo=%s: generating product(*solutions)", self.path, r, combo_i)
+        for combo_i, selected_children in enumerate(itertools.combinations(items, size)):
+            if debug: logger.debug("%s, size=%s, combo=%s: generating product(*solutions)", self.path, size, combo_i)
 
-            deselected_children_set = set(all_children - children_with_results).difference(set(selected_children))
-            deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(deselected_children_set)
+            deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(r for r in selected_children if r not in other_children)
 
             # itertools.product does this internally, so we'll pre-compute the
             # results here to make it obvious that it's not lazy
@@ -277,7 +277,7 @@ class CountRule(Rule, BaseCountRule):
             solutionset: Tuple[Union[Rule, Solution, Result], ...]
             for solset_i, solutionset in enumerate(itertools.product(*solutions)):
                 if debug and solset_i > 0 and solset_i % 10_000 == 0:
-                    logger.debug("%s, r=%s, combo=%s solset=%s: generating product(*solutions)", self.path, r, combo_i, solset_i)
+                    logger.debug("%s, size=%s, combo=%s solset=%s: generating product(*solutions)", self.path, size, combo_i, solset_i)
 
                 to_yield = tuple(sorted(solutionset + deselected_children + results, key=sort_by_path))
                 yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
