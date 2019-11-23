@@ -1,5 +1,5 @@
 import attr
-from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any, cast
+from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any
 from datetime import datetime
 from decimal import Decimal
 import time
@@ -118,7 +118,7 @@ def audit(
                 count=total_count,
                 recent_iters=iterations[-1_000:],
                 start_time=start_time,
-                best_rank=cast(AreaResult, best_sol).rank(),
+                best_rank=best_sol.rank() if best_sol else 0,
             )
 
         result = sol.audit()
