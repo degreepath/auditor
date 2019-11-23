@@ -22,6 +22,7 @@ class Arguments:
     gpa_only: bool = False
 
     print_all: bool = False
+    stop_after: Optional[int] = None
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -153,6 +154,9 @@ def audit(
         iter_end = time.perf_counter()
         iterations.append(iter_end - iter_start)
         iter_start = time.perf_counter()
+
+        if args.stop_after is not None and total_count >= args.stop_after:
+            break
 
     if not best_sol:
         yield NoAuditsCompletedMsg()
