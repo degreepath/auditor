@@ -43,7 +43,7 @@ class QueryRule(Rule, BaseQueryRule):
         if 'limits' in data:
             raise ValueError(f'the key is "limit", not "limits": {data}')
 
-        assertions: List[Union[AssertionRule, ConditionalAssertionRule]] = []
+        assertions: List[Union[AssertionRule, ConditionalAssertionRule]]
         if "assert" in data:
             assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, ".assertions", "[0]"])]
         elif "all" in data:
