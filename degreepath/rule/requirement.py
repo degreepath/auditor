@@ -58,7 +58,8 @@ class RequirementRule(Rule, BaseRequirementRule):
             elif ('then' in data and 'else' not in data) or ('then' not in data and 'else' in data):
                 raise TypeError(f'{path} in an if:, with one of then: or else:; expected both then: and else:')
             elif s.ok():
-                result = data['result']
+                # we support some "Optional" requirements that are department-audited
+                result = data.get("result", None)
             else:
                 return None
 
