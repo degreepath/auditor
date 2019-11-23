@@ -1,6 +1,5 @@
 import attr
 from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
-import re
 import logging
 
 from ..base import Rule, BaseCourseRule
@@ -69,13 +68,6 @@ class CourseRule(Rule, BaseCourseRule):
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
-        if self.course and not self.inserted:
-            method_a = re.match(r"[A-Z]{3,5} [0-9]{3}", self.course)
-            method_b = re.match(r"[A-Z]{2}/[A-Z]{2} [0-9]{3}", self.course)
-            method_c = re.match(r"(IS|ID) [0-9]{3}", self.course)
-
-            assert (method_a or method_b or method_c) is not None, f"{self.course}, {method_a}, {method_b}, {method_c}"
-
         assert self.course or self.ap or (self.institution and self.name)
 
     def get_requirement_names(self) -> List[str]:
