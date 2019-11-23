@@ -77,14 +77,15 @@ Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, Audi
 def audit(
     *,
     area: AreaOfStudy,
-    music_performances: Tuple[MusicPerformance, ...] = tuple(),
-    music_attendances: Tuple[MusicAttendance, ...] = tuple(),
-    music_proficiencies: MusicProficiencies = MusicProficiencies(),
-    transcript: Tuple[CourseInstance, ...],
-    transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
+    area_pointers: Sequence[AreaPointer] = tuple(),
+    args: Arguments = Arguments(),
     constants: Constants,
-    exceptions: List[RuleException],
-    area_pointers: Sequence[AreaPointer],
+    exceptions: Sequence[RuleException] = tuple(),
+    music_attendances: Tuple[MusicAttendance, ...] = tuple(),
+    music_performances: Tuple[MusicPerformance, ...] = tuple(),
+    music_proficiencies: MusicProficiencies = MusicProficiencies(),
+    transcript: Tuple[CourseInstance, ...] = tuple(),
+    transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
     print_all: bool,
 ) -> Iterator[Message]:  # noqa: C901
     best_sol: Optional[AreaResult] = None
@@ -104,7 +105,7 @@ def audit(
         music_performances=music_performances,
         music_attendances=music_attendances,
         music_proficiencies=music_proficiencies,
-        exceptions=exceptions,
+        exceptions=list(exceptions),
         transcript_with_failed=transcript_with_failed,
     ):
         if total_count == 0:
