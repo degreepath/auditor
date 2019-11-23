@@ -50,12 +50,8 @@ class QuerySolution(Solution, BaseQueryRule):
             "output": [x.to_dict() for x in self.output],
         }
 
-    @classmethod
-    def is_debug(cls) -> bool:
-        return __debug__ and logger.isEnabledFor(logging.DEBUG)
-
     def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
-        debug = self.is_debug()
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         if self.overridden:
             return QueryResult.from_solution(
@@ -95,7 +91,7 @@ class QuerySolution(Solution, BaseQueryRule):
         )
 
     def audit_courses(self, ctx: 'RequirementContext') -> AuditResult:
-        debug = self.is_debug()
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         claimed_items: List[Clausable] = []
         successful_claims: List['ClaimAttempt'] = []
@@ -154,7 +150,7 @@ class QuerySolution(Solution, BaseQueryRule):
                 yield assertion_result
 
     def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', input: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
-        debug = self.is_debug()
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         clause = resolve_assertion(asrt, input=input)
         if clause is None:
