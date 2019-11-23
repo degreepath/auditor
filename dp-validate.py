@@ -1,4 +1,5 @@
 import concurrent.futures
+import traceback
 import argparse
 import yaml
 import sys
@@ -22,9 +23,8 @@ def main() -> int:
             print(f'\r{f.ljust(longest)}', end='')
             try:
                 future.result()
-            except Exception as exc:
-                print()
-                print(f'{f} generated an exception: {exc}')
+            except Exception:
+                print(f'\n{f} generated an exception: {traceback.format_exc()}')
 
     print()
 
