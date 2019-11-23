@@ -32,7 +32,7 @@ class MusicSlip(Clausable):
     def type(self) -> str:
         raise NotImplementedError('not implemented')
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:  # noqa: C901
+    def apply_single_clause(self, clause: 'SingleClause') -> bool:
         if clause.key == 'name':
             return clause.compare(self.name)
 
@@ -86,6 +86,14 @@ class MusicPerformance(MusicSlip):
             term=int(data['term']),
             status=muspf_status_lookup[data.get('status', '')],
         )
+
+    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+        if clause.key == 'status':
+            if not self.status:
+                return False
+            return clause.compare(self.status.value)
+
+        return super().apply_single_clause(clause)
 
     def type(self) -> str:
         return 'music performance'
