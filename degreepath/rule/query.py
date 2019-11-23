@@ -54,7 +54,7 @@ class QueryRule(Rule, BaseQueryRule):
         if 'assert' in data and 'all' in data:
             raise ValueError(f'you cannot have both assert: and all: keys; {data}')
 
-        allowed_keys = set(['where', 'limit', 'claim', 'assert', 'all', 'allow_claimed', 'from', 'load_potentials'])
+        allowed_keys = {'where', 'limit', 'claim', 'assert', 'all', 'allow_claimed', 'from', 'load_potentials'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
