@@ -37,6 +37,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--raw", action='store_true')
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--stop-after", action='store', type=int)
+    parser.add_argument("--progress-every", action='store', type=int, default=1_000)
     parser.add_argument("--estimate", action='store_true')
     parser.add_argument("--transcript", action='store_true')
     parser.add_argument("--gpa", action='store_true')
@@ -63,6 +64,7 @@ def main() -> int:  # noqa: C901
         area_files=cli_args.area_files,
         gpa_only=cli_args.gpa,
         print_all=cli_args.print_all,
+        progress_every=cli_args.progress_every,
         stop_after=cli_args.stop_after,
         student_files=cli_args.student_files,
         transcript_only=cli_args.transcript,

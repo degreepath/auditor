@@ -23,6 +23,7 @@ class Arguments:
 
     print_all: bool = False
     stop_after: Optional[int] = None
+    progress_every: int = 1_000
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -118,10 +119,10 @@ def audit(
 
         total_count += 1
 
-        if total_count % 1_000 == 0:
+        if total_count % args.progress_every == 0:
             yield ProgressMsg(
                 count=total_count,
-                recent_iters=iterations[-1_000:],
+                recent_iters=iterations[-args.progress_every:],
                 start_time=start_time,
                 best_rank=best_sol.rank() if best_sol else 0,
             )
