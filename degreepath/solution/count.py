@@ -37,6 +37,7 @@ class CountSolution(Solution, BaseCountRule):
             )
 
         results = [r.audit(ctx=ctx) if isinstance(r, Solution) else r for r in self.items]
+        initial_matched_items = tuple(item for sol in results for item in sol.matched())
 
         audit_results = []
         for clause in self.audit_clauses:
@@ -49,22 +50,19 @@ class CountSolution(Solution, BaseCountRule):
                     path=clause.path,
                     message=clause.message,
                     overridden=True,
-                    inserted=(),
+                    inserted=tuple(),
                 ))
                 continue
-
-            matched_items = [item for sol in results for item in sol.matched()]
 
             override_value = ctx.get_value_exception(clause.path)
             if override_value:
                 logger.debug("override: new value on %s", self.path)
                 clause = clause.override_expected_value(override_value.value)
 
-            if clause.where is not None:
-                matched_items = [
-                    item for item in matched_items
-                    if clause.where.apply(item)
-                ]
+            if clause.where:
+                matched_items = [item for item in initial_matched_items if clause.where.apply(item)]
+            else:
+                matched_items = [item for item in initial_matched_items]
 
             inserted_clbids = []
             for insert in ctx.get_insert_exceptions(clause.path):
