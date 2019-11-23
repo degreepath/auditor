@@ -22,7 +22,7 @@ class RequirementContext:
     forced_clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
     transcript_with_failed_: List[CourseInstance] = attr.ib(factory=list)
 
-    multicountable: Dict[str, List[Tuple[str, ...]]] = attr.ib(factory=list)
+    multicountable: Dict[str, List[Tuple[str, ...]]] = attr.ib(factory=dict)
     claims: Dict[str, List[Claim]] = attr.ib(factory=lambda: defaultdict(list))
 
     exceptions: List[RuleException] = attr.ib(factory=list)
