@@ -1,13 +1,16 @@
-lint: flake types test
+all: lint
+
+lint: flake mypy test
+check: lint
 
 flake:
-	flake8 degreepath/ dp*.py
+	flake8 --show-source --statistics degreepath/ dp*.py
 
-types:
-	mypy --pretty degreepath/
+mypy:
+	mypy --pretty degreepath/ *.py
 
 test:
-	pytest
+	pytest tests/ degreepath/
 
 watch:
 	ptw
@@ -20,4 +23,3 @@ validate:
 
 profile:
 	echo 'use pyinstrument or py-spy'
-
