@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
+# mypy: warn_unreachable = False
 
 import argparse
-import runpy
 import glob
 import json
 import sys
 import os
 
 from degreepath.ms import pretty_ms
+from degreepath.main import run
 from degreepath.stringify import summarize
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
-
-dirpath = os.path.dirname(os.path.abspath(__file__))
-dp = runpy.run_path(dirpath + '/dp-common.py')
 
 
 def main() -> int:  # noqa: C901
@@ -60,7 +58,7 @@ def main() -> int:  # noqa: C901
             print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
             continue
 
-        for msg in dp['run'](args):
+        for msg in run(args):
             if isinstance(msg, NoStudentsMsg):
                 print('no student files provided', file=sys.stderr)
                 return 3

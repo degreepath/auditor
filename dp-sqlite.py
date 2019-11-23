@@ -1,8 +1,8 @@
+# mypy: warn_unreachable = False
+
 import argparse
 import json
 import logging
-import os
-import runpy
 from datetime import datetime
 from typing import Optional, Any, Dict, cast, Iterator
 import contextlib
@@ -10,12 +10,11 @@ import sqlite3
 import time
 import random
 
+from degreepath.main import run
 from degreepath.ms import pretty_ms
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 logger = logging.getLogger(__name__)
-dirpath = os.path.dirname(os.path.abspath(__file__))
-dp = runpy.run_path(dirpath + '/dp-common.py')
 
 
 def cli() -> None:
@@ -38,9 +37,9 @@ def main(area_file: str, student_file: str, run_id: int) -> None:
 
         result_id = None
 
-        args = Arguments(area_files=[area_file], student_files=[student_file], archive_file=None)
+        args = Arguments(area_files=[area_file], student_files=[student_file])
 
-        for msg in dp['run'](args):
+        for msg in run(args):
             if isinstance(msg, NoStudentsMsg):
                 logger.critical('no student files provided')
 

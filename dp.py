@@ -1,7 +1,8 @@
+# mypy: warn_unreachable = False
+
 from typing import Any, Iterator, Tuple, Dict
 import argparse
 import logging
-import runpy
 import json
 import sys
 import os
@@ -9,14 +10,12 @@ import dotenv
 import prettyprinter  # type: ignore
 from collections import defaultdict
 
+from degreepath.main import run
 from degreepath.ms import pretty_ms
 from degreepath.stringify import summarize
 from degreepath.stringify_csv import to_csv
 from degreepath.area import AreaResult
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
-
-dirpath = os.path.dirname(os.path.abspath(__file__))
-dp = runpy.run_path(dirpath + '/dp-common.py')
 
 prettyprinter.install_extras(['attrs', 'dataclasses'])
 dotenv.load_dotenv(verbose=False)
@@ -79,7 +78,7 @@ def main() -> int:  # noqa: C901
     top_mem_items: Dict[str, Dict[int, float]] = defaultdict(dict)
     tracemalloc_index = 0
 
-    for msg in dp['run'](args):
+    for msg in run(args):
         if isinstance(msg, NoStudentsMsg):
             logger.critical('no student files provided')
             return 3

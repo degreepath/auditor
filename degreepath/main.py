@@ -9,10 +9,10 @@ import csv
 import sys
 import os
 
-from degreepath import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
-from degreepath.lib import grade_point_average_items, grade_point_average
-from degreepath.data import GradeOption, GradeCode, CourseInstance, TranscriptCode, MusicPerformance, MusicAttendance, MusicProficiencies
-from degreepath.audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
+from . import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
+from .lib import grade_point_average_items, grade_point_average
+from .data import GradeOption, GradeCode, CourseInstance, TranscriptCode, MusicPerformance, MusicAttendance, MusicProficiencies
+from .audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
 def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
