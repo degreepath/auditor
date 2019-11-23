@@ -17,3 +17,7 @@ push: lint
 
 validate:
 	python3 dp-validate.py ../degreepath-areas/*/**.yaml --break
+
+profile:
+	echo 'use pyinstrument or py-spy'
+
