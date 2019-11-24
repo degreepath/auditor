@@ -97,8 +97,7 @@ class AreaOfStudy(Base):
             path=["$"],
             ctx=ctx,
         )
-        if result is None:
-            raise TypeError(f'expected load_rule to process {specification["result"]}')
+        assert result, TypeError(f'expected load_rule to process {specification["result"]}')
 
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
