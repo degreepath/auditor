@@ -1,8 +1,6 @@
 attrs==19.3.0
 markdown==3.1.1
 prettyprinter==0.18
-psycopg2-binary==2.8.3
 python-dotenv==0.10.3
 pyyaml==5.1.2
 requests==2.22.0
-sentry-sdk==0.13.2
