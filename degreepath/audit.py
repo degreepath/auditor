@@ -2,6 +2,7 @@ import attr
 from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any
 from datetime import datetime
 from decimal import Decimal
+import os
 import time
 
 from .constants import Constants
@@ -9,7 +10,6 @@ from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
 from .ms import pretty_ms
 from .data import CourseInstance, AreaPointer, MusicAttendance, MusicPerformance, MusicProficiencies
-from .discover_potentials import discover_clause_potential
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -102,7 +102,7 @@ def audit(
     iter_start = time.perf_counter()
     startup_time = 0.00
 
-    potentials_for_all_clauses = discover_clause_potential(area, c=constants)
+    potentials_for_all_clauses = find_potentials(area, constants)
 
     for sol in area.solutions(
         transcript=transcript,
@@ -175,3 +175,13 @@ def audit(
         startup_time=startup_time,
         potentials_for_all_clauses=potentials_for_all_clauses,
     )
+
+
+def find_potentials(area: AreaOfStudy, constants: Constants) -> Dict[int, List[str]]:
+    return {}
+
+    # if not os.getenv('POTENTIALS_URL', None):
+    #     return {}
+    #
+    # from .discover_potentials import discover_clause_potential
+    # return discover_clause_potential(area, c=constants)
