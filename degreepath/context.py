@@ -80,7 +80,7 @@ class RequirementContext:
                 yield match_by_clbid
             return
 
-        query = (course, name, ap, institution, True if ap else None)
+        query = (course, name, ap, institution, CourseType.AP if ap else None)
 
         for c in self.transcript():
             if not c.is_stolaf and institution is None and ap is None:
@@ -91,7 +91,7 @@ class RequirementContext:
                 c.name if name else None,
                 c.name if ap else None,
                 c.institution if institution else None,
-                c.course_type is CourseType.AP if ap else None,
+                c.course_type if ap else None,
             )
 
             if query == matcher:
