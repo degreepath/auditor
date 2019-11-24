@@ -2,7 +2,6 @@ import attr
 from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any
 from datetime import datetime
 from decimal import Decimal
-import os
 import time
 
 from .constants import Constants
