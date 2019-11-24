@@ -93,7 +93,8 @@ class QueryRule(Rule, BaseQueryRule):
 
     def get_data(self, *, ctx: 'RequirementContext') -> Sequence[Clausable]:
         if self.source is QuerySource.Courses:
-            return ctx.transcript()
+            all_courses = ctx.transcript()
+            return [c for c in all_courses if c.clbid not in self.excluded_clbids]
 
         elif self.source is QuerySource.Areas:
             return list(ctx.areas)
