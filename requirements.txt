@@ -1,5 +1,5 @@
 attrs==19.3.0
-markdown==3.1.1
+markdown2==2.3.8
 prettyprinter==0.18
 python-dotenv==0.10.3
 pyyaml==5.1.2

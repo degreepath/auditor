@@ -1,7 +1,7 @@
 from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 import attr
-import markdown  # type: ignore
+import markdown2  # type: ignore
 
 from ..base import Rule, BaseRequirementRule
 from ..base.requirement import AuditedBy
@@ -87,7 +87,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         message = data.get("message", None)
         if message:
-            message = markdown.markdown(message, extensions=['markdown.extensions.sane_lists', 'markdown.extensions.smarty'])
+            message = markdown2.markdown(message)
 
         return RequirementRule(
             name=name,
