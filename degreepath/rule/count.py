@@ -14,7 +14,7 @@ from .assertion import AssertionRule
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable  # noqa: F401
+    from ..data import Clausable, CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 SHOW_ESTIMATES = False if int(os.getenv('DP_ESTIMATE', default='0')) == 0 else True
@@ -170,6 +170,16 @@ class CountRule(Rule, BaseCountRule):
 
     def get_requirement_names(self) -> List[str]:
         return [name for rule in self.items for name in rule.get_requirement_names()]
+
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        if self.count != len(self.items):
+            return tuple()
+
+        return [c for rule in self.items for c in rule.get_required_courses(ctx=ctx)]
+
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'CountRule':
+        items = tuple(r.exclude_required_courses(to_exclude) for r in self.items)
+        return attr.evolve(self, items=items)
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
         if ctx.get_waive_exception(self.path):

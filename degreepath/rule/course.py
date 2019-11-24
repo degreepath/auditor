@@ -73,6 +73,17 @@ class CourseRule(Rule, BaseCourseRule):
     def get_requirement_names(self) -> List[str]:
         return []
 
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        matches = self.all_matches(ctx=ctx)
+
+        if len(matches) == 1:
+            return tuple(matches)
+
+        return tuple()
+
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'CourseRule':
+        return self
+
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         if self.waived or ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)

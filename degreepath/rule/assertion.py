@@ -11,7 +11,7 @@ from ..base.assertion import BaseAssertionRule
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable  # noqa: F401
+    from ..data import Clausable, CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +51,12 @@ class AssertionRule(Rule, BaseAssertionRule):
 
     def get_requirement_names(self) -> List[str]:
         return []
+
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        return tuple()
+
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'AssertionRule':
+        return self
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise Exception('this method should not be called')
@@ -113,6 +119,12 @@ class ConditionalAssertionRule(Rule):
 
     def get_requirement_names(self) -> List[str]:
         return self.when_yes.get_requirement_names()
+
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        return self.when_yes.get_required_courses(ctx=ctx)
+
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'ConditionalAssertionRule':
+        return self
 
     def resolve(self, input: Sequence['Clausable']) -> Optional[AssertionRule]:
         if self.condition.where is not None:

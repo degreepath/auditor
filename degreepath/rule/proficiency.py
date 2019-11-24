@@ -9,7 +9,7 @@ from .course import CourseRule
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable  # noqa: F401
+    from ..data import Clausable, CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,14 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
 
     def get_requirement_names(self) -> List[str]:
         return []
+
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        if self.course:
+            return self.course.get_required_courses(ctx=ctx)
+        return tuple()
+
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'ProficiencyRule':
+        return self
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[ProficiencySolution]:
         if ctx.get_waive_exception(self.path):
