@@ -99,6 +99,11 @@ class AreaOfStudy(Base):
         )
         assert result, TypeError(f'expected load_rule to process {specification["result"]}')
 
+        # Automatically exclude any "required" courses
+        if not emphasis_validity_check:
+            required_courses = result.get_required_courses(ctx=ctx)
+            result = result.exclude_required_courses(required_courses)
+
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         multicountable_rules: Dict[str, List[Tuple[str, ...]]] = {
