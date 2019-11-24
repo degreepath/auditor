@@ -7,17 +7,14 @@ import json
 import sys
 import os
 import dotenv
-import prettyprinter  # type: ignore
 from collections import defaultdict
 
 from degreepath.main import run
 from degreepath.ms import pretty_ms
 from degreepath.stringify import summarize
 from degreepath.stringify_csv import to_csv
-from degreepath.area import AreaResult
 from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
-prettyprinter.install_extras(['attrs', 'dataclasses'])
 dotenv.load_dotenv(verbose=False)
 
 logger = logging.getLogger(__name__)
@@ -33,7 +30,6 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--csv", action='store_true')
-    parser.add_argument("--raw", action='store_true')
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--stop-after", action='store', type=int)
     parser.add_argument("--progress-every", action='store', type=int, default=1_000)
@@ -117,7 +113,6 @@ def main() -> int:  # noqa: C901
                 print(result_str(
                     msg,
                     as_json=cli_args.json,
-                    as_raw=cli_args.raw,
                     as_csv=cli_args.csv,
                     gpa_only=cli_args.gpa,
                     show_paths=cli_args.show_paths,
@@ -151,7 +146,6 @@ def main() -> int:  # noqa: C901
 def result_str(
     msg: ResultMsg, *,
     as_json: bool,
-    as_raw: bool,
     as_csv: bool,
     gpa_only: bool,
     show_paths: bool,
@@ -167,10 +161,6 @@ def result_str(
 
     if as_json:
         return json.dumps(dict_result)
-
-    if as_raw:
-        prettyprinter.cpprint(dict_result)
-        return ''
 
     dict_result = json.loads(json.dumps(dict_result))
 
@@ -237,11 +227,6 @@ def display_top(snapshot: Any, key_type: str = 'lineno', limit: int = 10) -> Non
 
     total = sum(stat.size for stat in top_stats)
     print("Total allocated size: %.1f KiB" % (total / 1024))
-
-
-@prettyprinter.register_pretty(AreaResult)  # type: ignore
-def pretty_arearesult(value: Any, ctx: Any) -> Any:
-    return prettyprinter.pretty_call(ctx, AreaResult, result=value.result)
 
 
 if __name__ == "__main__":
