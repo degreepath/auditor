@@ -101,7 +101,7 @@ class CourseRule(Rule, BaseCourseRule):
         except StopIteration:
             return False
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
         for insert in ctx.get_insert_exceptions(self.path):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []
