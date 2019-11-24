@@ -367,9 +367,4 @@ class CountRule(Rule, BaseCountRule):
         return any(r.has_potential(ctx=ctx) for r in self.items)
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
-        matches = [c for r in self.items for c in r.all_matches(ctx=ctx)]
-
-        for insert in ctx.get_insert_exceptions(self.path):
-            matches.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
-
-        return matches
+        return [c for r in self.items for c in r.all_matches(ctx=ctx)]
