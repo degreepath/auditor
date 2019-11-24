@@ -10,7 +10,7 @@ from ..data.course_enums import GradeOption
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable  # noqa: F401
+    from ..data import Clausable, CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +72,17 @@ class CourseRule(Rule, BaseCourseRule):
 
     def get_requirement_names(self) -> List[str]:
         return []
+
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        matches = self.all_matches(ctx=ctx)
+
+        if len(matches) == 1:
+            return tuple(matches)
+
+        return tuple()
+
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'CourseRule':
+        return self
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         if self.waived or ctx.get_waive_exception(self.path):

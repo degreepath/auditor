@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, Union, Tuple, cast, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, FrozenSet, Union, Tuple, cast, TYPE_CHECKING
 import itertools
 import logging
 import decimal
@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryRule(Rule, BaseQueryRule):
     load_potentials: bool
+    excluded_clbids: FrozenSet[str] = frozenset()
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -74,6 +75,11 @@ class QueryRule(Rule, BaseQueryRule):
             inserted=tuple(),
         )
 
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'QueryRule':
+        clbids = frozenset(c.clbid for c in to_exclude)
+        logger.debug(f'{self.path} excluding required courses: {sorted(c for c in clbids)}')
+        return attr.evolve(self, excluded_clbids=clbids)
+
     def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.assertions:
             for a in self.assertions:
@@ -81,6 +87,9 @@ class QueryRule(Rule, BaseQueryRule):
 
     def get_requirement_names(self) -> List[str]:
         return []
+
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        return tuple()
 
     def get_data(self, *, ctx: 'RequirementContext') -> Sequence[Clausable]:
         if self.source is QuerySource.Courses:
