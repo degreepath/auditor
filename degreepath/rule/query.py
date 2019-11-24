@@ -53,6 +53,8 @@ class QueryRule(Rule, BaseQueryRule):
         else:
             raise ValueError(f'you must have either an assert: or an all: key in {data}')
 
+        assert len(assertions) > 0
+
         if 'assert' in data and 'all' in data:
             raise ValueError(f'you cannot have both assert: and all: keys; {data}')
 
@@ -103,7 +105,6 @@ class QueryRule(Rule, BaseQueryRule):
             return
 
         data = self.get_data(ctx=ctx)
-        assert len(self.assertions) > 0
 
         if self.where is not None:
             logger.debug("%s clause: %s", self.path, self.where)
