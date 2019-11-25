@@ -108,6 +108,9 @@ class AreaOfStudy(Base):
             excluded_clbids = frozenset(c.clbid for c in required_courses)
             result = result.exclude_required_courses(required_courses)
 
+            for crs in required_courses:
+                logger.debug(f'excluding {crs.clbid} {crs.identity_}')
+
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         multicountable_rules: Dict[str, List[Tuple[str, ...]]] = {
