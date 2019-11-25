@@ -258,7 +258,7 @@ class CountRule(Rule, BaseCountRule):
         for combo_i, selected_children in enumerate(itertools.combinations(items, size)):
             if debug: logger.debug("%s, size=%s, combo=%s: generating product(*solutions)", self.path, size, combo_i)
 
-            deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(r for r in selected_children if r not in other_children)
+            deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(other_children.difference(set(selected_children)))
 
             # itertools.product does this internally, so we'll pre-compute the
             # results here to make it obvious that it's not lazy
