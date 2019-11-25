@@ -259,6 +259,8 @@ class SingleClause(BaseClause, ResolvedClause):
         expected_value = value[op]
         if isinstance(expected_value, list):
             expected_value = tuple(expected_value)
+        elif isinstance(expected_value, float):
+            expected_value = Decimal(expected_value)
 
         expected_verbatim = expected_value
 
@@ -268,6 +270,9 @@ class SingleClause(BaseClause, ResolvedClause):
             "gereq": "gereqs",
         }
         key = key_lookup.get(key, key)
+
+        allowed_types = (bool, str, tuple, int, Decimal)
+        assert type(expected_value) in allowed_types, f"expected_value should be {allowed_types}, not {type(expected_value)}"
 
         if type(expected_value) == str:
             expected_value = c.get_by_name(expected_value)
