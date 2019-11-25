@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Set, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
+from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
 
@@ -37,6 +37,7 @@ class AreaOfStudy(Base):
     path: Tuple[str, ...]
 
     common_rules: Tuple[Rule, ...]
+    excluded_clbids: FrozenSet[str] = frozenset()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -48,6 +49,7 @@ class AreaOfStudy(Base):
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
             "limit": self.limit.to_dict(),
+            "excluded": sorted(clbid for clbid in self.excluded_clbids),
         }
 
     def type(self) -> str:
@@ -100,8 +102,10 @@ class AreaOfStudy(Base):
         assert result, TypeError(f'expected load_rule to process {specification["result"]}')
 
         # Automatically exclude any "required" courses
+        excluded_clbids: FrozenSet[str] = frozenset()
         if not emphasis:
             required_courses = result.get_required_courses(ctx=ctx)
+            excluded_clbids = frozenset(c.clbid for c in required_courses)
             result = result.exclude_required_courses(required_courses)
 
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
@@ -131,6 +135,7 @@ class AreaOfStudy(Base):
             limit=limit,
             path=('$',),
             code=this_code,
+            excluded_clbids=excluded_clbids,
             common_rules=tuple(prepare_common_rules(
                 other_areas=tuple(areas),
                 dept_code=dept,
@@ -198,6 +203,7 @@ class AreaSolution(AreaOfStudy):
             solution=solution,
             context=ctx,
             common_rules=area.common_rules,
+            excluded_clbids=area.excluded_clbids,
         )
 
     def audit(self) -> 'AreaResult':
@@ -282,6 +288,7 @@ class AreaResult(AreaOfStudy, Result):
             context=ctx,
             result=result,
             common_rules=area.common_rules,
+            excluded_clbids=area.excluded_clbids,
         )
 
     def gpa(self) -> decimal.Decimal:
