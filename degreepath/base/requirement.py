@@ -58,6 +58,9 @@ class BaseRequirementRule(Base):
 
         return self.result.is_always_disjoint()
 
+    def is_manually_disjoint(self) -> bool:
+        return self.is_independent
+
     def is_in_gpa(self) -> bool:
         return self.in_gpa
 

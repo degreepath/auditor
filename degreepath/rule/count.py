@@ -121,6 +121,11 @@ class CountRule(Rule, BaseCountRule):
             for i, r in enumerate(items)
         ) if r is not None)
 
+        check_independent = data.get('check_independent', False)
+
+        # if not check_independent and any(r.is_manually_disjoint() for r in loaded_items):
+        #     raise Exception('setting independent:true is pointless without also setting check_independent:true above them', path)
+
         if "all" in data or ("count" in data and data["count"] == "all"):
             count = len(loaded_items)
         elif "any" in data or ("count" in data and data["count"] == "any"):
@@ -148,7 +153,7 @@ class CountRule(Rule, BaseCountRule):
             at_most=at_most,
             audit_clauses=audit_clauses,
             path=tuple(path),
-            check_independent=data.get('check_independent', False),
+            check_independent=check_independent,
         )
 
         all_child_names = set(r for r, k in data.get("requirements", {}).items() if 'if' not in k)
@@ -201,7 +206,7 @@ class CountRule(Rule, BaseCountRule):
         solved_results: Tuple[Result, ...]
         solved_results__rules: Set[Rule]
 
-        if self.check_independent or (depth == 1 and all_potential_rules and not self.audit_clauses):
+        if False and (self.check_independent or (depth == 1 and all_potential_rules and not self.audit_clauses)):
             logger.debug('%s searching for disjoint children', self.path)
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
 
@@ -218,8 +223,8 @@ class CountRule(Rule, BaseCountRule):
             solved_results__rules = set()
             potential_rules = tuple(sorted(all_potential_rules, key=sort_by_path))
 
-        logger.debug('%s potential rules are %s', self.path, [r.path for r in potential_rules])
-        logger.debug('%s solved rules are %s', self.path, [r.path for r in solved_results__rules])
+        print('%s potential rules are %s', self.path, [r.path for r in potential_rules])
+        print('%s solved rules are %s', self.path, [r.path for r in solved_results__rules])
 
         potential_len = len(potential_rules)
         all_children = set(items)
@@ -312,6 +317,10 @@ class CountRule(Rule, BaseCountRule):
 
         logger.debug("%s searching the following for independence %s", self.path, [r.path for r in items])
 
+        # Filter the items list down to just those that we haven't marked as manually disjoint
+        all_items = items
+        items = [r for r in items if not r.is_manually_disjoint()]
+
         all_rule_matches: Dict[Rule, FrozenSet['Clausable']] = {
             r: frozenset(r.all_matches(ctx=ctx))
             for r in items
@@ -322,7 +331,7 @@ class CountRule(Rule, BaseCountRule):
             return {'disjoint': set(all_rule_matches.keys()), 'non_disjoint': set()}
 
         non_disjoint_rules: Set[Rule] = set()
-        disjoint_rules: Set[Rule] = set()
+        disjoint_rules: Set[Rule] = set(r for r in all_items if r.is_manually_disjoint())
 
         for (rule_a, a_matches), (rule_b, b_matches) in itertools.combinations(all_rule_matches.items(), 2):
             if rule_a.is_always_disjoint() and rule_b.is_always_disjoint():
@@ -337,13 +346,8 @@ class CountRule(Rule, BaseCountRule):
                 non_disjoint_rules.add(rule_a)
                 non_disjoint_rules.add(rule_b)
 
-        for s in non_disjoint_rules:
-            disjoint_rules.discard(s)
-
-        for s in items:  # TODO: find better way
-            if getattr(s, 'is_independent', False):
-                disjoint_rules.add(s)
-                non_disjoint_rules.discard(s)
+        for r in non_disjoint_rules:
+            disjoint_rules.discard(r)
 
         logger.debug("found disjoint rules: %s", [r.path for r in disjoint_rules])
         logger.debug("found non-disjoint rules: %s", [r.path for r in non_disjoint_rules])
@@ -363,11 +367,13 @@ class CountRule(Rule, BaseCountRule):
 
         logger.debug('%s: %s independent children', self.path, len(independent_children))
 
-        independent_rule__results: Dict[Rule, Optional[Result]] = {}
-        for child in independent_children:
-            best_result = find_best_solution(rule=child, ctx=ctx, reset_claims=True)
-            logger.debug("found solution for %s: %s", child.path, best_result)
-            independent_rule__results[child] = best_result
+        independent_rule__results: Dict[Rule, Optional[Result]] = {
+            child: find_best_solution(rule=child, ctx=ctx, reset_claims=True)
+            for child in independent_children
+        }
+
+        for child, result in independent_rule__results.items():
+            logger.debug("found solution for %s: %s", child.path, result)
 
         return independent_rule__results
 
