@@ -14,16 +14,19 @@ dotenv.load_dotenv(verbose=True)
 def cli() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('student', help="use `-` to read from stdin")
-    parser.add_argument('area_codes', metavar='CODE', action='store', nargs='*', default=tuple())
+    parser.add_argument('area_codes', metavar='CODE', action='store', nargs='*', default=list())
     args = parser.parse_args()
 
     if args.student == '-':
         student_files = [l.strip() for l in sys.stdin.readlines() if l.strip()]
+        area_codes = args.area_codes
     else:
-        student_files = [args.student]
+        all_files = [args.student] + args.area_codes
+        student_files = [f for f in all_files if f.endswith('.json')]
+        area_codes = [f for f in all_files if not f.endswith('.json')]
 
     for file in student_files:
-        for (name, path) in main(files=file, area_codes=args.area_codes):
+        for (name, path) in main(files=file, area_codes=area_codes):
             print(name, path)
 
 
