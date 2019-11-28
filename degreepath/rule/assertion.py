@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, Sequence, Iterator, List, Collection, Optional, Union, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, List, Collection, Any, Optional, Union, TYPE_CHECKING
 import logging
 
 from ..clause import SingleClause
@@ -90,6 +90,14 @@ class ConditionalAssertionRule(Rule):
             self.when_no.validate(ctx=ctx)
             assert self.when_yes.type() == self.when_no.type()
             assert self.when_yes.path == self.when_no.path
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            **super().to_dict(),
+            "condition": self.condition.to_dict(),
+            "when_yes": self.when_yes.to_dict(),
+            "when_no": self.when_no.to_dict() if self.when_no else None,
+        }
 
     def type(self) -> str:
         return "conditional-assertion"
