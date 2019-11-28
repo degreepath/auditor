@@ -88,7 +88,7 @@ class ConditionalAssertionRule(Rule):
         self.when_yes.validate(ctx=ctx)
         if self.when_no:
             self.when_no.validate(ctx=ctx)
-            assert self.when_yes.type == self.when_no.type
+            assert self.when_yes.type() == self.when_no.type()
             assert self.when_yes.path == self.when_no.path
 
     def type(self) -> str:
