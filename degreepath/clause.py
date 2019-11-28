@@ -232,14 +232,12 @@ class SingleClause(BaseClause, ResolvedClause):
     treat_in_progress_as_pass: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
-        expected = stringify_expected(self.expected)
-
         return {
             **super().to_dict(),
             "type": "single-clause",
             "key": self.key,
-            "expected": expected,
-            "expected_verbatim": self.expected_verbatim,
+            "expected": stringify_expected(self.expected),
+            "expected_verbatim": stringify_expected(self.expected_verbatim),
             "operator": self.operator.name,
             "label": self.label,
             "ip_as_passing": self.treat_in_progress_as_pass,
