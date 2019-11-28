@@ -53,6 +53,7 @@ def print_result(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    inserted: Sequence[str] = tuple(),
 ) -> Iterator[str]:
     if rule["type"] == "area":
         yield from print_area(rule, transcript, indent, show_paths, show_ranks)
@@ -70,7 +71,10 @@ def print_result(
         yield from print_requirement(rule, transcript, indent, show_paths, show_ranks)
 
     elif rule["type"] == "assertion":
-        yield from print_assertion(rule, transcript, indent, show_paths, show_ranks)
+        yield from print_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted)
+
+    elif rule["type"] == "conditional-assertion":
+        yield from print_conditional_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted)
 
     elif rule["type"] == "proficiency":
         yield from print_proficiency(rule, transcript, indent, show_paths, show_ranks)
@@ -302,7 +306,7 @@ def print_query(
 
     yield f"{prefix} There must be:"
     for a in rule['assertions']:
-        yield from print_assertion(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, inserted=rule["inserted"])
+        yield from print_result(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, inserted=rule["inserted"])
 
 
 def print_requirement(
@@ -381,3 +385,28 @@ def print_assertion(
                 yield f'{prefix}  -{ip_msg}{inserted_msg} Course({", ".join(chunks)})'
             else:
                 yield f'{prefix}  -{ip_msg}{inserted_msg} Course(clbid={clbid})'
+
+
+def print_conditional_assertion(
+    rule: Dict[str, Any],
+    transcript: Dict[str, CourseInstance],
+    indent: int = 0,
+    show_paths: bool = True,
+    show_ranks: bool = True,
+    inserted: Sequence[str] = tuple(),
+) -> Iterator[str]:
+    if show_paths:
+        yield from print_path(rule, indent)
+
+    prefix = " " * indent
+    yield f"{prefix}If:"
+    yield from print_result(rule['condition'], transcript, indent + 4, show_paths, show_ranks, inserted)
+
+    yield f"{prefix}Then:"
+    yield from print_result(rule['when_yes'], transcript, indent + 4, show_paths, show_ranks, inserted)
+
+    if rule['when_no']:
+        yield f"{prefix}Otherwise:"
+        yield from print_result(rule['when_no'], transcript, indent + 4, show_paths, show_ranks, inserted)
+    else:
+        yield f"{prefix}Otherwise, do nothing"
