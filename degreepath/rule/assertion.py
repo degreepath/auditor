@@ -92,7 +92,7 @@ class ConditionalAssertionRule(Rule):
             assert self.when_yes.path == self.when_no.path
 
     def type(self) -> str:
-        return self.when_yes.type()
+        return "conditional-assertion"
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         return self.when_yes.solutions(ctx=ctx, depth=depth)
