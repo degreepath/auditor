@@ -27,6 +27,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--area", dest="area_files", nargs="+", required=True)
     parser.add_argument("--student", dest="student_files", nargs="+", required=True)
     parser.add_argument("--archive", dest="archive_file")
+    parser.add_argument("--db", dest="db_file")
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--csv", action='store_true')
@@ -57,6 +58,7 @@ def main() -> int:  # noqa: C901
     args = Arguments(
         archive_file=cli_args.archive_file,
         area_files=cli_args.area_files,
+        db_file=cli_args.db_file,
         gpa_only=cli_args.gpa,
         print_all=cli_args.print_all,
         progress_every=cli_args.progress_every,

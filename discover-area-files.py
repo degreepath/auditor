@@ -21,7 +21,7 @@ def cli() -> None:
         student_files = [l.strip() for l in sys.stdin.readlines() if l.strip()]
         area_codes = args.area_codes
     else:
-        all_files = [args.student] + args.area_codes
+        all_files = [args.student, *args.area_codes]
         student_files = [f for f in all_files if f.endswith('.json')]
         area_codes = [f for f in all_files if not f.endswith('.json')]
 
@@ -36,10 +36,9 @@ def main(
     catalog: Optional[Union[str, int]] = None,
     root: Optional[str] = os.getenv('AREA_ROOT'),
 ) -> Iterator[Tuple[str, str]]:
-    if not root:
-        raise ValueError('the environment variable AREA_ROOT must be set to a path')
+    assert root, ValueError('the environment variable AREA_ROOT must be set to a path')
 
-    for student_file in glob.iglob(files):
+    for student_file in sorted(glob.iglob(files)):
         yield from run_student(student_file=student_file, area_codes=area_codes, catalog=catalog, root=root)
 
 
@@ -69,11 +68,12 @@ def run_student(
     items = set(a['code'] for a in areas).union(area_codes)
     items = items.intersection(area_codes or items)
 
-    for area_code in items:
+    for area_code in sorted(items):
         area_pointer = area_dict.get(area_code, {'code': area_code, 'catalog': catalog})
+
         area_catalog = area_pointer.get('catalog', catalog)
         if '-' not in str(area_catalog):
-            area_catalog = fmt_catalog(area_pointer.get('catalog', catalog))
+            area_catalog = fmt_catalog(area_catalog)
 
         file_path = join(root, area_catalog, area_code + '.yaml')
         yield (abspath(student_file), abspath(file_path))
