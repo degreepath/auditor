@@ -364,7 +364,9 @@ class SingleClause(BaseClause, ResolvedClause):
         else:
             result = ResultStatus.Pending
 
-        if self.operator in (Operator.LessThan, Operator.LessThanOrEqualTo) and result == ResultStatus.InProgress:
+        if self.operator in (Operator.LessThan, Operator.LessThanOrEqualTo)\
+                and result == ResultStatus.InProgress\
+                and apply_operator(lhs=reduced_value, op=self.operator, rhs=self.expected) is True:
             result = ResultStatus.Pass
 
         return SingleClause(
