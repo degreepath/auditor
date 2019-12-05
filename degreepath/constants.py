@@ -15,7 +15,7 @@ class KnownConstants(Enum):
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Constants:
-    matriculation_year: int
+    matriculation_year: int = 0
 
     def get_by_name(self, v: Any) -> Any:
         if type(v) != str:
