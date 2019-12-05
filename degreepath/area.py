@@ -64,6 +64,7 @@ class AreaOfStudy(Base):
         areas: Sequence[AreaPointer] = tuple(),
         transcript: Sequence[CourseInstance] = tuple(),
         exceptions: Sequence[RuleException] = tuple(),
+        all_emphases: bool = False,
     ) -> 'AreaOfStudy':
         this_code = specification.get('code', '<null>')
         pointers = {p.code: p for p in areas}
@@ -86,7 +87,10 @@ class AreaOfStudy(Base):
             data=specification["result"],
             c=c,
             children=specification.get("requirements", {}),
-            emphases=[v for k, v in emphases.items() if str(k) in declared_emphasis_codes],
+            emphases=[
+                v for k, v in emphases.items()
+                if str(k) in declared_emphasis_codes or all_emphases
+            ],
             path=["$"],
             ctx=ctx,
         )
