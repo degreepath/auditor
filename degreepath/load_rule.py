@@ -21,7 +21,7 @@ def load_rule(
     emphases: Sequence[Dict[str, Dict]] = tuple(),
     ctx: 'RequirementContext',
 ) -> Optional[Rule]:
-    # This only runs at the top level of an area, because we don't ass
+    # This only runs at the top level of an area, because we don't pass
     # emphases down below that. This is how we attach the requirements
     # for an emphasis into the main run.
     if emphases:
@@ -40,7 +40,10 @@ def load_rule(
         return CountRule.load(data, c=c, children=children, path=path, emphases=emphases, ctx=ctx)
 
     elif RequirementRule.can_load(data):
-        req_name = data["requirement"]
-        return RequirementRule.load(children[req_name], name=req_name, c=c, path=path, ctx=ctx)
+        if "name" in data:
+            return RequirementRule.load(data, name=data["name"], c=c, path=path, ctx=ctx)
+        else:
+            req_name = data["requirement"]
+            return RequirementRule.load(children[req_name], name=req_name, c=c, path=path, ctx=ctx)
 
     raise ValueError(f"expected Course, Query, Count, or Reference; found none of those (in {data}, {type(data)})")
