@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterator
+from typing import Iterator, Iterable, Tuple
 from pathlib import Path
 import argparse
 
@@ -17,6 +17,7 @@ from degreepath.rule.requirement import RequirementRule
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('files', nargs='+')
+    parser.add_argument('--insert', default=False, action='store_true')
     args = parser.parse_args()
 
     pairs = set()
@@ -35,11 +36,15 @@ def main() -> None:
 
         area = AreaOfStudy.load(specification=area_spec, c=Constants(), all_emphases=True)
 
-        for c in find_courses_in_rule(area.result):
-            pairs.add(f"{code}:{c}")
+        for course in find_courses_in_rule(area.result):
+            pairs.add((code, course))
 
-    for pair in sorted(pairs):
-        print(pair)
+    if args.insert:
+        insert_to_db(pairs)
+        print('done')
+    else:
+        for pair in sorted(pairs):
+            print(pair)
 
 
 def find_courses_in_rule(rule: Rule) -> Iterator[str]:
@@ -70,6 +75,46 @@ def find_courses_in_rule(rule: Rule) -> Iterator[str]:
             return
 
         yield from find_courses_in_rule(rule.result)
+
+
+def insert_to_db(tuples: Iterable[Tuple[str, str]]) -> None:
+    import dotenv
+    import os
+    import psycopg2  # type: ignore
+
+    dotenv.load_dotenv(verbose=True)
+
+    conn = psycopg2.connect(
+        host=os.environ.get("PG_HOST"),
+        database=os.environ.get("PG_DATABASE"),
+        user=os.environ.get("PG_USER"),
+    )
+
+    known_tuples = set(tuples)
+
+    with conn.cursor() as curs:
+        for code, course in tuples:
+            curs.execute('''
+                INSERT INTO map_constant_area(area_code, course)
+                VALUES (%(code)s, %(course)s)
+                ON CONFLICT DO NOTHING
+            ''', {'code': code, 'course': course})
+
+        curs.execute('''
+            SELECT area_code, course
+            FROM map_constant_area
+        ''')
+
+        for code, course in curs.fetchall():
+            if (code, course) not in known_tuples:
+                print('deleting', (code, course))
+                curs.execute('''
+                    DELETE FROM map_constant_area
+                    WHERE area_code = %(code)s
+                        AND course = %(course)s
+                ''', {'code': code, 'course': course})
+
+        conn.commit()
 
 
 if __name__ == '__main__':
