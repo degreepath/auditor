@@ -1,6 +1,5 @@
 import traceback
 import pathlib
-import tarfile
 import sqlite3
 import json
 from typing import Iterator, List, Dict, Any
@@ -24,14 +23,7 @@ def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
     file_data = []
 
     try:
-        if args.archive_file:
-            with tarfile.open(args.archive_file, 'r') as tarball:
-                for student_file in args.student_files:
-                    tardata = tarball.extractfile(student_file)
-                    assert tardata is not None
-                    file_data.append(json.load(tardata))
-
-        elif args.db_file:
+        if args.db_file:
             conn = sqlite3.connect(args.db_file)
 
             # the sqlite3 module doesn't support passing in a list automatically,

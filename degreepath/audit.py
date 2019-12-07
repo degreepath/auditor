@@ -15,7 +15,6 @@ from .data import CourseInstance, AreaPointer, MusicAttendance, MusicPerformance
 class Arguments:
     area_files: Sequence[str] = tuple()
     student_files: Sequence[str] = tuple()
-    archive_file: Optional[str] = None
     db_file: Optional[str] = None
 
     transcript_only: bool = False

@@ -28,7 +28,6 @@ def cli() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file", required=True)
     parser.add_argument("--student", dest="student_file", required=True)
-    parser.add_argument("--archive", dest="archive_file")
     parser.add_argument("--db", dest="db_file")
     parser.add_argument("--run", dest="run", type=int, required=True)
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="warn")
@@ -37,10 +36,10 @@ def cli() -> None:
     loglevel = getattr(logging, args.loglevel.upper())
     logging.basicConfig(level=loglevel)
 
-    main(student_file=args.student_file, db_file=args.db_file, archive_file=args.archive_file, area_file=args.area_file, run_id=args.run)
+    main(student_file=args.student_file, db_file=args.db_file, area_file=args.area_file, run_id=args.run)
 
 
-def main(*, area_file: str, archive_file: Optional[str] = None, db_file: Optional[str] = None, student_file: str, run_id: Optional[int] = None) -> None:
+def main(*, area_file: str, db_file: Optional[str] = None, student_file: str, run_id: Optional[int] = None) -> None:
     conn = psycopg2.connect(
         host=os.environ.get("PGHOST"),
         database=os.environ.get("PGDATABASE"),
@@ -51,7 +50,6 @@ def main(*, area_file: str, archive_file: Optional[str] = None, db_file: Optiona
         result_id = None
 
         args = Arguments(
-            archive_file=archive_file,
             area_files=[area_file],
             db_file=db_file,
             student_files=[student_file],

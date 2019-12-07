@@ -50,7 +50,6 @@ def main() -> int:  # noqa: C901
             area_files=[area_file],
             student_files=[student_file],
             print_all=False,
-            archive_file=None,
             transcript_only=cli_args.transcript,
         )
 
