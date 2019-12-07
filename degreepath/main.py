@@ -1,7 +1,8 @@
-import json
 import traceback
 import pathlib
 import tarfile
+import sqlite3
+import json
 from typing import Iterator, List, Dict, Any
 
 import yaml
@@ -26,13 +27,31 @@ def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
         if args.archive_file:
             with tarfile.open(args.archive_file, 'r') as tarball:
                 for student_file in args.student_files:
-                    data = tarball.extractfile(student_file)
-                    assert data is not None
-                    file_data.append(json.load(data))
+                    tardata = tarball.extractfile(student_file)
+                    assert tardata is not None
+                    file_data.append(json.load(tardata))
+
+        elif args.db_file:
+            conn = sqlite3.connect(args.db_file)
+
+            # the sqlite3 module doesn't support passing in a list automatically,
+            # so we generate our own set of :n-params
+            param_marks = ','.join(f':{i}' for i, _ in enumerate(args.student_files))
+            query = f'''
+                SELECT student
+                FROM file
+                WHERE path IN ({param_marks}) OR stnum IN ({param_marks})
+            '''
+
+            with conn:
+                for (sqldata,) in conn.execute(query, args.student_files):
+                    file_data.append(json.loads(sqldata))
+
         else:
             for student_file in args.student_files:
                 with open(student_file, "r", encoding="utf-8") as infile:
                     file_data.append(json.load(infile))
+
     except FileNotFoundError as ex:
         yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=None, area_code=None)
         return
