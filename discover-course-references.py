@@ -85,9 +85,9 @@ def insert_to_db(tuples: Iterable[Tuple[str, str]]) -> None:
     dotenv.load_dotenv(verbose=True)
 
     conn = psycopg2.connect(
-        host=os.environ.get("PG_HOST"),
-        database=os.environ.get("PG_DATABASE"),
-        user=os.environ.get("PG_USER"),
+        host=os.environ.get("PGHOST"),
+        database=os.environ.get("PGDATABASE"),
+        user=os.environ.get("PGUSER"),
     )
 
     known_tuples = set(tuples)

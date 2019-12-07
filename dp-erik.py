@@ -41,10 +41,9 @@ def cli() -> None:
 
 def main(*, area_file: str, archive_file: Optional[str] = None, student_file: str, run_id: Optional[int] = None) -> None:
     conn = psycopg2.connect(
-        host=os.environ.get("PG_HOST"),
-        database=os.environ.get("PG_DATABASE"),
-        user=os.environ.get("PG_USER"),
-        password=os.environ.get("PG_PASSWORD"),
+        host=os.environ.get("PGHOST"),
+        database=os.environ.get("PGDATABASE"),
+        user=os.environ.get("PGUSER"),
     )
 
     try:
