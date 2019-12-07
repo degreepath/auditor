@@ -13,25 +13,9 @@ parser.add_argument('db')
 args = parser.parse_args()
 
 query = '''
-    WITH data AS (
-        SELECT stnum
-            , json_extract(student, '$.catalog') stu_catalog
-            , json_extract(areas.value, '$.kind') kind
-            , json_extract(areas.value, '$.code') code
-            , json_extract(areas.value, '$.catalog') area_catalog
-        FROM file
-            , json_each(student, '$.areas') areas
-        WHERE stu_catalog != 'None'
-            AND kind != 'emphasis'
-    )
-    SELECT stnum
-        , kind
-        , code
-        , coalesce(
-            area_catalog,
-            stu_catalog || '-' || substr(stu_catalog + 1, -2)
-        ) catalog
-    FROM data
+    SELECT stnum, kind, code, catalog
+    FROM area
+    WHERE catalog != 'None' AND kind != 'emphasis'
     ORDER BY 1, 2, 4, 3
 '''
 

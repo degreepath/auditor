@@ -1,5 +1,6 @@
 import argparse
 import sqlite3
+import json
 from pathlib import Path
 
 parser = argparse.ArgumentParser()
@@ -19,9 +20,25 @@ conn = sqlite3.connect(str(db_path))
 
 # set up the database
 with conn:
-    conn.execute("create table file (path varchar not null, student json not null, stnum varchar not null);")
-    conn.execute("create index file_stnum on file(stnum);")
-    conn.execute("create index file_path on file(path);")
+    conn.execute('''
+        CREATE TABLE file (
+            path varchar not null,
+            student json not null,
+            stnum varchar not null
+        );
+    ''')
+
+    conn.execute('CREATE INDEX file_stnum ON file(stnum);')
+    conn.execute('CREATE INDEX file_path ON file(path);')
+
+    conn.execute('''
+        CREATE TABLE area (
+            stnum varchar not null,
+            catalog varchar not null,
+            kind varchar not null,
+            code varchar not null
+        );
+    ''')
 
 # insert the data
 with conn:
@@ -29,10 +46,25 @@ with conn:
         stnum = student_file.stem.replace('.json', '')
         with open(student_file, 'r') as infile:
             student = infile.read()
+            parsed = json.loads(student)
 
         conn.execute('''
-            insert into file (path, student, stnum)
-            values (?, json(?), ?)
+            INSERT INTO file (path, student, stnum)
+            VALUES (?, ?, ?)
         ''', [str(student_file), student, stnum])
+
+        for area in parsed.get('areas', []):
+            catalog: str = area.get('catalog', parsed['catalog'])
+
+            if catalog == 'None':
+                continue
+            elif '-' not in catalog:
+                catalog = f"{int(catalog)}-{str(int(catalog) + 1)[2:]}"
+
+            conn.execute('''
+                INSERT INTO area (stnum, catalog, kind, code)
+                VALUES (?, ?, ?, ?)
+            ''', [stnum, catalog, area['kind'], area['code']])
+
 
 conn.close()
