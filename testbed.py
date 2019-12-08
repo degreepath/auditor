@@ -49,15 +49,22 @@ def main() -> None:
     parser_fetch.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
     parser_fetch.set_defaults(func=fetch)
 
-    parser_bench = subparsers.add_parser('bench', help='runs local "benchmarks" against the audits')
-    parser_bench.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
-    parser_bench.set_defaults(func=bench)
+    parser_baseline = subparsers.add_parser('baseline', help='runs a baseline audit benchmark')
+    parser_baseline.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
+    parser_baseline.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
+    parser_baseline.set_defaults(func=baseline)
 
-    parser_compare = subparsers.add_parser('compare', help='runs audits locally to check for changes')
-    parser_compare.add_argument('branch', nargs='?', help='the git branch to compare against')
-    parser_compare.set_defaults(func=compare)
+    # parser_branch = subparsers.add_parser('branch', help='runs an audit benchmark')
+    # parser_branch.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
+    # parser_branch.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
+    # parser_branch.add_argument('branch', required=True, help='the git branch to compare against')
+    # parser_branch.set_defaults(func=baseline)
+
+    # parser_compare = subparsers.add_parser('compare', help='runs audits locally to check for changes')
+    # parser_compare.set_defaults(func=compare)
 
     args = parser.parse_args()
+    init_local_db(args)
     args.func(args)
 
 
@@ -76,60 +83,36 @@ def fetch(args: argparse.Namespace) -> None:
     76%|████████████████████████████         | 7568/10000 [00:33<00:10, 229.00it/s]
     '''
 
-    conn = psycopg2.connect(
+    pg_conn = psycopg2.connect(
         host=os.environ.get("PGHOST"),
         database=os.environ.get("PGDATABASE"),
         user=os.environ.get("PGUSER"),
         cursor_factory=psycopg2.extras.DictCursor,
     )
-    conn.set_session(readonly=True)
+    pg_conn.set_session(readonly=True)
 
-    selected_run = fetch__select_run(args, conn)
+    selected_run = fetch__select_run(args, pg_conn)
 
-    with conn.cursor() as curs:
+    with pg_conn.cursor() as curs:
         curs.execute('''
             SELECT count(*) total_count
             FROM result
             WHERE run = %s
         ''', [selected_run])
 
-        count_row = curs.fetchone()
-        total_items = count_row['total_count']
+        total_items = curs.fetchone()['total_count']
 
     print(f"Fetching run #{selected_run} with {total_items:,} audits into '{args.db}'")
 
-    with sqlite_connect(args.db) as sqlite_conn:
-        with sqlite_cursor(sqlite_conn) as s_curs:
-            s_curs.execute('''
-                CREATE TABLE IF NOT EXISTS server_data (
-                    run integer not null,
-                    stnum text not null,
-                    catalog text not null,
-                    code text not null,
-                    iterations integer not null,
-                    duration numeric not null,
-                    gpa numeric not null,
-                    ok boolean not null,
-                    rank numeric not null,
-                    max_rank numeric not null,
-                    result json not null,
-                    input_data json not null
-                )
-            ''')
-            curs.execute('CREATE UNIQUE INDEX IF NOT EXISTS server_data_key_idx ON server_data (stnum, catalog, code)')
-            curs.execute('CREATE INDEX IF NOT EXISTS server_data_cmp_idx ON server_data (ok, gpa, iterations, rank, max_rank)')
-
-            sqlite_conn.commit()
-
-        if args.clear:
-            print('clearing cached data...')
-            with sqlite_cursor(sqlite_conn) as s_curs:
-                s_curs.execute('DELETE FROM server_data')
-                s_curs.commit()
+    if args.clear:
+        with sqlite_connect(args.db) as conn:
+            print('clearing cached data... ', end='')
+            conn.execute('DELETE FROM server_data')
+            conn.commit()
             print('cleared')
 
     # named cursors only allow one execute() call, so this must be its own block
-    with conn.cursor(name="degreepath_testbed") as curs:
+    with pg_conn.cursor(name="degreepath_testbed") as curs:
         curs.itersize = 10
 
         curs.execute('''
@@ -146,28 +129,84 @@ def fetch(args: argparse.Namespace) -> None:
                  , input_data::text as input_data
                  , run
             FROM result
-            WHERE run = %s
+            WHERE result IS NOT NULL AND run = %s
         ''', [selected_run])
 
-        with sqlite_connect(args.db) as sqlite_conn:
-            with sqlite_cursor(sqlite_conn) as s_curs:
-                for row in tqdm.tqdm(curs, total=total_items, disable=None, unit_scale=True):
-                    if row['result'] is None:
-                        continue
+        with sqlite_connect(args.db) as conn:
+            for row in tqdm.tqdm(curs, total=total_items, unit_scale=True):
+                try:
+                    conn.execute('''
+                        INSERT INTO server_data (run, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result, input_data)
+                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :ok, :gpa, :rank, :max_rank, json(:result), json(:input_data))
+                    ''', dict(row))
+                except Exception as e:
+                    print(dict(row))
+                    raise e
 
-                    try:
-                        s_curs.execute('''
-                            INSERT INTO server_data (run, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result, input_data)
-                            VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :ok, :gpa, :rank, :max_rank, json(:result), json(:input_data))
-                        ''', {**row})
-                    except Exception as e:
-                        print({**row})
-                        raise e
-
-                sqlite_conn.commit()
+            conn.commit()
 
 
-def fetch__select_run(args: argparse.Namespace, conn: psycopg2.Connection) -> int:
+def init_local_db(args: argparse.Namespace) -> None:
+    with sqlite_connect(args.db) as conn:
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS server_data (
+                run integer not null,
+                stnum text not null,
+                catalog text not null,
+                code text not null,
+                iterations integer not null,
+                duration numeric not null,
+                gpa numeric not null,
+                ok boolean not null,
+                rank numeric not null,
+                max_rank numeric not null,
+                result json not null,
+                input_data json not null
+            )
+        ''')
+        conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS server_data_key_idx ON server_data (stnum, catalog, code)')
+        conn.execute('CREATE INDEX IF NOT EXISTS server_data_cmp_idx ON server_data (ok, gpa, iterations, rank, max_rank)')
+
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS baseline (
+                stnum text not null,
+                catalog text not null,
+                code text not null,
+                iterations integer not null,
+                duration numeric not null,
+                gpa numeric not null,
+                ok boolean not null,
+                rank numeric not null,
+                max_rank numeric not null,
+                result json not null
+            )
+        ''')
+        conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS baseline_key_idx ON baseline (stnum, catalog, code)')
+        conn.execute('CREATE INDEX IF NOT EXISTS baseline_cmp_idx ON baseline (ok, gpa, iterations, rank, max_rank)')
+
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS branch (
+                branch text not null,
+                stnum text not null,
+                catalog text not null,
+                code text not null,
+                iterations integer not null,
+                duration numeric not null,
+                gpa numeric not null,
+                ok boolean not null,
+                rank numeric not null,
+                max_rank numeric not null,
+                result json not null
+            )
+        ''')
+        conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS branch_key_idx ON branch (stnum, catalog, code)')
+        conn.execute('CREATE INDEX IF NOT EXISTS branch_cmp_idx ON branch (ok, gpa, iterations, rank, max_rank)')
+        conn.execute('CREATE INDEX IF NOT EXISTS branch_cmp_branch_idx ON branch (branch, ok, gpa, iterations, rank, max_rank)')
+
+        conn.commit()
+
+
+def fetch__select_run(args: argparse.Namespace, conn: Any) -> int:
     with conn.cursor() as curs:
         if args.latest:
             curs.execute('SELECT max(run) as max FROM result')
@@ -217,9 +256,9 @@ def fetch_if_needed(args: argparse.Namespace) -> None:
                 raise Exception('run the fetch subcommand')
 
 
-def bench(args: argparse.Namespace) -> None:
+def baseline(args: argparse.Namespace) -> None:
     '''
-    $ python3 testbed.py bench
+    $ python3 testbed.py baseline
     Saving initial results...  # skip printing if results are already downloaded
     Initial results saved: run 217
     Running local checks on all <30s audits...
@@ -237,85 +276,68 @@ def bench(args: argparse.Namespace) -> None:
 
     fetch_if_needed(args)
 
+    if args.clear:
+        with sqlite_connect(args.db) as conn:
+            print('clearing baseline data... ', end='')
+            conn.execute('DELETE FROM baseline')
+            conn.commit()
+            print('cleared')
+
     minimum_duration = parse_ms_str(args.minimum_duration)
 
     with sqlite_connect(args.db) as conn:
-        with sqlite_cursor(conn) as curs:
-            curs.execute('''
-                CREATE TABLE IF NOT EXISTS local_run (
-                    run text not null,
-                    stnum text not null,
-                    catalog text not null,
-                    code text not null,
-                    iterations integer not null,
-                    duration numeric not null,
-                    gpa numeric not null,
-                    ok boolean not null,
-                    rank numeric not null,
-                    max_rank numeric not null,
-                    result json not null
-                )
-            ''')
-            curs.execute('CREATE UNIQUE INDEX IF NOT EXISTS local_run_key_idx ON local_run (stnum, catalog, code)')
-            curs.execute('CREATE INDEX IF NOT EXISTS local_run_cmp_idx ON local_run (run, ok, gpa, iterations, rank, max_rank)')
+        results = conn.execute('''
+            SELECT
+                count(duration) as count,
+                coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
+            FROM server_data
+            WHERE duration < :min
+        ''', {'min': minimum_duration.sec(), 'workers': args.workers})
 
-            conn.commit()
+        count, estimated_duration_s = results.fetchone()
+
+        pretty_min = pretty_ms(minimum_duration.ms())
+        pretty_dur = pretty_ms(estimated_duration_s * 1000)
+        print(f'{count:,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
 
     with sqlite_connect(args.db) as conn:
-        with sqlite_cursor(conn) as curs:
-            curs.execute('''
-                SELECT
-                    count(duration) as count,
-                    coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
-                FROM server_data
-                WHERE duration < :min
-            ''', {'min': minimum_duration.sec(), 'workers': args.workers})
+        results = conn.execute('''
+            SELECT catalog, code
+            FROM server_data
+            WHERE duration < :min
+            GROUP BY catalog, code
+        ''', {'min': minimum_duration.sec()})
 
-            count, estimated_duration_s = curs.fetchone()
+        area_specs = load_areas(args, list(results))
 
-            pretty_min = pretty_ms(minimum_duration.ms())
-            pretty_dur = pretty_ms(estimated_duration_s * 1000)
-            print(f'{count:,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
+    with sqlite_connect(args.db) as conn:
+        results = conn.execute('''
+            SELECT stnum, catalog, code
+            FROM server_data
+            WHERE duration < :min
+            ORDER BY duration DESC
+        ''', {'min': minimum_duration.sec()})
 
-            curs.execute('''
-                SELECT catalog, code
-                FROM server_data
-                WHERE duration < :min
-                GROUP BY catalog, code
-            ''', {'min': minimum_duration.sec()})
-
-            areas_to_load = list(curs.fetchall())
-
-            area_specs = load_areas(args, areas_to_load)
-
-            curs.execute('''
-                SELECT stnum, catalog, code
-                FROM server_data
-                WHERE duration < :min
-                ORDER BY duration DESC
-            ''', {'min': minimum_duration.sec()})
-
-            records = [tuple(row) for row in curs]
+        records = [tuple(row) for row in results]
 
     print(f'running {len(records):,} audits...')
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
             futures = [
-                executor.submit(audit, row, db=args.db, area_spec=area_specs[f"{row[1]}/{row[2]}"], run_id='base')
+                executor.submit(audit, row, db=args.db, area_spec=area_specs[f"{row[1]}/{row[2]}"])
                 for row in records
             ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
                 db_args = future.result()
 
-                with sqlite_cursor(conn) as curs:
-                    conn.execute('''
-                        INSERT INTO local_run (run, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
-                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
-                    ''', db_args)
+                conn.execute('''
+                    INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
+                    VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                ''', db_args)
 
-                    conn.commit()
+                conn.commit()
 
 
 def load_areas(args: argparse.Namespace, areas_to_load: Sequence[Dict]) -> Dict[str, Any]:
@@ -340,43 +362,42 @@ def load_area(root: pathlib.Path, catalog: str, code: str) -> Tuple[str, Dict]:
         return f"{catalog}/{code}", yaml.load(stream=infile, Loader=yaml.SafeLoader)
 
 
-def audit(row: Tuple[str, str, str], *, db: str, area_spec: Dict, run_id: str) -> Optional[Dict]:
+def audit(row: Tuple[str, str, str], *, db: str, area_spec: Dict, run_id: str = '') -> Optional[Dict]:
     stnum, catalog, code = row
 
     with sqlite_connect(db, readonly=True) as conn:
-        with sqlite_cursor(conn) as curs:
-            curs.execute('''
-                SELECT input_data
-                FROM server_data
-                WHERE (stnum, catalog, code) = (?, ?, ?)
-            ''', [stnum, catalog, code])
+        results = conn.execute('''
+            SELECT input_data
+            FROM server_data
+            WHERE (stnum, catalog, code) = (?, ?, ?)
+        ''', [stnum, catalog, code])
 
-            record = curs.fetchone()
-            assert record is not None
+        record = results.fetchone()
+        assert record is not None
 
-            args = Arguments(
-                student_data=[json.loads(record['input_data'])],
-                area_specs=[(area_spec, catalog)],
-            )
+        args = Arguments(
+            student_data=[json.loads(record['input_data'])],
+            area_specs=[(area_spec, catalog)],
+        )
 
-            for message in run(args):
-                if isinstance(message, ResultMsg):
-                    result = message.result.to_dict()
-                    return {
-                        "run": run_id,
-                        "stnum": stnum,
-                        "catalog": catalog,
-                        "code": code,
-                        "iterations": message.count,
-                        "duration": message.elapsed_ms / 1000,
-                        "gpa": result["gpa"],
-                        "ok": result["ok"],
-                        "rank": result["rank"],
-                        "max_rank": result["max_rank"],
-                        "result": json.dumps(result),
-                    }
-                else:
-                    pass
+        for message in run(args):
+            if isinstance(message, ResultMsg):
+                result = message.result.to_dict()
+                return {
+                    "run": run_id,
+                    "stnum": stnum,
+                    "catalog": catalog,
+                    "code": code,
+                    "iterations": message.count,
+                    "duration": message.elapsed_ms / 1000,
+                    "gpa": result["gpa"],
+                    "ok": result["ok"],
+                    "rank": result["rank"],
+                    "max_rank": result["max_rank"],
+                    "result": json.dumps(result),
+                }
+            else:
+                pass
 
     return None
 
