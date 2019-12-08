@@ -59,7 +59,7 @@ def main(area_file: str, student_file: str, run_id: int) -> None:
                 message = "Could not load area file"
 
                 if result_id is not None:
-                    record_error(result_id=result_id, conn=conn, error={"error": message, "stnum": msg.stnum, "area_file": msg.area_file})
+                    record_error(result_id=result_id, conn=conn, error={"error": message, "stnums": msg.stnums, "area_file": msg.area_file})
 
             elif isinstance(msg, ProgressMsg):
                 avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)

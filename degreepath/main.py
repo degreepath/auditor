@@ -2,7 +2,7 @@ import traceback
 import pathlib
 import sqlite3
 import json
-from typing import Iterator, List, Dict, Any
+from typing import Iterator, List, Dict, Tuple, Any
 
 import yaml
 import csv
@@ -16,11 +16,7 @@ from .audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNo
 
 
 def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
-    if not args.student_files:
-        yield NoStudentsMsg()
-        return
-
-    file_data = []
+    file_data = list(args.student_data)
 
     try:
         if args.db_file:
@@ -47,6 +43,21 @@ def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
     except FileNotFoundError as ex:
         yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=None, area_code=None)
         return
+
+    if not file_data:
+        yield NoStudentsMsg()
+        return
+
+    area_specs: List[Tuple[dict, str]] = list(args.area_specs)
+
+    for area_file in args.area_files:
+        try:
+            catalog = pathlib.Path(area_file).parent.stem
+            with open(area_file, "r", encoding="utf-8") as infile:
+                area_specs.append((yaml.load(stream=infile, Loader=yaml.SafeLoader), catalog))
+        except FileNotFoundError:
+            yield AreaFileNotFoundMsg(area_file=f"{os.path.dirname(area_file)}/{os.path.basename(area_file)}", stnums=[s['stnum'] for s in file_data])
+            return
 
     for student in file_data:
         area_pointers = tuple(AreaPointer.from_dict(a) for a in student['areas'])
@@ -79,16 +90,8 @@ def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
         music_attendances = tuple(sorted((MusicAttendance.from_dict(d) for d in student['performance_attendances']), key=lambda a: a.sort_order()))
         music_proficiencies = MusicProficiencies.from_dict(student['proficiencies'])
 
-        for area_file in args.area_files:
-            try:
-                with open(area_file, "r", encoding="utf-8") as infile:
-                    area_spec = yaml.load(stream=infile, Loader=yaml.SafeLoader)
-            except FileNotFoundError:
-                yield AreaFileNotFoundMsg(area_file=f"{os.path.dirname(area_file)}/{os.path.basename(area_file)}", stnum=student['stnum'])
-                return
-
+        for area_spec, area_catalog in area_specs:
             area_code = area_spec['code']
-            area_catalog = pathlib.Path(area_file).parent.stem
 
             exceptions = [
                 load_exception(e)

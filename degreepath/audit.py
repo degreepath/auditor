@@ -16,6 +16,8 @@ class Arguments:
     area_files: Sequence[str] = tuple()
     student_files: Sequence[str] = tuple()
     db_file: Optional[str] = None
+    student_data: Sequence[dict] = tuple()
+    area_specs: Sequence[Tuple[dict, str]] = tuple()
 
     transcript_only: bool = False
     gpa_only: bool = False
@@ -44,6 +46,7 @@ class ResultMsg:
     transcript: Tuple[CourseInstance, ...]
     count: int
     elapsed: str
+    elapsed_ms: float
     iterations: List[float]
     startup_time: float
     potentials_for_all_clauses: Dict[int, List[str]]
@@ -73,7 +76,7 @@ class ProgressMsg:
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class AreaFileNotFoundMsg:
     area_file: str
-    stnum: str
+    stnums: Sequence[str]
 
 
 Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg, AreaFileNotFoundMsg]
@@ -135,6 +138,7 @@ def audit(
                 transcript=transcript,
                 count=total_count,
                 elapsed='∞',
+                elapsed_ms=0,
                 iterations=[],
                 startup_time=startup_time,
                 potentials_for_all_clauses=potentials_for_all_clauses,
@@ -163,13 +167,15 @@ def audit(
         return
 
     end = time.perf_counter()
-    elapsed = pretty_ms((end - start) * 1000)
+    elapsed_ms = (end - start) * 1000
+    elapsed = pretty_ms(elapsed_ms)
 
     yield ResultMsg(
         result=best_sol,
         transcript=transcript,
         count=total_count,
         elapsed=elapsed,
+        elapsed_ms=elapsed_ms,
         iterations=iterations,
         startup_time=startup_time,
         potentials_for_all_clauses=potentials_for_all_clauses,

@@ -92,13 +92,14 @@ def main(*, area_file: str, db_file: Optional[str] = None, student_file: str, ru
             elif isinstance(msg, AreaFileNotFoundMsg):
                 message = "Could not load area file"
 
-                with sentry_sdk.configure_scope() as scope:
-                    scope.user = {"id": msg.stnum}
-                    scope.set_tag('area_file', msg.area_file)
-                    sentry_sdk.capture_message(message)
+                for stnum in msg.stnums:
+                    with sentry_sdk.configure_scope() as scope:
+                        scope.user = {"id": stnum}
+                        scope.set_tag('area_file', msg.area_file)
+                        sentry_sdk.capture_message(message)
 
                 if result_id:
-                    record_error(result_id=result_id, conn=conn, error={"error": message, "stnum": msg.stnum, "area_file": msg.area_file})
+                    record_error(result_id=result_id, conn=conn, error={"error": message, "stnums": msg.stnums, "area_file": msg.area_file})
 
             elif isinstance(msg, ProgressMsg):
                 avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)

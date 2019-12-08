@@ -4,7 +4,7 @@ lint: flake mypy test
 check: lint
 
 flake:
-	flake8 --show-source --statistics degreepath/ dp*.py
+	flake8 --show-source --statistics degreepath/ *.py
 
 mypy:
 	mypy --pretty degreepath/ *.py
