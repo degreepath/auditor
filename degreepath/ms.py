@@ -1,3 +1,7 @@
+# Most of this file was converted from
+# https://github.com/sindresorhus/pretty-ms, MIT
+# https://github.com/sindresorhus/parse-ms, MIT
+
 from typing import Optional, Union
 import attr
 import decimal
@@ -7,6 +11,12 @@ import re
 
 def to_zero(dec: decimal.Decimal) -> decimal.Decimal:
     return dec.quantize(decimal.Decimal("1"), rounding=decimal.ROUND_DOWN)
+
+
+ONE_DAY = 86_400_000
+ONE_HOUR = 3_600_000
+ONE_MINUTE = 60_000
+ONE_SECOND = 1_000
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -19,17 +29,48 @@ class Ms:
     microseconds: decimal.Decimal
     nanoseconds: decimal.Decimal
 
+    def sec(self) -> float:
+        return self.ms() / 1000
+
+    def ms(self) -> int:
+        return self.days * ONE_DAY \
+            + self.hours * ONE_HOUR \
+            + self.minutes * ONE_MINUTE \
+            + self.seconds * ONE_SECOND \
+            + self.milliseconds
+
 
 def parse_ms(ms: decimal.Decimal) -> Ms:
     return Ms(
-        days=to_zero(ms / 86_400_000),
-        hours=to_zero((ms / 3_600_000) % 24),
-        minutes=to_zero((ms / 60_000) % 60),
-        seconds=to_zero((ms / 1_000) % 60),
+        days=to_zero(ms / ONE_DAY),
+        hours=to_zero((ms / ONE_HOUR) % 24),
+        minutes=to_zero((ms / ONE_MINUTE) % 60),
+        seconds=to_zero((ms / ONE_SECOND) % 60),
         milliseconds=to_zero(ms % 1_000),
         microseconds=to_zero((ms * 1_000) % 1_000),
         nanoseconds=to_zero((ms * 1_000_000) % 1_000),
     )
+
+
+def parse_ms_str(string: str):
+    # Converted from https://github.com/astur/dhms, MIT license
+    if type(string) is not str:
+        return 0
+
+    cleaned = re.sub(r'\s', '', string)
+    start = re.match(r'-?\d+$', cleaned)
+    total = int(0 if not start else start.group())
+
+    chunks = {'ms': 1, 's': 1000, 'm': 60 * 1000, 'h': 3600 * 1000, 'd': 86400 * 1000}
+
+    for v in re.finditer(r'-?\d+[^-0-9]+', cleaned) or []:
+        a = re.sub(r'[^-0-9]+', '', v.group())
+        b = re.sub(r'[-0-9]+', '', v.group())
+        total += int(a) * chunks.get(b, 0)
+
+    # print(decimal.Decimal(total))
+
+    return parse_ms(decimal.Decimal(total))
 
 
 def pretty_ms(
