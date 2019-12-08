@@ -24,6 +24,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             path=rule.path,
             overridden=overridden,
             in_gpa=rule.in_gpa,
+            is_independent=rule.is_independent,
         )
 
     def state(self) -> RuleState:

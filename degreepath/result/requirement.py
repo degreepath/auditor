@@ -25,6 +25,7 @@ class RequirementResult(Result, BaseRequirementRule):
             is_contract=solution.is_contract,
             path=solution.path,
             in_gpa=solution.in_gpa,
+            is_independent=solution.is_independent,
             result=result,
             overridden=overridden,
         )

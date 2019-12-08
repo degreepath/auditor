@@ -260,6 +260,7 @@ class AreaSolution(AreaOfStudy):
             in_gpa=False,
             is_contract=False,
             overridden=False,
+            is_independent=False,
             result=CountResult(
                 path=('$', '%Common Requirements', '.count'),
                 count=len(items),

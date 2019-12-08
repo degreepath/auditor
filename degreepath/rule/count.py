@@ -23,6 +23,7 @@ SHOW_ESTIMATES = False if int(os.getenv('DP_ESTIMATE', default='0')) == 0 else T
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountRule(Rule, BaseCountRule):
     items: Tuple[Rule, ...]
+    check_independent: bool = False
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -137,7 +138,7 @@ class CountRule(Rule, BaseCountRule):
         else:
             count = int(data["count"])
 
-        allowed_keys = {'of', 'all', 'count', 'any', 'either', 'both', 'at_most', 'audit'}
+        allowed_keys = {'of', 'all', 'count', 'any', 'either', 'both', 'at_most', 'audit', 'check_independent'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -147,6 +148,7 @@ class CountRule(Rule, BaseCountRule):
             at_most=at_most,
             audit_clauses=audit_clauses,
             path=tuple(path),
+            check_independent=data.get('check_independent', False),
         )
 
         all_child_names = set(r for r, k in data.get("requirements", {}).items() if 'if' not in k)
@@ -199,7 +201,7 @@ class CountRule(Rule, BaseCountRule):
         solved_results: Tuple[Result, ...]
         solved_results__rules: Set[Rule]
 
-        if depth == 1 and all_potential_rules and not self.audit_clauses:
+        if self.check_independent or (depth == 1 and all_potential_rules and not self.audit_clauses):
             logger.debug('%s searching for disjoint children', self.path)
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
 
@@ -337,6 +339,11 @@ class CountRule(Rule, BaseCountRule):
 
         for s in non_disjoint_rules:
             disjoint_rules.discard(s)
+
+        for s in items:  # TODO: find better way
+            if getattr(s, 'is_independent', False):
+                disjoint_rules.add(s)
+                non_disjoint_rules.discard(s)
 
         logger.debug("found disjoint rules: %s", [r.path for r in disjoint_rules])
         logger.debug("found non-disjoint rules: %s", [r.path for r in non_disjoint_rules])
