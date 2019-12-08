@@ -16,6 +16,8 @@ class Arguments:
     area_files: Sequence[str] = tuple()
     student_files: Sequence[str] = tuple()
     db_file: Optional[str] = None
+    student_data: Sequence[dict] = tuple()
+    area_specs: Sequence[Tuple[dict, str]] = tuple()
 
     transcript_only: bool = False
     gpa_only: bool = False
@@ -73,7 +75,7 @@ class ProgressMsg:
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class AreaFileNotFoundMsg:
     area_file: str
-    stnum: str
+    stnums: Sequence[str]
 
 
 Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg, AreaFileNotFoundMsg]
