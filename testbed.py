@@ -54,11 +54,11 @@ def main() -> None:
     parser_baseline.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
     parser_baseline.set_defaults(func=baseline)
 
-    # parser_branch = subparsers.add_parser('branch', help='runs an audit benchmark')
-    # parser_branch.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
-    # parser_branch.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
-    # parser_branch.add_argument('branch', required=True, help='the git branch to compare against')
-    # parser_branch.set_defaults(func=baseline)
+    parser_branch = subparsers.add_parser('branch', help='runs an audit benchmark')
+    parser_branch.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
+    parser_branch.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
+    parser_branch.add_argument('branch', nargs=1, help='the git branch to compare against')
+    parser_branch.set_defaults(func=baseline)
 
     # parser_compare = subparsers.add_parser('compare', help='runs audits locally to check for changes')
     # parser_compare.set_defaults(func=compare)
@@ -283,6 +283,76 @@ def baseline(args: argparse.Namespace) -> None:
             conn.commit()
             print('cleared')
 
+    area_specs, records = prepare_audits(args)
+
+    with sqlite_connect(args.db) as conn:
+        with ProcessPoolExecutor(max_workers=args.workers) as executor:
+            futures = [
+                executor.submit(audit, row, db=args.db, area_spec=area_specs[f"{row[1]}/{row[2]}"])
+                for row in records
+            ]
+
+            for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
+                db_args = future.result()
+
+                with sqlite_cursor(conn) as curs:
+                    curs.execute('''
+                        INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
+                        VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                    ''', db_args)
+
+                    conn.commit()
+
+
+def branch(args: argparse.Namespace) -> None:
+    '''
+    $ python3 testbed.py baseline
+    Saving initial results...  # skip printing if results are already downloaded
+    Initial results saved: run 217
+    Running local checks on all <30s audits...
+    76%|████████████████████████████         | 7568/10000 [00:33<00:10, 229.00it/s]
+    [...]
+    Found 300 unexpected audit result changes:
+    code,catalog,count
+    150,2016-17,100
+    200,2016-17,200
+    Details for 150, 2016-17:
+    code,catalog,stnum,iterations,now_ok,now_rank,now_max,then_ok,then_rank,then_max_rank
+    150,2016-17,123456,5,t,10,10,f,9,10
+    [...]
+    '''
+
+    fetch_if_needed(args)
+
+    if args.clear:
+        with sqlite_connect(args.db) as conn:
+            print(f'clearing data for "{args.branch}"... ', end='')
+            conn.execute('DELETE FROM branch WHERE branch = ?', [args.branch])
+            conn.commit()
+            print('cleared')
+
+    area_specs, records = prepare_audits(args)
+
+    with sqlite_connect(args.db) as conn:
+        with ProcessPoolExecutor(max_workers=args.workers) as executor:
+            futures = [
+                executor.submit(audit, row, db=args.db, area_spec=area_specs[f"{row[1]}/{row[2]}"], run_id=args.branch)
+                for row in records
+            ]
+
+            for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
+                db_args = future.result()
+
+                with sqlite_cursor(conn) as curs:
+                    curs.execute('''
+                        INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
+                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                    ''', db_args)
+
+                    conn.commit()
+
+
+def prepare_audits(args: argparse.Namespace) -> Tuple[Dict, Sequence[Tuple[str, str, str]]]:
     minimum_duration = parse_ms_str(args.minimum_duration)
 
     with sqlite_connect(args.db) as conn:
@@ -322,22 +392,7 @@ def baseline(args: argparse.Namespace) -> None:
 
     print(f'running {len(records):,} audits...')
 
-    with sqlite_connect(args.db) as conn:
-        with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = [
-                executor.submit(audit, row, db=args.db, area_spec=area_specs[f"{row[1]}/{row[2]}"])
-                for row in records
-            ]
-
-            for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                db_args = future.result()
-
-                conn.execute('''
-                    INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
-                    VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
-                ''', db_args)
-
-                conn.commit()
+    return area_specs, records
 
 
 def load_areas(args: argparse.Namespace, areas_to_load: Sequence[Dict]) -> Dict[str, Any]:
