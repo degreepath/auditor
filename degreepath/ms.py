@@ -29,10 +29,10 @@ class Ms:
     microseconds: decimal.Decimal
     nanoseconds: decimal.Decimal
 
-    def sec(self) -> float:
+    def sec(self) -> decimal.Decimal:
         return self.ms() / 1000
 
-    def ms(self) -> int:
+    def ms(self) -> decimal.Decimal:
         return self.days * ONE_DAY \
             + self.hours * ONE_HOUR \
             + self.minutes * ONE_MINUTE \
@@ -52,10 +52,10 @@ def parse_ms(ms: decimal.Decimal) -> Ms:
     )
 
 
-def parse_ms_str(string: str):
+def parse_ms_str(string: str) -> Ms:
     # Converted from https://github.com/astur/dhms, MIT license
     if type(string) is not str:
-        return 0
+        return parse_ms(decimal.Decimal(0))
 
     cleaned = re.sub(r'\s', '', string)
     start = re.match(r'-?\d+$', cleaned)
