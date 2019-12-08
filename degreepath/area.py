@@ -65,6 +65,7 @@ class AreaOfStudy(Base):
         transcript: Sequence[CourseInstance] = tuple(),
         exceptions: Sequence[RuleException] = tuple(),
         all_emphases: bool = False,
+        emphasis: bool = False,
     ) -> 'AreaOfStudy':
         this_code = specification.get('code', '<null>')
         pointers = {p.code: p for p in areas}
@@ -72,8 +73,10 @@ class AreaOfStudy(Base):
 
         emphases = specification.get('emphases', {})
 
+        # this block just does validity checking on the emphases; we don't
+        # actually use the result of loading these here.
         for e in emphases.values():
-            r = AreaOfStudy.load(specification=e, c=c, areas=[], transcript=transcript)
+            r = AreaOfStudy.load(specification=e, c=c, areas=[], transcript=transcript, emphasis=True)
             r.validate()
 
         declared_emphasis_codes = set(str(a.code) for a in areas if a.kind is AreaType.Emphasis)
