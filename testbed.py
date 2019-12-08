@@ -7,21 +7,25 @@ import yaml
 # input() will use readline if imported
 import readline  # noqa: F401
 
+import contextlib
+import argparse
 import sqlite3
 import pathlib
 import decimal
-import math
-import contextlib
-import argparse
 import logging
-import os
+import math
 import json
+import csv
+import sys
+import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Optional, Any, Tuple, Dict, Sequence, Iterator
 
 from degreepath.main import run
 from degreepath.ms import pretty_ms, parse_ms_str
 from degreepath.audit import ResultMsg, Arguments
+from degreepath.data.course import load_course
+from degreepath.stringify import print_result
 
 logger = logging.getLogger(__name__)
 
@@ -51,17 +55,27 @@ def main() -> None:
 
     parser_baseline = subparsers.add_parser('baseline', help='runs a baseline audit benchmark')
     parser_baseline.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
-    parser_baseline.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
+    # parser_baseline.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
     parser_baseline.set_defaults(func=baseline)
 
     parser_branch = subparsers.add_parser('branch', help='runs an audit benchmark')
     parser_branch.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
-    parser_branch.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
-    parser_branch.add_argument('branch', nargs=1, help='the git branch to compare against')
-    parser_branch.set_defaults(func=baseline)
+    # parser_branch.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
+    parser_branch.add_argument('branch', help='the git branch to compare against')
+    parser_branch.set_defaults(func=branch)
 
-    # parser_compare = subparsers.add_parser('compare', help='runs audits locally to check for changes')
-    # parser_compare.set_defaults(func=compare)
+    parser_compare = subparsers.add_parser('compare', help='compare an audit run against the baseline')
+    parser_compare.add_argument('run', help='the run to compare against the base run')
+    parser_compare.add_argument('base', default='baseline', help='the base run to compare against')
+    parser_compare.add_argument('--mode', default='data', choices=['data', 'speed'], help='the base run to compare against')
+    parser_compare.set_defaults(func=compare)
+
+    parser_print = subparsers.add_parser('print', help='show the baseline and branched audit results')
+    parser_print.add_argument('branch', help='')
+    parser_print.add_argument('stnum', help='')
+    parser_print.add_argument('catalog')
+    parser_print.add_argument('code')
+    parser_print.set_defaults(func=render)
 
     args = parser.parse_args()
     init_local_db(args)
@@ -199,7 +213,7 @@ def init_local_db(args: argparse.Namespace) -> None:
                 result json not null
             )
         ''')
-        conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS branch_key_idx ON branch (stnum, catalog, code)')
+        conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS branch_key_idx ON branch (branch, stnum, catalog, code)')
         conn.execute('CREATE INDEX IF NOT EXISTS branch_cmp_idx ON branch (ok, gpa, iterations, rank, max_rank)')
         conn.execute('CREATE INDEX IF NOT EXISTS branch_cmp_branch_idx ON branch (branch, ok, gpa, iterations, rank, max_rank)')
 
@@ -276,12 +290,11 @@ def baseline(args: argparse.Namespace) -> None:
 
     fetch_if_needed(args)
 
-    if args.clear:
-        with sqlite_connect(args.db) as conn:
-            print('clearing baseline data... ', end='')
-            conn.execute('DELETE FROM baseline')
-            conn.commit()
-            print('cleared')
+    with sqlite_connect(args.db) as conn:
+        print('clearing baseline data... ', end='')
+        conn.execute('DELETE FROM baseline')
+        conn.commit()
+        print('cleared')
 
     area_specs, records = prepare_audits(args)
 
@@ -296,10 +309,14 @@ def baseline(args: argparse.Namespace) -> None:
                 db_args = future.result()
 
                 with sqlite_cursor(conn) as curs:
-                    curs.execute('''
-                        INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
-                        VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
-                    ''', db_args)
+                    try:
+                        curs.execute('''
+                            INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
+                            VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                        ''', db_args)
+                    except sqlite3.Error as ex:
+                        print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
+                        break
 
                     conn.commit()
 
@@ -324,12 +341,11 @@ def branch(args: argparse.Namespace) -> None:
 
     fetch_if_needed(args)
 
-    if args.clear:
-        with sqlite_connect(args.db) as conn:
-            print(f'clearing data for "{args.branch}"... ', end='')
-            conn.execute('DELETE FROM branch WHERE branch = ?', [args.branch])
-            conn.commit()
-            print('cleared')
+    with sqlite_connect(args.db) as conn:
+        print(f'clearing data for "{args.branch}"... ', end='')
+        conn.execute('DELETE FROM branch WHERE branch = ?', [args.branch])
+        conn.commit()
+        print('cleared')
 
     area_specs, records = prepare_audits(args)
 
@@ -341,18 +357,27 @@ def branch(args: argparse.Namespace) -> None:
             ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                db_args = future.result()
+                try:
+                    db_args = future.result()
+                except Exception as exc:
+                    print('generated an exception: %s' % (exc))
+                    break
 
                 with sqlite_cursor(conn) as curs:
-                    curs.execute('''
-                        INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
-                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
-                    ''', db_args)
+                    try:
+                        curs.execute('''
+                            INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
+                            VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                        ''', db_args)
+                    except sqlite3.Error as ex:
+                        print(db_args)
+                        print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
+                        break
 
                     conn.commit()
 
 
-def prepare_audits(args: argparse.Namespace) -> Tuple[Dict, Sequence[Tuple[str, str, str]]]:
+def prepare_audits(args: argparse.Namespace) -> Tuple[Dict[str, Any], Sequence[Tuple[str, str, str]]]:
     minimum_duration = parse_ms_str(args.minimum_duration)
 
     with sqlite_connect(args.db) as conn:
@@ -388,7 +413,7 @@ def prepare_audits(args: argparse.Namespace) -> Tuple[Dict, Sequence[Tuple[str, 
             ORDER BY duration DESC
         ''', {'min': minimum_duration.sec()})
 
-        records = [tuple(row) for row in results]
+        records = [(stnum, catalog, code) for stnum, catalog, code in results]
 
     print(f'running {len(records):,} audits...')
 
@@ -475,15 +500,101 @@ def compare(args: argparse.Namespace) -> None:
     wall,30s,20s  # wall time
     '''
 
-    print(args)
+    select = '''
+        SELECT b.stnum,
+               b.catalog,
+               b.code,
+               b.gpa AS gpa_b,
+               r.gpa AS gpa_r,
+               b.iterations AS it_b,
+               r.iterations AS it_r,
+               round(b.duration, 4) AS dur_b,
+               round(r.duration, 4) AS dur_r,
+               b.ok AS ok_b,
+               r.ok AS ok_r,
+               round(b.rank, 2) AS rank_b,
+               round(r.rank, 2) AS rank_r,
+               b.max_rank AS max_b,
+               r.max_rank AS max_r
+        FROM baseline b
+                 LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
+    '''
 
-    # fetch()
+    if args.mode == 'data':
+        with sqlite_connect(args.db, readonly=True) as conn:
+            results = conn.execute(f'''
+                {select}
+                WHERE r.branch = ? AND (
+                    b.ok != r.ok
+                    OR b.gpa != r.gpa
+                    OR b.rank != r.rank
+                    OR b.max_rank != r.max_rank
+                )
+                ORDER BY b.stnum, b.catalog, b.code
+            ''', [args.run])
 
-    # bench()
+            fields = ['stnum', 'catalog', 'code', 'gpa_b', 'gpa_r', 'it_b', 'it_r', 'dur_b', 'dur_r', 'ok_b', 'ok_r', 'rank_b', 'rank_r', 'max_b', 'max_r']
+            writer = csv.DictWriter(sys.stdout, fieldnames=fields)
+            writer.writeheader()
+            for row in results:
+                writer.writerow(dict(row))
 
-    # run(['git', 'checkout', args.branch])
+    elif args.mode == 'speed':
+        with sqlite_connect(args.db, readonly=True) as conn:
+            results = conn.execute(f'''
+                {select}
+                WHERE r.branch = ? AND b.iterations != r.iterations
+                ORDER BY b.stnum, b.catalog, b.code
+            ''', [args.run])
 
-    # bench()
+            fields = ['stnum', 'catalog', 'code', 'gpa_b', 'gpa_r', 'it_b', 'it_r', 'dur_b', 'dur_r', 'ok_b', 'ok_r', 'rank_b', 'rank_r', 'max_b', 'max_r']
+            writer = csv.DictWriter(sys.stdout, fieldnames=fields)
+            writer.writeheader()
+            for row in results:
+                writer.writerow(dict(row))
+
+
+def render(args: argparse.Namespace) -> None:
+    stnum = args.stnum
+    catalog = args.catalog
+    code = args.code
+    branch = args.branch
+
+    with sqlite_connect(args.db, readonly=True) as conn:
+        results = conn.execute('''
+            SELECT d.input_data, b1.result as baseline, b2.result as branch
+            FROM server_data d
+            LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
+            LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
+            WHERE d.stnum = :stnum
+                AND d.catalog = :catalog
+                AND d.code = :code
+                AND b2.branch = :branch
+        ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+
+        record = results.fetchone()
+
+        input_data = json.loads(record['input_data'])
+        baseline_result = json.loads(record['baseline'])
+        branch_result = json.loads(record['branch'])
+
+        print('Baseline')
+        print('========\n')
+
+        print(render_result(input_data, baseline_result))
+
+        print()
+        print()
+        print(f'Branch: {args.branch}')
+        print('========\n')
+        print(render_result(input_data, branch_result))
+
+
+def render_result(student_data: Dict, result: Dict) -> str:
+    courses = [load_course(row) for row in student_data["courses"]]
+    transcript = {c.clbid: c for c in courses}
+
+    return "\n".join(print_result(result, transcript=transcript, show_paths=False, show_ranks=False))
 
 
 @contextlib.contextmanager
