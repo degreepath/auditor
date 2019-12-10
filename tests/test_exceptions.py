@@ -119,15 +119,14 @@ def test_multi_insertion_on_query_rule(caplog):
         },
     }, c=c, transcript=transcript, exceptions=[exception, exception2])
     solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[exception, exception2]))
-    assert len(solutions) == 1
+    assert len(solutions) == 3
 
     result = solutions[0].audit()
 
     assert result.ok() is True
     assert result.was_overridden() is False
     assert result.claims()[0].claim.course.clbid == course_a.clbid
-    assert result.claims()[1].claim.course.clbid == course_b.clbid
-    assert len(result.claims()) == 2
+    assert len(result.claims()) == 1
 
 
 def test_insertion_on_count_rule__any(caplog):
