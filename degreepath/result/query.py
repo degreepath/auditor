@@ -26,7 +26,6 @@ class QueryResult(Result, BaseQueryRule):
         failed_claims: Tuple[ClaimAttempt, ...],
         success: bool,
         overridden: bool = False,
-        inserted: Tuple[str, ...] = tuple(),
     ) -> 'QueryResult':
         return QueryResult(
             source=solution.source,
@@ -41,7 +40,8 @@ class QueryResult(Result, BaseQueryRule):
             success=success,
             path=solution.path,
             overridden=overridden,
-            inserted=inserted,
+            inserted=solution.inserted,
+            force_inserted=solution.force_inserted,
         )
 
     def only_failed_claims(self) -> Sequence[ClaimAttempt]:
