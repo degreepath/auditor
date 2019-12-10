@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from datetime import datetime
+from pathlib import Path
 from typing import Optional, Any, Dict, cast
 
 import dotenv
@@ -17,7 +18,10 @@ from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionM
 
 logger = logging.getLogger(__name__)
 
-dotenv.load_dotenv(verbose=True)
+# always resolve to the local .env file
+dotenv_path = Path(__file__).parent / '.env'
+dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+
 if os.environ.get('SENTRY_DSN', None):
     sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
 else:
