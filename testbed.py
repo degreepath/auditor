@@ -1,5 +1,3 @@
-import psycopg2  # type: ignore
-import psycopg2.extras  # type: ignore
 import dotenv
 import tqdm  # type: ignore
 import yaml
@@ -18,6 +16,7 @@ import json
 import csv
 import sys
 import os
+from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Optional, Any, Tuple, Dict, Sequence, Iterator
 
@@ -66,8 +65,8 @@ def main() -> None:
 
     parser_compare = subparsers.add_parser('compare', help='compare an audit run against the baseline')
     parser_compare.add_argument('run', help='the run to compare against the base run')
-    parser_compare.add_argument('base', default='baseline', help='the base run to compare against')
-    parser_compare.add_argument('--mode', default='data', choices=['data', 'speed'], help='the base run to compare against')
+    parser_compare.add_argument('base', default='baseline', nargs='?', help='the base run to compare against')
+    parser_compare.add_argument('--mode', default='data', choices=['data', 'speed', 'all'], help='the base run to compare against')
     parser_compare.set_defaults(func=compare)
 
     parser_print = subparsers.add_parser('print', help='show the baseline and branched audit results')
@@ -96,6 +95,9 @@ def fetch(args: argparse.Namespace) -> None:
     Fetching and storing into run-217.sqlite3
     76%|████████████████████████████         | 7568/10000 [00:33<00:10, 229.00it/s]
     '''
+
+    import psycopg2  # type: ignore
+    import psycopg2.extras  # type: ignore
 
     pg_conn = psycopg2.connect(
         host=os.environ.get("PGHOST"),
@@ -180,6 +182,7 @@ def init_local_db(args: argparse.Namespace) -> None:
         ''')
         conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS server_data_key_idx ON server_data (stnum, catalog, code)')
         conn.execute('CREATE INDEX IF NOT EXISTS server_data_cmp_idx ON server_data (ok, gpa, iterations, rank, max_rank)')
+        conn.execute('CREATE INDEX IF NOT EXISTS server_data_duration_idx ON server_data (duration)')
 
         conn.execute('''
             CREATE TABLE IF NOT EXISTS baseline (
@@ -395,7 +398,6 @@ def prepare_audits(args: argparse.Namespace) -> Tuple[Dict[str, Any], Sequence[T
         pretty_dur = pretty_ms(estimated_duration_s * 1000)
         print(f'{count:,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
 
-    with sqlite_connect(args.db) as conn:
         results = conn.execute('''
             SELECT catalog, code
             FROM server_data
@@ -405,12 +407,11 @@ def prepare_audits(args: argparse.Namespace) -> Tuple[Dict[str, Any], Sequence[T
 
         area_specs = load_areas(args, list(results))
 
-    with sqlite_connect(args.db) as conn:
         results = conn.execute('''
             SELECT stnum, catalog, code
             FROM server_data
             WHERE duration < :min
-            ORDER BY duration DESC
+            ORDER BY duration, stnum, catalog, code DESC
         ''', {'min': minimum_duration.sec()})
 
         records = [(stnum, catalog, code) for stnum, catalog, code in results]
@@ -474,7 +475,7 @@ def audit(row: Tuple[str, str, str], *, db: str, area_spec: Dict, run_id: str = 
                     "ok": result["ok"],
                     "rank": result["rank"],
                     "max_rank": result["max_rank"],
-                    "result": json.dumps(result),
+                    "result": json.dumps(result, sort_keys=True),
                 }
             else:
                 pass
@@ -500,58 +501,81 @@ def compare(args: argparse.Namespace) -> None:
     wall,30s,20s  # wall time
     '''
 
-    select = '''
-        SELECT b.stnum,
-               b.catalog,
-               b.code,
-               b.gpa AS gpa_b,
-               r.gpa AS gpa_r,
-               b.iterations AS it_b,
-               r.iterations AS it_r,
-               round(b.duration, 4) AS dur_b,
-               round(r.duration, 4) AS dur_r,
-               b.ok AS ok_b,
-               r.ok AS ok_r,
-               round(b.rank, 2) AS rank_b,
-               round(r.rank, 2) AS rank_r,
-               b.max_rank AS max_b,
-               r.max_rank AS max_r
-        FROM baseline b
-                 LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
-    '''
+    columns = [
+        'b.stnum',
+        'b.catalog',
+        'b.code',
+        'b.gpa AS gpa_b',
+        'r.gpa AS gpa_r',
+        'b.iterations AS it_b',
+        'r.iterations AS it_r',
+        'round(b.duration, 4) AS dur_b',
+        'round(r.duration, 4) AS dur_r',
+        'b.ok AS ok_b',
+        'r.ok AS ok_r',
+        'round(b.rank, 2) AS rank_b',
+        'round(r.rank, 2) AS rank_r',
+        'b.max_rank AS max_b',
+        'r.max_rank AS max_r',
+    ]
 
     if args.mode == 'data':
-        with sqlite_connect(args.db, readonly=True) as conn:
-            results = conn.execute(f'''
-                {select}
-                WHERE r.branch = ? AND (
-                    b.ok != r.ok
-                    OR b.gpa != r.gpa
-                    OR b.rank != r.rank
-                    OR b.max_rank != r.max_rank
-                )
-                ORDER BY b.stnum, b.catalog, b.code
-            ''', [args.run])
-
-            fields = ['stnum', 'catalog', 'code', 'gpa_b', 'gpa_r', 'it_b', 'it_r', 'dur_b', 'dur_r', 'ok_b', 'ok_r', 'rank_b', 'rank_r', 'max_b', 'max_r']
-            writer = csv.DictWriter(sys.stdout, fieldnames=fields)
-            writer.writeheader()
-            for row in results:
-                writer.writerow(dict(row))
+        query = '''
+            SELECT {}
+            FROM baseline b
+                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
+            WHERE r.branch = ? AND (
+                b.ok != r.ok
+                OR b.gpa != r.gpa
+                OR b.rank != r.rank
+                OR b.max_rank != r.max_rank
+            )
+            ORDER BY b.stnum, b.catalog, b.code
+        '''.format(','.join(columns))
 
     elif args.mode == 'speed':
-        with sqlite_connect(args.db, readonly=True) as conn:
-            results = conn.execute(f'''
-                {select}
-                WHERE r.branch = ? AND b.iterations != r.iterations
-                ORDER BY b.stnum, b.catalog, b.code
-            ''', [args.run])
+        query = '''
+            SELECT {}
+            FROM baseline b
+                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
+            WHERE r.branch = ? AND b.iterations != r.iterations
+            ORDER BY b.stnum, b.catalog, b.code
+        '''.format(','.join(columns))
 
-            fields = ['stnum', 'catalog', 'code', 'gpa_b', 'gpa_r', 'it_b', 'it_r', 'dur_b', 'dur_r', 'ok_b', 'ok_r', 'rank_b', 'rank_r', 'max_b', 'max_r']
-            writer = csv.DictWriter(sys.stdout, fieldnames=fields)
-            writer.writeheader()
-            for row in results:
-                writer.writerow(dict(row))
+    elif args.mode == 'all':
+        query = '''
+            SELECT {}
+            FROM baseline b
+                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
+            WHERE r.branch = ?
+            ORDER BY b.stnum, b.catalog, b.code
+        '''.format(','.join(columns))
+
+    else:
+        assert False
+
+    with sqlite_connect(args.db, readonly=True) as conn:
+        results = [r for r in conn.execute(query, [args.run])]
+
+        fields = ['stnum', 'catalog', 'code', 'gpa_b', 'gpa_r', 'it_b', 'it_r', 'dur_b', 'dur_r', 'ok_b', 'ok_r', 'rank_b', 'rank_r', 'max_b', 'max_r']
+        writer = csv.DictWriter(sys.stdout, fieldnames=fields)
+        writer.writeheader()
+
+        counter: Dict[str, decimal.Decimal] = defaultdict(decimal.Decimal)
+        for row in results:
+            record = dict(row)
+
+            for fieldkey, value in record.items():
+                if type(value) in (int, float):
+                    v = decimal.Decimal(value).quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN)
+                    counter[fieldkey] += v
+
+            writer.writerow(record)
+
+        counter = {k: v.quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN) for k, v in counter.items()}
+        writer.writerow({**counter, 'stnum': 'totals', 'catalog': '=======', 'code': '==='})
+        averages = {k: (v / len(results)).quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN) for k, v in counter.items()}
+        writer.writerow({**averages, 'stnum': 'avg', 'catalog': '=======', 'code': '==='})
 
 
 def render(args: argparse.Namespace) -> None:
