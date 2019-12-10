@@ -21,7 +21,6 @@ class AuditResult:
     claimed_items: Tuple[Clausable, ...] = tuple()
     successful_claims: Tuple['ClaimAttempt', ...] = tuple()
     failed_claims: Tuple['ClaimAttempt', ...] = tuple()
-    inserted_clbids: Tuple[str, ...] = tuple()
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -30,7 +29,14 @@ class QuerySolution(Solution, BaseQueryRule):
     overridden: bool
 
     @staticmethod
-    def from_rule(*, rule: BaseQueryRule, output: Tuple[Clausable, ...], overridden: bool = False) -> 'QuerySolution':
+    def from_rule(
+        *,
+        rule: BaseQueryRule,
+        output: Tuple[Clausable, ...],
+        overridden: bool = False,
+        inserted: Tuple[str, ...] = tuple(),
+        force_inserted: Tuple[str, ...] = tuple(),
+    ) -> 'QuerySolution':
         return QuerySolution(
             source=rule.source,
             assertions=rule.assertions,
@@ -41,7 +47,8 @@ class QuerySolution(Solution, BaseQueryRule):
             output=output,
             path=rule.path,
             overridden=overridden,
-            inserted=rule.inserted,
+            inserted=rule.inserted + inserted,
+            force_inserted=rule.force_inserted + force_inserted,
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -87,7 +94,6 @@ class QuerySolution(Solution, BaseQueryRule):
             successful_claims=audit_result.successful_claims,
             failed_claims=audit_result.failed_claims,
             success=resolved_result,
-            inserted=audit_result.inserted_clbids,
         )
 
     def audit_courses(self, ctx: 'RequirementContext') -> AuditResult:
@@ -100,7 +106,8 @@ class QuerySolution(Solution, BaseQueryRule):
         output: Sequence[Clausable] = self.output
         if self.attempt_claims:
             for course in cast(Sequence[CourseInstance], output):
-                claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed)
+                was_forced = course.clbid in self.force_inserted
+                claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed or was_forced)
 
                 if claim.failed:
                     if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, course.clbid, claim.conflict_with)
@@ -113,25 +120,10 @@ class QuerySolution(Solution, BaseQueryRule):
             if debug: logger.debug('%s courses "%s" exist, and is available', self.path, output)
             claimed_items = list(output)
 
-        inserted_clbids = []
-        for insert in ctx.get_insert_exceptions(self.path):
-            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-            claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=self.allow_claimed or insert.forced)
-
-            if claim.failed:
-                if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, insert.clbid, claim.conflict_with)
-                failed_claims.append(claim)
-            else:
-                if debug: logger.debug('%s course "%s" exists, and is available', self.path, insert.clbid)
-                successful_claims.append(claim)
-                claimed_items.append(matched_course)
-                inserted_clbids.append(matched_course.clbid)
-
         return AuditResult(
             claimed_items=tuple(claimed_items),
             successful_claims=tuple(successful_claims),
             failed_claims=tuple(failed_claims),
-            inserted_clbids=tuple(inserted_clbids),
         )
 
     def audit_areas(self, ctx: 'RequirementContext') -> AuditResult:
