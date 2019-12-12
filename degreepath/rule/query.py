@@ -47,9 +47,9 @@ class QueryRule(Rule, BaseQueryRule):
 
         assertions: List[Union[AssertionRule, ConditionalAssertionRule]]
         if "assert" in data:
-            assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, ".assertions", "[0]"])]
+            assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, ctx=ctx, path=[*path, ".assertions", "[0]"])]
         elif "all" in data:
-            assertions = [ConditionalAssertionRule.load(d, c=c, path=[*path, ".assertions", f"[{i}]"]) for i, d in enumerate(data["all"])]
+            assertions = [ConditionalAssertionRule.load(d, c=c, ctx=ctx, path=[*path, ".assertions", f"[{i}]"]) for i, d in enumerate(data["all"])]
         else:
             raise ValueError(f'you must have either an assert: or an all: key in {data}')
 
@@ -301,6 +301,8 @@ def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Ite
             logger.debug("%s using simple-sum assertion mode with %s", rule.path, simple_sum_assertion)
             item_set_courses = cast(Sequence[CourseInstance], item_set)
 
+            # We can skip outputs with impunity here, because the calling
+            # function will ensure that the fallback set is attempted
             if sum(c.credits for c in item_set_courses) < simple_sum_assertion.expected:
                 return
 

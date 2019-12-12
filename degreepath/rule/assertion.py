@@ -25,14 +25,14 @@ class AssertionRule(Rule, BaseAssertionRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: Sequence[str]) -> 'AssertionRule':
+    def load(data: Dict, *, c: Constants, ctx: Optional['RequirementContext'], path: Sequence[str]) -> 'AssertionRule':
         path = [*path, ".assert"]
 
         where = data.get("where", None)
         if where is not None:
             where = load_clause(where, c=c)
 
-        assertion = load_clause(data["assert"], c=c, allow_boolean=False, forbid=[Operator.LessThan])
+        assertion = load_clause(data["assert"], c=c, ctx=ctx, allow_boolean=False, forbid=[Operator.LessThan])
 
         message = data.get("message", None)
 
@@ -69,17 +69,17 @@ class ConditionalAssertionRule(Rule):
     when_no: Optional[AssertionRule]
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: Sequence[str]) -> Union['ConditionalAssertionRule', AssertionRule]:
+    def load(data: Dict, *, c: Constants, ctx: Optional['RequirementContext'], path: Sequence[str]) -> Union['ConditionalAssertionRule', AssertionRule]:
         if 'if' not in data:
-            return AssertionRule.load(data, c=c, path=path)
+            return AssertionRule.load(data, c=c, path=path, ctx=ctx)
 
         allowed_keys = {'if', 'then', 'else'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
-        condition = AssertionRule.load(data['if'], c=c, path=[*path, '#if'])
-        when_yes = AssertionRule.load(data['then'], c=c, path=path)
-        when_no = AssertionRule.load(data['else'], c=c, path=path) if data['else'] is not None else None
+        condition = AssertionRule.load(data['if'], c=c, ctx=ctx, path=[*path, '#if'])
+        when_yes = AssertionRule.load(data['then'], c=c, ctx=ctx, path=path)
+        when_no = AssertionRule.load(data['else'], c=c, ctx=ctx, path=path) if data['else'] is not None else None
 
         return ConditionalAssertionRule(condition=condition, when_yes=when_yes, when_no=when_no, path=tuple(path))
 

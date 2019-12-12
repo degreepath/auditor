@@ -57,7 +57,7 @@ def load_clause(
 
     assert len(data.keys()) == 1, "only one key allowed in single-clauses"
 
-    clauses = tuple(SingleClause.load(key, value, c, forbid) for key, value in data.items())
+    clauses = tuple(SingleClause.load(key, value, c=c, forbid=forbid, ctx=ctx) for key, value in data.items())
 
     if len(clauses) == 1:
         return clauses[0]
