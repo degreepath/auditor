@@ -47,9 +47,9 @@ class QueryRule(Rule, BaseQueryRule):
 
         assertions: List[Union[AssertionRule, ConditionalAssertionRule]]
         if "assert" in data:
-            assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, path=[*path, ".assertions", "[0]"])]
+            assertions = [AssertionRule.load({'assert': data["assert"]}, c=c, ctx=ctx, path=[*path, ".assertions", "[0]"])]
         elif "all" in data:
-            assertions = [ConditionalAssertionRule.load(d, c=c, path=[*path, ".assertions", f"[{i}]"]) for i, d in enumerate(data["all"])]
+            assertions = [ConditionalAssertionRule.load(d, c=c, ctx=ctx, path=[*path, ".assertions", f"[{i}]"]) for i, d in enumerate(data["all"])]
         else:
             raise ValueError(f'you must have either an assert: or an all: key in {data}')
 

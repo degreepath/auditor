@@ -245,7 +245,7 @@ class SingleClause(BaseClause, ResolvedClause):
         }
 
     @staticmethod
-    def load(key: str, value: Any, c: Constants, forbid: Sequence[Operator] = tuple()) -> 'SingleClause':
+    def load(key: str, value: Dict, *, c: Constants, ctx: Optional['RequirementContext'] = None, forbid: Sequence[Operator] = tuple()) -> 'SingleClause':
         assert isinstance(value, Dict), Exception(f'expected {value} to be a dictionary')
 
         operators = [k for k in value.keys() if k.startswith('$')]
