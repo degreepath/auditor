@@ -40,6 +40,10 @@ def main() -> None:
 
         area = AreaOfStudy.load(specification=area_spec, c=Constants(), all_emphases=True)
 
+        for limit in area.limit.limits:
+            for bucket in find_buckets_in_clause(limit.where):
+                tuples.add((code, catalog, bucket))
+
         for bucket in find_buckets_in_rule(area.result):
             tuples.add((code, catalog, bucket))
 
@@ -53,6 +57,9 @@ def main() -> None:
 
 def find_buckets_in_rule(rule: Rule) -> Iterator[str]:
     if isinstance(rule, QueryRule):
+        for limit in rule.limit.limits:
+            yield from find_buckets_in_clause(limit.where)
+
         if rule.where:
             yield from find_buckets_in_clause(rule.where)
 
