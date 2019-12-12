@@ -248,7 +248,7 @@ class SingleClause(BaseClause, ResolvedClause):
     def load(key: str, value: Dict, *, c: Constants, ctx: Optional['RequirementContext'] = None, forbid: Sequence[Operator] = tuple()) -> 'SingleClause':
         assert isinstance(value, Dict), Exception(f'expected {value} to be a dictionary')
 
-        operators = [k for k in value.keys() if k.startswith('$')]
+        operators = [k for k in value.keys() if k.startswith('$') and k != '$ifs']
         assert len(operators) == 1, f"{value}"
         op = operators[0]
         operator = Operator(op)
@@ -259,6 +259,10 @@ class SingleClause(BaseClause, ResolvedClause):
             expected_value = tuple(expected_value)
         elif isinstance(expected_value, float):
             expected_value = Decimal(expected_value)
+
+        expected_value_diff = compute_single_clause_diff(value.get('$ifs', {}), ctx=ctx)
+        if expected_value_diff:
+            expected_value += expected_value_diff
 
         expected_verbatim = expected_value
 
@@ -419,6 +423,27 @@ class SingleClause(BaseClause, ResolvedClause):
 
         else:
             raise TypeError('unsupported operator for ranges %s', self.operator)
+
+
+def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional['RequirementContext']) -> Decimal:
+    diff_value = Decimal(0)
+
+    for cond, cond_action in conditionals.items():
+        assert cond.split('(')[0] == 'has-area-code'
+        assert ctx
+
+        area_code = cond.split('(')[1].rstrip(')')
+        if not ctx.has_area_code(area_code):
+            continue
+
+        cond_action_mode, cond_action_inc = cond_action.split(' ')
+
+        if cond_action_mode == '+':
+            diff_value += Decimal(cond_action_inc)
+        else:
+            raise TypeError(f'unsupported single_clause_diff mode {cond_action_mode}')
+
+    return diff_value
 
 
 def process_clause__grade(expected_value: Any) -> Union[Decimal, Tuple[Decimal, ...]]:
