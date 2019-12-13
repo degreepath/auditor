@@ -309,7 +309,11 @@ def baseline(args: argparse.Namespace) -> None:
             ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                db_args = future.result()
+                try:
+                    db_args = future.result()
+                except Exception as exc:
+                    print('generated an exception: %s' % (exc))
+                    break
 
                 with sqlite_cursor(conn) as curs:
                     try:
@@ -318,6 +322,7 @@ def baseline(args: argparse.Namespace) -> None:
                             VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
                         ''', db_args)
                     except sqlite3.Error as ex:
+                        print(db_args)
                         print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
                         break
 
