@@ -148,34 +148,34 @@ def print_course(
         display_course = rule['ap']
 
     status = "🌀      "
-    if rule["ok"]:
-        if len(rule["claims"]):
-            claim = rule["claims"][0]["claim"]
-            course = transcript.get(claim["clbid"], None)
-        else:
-            course = None
 
-        if not rule["overridden"]:
-            if course is not None:
-                if course.is_incomplete:
-                    status = "⛔️ [dnf]"
-                elif course.is_in_progress:
-                    status = "💙 [ ip]"
-                elif course.is_repeat:
-                    status = "💕 [rep]"
-                else:
-                    status = "💚 [ ok]"
+    if len(rule["claims"]):
+        claim = rule["claims"][0]["claim"]
+        course = transcript.get(claim["clbid"], None)
+    else:
+        course = None
 
-                if course.course_type is CourseType.AP:
-                    display_course = course.name
+    if not rule["overridden"]:
+        if course is not None:
+            if course.is_incomplete:
+                status = "⛔️ [dnf]"
+            elif course.is_in_progress:
+                status = "💙 [ ip]"
+            elif course.is_repeat:
+                status = "💕 [rep]"
             else:
-                status = "!!!!!!! "
+                status = "💚 [ ok]"
+
+            if course.course_type is CourseType.AP:
+                display_course = course.name
         else:
-            if course:
-                status = "💜 [ovr]"
-                display_course = f"{course.course().strip()} {course.name}"
-            else:
-                status = "💜 [wvd]"
+            status = "!!!!!!! "
+    elif rule["ok"] and rule["overridden"]:
+        if course:
+            status = "💜 [ovr]"
+            display_course = f"{course.course().strip()} {course.name}"
+        else:
+            status = "💜 [wvd]"
 
     institution = ""
     if rule['institution']:
