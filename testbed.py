@@ -129,7 +129,7 @@ def fetch(args: argparse.Namespace) -> None:
 
     # named cursors only allow one execute() call, so this must be its own block
     with pg_conn.cursor(name="degreepath_testbed") as curs:
-        curs.itersize = 10
+        curs.itersize = 50
 
         curs.execute('''
             SELECT student_id AS stnum
