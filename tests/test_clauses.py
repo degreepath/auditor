@@ -1,8 +1,10 @@
-from degreepath.clause import SingleClause, Operator, apply_operator
+from degreepath.clause import SingleClause, Operator, apply_operator, compute_single_clause_diff
 from degreepath.load_clause import load_clause
-from degreepath.data import course_from_str, Clausable
+from degreepath.context import RequirementContext
+from degreepath.data import course_from_str, Clausable, AreaPointer, MusicProficiencies
 from degreepath.constants import Constants
 import logging
+import pytest
 
 
 def test_clauses(caplog):
@@ -243,3 +245,32 @@ def test_clause__grade_code():
 
     assert clause.apply(y_course) is True
     assert clause.apply(n_course) is False
+
+
+def test_compute_single_clause_diff():
+    from decimal import Decimal
+    ctx = RequirementContext(areas=(AreaPointer.with_code('711'),))
+
+    assert compute_single_clause_diff({'has-area-code(711)': '+ 0.50'}, ctx=ctx) == Decimal(0.5)
+    assert compute_single_clause_diff({'has-area-code(711)': '+  .50'}, ctx=ctx) == Decimal(0.5)
+
+    with pytest.raises(TypeError, match=r'unknown \$ifs key unknown-key'):
+        assert compute_single_clause_diff({'unknown-key(711)': '+  .50'}, ctx=ctx) == Decimal(0)
+
+    ctx = RequirementContext(
+        areas=(AreaPointer.with_code('711'),),
+        music_proficiencies=MusicProficiencies(keyboard_3=True, keyboard_4=False),
+    )
+
+    assert compute_single_clause_diff({'has-area-code(711) + passed-proficiency-exam(Keyboard Level III)': '+ 0.50'}, ctx=ctx) == Decimal(0.5)
+    assert compute_single_clause_diff({'has-area-code(711) + passed-proficiency-exam(Keyboard Level IV)': '+  .50'}, ctx=ctx) == Decimal(0)
+
+    assert compute_single_clause_diff({
+        'has-area-code(711)': '+ 0.50',
+        'has-area-code(711) + passed-proficiency-exam(Keyboard Level III)': '+ 0.50',
+    }, ctx=ctx) == Decimal(1.0)
+
+    assert compute_single_clause_diff({
+        'has-area-code(711)': '+ 0.50',
+        'has-area-code(711) + passed-proficiency-exam(Keyboard Level IV)': '+ 0.50',
+    }, ctx=ctx) == Decimal(0.5)
