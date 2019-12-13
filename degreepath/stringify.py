@@ -156,20 +156,21 @@ def print_course(
         course = None
 
     if not rule["overridden"]:
-        if course is not None:
-            if course.is_incomplete:
-                status = "⛔️ [dnf]"
-            elif course.is_in_progress:
-                status = "💙 [ ip]"
-            elif course.is_repeat:
-                status = "💕 [rep]"
-            else:
-                status = "💚 [ ok]"
-
-            if course.course_type is CourseType.AP:
-                display_course = course.name
+        if course is None:
+            status = "🌀      "
+        elif course.is_incomplete:
+            status = "⛔️ [dnf]"
+        elif course.is_in_progress:
+            status = "💙 [ ip]"
+        elif course.is_repeat:
+            status = "💕 [rep]"
+        elif course:
+            status = "💚 [ ok]"
         else:
             status = "!!!!!!! "
+
+        if course and course.course_type is CourseType.AP:
+            display_course = course.name
     elif rule["ok"] and rule["overridden"]:
         if course:
             status = "💜 [ovr]"
