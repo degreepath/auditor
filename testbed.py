@@ -122,7 +122,7 @@ def fetch(args: argparse.Namespace) -> None:
 
     if args.clear:
         with sqlite_connect(args.db) as conn:
-            print('clearing cached data... ', end='')
+            print('clearing cached data... ', end='', flush=True)
             conn.execute('DELETE FROM server_data')
             conn.commit()
             print('cleared')
@@ -294,7 +294,7 @@ def baseline(args: argparse.Namespace) -> None:
     fetch_if_needed(args)
 
     with sqlite_connect(args.db) as conn:
-        print('clearing baseline data... ', end='')
+        print('clearing baseline data... ', end='', flush=True)
         conn.execute('DELETE FROM baseline')
         conn.commit()
         print('cleared')
@@ -345,7 +345,7 @@ def branch(args: argparse.Namespace) -> None:
     fetch_if_needed(args)
 
     with sqlite_connect(args.db) as conn:
-        print(f'clearing data for "{args.branch}"... ', end='')
+        print(f'clearing data for "{args.branch}"... ', end='', flush=True)
         conn.execute('DELETE FROM branch WHERE branch = ?', [args.branch])
         conn.commit()
         print('cleared')
