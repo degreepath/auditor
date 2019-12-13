@@ -83,7 +83,7 @@ def main() -> None:
 
 def fetch(args: argparse.Namespace) -> None:
     '''
-    $ python3 testbed.py fetch
+    # python3 testbed.py fetch
     Which run would you like to fetch?
     1. 217, 2019-12-06 10pm / 2019-12-07 2am [4hr]; 7701 total, 100 ok, 7601 not-ok
     2. 216, 2019-12-06 10pm / 2019-12-07 2am [4hr]; 7701 total, 100 ok, 7601 not-ok
@@ -91,7 +91,7 @@ def fetch(args: argparse.Namespace) -> None:
     4. 214, 2019-12-06 10pm / 2019-12-07 2am [4hr]; 7701 total, 100 ok, 7601 not-ok
     5. 213, 2019-12-06 10pm / 2019-12-07 2am [4hr]; 7701 total, 100 ok, 7601 not-ok
     219: 2019-12-06 23:07 / 2019-12-07 04:40 [5h 32m 58.7s]; 6,997 total, 201 ok, 6,796 not-ok
-    >>> 1
+    # >>> 1
     Fetching and storing into run-217.sqlite3
     76%|████████████████████████████         | 7568/10000 [00:33<00:10, 229.00it/s]
     '''
@@ -275,7 +275,7 @@ def fetch_if_needed(args: argparse.Namespace) -> None:
 
 def baseline(args: argparse.Namespace) -> None:
     '''
-    $ python3 testbed.py baseline
+    # python3 testbed.py baseline
     Saving initial results...  # skip printing if results are already downloaded
     Initial results saved: run 217
     Running local checks on all <30s audits...
@@ -326,7 +326,7 @@ def baseline(args: argparse.Namespace) -> None:
 
 def branch(args: argparse.Namespace) -> None:
     '''
-    $ python3 testbed.py baseline
+    # python3 testbed.py baseline
     Saving initial results...  # skip printing if results are already downloaded
     Initial results saved: run 217
     Running local checks on all <30s audits...
@@ -485,7 +485,7 @@ def audit(row: Tuple[str, str, str], *, db: str, area_spec: Dict, run_id: str = 
 
 def compare(args: argparse.Namespace) -> None:
     '''
-    $ python3 testbed.py compare <git-branch> --min 45s
+    # python3 testbed.py compare <git-branch> --min 45s
     Saving initial results...  # skip printing if results are already downloaded
     Initial results saved: run 217
     Running local checks on all <45s audits...
