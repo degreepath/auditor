@@ -22,6 +22,18 @@ class AreaPointer(Clausable):
     dept: Optional[str]
     gpa: Optional[decimal.Decimal]
 
+    @staticmethod
+    def with_code(code: str) -> 'AreaPointer':
+        return AreaPointer(
+            code=code,
+            status=AreaStatus.WhatIf,
+            kind=AreaType.Concentration,
+            name='',
+            degree='',
+            gpa=None,
+            dept=None,
+        )
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "type": "area",
