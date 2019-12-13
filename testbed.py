@@ -13,6 +13,7 @@ import decimal
 import logging
 import math
 import json
+import time
 import csv
 import sys
 import os
@@ -299,12 +300,19 @@ def baseline(args: argparse.Namespace) -> None:
         conn.commit()
         print('cleared')
 
+    minimum_duration = parse_ms_str(args.minimum_duration)
     area_specs, records = prepare_audits(args)
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
             futures = [
-                executor.submit(audit, row, db=args.db, area_spec=area_specs[f"{row[1]}/{row[2]}"])
+                executor.submit(
+                    audit,
+                    row,
+                    db=args.db,
+                    area_spec=area_specs[f"{row[1]}/{row[2]}"],
+                    timeout=minimum_duration.sec(),
+                )
                 for row in records
             ]
 
@@ -314,6 +322,8 @@ def baseline(args: argparse.Namespace) -> None:
                 except Exception as exc:
                     print('generated an exception: %s' % (exc))
                     break
+
+                assert db_args
 
                 with sqlite_cursor(conn) as curs:
                     try:
@@ -355,12 +365,20 @@ def branch(args: argparse.Namespace) -> None:
         conn.commit()
         print('cleared')
 
+    minimum_duration = parse_ms_str(args.minimum_duration)
     area_specs, records = prepare_audits(args)
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
             futures = [
-                executor.submit(audit, row, db=args.db, area_spec=area_specs[f"{row[1]}/{row[2]}"], run_id=args.branch)
+                executor.submit(
+                    audit,
+                    row,
+                    db=args.db,
+                    area_spec=area_specs[f"{row[1]}/{row[2]}"],
+                    run_id=args.branch,
+                    timeout=minimum_duration.sec(),
+                )
                 for row in records
             ]
 
@@ -370,6 +388,8 @@ def branch(args: argparse.Namespace) -> None:
                 except Exception as exc:
                     print('generated an exception: %s' % (exc))
                     break
+
+                assert db_args
 
                 with sqlite_cursor(conn) as curs:
                     try:
@@ -448,7 +468,14 @@ def load_area(root: pathlib.Path, catalog: str, code: str) -> Tuple[str, Dict]:
         return f"{catalog}/{code}", yaml.load(stream=infile, Loader=yaml.SafeLoader)
 
 
-def audit(row: Tuple[str, str, str], *, db: str, area_spec: Dict, run_id: str = '') -> Optional[Dict]:
+def audit(
+    row: Tuple[str, str, str],
+    *,
+    db: str,
+    area_spec: Dict,
+    run_id: str = '',
+    timeout: Optional[float] = None
+) -> Optional[Dict]:
     stnum, catalog, code = row
 
     with sqlite_connect(db, readonly=True) as conn:
@@ -465,6 +492,8 @@ def audit(row: Tuple[str, str, str], *, db: str, area_spec: Dict, run_id: str = 
             student_data=[json.loads(record['input_data'])],
             area_specs=[(area_spec, catalog)],
         )
+
+        start_time = time.perf_counter()
 
         for message in run(args):
             if isinstance(message, ResultMsg):
@@ -483,6 +512,8 @@ def audit(row: Tuple[str, str, str], *, db: str, area_spec: Dict, run_id: str = 
                     "result": json.dumps(result, sort_keys=True),
                 }
             else:
+                if timeout and time.perf_counter() - start_time >= timeout:
+                    raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}')
                 pass
 
     return None
