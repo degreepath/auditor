@@ -67,7 +67,7 @@ def main() -> None:
     parser_compare = subparsers.add_parser('compare', help='compare an audit run against the baseline')
     parser_compare.add_argument('run', help='the run to compare against the base run')
     parser_compare.add_argument('base', default='baseline', nargs='?', help='the base run to compare against')
-    parser_compare.add_argument('--mode', default='data', choices=['data', 'speed', 'all'], help='the base run to compare against')
+    parser_compare.add_argument('--mode', default='data', choices=['data', 'speed', 'all', 'ok'], help='the base run to compare against')
     parser_compare.set_defaults(func=compare)
 
     parser_print = subparsers.add_parser('print', help='show the baseline and branched audit results')
@@ -275,23 +275,6 @@ def fetch_if_needed(args: argparse.Namespace) -> None:
 
 
 def baseline(args: argparse.Namespace) -> None:
-    '''
-    # python3 testbed.py baseline
-    Saving initial results...  # skip printing if results are already downloaded
-    Initial results saved: run 217
-    Running local checks on all <30s audits...
-    76%|████████████████████████████         | 7568/10000 [00:33<00:10, 229.00it/s]
-    [...]
-    Found 300 unexpected audit result changes:
-    code,catalog,count
-    150,2016-17,100
-    200,2016-17,200
-    Details for 150, 2016-17:
-    code,catalog,stnum,iterations,now_ok,now_rank,now_max,then_ok,then_rank,then_max_rank
-    150,2016-17,123456,5,t,10,10,f,9,10
-    [...]
-    '''
-
     fetch_if_needed(args)
 
     with sqlite_connect(args.db) as conn:
@@ -301,7 +284,41 @@ def baseline(args: argparse.Namespace) -> None:
         print('cleared')
 
     minimum_duration = parse_ms_str(args.minimum_duration)
-    area_specs, records = prepare_audits(args)
+
+    with sqlite_connect(args.db) as conn:
+        results = conn.execute('''
+            SELECT
+                count(duration) as count,
+                coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
+            FROM server_data
+            WHERE duration < :min AND code NOT LIKE '45%'
+        ''', {'min': minimum_duration.sec(), 'workers': args.workers})
+
+        count, estimated_duration_s = results.fetchone()
+
+        pretty_min = pretty_ms(minimum_duration.ms())
+        pretty_dur = pretty_ms(estimated_duration_s * 1000)
+        print(f'{count:,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
+
+        results = conn.execute('''
+            SELECT catalog, code
+            FROM server_data
+            WHERE duration < :min AND code NOT LIKE '45%'
+            GROUP BY catalog, code
+        ''', {'min': minimum_duration.sec()})
+
+        area_specs = load_areas(args, list(results))
+
+        results = conn.execute('''
+            SELECT stnum, catalog, code
+            FROM server_data
+            WHERE duration < :min AND code NOT LIKE '45%'
+            ORDER BY duration, stnum, catalog, code DESC
+        ''', {'min': minimum_duration.sec()})
+
+        records = [(stnum, catalog, code) for stnum, catalog, code in results]
+
+    print(f'running {len(records):,} audits...')
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
@@ -311,7 +328,7 @@ def baseline(args: argparse.Namespace) -> None:
                     row,
                     db=args.db,
                     area_spec=area_specs[f"{row[1]}/{row[2]}"],
-                    timeout=minimum_duration.sec(),
+                    timeout=float(minimum_duration.sec()),
                 )
                 for row in records
             ]
@@ -323,7 +340,7 @@ def baseline(args: argparse.Namespace) -> None:
                     print('generated an exception: %s' % (exc))
                     break
 
-                assert db_args
+                assert db_args is not None
 
                 with sqlite_cursor(conn) as curs:
                     try:
@@ -366,7 +383,41 @@ def branch(args: argparse.Namespace) -> None:
         print('cleared')
 
     minimum_duration = parse_ms_str(args.minimum_duration)
-    area_specs, records = prepare_audits(args)
+
+    with sqlite_connect(args.db) as conn:
+        results = conn.execute('''
+            SELECT
+                count(duration) as count,
+                coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
+            FROM baseline
+            WHERE duration < :min
+        ''', {'min': minimum_duration.sec(), 'workers': args.workers})
+
+        count, estimated_duration_s = results.fetchone()
+
+        pretty_min = pretty_ms(minimum_duration.ms())
+        pretty_dur = pretty_ms(estimated_duration_s * 1000)
+        print(f'{count:,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
+
+        results = conn.execute('''
+            SELECT catalog, code
+            FROM baseline
+            WHERE duration < :min
+            GROUP BY catalog, code
+        ''', {'min': minimum_duration.sec()})
+
+        area_specs = load_areas(args, list(results))
+
+        results = conn.execute('''
+            SELECT stnum, catalog, code
+            FROM baseline
+            WHERE duration < :min
+            ORDER BY duration, stnum, catalog, code DESC
+        ''', {'min': minimum_duration.sec()})
+
+        records = [(stnum, catalog, code) for stnum, catalog, code in results]
+
+    print(f'running {len(records):,} audits...')
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
@@ -377,7 +428,7 @@ def branch(args: argparse.Namespace) -> None:
                     db=args.db,
                     area_spec=area_specs[f"{row[1]}/{row[2]}"],
                     run_id=args.branch,
-                    timeout=minimum_duration.sec(),
+                    timeout=float(minimum_duration.sec()),
                 )
                 for row in records
             ]
@@ -387,9 +438,9 @@ def branch(args: argparse.Namespace) -> None:
                     db_args = future.result()
                 except Exception as exc:
                     print('generated an exception: %s' % (exc))
-                    break
+                    continue
 
-                assert db_args
+                assert db_args is not None
 
                 with sqlite_cursor(conn) as curs:
                     try:
@@ -403,47 +454,6 @@ def branch(args: argparse.Namespace) -> None:
                         break
 
                     conn.commit()
-
-
-def prepare_audits(args: argparse.Namespace) -> Tuple[Dict[str, Any], Sequence[Tuple[str, str, str]]]:
-    minimum_duration = parse_ms_str(args.minimum_duration)
-
-    with sqlite_connect(args.db) as conn:
-        results = conn.execute('''
-            SELECT
-                count(duration) as count,
-                coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
-            FROM server_data
-            WHERE duration < :min
-        ''', {'min': minimum_duration.sec(), 'workers': args.workers})
-
-        count, estimated_duration_s = results.fetchone()
-
-        pretty_min = pretty_ms(minimum_duration.ms())
-        pretty_dur = pretty_ms(estimated_duration_s * 1000)
-        print(f'{count:,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
-
-        results = conn.execute('''
-            SELECT catalog, code
-            FROM server_data
-            WHERE duration < :min
-            GROUP BY catalog, code
-        ''', {'min': minimum_duration.sec()})
-
-        area_specs = load_areas(args, list(results))
-
-        results = conn.execute('''
-            SELECT stnum, catalog, code
-            FROM server_data
-            WHERE duration < :min
-            ORDER BY duration, stnum, catalog, code DESC
-        ''', {'min': minimum_duration.sec()})
-
-        records = [(stnum, catalog, code) for stnum, catalog, code in results]
-
-    print(f'running {len(records):,} audits...')
-
-    return area_specs, records
 
 
 def load_areas(args: argparse.Namespace, areas_to_load: Sequence[Dict]) -> Dict[str, Any]:
@@ -520,22 +530,17 @@ def audit(
 
 
 def compare(args: argparse.Namespace) -> None:
-    '''
-    # python3 testbed.py compare <git-branch> --min 45s
-    Saving initial results...  # skip printing if results are already downloaded
-    Initial results saved: run 217
-    Running local checks on all <45s audits...
-    76%|████████████████████████████         | 7568/10000 [00:33<00:10, 229.00it/s]
-    [...]
-    No audit results changed.
-    Checking out <git-branch>...
-    Running local checks on all <45s audits...
-    76%|████████████████████████████         | 7568/10000 [00:33<00:10, 229.00it/s]
-    [...]
-    No audit results changed.
-    value,stable,<git-branch>
-    wall,30s,20s  # wall time
-    '''
+    # check to see if the branch has any results
+    with sqlite_connect(args.db, readonly=True) as conn:
+        results = conn.execute('''
+            SELECT count(*) count
+            FROM branch
+            WHERE branch = ?
+        ''', [args.run])
+
+        record = results.fetchone()
+
+        assert record['count'] > 0, f'no records found for branch "{args.run}"'
 
     columns = [
         'b.stnum',
@@ -566,6 +571,16 @@ def compare(args: argparse.Namespace) -> None:
                 OR b.rank != r.rank
                 OR b.max_rank != r.max_rank
             )
+            ORDER BY b.stnum, b.catalog, b.code
+        '''.format(','.join(columns))
+
+    if args.mode == 'ok':
+        query = '''
+            SELECT {}
+            FROM baseline b
+                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
+            WHERE r.branch = ?
+                AND b.ok != r.ok
             ORDER BY b.stnum, b.catalog, b.code
         '''.format(','.join(columns))
 
@@ -654,7 +669,7 @@ def render_result(student_data: Dict, result: Dict) -> str:
     courses = [load_course(row) for row in student_data["courses"]]
     transcript = {c.clbid: c for c in courses}
 
-    return "\n".join(print_result(result, transcript=transcript, show_paths=False, show_ranks=False))
+    return "\n".join(print_result(result, transcript=transcript, show_paths=False))
 
 
 @contextlib.contextmanager
