@@ -37,6 +37,9 @@ class BaseRequirementRule(Base):
         return "requirement"
 
     def rank(self) -> Summable:
+        if self.audited_by is not None and self.ok():
+            return 1
+
         if self.result is None:
             return 0
 
@@ -44,8 +47,15 @@ class BaseRequirementRule(Base):
         return self.result.rank() + boost
 
     def max_rank(self) -> Summable:
+        if self.audited_by is not None and self.ok():
+            return self.rank()
+
         if self.result is None:
             return 1
+
+        if self.ok():
+            return self.rank()
+
         return self.result.max_rank() + 1
 
     def is_always_disjoint(self) -> bool:
