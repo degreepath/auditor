@@ -429,14 +429,40 @@ def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional
     diff_value = Decimal(0)
 
     for cond, cond_action in conditionals.items():
-        assert cond.split('(')[0] == 'has-area-code'
-        assert ctx
+        conditions = cond.split(' + ')
+        condition_results = True
 
-        area_code = cond.split('(')[1].rstrip(')')
-        if not ctx.has_area_code(area_code):
+        for condition in conditions:
+            key = condition.split('(')[0]
+
+            if key == 'has-area-code':
+                assert ctx
+
+                area_code = condition.split('(')[1].rstrip(')').strip()
+                if not ctx.has_area_code(area_code):
+                    condition_results = False
+
+            elif key == 'passed-proficiency-exam':
+                # note: this was prototyped for BM Performance, but they
+                # actually want to check for proficiency _exams_ and make you
+                # take extra credits if you tested out of the courses, so this
+                # check needs to be extended to check for proficiency exams -
+                # we don't currently store exam status in MusicProficiencies,
+                # just whether you have the proficiency or not.
+                assert ctx
+
+                proficiency = condition.split('(')[1].rstrip(')').strip()
+
+                if ctx.music_proficiencies.status(of=proficiency) is not ResultStatus.Pass:
+                    condition_results = False
+
+            else:
+                raise TypeError(f"unknown $ifs key {key}")
+
+        if not condition_results:
             continue
 
-        cond_action_mode, cond_action_inc = cond_action.split(' ')
+        cond_action_mode, cond_action_inc = cond_action.split(' ', maxsplit=1)
 
         if cond_action_mode == '+':
             diff_value += Decimal(cond_action_inc)
