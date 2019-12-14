@@ -171,6 +171,9 @@ class RequirementContext:
     def reset_claims(self) -> None:
         self.claims = defaultdict(list)
 
+    def with_empty_claims(self) -> 'RequirementContext':
+        return attr.evolve(self, claims=defaultdict(list))
+
     def make_claim(  # noqa: C901
         self,
         *,
