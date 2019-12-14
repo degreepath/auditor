@@ -151,17 +151,24 @@ class AreaOfStudy(Base):
         forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)
         forced_courses = {c.clbid: c for c in transcript if c.clbid in forced_clbids}
 
+        ctx = RequirementContext(
+            areas=tuple(areas),
+            music_performances=tuple(music_performances),
+            music_attendances=tuple(music_attendances),
+            music_proficiencies=music_proficiencies,
+            exceptions=exceptions,
+            multicountable=self.multicountable,
+        )
+
         for limited_transcript in self.limit.limited_transcripts(courses=transcript):
             logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
-            ctx = RequirementContext(
-                areas=tuple(areas),
-                music_performances=tuple(music_performances),
-                music_attendances=tuple(music_attendances),
-                music_proficiencies=music_proficiencies,
-                exceptions=exceptions,
-                multicountable=self.multicountable,
-            ).with_transcript(limited_transcript, full=transcript, forced=forced_courses, including_failed=transcript_with_failed)
+            ctx = ctx.with_transcript(
+                limited_transcript,
+                full=transcript,
+                forced=forced_courses,
+                including_failed=transcript_with_failed,
+            )
 
             for sol in self.result.solutions(ctx=ctx, depth=1):
                 ctx.reset_claims()
