@@ -116,8 +116,8 @@ def audit(
         transcript_with_failed=transcript_with_failed,
     ):
         if total_count == 0:
-            startup_time = time.perf_counter() - iter_start
             iter_start = time.perf_counter()
+            startup_time = time.perf_counter() - iter_start
 
         total_count += 1
 
