@@ -46,7 +46,7 @@ class CourseResult(Result, BaseCourseRule):
         }
 
     def claims(self) -> List['ClaimAttempt']:
-        if self.claim_attempt:
+        if self.claim_attempt and self.claim_attempt.failed is False:
             return [self.claim_attempt]
         else:
             return []

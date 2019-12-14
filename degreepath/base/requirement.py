@@ -58,6 +58,12 @@ class BaseRequirementRule(Base):
 
         return self.result.max_rank() + 1
 
+    def in_progress(self) -> bool:
+        if self.result is None:
+            return super().in_progress()
+
+        return self.result.in_progress()
+
     def is_always_disjoint(self) -> bool:
         if self.result is None:
             return False
