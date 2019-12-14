@@ -171,8 +171,12 @@ class AreaOfStudy(Base):
             )
 
             for sol in self.result.solutions(ctx=ctx, depth=1):
-                ctx.reset_claims()
-                yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx)
+                # be sure to start with an empty claims list - without
+                # clearing it here, these calls only work if you process the
+                # `.audit()` calls in sequence directly from the generator;
+                # generating a full list of all solutions and then iterating
+                # over that will accidentally share state.
+                yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx.with_empty_claims())
 
         logger.debug("all solutions generated")
 
