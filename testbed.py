@@ -77,6 +77,12 @@ def main() -> None:
     parser_print.add_argument('code')
     parser_print.set_defaults(func=render)
 
+    parser_print = subparsers.add_parser('run', help='run an audit against the current code')
+    parser_print.add_argument('stnum', help='')
+    parser_print.add_argument('catalog')
+    parser_print.add_argument('code')
+    parser_print.set_defaults(func=run_one)
+
     args = parser.parse_args()
     init_local_db(args)
     args.func(args)
@@ -532,13 +538,13 @@ def audit(
 def compare(args: argparse.Namespace) -> None:
     # check to see if the branch has any results
     with sqlite_connect(args.db, readonly=True) as conn:
-        results = conn.execute('''
+        count_results = conn.execute('''
             SELECT count(*) count
             FROM branch
             WHERE branch = ?
         ''', [args.run])
 
-        record = results.fetchone()
+        record = count_results.fetchone()
 
         assert record['count'] > 0, f'no records found for branch "{args.run}"'
 
@@ -574,7 +580,7 @@ def compare(args: argparse.Namespace) -> None:
             ORDER BY b.stnum, b.catalog, b.code
         '''.format(','.join(columns))
 
-    if args.mode == 'ok':
+    elif args.mode == 'ok':
         query = '''
             SELECT {}
             FROM baseline b
@@ -670,6 +676,28 @@ def render_result(student_data: Dict, result: Dict) -> str:
     transcript = {c.clbid: c for c in courses}
 
     return "\n".join(print_result(result, transcript=transcript, show_paths=False))
+
+
+def run_one(args: argparse.Namespace) -> None:
+    stnum = args.stnum
+    catalog = args.catalog
+    code = args.code
+
+    with sqlite_connect(args.db, readonly=True) as conn:
+        results = conn.execute('''
+            SELECT d.input_data
+            FROM server_data d
+            WHERE (d.stnum, d.catalog, d.code) = (:stnum, :catalog, :code)
+        ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+
+        record = results.fetchone()
+        input_data = json.loads(record['input_data'])
+
+    areas = load_areas(args, [{'catalog': catalog, 'code': code}])
+    result_msg = audit((stnum, catalog, code), db=args.db, area_spec=areas[f"{catalog}/{code}"])
+    assert result_msg
+
+    print(render_result(input_data, json.loads(result_msg['result'])))
 
 
 @contextlib.contextmanager
