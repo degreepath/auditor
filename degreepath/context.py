@@ -4,6 +4,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 import logging
 
+from .base.course import BaseCourseRule
 from .data import CourseInstance, AreaPointer, MusicPerformance, MusicAttendance, MusicProficiencies
 from .data.course_enums import CourseType
 from .claim import ClaimAttempt, Claim
@@ -65,22 +66,19 @@ class RequirementContext:
     def transcript_with_excluded(self) -> List[CourseInstance]:
         return self.transcript_with_excluded_
 
-    def find_courses(
-        self,
-        *,
-        course: Optional[str] = None,
-        name: Optional[str] = None,
-        ap: Optional[str] = None,
-        institution: Optional[str] = None,
-        clbid: Optional[str] = None,
-    ) -> Iterator[CourseInstance]:
-        if clbid:
-            match_by_clbid = self.find_course_by_clbid(clbid)
+    def find_courses(self, *, rule: BaseCourseRule) -> Iterator[CourseInstance]:
+        if rule.clbid:
+            match_by_clbid = self.find_course_by_clbid(rule.clbid)
             if match_by_clbid:
                 yield match_by_clbid
             return
 
-        query = (course, name, ap, institution, True if ap else None)
+        ap = rule.ap
+        course = rule.course
+        institution = rule.institution
+        name = rule.name
+
+        query = (course, name, ap, institution, CourseType.AP if ap else None)
 
         for c in self.transcript():
             if not c.is_stolaf and institution is None and ap is None:
@@ -91,7 +89,7 @@ class RequirementContext:
                 c.name if name else None,
                 c.name if ap else None,
                 c.institution if institution else None,
-                c.course_type is CourseType.AP if ap else None,
+                c.course_type if ap else None,
             )
 
             if query == matcher:

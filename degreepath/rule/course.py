@@ -96,14 +96,14 @@ class CourseRule(Rule, BaseCourseRule):
             return True
 
         try:
-            next(ctx.find_courses(course=self.course, ap=self.ap, institution=self.institution, clbid=self.clbid))
+            next(ctx.find_courses(rule=self))
             return True
         except StopIteration:
             return False
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
         for insert in ctx.get_insert_exceptions(self.path):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []
 
-        return list(ctx.find_courses(course=self.course, ap=self.ap, institution=self.institution, clbid=self.clbid))
+        return list(ctx.find_courses(rule=self))

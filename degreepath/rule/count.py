@@ -137,7 +137,7 @@ class CountRule(Rule, BaseCountRule):
         else:
             count = int(data["count"])
 
-        allowed_keys = set(['of', 'all', 'count', 'any', 'either', 'both', 'at_most', 'audit'])
+        allowed_keys = {'of', 'all', 'count', 'any', 'either', 'both', 'at_most', 'audit'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -186,6 +186,9 @@ class CountRule(Rule, BaseCountRule):
         logger.debug('%s discovering children with potential', self.path)
         all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
 
+        solved_results: Tuple[Result, ...]
+        solved_results__rules: Set[Rule]
+
         if depth == 1 and all_potential_rules and not self.audit_clauses:
             logger.debug('%s searching for disjoint children', self.path)
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
@@ -195,9 +198,9 @@ class CountRule(Rule, BaseCountRule):
 
             independent_rule__results = self.solve_independent_children(ctx=ctx, independent_children=independent_children)
 
+            solved_results = tuple(sorted((result for result in independent_rule__results.values() if result is not None), key=sort_by_path))
+            solved_results__rules = set(r for r, result in independent_rule__results.items() if result is not None)
             potential_rules = tuple(sorted(codependent_children, key=sort_by_path))
-            solved_results: Tuple[Result, ...] = tuple(sorted((result for result in independent_rule__results.values() if result is not None), key=sort_by_path))
-            solved_results__rules: Set[Rule] = set(r for r, result in independent_rule__results.items() if result is not None)
         else:
             solved_results = tuple()
             solved_results__rules = set()
@@ -208,7 +211,6 @@ class CountRule(Rule, BaseCountRule):
 
         potential_len = len(potential_rules)
         all_children = set(items)
-
         all_but_results = set(all_children - solved_results__rules)
 
         did_yield = False
@@ -367,9 +369,4 @@ class CountRule(Rule, BaseCountRule):
         return any(r.has_potential(ctx=ctx) for r in self.items)
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
-        matches = [c for r in self.items for c in r.all_matches(ctx=ctx)]
-
-        for insert in ctx.get_insert_exceptions(self.path):
-            matches.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
-
-        return matches
+        return [course for rule in self.items for course in rule.all_matches(ctx=ctx)]
