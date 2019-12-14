@@ -289,11 +289,13 @@ def print_query(
         yield f"{prefix} Matching courses:"
         for clm in rule["claims"]:
             course = transcript.get(clm['claim']["clbid"], None)
-            if course:
-                inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
-                yield f"{prefix}    {inserted_msg}{course.course()} \"{course.name}\" ({course.clbid})"
-            else:
+            if not course:
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
+                continue
+
+            inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
+            ip_msg = "[ip] " if course.is_in_progress else ""
+            yield f"{prefix}    {inserted_msg}{ip_msg}{course.course()} \"{course.name}\" ({course.clbid})"
 
     if rule["failures"]:
         yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
