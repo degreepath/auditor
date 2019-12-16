@@ -79,7 +79,15 @@ class AreaFileNotFoundMsg:
     stnums: Sequence[str]
 
 
-Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg, AreaFileNotFoundMsg]
+Message = Union[
+    ProgressMsg,
+    NoAuditsCompletedMsg,
+    ExceptionMsg,
+    ResultMsg,
+    AuditStartMsg,
+    NoStudentsMsg,
+    AreaFileNotFoundMsg,
+]
 
 
 def audit(
