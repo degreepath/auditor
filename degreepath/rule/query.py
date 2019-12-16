@@ -122,13 +122,14 @@ class QueryRule(Rule, BaseQueryRule):
 
         inserted_clbids: Tuple[str, ...] = tuple()
         force_inserted_clbids: Tuple[str, ...] = tuple()
-        for insert in ctx.get_insert_exceptions(self.path):
-            inserted_clbids = (*inserted_clbids, insert.clbid)
-            if insert.forced:
-                force_inserted_clbids = (*force_inserted_clbids, insert.clbid)
+        if self.source is QuerySource.Courses:
+            for insert in ctx.get_insert_exceptions(self.path):
+                inserted_clbids = (*inserted_clbids, insert.clbid)
+                if insert.forced:
+                    force_inserted_clbids = (*force_inserted_clbids, insert.clbid)
 
-            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-            data.append(matched_course)
+                matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
+                data.append(matched_course)
 
         return data, inserted_clbids, force_inserted_clbids
 
