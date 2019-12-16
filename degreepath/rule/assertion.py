@@ -79,7 +79,7 @@ class ConditionalAssertionRule(Rule):
 
         condition = AssertionRule.load(data['if'], c=c, ctx=ctx, path=[*path, '#if'])
         when_yes = AssertionRule.load(data['then'], c=c, ctx=ctx, path=path)
-        when_no = AssertionRule.load(data['else'], c=c, ctx=ctx, path=path) if data['else'] is not None else None
+        when_no = AssertionRule.load(data['else'], c=c, ctx=ctx, path=path) if data.get('else', None) is not None else None
 
         return ConditionalAssertionRule(condition=condition, when_yes=when_yes, when_no=when_no, path=tuple(path))
 
