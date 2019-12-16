@@ -77,17 +77,23 @@ def main() -> None:
     parser_print.add_argument('code')
     parser_print.set_defaults(func=render)
 
-    parser_print = subparsers.add_parser('run', help='run an audit against the current code')
-    parser_print.add_argument('stnum', help='')
-    parser_print.add_argument('catalog')
-    parser_print.add_argument('code')
-    parser_print.set_defaults(func=run_one)
+    parser_query = subparsers.add_parser('query', help='query the database')
+    parser_query.add_argument('--stnum', default=None)
+    parser_query.add_argument('--catalog', default=None)
+    parser_query.add_argument('--code', default=None)
+    parser_query.set_defaults(func=query)
 
-    parser_print = subparsers.add_parser('extract', help='extract input data for a student')
-    parser_print.add_argument('stnum', help='')
-    parser_print.add_argument('catalog')
-    parser_print.add_argument('code')
-    parser_print.set_defaults(func=extract_one)
+    parser_run = subparsers.add_parser('run', help='run an audit against the current code')
+    parser_run.add_argument('stnum', help='')
+    parser_run.add_argument('catalog')
+    parser_run.add_argument('code')
+    parser_run.set_defaults(func=run_one)
+
+    parser_extract = subparsers.add_parser('extract', help='extract input data for a student')
+    parser_extract.add_argument('stnum', help='')
+    parser_extract.add_argument('catalog')
+    parser_extract.add_argument('code')
+    parser_extract.set_defaults(func=extract_one)
 
     args = parser.parse_args()
     init_local_db(args)
@@ -473,14 +479,18 @@ def load_areas(args: argparse.Namespace, areas_to_load: Sequence[Dict]) -> Dict[
     assert root_env
     area_root = pathlib.Path(root_env)
 
-    print(f'loading {len(areas_to_load):,} areas...')
     area_specs = {}
-    with ProcessPoolExecutor(max_workers=args.workers) as executor:
-        futures = [executor.submit(load_area, area_root, record['catalog'], record['code']) for record in areas_to_load]
 
-        for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
-            key, area = future.result()
-            area_specs[key] = area
+    if len(areas_to_load) > args.workers:
+        print(f'loading {len(areas_to_load):,} areas...')
+        with ProcessPoolExecutor(max_workers=args.workers) as executor:
+            futures = [executor.submit(load_area, area_root, record['catalog'], record['code']) for record in areas_to_load]
+
+            for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
+                key, area = future.result()
+                area_specs[key] = area
+    else:
+        area_specs = dict(load_area(area_root, record['catalog'], record['code']) for record in areas_to_load)
 
     return area_specs
 
@@ -493,6 +503,7 @@ def load_area(root: pathlib.Path, catalog: str, code: str) -> Tuple[str, Dict]:
 def audit(
     row: Tuple[str, str, str],
     *,
+    data: Optional[Dict] = None,
     db: str,
     area_spec: Dict,
     run_id: str = '',
@@ -500,43 +511,49 @@ def audit(
 ) -> Optional[Dict]:
     stnum, catalog, code = row
 
-    with sqlite_connect(db, readonly=True) as conn:
-        results = conn.execute('''
-            SELECT input_data
-            FROM server_data
-            WHERE (stnum, catalog, code) = (?, ?, ?)
-        ''', [stnum, catalog, code])
+    if not data:
+        with sqlite_connect(db, readonly=True) as conn:
+            results = conn.execute('''
+                SELECT input_data
+                FROM server_data
+                WHERE (stnum, catalog, code) = (?, ?, ?)
+            ''', [stnum, catalog, code])
 
-        record = results.fetchone()
-        assert record is not None
+            record = results.fetchone()
+            assert record is not None
 
+            args = Arguments(
+                student_data=[json.loads(record['input_data'])],
+                area_specs=[(area_spec, catalog)],
+            )
+    else:
         args = Arguments(
-            student_data=[json.loads(record['input_data'])],
+            student_data=[data],
             area_specs=[(area_spec, catalog)],
         )
 
-        start_time = time.perf_counter()
+    start_time = time.perf_counter()
 
-        for message in run(args):
-            if isinstance(message, ResultMsg):
-                result = message.result.to_dict()
-                return {
-                    "run": run_id,
-                    "stnum": stnum,
-                    "catalog": catalog,
-                    "code": code,
-                    "iterations": message.count,
-                    "duration": message.elapsed_ms / 1000,
-                    "gpa": result["gpa"],
-                    "ok": result["ok"],
-                    "rank": result["rank"],
-                    "max_rank": result["max_rank"],
-                    "result": json.dumps(result, sort_keys=True),
-                }
-            else:
-                if timeout and time.perf_counter() - start_time >= timeout:
-                    raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}')
-                pass
+    for message in run(args):
+        if isinstance(message, ResultMsg):
+            result = message.result.to_dict()
+            return {
+                "run": run_id,
+                "stnum": stnum,
+                "catalog": catalog,
+                "code": code,
+                "iterations": message.count,
+                "duration": message.elapsed_ms / 1000,
+                "gpa": result["gpa"],
+                "ok": result["ok"],
+                "rank": result["rank"],
+                "max_rank": result["max_rank"],
+                "result": json.dumps(result, sort_keys=True),
+            }
+        else:
+            if timeout and time.perf_counter() - start_time >= timeout:
+                raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}')
+            pass
 
     return None
 
@@ -684,6 +701,27 @@ def render_result(student_data: Dict, result: Dict) -> str:
     return "\n".join(print_result(result, transcript=transcript, show_paths=False))
 
 
+def query(args: argparse.Namespace) -> None:
+    stnum = args.stnum
+    catalog = args.catalog
+    code = args.code
+
+    with sqlite_connect(args.db, readonly=True) as conn:
+        # conn.set_trace_callback(print)
+
+        results = conn.execute('''
+            SELECT stnum, catalog, code
+            FROM server_data d
+            WHERE
+                CASE WHEN :stnum IS NULL THEN :stnum IS NULL ELSE d.stnum = :stnum END
+                AND CASE WHEN :catalog IS NULL THEN :catalog IS NULL ELSE d.catalog = :catalog END
+                AND CASE WHEN :code IS NULL THEN :code IS NULL ELSE d.code = :code END
+        ''', {'stnum': stnum, 'catalog': catalog, 'code': code})
+
+        for record in results:
+            print(record['stnum'], record['catalog'], record['code'])
+
+
 def run_one(args: argparse.Namespace) -> None:
     stnum = args.stnum
     catalog = args.catalog
@@ -693,14 +731,14 @@ def run_one(args: argparse.Namespace) -> None:
         results = conn.execute('''
             SELECT d.input_data
             FROM server_data d
-            WHERE (d.stnum, d.catalog, d.code) = (:stnum, :catalog, :code)
-        ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+            WHERE (d.stnum) = (:stnum)
+        ''', {'stnum': stnum})
 
         record = results.fetchone()
         input_data = json.loads(record['input_data'])
 
     areas = load_areas(args, [{'catalog': catalog, 'code': code}])
-    result_msg = audit((stnum, catalog, code), db=args.db, area_spec=areas[f"{catalog}/{code}"])
+    result_msg = audit((stnum, catalog, code), data=input_data, db=args.db, area_spec=areas[f"{catalog}/{code}"])
     assert result_msg
 
     print(render_result(input_data, json.loads(result_msg['result'])))
