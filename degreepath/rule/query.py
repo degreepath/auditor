@@ -109,12 +109,7 @@ class QueryRule(Rule, BaseQueryRule):
         else:
             raise TypeError(f'unknown type of data for query, {self.source}')
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:  # noqa: C901
-        if ctx.get_waive_exception(self.path):
-            logger.debug("forced override on %s", self.path)
-            yield QuerySolution.from_rule(rule=self, output=tuple(), overridden=True)
-            return
-
+    def get_filtered_data(self, *, ctx: 'RequirementContext') -> Tuple[List[Clausable], Tuple[str, ...], Tuple[str, ...]]:
         data = list(self.get_data(ctx=ctx))
 
         if self.where is not None:
@@ -134,6 +129,16 @@ class QueryRule(Rule, BaseQueryRule):
 
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             data.append(matched_course)
+
+        return data, inserted_clbids, force_inserted_clbids
+
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:  # noqa: C901
+        if ctx.get_waive_exception(self.path):
+            logger.debug("forced override on %s", self.path)
+            yield QuerySolution.from_rule(rule=self, output=tuple(), overridden=True)
+            return
+
+        data, inserted_clbids, force_inserted_clbids = self.get_filtered_data(ctx=ctx)
 
         did_iter = False
         for item_set in self.limit.limited_transcripts(data):
