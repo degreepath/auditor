@@ -309,7 +309,7 @@ def baseline(args: argparse.Namespace) -> None:
                 count(duration) as count,
                 coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
             FROM server_data
-            WHERE duration < :min AND code NOT LIKE '45%'
+            WHERE duration < :min
         ''', {'min': minimum_duration.sec(), 'workers': args.workers})
 
         count, estimated_duration_s = results.fetchone()
@@ -321,7 +321,7 @@ def baseline(args: argparse.Namespace) -> None:
         results = conn.execute('''
             SELECT catalog, code
             FROM server_data
-            WHERE duration < :min AND code NOT LIKE '45%'
+            WHERE duration < :min
             GROUP BY catalog, code
         ''', {'min': minimum_duration.sec()})
 
@@ -330,7 +330,7 @@ def baseline(args: argparse.Namespace) -> None:
         results = conn.execute('''
             SELECT stnum, catalog, code
             FROM server_data
-            WHERE duration < :min AND code NOT LIKE '45%'
+            WHERE duration < :min
             ORDER BY duration, stnum, catalog, code DESC
         ''', {'min': minimum_duration.sec()})
 
