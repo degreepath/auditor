@@ -13,7 +13,7 @@ from degreepath.main import run
 from degreepath.ms import pretty_ms
 from degreepath.stringify import summarize
 from degreepath.stringify_csv import to_csv
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
+from degreepath.audit import EstimateMsg, NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 dotenv.load_dotenv(verbose=False)
 
@@ -63,6 +63,7 @@ def main() -> int:  # noqa: C901
         stop_after=cli_args.stop_after,
         student_files=cli_args.student_files,
         transcript_only=cli_args.transcript,
+        estimate_only=cli_args.estimate,
     )
 
     if has_tracemalloc:
@@ -93,6 +94,10 @@ def main() -> int:  # noqa: C901
 
         elif isinstance(msg, AreaFileNotFoundMsg):
             pass
+
+        elif isinstance(msg, EstimateMsg):
+            if not cli_args.quiet:
+                print(f"{msg.estimate:,} estimated solution{'s' if msg.estimate != 1 else ''}", file=sys.stderr)
 
         elif isinstance(msg, ProgressMsg):
             if (cli_args.tracemalloc_init and first_progress_message) or cli_args.tracemalloc_each:

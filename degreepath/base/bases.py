@@ -125,8 +125,20 @@ class Rule(Base):
         raise NotImplementedError(f'must define a get_requirement_names() method')
 
     @abc.abstractmethod
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        raise NotImplementedError(f'must define a get_required_courses() method')
+
+    @abc.abstractmethod
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'Rule':
+        raise NotImplementedError(f'must define an exclude_required_courses() method')
+
+    @abc.abstractmethod
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise NotImplementedError(f'must define a solutions() method')
+
+    @abc.abstractmethod
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+        raise NotImplementedError(f'must define an estimate() method')
 
     @abc.abstractmethod
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:

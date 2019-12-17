@@ -12,7 +12,7 @@ from ..solve import find_best_solution
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable  # noqa: F401
+    from ..data import Clausable, CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +118,18 @@ class RequirementRule(Rule, BaseRequirementRule):
     def get_requirement_names(self) -> List[str]:
         return [self.name]
 
+    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        if self.result:
+            return self.result.get_required_courses(ctx=ctx)
+        return tuple()
+
+    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'RequirementRule':
+        if not self.result:
+            return self
+
+        result = self.result.exclude_required_courses(to_exclude)
+        return attr.evolve(self, result=result)
+
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
         if ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
@@ -136,6 +148,15 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         for solution in self.result.solutions(ctx=ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
+
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+        if ctx.get_waive_exception(self.path):
+            return 1
+
+        if not self.result:
+            return 1
+
+        return self.result.estimate(ctx=ctx)
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):

@@ -20,6 +20,7 @@ class Arguments:
     area_specs: Sequence[Tuple[dict, str]] = tuple()
 
     transcript_only: bool = False
+    estimate_only: bool = False
     gpa_only: bool = False
 
     print_all: bool = False
@@ -66,6 +67,11 @@ class NoAuditsCompletedMsg:
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
+class EstimateMsg:
+    estimate: int
+
+
+@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ProgressMsg:
     count: int
     recent_iters: List[float]
@@ -79,7 +85,16 @@ class AreaFileNotFoundMsg:
     stnums: Sequence[str]
 
 
-Message = Union[ProgressMsg, NoAuditsCompletedMsg, ExceptionMsg, ResultMsg, AuditStartMsg, NoStudentsMsg, AreaFileNotFoundMsg]
+Message = Union[
+    AreaFileNotFoundMsg,
+    AuditStartMsg,
+    EstimateMsg,
+    ExceptionMsg,
+    NoAuditsCompletedMsg,
+    NoStudentsMsg,
+    ProgressMsg,
+    ResultMsg,
+]
 
 
 def audit(
@@ -103,6 +118,20 @@ def audit(
     start = time.perf_counter()
     iter_start = time.perf_counter()
     startup_time = 0.00
+
+    # estimate = area.estimate(
+    #     transcript=transcript,
+    #     areas=tuple(area_pointers),
+    #     music_performances=music_performances,
+    #     music_attendances=music_attendances,
+    #     music_proficiencies=music_proficiencies,
+    #     exceptions=list(exceptions),
+    #     transcript_with_failed=transcript_with_failed,
+    # )
+    # yield EstimateMsg(estimate=estimate)
+
+    # if args.estimate_only:
+    #     return
 
     potentials_for_all_clauses = find_potentials(area, constants)
 

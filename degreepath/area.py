@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Set, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
+from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
 
@@ -37,6 +37,7 @@ class AreaOfStudy(Base):
     path: Tuple[str, ...]
 
     common_rules: Tuple[Rule, ...]
+    excluded_clbids: FrozenSet[str] = frozenset()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -48,6 +49,7 @@ class AreaOfStudy(Base):
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
             "limit": self.limit.to_dict(),
+            "excluded": sorted(clbid for clbid in self.excluded_clbids),
         }
 
     def type(self) -> str:
@@ -99,6 +101,16 @@ class AreaOfStudy(Base):
         )
         assert result, TypeError(f'expected load_rule to process {specification["result"]}')
 
+        # Automatically exclude any "required" courses
+        excluded_clbids: FrozenSet[str] = frozenset()
+        if not emphasis_validity_check:
+            required_courses = result.get_required_courses(ctx=ctx)
+            excluded_clbids = frozenset(c.clbid for c in required_courses)
+            result = result.exclude_required_courses(required_courses)
+
+            for crs in required_courses:
+                logger.debug(f'excluding {crs.clbid} {crs.identity_}')
+
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
         multicountable_rules: Dict[str, List[Tuple[str, ...]]] = {
@@ -126,6 +138,7 @@ class AreaOfStudy(Base):
             limit=limit,
             path=('$',),
             code=this_code,
+            excluded_clbids=excluded_clbids,
             common_rules=tuple(prepare_common_rules(
                 other_areas=tuple(areas),
                 dept_code=dept,
@@ -183,6 +196,42 @@ class AreaOfStudy(Base):
 
         logger.debug("all solutions generated")
 
+    def estimate(
+        self, *,
+        transcript: Sequence[CourseInstance],
+        transcript_with_failed: Sequence[CourseInstance] = tuple(),
+        areas: Sequence[AreaPointer],
+        music_performances: Sequence[MusicPerformance] = tuple(),
+        music_attendances: Sequence[MusicAttendance] = tuple(),
+        music_proficiencies: MusicProficiencies = MusicProficiencies(),
+        exceptions: List[RuleException],
+    ) -> int:
+        forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)
+        forced_courses = {c.clbid: c for c in transcript if c.clbid in forced_clbids}
+
+        ctx = RequirementContext(
+            areas=tuple(areas),
+            music_performances=tuple(music_performances),
+            music_attendances=tuple(music_attendances),
+            music_proficiencies=music_proficiencies,
+            exceptions=exceptions,
+            multicountable=self.multicountable,
+        )
+
+        acc = 0
+
+        for limited_transcript in self.limit.limited_transcripts(courses=transcript):
+            ctx = ctx.with_transcript(
+                limited_transcript,
+                full=transcript,
+                forced=forced_courses,
+                including_failed=transcript_with_failed,
+            )
+
+            acc += self.result.estimate(ctx=ctx, depth=1)
+
+        return acc
+
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AreaSolution(AreaOfStudy):
@@ -204,6 +253,7 @@ class AreaSolution(AreaOfStudy):
             solution=solution,
             context=ctx,
             common_rules=area.common_rules,
+            excluded_clbids=area.excluded_clbids,
         )
 
     def audit(self) -> 'AreaResult':
@@ -288,6 +338,7 @@ class AreaResult(AreaOfStudy, Result):
             context=ctx,
             result=result,
             common_rules=area.common_rules,
+            excluded_clbids=area.excluded_clbids,
         )
 
     def gpa(self) -> decimal.Decimal:

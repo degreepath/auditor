@@ -23,7 +23,7 @@ from typing import Optional, Any, Tuple, Dict, Sequence, Iterator
 
 from degreepath.main import run
 from degreepath.ms import pretty_ms, parse_ms_str
-from degreepath.audit import ResultMsg, Arguments
+from degreepath.audit import ResultMsg, EstimateMsg, Arguments, AuditStartMsg
 from degreepath.data.course import load_course
 from degreepath.stringify import print_result
 
@@ -88,6 +88,12 @@ def main() -> None:
     parser_run.add_argument('catalog')
     parser_run.add_argument('code')
     parser_run.set_defaults(func=run_one)
+
+    parser_run = subparsers.add_parser('invoke', help='')
+    parser_run.add_argument('stnum', help='')
+    parser_run.add_argument('catalog')
+    parser_run.add_argument('code')
+    parser_run.set_defaults(func=print_invocation)
 
     parser_extract = subparsers.add_parser('extract', help='extract input data for a student')
     parser_extract.add_argument('stnum', help='')
@@ -221,6 +227,16 @@ def init_local_db(args: argparse.Namespace) -> None:
         conn.execute('CREATE INDEX IF NOT EXISTS baseline_cmp_idx ON baseline (ok, gpa, iterations, rank, max_rank)')
 
         conn.execute('''
+            CREATE TABLE IF NOT EXISTS baseline_ip (
+                stnum text not null,
+                catalog text not null,
+                code text not null,
+                estimate integer not null,
+                ts datetime not null default (datetime('now'))
+            )
+        ''')
+
+        conn.execute('''
             CREATE TABLE IF NOT EXISTS branch (
                 branch text not null,
                 stnum text not null,
@@ -238,6 +254,17 @@ def init_local_db(args: argparse.Namespace) -> None:
         conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS branch_key_idx ON branch (branch, stnum, catalog, code)')
         conn.execute('CREATE INDEX IF NOT EXISTS branch_cmp_idx ON branch (ok, gpa, iterations, rank, max_rank)')
         conn.execute('CREATE INDEX IF NOT EXISTS branch_cmp_branch_idx ON branch (branch, ok, gpa, iterations, rank, max_rank)')
+
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS branch_ip (
+                branch text not null,
+                stnum text not null,
+                catalog text not null,
+                code text not null,
+                estimate integer not null,
+                ts datetime not null default (datetime('now'))
+            )
+        ''')
 
         conn.commit()
 
@@ -298,6 +325,7 @@ def baseline(args: argparse.Namespace) -> None:
     with sqlite_connect(args.db) as conn:
         print('clearing baseline data... ', end='', flush=True)
         conn.execute('DELETE FROM baseline')
+        conn.execute('DELETE FROM baseline_ip')
         conn.commit()
         print('cleared')
 
@@ -309,7 +337,7 @@ def baseline(args: argparse.Namespace) -> None:
                 count(duration) as count,
                 coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
             FROM server_data
-            WHERE duration < :min
+            WHERE code like '45%'
         ''', {'min': minimum_duration.sec(), 'workers': args.workers})
 
         count, estimated_duration_s = results.fetchone()
@@ -321,7 +349,7 @@ def baseline(args: argparse.Namespace) -> None:
         results = conn.execute('''
             SELECT catalog, code
             FROM server_data
-            WHERE duration < :min
+            WHERE code like '45%'
             GROUP BY catalog, code
         ''', {'min': minimum_duration.sec()})
 
@@ -330,7 +358,7 @@ def baseline(args: argparse.Namespace) -> None:
         results = conn.execute('''
             SELECT stnum, catalog, code
             FROM server_data
-            WHERE duration < :min
+            WHERE code like '45%'
             ORDER BY duration, stnum, catalog, code DESC
         ''', {'min': minimum_duration.sec()})
 
@@ -340,23 +368,35 @@ def baseline(args: argparse.Namespace) -> None:
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = [
-                executor.submit(
+            futures = []
+            for stnum, catalog, code in records:
+                estimate_count = estimate((stnum, catalog, code), db=args.db, area_spec=area_specs[f"{catalog}/{code}"])
+
+                assert estimate_count is not None
+
+                with sqlite_cursor(conn) as curs:
+                    curs.execute('''
+                        INSERT INTO baseline_ip (stnum, catalog, code, estimate)
+                        VALUES (?, ?, ?, ?)
+                    ''', (stnum, catalog, code, estimate_count))
+                    conn.commit()
+
+                f = executor.submit(
                     audit,
-                    row,
+                    (stnum, catalog, code),
                     db=args.db,
-                    area_spec=area_specs[f"{row[1]}/{row[2]}"],
+                    area_spec=area_specs[f"{catalog}/{code}"],
                     timeout=float(minimum_duration.sec()),
                 )
-                for row in records
-            ]
+
+                futures.append(f)
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
                 try:
                     db_args = future.result()
                 except Exception as exc:
                     print('generated an exception: %s' % (exc))
-                    break
+                    continue
 
                 assert db_args is not None
 
@@ -366,10 +406,19 @@ def baseline(args: argparse.Namespace) -> None:
                             INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
                             VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
                         ''', db_args)
+
+                        curs.execute('''
+                            DELETE
+                            FROM baseline_ip
+                            WHERE stnum = :stnum
+                                AND catalog = :catalog
+                                AND code = :code
+                        ''', db_args)
                     except sqlite3.Error as ex:
                         print(db_args)
                         print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
-                        break
+                        conn.rollback()
+                        continue
 
                     conn.commit()
 
@@ -469,7 +518,8 @@ def branch(args: argparse.Namespace) -> None:
                     except sqlite3.Error as ex:
                         print(db_args)
                         print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
-                        break
+                        conn.rollback()
+                        continue
 
                     conn.commit()
 
@@ -554,6 +604,49 @@ def audit(
             if timeout and time.perf_counter() - start_time >= timeout:
                 raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}')
             pass
+
+    return None
+
+
+def estimate(
+    row: Tuple[str, str, str],
+    *,
+    data: Optional[Dict] = None,
+    db: str,
+    area_spec: Dict,
+    run_id: str = '',
+) -> Optional[int]:
+    stnum, catalog, code = row
+
+    if not data:
+        with sqlite_connect(db, readonly=True) as conn:
+            results = conn.execute('''
+                SELECT input_data
+                FROM server_data
+                WHERE (stnum, catalog, code) = (?, ?, ?)
+            ''', [stnum, catalog, code])
+
+            record = results.fetchone()
+            assert record is not None
+
+            args = Arguments(
+                student_data=[json.loads(record['input_data'])],
+                area_specs=[(area_spec, catalog)],
+            )
+    else:
+        args = Arguments(
+            student_data=[data],
+            area_specs=[(area_spec, catalog)],
+            estimate_only=True,
+        )
+
+    for message in run(args):
+        if isinstance(message, EstimateMsg):
+            return message.estimate
+        elif isinstance(message, AuditStartMsg):
+            pass
+        else:
+            assert False, type(message)
 
     return None
 
@@ -744,7 +837,22 @@ def run_one(args: argparse.Namespace) -> None:
     print(render_result(input_data, json.loads(result_msg['result'])))
 
 
-def extract_one(args: argparse.Namespace) -> None:
+def print_invocation(args: argparse.Namespace) -> None:
+    stnum = args.stnum
+    catalog = args.catalog
+    code = args.code
+
+    do_extract(args)
+
+    root_env = os.getenv('AREA_ROOT')
+    assert root_env
+    area_root = pathlib.Path(root_env)
+    area_path = area_root / catalog / f"{code}.yaml"
+
+    print(f'python3 dp.py --student {stnum}.json --area {area_path}')
+
+
+def do_extract(args: argparse.Namespace) -> None:
     stnum = args.stnum
     catalog = args.catalog
     code = args.code
@@ -762,7 +870,10 @@ def extract_one(args: argparse.Namespace) -> None:
     with open(f'./{stnum}.json', 'w', encoding='utf-8') as outfile:
         json.dump(input_data, outfile, sort_keys=True, indent=2)
 
-    print(f'./{stnum}.json')
+
+def extract_one(args: argparse.Namespace) -> None:
+    do_extract(args)
+    print(f'./{args.stnum}.json')
 
 
 @contextlib.contextmanager
