@@ -359,7 +359,7 @@ def baseline(args: argparse.Namespace) -> None:
             SELECT stnum, catalog, code
             FROM server_data
             WHERE code like '45%'
-            ORDER BY duration, stnum, catalog, code DESC
+            ORDER BY duration DESC, stnum, catalog, code
         ''', {'min': minimum_duration.sec()})
 
         records = [(stnum, catalog, code) for stnum, catalog, code in results]
@@ -480,7 +480,7 @@ def branch(args: argparse.Namespace) -> None:
             SELECT stnum, catalog, code
             FROM baseline
             WHERE duration < :min
-            ORDER BY duration, stnum, catalog, code DESC
+            ORDER BY duration DESC, stnum, catalog, code
         ''', {'min': minimum_duration.sec()})
 
         records = [(stnum, catalog, code) for stnum, catalog, code in results]
