@@ -119,6 +119,20 @@ def audit(
     iter_start = time.perf_counter()
     startup_time = 0.00
 
+    # estimate = area.estimate(
+    #     transcript=transcript,
+    #     areas=tuple(area_pointers),
+    #     music_performances=music_performances,
+    #     music_attendances=music_attendances,
+    #     music_proficiencies=music_proficiencies,
+    #     exceptions=list(exceptions),
+    #     transcript_with_failed=transcript_with_failed,
+    # )
+    # yield EstimateMsg(estimate=estimate)
+
+    # if args.estimate_only:
+    #     return
+
     potentials_for_all_clauses = find_potentials(area, constants)
 
     for sol in area.solutions(
