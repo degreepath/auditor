@@ -446,6 +446,7 @@ def branch(args: argparse.Namespace) -> None:
     with sqlite_connect(args.db) as conn:
         print(f'clearing data for "{args.branch}"... ', end='', flush=True)
         conn.execute('DELETE FROM branch WHERE branch = ?', [args.branch])
+        conn.execute('DELETE FROM branch_ip WHERE branch = ?', [args.branch])
         conn.commit()
         print('cleared')
 
@@ -488,17 +489,29 @@ def branch(args: argparse.Namespace) -> None:
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = [
-                executor.submit(
+            futures = []
+            for stnum, catalog, code in records:
+                estimate_count = estimate((stnum, catalog, code), db=args.db, area_spec=area_specs[f"{catalog}/{code}"])
+
+                assert estimate_count is not None
+
+                with sqlite_cursor(conn) as curs:
+                    curs.execute('''
+                        INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (stnum, catalog, code, estimate_count, args.branch))
+                    conn.commit()
+
+                f = executor.submit(
                     audit,
-                    row,
+                    (stnum, catalog, code),
                     db=args.db,
-                    area_spec=area_specs[f"{row[1]}/{row[2]}"],
-                    run_id=args.branch,
+                    area_spec=area_specs[f"{catalog}/{code}"],
                     timeout=float(minimum_duration.sec()),
+                    run_id=args.branch,
                 )
-                for row in records
-            ]
+
+                futures.append(f)
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
                 try:
@@ -514,6 +527,15 @@ def branch(args: argparse.Namespace) -> None:
                         curs.execute('''
                             INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
                             VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                        ''', db_args)
+
+                        curs.execute('''
+                            DELETE
+                            FROM branch_ip
+                            WHERE stnum = :stnum
+                                AND catalog = :catalog
+                                AND code = :code
+                                AND branch = :run
                         ''', db_args)
                     except sqlite3.Error as ex:
                         print(db_args)
