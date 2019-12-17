@@ -7,6 +7,7 @@ import logging
 from .clause import Clause, str_clause
 from .load_clause import load_clause
 from .constants import Constants
+from .ncr import ncr
 
 from .data.clausable import Clausable
 
@@ -60,6 +61,14 @@ class Limit:
             for combo in itertools.combinations(courses, n):
                 logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                 yield combo
+
+    def estimate(self, courses: Sequence[T]) -> int:
+        acc = 0
+
+        for n in range(0, self.at_most + 1):
+            acc += ncr(len(courses), n)
+
+        return acc
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -176,3 +185,7 @@ class LimitSet:
 
             logger.debug("limit/combos: %s", this_combo)
             yield tuple(this_combo)
+
+    def estimate(self, courses: Sequence[T]) -> int:
+        # TODO: optimize this so that it doesn't need to actually build the results
+        return sum(1 for _ in self.limited_transcripts(courses))

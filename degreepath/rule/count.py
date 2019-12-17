@@ -181,6 +181,15 @@ class CountRule(Rule, BaseCountRule):
         items = tuple(r.exclude_required_courses(to_exclude) for r in self.items)
         return attr.evolve(self, items=items)
 
+    def range(self) -> Tuple[int, int]:
+        items = self.items
+        count = self.count
+
+        lo = count
+        hi = len(items) + 1 if self.at_most is False else count + 1
+
+        return lo, hi
+
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
         if ctx.get_waive_exception(self.path):
             logger.debug("%s forced override", self.path)
@@ -190,8 +199,7 @@ class CountRule(Rule, BaseCountRule):
         items = self.items
         count = self.count
 
-        lo = count
-        hi = len(items) + 1 if self.at_most is False else count + 1
+        lo, hi = self.range()
 
         logger.debug('%s discovering children with potential', self.path)
         all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
@@ -256,6 +264,53 @@ class CountRule(Rule, BaseCountRule):
 
             yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+        if ctx.get_waive_exception(self.path):
+            return 1
+
+        items = self.items
+        count = self.count
+
+        lo, hi = self.range()
+
+        all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
+
+        solved_results: Tuple[Result, ...]
+        solved_results__rules: Set[Rule]
+
+        if depth == 1 and all_potential_rules and not self.audit_clauses:
+            separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
+
+            independent_children = separated_children['disjoint']
+            codependent_children = separated_children['non_disjoint']
+
+            independent_rule__results = self.solve_independent_children(ctx=ctx, independent_children=independent_children)
+
+            solved_results = tuple(sorted((result for result in independent_rule__results.values() if result is not None), key=sort_by_path))
+            solved_results__rules = set(r for r, result in independent_rule__results.items() if result is not None)
+            potential_rules = tuple(sorted(codependent_children, key=sort_by_path))
+        else:
+            solved_results = tuple()
+            solved_results__rules = set()
+            potential_rules = tuple(sorted(all_potential_rules, key=sort_by_path))
+
+        potential_len = len(potential_rules)
+        all_children = set(items)
+        all_but_results = set(all_children - solved_results__rules)
+
+        acc = 0
+
+        for size in range(lo, hi):
+            acc += self.count_combinations(items=potential_rules, results=solved_results, other_children=all_but_results, size=size, count=count, ctx=ctx)
+
+        if acc == 0 and potential_len > 0:
+            acc += self.count_combinations(items=potential_rules, results=solved_results, other_children=all_but_results, size=potential_len, count=count, ctx=ctx)
+
+        if acc == 0:
+            acc += 1
+
+        return acc
+
     def make_combinations(
         self, *,
         ctx: 'RequirementContext',
@@ -293,6 +348,38 @@ class CountRule(Rule, BaseCountRule):
 
                 to_yield = tuple(sorted(solutionset + deselected_children + results, key=sort_by_path))
                 yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
+
+    def count_combinations(
+        self, *,
+        ctx: 'RequirementContext',
+        items: Tuple[Rule, ...],
+        results: Tuple[Result, ...],
+        other_children: Set[Rule],
+        size: int,
+        count: int,
+    ) -> int:
+        acc = 0
+
+        for combo_i, selected_children in enumerate(itertools.combinations(items, size)):
+            # itertools.product does this internally, so we'll pre-compute the
+            # results here to make it obvious that it's not lazy
+            solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
+            solutions = tuple(solutions_dict.values())
+
+            if SHOW_ESTIMATES:
+                lengths = {r.path: len(s) for r, s in solutions_dict.items()}
+                ppath = ' → '.join(self.path)
+                lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
+                body = '\n\t'.join(lines)
+                estimated_count = mult(lengths.values())
+                word = 'solution' if estimated_count == 1 else 'solutions'
+                print(f"\nemitting xxx {estimated_count:,} {word} at {ppath}\n\t{body}", file=sys.stderr)
+
+            solutionset: Tuple[Union[Rule, Solution, Result], ...]
+            for solset_i, solutionset in enumerate(itertools.product(*solutions)):
+                acc += 1
+
+        return acc
 
     def find_independent_children(self, *, items: Collection[Rule], ctx: 'RequirementContext') -> Dict[str, Collection[Rule]]:
         """

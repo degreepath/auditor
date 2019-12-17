@@ -164,6 +164,28 @@ class QueryRule(Rule, BaseQueryRule):
             logger.debug("%s did not yield anything; yielding empty collection", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple())
 
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
+        if ctx.get_waive_exception(self.path):
+            return 1
+
+        data, _, _ = self.get_filtered_data(ctx=ctx)
+
+        acc = 0
+        for item_set in self.limit.limited_transcripts(data):
+            if self.attempt_claims is False:
+                if self.source is QuerySource.Courses:
+                    acc += 1
+
+                acc += 1
+
+            acc += estimate_item_set(item_set, rule=self)
+
+        if acc == 0:
+            # be sure we always yield something
+            acc += 1
+
+        return acc
+
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         if self._has_potential(ctx=ctx):
             logger.debug('%s has potential: yes', self.path)
@@ -335,3 +357,8 @@ def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Ite
 
     else:
         yield tuple(item_set)
+
+
+def estimate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> int:
+    # TODO: optimize this
+    return sum(1 for _ in iterate_item_set(item_set, rule=rule))

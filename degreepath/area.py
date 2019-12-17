@@ -196,6 +196,42 @@ class AreaOfStudy(Base):
 
         logger.debug("all solutions generated")
 
+    def estimate(
+        self, *,
+        transcript: Sequence[CourseInstance],
+        transcript_with_failed: Sequence[CourseInstance] = tuple(),
+        areas: Sequence[AreaPointer],
+        music_performances: Sequence[MusicPerformance] = tuple(),
+        music_attendances: Sequence[MusicAttendance] = tuple(),
+        music_proficiencies: MusicProficiencies = MusicProficiencies(),
+        exceptions: List[RuleException],
+    ) -> int:
+        forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)
+        forced_courses = {c.clbid: c for c in transcript if c.clbid in forced_clbids}
+
+        ctx = RequirementContext(
+            areas=tuple(areas),
+            music_performances=tuple(music_performances),
+            music_attendances=tuple(music_attendances),
+            music_proficiencies=music_proficiencies,
+            exceptions=exceptions,
+            multicountable=self.multicountable,
+        )
+
+        acc = 0
+
+        for limited_transcript in self.limit.limited_transcripts(courses=transcript):
+            ctx = ctx.with_transcript(
+                limited_transcript,
+                full=transcript,
+                forced=forced_courses,
+                including_failed=transcript_with_failed,
+            )
+
+            acc += self.result.estimate(ctx=ctx, depth=1)
+
+        return acc
+
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class AreaSolution(AreaOfStudy):

@@ -65,6 +65,9 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
 
         yield ProficiencySolution.from_rule(rule=self, course_solution=course_solution)
 
+    def estimate(self, *, ctx: 'RequirementContext') -> int:
+        return 1
+
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
         return True
 
