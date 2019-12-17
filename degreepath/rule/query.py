@@ -63,8 +63,11 @@ class QueryRule(Rule, BaseQueryRule):
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
+        allow_claimed = data.get('allow_claimed', False)
+
         source = QuerySource(data['from'])
-        allow_claimed = data.get('allow_claimed', False) or source is QuerySource.Claimed
+        if source is QuerySource.Claimed:
+            allow_claimed = True
 
         return QueryRule(
             source=source,
@@ -101,7 +104,7 @@ class QueryRule(Rule, BaseQueryRule):
             return [c for c in all_courses if c.clbid not in self.excluded_clbids]
 
         if self.source is QuerySource.Claimed:
-            return ctx.all_claimed()
+            return []
 
         elif self.source is QuerySource.Areas:
             return list(ctx.areas)
@@ -147,6 +150,10 @@ class QueryRule(Rule, BaseQueryRule):
 
         data, inserted_clbids, force_inserted_clbids = self.get_filtered_data(ctx=ctx)
 
+        if self.source is QuerySource.Claimed:
+            yield QuerySolution.from_rule(rule=self, output=tuple(), inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+            return
+
         did_iter = False
         for item_set in self.limit.limited_transcripts(data):
             if self.attempt_claims is False:
@@ -168,7 +175,7 @@ class QueryRule(Rule, BaseQueryRule):
         if not did_iter:
             # be sure we always yield something
             logger.debug("%s did not yield anything; yielding empty collection", self.path)
-            yield QuerySolution.from_rule(rule=self, output=tuple())
+            yield QuerySolution.from_rule(rule=self, output=tuple(), inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
     def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
         if ctx.get_waive_exception(self.path):
@@ -208,6 +215,9 @@ class QueryRule(Rule, BaseQueryRule):
             return True
 
         if has_assertion(self.assertions, key=get_at_least_0_clauses):
+            return True
+
+        if self.source is QuerySource.Claimed:
             return True
 
         if self.where is None:

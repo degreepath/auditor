@@ -44,8 +44,14 @@ class CourseRule(Rule, BaseCourseRule):
         path_grade = f"(grade >= {min_grade})" if min_grade else ""
         path = [*path, f"{path_name}{path_inst}{path_grade}"]
 
+        from_claimed = data.get("from_claimed", False)
+        allow_claimed = data.get("allow_claimed", False)
+
+        if from_claimed:
+            allow_claimed = True
+
         allowed_keys = {
-            'course', 'grade', 'allow_claimed',
+            'course', 'grade', 'allow_claimed', 'from_claimed',
             'hidden', 'ap', 'grade_option', 'institution',
             'name', 'clbid', 'inserted', 'waived',
         }
@@ -57,7 +63,8 @@ class CourseRule(Rule, BaseCourseRule):
             hidden=data.get("hidden", False),
             grade=str_to_grade_points(min_grade) if min_grade is not None else None,
             grade_option=GradeOption(grade_option) if grade_option else None,
-            allow_claimed=data.get("allow_claimed", False),
+            allow_claimed=allow_claimed,
+            from_claimed=from_claimed,
             path=tuple(path),
             institution=institution,
             name=name,
@@ -119,5 +126,8 @@ class CourseRule(Rule, BaseCourseRule):
         for insert in ctx.get_insert_exceptions(self.path):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []
+
+        if self.from_claimed:
+            return []
 
         return list(ctx.find_courses(rule=self))
