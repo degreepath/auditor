@@ -164,7 +164,7 @@ class QueryRule(Rule, BaseQueryRule):
             logger.debug("%s did not yield anything; yielding empty collection", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple())
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
         if ctx.get_waive_exception(self.path):
             return 1
 

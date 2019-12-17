@@ -149,7 +149,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         for solution in self.result.solutions(ctx=ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
         if ctx.get_waive_exception(self.path):
             return 1
 

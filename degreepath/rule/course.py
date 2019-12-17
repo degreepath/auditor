@@ -94,7 +94,7 @@ class CourseRule(Rule, BaseCourseRule):
 
         yield CourseSolution.from_rule(rule=self)
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
         return 1
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:

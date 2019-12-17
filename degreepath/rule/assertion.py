@@ -61,7 +61,7 @@ class AssertionRule(Rule, BaseAssertionRule):
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise Exception('this method should not be called')
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
         raise Exception('this method should not be called')
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
@@ -114,7 +114,7 @@ class ConditionalAssertionRule(Rule):
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         return self.when_yes.solutions(ctx=ctx, depth=depth)
 
-    def estimate(self, *, ctx: 'RequirementContext') -> int:
+    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
         return self.when_yes.estimate(ctx=ctx)
 
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
