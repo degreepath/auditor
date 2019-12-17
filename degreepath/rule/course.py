@@ -45,7 +45,7 @@ class CourseRule(Rule, BaseCourseRule):
         path = [*path, f"{path_name}{path_inst}{path_grade}"]
 
         allowed_keys = {
-            'course', 'grade', 'allow_claimed', 'including claimed',
+            'course', 'grade', 'allow_claimed',
             'hidden', 'ap', 'grade_option', 'institution',
             'name', 'clbid', 'inserted', 'waived',
         }
@@ -57,7 +57,7 @@ class CourseRule(Rule, BaseCourseRule):
             hidden=data.get("hidden", False),
             grade=str_to_grade_points(min_grade) if min_grade is not None else None,
             grade_option=GradeOption(grade_option) if grade_option else None,
-            allow_claimed=data.get("including claimed", data.get("allow_claimed", False)),
+            allow_claimed=data.get("allow_claimed", False),
             path=tuple(path),
             institution=institution,
             name=name,
