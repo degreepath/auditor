@@ -60,6 +60,7 @@ def main() -> None:
 
     parser_branch = subparsers.add_parser('branch', help='runs an audit benchmark')
     parser_branch.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
+    parser_branch.add_argument('--code', dest='filter', default=None, nargs='?', help='an area code to filter to')
     # parser_branch.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
     parser_branch.add_argument('branch', help='the git branch to compare against')
     parser_branch.set_defaults(func=branch)
@@ -459,7 +460,8 @@ def branch(args: argparse.Namespace) -> None:
                 coalesce(max(sum(duration) / :workers, max(duration)), 0) as duration_s
             FROM baseline
             WHERE duration < :min
-        ''', {'min': minimum_duration.sec(), 'workers': args.workers})
+                AND CASE WHEN :code IS NULL THEN 1 = 1 ELSE code = :code END
+        ''', {'min': minimum_duration.sec(), 'workers': args.workers, 'code': args.filter})
 
         count, estimated_duration_s = results.fetchone()
 
@@ -471,8 +473,9 @@ def branch(args: argparse.Namespace) -> None:
             SELECT catalog, code
             FROM baseline
             WHERE duration < :min
+                AND CASE WHEN :code IS NULL THEN 1 = 1 ELSE code = :code END
             GROUP BY catalog, code
-        ''', {'min': minimum_duration.sec()})
+        ''', {'min': minimum_duration.sec(), 'code': args.filter})
 
         area_specs = load_areas(args, list(results))
 
@@ -480,8 +483,9 @@ def branch(args: argparse.Namespace) -> None:
             SELECT stnum, catalog, code
             FROM baseline
             WHERE duration < :min
+                AND CASE WHEN :code IS NULL THEN 1 = 1 ELSE code = :code END
             ORDER BY duration DESC, stnum, catalog, code
-        ''', {'min': minimum_duration.sec()})
+        ''', {'min': minimum_duration.sec(), 'code': args.filter})
 
         records = [(stnum, catalog, code) for stnum, catalog, code in results]
 
