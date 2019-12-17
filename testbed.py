@@ -381,15 +381,26 @@ def baseline(args: argparse.Namespace) -> None:
             ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                try:
-                    db_args = future.result()
-                except Exception as exc:
-                    print('generated an exception: %s' % (exc))
-                    continue
-
-                assert db_args is not None
-
                 with sqlite_cursor(conn) as curs:
+                    try:
+                        db_args = future.result()
+                    except TimeoutError as timeout:
+                        print(timeout.args[0])
+                        curs.execute('''
+                            DELETE
+                            FROM baseline_ip
+                            WHERE stnum = :stnum
+                                AND catalog = :catalog
+                                AND code = :code
+                        ''', timeout.args[1])
+                        conn.commit()
+                        continue
+                    except Exception as exc:
+                        print('generated an exception: %s' % (exc))
+                        continue
+
+                    assert db_args is not None
+
                     try:
                         curs.execute('''
                             INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
@@ -491,15 +502,27 @@ def branch(args: argparse.Namespace) -> None:
             ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                try:
-                    db_args = future.result()
-                except Exception as exc:
-                    print('generated an exception: %s' % (exc))
-                    continue
-
-                assert db_args is not None
-
                 with sqlite_cursor(conn) as curs:
+                    try:
+                        db_args = future.result()
+                    except TimeoutError as timeout:
+                        print(timeout.args[0])
+                        curs.execute('''
+                            DELETE
+                            FROM branch_ip
+                            WHERE stnum = :stnum
+                                AND catalog = :catalog
+                                AND code = :code
+                                AND branch = :branch
+                        ''', timeout.args[1])
+                        conn.commit()
+                        continue
+                    except Exception as exc:
+                        print('generated an exception: %s' % (exc))
+                        continue
+
+                    assert db_args is not None
+
                     try:
                         curs.execute('''
                             INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
@@ -583,18 +606,21 @@ def audit(
 
     estimate_count = estimate((stnum, catalog, code), db=db, area_spec=area_spec)
     assert estimate_count is not None
+
+    db_keys = {'stnum': stnum, 'catalog': catalog, 'code': code, 'estimate': estimate_count, 'branch': run_id}
+
     with sqlite_connect(db, readonly=False) as conn:
         with sqlite_cursor(conn) as curs:
             if run_id == '':
                 curs.execute('''
                     INSERT INTO baseline_ip (stnum, catalog, code, estimate)
-                    VALUES (?, ?, ?, ?)
-                ''', (stnum, catalog, code, estimate_count))
+                    VALUES (:stnum, :catalog, :code, :estimate)
+                ''', db_keys)
             else:
                 curs.execute('''
                     INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
-                    VALUES (?, ?, ?, ?, ?)
-                ''', (stnum, catalog, code, estimate_count, run_id))
+                    VALUES (:stnum, :catalog, :code, :estimate, :branch)
+                ''', db_keys)
             conn.commit()
 
     start_time = time.perf_counter()
@@ -617,7 +643,7 @@ def audit(
             }
         else:
             if timeout and time.perf_counter() - start_time >= timeout:
-                raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}')
+                raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}', db_keys)
             pass
 
     return None
