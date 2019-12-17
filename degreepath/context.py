@@ -66,7 +66,10 @@ class RequirementContext:
     def transcript_with_excluded(self) -> List[CourseInstance]:
         return self.transcript_with_excluded_
 
-    def find_courses(self, *, rule: BaseCourseRule) -> Iterator[CourseInstance]:
+    def all_claimed(self) -> List[CourseInstance]:
+        return [self.clbid_lookup_map_[clbid] for clbid in self.claims.keys()]
+
+    def find_courses(self, *, rule: BaseCourseRule, from_claimed: bool = False) -> Iterator[CourseInstance]:
         if rule.clbid:
             match_by_clbid = self.find_course_by_clbid(rule.clbid)
             if match_by_clbid:
@@ -80,7 +83,9 @@ class RequirementContext:
 
         query = (course, name, ap, institution, CourseType.AP if ap else None)
 
-        for c in self.transcript():
+        source = self.transcript() if not from_claimed else self.all_claimed()
+
+        for c in source:
             if not c.is_stolaf and institution is None and ap is None:
                 continue
 

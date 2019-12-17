@@ -72,6 +72,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         audit_mode: Dict[QuerySource, Callable[['RequirementContext'], AuditResult]] = {
             QuerySource.Courses: self.audit_courses,
+            QuerySource.Claimed: self.audit_claimed_courses,
             QuerySource.Areas: self.audit_areas,
             QuerySource.MusicPerformances: self.audit_music_performances,
             QuerySource.MusicAttendances: self.audit_music_attendances,
@@ -124,6 +125,32 @@ class QuerySolution(Solution, BaseQueryRule):
             claimed_items=tuple(claimed_items),
             successful_claims=tuple(successful_claims),
             failed_claims=tuple(failed_claims),
+        )
+
+    def audit_claimed_courses(self, ctx: 'RequirementContext') -> AuditResult:
+        claimed_items: List[Clausable] = []
+        successful_claims: List['ClaimAttempt'] = []
+
+        output: List[CourseInstance] = ctx.all_claimed()
+        if self.where:
+            output = [item for item in output if self.where.apply(item)]
+
+        for clbid in self.inserted:
+            matched_course = ctx.forced_course_by_clbid(clbid, path=self.path)
+            output.append(matched_course)
+
+        for course in output:
+            claim = ctx.make_claim(course=course, path=self.path, allow_claimed=True)
+
+            assert claim.failed is False
+
+            successful_claims.append(claim)
+            claimed_items.append(course)
+
+        return AuditResult(
+            claimed_items=tuple(claimed_items),
+            successful_claims=tuple(successful_claims),
+            failed_claims=tuple(),
         )
 
     def audit_areas(self, ctx: 'RequirementContext') -> AuditResult:

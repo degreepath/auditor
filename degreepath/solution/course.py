@@ -42,13 +42,13 @@ class CourseSolution(Solution, BaseCourseRule):
             logger.debug('inserting %s into %s due to override', insert.clbid, self)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
 
-            claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=insert.forced)
+            claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=insert.forced or self.allow_claimed)
 
             if not claim.failed:
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
                 return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=True)
 
-        for matched_course in ctx.find_courses(rule=self):
+        for matched_course in ctx.find_courses(rule=self, from_claimed=self.from_claimed):
             if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
                 logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.identifier(), matched_course.grade_points, self.grade)
                 continue
@@ -58,6 +58,9 @@ class CourseSolution(Solution, BaseCourseRule):
                 continue
 
             claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=self.allow_claimed)
+
+            if self.from_claimed:
+                assert claim.failed is False
 
             if not claim.failed:
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())

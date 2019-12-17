@@ -17,6 +17,7 @@ class BaseCourseRule(Base):
     grade: Optional[Decimal] = None
     grade_option: Optional[GradeOption] = None
     allow_claimed: bool = False
+    from_claimed: bool = False
     path: Tuple[str, ...] = tuple()
     inserted: bool = False
     overridden: bool = False

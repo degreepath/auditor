@@ -177,7 +177,8 @@ def fetch(args: argparse.Namespace) -> None:
             for row in tqdm.tqdm(curs, total=total_items, unit_scale=True):
                 try:
                     conn.execute('''
-                        INSERT INTO server_data (run, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result, input_data)
+                        INSERT INTO server_data
+                                (run,  stnum,  catalog,  code,  iterations,  duration,  ok,  gpa,  rank,  max_rank,       result,        input_data)
                         VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :ok, :gpa, :rank, :max_rank, json(:result), json(:input_data))
                     ''', dict(row))
                 except Exception as e:
@@ -359,7 +360,7 @@ def baseline(args: argparse.Namespace) -> None:
             SELECT stnum, catalog, code
             FROM server_data
             WHERE code like '45%'
-            ORDER BY duration, stnum, catalog, code DESC
+            ORDER BY duration DESC, stnum, catalog, code
         ''', {'min': minimum_duration.sec()})
 
         records = [(stnum, catalog, code) for stnum, catalog, code in results]
@@ -368,39 +369,38 @@ def baseline(args: argparse.Namespace) -> None:
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = []
-            for stnum, catalog, code in records:
-                estimate_count = estimate((stnum, catalog, code), db=args.db, area_spec=area_specs[f"{catalog}/{code}"])
-
-                assert estimate_count is not None
-
-                with sqlite_cursor(conn) as curs:
-                    curs.execute('''
-                        INSERT INTO baseline_ip (stnum, catalog, code, estimate)
-                        VALUES (?, ?, ?, ?)
-                    ''', (stnum, catalog, code, estimate_count))
-                    conn.commit()
-
-                f = executor.submit(
+            futures = [
+                executor.submit(
                     audit,
                     (stnum, catalog, code),
                     db=args.db,
                     area_spec=area_specs[f"{catalog}/{code}"],
                     timeout=float(minimum_duration.sec()),
                 )
-
-                futures.append(f)
+                for (stnum, catalog, code) in records
+            ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                try:
-                    db_args = future.result()
-                except Exception as exc:
-                    print('generated an exception: %s' % (exc))
-                    continue
-
-                assert db_args is not None
-
                 with sqlite_cursor(conn) as curs:
+                    try:
+                        db_args = future.result()
+                    except TimeoutError as timeout:
+                        print(timeout.args[0])
+                        curs.execute('''
+                            DELETE
+                            FROM baseline_ip
+                            WHERE stnum = :stnum
+                                AND catalog = :catalog
+                                AND code = :code
+                        ''', timeout.args[1])
+                        conn.commit()
+                        continue
+                    except Exception as exc:
+                        print('generated an exception: %s' % (exc))
+                        continue
+
+                    assert db_args is not None
+
                     try:
                         curs.execute('''
                             INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
@@ -446,6 +446,7 @@ def branch(args: argparse.Namespace) -> None:
     with sqlite_connect(args.db) as conn:
         print(f'clearing data for "{args.branch}"... ', end='', flush=True)
         conn.execute('DELETE FROM branch WHERE branch = ?', [args.branch])
+        conn.execute('DELETE FROM branch_ip WHERE branch = ?', [args.branch])
         conn.commit()
         print('cleared')
 
@@ -479,7 +480,7 @@ def branch(args: argparse.Namespace) -> None:
             SELECT stnum, catalog, code
             FROM baseline
             WHERE duration < :min
-            ORDER BY duration, stnum, catalog, code DESC
+            ORDER BY duration DESC, stnum, catalog, code
         ''', {'min': minimum_duration.sec()})
 
         records = [(stnum, catalog, code) for stnum, catalog, code in results]
@@ -491,29 +492,50 @@ def branch(args: argparse.Namespace) -> None:
             futures = [
                 executor.submit(
                     audit,
-                    row,
+                    (stnum, catalog, code),
                     db=args.db,
-                    area_spec=area_specs[f"{row[1]}/{row[2]}"],
-                    run_id=args.branch,
+                    area_spec=area_specs[f"{catalog}/{code}"],
                     timeout=float(minimum_duration.sec()),
+                    run_id=args.branch,
                 )
-                for row in records
+                for (stnum, catalog, code) in records
             ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                try:
-                    db_args = future.result()
-                except Exception as exc:
-                    print('generated an exception: %s' % (exc))
-                    continue
-
-                assert db_args is not None
-
                 with sqlite_cursor(conn) as curs:
+                    try:
+                        db_args = future.result()
+                    except TimeoutError as timeout:
+                        print(timeout.args[0])
+                        curs.execute('''
+                            DELETE
+                            FROM branch_ip
+                            WHERE stnum = :stnum
+                                AND catalog = :catalog
+                                AND code = :code
+                                AND branch = :branch
+                        ''', timeout.args[1])
+                        conn.commit()
+                        continue
+                    except Exception as exc:
+                        print('generated an exception: %s' % (exc))
+                        continue
+
+                    assert db_args is not None
+
                     try:
                         curs.execute('''
                             INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
                             VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                        ''', db_args)
+
+                        curs.execute('''
+                            DELETE
+                            FROM branch_ip
+                            WHERE stnum = :stnum
+                                AND catalog = :catalog
+                                AND code = :code
+                                AND branch = :run
                         ''', db_args)
                     except sqlite3.Error as ex:
                         print(db_args)
@@ -557,7 +579,7 @@ def audit(
     db: str,
     area_spec: Dict,
     run_id: str = '',
-    timeout: Optional[float] = None
+    timeout: Optional[float] = None,
 ) -> Optional[Dict]:
     stnum, catalog, code = row
 
@@ -582,6 +604,25 @@ def audit(
             area_specs=[(area_spec, catalog)],
         )
 
+    estimate_count = estimate((stnum, catalog, code), db=db, area_spec=area_spec)
+    assert estimate_count is not None
+
+    db_keys = {'stnum': stnum, 'catalog': catalog, 'code': code, 'estimate': estimate_count, 'branch': run_id}
+
+    with sqlite_connect(db, readonly=False) as conn:
+        with sqlite_cursor(conn) as curs:
+            if run_id == '':
+                curs.execute('''
+                    INSERT INTO baseline_ip (stnum, catalog, code, estimate)
+                    VALUES (:stnum, :catalog, :code, :estimate)
+                ''', db_keys)
+            else:
+                curs.execute('''
+                    INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
+                    VALUES (:stnum, :catalog, :code, :estimate, :branch)
+                ''', db_keys)
+            conn.commit()
+
     start_time = time.perf_counter()
 
     for message in run(args):
@@ -602,7 +643,7 @@ def audit(
             }
         else:
             if timeout and time.perf_counter() - start_time >= timeout:
-                raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}')
+                raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}', db_keys)
             pass
 
     return None
@@ -758,33 +799,49 @@ def render(args: argparse.Namespace) -> None:
     branch = args.branch
 
     with sqlite_connect(args.db, readonly=True) as conn:
-        results = conn.execute('''
-            SELECT d.input_data, b1.result as baseline, b2.result as branch
-            FROM server_data d
-            LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
-            LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
-            WHERE d.stnum = :stnum
-                AND d.catalog = :catalog
-                AND d.code = :code
-                AND b2.branch = :branch
-        ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+        if branch == 'server':
+            results = conn.execute('''
+                SELECT d.input_data, d.result as output
+                FROM server_data d
+                WHERE d.stnum = :stnum
+                    AND d.catalog = :catalog
+                    AND d.code = :code
+            ''', {'catalog': catalog, 'code': code, 'stnum': stnum})
 
-        record = results.fetchone()
+            record = results.fetchone()
 
-        input_data = json.loads(record['input_data'])
-        baseline_result = json.loads(record['baseline'])
-        branch_result = json.loads(record['branch'])
+            input_data = json.loads(record['input_data'])
+            baseline_result = json.loads(record['output'])
 
-        print('Baseline')
-        print('========\n')
+            print(render_result(input_data, baseline_result))
+        else:
+            results = conn.execute('''
+                SELECT d.input_data, b1.result as baseline, b2.result as branch
+                FROM server_data d
+                LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
+                LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
+                WHERE d.stnum = :stnum
+                    AND d.catalog = :catalog
+                    AND d.code = :code
+                    AND b2.branch = :branch
+            ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
 
-        print(render_result(input_data, baseline_result))
+            record = results.fetchone()
 
-        print()
-        print()
-        print(f'Branch: {args.branch}')
-        print('========\n')
-        print(render_result(input_data, branch_result))
+            input_data = json.loads(record['input_data'])
+            baseline_result = json.loads(record['baseline'])
+            branch_result = json.loads(record['branch'])
+
+            print('Baseline')
+            print('========\n')
+
+            print(render_result(input_data, baseline_result))
+
+            print()
+            print()
+            print(f'Branch: {args.branch}')
+            print('========\n')
+            print(render_result(input_data, branch_result))
 
 
 def render_result(student_data: Dict, result: Dict) -> str:
