@@ -177,7 +177,8 @@ def fetch(args: argparse.Namespace) -> None:
             for row in tqdm.tqdm(curs, total=total_items, unit_scale=True):
                 try:
                     conn.execute('''
-                        INSERT INTO server_data (run, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result, input_data)
+                        INSERT INTO server_data
+                                (run,  stnum,  catalog,  code,  iterations,  duration,  ok,  gpa,  rank,  max_rank,       result,        input_data)
                         VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :ok, :gpa, :rank, :max_rank, json(:result), json(:input_data))
                     ''', dict(row))
                 except Exception as e:
