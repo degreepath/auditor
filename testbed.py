@@ -369,28 +369,16 @@ def baseline(args: argparse.Namespace) -> None:
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = []
-            for stnum, catalog, code in records:
-                estimate_count = estimate((stnum, catalog, code), db=args.db, area_spec=area_specs[f"{catalog}/{code}"])
-
-                assert estimate_count is not None
-
-                with sqlite_cursor(conn) as curs:
-                    curs.execute('''
-                        INSERT INTO baseline_ip (stnum, catalog, code, estimate)
-                        VALUES (?, ?, ?, ?)
-                    ''', (stnum, catalog, code, estimate_count))
-                    conn.commit()
-
-                f = executor.submit(
+            futures = [
+                executor.submit(
                     audit,
                     (stnum, catalog, code),
                     db=args.db,
                     area_spec=area_specs[f"{catalog}/{code}"],
                     timeout=float(minimum_duration.sec()),
                 )
-
-                futures.append(f)
+                for (stnum, catalog, code) in records
+            ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
                 try:
@@ -490,20 +478,8 @@ def branch(args: argparse.Namespace) -> None:
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = []
-            for stnum, catalog, code in records:
-                estimate_count = estimate((stnum, catalog, code), db=args.db, area_spec=area_specs[f"{catalog}/{code}"])
-
-                assert estimate_count is not None
-
-                with sqlite_cursor(conn) as curs:
-                    curs.execute('''
-                        INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
-                        VALUES (?, ?, ?, ?, ?)
-                    ''', (stnum, catalog, code, estimate_count, args.branch))
-                    conn.commit()
-
-                f = executor.submit(
+            futures = [
+                executor.submit(
                     audit,
                     (stnum, catalog, code),
                     db=args.db,
@@ -511,8 +487,8 @@ def branch(args: argparse.Namespace) -> None:
                     timeout=float(minimum_duration.sec()),
                     run_id=args.branch,
                 )
-
-                futures.append(f)
+                for (stnum, catalog, code) in records
+            ]
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
                 try:
@@ -580,7 +556,7 @@ def audit(
     db: str,
     area_spec: Dict,
     run_id: str = '',
-    timeout: Optional[float] = None
+    timeout: Optional[float] = None,
 ) -> Optional[Dict]:
     stnum, catalog, code = row
 
@@ -604,6 +580,22 @@ def audit(
             student_data=[data],
             area_specs=[(area_spec, catalog)],
         )
+
+    estimate_count = estimate((stnum, catalog, code), db=db, area_spec=area_spec)
+    assert estimate_count is not None
+    with sqlite_connect(db, readonly=False) as conn:
+        with sqlite_cursor(conn) as curs:
+            if run_id == '':
+                curs.execute('''
+                    INSERT INTO baseline_ip (stnum, catalog, code, estimate)
+                    VALUES (?, ?, ?, ?)
+                ''', (stnum, catalog, code, estimate_count))
+            else:
+                curs.execute('''
+                    INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (stnum, catalog, code, estimate_count, run_id))
+            conn.commit()
 
     start_time = time.perf_counter()
 
@@ -781,33 +773,49 @@ def render(args: argparse.Namespace) -> None:
     branch = args.branch
 
     with sqlite_connect(args.db, readonly=True) as conn:
-        results = conn.execute('''
-            SELECT d.input_data, b1.result as baseline, b2.result as branch
-            FROM server_data d
-            LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
-            LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
-            WHERE d.stnum = :stnum
-                AND d.catalog = :catalog
-                AND d.code = :code
-                AND b2.branch = :branch
-        ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+        if branch == 'server':
+            results = conn.execute('''
+                SELECT d.input_data, d.result as output
+                FROM server_data d
+                WHERE d.stnum = :stnum
+                    AND d.catalog = :catalog
+                    AND d.code = :code
+            ''', {'catalog': catalog, 'code': code, 'stnum': stnum})
 
-        record = results.fetchone()
+            record = results.fetchone()
 
-        input_data = json.loads(record['input_data'])
-        baseline_result = json.loads(record['baseline'])
-        branch_result = json.loads(record['branch'])
+            input_data = json.loads(record['input_data'])
+            baseline_result = json.loads(record['output'])
 
-        print('Baseline')
-        print('========\n')
+            print(render_result(input_data, baseline_result))
+        else:
+            results = conn.execute('''
+                SELECT d.input_data, b1.result as baseline, b2.result as branch
+                FROM server_data d
+                LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
+                LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
+                WHERE d.stnum = :stnum
+                    AND d.catalog = :catalog
+                    AND d.code = :code
+                    AND b2.branch = :branch
+            ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
 
-        print(render_result(input_data, baseline_result))
+            record = results.fetchone()
 
-        print()
-        print()
-        print(f'Branch: {args.branch}')
-        print('========\n')
-        print(render_result(input_data, branch_result))
+            input_data = json.loads(record['input_data'])
+            baseline_result = json.loads(record['baseline'])
+            branch_result = json.loads(record['branch'])
+
+            print('Baseline')
+            print('========\n')
+
+            print(render_result(input_data, baseline_result))
+
+            print()
+            print()
+            print(f'Branch: {args.branch}')
+            print('========\n')
+            print(render_result(input_data, branch_result))
 
 
 def render_result(student_data: Dict, result: Dict) -> str:
