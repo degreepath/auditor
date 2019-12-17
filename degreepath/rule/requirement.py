@@ -33,7 +33,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         # "name" is allowed due to emphasis requirements
         allowed_keys = {
-            'if', 'in_gpa', 'name', 'else', 'then', 'result',
+            'if', 'in_gpa', 'name', 'else', 'then', 'result', 'disjoint',
             'message', 'contract', 'requirements',
             'department_audited', 'department-audited',
             'registrar-audited', 'registrar_audited',
@@ -99,6 +99,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             message=message,
             result=result,
             is_contract=data.get("contract", False),
+            disjoint=data.get("disjoint", None),
             in_gpa=data.get("in_gpa", True),
             audited_by=audited_by,
             path=tuple(path),

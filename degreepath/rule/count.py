@@ -411,6 +411,10 @@ class CountRule(Rule, BaseCountRule):
         non_disjoint_rules: Set[Rule] = set()
         disjoint_rules: Set[Rule] = set()
 
+        for rule in all_rule_matches:
+            if rule.is_never_disjoint():
+                non_disjoint_rules.add(rule)
+
         for (rule_a, a_matches), (rule_b, b_matches) in itertools.combinations(all_rule_matches.items(), 2):
             if rule_a.is_always_disjoint() and rule_b.is_always_disjoint():
                 disjoint_rules.add(rule_a)
@@ -447,7 +451,7 @@ class CountRule(Rule, BaseCountRule):
 
         independent_rule__results: Dict[Rule, Optional[Result]] = {}
         for child in independent_children:
-            best_result = find_best_solution(rule=child, ctx=ctx, reset_claims=True)
+            best_result = find_best_solution(rule=child, ctx=ctx, merge_claims=True)
             logger.debug("found solution for %s: %s", child.path, best_result)
             independent_rule__results[child] = best_result
 

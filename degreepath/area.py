@@ -228,7 +228,7 @@ class AreaOfStudy(Base):
                 including_failed=transcript_with_failed,
             )
 
-            acc += self.result.estimate(ctx=ctx, depth=1)
+            acc += self.result.estimate(ctx=ctx.with_empty_claims(), depth=1)
 
         return acc
 
@@ -307,6 +307,7 @@ class AreaSolution(AreaOfStudy):
             in_gpa=False,
             is_contract=False,
             overridden=False,
+            disjoint=None,
             result=CountResult(
                 path=('$', '%Common Requirements', '.count'),
                 count=len(items),

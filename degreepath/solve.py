@@ -6,31 +6,29 @@ if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext
 
 
-def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', reset_claims: bool = False) -> Optional['Result']:
-    result = None
+def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims: bool = False) -> Optional['Result']:
+    result: Optional['Result'] = None
 
     claims: Dict[str, List['Claim']] = dict()
-    if reset_claims:
+    if merge_claims:
         claims = ctx.claims
-        ctx.reset_claims()
 
-    for s in rule.solutions(ctx=ctx):
-        tmp_result = s.audit(ctx=ctx)
+    with ctx.fresh_claims():
+        for s in rule.solutions(ctx=ctx):
+            inner_ctx = ctx.with_empty_claims()
+            tmp_result = s.audit(ctx=inner_ctx)
 
-        if result is None:
-            result = tmp_result
+            if result is None:
+                result = tmp_result
 
-        if tmp_result.ok():
-            result = tmp_result
-            break
+            if tmp_result.rank() > result.rank():
+                result = tmp_result
 
-        if result.rank() < tmp_result.rank():
-            result = tmp_result
+            if tmp_result.ok():
+                result = tmp_result
+                break
 
-        if reset_claims:
-            ctx.reset_claims()
-
-    if reset_claims:
-        ctx.set_claims(claims)
+    if merge_claims and inner_ctx:
+        ctx.set_claims({**claims, **inner_ctx.claims})
 
     return result

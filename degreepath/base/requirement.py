@@ -22,6 +22,7 @@ class BaseRequirementRule(Base):
     audited_by: Optional[AuditedBy]
     is_contract: bool
     in_gpa: bool
+    disjoint: Optional[bool]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -65,10 +66,22 @@ class BaseRequirementRule(Base):
         return self.result.in_progress()
 
     def is_always_disjoint(self) -> bool:
+        if self.disjoint is True:
+            return True
+
         if self.result is None:
-            return False
+            return super().is_always_disjoint()
 
         return self.result.is_always_disjoint()
+
+    def is_never_disjoint(self) -> bool:
+        if self.disjoint is False:
+            return True
+
+        if self.result is None:
+            return super().is_never_disjoint()
+
+        return self.result.is_never_disjoint()
 
     def is_in_gpa(self) -> bool:
         return self.in_gpa

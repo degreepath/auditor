@@ -81,6 +81,9 @@ class CourseRule(Rule, BaseCourseRule):
         return []
 
     def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        if self.from_claimed:
+            return tuple()
+
         matches = self.all_matches(ctx=ctx)
 
         if len(matches) == 1:

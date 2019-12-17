@@ -21,6 +21,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             message=rule.message,
             audited_by=rule.audited_by,
             is_contract=rule.is_contract,
+            disjoint=rule.disjoint,
             path=rule.path,
             overridden=overridden,
             in_gpa=rule.in_gpa,

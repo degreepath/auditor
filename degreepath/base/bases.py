@@ -91,6 +91,9 @@ class Base(abc.ABC):
     def is_always_disjoint(self) -> bool:
         return False
 
+    def is_never_disjoint(self) -> bool:
+        return False
+
 
 class Result(Base, abc.ABC):
     __slots__ = ()

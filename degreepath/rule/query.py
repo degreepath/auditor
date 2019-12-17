@@ -237,7 +237,16 @@ class QueryRule(Rule, BaseQueryRule):
         return matches
 
     def is_always_disjoint(self) -> bool:
-        return self.allow_claimed is True and self.attempt_claims is False
+        if self.allow_claimed is True and self.attempt_claims is False and self.source is not QuerySource.Claimed:
+            return True
+
+        return False
+
+    def is_never_disjoint(self) -> bool:
+        if self.source is QuerySource.Claimed:
+            return True
+
+        return False
 
 
 def has_assertion(assertions: Sequence[Union[AssertionRule, ConditionalAssertionRule]], key: Callable[[SingleClause], Iterator[Clause]]) -> bool:

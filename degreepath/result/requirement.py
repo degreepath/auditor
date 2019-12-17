@@ -24,6 +24,7 @@ class RequirementResult(Result, BaseRequirementRule):
             audited_by=solution.audited_by,
             is_contract=solution.is_contract,
             path=solution.path,
+            disjoint=solution.disjoint,
             in_gpa=solution.in_gpa,
             result=result,
             overridden=overridden,
