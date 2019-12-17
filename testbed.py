@@ -802,6 +802,10 @@ def render(args: argparse.Namespace) -> None:
     code = args.code
     branch = args.branch
 
+    input_data: Optional[Dict] = None
+    baseline_result: Optional[Dict] = None
+    branch_result: Optional[Dict] = None
+
     with sqlite_connect(args.db, readonly=True) as conn:
         if branch == 'server':
             results = conn.execute('''
@@ -813,11 +817,27 @@ def render(args: argparse.Namespace) -> None:
             ''', {'catalog': catalog, 'code': code, 'stnum': stnum})
 
             record = results.fetchone()
+            assert record, {'catalog': catalog, 'code': code, 'stnum': stnum}
 
             input_data = json.loads(record['input_data'])
             baseline_result = json.loads(record['output'])
 
-            print(render_result(input_data, baseline_result))
+        elif branch == 'baseline':
+            results = conn.execute('''
+                SELECT d.input_data, b1.result as output
+                FROM server_data d
+                LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
+                WHERE d.stnum = :stnum
+                    AND d.catalog = :catalog
+                    AND d.code = :code
+            ''', {'catalog': catalog, 'code': code, 'stnum': stnum})
+
+            record = results.fetchone()
+            assert record, {'catalog': catalog, 'code': code, 'stnum': stnum}
+
+            input_data = json.loads(record['input_data'])
+            baseline_result = json.loads(record['output'])
+
         else:
             results = conn.execute('''
                 SELECT d.input_data, b1.result as baseline, b2.result as branch
@@ -831,21 +851,27 @@ def render(args: argparse.Namespace) -> None:
             ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
 
             record = results.fetchone()
+            assert record, {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch}
 
             input_data = json.loads(record['input_data'])
             baseline_result = json.loads(record['baseline'])
             branch_result = json.loads(record['branch'])
 
-            print('Baseline')
-            print('========\n')
+        assert input_data
+        assert baseline_result
 
+        if not branch_result:
             print(render_result(input_data, baseline_result))
+            return
 
-            print()
-            print()
-            print(f'Branch: {args.branch}')
-            print('========\n')
-            print(render_result(input_data, branch_result))
+        print('Baseline')
+        print('========\n')
+        print(render_result(input_data, baseline_result))
+        print()
+        print()
+        print(f'Branch: {args.branch}')
+        print('========\n')
+        print(render_result(input_data, branch_result))
 
 
 def render_result(student_data: Dict, result: Dict) -> str:
