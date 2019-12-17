@@ -62,6 +62,8 @@ class CountRule(Rule, BaseCountRule):
         else:
             items = data["of"]
 
+        items = list(items)
+
         children_with_emphases = {**children}
         for emph in emphases:
             emphasis_key = f"Emphasis: {emph['name']}"
