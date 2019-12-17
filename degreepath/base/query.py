@@ -13,6 +13,7 @@ from .assertion import BaseAssertionRule
 @enum.unique
 class QuerySource(enum.Enum):
     Courses = "courses"
+    Claimed = "claimed"
     Areas = "areas"
     MusicPerformances = "music performances"
     MusicAttendances = "music recitals"

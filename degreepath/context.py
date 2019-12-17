@@ -66,6 +66,9 @@ class RequirementContext:
     def transcript_with_excluded(self) -> List[CourseInstance]:
         return self.transcript_with_excluded_
 
+    def all_claimed(self) -> List[CourseInstance]:
+        return [self.clbid_lookup_map_[clbid] for clbid in self.claims.keys()]
+
     def find_courses(self, *, rule: BaseCourseRule) -> Iterator[CourseInstance]:
         if rule.clbid:
             match_by_clbid = self.find_course_by_clbid(rule.clbid)
