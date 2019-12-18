@@ -14,7 +14,7 @@ import sentry_sdk
 
 from degreepath.main import run
 from degreepath.ms import pretty_ms
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
+from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg, EstimateMsg
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +113,9 @@ def main(*, area_file: str, db_file: Optional[str] = None, student_file: str, ru
 
             elif isinstance(msg, ResultMsg):
                 record(conn=conn, result_id=result_id, message=msg)
+            
+            elif isinstance(msg, EstimateMsg):
+                pass
 
             else:
                 logger.critical('unknown message %s', msg)
