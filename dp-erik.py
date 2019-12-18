@@ -113,7 +113,7 @@ def main(*, area_file: str, db_file: Optional[str] = None, student_file: str, ru
 
             elif isinstance(msg, ResultMsg):
                 record(conn=conn, result_id=result_id, message=msg)
-            
+
             elif isinstance(msg, EstimateMsg):
                 pass
 
