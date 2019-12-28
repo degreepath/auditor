@@ -5,8 +5,10 @@ import argparse
 import json
 import os
 
+import tqdm  # type: ignore
 import urllib3  # type: ignore
 import psycopg2  # type: ignore
+import sentry_sdk  # type: ignore
 import dotenv
 
 from dp.bin.expand import expand_student
@@ -14,6 +16,9 @@ from dp.bin.expand import expand_student
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+
+if os.environ.get('SENTRY_DSN', None):
+    sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
 
 http = urllib3.PoolManager()
 DISABLED = {('161932', '456'), ('163749', '456')}
@@ -37,7 +42,7 @@ def batch() -> Iterator[Tuple[Dict, str]]:
     with ProcessPoolExecutor() as pool:
         future_to_stnum = {pool.submit(fetch, stnum): stnum for stnum in student_ids}
 
-        for future in as_completed(future_to_stnum):
+        for future in tqdm.tqdm(as_completed(future_to_stnum), total=len(future_to_stnum), disable=None):
             stnum = future_to_stnum[future]
 
             try:
