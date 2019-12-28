@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # mypy: warn_unreachable = False
 
 import argparse
@@ -7,10 +6,10 @@ import json
 import sys
 import os
 
-from degreepath.ms import pretty_ms
-from degreepath.main import run
-from degreepath.stringify import summarize
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
+from dp.ms import pretty_ms
+from dp.run import run
+from dp.stringify import summarize
+from dp.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 
 def main() -> int:  # noqa: C901

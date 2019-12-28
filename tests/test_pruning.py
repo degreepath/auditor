@@ -1,7 +1,7 @@
-from degreepath.data import course_from_str
-from degreepath.area import AreaOfStudy
-from degreepath.constants import Constants
-from degreepath.result.course import CourseResult
+from dp.data import course_from_str
+from dp.area import AreaOfStudy
+from dp.constants import Constants
+from dp.result.course import CourseResult
 import logging
 
 c = Constants(matriculation_year=2000)

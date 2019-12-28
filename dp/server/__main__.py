@@ -1,17 +1,29 @@
 # mypy: warn_unreachable = False
 
-import os
-import json
 from pathlib import Path
+import os
+import logging
 import select
 
 import dotenv
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
+import sentry_sdk
+
+logger = logging.getLogger(__name__)
+
+if os.environ.get('SENTRY_DSN', None):
+    sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
+else:
+    logger.warning('SENTRY_DSN not set; skipping')
+
+from .audit import main as single
 
 # always resolve to the local .env file
-dotenv_path = Path(__file__).parent / '.env'
+dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+
+AREA_ROOT = os.getenv('AREA_ROOT')
 
 
 def worker() -> None:
@@ -60,19 +72,23 @@ def process_queue(curs: psycopg2.extensions.cursor) -> None:
                         SKIP LOCKED
                 LIMIT 1
             )
-            RETURNING id, student_id, area_catalog, area_code, input_data::text;
+            RETURNING id, run, student_id, area_catalog, area_code, input_data::text;
         ''')
 
         row = curs.fetchone()
-        print(row)
-
-        # when error, curs.execute('ROLLBACK;')
 
         if row is None:
             curs.execute('COMMIT;')
             break
 
-        curs.execute('COMMIT;')
+        queue_id, run_id, student_id, area_catalog, area_code, input_data = row
+
+        try:
+            # area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
+            # single(conn=curs.conn, student_data=input_data, run_id=run_id, area_file=area_path)
+            curs.execute('COMMIT;')
+        except Exception:
+            curs.execute('ROLLBACK;')
 
 
 def main() -> None:

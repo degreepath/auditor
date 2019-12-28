@@ -1,10 +1,15 @@
+"""validate
+
+Given area files on sys.argv, creates the AreaOfStudy object and calls .validate() on each one.
+"""
+
 import concurrent.futures
 import traceback
 import argparse
 import yaml
 import sys
 import os
-from degreepath import AreaOfStudy, Constants
+from dp import AreaOfStudy, Constants
 
 
 def main() -> int:

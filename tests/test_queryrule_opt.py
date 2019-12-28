@@ -1,6 +1,6 @@
-from degreepath.data import course_from_str
-from degreepath.rule.query import iterate_item_set, QueryRule
-from degreepath import Constants
+from dp.data import course_from_str
+from dp.rule.query import iterate_item_set, QueryRule
+from dp import Constants
 from decimal import Decimal
 
 

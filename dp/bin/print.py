@@ -1,8 +1,13 @@
+"""print
+
+Given an input JSON student and the output of `dp --json` as argv, prints the output like dp would normally
+"""
+
 import json
 import argparse
 
-from degreepath.stringify import print_result
-from degreepath import load_course
+from dp.stringify import print_result
+from dp import load_course
 
 
 def main() -> None:

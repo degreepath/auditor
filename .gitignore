@@ -16,4 +16,3 @@ __pycache__/
 *.db-*
 
 /*.json
-degreepath/cfml/

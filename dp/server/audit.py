@@ -10,17 +10,14 @@ from typing import Optional, Any, Dict, cast
 
 import dotenv
 import psycopg2  # type: ignore
+import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
-from degreepath.main import run
-from degreepath.ms import pretty_ms
-from degreepath.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg, EstimateMsg
+from dp.run import run
+from dp.ms import pretty_ms
+from dp.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg, EstimateMsg
 
 logger = logging.getLogger(__name__)
-
-# always resolve to the local .env file
-dotenv_path = Path(__file__).parent / '.env'
-dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
 
 if os.environ.get('SENTRY_DSN', None):
     sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
@@ -40,23 +37,30 @@ def cli() -> None:
     loglevel = getattr(logging, args.loglevel.upper())
     logging.basicConfig(level=loglevel)
 
-    main(student_file=args.student_file, db_file=args.db_file, area_file=args.area_file, run_id=args.run)
+    with open(args.student_file, 'r') as infile:
+        student_data = json.load(infile)
+
+    main(student_data=student_data, area_file=args.area_file, run_id=args.run)
 
 
-def main(*, area_file: str, db_file: Optional[str] = None, student_file: str, run_id: Optional[int] = None) -> None:
-    conn = psycopg2.connect(
-        host=os.environ.get("PGHOST"),
-        database=os.environ.get("PGDATABASE"),
-        user=os.environ.get("PGUSER"),
-    )
+def main(*, conn: Optional[psycopg2.extensions.connection] = None, area_file: str, student_data: Dict, run_id: int = -1) -> None:
+    if not conn:
+        # always resolve to the local .env file
+        dotenv_path = Path(__file__).parent.parent.parent / '.env'
+        dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+
+        conn = psycopg2.connect(
+            host=os.environ.get("PGHOST"),
+            database=os.environ.get("PGDATABASE"),
+            user=os.environ.get("PGUSER"),
+        )
 
     try:
         result_id = None
 
         args = Arguments(
             area_files=[area_file],
-            db_file=db_file,
-            student_files=[student_file],
+            student_data=[student_data],
         )
 
         for msg in run(args):
@@ -76,7 +80,7 @@ def main(*, area_file: str, db_file: Optional[str] = None, student_file: str, ru
                     stnum=msg.stnum,
                     area_code=msg.area_code,
                     catalog=msg.area_catalog,
-                    run=run_id,
+                    run_id=run_id,
                     student=msg.student,
                 )
                 logger.info("result id = %s", result_id)
@@ -182,13 +186,13 @@ def update_progress(*, conn: Any, start_time: datetime, count: int, result_id: O
         conn.commit()
 
 
-def make_result_id(*, stnum: str, conn: Any, student: Dict[str, Any], area_code: str, catalog: str, run: Optional[int]) -> Optional[int]:
+def make_result_id(*, stnum: str, conn: Any, student: Dict[str, Any], area_code: str, catalog: str, run_id: int) -> Optional[int]:
     with conn.cursor() as curs:
         curs.execute("""
             INSERT INTO result (student_id, area_code, catalog, in_progress, run, input_data)
             VALUES (%(student_id)s, %(area_code)s, %(catalog)s, true, %(run)s, %(student)s)
             RETURNING id
-        """, {"student_id": stnum, "area_code": area_code, "catalog": catalog, "run": run, "student": json.dumps(student)})
+        """, {"student_id": stnum, "area_code": area_code, "catalog": catalog, "run": run_id, "student": json.dumps(student)})
 
         conn.commit()
 

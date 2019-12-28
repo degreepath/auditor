@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 
+"""Usage: python3 -m dp.bin.index <query>
+
+Given a folder of student JSON files, caches their areas in a SQLite file within that folder, then executes <query> on
+that db.
+
+Output is intended to be piped to dp.bin.batch.
+
+Defaults to the "max" folder matching the glob ~/2019-*.
+"""
+
 import argparse
 import json
 import glob
@@ -8,10 +18,10 @@ import sqlite3
 
 
 def main() -> int:
-    DEFAULT_DIR = os.getenv('DP_STUDENT_DIR', default=max(glob.iglob(os.path.expanduser('~/2019-*'))))
+    default_dir = os.getenv('DP_STUDENT_DIR', default=max(glob.iglob(os.path.expanduser('~/2019-*'))))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dir', default=DEFAULT_DIR)
+    parser.add_argument('--dir', default=default_dir)
     parser.add_argument('--clean', action='store_true')
     parser.add_argument('--more', action='store_true')
     parser.add_argument('--print', action='store_true')
@@ -54,7 +64,7 @@ def main() -> int:
         for i, stnum in enumerate(to_index):
             if i % 100 == 0:
                 print(f'\rindexing {i}/{len(to_index)} items', end='')
-            elif (i + 1 == len(to_index)):
+            elif i + 1 == len(to_index):
                 print(f'\rindexing {i + 1}/{len(to_index)} items', end='')
 
             with open(os.path.join(args.dir, f"{stnum}.json"), 'r', encoding='utf-8') as infile:

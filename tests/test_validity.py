@@ -1,5 +1,5 @@
-from degreepath.area import AreaOfStudy
-from degreepath.constants import Constants
+from dp.area import AreaOfStudy
+from dp.constants import Constants
 import pytest
 import io
 import yaml

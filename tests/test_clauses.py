@@ -1,8 +1,8 @@
-from degreepath.clause import SingleClause, Operator, apply_operator, compute_single_clause_diff
-from degreepath.load_clause import load_clause
-from degreepath.context import RequirementContext
-from degreepath.data import course_from_str, Clausable, AreaPointer, MusicProficiencies
-from degreepath.constants import Constants
+from dp.clause import SingleClause, Operator, apply_operator, compute_single_clause_diff
+from dp.load_clause import load_clause
+from dp.context import RequirementContext
+from dp.data import course_from_str, Clausable, AreaPointer, MusicProficiencies
+from dp.constants import Constants
 import logging
 import pytest
 

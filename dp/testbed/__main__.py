@@ -21,11 +21,11 @@ from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Optional, Any, Tuple, Dict, Sequence, Iterator
 
-from degreepath.main import run
-from degreepath.ms import pretty_ms, parse_ms_str
-from degreepath.audit import ResultMsg, EstimateMsg, Arguments, AuditStartMsg
-from degreepath.data.course import load_course
-from degreepath.stringify import print_result
+from dp.run import run
+from dp.ms import pretty_ms, parse_ms_str
+from dp.audit import ResultMsg, EstimateMsg, Arguments, AuditStartMsg
+from dp.data.course import load_course
+from dp.stringify import print_result
 
 logger = logging.getLogger(__name__)
 

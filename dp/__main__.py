@@ -9,11 +9,11 @@ import os
 import dotenv
 from collections import defaultdict
 
-from degreepath.main import run
-from degreepath.ms import pretty_ms
-from degreepath.stringify import summarize
-from degreepath.stringify_csv import to_csv
-from degreepath.audit import EstimateMsg, NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
+from dp.run import run
+from dp.ms import pretty_ms
+from dp.stringify import summarize
+from dp.stringify_csv import to_csv
+from dp.audit import EstimateMsg, NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
 
 dotenv.load_dotenv(verbose=False)
 
