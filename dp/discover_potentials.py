@@ -1,8 +1,9 @@
 from typing import List, Iterator, Union, Dict, Optional
-import urllib3
 import os
-import attr
 import json
+
+import attr
+import urllib3  # type: ignore
 
 from .constants import Constants
 from .area import AreaOfStudy
