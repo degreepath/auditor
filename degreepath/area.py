@@ -2,6 +2,7 @@ import attr
 from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
+from collections import defaultdict
 
 from .base import Solution, Result, Rule, Base, Summable
 from .constants import Constants
@@ -14,7 +15,6 @@ from .result.count import CountResult
 from .result.requirement import RequirementResult
 from .lib import grade_point_average
 from .solve import find_best_solution
-from .group_by import group_by
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import ClaimAttempt  # noqa: F401
@@ -374,7 +374,10 @@ class AreaResult(AreaOfStudy, Result):
             return (c.subject, c.number, c.section or '', c.sub_type.value, c.year, c.term)
 
         claims = sorted((c for c in self.claims() if not c.failed), key=sort_claims_by_time)
-        by_clbid = group_by(claims, key=lambda c: c.claim.course.clbid)
+
+        by_clbid: Dict[str, List['ClaimAttempt']] = defaultdict(list)
+        for c in claims:
+            by_clbid[c.claim.course.clbid].append(c)
 
         return {
             clbid: [list(attempt.claim.claimant_path) for attempt in claim_attempts]
