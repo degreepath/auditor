@@ -41,7 +41,7 @@ def worker() -> None:
 
     with conn.cursor() as curs:
         # process any already-existing items
-        process_queue(curs, conn)
+        process_queue(curs, pid)
 
     with conn.cursor() as curs:
         # language=PostgreSQL
@@ -57,10 +57,10 @@ def worker() -> None:
                 notify = conn.notifies.pop(0)
                 print(f"NOTIFY: ${notify.pid}, channel={notify.channel}, payload={notify.payload!r}")
 
-                process_queue(curs, conn)
+                process_queue(curs, pid)
 
 
-def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.connection) -> None:
+def process_queue(curs: psycopg2.extensions.cursor, pid: int) -> None:
     while True:
         # language=PostgreSQL
         curs.execute('BEGIN;')
@@ -91,20 +91,20 @@ def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.co
 
         try:
             assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
-            print(f'auditing #{queue_id}, stnum {student_id} against {area_catalog}/{area_code}')
+            print(f'auditing #{queue_id}, stnum {student_id} against {area_catalog}/{area_code} with {pid}')
 
             area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
             single(student_data=input_data, run_id=run_id, area_file=area_path)
             # language=PostgreSQL
             curs.execute('COMMIT;')
 
-            print(f'completed #{queue_id}, stnum {student_id} against {area_catalog}/{area_code}')
+            print(f'completed #{queue_id}, stnum {student_id} against {area_catalog}/{area_code} with {pid}')
         except Exception as exc:
             # language=PostgreSQL
             curs.execute('ROLLBACK;')
 
             sentry_sdk.capture_exception(exc)
-            print(f'error during #{queue_id}, stnum {student_id} against {area_catalog}/{area_code}')
+            print(f'error during #{queue_id}, stnum {student_id} against {area_catalog}/{area_code} with {pid}')
 
 
 def main() -> None:
