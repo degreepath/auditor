@@ -29,14 +29,12 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          flake8 --count --show-source --statistics degreepath/
-          flake8 --count --show-source --statistics *.py
+          flake8 --count --show-source --statistics dp/
 
       - name: Check with mypy
         run: |
-          mypy --pretty degreepath/
-          mypy --pretty *.py
+          mypy --pretty dp/
 
       - name: Test with pytest
         run: |
-          pytest tests/ degreepath/
+          pytest tests/ dp/
