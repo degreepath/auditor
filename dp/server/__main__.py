@@ -1,9 +1,11 @@
 # mypy: warn_unreachable = False
 
 from pathlib import Path
-import os
+import multiprocessing
+import argparse
 import logging
 import select
+import os
 
 import dotenv
 import psycopg2  # type: ignore
@@ -95,7 +97,8 @@ def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.co
 def main() -> None:
     assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
 
-    import multiprocessing
+    parser = argparse.ArgumentParser()
+    parser.parse_args()
 
     try:
         worker_count = len(os.sched_getaffinity(0))
