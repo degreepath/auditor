@@ -40,7 +40,7 @@ def batch() -> Iterator[Tuple[Dict, str]]:
     student_ids = set(r.data.decode('utf-8').splitlines())
     student_ids.add('122932')
 
-    print(f'fetched {len(student_ids):,} stnums to audit')
+    print(f'fetched list of {len(student_ids):,} stnums to audit')
 
     with ProcessPoolExecutor() as pool:
         future_to_stnum = {pool.submit(fetch, stnum): stnum for stnum in student_ids}
@@ -75,16 +75,22 @@ def main() -> None:
             row = curs.fetchone()
             run = row[0]
 
+    count = 0
+
     with conn, conn.cursor() as curs:
         for student, data in batch():
             for stnum, catalog, code in expand_student(student=student):
                 if (stnum, code) in DISABLED:
                     continue
 
+                count += 1
+
                 curs.execute('''
                     INSERT INTO queue (priority, student_id, area_catalog, area_code, input_data, run)
                     VALUES (1, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), %(run)s)
                 ''', {'stnum': stnum, 'catalog': catalog, 'code': code, 'data': data, 'run': run})
+
+    print(f'queued {count:,} audits in the database')
 
 
 if __name__ == '__main__':
