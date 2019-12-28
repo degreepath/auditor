@@ -46,7 +46,7 @@ def batch() -> Iterator[Tuple[Dict, str]]:
     try:
         worker_count = len(os.sched_getaffinity(0))
     except AttributeError:
-        worker_count = os.cpu_count()
+        worker_count = cast(int, os.cpu_count())
 
     worker_count = math.floor(worker_count * 0.75)
 
