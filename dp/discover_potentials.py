@@ -1,5 +1,5 @@
 from typing import List, Iterator, Union, Dict, Optional
-import requests
+import urllib3
 import os
 import attr
 import json
@@ -13,6 +13,8 @@ from .rule.query import QueryRule
 from .clause import ClauseWithResult, AndClause, OrClause, SingleClause
 from .operator import Operator
 
+http = urllib3.PoolManager()
+
 
 def discover_clause_potential(
     area: AreaOfStudy,
@@ -24,7 +26,6 @@ def discover_clause_potential(
         return {}
 
     result = {}
-    s = requests.Session()
     for clause in find_all_clauses(area):
         positive_buckets = set(extract_positive_buckets(clause))
         negative_buckets = set(extract_negative_buckets(clause))
@@ -38,8 +39,8 @@ def discover_clause_potential(
             'matriculation': str(c.matriculation_year),
         }
 
-        response = s.post(url, data=data, headers={'accept': 'application/json'})
-        parsed = response.json()
+        response = http.request('POST', url, fields=data, headers={'Accept': 'application/json'})
+        parsed = json.loads(response.data.decode('utf-8'))
 
         if 'hash' in parsed and parsed['error'] is False:
             result[parsed['hash']] = parsed['clbids']
