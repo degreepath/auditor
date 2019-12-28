@@ -6,8 +6,6 @@ from pathlib import Path
 import psycopg2  # type: ignore
 import dotenv
 
-from dp.bin.expand import expand_student
-
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
@@ -28,13 +26,21 @@ def main() -> None:
 
     with open(args.student, 'r', encoding='utf-8') as infile:
         data = json.load(infile)
+        stnum = data['stnum']
+
+    db_args = {
+        'stnum': stnum,
+        'catalog': args.catalog,
+        'code': args.code,
+        'data': data,
+        'run': args.run,
+    }
 
     with conn, conn.cursor() as curs:
-        for stnum, catalog, code in expand_student(student=data, area_code=args.code, catalog=args.catalog):
-            curs.execute('''
-                INSERT INTO queue (priority, student_id, area_catalog, area_code, input_data, run)
-                VALUES (100, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), -1)
-            ''', {'stnum': stnum, 'catalog': catalog, 'code': code, 'data': data, 'run': args.run})
+        curs.execute('''
+            INSERT INTO queue (priority, student_id, area_catalog, area_code, input_data, run)
+            VALUES (100, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), -1)
+        ''', db_args)
 
 
 if __name__ == '__main__':
