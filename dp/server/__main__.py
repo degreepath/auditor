@@ -91,13 +91,20 @@ def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.co
 
         try:
             assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
+            print(f'auditing #{queue_id}, stnum {student_id} against {area_catalog}/{area_code}')
+
             area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
             single(student_data=input_data, run_id=run_id, area_file=area_path)
             # language=PostgreSQL
             curs.execute('COMMIT;')
-        except Exception:
+
+            print(f'completed #{queue_id}, stnum {student_id} against {area_catalog}/{area_code}')
+        except Exception as exc:
             # language=PostgreSQL
             curs.execute('ROLLBACK;')
+
+            sentry_sdk.capture_exception(exc)
+            print(f'error during #{queue_id}, stnum {student_id} against {area_catalog}/{area_code}')
 
 
 def main() -> None:
