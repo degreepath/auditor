@@ -5,6 +5,7 @@ import multiprocessing
 import argparse
 import logging
 import select
+import json
 import os
 
 import dotenv
@@ -94,8 +95,10 @@ def process_queue(curs: psycopg2.extensions.cursor, pid: int) -> None:
             assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
             area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
 
+            student = json.loads(input_data)
+
             print(f'auditing #{queue_id}, stnum {student_id} against {area_path} with {pid}')
-            single(student_data=input_data, run_id=run_id, area_file=area_path)
+            single(student_data=student, run_id=run_id, area_file=area_path)
             # language=PostgreSQL
             curs.execute('COMMIT;')
 
