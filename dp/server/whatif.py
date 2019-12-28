@@ -33,7 +33,6 @@ def main() -> None:
         'catalog': args.catalog,
         'code': args.code,
         'data': data,
-        'run': args.run,
     }
 
     with conn, conn.cursor() as curs:
