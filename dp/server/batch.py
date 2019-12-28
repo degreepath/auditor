@@ -2,6 +2,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Iterator, Dict, Tuple, cast
 from pathlib import Path
 import argparse
+import math
 import json
 import os
 
@@ -42,7 +43,14 @@ def batch() -> Iterator[Tuple[Dict, str]]:
 
     print(f'fetched list of {len(student_ids):,} stnums to audit')
 
-    with ProcessPoolExecutor() as pool:
+    try:
+        worker_count = len(os.sched_getaffinity(0))
+    except AttributeError:
+        worker_count = os.cpu_count()
+
+    worker_count = math.floor(worker_count * 0.75)
+
+    with ProcessPoolExecutor(max_workers=worker_count) as pool:
         future_to_stnum = {pool.submit(fetch, stnum): stnum for stnum in student_ids}
 
         for future in tqdm.tqdm(as_completed(future_to_stnum), total=len(future_to_stnum), disable=None):

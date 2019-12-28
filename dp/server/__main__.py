@@ -5,6 +5,7 @@ import multiprocessing
 import argparse
 import logging
 import select
+import math
 import json
 import os
 
@@ -121,6 +122,8 @@ def main() -> None:
         worker_count = len(os.sched_getaffinity(0))
     except AttributeError:
         worker_count = multiprocessing.cpu_count()
+
+    worker_count = math.floor(worker_count * 0.75)
 
     processes = []
     for _ in range(worker_count):
