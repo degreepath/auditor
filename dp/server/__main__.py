@@ -10,6 +10,8 @@ import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
+from .audit import main as single
+
 logger = logging.getLogger(__name__)
 
 if os.environ.get('SENTRY_DSN', None):
@@ -17,13 +19,13 @@ if os.environ.get('SENTRY_DSN', None):
 else:
     logger.warning('SENTRY_DSN not set; skipping')
 
-from .audit import main as single
-
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
 
-AREA_ROOT = os.getenv('AREA_ROOT')
+AREA_ROOT_ = os.getenv('AREA_ROOT')
+assert AREA_ROOT_ is not None, "The AREA_ROOT environment variable is required"
+AREA_ROOT: str = AREA_ROOT_
 
 
 def worker() -> None:
@@ -39,7 +41,7 @@ def worker() -> None:
 
     with conn.cursor() as curs:
         # process any already-existing items
-        process_queue(curs)
+        process_queue(curs, conn)
 
     with conn.cursor() as curs:
         curs.execute("LISTEN dp_queue_update;")
@@ -54,10 +56,10 @@ def worker() -> None:
                 notify = conn.notifies.pop(0)
                 print(f"NOTIFY: ${notify.pid}, channel={notify.channel}, payload={notify.payload!r}")
 
-                process_queue(curs)
+                process_queue(curs, conn)
 
 
-def process_queue(curs: psycopg2.extensions.cursor) -> None:
+def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.connection) -> None:
     while True:
         curs.execute('BEGIN;')
 
@@ -84,8 +86,8 @@ def process_queue(curs: psycopg2.extensions.cursor) -> None:
         queue_id, run_id, student_id, area_catalog, area_code, input_data = row
 
         try:
-            # area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
-            # single(conn=curs.conn, student_data=input_data, run_id=run_id, area_file=area_path)
+            area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
+            single(conn=conn, student_data=input_data, run_id=run_id, area_file=area_path)
             curs.execute('COMMIT;')
         except Exception:
             curs.execute('ROLLBACK;')

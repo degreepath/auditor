@@ -107,10 +107,10 @@ def fetch__select_run(args: argparse.Namespace, conn: Any) -> int:
             """)
 
             # 219: 2019-12-06 23:07 / 2019-12-07 04:40 [5h 32m 58.7s]; 6,997 total, 201 ok, 6,796 not-ok
-            datefmt = "%Y-%m-%d %H:%M"
+            date_fmt = "%Y-%m-%d %H:%M"
             for row in curs.fetchall():
-                first = row['first'].strftime(datefmt)
-                last = row['last'].strftime(datefmt)
+                first = row['first'].strftime(date_fmt)
+                last = row['last'].strftime(date_fmt)
                 duration = pretty_ms(row['duration'] * 1000, unit_count=2)
                 print(f"{row['run']}: {first} / {last} [{duration}]; {row['total']:,} total, {row['ok']:,} ok, {row['not-ok']:,} not-ok")
 

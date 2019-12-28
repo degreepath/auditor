@@ -14,7 +14,7 @@ def do_extract(args: argparse.Namespace) -> None:
             SELECT d.input_data
             FROM server_data d
             WHERE (d.stnum, d.catalog, d.code) = (:stnum, :catalog, :code)
-        ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+        ''', {'catalog': catalog, 'code': code, 'stnum': stnum})
 
         record = results.fetchone()
         input_data = json.loads(record['input_data'])

@@ -5,7 +5,7 @@ import pathlib
 import yaml
 import os
 
-import tqdm
+import tqdm  # type: ignore
 
 
 def load_areas(args: argparse.Namespace, areas_to_load: Sequence[Dict]) -> Dict[str, Any]:
@@ -32,4 +32,3 @@ def load_areas(args: argparse.Namespace, areas_to_load: Sequence[Dict]) -> Dict[
 def load_area(root: pathlib.Path, catalog: str, code: str) -> Tuple[str, Dict]:
     with open(root / catalog / f"{code}.yaml", "r", encoding="utf-8") as infile:
         return f"{catalog}/{code}", yaml.load(stream=infile, Loader=yaml.SafeLoader)
-
