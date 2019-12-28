@@ -43,25 +43,21 @@ def cli() -> None:
     main(student_data=student_data, area_file=args.area_file, run_id=args.run)
 
 
-def main(*, conn: Optional[psycopg2.extensions.connection] = None, area_file: str, student_data: Dict, run_id: int = -1) -> None:
-    if not conn:
-        # always resolve to the local .env file
-        dotenv_path = Path(__file__).parent.parent.parent / '.env'
-        dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+def main(*, area_file: str, student_data: Dict, run_id: int = -1) -> None:
+    # always resolve to the local .env file
+    dotenv_path = Path(__file__).parent.parent.parent / '.env'
+    dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
 
-        conn = psycopg2.connect(
-            host=os.environ.get("PGHOST"),
-            database=os.environ.get("PGDATABASE"),
-            user=os.environ.get("PGUSER"),
-        )
+    conn = psycopg2.connect(
+        host=os.environ.get("PGHOST"),
+        database=os.environ.get("PGDATABASE"),
+        user=os.environ.get("PGUSER"),
+    )
+    conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     try:
         result_id = None
-
-        args = Arguments(
-            area_files=[area_file],
-            student_data=[student_data],
-        )
+        args = Arguments(area_files=[area_file], student_data=[student_data])
 
         for msg in run(args):
             if isinstance(msg, NoStudentsMsg):
@@ -135,44 +131,49 @@ def record(*, message: ResultMsg, conn: Any, result_id: Optional[int]) -> None:
     avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
     with conn.cursor() as curs:
-        curs.execute("""
-            UPDATE result
-            SET iterations = %(total_count)s
-              , duration = interval %(elapsed)s
-              , per_iteration = interval %(avg_iter_time)s
-              , rank = %(rank)s
-              , max_rank = %(max_rank)s
-              , result = %(result)s::jsonb
-              , ok = %(ok)s
-              , ts = now()
-              , gpa = %(gpa)s
-              , in_progress = false
-              , claimed_courses = %(claimed_courses)s::jsonb
-            WHERE id = %(result_id)s
-        """, {
-            "result_id": result_id,
-            "total_count": message.count,
-            "elapsed": message.elapsed,
-            "avg_iter_time": avg_iter_time.strip("~"),
-            "result": json.dumps(result),
-            "claimed_courses": json.dumps(message.result.keyed_claims()),
-            "rank": result["rank"],
-            "max_rank": result["max_rank"],
-            "gpa": result["gpa"],
-            "ok": result["ok"],
-        })
+        curs.execute('BEGIN;')
 
-        for clause_hash, clbids in message.potentials_for_all_clauses.items():
+        try:
             curs.execute("""
-                INSERT INTO potential_clbids (result_id, clause_hash, clbids)
-                VALUES (%(result_id)s, %(clause_hash)s, %(clbids)s)
+                UPDATE result
+                SET iterations = %(total_count)s
+                  , duration = interval %(elapsed)s
+                  , per_iteration = interval %(avg_iter_time)s
+                  , rank = %(rank)s
+                  , max_rank = %(max_rank)s
+                  , result = %(result)s::jsonb
+                  , ok = %(ok)s
+                  , ts = now()
+                  , gpa = %(gpa)s
+                  , in_progress = false
+                  , claimed_courses = %(claimed_courses)s::jsonb
+                WHERE id = %(result_id)s
             """, {
                 "result_id": result_id,
-                "clause_hash": clause_hash,
-                "clbids": clbids,
+                "total_count": message.count,
+                "elapsed": message.elapsed,
+                "avg_iter_time": avg_iter_time.strip("~"),
+                "result": json.dumps(result),
+                "claimed_courses": json.dumps(message.result.keyed_claims()),
+                "rank": result["rank"],
+                "max_rank": result["max_rank"],
+                "gpa": result["gpa"],
+                "ok": result["ok"],
             })
 
-        conn.commit()
+            for clause_hash, clbids in message.potentials_for_all_clauses.items():
+                curs.execute("""
+                    INSERT INTO potential_clbids (result_id, clause_hash, clbids)
+                    VALUES (%(result_id)s, %(clause_hash)s, %(clbids)s)
+                """, {
+                    "result_id": result_id,
+                    "clause_hash": clause_hash,
+                    "clbids": clbids,
+                })
+
+            curs.execute('COMMIT;')
+        finally:
+            curs.execute('ROLLBACK;')
 
 
 def update_progress(*, conn: Any, start_time: datetime, count: int, result_id: Optional[int]) -> None:
@@ -183,8 +184,6 @@ def update_progress(*, conn: Any, start_time: datetime, count: int, result_id: O
             WHERE id = %(result_id)s
         """, {"result_id": result_id, "count": count, "start_time": start_time})
 
-        conn.commit()
-
 
 def make_result_id(*, stnum: str, conn: Any, student: Dict[str, Any], area_code: str, catalog: str, run_id: int) -> Optional[int]:
     with conn.cursor() as curs:
@@ -193,8 +192,6 @@ def make_result_id(*, stnum: str, conn: Any, student: Dict[str, Any], area_code:
             VALUES (%(student_id)s, %(area_code)s, %(catalog)s, true, %(run)s, %(student)s)
             RETURNING id
         """, {"student_id": stnum, "area_code": area_code, "catalog": catalog, "run": run_id, "student": json.dumps(student)})
-
-        conn.commit()
 
         for row in curs:
             return cast(int, row[0])
@@ -208,11 +205,7 @@ def record_error(*, conn: Any, result_id: int, error: Dict[str, Any]) -> None:
             UPDATE result
             SET in_progress = false, error = %(error)s
             WHERE id = %(result_id)s
-        """, {
-            "result_id": result_id,
-            "error": json.dumps(error),
-        })
-        conn.commit()
+        """, {"result_id": result_id, "error": json.dumps(error)})
 
 
 if __name__ == "__main__":

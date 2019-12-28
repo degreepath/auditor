@@ -44,6 +44,7 @@ def worker() -> None:
         process_queue(curs, conn)
 
     with conn.cursor() as curs:
+        # language=PostgreSQL
         curs.execute("LISTEN dp_queue_update;")
         print("Waiting for notifications on channel 'dp_queue_update'")
 
@@ -61,8 +62,10 @@ def worker() -> None:
 
 def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.connection) -> None:
     while True:
+        # language=PostgreSQL
         curs.execute('BEGIN;')
 
+        # language=PostgreSQL
         curs.execute('''
             DELETE
             FROM public.queue
@@ -80,6 +83,7 @@ def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.co
         row = curs.fetchone()
 
         if row is None:
+            # language=PostgreSQL
             curs.execute('COMMIT;')
             break
 
@@ -88,9 +92,11 @@ def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.co
         try:
             assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
             area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
-            single(conn=conn, student_data=input_data, run_id=run_id, area_file=area_path)
+            single(student_data=input_data, run_id=run_id, area_file=area_path)
+            # language=PostgreSQL
             curs.execute('COMMIT;')
         except Exception:
+            # language=PostgreSQL
             curs.execute('ROLLBACK;')
 
 

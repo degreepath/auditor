@@ -28,7 +28,7 @@ def fetch(stnum: str) -> Tuple[Dict, str]:
     return cast(Dict, json.loads(text)), text
 
 
-def batch() -> Iterator[Dict]:
+def batch() -> Iterator[Tuple[Dict, str]]:
     r = http.request('GET', BATCH_URL)
 
     student_ids = set(r.data.decode('utf-8').splitlines())
