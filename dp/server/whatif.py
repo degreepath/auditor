@@ -25,21 +25,15 @@ def main() -> None:
     )
 
     with open(args.student, 'r', encoding='utf-8') as infile:
-        data = json.load(infile)
-        stnum = data['stnum']
-
-    db_args = {
-        'stnum': stnum,
-        'catalog': args.catalog,
-        'code': args.code,
-        'data': data,
-    }
+        data = infile.read()
+        student = json.loads(data)
+        stnum = student['stnum']
 
     with conn, conn.cursor() as curs:
         curs.execute('''
             INSERT INTO queue (priority, student_id, area_catalog, area_code, input_data, run)
             VALUES (100, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), -1)
-        ''', db_args)
+        ''', {'stnum': stnum, 'catalog': args.catalog, 'code': args.code, 'data': data})
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from typing import Iterator, Dict, cast
+from typing import Iterator, Dict, Tuple, cast
 from pathlib import Path
 import argparse
 import json
@@ -22,9 +22,10 @@ BATCH_URL = os.getenv('DP_BATCH_URL')
 SINGLE_URL = os.getenv('DP_SINGLE_URL')
 
 
-def fetch(stnum: str) -> Dict:
+def fetch(stnum: str) -> Tuple[Dict, str]:
     r = http.request('GET', SINGLE_URL, fields={'stnum': stnum})
-    return cast(Dict, json.loads(r.data.decode('utf-8')))
+    text = r.data.decode('utf-8')
+    return cast(Dict, json.loads(text)), text
 
 
 def batch() -> Iterator[Dict]:
@@ -67,7 +68,7 @@ def main() -> None:
             run = row[0]
 
     with conn, conn.cursor() as curs:
-        for student in batch():
+        for student, data in batch():
             for stnum, catalog, code in expand_student(student=student):
                 if (stnum, code) in DISABLED:
                     continue
@@ -75,7 +76,7 @@ def main() -> None:
                 curs.execute('''
                     INSERT INTO queue (priority, student_id, area_catalog, area_code, input_data, run)
                     VALUES (1, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), %(run)s)
-                ''', {'stnum': stnum, 'catalog': catalog, 'code': code, 'data': student, 'run': run})
+                ''', {'stnum': stnum, 'catalog': catalog, 'code': code, 'data': data, 'run': run})
 
 
 if __name__ == '__main__':
