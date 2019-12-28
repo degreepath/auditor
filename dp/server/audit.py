@@ -5,10 +5,8 @@ import json
 import logging
 import os
 from datetime import datetime
-from pathlib import Path
 from typing import Optional, Any, Dict, cast
 
-import dotenv
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
@@ -21,11 +19,16 @@ logger = logging.getLogger(__name__)
 
 if os.environ.get('SENTRY_DSN', None):
     sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
-else:
-    logger.warning('SENTRY_DSN not set; skipping')
 
 
 def cli() -> None:
+    import dotenv
+    from pathlib import Path
+
+    # always resolve to the local .env file
+    dotenv_path = Path(__file__).parent.parent.parent / '.env'
+    dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file", required=True)
     parser.add_argument("--student", dest="student_file", required=True)
@@ -44,10 +47,6 @@ def cli() -> None:
 
 
 def main(*, area_file: str, student_data: Dict, run_id: int = -1) -> None:
-    # always resolve to the local .env file
-    dotenv_path = Path(__file__).parent.parent.parent / '.env'
-    dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
-
     conn = psycopg2.connect(
         host=os.environ.get("PGHOST"),
         database=os.environ.get("PGDATABASE"),

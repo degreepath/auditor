@@ -16,14 +16,15 @@ import sentry_sdk
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
 
-from .audit import main as single
-
 logger = logging.getLogger(__name__)
 
 if os.environ.get('SENTRY_DSN', None):
     sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
 else:
     logger.warning('SENTRY_DSN not set; skipping')
+
+# we need to import this after dotenv and sentry have loaded
+from .audit import main as single  # noqa: F402
 
 AREA_ROOT = os.getenv('AREA_ROOT')
 
