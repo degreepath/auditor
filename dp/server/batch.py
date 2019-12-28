@@ -8,7 +8,7 @@ import os
 import tqdm  # type: ignore
 import urllib3  # type: ignore
 import psycopg2  # type: ignore
-import sentry_sdk  # type: ignore
+import sentry_sdk
 import dotenv
 
 from dp.bin.expand import expand_student
