@@ -23,9 +23,7 @@ else:
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
 
-AREA_ROOT_ = os.getenv('AREA_ROOT')
-assert AREA_ROOT_ is not None, "The AREA_ROOT environment variable is required"
-AREA_ROOT: str = AREA_ROOT_
+AREA_ROOT = os.getenv('AREA_ROOT')
 
 
 def worker() -> None:
@@ -86,6 +84,7 @@ def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.co
         queue_id, run_id, student_id, area_catalog, area_code, input_data = row
 
         try:
+            assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
             area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
             single(conn=conn, student_data=input_data, run_id=run_id, area_file=area_path)
             curs.execute('COMMIT;')
@@ -94,6 +93,8 @@ def process_queue(curs: psycopg2.extensions.cursor, conn: psycopg2.extensions.co
 
 
 def main() -> None:
+    assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
+
     import multiprocessing
 
     try:
