@@ -61,7 +61,8 @@ def expand_student(*, student: Dict, area_code: Optional[str] = None, catalog: O
 
         area_catalog = area_pointer.get('catalog', catalog)
         if '-' not in str(area_catalog):
-            area_catalog = str(area_catalog) + '-' + str(area_catalog + 1)[2:]
+            int_catalog = int(str(area_catalog))
+            area_catalog = str(int_catalog) + '-' + str(int_catalog + 1)[2:]
 
         yield (stnum, area_catalog, area_code)
 
