@@ -48,7 +48,7 @@ def expand_student(*, student: Dict, area_code: Optional[str] = None, catalog: O
         try:
             catalog = str(int(student['catalog']))
         except ValueError:
-            # If the catalog isn't a year, just go ahead and return now
+            # If the catalog isn't a year, just go ahead and skip this audit
             return
 
     if area_code:
@@ -59,10 +59,11 @@ def expand_student(*, student: Dict, area_code: Optional[str] = None, catalog: O
     for area_code in items:
         area_pointer = area_dict.get(area_code, {'code': area_code, 'catalog': catalog})
 
+        # fetch the more-specific catalog field from the area reference, if given
         area_catalog = area_pointer.get('catalog', catalog)
-        if '-' not in str(area_catalog):
-            int_catalog = int(str(area_catalog))
-            area_catalog = str(int_catalog) + '-' + str(int_catalog + 1)[2:]
+
+        # convert the year catalog "2019" into "2019-20"
+        area_catalog = area_catalog + '-' + str(int(area_catalog) + 1)[2:]
 
         yield (stnum, area_catalog, area_code)
 
