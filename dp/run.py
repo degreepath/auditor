@@ -2,16 +2,17 @@ import traceback
 import pathlib
 import sqlite3
 import json
-from typing import Iterator, List, Dict, Tuple, Any
+from typing import Iterator, List, Tuple
 
 import yaml
 import csv
 import sys
 import os
 
-from . import load_course, Constants, AreaPointer, load_exception, AreaOfStudy
+from . import Constants, AreaPointer, load_exception, AreaOfStudy
 from .lib import grade_point_average_items, grade_point_average
-from .data import GradeOption, GradeCode, CourseInstance, TranscriptCode, MusicPerformance, MusicAttendance, MusicProficiencies
+from .data import MusicPerformance, MusicAttendance, MusicProficiencies
+from .load_transcript import load_transcript
 from .audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
@@ -126,31 +127,3 @@ def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
 
             except Exception as ex:
                 yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=student['stnum'], area_code=area_code)
-
-
-def load_transcript(courses: List[Dict[str, Any]], *, include_failed: bool = False) -> Iterator[CourseInstance]:
-    # We need to leave repeated courses in the transcript, because some majors
-    # (THEAT) require repeated courses for completion (and others )
-    for row in courses:
-        c = load_course(row)
-
-        # excluded Audited courses
-        if c.grade_option is GradeOption.Audit:
-            continue
-
-        # excluded repeated courses
-        if c.transcript_code in (TranscriptCode.RepeatedLater, TranscriptCode.RepeatInProgress):
-            continue
-
-        # exclude [N]o-Pass, [U]nsuccessful, [AU]dit, [UA]nsuccessfulAudit, [WF]ithdrawnFail, [WP]ithdrawnPass, and [Withdrawn]
-        if c.grade_code in (GradeCode._N, GradeCode._U, GradeCode._AU, GradeCode._UA, GradeCode._WF, GradeCode._WP, GradeCode._W):
-            continue
-
-        # exclude courses at grade F
-        if c.grade_code is GradeCode.F:
-            if include_failed is True:
-                pass
-            else:
-                continue
-
-        yield c
