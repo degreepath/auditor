@@ -1,0 +1,129 @@
+import json
+import time
+from typing import Optional, Tuple, Dict
+
+from .sqlite import sqlite_connect, sqlite_cursor
+
+from dp.run import run
+from dp.audit import ResultMsg, Arguments, EstimateMsg, AuditStartMsg
+
+
+def audit(
+    row: Tuple[str, str, str],
+    *,
+    data: Optional[Dict] = None,
+    db: str,
+    area_spec: Dict,
+    run_id: str = '',
+    timeout: Optional[float] = None,
+) -> Optional[Dict]:
+    stnum, catalog, code = row
+
+    if not data:
+        with sqlite_connect(db, readonly=True) as conn:
+            results = conn.execute('''
+                SELECT input_data
+                FROM server_data
+                WHERE (stnum, catalog, code) = (?, ?, ?)
+            ''', [stnum, catalog, code])
+
+            record = results.fetchone()
+            assert record is not None
+
+            args = Arguments(
+                student_data=[json.loads(record['input_data'])],
+                area_specs=[(area_spec, catalog)],
+            )
+    else:
+        args = Arguments(
+            student_data=[data],
+            area_specs=[(area_spec, catalog)],
+        )
+
+    estimate_count = estimate((stnum, catalog, code), db=db, area_spec=area_spec)
+    assert estimate_count is not None
+
+    db_keys = {'stnum': stnum, 'catalog': catalog, 'code': code, 'estimate': estimate_count, 'branch': run_id}
+
+    with sqlite_connect(db, readonly=False) as conn:
+        with sqlite_cursor(conn) as curs:
+            if run_id == '':
+                curs.execute('''
+                    INSERT INTO baseline_ip (stnum, catalog, code, estimate)
+                    VALUES (:stnum, :catalog, :code, :estimate)
+                ''', db_keys)
+            else:
+                curs.execute('''
+                    INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
+                    VALUES (:stnum, :catalog, :code, :estimate, :branch)
+                ''', db_keys)
+            conn.commit()
+
+    start_time = time.perf_counter()
+
+    for message in run(args):
+        if isinstance(message, ResultMsg):
+            result = message.result.to_dict()
+            return {
+                "run": run_id,
+                "stnum": stnum,
+                "catalog": catalog,
+                "code": code,
+                "iterations": message.count,
+                "duration": message.elapsed_ms / 1000,
+                "gpa": result["gpa"],
+                "ok": result["ok"],
+                "rank": result["rank"],
+                "max_rank": result["max_rank"],
+                "result": json.dumps(result, sort_keys=True),
+            }
+        else:
+            if timeout and time.perf_counter() - start_time >= timeout:
+                raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}', db_keys)
+            pass
+
+    return None
+
+
+def estimate(
+    row: Tuple[str, str, str],
+    *,
+    data: Optional[Dict] = None,
+    db: str,
+    area_spec: Dict,
+    run_id: str = '',
+) -> Optional[int]:
+    stnum, catalog, code = row
+
+    if not data:
+        with sqlite_connect(db, readonly=True) as conn:
+            results = conn.execute('''
+                SELECT input_data
+                FROM server_data
+                WHERE (stnum, catalog, code) = (?, ?, ?)
+            ''', [stnum, catalog, code])
+
+            record = results.fetchone()
+            assert record is not None
+
+            args = Arguments(
+                student_data=[json.loads(record['input_data'])],
+                area_specs=[(area_spec, catalog)],
+                estimate_only=True,
+            )
+    else:
+        args = Arguments(
+            student_data=[data],
+            area_specs=[(area_spec, catalog)],
+            estimate_only=True,
+        )
+
+    for message in run(args):
+        if isinstance(message, EstimateMsg):
+            return message.estimate
+        elif isinstance(message, AuditStartMsg):
+            pass
+        else:
+            assert False, type(message)
+
+    return None

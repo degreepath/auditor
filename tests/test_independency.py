@@ -1,7 +1,7 @@
-from degreepath.data import course_from_str
-from degreepath.area import AreaOfStudy
-from degreepath.constants import Constants
-from degreepath.context import RequirementContext
+from dp.data import course_from_str
+from dp.area import AreaOfStudy
+from dp.constants import Constants
+from dp.context import RequirementContext
 from typing import Any
 import logging
 

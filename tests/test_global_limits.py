@@ -1,6 +1,6 @@
-from degreepath.area import AreaOfStudy
-from degreepath.data import course_from_str
-from degreepath.constants import Constants
+from dp.area import AreaOfStudy
+from dp.data import course_from_str
+from dp.constants import Constants
 import pytest  # type: ignore
 import io
 import yaml

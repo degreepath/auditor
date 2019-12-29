@@ -1,7 +1,7 @@
-from degreepath import AreaOfStudy, Constants, AreaPointer
-from degreepath.audit import audit, Arguments
-from degreepath.data.course import course_from_str
-from degreepath.data.area_enums import AreaStatus, AreaType
+from dp import AreaOfStudy, Constants, AreaPointer
+from dp.audit import audit, Arguments
+from dp.data.course import course_from_str
+from dp.data.area_enums import AreaStatus, AreaType
 from typing import Dict, Any
 
 

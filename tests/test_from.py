@@ -1,6 +1,6 @@
-from degreepath.area import AreaOfStudy
-from degreepath.data import course_from_str
-from degreepath.constants import Constants
+from dp.area import AreaOfStudy
+from dp.data import course_from_str
+from dp.constants import Constants
 import pytest
 import io
 import yaml
@@ -47,7 +47,7 @@ def __get_data(spec):
 
 
 def test_solution_count_exact(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
+    caplog.set_level(logging.DEBUG, logger='dp.rule.given.rule')
 
     area, transcript = __get_data("""
         result:
@@ -72,7 +72,7 @@ def test_solution_count_exact(caplog):
 
 
 def test_solution_count_lessthan(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
+    caplog.set_level(logging.DEBUG, logger='dp.rule.given.rule')
 
     with pytest.raises(AssertionError):
         area, transcript = __get_data("""
@@ -89,7 +89,7 @@ def test_solution_count_lessthan(caplog):
 
 
 def test_solution_count_greaterthan_1(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
+    caplog.set_level(logging.DEBUG, logger='dp.rule.given.rule')
     area, transcript = __get_data("""
         result:
             from: courses
@@ -116,7 +116,7 @@ def test_solution_count_greaterthan_1(caplog):
 
 
 def test_solution_count_always_yield_something(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.rule.given.rule')
+    caplog.set_level(logging.DEBUG, logger='dp.rule.given.rule')
     area, transcript = __get_data("""
         result:
             from: courses

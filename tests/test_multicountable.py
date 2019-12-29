@@ -1,6 +1,6 @@
-from degreepath.area import AreaOfStudy
-from degreepath.data import course_from_str
-from degreepath.constants import Constants
+from dp.area import AreaOfStudy
+from dp.data import course_from_str
+from dp.constants import Constants
 import yaml
 import io
 import logging
@@ -11,7 +11,7 @@ next_assertion = '\n\n... next assertion ...\n\n'
 
 
 def test_mc__none(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.context')
+    caplog.set_level(logging.DEBUG, logger='dp.context')
 
     test_data = io.StringIO("""
         result:
@@ -50,7 +50,7 @@ def test_mc__none(caplog):
 
 
 def test_mc__none_2(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.context')
+    caplog.set_level(logging.DEBUG, logger='dp.context')
 
     test_data = io.StringIO("""
         result:
@@ -93,7 +93,7 @@ def test_mc__none_2(caplog):
 
 
 def test_mc__only_course_references(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.context')
+    caplog.set_level(logging.DEBUG, logger='dp.context')
 
     test_data = io.StringIO("""
         result:
@@ -135,7 +135,7 @@ def test_mc__only_course_references(caplog):
 
 
 def test_mc__only_query_references(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.context')
+    caplog.set_level(logging.DEBUG, logger='dp.context')
 
     test_data = io.StringIO("""
         result:
@@ -176,7 +176,7 @@ def test_mc__only_query_references(caplog):
 
 
 def x_test_mc__mixed_course_query_references(caplog):
-    caplog.set_level(logging.DEBUG, logger='degreepath.context')
+    caplog.set_level(logging.DEBUG, logger='dp.context')
 
     test_data = io.StringIO("""
         result:

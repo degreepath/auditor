@@ -1,6 +1,6 @@
-from degreepath.data import course_from_str
+from dp.data import course_from_str
 from decimal import Decimal
-import degreepath.apply_clause as funcs
+import dp.apply_clause as funcs
 
 
 def test_count_courses__all_different():

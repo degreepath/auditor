@@ -1,8 +1,8 @@
 import pytest
 from collections import defaultdict
 
-from degreepath.context import RequirementContext
-from degreepath.data import course_from_str
+from dp.context import RequirementContext
+from dp.data import course_from_str
 
 
 def do_claim(*, course, path, context, allow_claimed):
