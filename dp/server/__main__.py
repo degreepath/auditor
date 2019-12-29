@@ -39,11 +39,10 @@ else:
 # we need to import this after dotenv and sentry have loaded
 from .audit import main as single  # noqa: F402
 
-AREA_ROOT = os.getenv('AREA_ROOT')
 PROCTITLE = getproctitle()
 
 
-def worker() -> None:
+def worker(*, area_root: str) -> None:
     pid = os.getpid()
     print(f'[pid={pid}] connect', file=sys.stderr)
 
@@ -58,7 +57,7 @@ def worker() -> None:
 
     with conn.cursor() as curs:
         # process any already-existing items
-        process_queue(curs=curs, pid=pid)
+        process_queue(curs=curs, pid=pid, area_root=area_root)
 
     print(f'[pid={pid}] initial queue emptied', file=sys.stderr)
 
@@ -80,12 +79,12 @@ def worker() -> None:
             conn.poll()
             while conn.notifies:
                 notify = conn.notifies.pop(0)
-                print(f"NOTIFY: ${notify.pid}, channel={notify.channel}, payload={notify.payload!r}", file=sys.stderr)
+                print(f"NOTIFY: {notify.pid}, channel={notify.channel}, payload={notify.payload!r}", file=sys.stderr)
 
-                process_queue(curs=curs, pid=pid)
+                process_queue(curs=curs, pid=pid, area_root=area_root)
 
 
-def process_queue(*, curs: psycopg2.extensions.cursor, pid: int) -> None:
+def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str) -> None:
     # loop until the queue is empty
     while True:
         curs.execute('BEGIN;')
@@ -116,12 +115,9 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int) -> None:
         try:
             queue_id, run_id, student_id, area_catalog, area_code, input_data = row
             area_id = area_catalog + '/' + area_code
+            area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
 
             setproctitle(f'{PROCTITLE} RUN stnum={student_id} code={area_code} catalog={area_catalog}')
-
-            assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
-            area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
-
             print(f'[pid={pid}, q={queue_id}] begin  {student_id}::{area_id}', file=sys.stderr)
 
             # run the audit
@@ -147,7 +143,8 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int) -> None:
 
 
 def main() -> None:
-    assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
+    area_root = os.getenv('AREA_ROOT')
+    assert area_root is not None, "The AREA_ROOT environment variable is required"
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--workers", "-w", type=int, help="the number of worker processes to spawn")
@@ -166,7 +163,7 @@ def main() -> None:
 
     processes = []
     for _ in range(worker_count):
-        p = multiprocessing.Process(target=worker, daemon=True)
+        p = multiprocessing.Process(target=worker, daemon=True, kwargs=dict(area_root=area_root))
         processes.append(p)
         p.start()
 
