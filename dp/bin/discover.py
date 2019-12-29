@@ -45,7 +45,9 @@ def main() -> None:
         if not file.endswith('.yaml'):
             continue
 
-        code = Path(file).stem
+        file = Path(file)
+
+        code = file.stem
         catalog = file.parent.stem
 
         if '-' in code or '.' in code:
