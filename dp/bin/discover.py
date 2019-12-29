@@ -132,7 +132,7 @@ def insert_course_refs(conn: Any, courses: Set[CourseReference]) -> None:
                 INSERT INTO map_constant_area(area_code, course)
                 VALUES (%(code)s, %(course)s)
                 ON CONFLICT DO NOTHING
-            ''', course_ref)
+            ''', {'code': course_ref.code, 'course': course_ref.course})
 
         curs.execute('''
             SELECT area_code, course
@@ -147,7 +147,7 @@ def insert_course_refs(conn: Any, courses: Set[CourseReference]) -> None:
                     DELETE FROM map_constant_area
                     WHERE area_code = %(code)s
                         AND course = %(course)s
-                ''', ref)
+                ''', {'code': ref.code, 'course': ref.course})
 
         conn.commit()
 
@@ -159,7 +159,7 @@ def insert_bucket_refs(conn: Any, buckets: Set[BucketReference]) -> None:
                 INSERT INTO map_attribute_area(attr, area_code, catalog_year)
                 VALUES (%(bucket)s, %(code)s, %(catalog)s)
                 ON CONFLICT DO NOTHING
-            ''', bucket_ref)
+            ''', {'bucket': bucket_ref.bucket, 'code': bucket_ref.code, 'catalog': bucket_ref.catalog})
 
         curs.execute('''
             SELECT area_code, catalog_year, attr
@@ -175,7 +175,7 @@ def insert_bucket_refs(conn: Any, buckets: Set[BucketReference]) -> None:
                     WHERE area_code = %(code)s
                         AND catalog_year = %(catalog)s
                         AND attr = %(bucket)s
-                ''', ref)
+                ''', {'bucket': ref.bucket, 'code': ref.code, 'catalog': ref.catalog})
 
         conn.commit()
 
