@@ -15,6 +15,16 @@ import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
+try:
+    from setproctitle import setproctitle, getproctitle  # type: ignore
+except ImportError:
+    def setproctitle(title: str) -> None:
+        pass
+
+    def getproctitle(title: str) -> None:
+        pass
+
+
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
@@ -30,6 +40,7 @@ else:
 from .audit import main as single  # noqa: F402
 
 AREA_ROOT = os.getenv('AREA_ROOT')
+PROCTITLE = getproctitle()
 
 
 def worker() -> None:
@@ -43,16 +54,26 @@ def worker() -> None:
     conn = psycopg2.connect(host=PGHOST, database=PGDATABASE, user=PGUSER)
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
+    print(f'[pid={pid}] connected', file=sys.stderr)
+
     with conn.cursor() as curs:
         # process any already-existing items
         process_queue(curs=curs, pid=pid)
 
+    print(f'[pid={pid}] initial queue emptied', file=sys.stderr)
+
     with conn.cursor() as curs:
         channel = 'dp_queue_update'
         curs.execute(f"LISTEN {channel};")
-        print(f"Waiting for notifications on channel '{channel}'", file=sys.stderr)
+        print(f"LISTEN {channel};", file=sys.stderr)
+        setproctitle(f'{PROCTITLE} LISTEN')
 
         while True:
+            # this was taken from the psycopg2 documentation. I believe that
+            # the output is the items from the input that have data, and that
+            # the timeout is how long it will wait for there to be data... and
+            # that if data shows up beforehand, it will return as soon as
+            # there is data.
             if select.select([conn], [], [], 5) == ([], [], []):
                 continue
 
@@ -68,6 +89,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int) -> None:
     # loop until the queue is empty
     while True:
         curs.execute('BEGIN;')
+        setproctitle(f'{PROCTITLE} BEGIN')
 
         curs.execute('''
             DELETE
@@ -95,6 +117,8 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int) -> None:
             queue_id, run_id, student_id, area_catalog, area_code, input_data = row
             area_id = area_catalog + '/' + area_code
 
+            setproctitle(f'{PROCTITLE} RUN stnum={student_id} code={area_code} catalog={area_catalog}')
+
             assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
             area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
 
@@ -115,6 +139,9 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int) -> None:
             # record the exception in Sentry for debugging
             sentry_sdk.capture_exception(exc)
 
+            # update the process title
+            setproctitle(f'{PROCTITLE} ERROR stnum={student_id} code={area_code} catalog={area_catalog}')
+
             # log the exception
             print(f'[pid={pid}, q={queue_id}] error  {student_id}::{area_id}', file=sys.stderr)
 
@@ -123,14 +150,19 @@ def main() -> None:
     assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
 
     parser = argparse.ArgumentParser()
-    parser.parse_args()
+    parser.add_argument("--workers", "-w", type=int, help="the number of worker processes to spawn")
+    args = parser.parse_args()
 
-    try:
-        worker_count = len(os.sched_getaffinity(0))
-    except AttributeError:
-        worker_count = multiprocessing.cpu_count()
+    if args.workers:
+        worker_count = args.workers
+    else:
+        try:
+            # only available on linux
+            worker_count = len(os.sched_getaffinity(0))
+        except AttributeError:
+            worker_count = multiprocessing.cpu_count()
 
-    worker_count = math.floor(worker_count * 0.75)
+        worker_count = math.floor(worker_count * 0.75)
 
     processes = []
     for _ in range(worker_count):
