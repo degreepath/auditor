@@ -41,6 +41,13 @@ from .audit import main as single  # noqa: F402
 PROCTITLE = getproctitle()
 
 
+def wrapper(*, area_root: str) -> None:
+    try:
+        worker(area_root=area_root)
+    except KeyboardInterrupt:
+        pass
+
+
 def worker(*, area_root: str) -> None:
     pid = os.getpid()
     print(f'[pid={pid}] connect', file=sys.stderr)
@@ -162,7 +169,7 @@ def main() -> None:
 
     processes = []
     for _ in range(worker_count):
-        p = multiprocessing.Process(target=worker, kwargs=dict(area_root=area_root))
+        p = multiprocessing.Process(target=wrapper, kwargs=dict(area_root=area_root))
         processes.append(p)
         p.start()
 
