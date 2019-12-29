@@ -21,8 +21,8 @@ except ImportError:
     def setproctitle(title: str) -> None:
         pass
 
-    def getproctitle(title: str) -> None:
-        pass
+    def getproctitle() -> str:
+        return ''
 
 
 # always resolve to the local .env file
