@@ -24,7 +24,6 @@ except ImportError:
     def getproctitle() -> str:
         return ''
 
-
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
