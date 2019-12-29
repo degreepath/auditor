@@ -163,7 +163,7 @@ def main() -> None:
 
     processes = []
     for _ in range(worker_count):
-        p = multiprocessing.Process(target=worker, daemon=True, kwargs=dict(area_root=area_root))
+        p = multiprocessing.Process(target=worker, kwargs=dict(area_root=area_root))
         processes.append(p)
         p.start()
 
