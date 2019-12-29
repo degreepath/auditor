@@ -7,6 +7,7 @@ import logging
 import select
 import math
 import json
+import sys
 import os
 
 import dotenv
@@ -33,23 +34,23 @@ AREA_ROOT = os.getenv('AREA_ROOT')
 
 def worker() -> None:
     pid = os.getpid()
-    print('starting connection', pid)
+    print(f'[pid={pid}] connect', file=sys.stderr)
 
-    conn = psycopg2.connect(
-        host=os.environ.get("PGHOST"),
-        database=os.environ.get("PGDATABASE"),
-        user=os.environ.get("PGUSER"),
-    )
+    PGHOST = os.environ.get("PGHOST")
+    PGDATABASE = os.environ.get("PGDATABASE")
+    PGUSER = os.environ.get("PGUSER")
+
+    conn = psycopg2.connect(host=PGHOST, database=PGDATABASE, user=PGUSER)
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     with conn.cursor() as curs:
         # process any already-existing items
-        process_queue(curs, pid)
+        process_queue(curs=curs, pid=pid)
 
     with conn.cursor() as curs:
-        # language=PostgreSQL
-        curs.execute("LISTEN dp_queue_update;")
-        print("Waiting for notifications on channel 'dp_queue_update'")
+        channel = 'dp_queue_update'
+        curs.execute(f"LISTEN {channel};")
+        print(f"Waiting for notifications on channel '{channel}'", file=sys.stderr)
 
         while True:
             if select.select([conn], [], [], 5) == ([], [], []):
@@ -58,17 +59,16 @@ def worker() -> None:
             conn.poll()
             while conn.notifies:
                 notify = conn.notifies.pop(0)
-                print(f"NOTIFY: ${notify.pid}, channel={notify.channel}, payload={notify.payload!r}")
+                print(f"NOTIFY: ${notify.pid}, channel={notify.channel}, payload={notify.payload!r}", file=sys.stderr)
 
-                process_queue(curs, pid)
+                process_queue(curs=curs, pid=pid)
 
 
-def process_queue(curs: psycopg2.extensions.cursor, pid: int) -> None:
+def process_queue(*, curs: psycopg2.extensions.cursor, pid: int) -> None:
+    # loop until the queue is empty
     while True:
-        # language=PostgreSQL
         curs.execute('BEGIN;')
 
-        # language=PostgreSQL
         curs.execute('''
             DELETE
             FROM public.queue
@@ -83,33 +83,40 @@ def process_queue(curs: psycopg2.extensions.cursor, pid: int) -> None:
             RETURNING id, run, student_id, area_catalog, area_code, input_data::text;
         ''')
 
+        # fetch the next available queued item
         row = curs.fetchone()
 
+        # if there are no more, return to waiting
         if row is None:
-            # language=PostgreSQL
             curs.execute('COMMIT;')
             break
 
-        queue_id, run_id, student_id, area_catalog, area_code, input_data = row
-
         try:
+            queue_id, run_id, student_id, area_catalog, area_code, input_data = row
+            area_id = area_catalog + '/' + area_code
+
             assert AREA_ROOT is not None, "The AREA_ROOT environment variable is required"
             area_path = os.path.join(AREA_ROOT, area_catalog, area_code + '.yaml')
 
-            student = json.loads(input_data)
+            print(f'[pid={pid}, q={queue_id}] begin  {student_id}::{area_id}', file=sys.stderr)
 
-            print(f'auditing #{queue_id}, stnum {student_id} against {area_path} with {pid}')
-            single(student_data=student, run_id=run_id, area_file=area_path)
-            # language=PostgreSQL
+            # run the audit
+            single(student_data=json.loads(input_data), area_file=area_path, run_id=run_id)
+
+            # once the audit is done, commit the queue's DELETE
             curs.execute('COMMIT;')
 
-            print(f'completed #{queue_id}, stnum {student_id} against {area_path} with {pid}')
-        except Exception as exc:
-            # language=PostgreSQL
-            curs.execute('ROLLBACK;')
+            print(f'[pid={pid}, q={queue_id}] commit {student_id}::{area_id}', file=sys.stderr)
 
+        except Exception as exc:
+            # commit the deletion, just so it doesn't endlessly re-run itself
+            curs.execute('COMMIT;')
+
+            # record the exception in Sentry for debugging
             sentry_sdk.capture_exception(exc)
-            print(f'error during #{queue_id}, stnum {student_id} against {area_catalog}/{area_code} with {pid}')
+
+            # log the exception
+            print(f'[pid={pid}, q={queue_id}] error  {student_id}::{area_id}', file=sys.stderr)
 
 
 def main() -> None:
