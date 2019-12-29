@@ -1,4 +1,4 @@
-from typing import Iterator, Set, Any
+from typing import Iterator, Set, Any, List
 from pathlib import Path
 from collections import namedtuple
 import argparse
@@ -38,14 +38,15 @@ def main() -> None:
     parser.add_argument('--insert', default=False, action='store_true')
     args = parser.parse_args()
 
+    files: List[str] = args.files
     courses: Set[CourseReference] = set()
     buckets: Set[BucketReference] = set()
 
-    for file in args.files:
-        if not file.endswith('.yaml'):
+    for filepath in files:
+        if not filepath.endswith('.yaml'):
             continue
 
-        file = Path(file)
+        file: Path = Path(filepath)
 
         code = file.stem
         catalog = file.parent.stem
