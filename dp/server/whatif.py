@@ -15,7 +15,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--student', required=True)
     parser.add_argument('--code', required=True)
-    parser.add_argument('--catalog', required=True)
+    parser.add_argument('--catalog', required=True, type=int)
     args = parser.parse_args()
 
     conn = psycopg2.connect(
@@ -29,11 +29,13 @@ def main() -> None:
         student = json.loads(data)
         stnum = student['stnum']
 
+    catalog = str(args.catalog) + '-' + str(args.catalog + 1)[2:]
+
     with conn, conn.cursor() as curs:
         curs.execute('''
             INSERT INTO queue (priority, student_id, area_catalog, area_code, input_data, run)
             VALUES (100, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), -1)
-        ''', {'stnum': stnum, 'catalog': args.catalog, 'code': args.code, 'data': data})
+        ''', {'stnum': stnum, 'catalog': catalog, 'code': args.code, 'data': data})
 
 
 if __name__ == '__main__':
