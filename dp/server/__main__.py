@@ -120,6 +120,11 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
 
         try:
             queue_id, run_id, student_id, area_catalog, area_code, input_data = row
+        except Exception:
+            curs.execute('COMMIT;')
+            break
+
+        try:
             area_id = area_catalog + '/' + area_code
             area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
 
