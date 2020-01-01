@@ -2,12 +2,11 @@ import traceback
 import pathlib
 import sqlite3
 import json
-from typing import Iterator, List, Tuple
+from typing import Iterator, List, Tuple, Sequence, Optional, Dict
 
 import yaml
 import csv
 import sys
-import os
 
 from . import Constants, AreaPointer, load_exception, AreaOfStudy
 from .lib import grade_point_average_items, grade_point_average
@@ -16,49 +15,29 @@ from .load_transcript import load_transcript
 from .audit import audit, NoStudentsMsg, AuditStartMsg, ExceptionMsg, AreaFileNotFoundMsg, Message, Arguments
 
 
-def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
-    file_data = list(args.student_data)
-
+def run(
+    args: Arguments,
+    *,
+    db_file: Optional[str] = None,
+    student_files: Sequence[str] = tuple(),
+    student_data: Sequence[Dict] = tuple(),
+    area_files: Sequence[str] = tuple(),
+    area_specs: Sequence[Tuple[Dict, str]] = tuple(),
+) -> Iterator[Message]:
     try:
-        if args.db_file:
-            conn = sqlite3.connect(args.db_file)
-
-            # the sqlite3 module doesn't support passing in a list automatically,
-            # so we generate our own set of :n-params
-            param_marks = ','.join(f':{i}' for i, _ in enumerate(args.student_files))
-            query = f'''
-                SELECT student
-                FROM file
-                WHERE path IN ({param_marks}) OR stnum IN ({param_marks})
-            '''
-
-            with conn:
-                for (sqldata,) in conn.execute(query, args.student_files):
-                    file_data.append(json.loads(sqldata))
-
-        else:
-            for student_file in args.student_files:
-                with open(student_file, "r", encoding="utf-8") as infile:
-                    file_data.append(json.load(infile))
-
+        file_data = load_students(db_file=db_file, student_files=student_files, student_data=student_data)
+        if not file_data:
+            yield NoStudentsMsg()
+            return
     except FileNotFoundError as ex:
         yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=None, area_code=None)
         return
 
-    if not file_data:
-        yield NoStudentsMsg()
+    try:
+        spec_pairs = load_specs(area_files=area_files, area_specs=area_specs)
+    except FileNotFoundError as ex:
+        yield AreaFileNotFoundMsg(area_file=ex.filename, stnums=[s['stnum'] for s in file_data])
         return
-
-    area_specs: List[Tuple[dict, str]] = list(args.area_specs)
-
-    for area_file in args.area_files:
-        try:
-            catalog = pathlib.Path(area_file).parent.stem
-            with open(area_file, "r", encoding="utf-8") as infile:
-                area_specs.append((yaml.load(stream=infile, Loader=yaml.SafeLoader), catalog))
-        except FileNotFoundError:
-            yield AreaFileNotFoundMsg(area_file=f"{os.path.dirname(area_file)}/{os.path.basename(area_file)}", stnums=[s['stnum'] for s in file_data])
-            return
 
     for student in file_data:
         area_pointers = tuple(AreaPointer.from_dict(a) for a in student['areas'])
@@ -91,7 +70,7 @@ def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
         music_attendances = tuple(sorted((MusicAttendance.from_dict(d) for d in student['performance_attendances']), key=lambda a: a.sort_order()))
         music_proficiencies = MusicProficiencies.from_dict(student['proficiencies'])
 
-        for area_spec, area_catalog in area_specs:
+        for area_spec, area_catalog in spec_pairs:
             area_code = area_spec['code']
 
             exceptions = [
@@ -127,3 +106,49 @@ def run(args: Arguments) -> Iterator[Message]:  # noqa: C901
 
             except Exception as ex:
                 yield ExceptionMsg(ex=ex, tb=traceback.format_exc(), stnum=student['stnum'], area_code=area_code)
+
+
+def load_students(
+    *,
+    student_files: Sequence[str] = tuple(),
+    db_file: Optional[str] = None,
+    student_data: Sequence[Dict] = tuple(),
+) -> List[Dict]:
+    file_data = list(student_data)
+
+    if db_file:
+        conn = sqlite3.connect(db_file)
+
+        # the sqlite3 module doesn't support passing in a list automatically,
+        # so we generate our own set of :n-params
+        param_marks = ','.join(f':{i}' for i, _ in enumerate(student_files))
+        query = f'''
+            SELECT student
+            FROM file
+            WHERE path IN ({param_marks}) OR stnum IN ({param_marks})
+        '''
+
+        with conn:
+            for (sqldata,) in conn.execute(query, student_files):
+                file_data.append(json.loads(sqldata))
+
+    else:
+        for student_file in student_files:
+            with open(student_file, "r", encoding="utf-8") as infile:
+                file_data.append(json.load(infile))
+
+    return file_data
+
+
+def load_specs(
+    area_files: Sequence[str] = tuple(),
+    area_specs: Sequence[Tuple[Dict, str]] = tuple(),
+) -> List[Tuple[Dict, str]]:
+    spec_pairs: List[Tuple[Dict, str]] = list(area_specs)
+
+    for area_file in area_files:
+        catalog = pathlib.Path(area_file).parent.stem
+        with open(area_file, "r", encoding="utf-8") as infile:
+            spec_pairs.append((yaml.load(stream=infile, Loader=yaml.SafeLoader), catalog))
+
+    return spec_pairs
