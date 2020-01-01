@@ -1,7 +1,5 @@
-# mypy: warn_unreachable = False
-
 import argparse
-import json
+import pathlib
 import logging
 import os
 
@@ -9,6 +7,7 @@ import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
+from dp.run import load_areas, load_students
 from dp.server.audit import audit
 
 logger = logging.getLogger(__name__)
@@ -32,8 +31,11 @@ def main() -> None:
     parser.add_argument("--run", dest="run", type=int, default=-1, required=True)
     args = parser.parse_args()
 
-    with open(args.student_file, 'r') as infile:
-        student_data = json.load(infile)
+    student_data = load_students(args.student_file)[0]
+    area_spec = load_areas(args.area_file)[0]
+
+    area_catalog = str(pathlib.Path(args.area_file).parent)
+    area_code = pathlib.Path(args.area_file).stem
 
     PGHOST = os.environ.get("PGHOST")
     PGDATABASE = os.environ.get("PGDATABASE")
@@ -45,7 +47,14 @@ def main() -> None:
     with conn.cursor() as curs:
         curs.execute('BEGIN;')
         try:
-            audit(curs=curs, student_data=student_data, area_file=args.area_file, run_id=args.run)
+            audit(
+                curs=curs,
+                area_spec=area_spec,
+                area_catalog=area_catalog,
+                area_code=area_code,
+                student=student_data,
+                run_id=args.run,
+            )
             curs.execute('COMMIT;')
         except Exception:
             curs.execute('ROLLBACK;')

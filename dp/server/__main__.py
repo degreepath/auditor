@@ -15,6 +15,8 @@ import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
+from dp.run import load_areas
+
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
@@ -117,8 +119,17 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
 
             print(f'[pid={pid}, q={queue_id}] begin  {student_id}::{area_id}', file=sys.stderr)
 
+            area_spec = load_areas(area_path)[0]
+
             # run the audit
-            audit(curs=curs, student_data=json.loads(input_data), area_file=area_path, run_id=run_id)
+            audit(
+                curs=curs,
+                student=json.loads(input_data),
+                area_spec=area_spec,
+                area_catalog=area_catalog,
+                area_code=area_code,
+                run_id=run_id,
+            )
 
             # once the audit is done, commit the queue's DELETE
             curs.execute('COMMIT;')

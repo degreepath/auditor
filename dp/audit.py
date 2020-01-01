@@ -80,12 +80,9 @@ class AreaFileNotFoundMsg:
 
 
 Message = Union[
-    AreaFileNotFoundMsg,
-    AuditStartMsg,
     EstimateMsg,
     ExceptionMsg,
     NoAuditsCompletedMsg,
-    NoStudentsMsg,
     ProgressMsg,
     ResultMsg,
 ]

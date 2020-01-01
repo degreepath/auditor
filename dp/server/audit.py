@@ -2,7 +2,7 @@
 
 import json
 import logging
-from typing import Optional, Dict, cast
+from typing import Dict, cast
 
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
@@ -10,88 +10,74 @@ import sentry_sdk
 
 from dp.run import run
 from dp.ms import pretty_ms
-from dp.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg, EstimateMsg
+from dp.audit import ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg
 
 logger = logging.getLogger(__name__)
 
 
-def audit(*, area_file: str, student_data: Dict, run_id: int, curs: psycopg2.extensions.cursor) -> None:
-    result_id = None
+def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, run_id: int, curs: psycopg2.extensions.cursor) -> None:
     args = Arguments()
 
-    for msg in run(args, area_files=[area_file], student_data=[student_data]):
-        if isinstance(msg, NoStudentsMsg):
-            logger.critical('no student files provided')
+    stnum = student['stnum']
 
-        elif isinstance(msg, NoAuditsCompletedMsg):
-            logger.critical('no audits completed')
+    logger.info("auditing #%s against %s %s", stnum, area_catalog, area_code)
+    with sentry_sdk.configure_scope() as scope:
+        scope.user = {"id": stnum}
 
-        elif isinstance(msg, AuditStartMsg):
-            logger.info("auditing #%s against %s %s", msg.stnum, msg.area_catalog, msg.area_code)
-            with sentry_sdk.configure_scope() as scope:
-                scope.user = {"id": msg.stnum}
+    curs.execute("""
+        INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data, in_progress)
+        VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(student)s , true       )
+        RETURNING id
+    """, {"student_id": stnum, "area_code": area_code, "catalog": area_catalog, "run": run_id, "student": json.dumps(student)})
 
-            curs.execute("""
-                INSERT INTO result (student_id, area_code, catalog, in_progress, run, input_data)
-                VALUES (%(student_id)s, %(area_code)s, %(catalog)s, true, %(run)s, %(student)s)
-                RETURNING id
-            """, {"student_id": msg.stnum, "area_code": msg.area_code, "catalog": msg.area_catalog, "run": run_id, "student": json.dumps(msg.student)})
+    row = curs.fetchone()
+    result_id: int = cast(int, row[0])
 
-            row = curs.fetchone()
-            result_id = cast(int, row[0])
+    logger.info(f"result id = {result_id}")
 
-            logger.info("result id = %s", result_id)
+    with sentry_sdk.configure_scope() as scope:
+        scope.user = dict(id=stnum)
+        scope.set_tag("area_code", area_code)
+        scope.set_tag("catalog", area_catalog)
+        scope.set_extra("result_id", result_id)
 
-            with sentry_sdk.configure_scope() as scope:
-                scope.user = {"id": msg.stnum}
-                scope.set_tag('area_code', msg.area_code)
-                scope.set_tag('catalog', msg.area_catalog)
-                scope.set_extra('result_id', result_id)
+    try:
+        for msg in run(args, area_spec=area_spec, student=student):
+            if isinstance(msg, NoAuditsCompletedMsg):
+                logger.critical('no audits completed')
 
-        elif isinstance(msg, ExceptionMsg):
-            sentry_sdk.capture_exception(msg.ex)
+            elif isinstance(msg, EstimateMsg):
+                pass
 
-            if result_id:
-                error = {"error": str(msg.ex)}
+            elif isinstance(msg, ProgressMsg):
+                avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
+                avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
 
                 curs.execute("""
                     UPDATE result
-                    SET in_progress = false, error = %(error)s
+                    SET iterations = %(count)s, duration = cast(now() - %(start_time)s as interval)
                     WHERE id = %(result_id)s
-                """, {"result_id": result_id, "error": json.dumps(error)})
+                """, {"result_id": result_id, "count": msg.count, "start_time": msg.start_time})
 
-        elif isinstance(msg, AreaFileNotFoundMsg):
-            message = "Could not load area file"
+                logger.info(f"{msg.count:,} at {avg_iter_time} per audit")
 
-            for stnum in msg.stnums:
-                with sentry_sdk.configure_scope() as scope:
-                    scope.user = {"id": stnum}
-                    scope.set_tag('area_file', msg.area_file)
-                    sentry_sdk.capture_message(message)
+            elif isinstance(msg, ResultMsg):
+                record(curs=curs, result_id=result_id, message=msg)
 
-        elif isinstance(msg, ProgressMsg):
-            avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
-            avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
+            else:
+                logger.critical('unknown message %s', msg)
 
-            curs.execute("""
-                UPDATE result
-                SET iterations = %(count)s, duration = cast(now() - %(start_time)s as interval)
-                WHERE id = %(result_id)s
-            """, {"result_id": result_id, "count": msg.count, "start_time": msg.start_time})
+    except Exception as ex:
+        sentry_sdk.capture_exception(ex)
 
-            logger.info(f"{msg.count:,} at {avg_iter_time} per audit")
-
-        elif isinstance(msg, ResultMsg):
-            record(curs=curs, result_id=result_id, message=msg)
-
-        elif isinstance(msg, EstimateMsg):
-            pass
-
-        else:
-            logger.critical('unknown message %s', msg)
+        curs.execute("""
+            UPDATE result
+            SET in_progress = false, error = %(error)s
+            WHERE id = %(result_id)s
+        """, {"result_id": result_id, "error": json.dumps({"error": str(ex)})})
 
 
-def record(*, message: ResultMsg, curs: psycopg2.extensions.cursor, result_id: Optional[int]) -> None:
+def record(*, message: ResultMsg, curs: psycopg2.extensions.cursor, result_id: int) -> None:
     result = message.result.to_dict()
 
     avg_iter_s = sum(message.iterations) / max(len(message.iterations), 1)
