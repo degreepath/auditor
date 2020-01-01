@@ -9,24 +9,22 @@ import os
 import dotenv
 from collections import defaultdict
 
-from dp.run import run
+from dp.run import run, load_students, load_areas
 from dp.ms import pretty_ms
 from dp.stringify import summarize
 from dp.stringify_csv import to_csv
-from dp.audit import EstimateMsg, NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
+from dp.audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
 dotenv.load_dotenv(verbose=False)
 
 logger = logging.getLogger(__name__)
-# logformat = "%(levelname)s:%(name)s:%(message)s"
 logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
 def main() -> int:  # noqa: C901
     parser = argparse.ArgumentParser()
-    parser.add_argument("--area", dest="area_files", nargs="+", required=True)
-    parser.add_argument("--student", dest="student_files", nargs="+", required=True)
-    parser.add_argument("--db", dest="db_file")
+    parser.add_argument("--area", dest="area_file", nargs=1)
+    parser.add_argument("--student", dest="student_file", nargs=1)
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--csv", action='store_true')
@@ -36,7 +34,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--estimate", action='store_true')
     parser.add_argument("--transcript", action='store_true')
     parser.add_argument("--gpa", action='store_true')
-    parser.add_argument("-q", "--quiet", action='store_true')
+    parser.add_argument("--quiet", "-q", action='store_true')
     parser.add_argument("--tracemalloc-init", action='store_true')
     parser.add_argument("--tracemalloc-end", action='store_true')
     parser.add_argument("--tracemalloc-each", action='store_true')
@@ -55,13 +53,10 @@ def main() -> int:  # noqa: C901
     has_tracemalloc = cli_args.tracemalloc_init or cli_args.tracemalloc_end or cli_args.tracemalloc_each
 
     args = Arguments(
-        area_files=cli_args.area_files,
-        db_file=cli_args.db_file,
         gpa_only=cli_args.gpa,
         print_all=cli_args.print_all,
         progress_every=cli_args.progress_every,
         stop_after=cli_args.stop_after,
-        student_files=cli_args.student_files,
         transcript_only=cli_args.transcript,
         estimate_only=cli_args.estimate,
     )
@@ -75,25 +70,16 @@ def main() -> int:  # noqa: C901
     top_mem_items: Dict[str, Dict[int, float]] = defaultdict(dict)
     tracemalloc_index = 0
 
-    for msg in run(args):
-        if isinstance(msg, NoStudentsMsg):
-            logger.critical('no student files provided')
-            return 3
+    student = load_students(cli_args.student_file)[0]
+    area_spec = load_areas(cli_args.area_file)[0]
 
-        elif isinstance(msg, NoAuditsCompletedMsg):
+    if not cli_args.quiet:
+        print(f"auditing #{student['stnum']} against {cli_args.area_file}", file=sys.stderr)
+
+    for msg in run(args, student=student, area_spec=area_spec):
+        if isinstance(msg, NoAuditsCompletedMsg):
             logger.critical('no audits completed')
             return 2
-
-        elif isinstance(msg, AuditStartMsg):
-            if not cli_args.quiet:
-                print(f"auditing #{msg.stnum} against {msg.area_catalog} {msg.area_code}", file=sys.stderr)
-
-        elif isinstance(msg, ExceptionMsg):
-            logger.critical("%s %s\n%s %s", msg.stnum, msg.area_code, msg.ex, msg.tb)
-            return 1
-
-        elif isinstance(msg, AreaFileNotFoundMsg):
-            pass
 
         elif isinstance(msg, EstimateMsg):
             if not cli_args.quiet:

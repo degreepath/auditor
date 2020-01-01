@@ -7,9 +7,9 @@ import sys
 import os
 
 from dp.ms import pretty_ms
-from dp.run import run
+from dp.run import run, load_students, load_areas
 from dp.stringify import summarize
-from dp.audit import NoStudentsMsg, ResultMsg, AuditStartMsg, ExceptionMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, AreaFileNotFoundMsg
+from dp.audit import ResultMsg, EstimateMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
 
 def main() -> int:  # noqa: C901
@@ -45,75 +45,67 @@ def main() -> int:  # noqa: C901
         student_file = os.path.join(cli_args.dir, f"{stnum}.json")
         area_file = os.path.join(cli_args.areas_dir, catalog, f"{area_code}.yaml")
 
-        args = Arguments(
-            area_files=[area_file],
-            student_files=[student_file],
-            print_all=False,
-            transcript_only=cli_args.transcript,
-        )
+        args = Arguments(print_all=False, transcript_only=cli_args.transcript)
 
         if cli_args.invocation:
             print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
             continue
 
-        for msg in run(args):
-            if isinstance(msg, NoStudentsMsg):
-                print('no student files provided', file=sys.stderr)
-                return 3
+        student = load_students(student_file)[0]
+        area_spec = load_areas(area_file)[0]
 
-            elif isinstance(msg, NoAuditsCompletedMsg):
-                print('no audits completed', file=sys.stderr)
-                return 2
+        if not cli_args.quiet and not cli_args.table:
+            print(f"auditing #{student['stnum']} against {area_file}", file=sys.stderr)
 
-            elif isinstance(msg, AuditStartMsg):
-                if not cli_args.quiet and not cli_args.table:
-                    print(f"auditing #{msg.stnum} against {msg.area_catalog} {msg.area_code}", file=sys.stderr)
+        try:
+            for msg in run(args, area_spec=area_spec, student=student):
+                if isinstance(msg, NoAuditsCompletedMsg):
+                    print('no audits completed', file=sys.stderr)
+                    return 2
 
-            elif isinstance(msg, ExceptionMsg):
-                print("%s %s\n%s %s", msg.stnum, msg.area_code, msg.ex, msg.tb, file=sys.stderr)
-                return 1
+                elif isinstance(msg, EstimateMsg):
+                    print("estimate completed", file=sys.stderr)
 
-            elif isinstance(msg, AreaFileNotFoundMsg):
-                pass
+                elif isinstance(msg, ProgressMsg):
+                    if not cli_args.quiet:
+                        avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
+                        avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
+                        print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
-            elif isinstance(msg, ProgressMsg):
-                if not cli_args.quiet:
-                    avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
-                    avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
-                    print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
+                elif isinstance(msg, ResultMsg):
+                    result = json.loads(json.dumps(msg.result.to_dict()))
+                    if cli_args.table:
+                        avg_iter_s = sum(msg.iterations) / max(len(msg.iterations), 1)
+                        avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
+                        print(','.join([
+                            stnum,
+                            catalog,
+                            area_code,
+                            str(round(float(result['gpa']), 2)),
+                            str(round(float(result['rank']), 2)),
+                            str(round(float(result['max_rank']))),
+                        ]), flush=True)
+                    else:
+                        print("\n" + "".join(summarize(
+                            result=result,
+                            transcript=msg.transcript,
+                            count=msg.count,
+                            elapsed=msg.elapsed,
+                            iterations=msg.iterations,
+                            show_paths=cli_args.show_paths,
+                            show_ranks=cli_args.show_ranks,
+                            claims=msg.result.keyed_claims(),
+                        )))
 
-            elif isinstance(msg, ResultMsg):
-                result = json.loads(json.dumps(msg.result.to_dict()))
-                if cli_args.table:
-                    avg_iter_s = sum(msg.iterations) / max(len(msg.iterations), 1)
-                    avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
-                    print(','.join([
-                        stnum,
-                        catalog,
-                        area_code,
-                        str(round(float(result['gpa']), 2)),
-                        str(round(float(result['rank']), 2)),
-                        str(round(float(result['max_rank']))),
-                        # str(msg.count),
-                        # msg.elapsed,
-                        # avg_iter_time,
-                    ]), flush=True)
                 else:
-                    print("\n" + "".join(summarize(
-                        result=result,
-                        transcript=msg.transcript,
-                        count=msg.count,
-                        elapsed=msg.elapsed,
-                        iterations=msg.iterations,
-                        show_paths=cli_args.show_paths,
-                        show_ranks=cli_args.show_ranks,
-                        claims=msg.result.keyed_claims(),
-                    )))
+                    if not cli_args.quiet:
+                        print('unknown message %s' % msg, file=sys.stderr)
+                    return 1
 
-            else:
-                if not cli_args.quiet:
-                    print('unknown message %s' % msg, file=sys.stderr)
-                return 1
+        except Exception as ex:
+            print(f"error during audit of #{student['stnum']} against {area_file}", file=sys.stderr)
+            print(ex, file=sys.stderr)
+            return 1
 
     return 0
 

@@ -15,14 +15,7 @@ import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
-try:
-    from setproctitle import setproctitle, getproctitle  # type: ignore
-except ImportError:
-    def setproctitle(title: str) -> None:
-        pass
-
-    def getproctitle() -> str:
-        return ''
+from dp.run import load_areas
 
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
@@ -36,9 +29,7 @@ else:
     logger.warning('SENTRY_DSN not set; skipping')
 
 # we need to import this after dotenv and sentry have loaded
-from .audit import main as single  # noqa: F402
-
-PROCTITLE = getproctitle()
+from .audit import audit  # noqa: F402
 
 
 def wrapper(*, area_root: str) -> None:
@@ -71,7 +62,6 @@ def worker(*, area_root: str) -> None:
         channel = 'dp_queue_update'
         curs.execute(f"LISTEN {channel};")
         print(f"LISTEN {channel};", file=sys.stderr)
-        setproctitle(f'{PROCTITLE} LISTEN')
 
         while True:
             # this was taken from the psycopg2 documentation. I believe that
@@ -94,7 +84,6 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
     # loop until the queue is empty
     while True:
         curs.execute('BEGIN;')
-        setproctitle(f'{PROCTITLE} BEGIN')
 
         curs.execute('''
             DELETE
@@ -128,11 +117,19 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
             area_id = area_catalog + '/' + area_code
             area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
 
-            setproctitle(f'{PROCTITLE} RUN stnum={student_id} code={area_code} catalog={area_catalog}')
             print(f'[pid={pid}, q={queue_id}] begin  {student_id}::{area_id}', file=sys.stderr)
 
+            area_spec = load_areas(area_path)[0]
+
             # run the audit
-            single(student_data=json.loads(input_data), area_file=area_path, run_id=run_id)
+            audit(
+                curs=curs,
+                student=json.loads(input_data),
+                area_spec=area_spec,
+                area_catalog=area_catalog,
+                area_code=area_code,
+                run_id=run_id,
+            )
 
             # once the audit is done, commit the queue's DELETE
             curs.execute('COMMIT;')
@@ -145,9 +142,6 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
 
             # record the exception in Sentry for debugging
             sentry_sdk.capture_exception(exc)
-
-            # update the process title
-            setproctitle(f'{PROCTITLE} ERROR stnum={student_id} code={area_code} catalog={area_catalog}')
 
             # log the exception
             print(f'[pid={pid}, q={queue_id}] error  {student_id}::{area_id}', file=sys.stderr)
