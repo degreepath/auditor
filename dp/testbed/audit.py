@@ -30,15 +30,11 @@ def audit(
             record = results.fetchone()
             assert record is not None
 
-            args = Arguments(
-                student_data=[json.loads(record['input_data'])],
-                area_specs=[(area_spec, catalog)],
-            )
+            student_data = [json.loads(record['input_data'])]
+            area_specs = [(area_spec, catalog)]
     else:
-        args = Arguments(
-            student_data=[data],
-            area_specs=[(area_spec, catalog)],
-        )
+        student_data = [data]
+        area_specs = [(area_spec, catalog)]
 
     estimate_count = estimate((stnum, catalog, code), db=db, area_spec=area_spec)
     assert estimate_count is not None
@@ -61,7 +57,7 @@ def audit(
 
     start_time = time.perf_counter()
 
-    for message in run(args):
+    for message in run(args=Arguments(), student_data=student_data, area_specs=area_specs):
         if isinstance(message, ResultMsg):
             result = message.result.to_dict()
             return {
@@ -106,19 +102,13 @@ def estimate(
             record = results.fetchone()
             assert record is not None
 
-            args = Arguments(
-                student_data=[json.loads(record['input_data'])],
-                area_specs=[(area_spec, catalog)],
-                estimate_only=True,
-            )
+            student_data = [json.loads(record['input_data'])]
+            area_specs = [(area_spec, catalog)]
     else:
-        args = Arguments(
-            student_data=[data],
-            area_specs=[(area_spec, catalog)],
-            estimate_only=True,
-        )
+        student_data = [data]
+        area_specs = [(area_spec, catalog)]
 
-    for message in run(args):
+    for message in run(args=Arguments(estimate_only=True), student_data=student_data, area_specs=area_specs):
         if isinstance(message, EstimateMsg):
             return message.estimate
         elif isinstance(message, AuditStartMsg):

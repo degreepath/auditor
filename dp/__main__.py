@@ -55,13 +55,10 @@ def main() -> int:  # noqa: C901
     has_tracemalloc = cli_args.tracemalloc_init or cli_args.tracemalloc_end or cli_args.tracemalloc_each
 
     args = Arguments(
-        area_files=cli_args.area_files,
-        db_file=cli_args.db_file,
         gpa_only=cli_args.gpa,
         print_all=cli_args.print_all,
         progress_every=cli_args.progress_every,
         stop_after=cli_args.stop_after,
-        student_files=cli_args.student_files,
         transcript_only=cli_args.transcript,
         estimate_only=cli_args.estimate,
     )
@@ -75,7 +72,7 @@ def main() -> int:  # noqa: C901
     top_mem_items: Dict[str, Dict[int, float]] = defaultdict(dict)
     tracemalloc_index = 0
 
-    for msg in run(args):
+    for msg in run(args, area_files=cli_args.area_files, db_file=cli_args.db_file, student_files=cli_args.student_files):
         if isinstance(msg, NoStudentsMsg):
             logger.critical('no student files provided')
             return 3

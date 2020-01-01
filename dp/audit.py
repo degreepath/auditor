@@ -13,12 +13,6 @@ from .data import CourseInstance, AreaPointer, MusicAttendance, MusicPerformance
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class Arguments:
-    area_files: Sequence[str] = tuple()
-    student_files: Sequence[str] = tuple()
-    db_file: Optional[str] = None
-    student_data: Sequence[dict] = tuple()
-    area_specs: Sequence[Tuple[dict, str]] = tuple()
-
     transcript_only: bool = False
     estimate_only: bool = False
     gpa_only: bool = False

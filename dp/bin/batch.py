@@ -45,18 +45,13 @@ def main() -> int:  # noqa: C901
         student_file = os.path.join(cli_args.dir, f"{stnum}.json")
         area_file = os.path.join(cli_args.areas_dir, catalog, f"{area_code}.yaml")
 
-        args = Arguments(
-            area_files=[area_file],
-            student_files=[student_file],
-            print_all=False,
-            transcript_only=cli_args.transcript,
-        )
+        args = Arguments(print_all=False, transcript_only=cli_args.transcript)
 
         if cli_args.invocation:
             print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
             continue
 
-        for msg in run(args):
+        for msg in run(args, area_files=[area_file], student_files=[student_file]):
             if isinstance(msg, NoStudentsMsg):
                 print('no student files provided', file=sys.stderr)
                 return 3
