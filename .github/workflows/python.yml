@@ -102,6 +102,12 @@ jobs:
         run: |
           docker build . --file Dockerfile --tag "$REPO:$TAG"
 
-      - name: Docker Push
+      - name: Docker Push (timestamp)
         run: |
           docker push "$REPO:$TAG"
+
+      - name: Docker Push (branch)
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          docker tag "$REPO:$TAG" "$REPO:$BRANCH"
+          docker push "$REPO:$BRANCH"
