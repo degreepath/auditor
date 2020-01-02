@@ -34,6 +34,7 @@ class QueryResult(Result, BaseQueryRule):
             where=solution.where,
             allow_claimed=solution.allow_claimed,
             attempt_claims=solution.attempt_claims,
+            record_claims=solution.record_claims,
             resolved_assertions=resolved_assertions,
             successful_claims=successful_claims,
             failed_claims=failed_claims,

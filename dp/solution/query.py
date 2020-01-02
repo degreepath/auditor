@@ -44,6 +44,7 @@ class QuerySolution(Solution, BaseQueryRule):
             where=rule.where,
             allow_claimed=rule.allow_claimed,
             attempt_claims=rule.attempt_claims,
+            record_claims=rule.record_claims,
             output=output,
             path=rule.path,
             overridden=overridden,
@@ -117,6 +118,12 @@ class QuerySolution(Solution, BaseQueryRule):
                     if debug: logger.debug('%s course "%s" exists, and is available', self.path, course.clbid)
                     successful_claims.append(claim)
                     claimed_items.append(course)
+        elif self.record_claims:
+            for course in cast(Sequence[CourseInstance], output):
+                claim = ctx.make_claim(course=course, path=self.path, allow_claimed=True)
+                assert claim.failed is False
+                successful_claims.append(claim)
+                claimed_items.append(course)
         else:
             if debug: logger.debug('%s courses "%s" exist, and is available', self.path, output)
             claimed_items = list(output)
