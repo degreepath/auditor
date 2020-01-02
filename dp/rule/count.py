@@ -46,7 +46,7 @@ class CountRule(Rule, BaseCountRule):
         path: List[str],
         emphases: Sequence[Dict[str, Dict]] = tuple(),
         ctx: 'RequirementContext',
-    ) -> 'CountRule':
+    ) -> 'CountRule':  # noqa: C901
         from ..load_rule import load_rule
 
         path = [*path, f".count"]
@@ -74,8 +74,7 @@ class CountRule(Rule, BaseCountRule):
             # the name of the emphasis. This allows us to find any disjoint
             # emphasis requirements with the normal logic, and do independent
             # solutions for anything that we can. We also can't do any
-            # short-circuiting if there's a post-audit clause on the
-            # emphasis.
+            # short-circuiting if there's a post-audit clause on the emphasis.
 
             is_all_rule = 'all' in emph['result']
             has_requirements = 'requirements' in emph
