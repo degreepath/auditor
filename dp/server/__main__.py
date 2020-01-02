@@ -43,11 +43,8 @@ def worker(*, area_root: str) -> None:
     pid = os.getpid()
     print(f'[pid={pid}] connect', file=sys.stderr)
 
-    PGHOST = os.environ.get("PGHOST")
-    PGDATABASE = os.environ.get("PGDATABASE")
-    PGUSER = os.environ.get("PGUSER")
-
-    conn = psycopg2.connect(host=PGHOST, database=PGDATABASE, user=PGUSER)
+    # an empty string tells psycopg2 to read from environment variables
+    conn = psycopg2.connect('')
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     print(f'[pid={pid}] connected', file=sys.stderr)
