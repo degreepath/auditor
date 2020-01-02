@@ -7,6 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      REPO: hub.docker.com/degreepath/degreepath
+
     steps:
       - uses: actions/checkout@v1
 
@@ -16,13 +19,14 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
+      - name: Set tag
+        run: |
+          echo ::set-env name=TAG::"$(date +%s)"
+
       - name: Docker Build
         run: |
-          REPO=hub.docker.com/degreepath/degreepath
-          TAG="$(date +%s)"
-
           docker build . --file Dockerfile --tag "$REPO:$TAG"
-          docker push "$REPO:$TAG"
 
-          docker tag degreepath "$REPO:${{ github.ref }}"
-          docker push "$REPO:${{ github.ref }}"
+      - name: Docker Push
+        run: |
+          docker push "$REPO:$TAG"
