@@ -258,7 +258,7 @@ class SingleClause(BaseClause, ResolvedClause):
         if isinstance(expected_value, list):
             expected_value = tuple(expected_value)
         elif isinstance(expected_value, float):
-            expected_value = Decimal(expected_value)
+            expected_value = Decimal(str(expected_value))
 
         expected_value_diff = compute_single_clause_diff(value.get('$ifs', {}), ctx=ctx)
         if expected_value_diff:
