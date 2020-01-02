@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      REPO: hub.docker.com/degreepath/degreepath
+      REPO: docker.io/degreepath/degreepath
 
     steps:
       - uses: actions/checkout@v1
