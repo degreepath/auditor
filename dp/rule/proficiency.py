@@ -28,7 +28,7 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
     def load(data: Dict, *, c: Constants, path: List[str]) -> 'ProficiencyRule':
         proficiency = data['proficiency']
 
-        path = [*path, f"proficiency={proficiency}"]
+        path = [*path, f".proficiency={proficiency}"]
 
         allowed_keys = {'proficiency', 'course'}
         given_keys = set(data.keys())
