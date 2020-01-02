@@ -1,0 +1,7 @@
+./venv
+./.git
+*.db
+tests/
+*/__pycache__/
+__pycache__/
+.mypy_cache/
