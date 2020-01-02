@@ -23,8 +23,8 @@ logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 def main() -> int:  # noqa: C901
     parser = argparse.ArgumentParser()
-    parser.add_argument("--area", dest="area_file", nargs=1)
-    parser.add_argument("--student", dest="student_file", nargs=1)
+    parser.add_argument("--area", dest="area_file")
+    parser.add_argument("--student", dest="student_file")
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--csv", action='store_true')
