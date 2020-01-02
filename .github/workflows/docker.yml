@@ -9,18 +9,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-    
+
       - name: Docker Login
         uses: Azure/docker-login@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      
-      - run: |
+
+      - name: Docker Build
+        run: |
+          REPO=hub.docker.com/degreepath/degreepath
           TAG="$(date +%s)"
-          docker build . --file Dockerfile --tag "degreepath:$TAG"
-          docker push "hub.docker.com/degreepath/degreepath:$TAG"
-      
-      - run: |
-          docker tag degreepath "hub.docker.com/degreepath/degreepath:${{ github.ref }}"
-          docker push "hub.docker.com/degreepath/degreepath:${{ github.ref }}"
+
+          docker build . --file Dockerfile --tag "$REPO:$TAG"
+          docker push "$REPO:$TAG"
+
+          docker tag degreepath "$REPO:${{ github.ref }}"
+          docker push "$REPO:${{ github.ref }}"
