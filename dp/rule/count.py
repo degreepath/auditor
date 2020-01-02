@@ -39,7 +39,7 @@ class CountRule(Rule, BaseCountRule):
         return False
 
     @staticmethod  # noqa: C901
-    def load(
+    def load(  # noqa: C901
         data: Dict, *,
         c: Constants,
         children: Dict[str, Dict],
