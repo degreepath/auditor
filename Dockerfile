@@ -13,7 +13,9 @@ COPY requirements.txt requirements-server.txt ./
 
 RUN pip install --no-cache-dir \
 	-r requirements.txt \
-	-r requirements-server.txt
+	-r requirements-server.txt \
+	&& find /usr/local/lib -path "*/*.pyo"  -delete \
+	&& find /usr/local/lib -path "*/*.pyc"  -delete
 
 COPY dp ./dp
 
