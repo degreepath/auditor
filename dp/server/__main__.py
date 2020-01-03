@@ -7,7 +7,6 @@ import logging
 import select
 import math
 import json
-import sys
 import os
 
 import dotenv
@@ -31,6 +30,13 @@ else:
 # we need to import this after dotenv and sentry have loaded
 from .audit import audit  # noqa: F402
 
+logformat = "%(asctime)s %(name)s [pid=%(process)d] %(processName)s [%(levelname)s] %(message)s"
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+ch.setFormatter(logging.Formatter(logformat))
+logger.addHandler(ch)
+
 
 def wrapper(*, area_root: str) -> None:
     try:
@@ -40,25 +46,22 @@ def wrapper(*, area_root: str) -> None:
 
 
 def worker(*, area_root: str) -> None:
-    pid = os.getpid()
-    print(f'[pid={pid}] connect', file=sys.stderr)
+    logger.info(f'connect')
 
     # an empty string tells psycopg2 to read from environment variables
     conn = psycopg2.connect('')
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
-    print(f'[pid={pid}] connected', file=sys.stderr)
+    logger.info(f'connected')
 
     with conn.cursor() as curs:
         # process any already-existing items
-        process_queue(curs=curs, pid=pid, area_root=area_root)
-
-    print(f'[pid={pid}] initial queue emptied', file=sys.stderr)
+        process_queue(curs=curs, area_root=area_root)
 
     with conn.cursor() as curs:
         channel = 'dp_queue_update'
         curs.execute(f"LISTEN {channel};")
-        print(f"LISTEN {channel};", file=sys.stderr)
+        logger.info(f"LISTEN {channel};")
 
         while True:
             # this was taken from the psycopg2 documentation. I believe that
@@ -72,12 +75,12 @@ def worker(*, area_root: str) -> None:
             conn.poll()
             while conn.notifies:
                 notify = conn.notifies.pop(0)
-                print(f"NOTIFY: {notify.pid}, channel={notify.channel}, payload={notify.payload!r}", file=sys.stderr)
+                logger.info(f"NOTIFY: {notify.pid}, channel={notify.channel}, payload={notify.payload!r}")
 
-                process_queue(curs=curs, pid=pid, area_root=area_root)
+                process_queue(curs=curs, area_root=area_root)
 
 
-def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str) -> None:
+def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
     # loop until the queue is empty
     while True:
         curs.execute('BEGIN;')
@@ -114,7 +117,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
             area_id = area_catalog + '/' + area_code
             area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
 
-            print(f'[pid={pid}, q={queue_id}] begin  {student_id}::{area_id}', file=sys.stderr)
+            logger.info(f'[q={queue_id}] begin  {student_id}::{area_id}')
 
             area_spec = load_areas(area_path)[0]
 
@@ -131,7 +134,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
             # once the audit is done, commit the queue's DELETE
             curs.execute('COMMIT;')
 
-            print(f'[pid={pid}, q={queue_id}] commit {student_id}::{area_id}', file=sys.stderr)
+            logger.info(f'[q={queue_id}] commit {student_id}::{area_id}')
 
         except Exception as exc:
             # commit the deletion, just so it doesn't endlessly re-run itself
@@ -141,7 +144,9 @@ def process_queue(*, curs: psycopg2.extensions.cursor, pid: int, area_root: str)
             sentry_sdk.capture_exception(exc)
 
             # log the exception
-            print(f'[pid={pid}, q={queue_id}] error  {student_id}::{area_id}', file=sys.stderr)
+            logger.error(f'[q={queue_id}] error  {student_id}::{area_id}')
+
+    logger.info(f'queue is empty')
 
 
 def main() -> None:
@@ -162,6 +167,8 @@ def main() -> None:
             worker_count = multiprocessing.cpu_count()
 
         worker_count = math.floor(worker_count * 0.75)
+
+    logger.info(f"spawning {worker_count:,} worker thread{'s' if worker_count != 1 else ''}")
 
     processes = []
     for _ in range(worker_count):
