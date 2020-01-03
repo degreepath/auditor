@@ -19,4 +19,7 @@ RUN pip install --no-cache-dir \
 
 COPY dp ./dp
 
+HEALTHCHECK --start-period=5s \
+	CMD test $(ps aux | grep -F 'python -m dp.server' | grep -v grep | wc -l) -lt 1
+
 CMD ["python", "-m", "dp.server"]
