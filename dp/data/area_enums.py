@@ -3,9 +3,10 @@ import enum
 
 @enum.unique
 class AreaStatus(enum.Enum):
-    Certified = "certified"
-    Declared = "declared"
     WhatIf = "what-if"
+    Declared = "declared"
+    Certified = "certified"
+    Awarded = "awarded"
 
 
 @enum.unique
