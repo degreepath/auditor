@@ -153,9 +153,12 @@ class MusicMediums:
 
     @staticmethod
     def from_dict(data: Dict) -> 'MusicMediums':
-        return MusicMediums(
-            ppm=data.get('ppm', 'Unknown'),
-            ppm2=data.get('ppm2', 'Unknown'),
-            spm=data.get('spm', 'Unknown'),
-            spm2=data.get('spm2', 'Unknown'),
-        )
+        try:
+            return MusicMediums(
+                ppm=data.get('ppm', 'Unknown'),
+                ppm2=data.get('ppm2', 'Unknown'),
+                spm=data.get('spm', 'Unknown'),
+                spm2=data.get('spm2', 'Unknown'),
+            )
+        except AttributeError:
+            return MusicMediums()
