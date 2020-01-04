@@ -120,15 +120,10 @@ class QueryRule(Rule, BaseQueryRule):
             raise TypeError(f'unknown type of data for query, {self.source}')
 
     def get_filtered_data(self, *, ctx: 'RequirementContext') -> Tuple[List[Clausable], Tuple[str, ...], Tuple[str, ...]]:
-        data = list(self.get_data(ctx=ctx))
-
         if self.where is not None:
-            logger.debug("%s clause: %s", self.path, self.where)
-            logger.debug("%s before filter: %s item(s)", self.path, len(data))
-
-            data = [item for item in data if self.where.apply(item)]
-
-            logger.debug("%s after filter: %s item(s)", self.path, len(data))
+            data = [item for item in self.get_data(ctx=ctx) if self.where.apply(item)]
+        else:
+            data = list(self.get_data(ctx=ctx))
 
         inserted_clbids: Tuple[str, ...] = tuple()
         force_inserted_clbids: Tuple[str, ...] = tuple()
