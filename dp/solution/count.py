@@ -36,7 +36,7 @@ class CountSolution(Solution, BaseCountRule):
                 overridden=self.overridden,
             )
 
-        results = [r.audit(ctx=ctx) if isinstance(r, Solution) else r for r in self.items]
+        results = tuple(r.audit(ctx=ctx) if isinstance(r, Solution) else r for r in self.items)
         initial_matched_items = tuple(item for sol in results for item in sol.matched())
 
         audit_results = []
@@ -84,6 +84,6 @@ class CountSolution(Solution, BaseCountRule):
 
         return CountResult.from_solution(
             solution=self,
-            items=tuple(results),
+            items=results,
             audit_results=tuple(audit_results),
         )
