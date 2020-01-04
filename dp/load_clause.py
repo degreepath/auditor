@@ -45,7 +45,11 @@ def load_clause(
             s = find_best_solution(rule=rule, ctx=ctx)
 
         when_yes = load_clause(data['$then'], c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid)
-        when_no = load_clause(data['$else'], c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid) if '$else' in data else None
+
+        when_no = None
+        when_no_clause = data.get('$else', None)
+        if when_no_clause:
+            when_no = load_clause(when_no_clause, c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid)
 
         if not s:
             return when_no
