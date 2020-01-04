@@ -26,7 +26,7 @@ class TermInfo:
             end=datetime.datetime.strptime(data['end'], '%Y-%m-%d'),
             term=data['term'],
             name=data['name'],
-            type=TermType(data['type'])
+            type=TermType(data['type']),
         )
 
     def is_current_term(self, *, now: datetime.datetime) -> bool:
