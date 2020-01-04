@@ -10,6 +10,7 @@ from ..limit import LimitSet
 from ..clause import Clause, SingleClause, OrClause, AndClause
 from ..load_clause import load_clause
 from ..data.clausable import Clausable
+from ..ncr import ncr
 from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..operator import Operator
@@ -381,5 +382,47 @@ def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Ite
 
 
 def estimate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> int:
-    # TODO: optimize this
-    return sum(1 for _ in iterate_item_set(item_set, rule=rule))
+    # This is known to over-estimate the number of items, because it doesn't
+    # check the credit sum inside of simple_sum_assertion.
+    total = 0
+
+    assertions = []
+    for a in rule.all_assertions():
+        if isinstance(a, BaseAssertionRule):
+            assertions.append(a)
+        else:
+            assertions.append(a.when_yes)
+            if a.when_no:
+                assertions.append(a.when_no)
+
+    if rule.source is QuerySource.Courses:
+        simple_count_assertion = get_largest_simple_count_assertion(assertions)
+        if simple_count_assertion is not None:
+            for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
+                total += ncr(n=len(item_set), r=n)
+            return total
+
+        simple_sum_assertion = get_largest_simple_sum_assertion(assertions)
+        if simple_sum_assertion is not None:
+            item_set_courses = cast(Sequence[CourseInstance], item_set)
+
+            # We can skip outputs with impunity here, because the calling
+            # function will ensure that the fallback set is attempted
+            if sum(c.credits for c in item_set_courses) < simple_sum_assertion.expected:
+                return total
+
+            for n in range(1, len(item_set_courses) + 1):
+                total += ncr(n=len(item_set_courses), r=n)
+                # for combo in itertools.combinations(item_set_courses, n):
+                #     if sum(c.credits for c in combo) >= simple_sum_assertion.expected:
+                #         total += 1
+            return total
+
+        logger.debug("%s not running single assertion mode", rule.path)
+        for n in range(1, len(item_set) + 1):
+            total += ncr(n=len(item_set), r=n)
+
+    else:
+        total += 1
+
+    return total
