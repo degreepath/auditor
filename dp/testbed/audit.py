@@ -5,7 +5,7 @@ from typing import Optional, Tuple, Dict
 from .sqlite import sqlite_connect, sqlite_cursor
 
 from dp.run import run
-from dp.audit import ResultMsg, Arguments, EstimateMsg, AuditStartMsg
+from dp.audit import ResultMsg, Arguments, EstimateMsg
 
 
 def audit(
@@ -65,7 +65,7 @@ def audit(
                 "stnum": stnum,
                 "catalog": catalog,
                 "code": code,
-                "iterations": message.count,
+                "iterations": message.iters,
                 "duration": message.elapsed_ms / 1000,
                 "gpa": result["gpa"],
                 "ok": result["ok"],
@@ -111,8 +111,6 @@ def estimate(
     for message in run(args=Arguments(estimate_only=True), student=student, area_spec=area_spec):
         if isinstance(message, EstimateMsg):
             return message.estimate
-        elif isinstance(message, AuditStartMsg):
-            pass
         else:
             assert False, type(message)
 

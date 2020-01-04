@@ -68,15 +68,13 @@ def main() -> int:  # noqa: C901
 
                 elif isinstance(msg, ProgressMsg):
                     if not cli_args.quiet:
-                        avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
-                        avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
-                        print(f"{msg.count:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
+                        avg_iter_time = pretty_ms(msg.avg_iter_ms, format_sub_ms=True)
+                        print(f"{msg.iters:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
 
                 elif isinstance(msg, ResultMsg):
                     result = json.loads(json.dumps(msg.result.to_dict()))
                     if cli_args.table:
-                        avg_iter_s = sum(msg.iterations) / max(len(msg.iterations), 1)
-                        avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True)
+                        avg_iter_time = pretty_ms(msg.avg_iter_ms, format_sub_ms=True)
                         print(','.join([
                             stnum,
                             catalog,
@@ -89,9 +87,9 @@ def main() -> int:  # noqa: C901
                         print("\n" + "".join(summarize(
                             result=result,
                             transcript=msg.transcript,
-                            count=msg.count,
-                            elapsed=msg.elapsed,
-                            iterations=msg.iterations,
+                            count=msg.iters,
+                            avg_iter_ms=msg.avg_iter_ms,
+                            elapsed=pretty_ms(msg.elapsed_ms),
                             show_paths=cli_args.show_paths,
                             show_ranks=cli_args.show_ranks,
                             claims=msg.result.keyed_claims(),

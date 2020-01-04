@@ -1,13 +1,11 @@
 import attr
-from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict, Any
-from datetime import datetime
+from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict
 from decimal import Decimal
 import time
 
 from .constants import Constants
 from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
-from .ms import pretty_ms
 from .data import CourseInstance, AreaPointer, MusicAttendance, MusicPerformance, MusicProficiencies
 
 
@@ -23,36 +21,12 @@ class Arguments:
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
-class NoStudentsMsg:
-    pass
-
-
-@attr.s(slots=True, kw_only=True, auto_attribs=True)
-class AuditStartMsg:
-    stnum: str
-    area_code: str
-    area_catalog: str
-    student: Dict[str, Any]
-
-
-@attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ResultMsg:
     result: AreaResult
     transcript: Tuple[CourseInstance, ...]
-    count: int
-    elapsed: str
+    iters: int
+    avg_iter_ms: float
     elapsed_ms: float
-    iterations: List[float]
-    startup_time: float
-    potentials_for_all_clauses: Dict[int, List[str]]
-
-
-@attr.s(slots=True, kw_only=True, auto_attribs=True)
-class ExceptionMsg:
-    ex: Exception
-    tb: str
-    stnum: Optional[str]
-    area_code: Optional[str]
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -67,21 +41,14 @@ class EstimateMsg:
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ProgressMsg:
-    count: int
-    recent_iters: List[float]
-    start_time: datetime
     best_rank: Union[int, Decimal]
-
-
-@attr.s(slots=True, kw_only=True, auto_attribs=True)
-class AreaFileNotFoundMsg:
-    area_file: str
-    stnums: Sequence[str]
+    iters: int
+    avg_iter_ms: float
+    elapsed_ms: float
 
 
 Message = Union[
     EstimateMsg,
-    ExceptionMsg,
     NoAuditsCompletedMsg,
     ProgressMsg,
     ResultMsg,
@@ -100,15 +67,11 @@ def audit(
     music_proficiencies: MusicProficiencies = MusicProficiencies(),
     transcript: Tuple[CourseInstance, ...] = tuple(),
     transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
-) -> Iterator[Message]:  # noqa: C901
+) -> Iterator[Message]:
     best_sol: Optional[AreaResult] = None
     best_rank: Union[int, Decimal] = 0
-    total_count = 0
-    iterations: List[float] = []
-    start_time = datetime.now()
     start = time.perf_counter()
-    iter_start = time.perf_counter()
-    startup_time = 0.00
+    total_count = 0
 
     estimate = area.estimate(
         transcript=transcript,
@@ -124,8 +87,6 @@ def audit(
     if args.estimate_only:
         return
 
-    potentials_for_all_clauses = find_potentials(area, constants)
-
     for sol in area.solutions(
         transcript=transcript,
         areas=tuple(area_pointers),
@@ -135,49 +96,42 @@ def audit(
         exceptions=list(exceptions),
         transcript_with_failed=transcript_with_failed,
     ):
-        if total_count == 0:
-            iter_start = time.perf_counter()
-            startup_time = time.perf_counter() - iter_start
-
         total_count += 1
-
-        if total_count % args.progress_every == 0:
-            yield ProgressMsg(
-                count=total_count,
-                recent_iters=iterations[-args.progress_every:],
-                start_time=start_time,
-                best_rank=best_sol.rank() if best_sol else 0,
-            )
 
         result = sol.audit()
         result_rank = result.rank()
 
+        if total_count % args.progress_every == 0:
+            elapsed_ms = ms_since(start)
+            yield ProgressMsg(
+                best_rank=best_rank,
+                iters=total_count,
+                avg_iter_ms=elapsed_ms / total_count,
+                elapsed_ms=elapsed_ms,
+            )
+
         if args.print_all:
+            elapsed_ms = ms_since(start)
             yield ResultMsg(
                 result=result,
                 transcript=transcript,
-                count=total_count,
-                elapsed='∞',
-                elapsed_ms=0,
-                iterations=[],
-                startup_time=startup_time,
-                potentials_for_all_clauses=potentials_for_all_clauses,
+                iters=total_count,
+                avg_iter_ms=elapsed_ms / total_count,
+                elapsed_ms=elapsed_ms,
             )
 
+        # if this is the first solution, store it, because it's the best so far
         if best_sol is None:
             best_sol, best_rank = result, result_rank
-        elif result_rank > best_rank:
+
+        # if the current solution is better, then store it
+        if result_rank > best_rank:
             best_sol, best_rank = result, result_rank
 
+        # if the current solution is OK, then store it, and end the loop
         if result.ok():
             best_sol, best_rank = result, result_rank
-            iter_end = time.perf_counter()
-            iterations.append(iter_end - iter_start)
             break
-
-        iter_end = time.perf_counter()
-        iterations.append(iter_end - iter_start)
-        iter_start = time.perf_counter()
 
         if args.stop_after is not None and total_count >= args.stop_after:
             break
@@ -186,20 +140,20 @@ def audit(
         yield NoAuditsCompletedMsg()
         return
 
-    end = time.perf_counter()
-    elapsed_ms = (end - start) * 1000
-    elapsed = pretty_ms(elapsed_ms)
-
+    elapsed_ms = ms_since(start)
     yield ResultMsg(
         result=best_sol,
         transcript=transcript,
-        count=total_count,
-        elapsed=elapsed,
+        iters=total_count,
+        avg_iter_ms=elapsed_ms / total_count,
         elapsed_ms=elapsed_ms,
-        iterations=iterations,
-        startup_time=startup_time,
-        potentials_for_all_clauses=potentials_for_all_clauses,
     )
+
+
+def ms_since(start: float, *, now: Optional[float] = None) -> float:
+    if now is None:
+        now = time.perf_counter()
+    return (now - start) * 1000
 
 
 def find_potentials(area: AreaOfStudy, constants: Constants) -> Dict[int, List[str]]:

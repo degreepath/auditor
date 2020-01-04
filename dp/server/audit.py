@@ -50,16 +50,15 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                 pass
 
             elif isinstance(msg, ProgressMsg):
-                avg_iter_s = sum(msg.recent_iters) / max(len(msg.recent_iters), 1)
-                avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
+                avg_iter_time = pretty_ms(msg.avg_iter_ms, format_sub_ms=True)
 
                 curs.execute("""
                     UPDATE result
-                    SET iterations = %(count)s, duration = cast(now() - %(start_time)s as interval)
+                    SET iterations = %(count)s, duration = interval %(elapsed)s
                     WHERE id = %(result_id)s
-                """, {"result_id": result_id, "count": msg.count, "start_time": msg.start_time})
+                """, {"result_id": result_id, "count": msg.iters, "elapsed": f"{msg.elapsed_ms}ms"})
 
-                logger.info(f"{msg.count:,} at {avg_iter_time} per audit")
+                logger.info(f"{msg.iters:,} at {avg_iter_time} per audit")
 
             elif isinstance(msg, ResultMsg):
                 record(curs=curs, result_id=result_id, message=msg)
@@ -80,9 +79,6 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
 def record(*, message: ResultMsg, curs: psycopg2.extensions.cursor, result_id: int) -> None:
     result = message.result.to_dict()
 
-    avg_iter_s = sum(message.iterations) / max(len(message.iterations), 1)
-    avg_iter_time = pretty_ms(avg_iter_s * 1_000, format_sub_ms=True, unit_count=1)
-
     curs.execute("""
         UPDATE result
         SET iterations = %(total_count)s
@@ -99,9 +95,9 @@ def record(*, message: ResultMsg, curs: psycopg2.extensions.cursor, result_id: i
         WHERE id = %(result_id)s
     """, {
         "result_id": result_id,
-        "total_count": message.count,
-        "elapsed": message.elapsed,
-        "avg_iter_time": avg_iter_time.strip("~"),
+        "total_count": message.iters,
+        "elapsed": f"{message.elapsed_ms}ms",
+        "avg_iter_time": f"{message.avg_iter_ms}ms",
         "result": json.dumps(result),
         "claimed_courses": json.dumps(message.result.keyed_claims()),
         "rank": result["rank"],
@@ -109,13 +105,3 @@ def record(*, message: ResultMsg, curs: psycopg2.extensions.cursor, result_id: i
         "gpa": result["gpa"],
         "ok": result["ok"],
     })
-
-    for clause_hash, clbids in message.potentials_for_all_clauses.items():
-        curs.execute("""
-            INSERT INTO potential_clbids (result_id, clause_hash, clbids)
-            VALUES (%(result_id)s, %(clause_hash)s, %(clbids)s)
-        """, {
-            "result_id": result_id,
-            "clause_hash": clause_hash,
-            "clbids": clbids,
-        })
