@@ -277,7 +277,7 @@ def load_course(data: Dict[str, Any], *, current_term: Optional[TermInfo] = None
     number = data['number']
     section = data['section']
     sub_type = data['sub_type']
-    subject = data.get('subject', data['subjects'])
+    subject = data['subject']
     term = data['term']
     transcript_code = data['transcript_code']
     year = data['year']
@@ -286,8 +286,6 @@ def load_course(data: Dict[str, Any], *, current_term: Optional[TermInfo] = None
     term = int(term)
     credits = Decimal(credits)
     section = section or None
-
-    subject = subject[0] if isinstance(subject, list) else subject
 
     grade_code = GradeCode(grade_code)
     grade_points = Decimal(grade_points)
