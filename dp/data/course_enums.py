@@ -129,6 +129,7 @@ class GradeCode(OrderedEnum):
     _WF = "WF"
     _WP = "WP"
     _W = "W"
+    _REG = "DP_REG"
 
 
 grade_code_to_points: Dict[GradeCode, Decimal] = {

@@ -6,6 +6,7 @@ import logging
 from .clausable import Clausable
 from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
 from ..lib import str_to_grade_points
+from .terminfo import TermInfo
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause
@@ -252,7 +253,7 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
 }
 
 
-def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
+def load_course(data: Dict[str, Any], *, current_term: Optional[TermInfo] = None) -> CourseInstance:
     if isinstance(data, CourseInstance):
         return data  # type: ignore
 
@@ -294,6 +295,9 @@ def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
     sub_type = SubType(sub_type)
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
+
+    if current_term and grade_code == GradeCode._IP and f"{year}{term}" >= current_term.term:
+        grade_code = GradeCode._REG
 
     # GPA points are the (truncated to two decimal places!) result of GP * credits.
     # If someone gets an A- in a 0.25-credit course, they are supposed to
