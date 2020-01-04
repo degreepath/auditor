@@ -364,12 +364,12 @@ class CountRule(Rule, BaseCountRule):
         for combo_i, selected_children in enumerate(itertools.combinations(items, size)):
             # itertools.product does this internally, so we'll pre-compute the
             # results here to make it obvious that it's not lazy
-            solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
+            solutions_dict = {r: r.estimate(ctx=ctx) for r in selected_children}
 
-            lengths = {r.path: len(s) for r, s in solutions_dict.items()}
-            estimated_count = mult(lengths.values())
+            estimated_count = mult(solutions_dict.values())
 
             if SHOW_ESTIMATES:
+                lengths = {r.path: s for r, s in solutions_dict.items()}
                 ppath = ' → '.join(self.path)
                 lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
                 body = '\n\t'.join(lines)
