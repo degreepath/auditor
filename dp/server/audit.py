@@ -4,7 +4,6 @@ import json
 import logging
 from typing import Dict, cast
 
-import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
