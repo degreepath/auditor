@@ -365,20 +365,18 @@ class CountRule(Rule, BaseCountRule):
             # itertools.product does this internally, so we'll pre-compute the
             # results here to make it obvious that it's not lazy
             solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
-            solutions = tuple(solutions_dict.values())
+
+            lengths = {r.path: len(s) for r, s in solutions_dict.items()}
+            estimated_count = mult(lengths.values())
 
             if SHOW_ESTIMATES:
-                lengths = {r.path: len(s) for r, s in solutions_dict.items()}
                 ppath = ' → '.join(self.path)
                 lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
                 body = '\n\t'.join(lines)
-                estimated_count = mult(lengths.values())
                 word = 'solution' if estimated_count == 1 else 'solutions'
                 print(f"\nemitting xxx {estimated_count:,} {word} at {ppath}\n\t{body}", file=sys.stderr)
 
-            solutionset: Tuple[Union[Rule, Solution, Result], ...]
-            for solset_i, solutionset in enumerate(itertools.product(*solutions)):
-                acc += 1
+            acc += estimated_count
 
         return acc
 
