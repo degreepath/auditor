@@ -381,21 +381,6 @@ def prepare_common_rules(
 ) -> Iterator[Rule]:
     c = Constants(matriculation_year=0)
 
-    other_area_codes = set(p.code for p in other_areas if p.code != area_code)
-
-    studio_art_code = '140'
-    art_history_code = '135'
-    is_history_and_studio = \
-        (area_code == studio_art_code and art_history_code in other_area_codes)\
-        or (area_code == art_history_code and studio_art_code in other_area_codes)
-
-    if is_history_and_studio:
-        credits_message = " Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART' subject code."
-        credits_outside_major = 18
-    else:
-        credits_message = ""
-        credits_outside_major = 21
-
     if degree == 'B.M.':
         is_bm_major = True
     else:
@@ -475,14 +460,42 @@ def prepare_common_rules(
     yield s_u_credits
 
     if is_bm_major is False:
+        other_area_codes = set(p.code for p in other_areas if p.code != area_code)
+
+        studio_art_code = '140'
+        art_history_code = '135'
+        is_history_and_studio = \
+            (area_code == studio_art_code and art_history_code in other_area_codes)\
+            or (area_code == art_history_code and studio_art_code in other_area_codes)
+
+        outside_rule: Dict
         if dept_code is None:
             outside_rule = {
-                "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
+                "message": "21 total credits must be completed outside of the courses in the major",
                 "registrar_audited": True,
             }
+
+        elif is_history_and_studio:
+            outside_rule = {
+                "message": "Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART' subject code.",
+                "result": {
+                    "from": "courses",
+                    "where": {
+                        "$and": [
+                            {"subject": {"$neq": "ART"}},
+                            {"subject": {"$neq": "REG"}},
+                            {"credits": {"$eq": 1}},
+                        ],
+                    },
+                    "allow_claimed": True,
+                    "claim": False,
+                    "assert": {"sum(credits)": {"$gte": 18}},
+                },
+            }
+
         else:
             outside_rule = {
-                "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major ({dept_code}).{credits_message}",
+                "message": f"21 total credits must be completed outside of the SIS 'subject' code of the major, '{dept_code}'.",
                 "result": {
                     "from": "courses",
                     "where": {
@@ -493,7 +506,7 @@ def prepare_common_rules(
                     },
                     "allow_claimed": True,
                     "claim": False,
-                    "assert": {"sum(credits)": {"$gte": credits_outside_major}},
+                    "assert": {"sum(credits)": {"$gte": 21}},
                 },
             }
 
