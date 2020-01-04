@@ -65,11 +65,17 @@ class Student:
         music_proficiencies = MusicProficiencies.from_dict(data.get('proficiencies', {}))
         music_mediums = MusicMediums.from_dict(data.get('mediums', {}))
 
+        matriculation = data.get('matriculation', '0')
+        if matriculation == '':
+            matriculation = 0
+        else:
+            matriculation = int(data.get('matriculation', '0'))
+
         return Student(
             stnum=data.get('stnum', '000000'),
             curriculum=int(data.get('curriculum', 0)),
             catalog=int(data.get('catalog', 0)),
-            matriculation=int(data.get('matriculation', 0)),
+            matriculation=matriculation,
             areas=tuple(area_pointers),
             courses=tuple(courses),
             courses_with_failed=tuple(courses_with_failed),
