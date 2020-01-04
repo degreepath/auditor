@@ -254,31 +254,25 @@ class AreaSolution(AreaOfStudy):
         claimed: Set[CourseInstance] = result.matched()
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
-        fresh_context = attr.evolve(self.context)
+        fresh_context = self.context.with_empty_claims()
         whole_context = fresh_context.with_transcript(fresh_context.transcript_with_excluded())
         claimed_context = fresh_context.with_transcript(claimed)
 
-        c_or_better = self.common_rules[0]
-        s_u_credits = self.common_rules[1]
-        outside_the_major = self.common_rules[2] if len(self.common_rules) > 2 else None
+        c_or_better = find_best_solution(rule=self.common_rules[0], ctx=claimed_context)
+        assert c_or_better is not None, TypeError('no solutions found for c_or_better rule')
 
-        with claimed_context.fresh_claims():
-            c_or_better__result = find_best_solution(rule=c_or_better, ctx=claimed_context)
-            assert c_or_better__result is not None, TypeError('no solutions found for c_or_better rule')
+        s_u_credits = find_best_solution(rule=self.common_rules[1], ctx=claimed_context)
+        assert s_u_credits is not None, TypeError('no solutions found for s_u_credits rule')
 
-        with claimed_context.fresh_claims():
-            s_u_credits__result = find_best_solution(rule=s_u_credits, ctx=claimed_context)
-            assert s_u_credits__result is not None, TypeError('no solutions found for s_u_credits__result rule')
+        try:
+            outside_the_major = find_best_solution(rule=self.common_rules[2], ctx=whole_context)
+            assert outside_the_major is not None, TypeError('no solutions found for outside_the_major rule')
+        except IndexError:
+            outside_the_major = None
 
-        outside_the_major__result = None
-        if outside_the_major:
-            # with unclaimed_context.fresh_claims():
-            outside_the_major__result = find_best_solution(rule=outside_the_major, ctx=whole_context)
-            assert outside_the_major__result is not None, TypeError('no solutions found for outside_the_major__result rule')
-
-        items = [c_or_better__result, s_u_credits__result]
-        if outside_the_major__result is not None:
-            items.append(outside_the_major__result)
+        items = [c_or_better, s_u_credits]
+        if outside_the_major is not None:
+            items.append(outside_the_major)
 
         return RequirementResult(
             name=f"Common {self.degree} Major Requirements",
