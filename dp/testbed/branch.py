@@ -64,7 +64,7 @@ def branch(args: argparse.Namespace) -> None:
 
     with sqlite_connect(args.db) as conn:
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = [
+            futures = {
                 executor.submit(
                     audit,
                     (stnum, catalog, code),
@@ -72,11 +72,13 @@ def branch(args: argparse.Namespace) -> None:
                     area_spec=area_specs[f"{catalog}/{code}"],
                     timeout=float(minimum_duration.sec()),
                     run_id=args.branch,
-                )
+                ): (stnum, catalog, code)
                 for (stnum, catalog, code) in records
-            ]
+            }
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
+                stnum, catalog, code = futures[future]
+
                 with sqlite_cursor(conn) as curs:
                     try:
                         db_args = future.result()
@@ -93,7 +95,7 @@ def branch(args: argparse.Namespace) -> None:
                         conn.commit()
                         continue
                     except Exception as exc:
-                        print('generated an exception: %s' % (exc))
+                        print(f'{stnum} {catalog} {code} generated an exception: {exc}')
                         continue
 
                     assert db_args is not None
