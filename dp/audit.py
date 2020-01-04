@@ -72,6 +72,10 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         return
 
     for sol in area.solutions(student=student, exceptions=exceptions or []):
+        if total_count == 0:
+            # ignore startup time
+            start = time.perf_counter()
+
         total_count += 1
 
         result = sol.audit()
