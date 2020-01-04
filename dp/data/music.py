@@ -114,7 +114,7 @@ class MusicAttendance(MusicSlip):
         return 'music attendance'
 
 
-@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, hash=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class MusicProficiencies:
     guitar: bool = False
     keyboard_1: bool = False
@@ -144,7 +144,7 @@ class MusicProficiencies:
         return ResultStatus.Pass if matcher[of] else ResultStatus.Pending
 
 
-@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, hash=True)
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class MusicMediums:
     ppm: str = 'Unknown'
     ppm2: str = 'Unknown'
