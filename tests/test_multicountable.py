@@ -1,5 +1,5 @@
 from dp.area import AreaOfStudy
-from dp.data import course_from_str
+from dp.data import course_from_str, Student
 from dp.constants import Constants
 import yaml
 import io
@@ -33,7 +33,7 @@ def test_mc__none(caplog):
 
     course = course_from_str('DEPT 123')
 
-    solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=[course])), exceptions=[])
 
     results = [s.audit() for s in solutions]
     assert len(results) == 3
@@ -76,7 +76,7 @@ def test_mc__none_2(caplog):
 
     course = course_from_str('DEPT 123')
 
-    solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=[course])), exceptions=[])
 
     results = [s.audit() for s in solutions]
     assert len(results) == 3
@@ -120,7 +120,7 @@ def test_mc__only_course_references(caplog):
 
     course = course_from_str('DEPT 123')
 
-    solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=[course])), exceptions=[])
 
     results = [s.audit() for s in solutions]
     assert len(results) == 1
@@ -164,7 +164,7 @@ def test_mc__only_query_references(caplog):
 
     course = course_from_str('DEPT 123')
 
-    solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=[course])), exceptions=[])
 
     results = [s.audit() for s in solutions]
     assert len(results) == 1
@@ -204,7 +204,7 @@ def x_test_mc__mixed_course_query_references(caplog):
 
     course = course_from_str('DEPT 123')
 
-    solutions = area.solutions(transcript=[course], areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=[course])), exceptions=[])
 
     results = [s.audit() for s in solutions]
     assert len(results) == 1

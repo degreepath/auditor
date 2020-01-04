@@ -1,5 +1,5 @@
 from dp.area import AreaOfStudy
-from dp.data import course_from_str
+from dp.data import course_from_str, Student
 from dp.constants import Constants
 import pytest  # type: ignore
 import io
@@ -34,7 +34,7 @@ def test_global_limits(caplog):
     bio_302 = course_from_str("BIO 302")
     transcript = [bio_101, bio_201, bio_202, bio_301, bio_302]
 
-    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    solutions = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))
     course_sets = set([frozenset(s.solution.output) for s in solutions])
 
     assert course_sets == set([
@@ -79,7 +79,7 @@ def test_limits_esth(caplog):
     ap_stat = course_from_str("STAT 0", name="AP Statistics", course_type="AP", clbid="2")
     transcript = [psych_241, stat_212, ap_stat]
 
-    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    solutions = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))
     course_sets = [list(s.solution.output) for s in solutions]
 
     assert course_sets == [

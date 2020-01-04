@@ -47,6 +47,9 @@ class AreaPointer(Clausable):
 
     @staticmethod
     def from_dict(data: Dict) -> 'AreaPointer':
+        if isinstance(data, AreaPointer):
+            return data  # type: ignore
+
         return AreaPointer(
             code=data['code'],
             status=AreaStatus(data['status']),

@@ -253,6 +253,9 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
 
 
 def load_course(data: Dict[str, Any]) -> CourseInstance:  # noqa: C901
+    if isinstance(data, CourseInstance):
+        return data  # type: ignore
+
     attributes = data.get('attributes', tuple())
     clbid = data['clbid']
     course_type = data['course_type']

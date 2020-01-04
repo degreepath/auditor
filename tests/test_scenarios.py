@@ -1,6 +1,7 @@
 from dp import AreaOfStudy, Constants, AreaPointer
 from dp.audit import audit, Arguments
 from dp.data.course import course_from_str
+from dp.data.student import Student
 from dp.data.area_enums import AreaStatus, AreaType
 from typing import Dict, Any
 
@@ -34,7 +35,7 @@ def test_audit__double_history_and_studio():
 
     c = Constants(matriculation_year=2000)
 
-    area = AreaOfStudy.load(c=c, areas=student['areas'], transcript=student['courses'], specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Art History Test',
         'type': 'major',
         'code': '140',
@@ -45,7 +46,7 @@ def test_audit__double_history_and_studio():
         }
     })
 
-    messages = list(audit(area=area, transcript=student['courses'], area_pointers=student['areas'], constants=c))
+    messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
     assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 18
@@ -71,7 +72,7 @@ def test_audit__single_studio_art():
 
     c = Constants(matriculation_year=2000)
 
-    area = AreaOfStudy.load(c=c, areas=student['areas'], transcript=student['courses'], specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Art History Test',
         'type': 'major',
         'code': '140',
@@ -82,7 +83,7 @@ def test_audit__single_studio_art():
         }
     })
 
-    messages = list(audit(area=area, transcript=student['courses'], area_pointers=student['areas'], constants=c))
+    messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
     assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
@@ -108,7 +109,7 @@ def test_audit__single_art_history():
 
     c = Constants(matriculation_year=2000)
 
-    area = AreaOfStudy.load(c=c, areas=student['areas'], transcript=student['courses'], specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Art History Test',
         'type': 'major',
         'code': '135',
@@ -119,7 +120,7 @@ def test_audit__single_art_history():
         }
     })
 
-    messages = list(audit(area=area, transcript=student['courses'], area_pointers=student['areas'], constants=c))
+    messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
     assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
@@ -154,7 +155,7 @@ def test_audit__double_art_history_and_other():
 
     c = Constants(matriculation_year=2000)
 
-    area = AreaOfStudy.load(c=c, areas=student['areas'], transcript=student['courses'], specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Art History',
         'type': 'major',
         'code': '135',
@@ -165,7 +166,7 @@ def test_audit__double_art_history_and_other():
         }
     })
 
-    messages = list(audit(area=area, transcript=student['courses'], area_pointers=student['areas'], constants=c))
+    messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
     assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
@@ -209,7 +210,7 @@ def test_audit__triple_arts_and_other():
 
     c = Constants(matriculation_year=2000)
 
-    area = AreaOfStudy.load(c=c, areas=student['areas'], transcript=student['courses'], specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Art History Test',
         'type': 'major',
         'code': '001',
@@ -220,12 +221,12 @@ def test_audit__triple_arts_and_other():
         }
     })
 
-    messages = list(audit(area=area, transcript=student['courses'], area_pointers=student['areas'], constants=c))
+    messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
     assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
 
-    area = AreaOfStudy.load(c=c, areas=student['areas'], transcript=student['courses'], specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Art History',
         'type': 'major',
         'code': '135',
@@ -236,12 +237,12 @@ def test_audit__triple_arts_and_other():
         }
     })
 
-    messages = list(audit(area=area, transcript=student['courses'], area_pointers=student['areas'], constants=c))
+    messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
     assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 18
 
-    area = AreaOfStudy.load(c=c, areas=student['areas'], transcript=student['courses'], specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Studio Art',
         'type': 'major',
         'code': '140',
@@ -252,7 +253,7 @@ def test_audit__triple_arts_and_other():
         }
     })
 
-    messages = list(audit(area=area, transcript=student['courses'], area_pointers=student['areas'], constants=c))
+    messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
     assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 18

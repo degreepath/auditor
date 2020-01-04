@@ -1,4 +1,4 @@
-from dp.data import course_from_str
+from dp.data import course_from_str, Student
 from dp.area import AreaOfStudy
 from dp.constants import Constants
 from dp.result.course import CourseResult
@@ -24,7 +24,7 @@ def test_pruning_on_count_rule(caplog):
     course_b = course_from_str("DEPT 234", clbid="1")
     transcript = [course_a, course_b]
 
-    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    solutions = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))
 
     assert [
         [x.course for x in s.solution.items if isinstance(x, CourseResult)]

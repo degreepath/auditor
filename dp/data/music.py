@@ -125,11 +125,11 @@ class MusicProficiencies:
     @staticmethod
     def from_dict(data: Dict) -> 'MusicProficiencies':
         return MusicProficiencies(
-            guitar=data['guitar'],
-            keyboard_1=data['keyboard_1'],
-            keyboard_2=data['keyboard_2'],
-            keyboard_3=data['keyboard_3'],
-            keyboard_4=data['keyboard_4'],
+            guitar=data.get('guitar', False),
+            keyboard_1=data.get('keyboard_1', False),
+            keyboard_2=data.get('keyboard_2', False),
+            keyboard_3=data.get('keyboard_3', False),
+            keyboard_4=data.get('keyboard_4', False),
         )
 
     def status(self, *, of: str) -> ResultStatus:
@@ -142,3 +142,20 @@ class MusicProficiencies:
         }
 
         return ResultStatus.Pass if matcher[of] else ResultStatus.Pending
+
+
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, hash=True)
+class MusicMediums:
+    ppm: str = 'Unknown'
+    ppm2: str = 'Unknown'
+    spm: str = 'Unknown'
+    spm2: str = 'Unknown'
+
+    @staticmethod
+    def from_dict(data: Dict) -> 'MusicMediums':
+        return MusicMediums(
+            ppm=data.get('ppm', 'Unknown'),
+            ppm2=data.get('ppm2', 'Unknown'),
+            spm=data.get('spm', 'Unknown'),
+            spm2=data.get('spm2', 'Unknown'),
+        )

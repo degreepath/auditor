@@ -1,5 +1,5 @@
 from dp import AreaOfStudy
-from dp.data import course_from_str
+from dp.data import course_from_str, Student
 from dp.constants import Constants
 from decimal import Decimal
 
@@ -17,7 +17,7 @@ def trns():
 def test_normal_gpa():
     transcript = trns()
 
-    area = AreaOfStudy.load(c=c, transcript=transcript, specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(courses=transcript)), specification={
         'name': 'test',
         'type': 'concentration',
         'result': {
@@ -44,7 +44,7 @@ def test_normal_gpa():
         },
     })
 
-    solution = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))[0]
+    solution = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))[0]
 
     result = solution.audit()
 
@@ -56,7 +56,7 @@ def test_normal_gpa():
 def test_excluded_req_gpa():
     transcript = trns()
 
-    area = AreaOfStudy.load(c=c, transcript=transcript, specification={
+    area = AreaOfStudy.load(c=c, student=Student.load(dict(courses=transcript)), specification={
         'name': 'test',
         'type': 'concentration',
         'result': {
@@ -84,7 +84,7 @@ def test_excluded_req_gpa():
         },
     })
 
-    solution = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))[0]
+    solution = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))[0]
     result = solution.audit()
 
     assert area.result.items[1].in_gpa is False

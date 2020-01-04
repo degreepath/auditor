@@ -1,12 +1,12 @@
 import attr
-from typing import List, Optional, Tuple, Sequence, Iterator, Union, Dict
+from typing import List, Optional, Tuple, Iterator, Union, Dict
 from decimal import Decimal
 import time
 
 from .constants import Constants
 from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
-from .data import CourseInstance, AreaPointer, MusicAttendance, MusicPerformance, MusicProficiencies
+from .data import CourseInstance, Student
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -55,47 +55,23 @@ Message = Union[
 ]
 
 
-def audit(
-    *,
-    area: AreaOfStudy,
-    area_pointers: Sequence[AreaPointer] = tuple(),
-    args: Arguments = Arguments(),
-    constants: Constants,
-    exceptions: Sequence[RuleException] = tuple(),
-    music_attendances: Tuple[MusicAttendance, ...] = tuple(),
-    music_performances: Tuple[MusicPerformance, ...] = tuple(),
-    music_proficiencies: MusicProficiencies = MusicProficiencies(),
-    transcript: Tuple[CourseInstance, ...] = tuple(),
-    transcript_with_failed: Tuple[CourseInstance, ...] = tuple(),
-) -> Iterator[Message]:
-    best_sol: Optional[AreaResult] = None
-    best_rank: Union[int, Decimal] = 0
+def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = None, exceptions: Optional[List[RuleException]] = None) -> Iterator[Message]:
+    if not args:
+        args = Arguments()
+
     start = time.perf_counter()
     total_count = 0
 
-    estimate = area.estimate(
-        transcript=transcript,
-        areas=tuple(area_pointers),
-        music_performances=music_performances,
-        music_attendances=music_attendances,
-        music_proficiencies=music_proficiencies,
-        exceptions=list(exceptions),
-        transcript_with_failed=transcript_with_failed,
-    )
+    best_sol: Optional[AreaResult] = None
+    best_rank: Union[int, Decimal] = 0
+
+    estimate = area.estimate(student=student, exceptions=exceptions or [])
     yield EstimateMsg(estimate=estimate)
 
     if args.estimate_only:
         return
 
-    for sol in area.solutions(
-        transcript=transcript,
-        areas=tuple(area_pointers),
-        music_performances=music_performances,
-        music_attendances=music_attendances,
-        music_proficiencies=music_proficiencies,
-        exceptions=list(exceptions),
-        transcript_with_failed=transcript_with_failed,
-    ):
+    for sol in area.solutions(student=student, exceptions=exceptions or []):
         total_count += 1
 
         result = sol.audit()
@@ -114,7 +90,7 @@ def audit(
             elapsed_ms = ms_since(start)
             yield ResultMsg(
                 result=result,
-                transcript=transcript,
+                transcript=student.courses,
                 iters=total_count,
                 avg_iter_ms=elapsed_ms / total_count,
                 elapsed_ms=elapsed_ms,
@@ -143,7 +119,7 @@ def audit(
     elapsed_ms = ms_since(start)
     yield ResultMsg(
         result=best_sol,
-        transcript=transcript,
+        transcript=student.courses,
         iters=total_count,
         avg_iter_ms=elapsed_ms / total_count,
         elapsed_ms=elapsed_ms,

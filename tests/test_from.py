@@ -1,5 +1,5 @@
 from dp.area import AreaOfStudy
-from dp.data import course_from_str
+from dp.data import course_from_str, Student
 from dp.constants import Constants
 import pytest
 import io
@@ -26,7 +26,7 @@ def test_from(caplog):
         course_from_str("ASIAN 110"),
     ]
 
-    s = next(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    s = next(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))
     a = s.audit().result
 
     assert len(a.successful_claims) == 1
@@ -56,7 +56,7 @@ def test_solution_count_exact(caplog):
             assert: {count(courses): {$eq: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 1
@@ -97,7 +97,7 @@ def test_solution_count_greaterthan_1(caplog):
             assert: {count(courses): {$gt: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 2
@@ -124,7 +124,7 @@ def test_solution_count_always_yield_something(caplog):
             assert: {count(courses): {$gt: 1}}
     """)
 
-    solutions = area.solutions(transcript=transcript, areas=[], exceptions=[])
+    solutions = area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[])
 
     sol = next(solutions)
     assert len(sol.solution.output) == 0

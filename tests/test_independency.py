@@ -1,4 +1,4 @@
-from dp.data import course_from_str
+from dp.data import course_from_str, Student
 from dp.area import AreaOfStudy
 from dp.constants import Constants
 from dp.context import RequirementContext
@@ -46,7 +46,7 @@ def test_overlaps(caplog: Any) -> None:
 
     area.result.find_independent_children(items=area.result.items, ctx=ctx)
 
-    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    solutions = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))
     assert len(solutions) == 1
 
     result = solutions[0].audit()
@@ -115,7 +115,7 @@ def x_test_overlaps(caplog: Any) -> None:
         "MUSPF 101", "MUSPF 102", "MUSPF 103", "MUSPF 104", "MUSPF 105", "MUSPF 106",
     ]]
 
-    solutions = list(area.solutions(transcript=transcript, areas=[], exceptions=[]))
+    solutions = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[]))
     assert len(solutions) == 1
 
     result = solutions[0].audit()

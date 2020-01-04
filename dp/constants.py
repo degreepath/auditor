@@ -1,23 +1,24 @@
-import attr
-from typing import Any
-import logging
+# mypy: warn_unreachable = False
+
+from typing import Any, Union
 from enum import Enum
+import logging
+
+import attr
 
 logger = logging.getLogger(__name__)
 
 
 class KnownConstants(Enum):
-    SeniorYear = "$senior-year"
-    JuniorYear = "$junior-year"
-    MajorDeclarationDate = "$major-declaration"
     MatriculationYear = "$matriculation-year"
+    TermsOnCampusSinceMajorDeclaration = "$terms-on-campus-since-major-declaration"
 
 
-@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+@attr.s(slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Constants:
     matriculation_year: int = 0
 
-    def get_by_name(self, v: Any) -> Any:
+    def get_by_name(self, v: Union[str, Any]) -> Any:
         if type(v) != str:
             return v
 
@@ -25,7 +26,10 @@ class Constants:
             return v
 
         key = KnownConstants(v)
+
         if key is KnownConstants.MatriculationYear:
+            return self.matriculation_year
+        elif key is KnownConstants.TermsOnCampusSinceMajorDeclaration:
             return self.matriculation_year
         else:
             logger.critical(f"TODO: support constant value `{v}`")
