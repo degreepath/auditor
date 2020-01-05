@@ -1,5 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from typing import Iterator, Dict, Tuple, cast
+from typing import Iterator, Set, Dict, Tuple, cast
 from pathlib import Path
 import argparse
 import math
@@ -22,7 +22,7 @@ if os.environ.get('SENTRY_DSN', None):
     sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
 
 http = urllib3.PoolManager()
-DISABLED = {('161932', '456'), ('163749', '456')}
+DISABLED: Set[Tuple[str, str]] = set()
 
 BATCH_URL = os.getenv('DP_BATCH_URL')
 SINGLE_URL = os.getenv('DP_SINGLE_URL')
