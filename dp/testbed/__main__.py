@@ -10,7 +10,7 @@ import os
 from typing import Any
 
 from .extract import extract_one
-from .fetch import fetch
+from .fetch import fetch, summarize
 from .baseline import baseline
 from .branch import branch
 from .compare import compare
@@ -41,6 +41,9 @@ def main() -> None:
     parser.add_argument('-w', '--workers', action='store', type=int, help='how many workers to use to run parallel audits', default=math.floor((os.cpu_count() or 0) / 4 * 3))
 
     subparsers = parser.add_subparsers(title='subcommands', description='valid subcommands')
+
+    parser_fetch = subparsers.add_parser('summarize', help='show stats for recent audit runs on the server')
+    parser_fetch.set_defaults(func=summarize)
 
     parser_fetch = subparsers.add_parser('fetch', help='downloads audit results from a server')
     parser_fetch.add_argument('--latest', action='store_true', default=False, help='always fetch the latest run of audits')

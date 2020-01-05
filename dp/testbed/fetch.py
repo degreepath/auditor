@@ -90,34 +90,60 @@ def fetch__select_run(args: argparse.Namespace, conn: Any) -> int:
             to_fetch = args.run
 
         else:
-            # language=PostgreSQL
-            curs.execute("""
-                SELECT run
-                     , min(ts AT TIME ZONE 'America/Chicago') AS first
-                     , max(ts AT TIME ZONE 'America/Chicago') AS last
-                     , extract(epoch from max(ts AT TIME ZONE 'America/Chicago') - min(ts AT TIME ZONE 'America/Chicago')) AS duration
-                     , count(*) AS total
-                     , sum(ok::integer) AS ok
-                     , sum((NOT ok)::integer) AS "not-ok"
-                FROM result
-                WHERE run > 0
-                  AND ts > now() - INTERVAL '1 week'
-                GROUP BY run
-                ORDER BY run DESC
-            """)
-
-            # 219: 2019-12-06 23:07 / 2019-12-07 04:40 [5h 32m 58.7s]; 6,997 total, 201 ok, 6,796 not-ok
-            date_fmt = "%Y-%m-%d %H:%M"
-            for row in curs.fetchall():
-                first = row['first'].strftime(date_fmt)
-                last = row['last'].strftime(date_fmt)
-                duration = pretty_ms(row['duration'] * 1000, unit_count=2)
-                print(f"{row['run']}: {first} / {last} [{duration}]; {row['total']:,} total, {row['ok']:,} ok, {row['not-ok']:,} not-ok")
+            fetch__print_summary(args=args, curs=curs)
 
             print('Download which run?')
             to_fetch = int(input('>>> '))
 
         return int(to_fetch)
+
+
+def fetch__print_summary(args: argparse.Namespace, curs: Any) -> None:
+    # language=PostgreSQL
+    curs.execute("""
+        SELECT run
+             , min(ts AT TIME ZONE 'America/Chicago') AS first
+             , max(ts AT TIME ZONE 'America/Chicago') AS last
+             , extract(epoch from max(ts AT TIME ZONE 'America/Chicago') - min(ts AT TIME ZONE 'America/Chicago')) AS duration
+             , count(*) AS total
+             , sum(ok::integer) AS ok
+             , sum((NOT ok)::integer) AS "not-ok"
+        FROM result
+        WHERE run > 0
+          AND ts > now() - INTERVAL '1 week'
+        GROUP BY run
+        ORDER BY run DESC
+    """)
+
+    # 219: 2019-12-06 23:07 / 2019-12-07 04:40 [5h 32m 58.7s]; 6,997 total, 201 ok, 6,796 not-ok
+    date_fmt = "%Y-%m-%d %H:%M"
+    for row in curs.fetchall():
+        first = row['first'].strftime(date_fmt)
+        last = row['last'].strftime(date_fmt)
+        duration = pretty_ms(row['duration'] * 1000, unit_count=2)
+        print(f"{row['run']}: {first} / {last} [{duration}]; {row['total']:,} total, {row['ok']:,} ok, {row['not-ok']:,} not-ok")
+
+
+def summarize(args: argparse.Namespace) -> None:
+    import psycopg2
+    import psycopg2.extras
+
+    pg_conn = psycopg2.connect('', cursor_factory=psycopg2.extras.DictCursor)
+    pg_conn.set_session(readonly=True)
+
+    with pg_conn.cursor() as curs:
+        fetch__print_summary(args=args, curs=curs)
+
+        curs.execute("""
+            SELECT count(*) AS total
+                , min(ts AT TIME ZONE 'America/Chicago') AS first
+                , max(ts AT TIME ZONE 'America/Chicago') AS last
+            FROM queue
+        """)
+
+        date_fmt = "%Y-%m-%d %H:%M"
+        for row in curs.fetchall():
+            print(f"queue: {row['first'].strftime(date_fmt)} / {row['last'].strftime(date_fmt)}; {row['total']:,} total")
 
 
 def fetch_if_needed(args: argparse.Namespace) -> None:
