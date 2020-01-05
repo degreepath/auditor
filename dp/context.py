@@ -177,13 +177,7 @@ class RequirementContext:
     def with_empty_claims(self) -> 'RequirementContext':
         return attr.evolve(self, claims=defaultdict(list))
 
-    def make_claim(  # noqa: C901
-        self,
-        *,
-        course: CourseInstance,
-        path: Tuple[str, ...],
-        allow_claimed: bool = False,
-    ) -> ClaimAttempt:
+    def make_claim(self, *, course: CourseInstance, path: Tuple[str, ...], allow_claimed: bool = False) -> ClaimAttempt:
         """
         Make claims against courses, to ensure that they are only used once
         (with exceptions) in an audit.
@@ -201,57 +195,61 @@ class RequirementContext:
         # build a claim so it can be returned later
         claim = Claim(course=course, claimant_path=path, claimant_requirements=path_reqs_only)
 
-        # > A multicountable set describes the ways in which a course may be
-        # > counted.
-        #
-        # > If no multicountable set describes the course, it may only be
-        # > counted once.
-
         # If the claimant is a CourseRule specified with the `.allow_claimed`
         # option, the claim succeeds (and is not recorded).
         if allow_claimed:
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
             return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
 
-        prior_claims = self.claims[course.clbid]
-
         # If there are no prior claims, the claim is automatically allowed.
-        if not prior_claims:
+        if course.clbid not in self.claims:
             if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
             self.claims[course.clbid].append(claim)
             return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
 
-        # Find any multicountable sets that may apply to this course
-        applicable_reqpaths: List[Tuple[str, ...]] = self.multicountable.get(course.course(), [])
+        prior_claims = self.claims[course.clbid]
+
+        # > A multicountable set describes the ways in which a course may be
+        # > counted. If no multicountable set describes the course, it may only
+        # > be counted once.
+
+        # See if any multicountable sets apply to this course.
+        if course.course() in self.multicountable:
+            return self._make_multicountable_claim(course=course, path_reqs_only=path_reqs_only, allow_claimed=allow_claimed, claim=claim)
 
         # If there are no applicable multicountable sets, return a claim
-        # attempt against the prior claims. If there are no prior claims, it
-        # is automatically successful.
-        if not applicable_reqpaths:
-            if prior_claims:
-                if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
-            else:
-                if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim has no conflicts', course.clbid)
-                self.claims[course.clbid].append(claim)
-                return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+        # attempt against the prior claims.
+        if prior_claims:
+            if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
+            return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
 
-        # We can allow a course to be claimed by multiple requirements, if
-        # that's what is required by the department.
-        #
-        # A `multicountable` attribute is a dictionary of {DEPTNUM: List[RequirementPath]}.
-        #
-        # That is, it looks like the following:
-        #
-        # multicountable: [
-        #   "DEPT 123": [
-        #     ["Requirement Name"],
-        #     ["A", "Nested", "Requirement"],
-        #   ],
-        # }
-        #
-        # where each of the RequirementPath is a list of strings that match up
-        # to a requirement defined somewhere in the file.
+        # If there are no prior claims, it is automatically successful.
+        if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim has no conflicts', course.clbid)
+        self.claims[course.clbid].append(claim)
+        return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+
+    def _make_multicountable_claim(self, *, claim: Claim, course: CourseInstance, path_reqs_only: Tuple[str, ...], allow_claimed: bool) -> ClaimAttempt:
+        """
+        We can allow a course to be claimed by multiple requirements, if
+        that's what is required by the department.
+
+        A `multicountable` attribute is a dictionary of {DEPTNUM: List[RequirementPath]}.
+
+        That is, it looks like the following:
+
+        multicountable: [
+          "DEPT 123": [
+            ["Requirement Name"],
+            ["A", "Nested", "Requirement"],
+          ],
+        }
+
+        where each of the RequirementPath is a list of strings that match up
+        to a requirement defined somewhere in the file.
+        """
+
+        prior_claims = self.claims[course.clbid]
+        applicable_reqpaths: List[Tuple[str, ...]] = self.multicountable.get(course.course(), [])
 
         prior_claimers = list(set(cl.claimant_requirements for cl in prior_claims))
 
