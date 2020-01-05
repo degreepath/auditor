@@ -79,7 +79,10 @@ class Student:
         )
 
     def constants(self) -> Constants:
-        return Constants(matriculation_year=self.matriculation)
+        return Constants(
+            matriculation_year=self.matriculation,
+            primary_performing_medium=self.music_mediums.ppm,
+        )
 
 
 def load_transcript(courses: List[Dict[str, Any]], *, include_failed: bool = False, current_term: Optional[TermInfo] = None) -> Iterator[CourseInstance]:

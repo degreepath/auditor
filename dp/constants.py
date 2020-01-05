@@ -12,11 +12,13 @@ logger = logging.getLogger(__name__)
 class KnownConstants(Enum):
     MatriculationYear = "$matriculation-year"
     TermsOnCampusSinceMajorDeclaration = "$terms-on-campus-since-major-declaration"
+    PrimaryPerformingMedium = "$primary-performing-medium"
 
 
 @attr.s(slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Constants:
     matriculation_year: int = 0
+    primary_performing_medium: str = ''
 
     def get_by_name(self, v: Union[str, Any]) -> Any:
         if type(v) != str:
@@ -31,6 +33,8 @@ class Constants:
             return self.matriculation_year
         elif key is KnownConstants.TermsOnCampusSinceMajorDeclaration:
             return self.matriculation_year
+        elif key is KnownConstants.PrimaryPerformingMedium:
+            return self.primary_performing_medium
         else:
             logger.critical(f"TODO: support constant value `{v}`")
             return 0
