@@ -1,8 +1,11 @@
-import attr
-from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List, Set
-import itertools
+from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List, Set, TYPE_CHECKING, cast
 from collections import defaultdict
+import itertools
 import logging
+import decimal
+import enum
+
+import attr
 
 from .clause import Clause, str_clause
 from .load_clause import load_clause
@@ -11,20 +14,31 @@ from .ncr import ncr
 
 from .data.clausable import Clausable
 
+if TYPE_CHECKING:
+    from .data.course import CourseInstance
+
 logger = logging.getLogger(__name__)
 T = TypeVar('T', bound=Clausable)
 
 
+@enum.unique
+class AtMostWhat(enum.Enum):
+    Courses = 0
+    Credits = 1
+
+
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Limit:
-    at_most: int
+    at_most: decimal.Decimal
+    at_most_what: AtMostWhat = AtMostWhat.Courses
     where: Clause
     message: Optional[str]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "type": "limit",
-            "at_most": self.at_most,
+            "at_most": str(self.at_most),
+            "at_most_what": self.at_most_what.name,
             "where": self.where.to_dict(),
             "message": self.message,
         }
@@ -43,7 +57,23 @@ class Limit:
         clause = load_clause(data["where"], c=c)
         assert clause, 'limits are not allowed to have conditional clauses'
 
-        return Limit(at_most=at_most, where=clause, message=data.get('message', None))
+        try:
+            at_most = decimal.Decimal(int(at_most))
+            at_most_what = AtMostWhat.Courses
+        except ValueError:
+            _at_most = at_most
+            # must be a string, like "1 course"
+            at_most, at_most_what = at_most.split()
+
+            at_most = decimal.Decimal(at_most)
+            if at_most_what in ('course', 'courses'):
+                at_most_what = AtMostWhat.Courses
+            elif at_most_what in ('credit', 'credits'):
+                at_most_what = AtMostWhat.Courses
+            else:
+                raise ValueError(f'expected course|credits, got {at_most_what} (part of {_at_most})')
+
+        return Limit(at_most=at_most, at_most_what=at_most_what, where=clause, message=data.get('message', None))
 
     def __str__(self) -> str:
         return f"Limit(at-most: {self.at_most}, where: {str_clause(self.where)})"
@@ -54,19 +84,41 @@ class Limit:
         # be a set, in which case there is no inherent ordering.
         courses = sorted(courses, key=lambda item: item.sort_order())
 
-        logger.debug("limit/loop/start: limit=%s, matched=%s", self, courses)
+        # logger.debug("limit/loop/start: limit=%s, matched=%s", self, courses)
 
-        for n in range(0, self.at_most + 1):
-            logger.debug("limit/loop(%s..<%s): n=%s applying %s", 0, self.at_most + 1, n, self.where)
+        if self.at_most_what is AtMostWhat.Courses:
+            yield from self.iterate_courses(courses)
+        elif self.at_most_what is AtMostWhat.Credits:
+            yield from self.iterate_credits(courses)  # type: ignore
+
+    def iterate_courses(self, courses: Sequence[T]) -> Iterator[Tuple[T, ...]]:
+        for n in range(0, int(self.at_most) + 1):
+            # logger.debug("limit/loop(%s..<%s): n=%s applying %s", 0, self.at_most + 1, n, self.where)
             for combo in itertools.combinations(courses, n):
-                logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
+                # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                 yield combo
+
+    def iterate_credits(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+        if sum(c.credits for c in courses) < self.at_most:
+            yield tuple(courses)
+            return
+
+        for n in range(1, len(courses) + 1):
+            # logger.debug("limit/loop(%s..<%s): n=%s applying %s", 0, self.at_most + 1, n, self.where)
+            for combo in itertools.combinations(courses, n):
+                if sum(c.credits for c in combo) < self.at_most:
+                    # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
+                    yield combo
 
     def estimate(self, courses: Sequence[T]) -> int:
         acc = 0
 
-        for n in range(0, self.at_most + 1):
-            acc += ncr(len(courses), n)
+        if self.at_most_what is AtMostWhat.Courses:
+            for n in range(0, int(self.at_most) + 1):
+                acc += ncr(len(courses), n)
+        elif self.at_most_what is AtMostWhat.Credits:
+            for n in range(1, len(courses) + 1):
+                acc += ncr(len(courses), n)
 
         return acc
 
