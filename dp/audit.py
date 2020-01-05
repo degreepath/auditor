@@ -81,6 +81,19 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         result = sol.audit()
         result_rank = result.rank()
 
+        # if this is the first solution, store it, because it's the best so far
+        if best_sol is None:
+            best_sol, best_rank = result, result_rank
+
+        # if the current solution is better, then store it
+        if result_rank > best_rank:
+            best_sol, best_rank = result, result_rank
+
+        # if the current solution is OK, then store it, and end the loop
+        if result.ok():
+            best_sol, best_rank = result, result_rank
+            break
+
         if total_count % args.progress_every == 0:
             elapsed_ms = ms_since(start)
             yield ProgressMsg(
@@ -99,19 +112,6 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
                 avg_iter_ms=elapsed_ms / total_count,
                 elapsed_ms=elapsed_ms,
             )
-
-        # if this is the first solution, store it, because it's the best so far
-        if best_sol is None:
-            best_sol, best_rank = result, result_rank
-
-        # if the current solution is better, then store it
-        if result_rank > best_rank:
-            best_sol, best_rank = result, result_rank
-
-        # if the current solution is OK, then store it, and end the loop
-        if result.ok():
-            best_sol, best_rank = result, result_rank
-            break
 
         if args.stop_after is not None and total_count >= args.stop_after:
             break
