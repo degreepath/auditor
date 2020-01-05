@@ -8,7 +8,7 @@ import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
 from dp.run import load_areas, load_students
-from dp.server.audit import audit
+from .audit import audit
 
 logger = logging.getLogger(__name__)
 
