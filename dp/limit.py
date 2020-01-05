@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List, Set, TYPE_CHECKING, cast
+from typing import Dict, Tuple, Sequence, Optional, Iterator, TypeVar, Any, List, Set, TYPE_CHECKING
 from collections import defaultdict
 import itertools
 import logging
@@ -15,7 +15,7 @@ from .ncr import ncr
 from .data.clausable import Clausable
 
 if TYPE_CHECKING:
-    from .data.course import CourseInstance
+    from .data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 T = TypeVar('T', bound=Clausable)
