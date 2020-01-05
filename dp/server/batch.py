@@ -70,11 +70,8 @@ def main() -> None:
     assert SINGLE_URL
     assert BATCH_URL
 
-    conn = psycopg2.connect(
-        host=os.environ.get("PGHOST"),
-        database=os.environ.get("PGDATABASE"),
-        user=os.environ.get("PGUSER"),
-    )
+    # empty string means "use the environment variables"
+    conn = psycopg2.connect('', application_name='degreepath-batch')
 
     run = args.run
     if args.run is None:

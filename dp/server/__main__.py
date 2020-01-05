@@ -48,8 +48,8 @@ def wrapper(*, area_root: str) -> None:
 def worker(*, area_root: str) -> None:
     logger.info(f'connect')
 
-    # an empty string tells psycopg2 to read from environment variables
-    conn = psycopg2.connect('')
+    # empty string means "use the environment variables"
+    conn = psycopg2.connect('', application_name='degreepath')
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     logger.info(f'connected')

@@ -1,7 +1,6 @@
-import json
-import argparse
-import os
 from pathlib import Path
+import argparse
+import json
 
 import psycopg2  # type: ignore
 import dotenv
@@ -18,11 +17,8 @@ def main() -> None:
     parser.add_argument('--catalog', required=True, type=int)
     args = parser.parse_args()
 
-    conn = psycopg2.connect(
-        host=os.environ.get("PGHOST"),
-        database=os.environ.get("PGDATABASE"),
-        user=os.environ.get("PGUSER"),
-    )
+    # empty string means "use the environment variables"
+    conn = psycopg2.connect('', application_name='degreepath-whatif')
 
     with open(args.student, 'r', encoding='utf-8') as infile:
         data = infile.read()

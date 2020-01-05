@@ -37,11 +37,8 @@ def main() -> None:
     area_catalog = str(pathlib.Path(args.area_file).parent)
     area_code = pathlib.Path(args.area_file).stem
 
-    PGHOST = os.environ.get("PGHOST")
-    PGDATABASE = os.environ.get("PGDATABASE")
-    PGUSER = os.environ.get("PGUSER")
-
-    conn = psycopg2.connect(host=PGHOST, database=PGDATABASE, user=PGUSER)
+    # empty string means "use the environment variables"
+    conn = psycopg2.connect('', application_name='degreepath-cli')
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     with conn.cursor() as curs:

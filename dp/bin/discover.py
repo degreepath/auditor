@@ -3,7 +3,6 @@ from pathlib import Path
 from collections import namedtuple
 import argparse
 import sys
-import os
 
 import yaml
 
@@ -115,11 +114,8 @@ def insert_to_db(*, courses: Set[CourseReference], buckets: Set[BucketReference]
         print('could not import module psycopg2', file=sys.stderr)
         sys.exit(1)
 
-    conn = psycopg2.connect(
-        host=os.environ.get("PGHOST"),
-        database=os.environ.get("PGDATABASE"),
-        user=os.environ.get("PGUSER"),
-    )
+    # empty string means "use the environment variables"
+    conn = psycopg2.connect('', application_name='degreepath-discovery')
 
     insert_course_refs(conn, courses)
     insert_bucket_refs(conn, buckets)

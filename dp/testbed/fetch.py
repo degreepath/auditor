@@ -1,6 +1,5 @@
 from typing import Any
 import argparse
-import os
 
 import tqdm  # type: ignore
 
@@ -12,12 +11,8 @@ def fetch(args: argparse.Namespace) -> None:
     import psycopg2  # type: ignore
     import psycopg2.extras  # type: ignore
 
-    pg_conn = psycopg2.connect(
-        host=os.environ.get("PGHOST"),
-        database=os.environ.get("PGDATABASE"),
-        user=os.environ.get("PGUSER"),
-        cursor_factory=psycopg2.extras.DictCursor,
-    )
+    # empty string means "use the environment variables"
+    pg_conn = psycopg2.connect('', application_name='degreepath-testbed', cursor_factory=psycopg2.extras.DictCursor)
     pg_conn.set_session(readonly=True)
 
     selected_run = fetch__select_run(args, pg_conn)
@@ -130,7 +125,8 @@ def summarize(args: argparse.Namespace) -> None:
     import psycopg2
     import psycopg2.extras
 
-    pg_conn = psycopg2.connect('', cursor_factory=psycopg2.extras.DictCursor)
+    # empty string means "use the environment variables"
+    pg_conn = psycopg2.connect('', application_name='degreepath-testbed', cursor_factory=psycopg2.extras.DictCursor)
     pg_conn.set_session(readonly=True)
 
     with pg_conn.cursor() as curs:
