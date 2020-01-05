@@ -108,7 +108,8 @@ def fetch__print_summary(args: argparse.Namespace, curs: Any) -> None:
              , count(*) AS total
              , sum(ok::integer) AS ok
              , sum((NOT ok)::integer) AS "not-ok"
-        FROM result
+             , ((SELECT count(*) FROM queue WHERE run = r.run)) as queued
+        FROM result r
         WHERE run > 0
           AND ts > now() - INTERVAL '1 week'
         GROUP BY run
@@ -121,7 +122,8 @@ def fetch__print_summary(args: argparse.Namespace, curs: Any) -> None:
         first = row['first'].strftime(date_fmt)
         last = row['last'].strftime(date_fmt)
         duration = pretty_ms(row['duration'] * 1000, unit_count=2)
-        print(f"{row['run']}: {first} / {last} [{duration}]; {row['total']:,} total, {row['ok']:,} ok, {row['not-ok']:,} not-ok")
+        queue_count = f", {row['queued']:,} queued" if row['queued'] else ''
+        print(f"{row['run']}: {first} / {last} [{duration.ljust(10, ' ')}]; {row['total']:,} total, {row['ok']:,} ok, {row['not-ok']:,} not-ok{queue_count}")
 
 
 def summarize(args: argparse.Namespace) -> None:
@@ -133,17 +135,6 @@ def summarize(args: argparse.Namespace) -> None:
 
     with pg_conn.cursor() as curs:
         fetch__print_summary(args=args, curs=curs)
-
-        curs.execute("""
-            SELECT count(*) AS total
-                , min(ts AT TIME ZONE 'America/Chicago') AS first
-                , max(ts AT TIME ZONE 'America/Chicago') AS last
-            FROM queue
-        """)
-
-        date_fmt = "%Y-%m-%d %H:%M"
-        for row in curs.fetchall():
-            print(f"queue: {row['first'].strftime(date_fmt)} / {row['last'].strftime(date_fmt)}; {row['total']:,} total")
 
 
 def fetch_if_needed(args: argparse.Namespace) -> None:
