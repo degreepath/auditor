@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 CACHE_SIZE = 2048
 
 
-@attr.s(auto_attribs=True, slots=True)
+@attr.s(auto_attribs=True, slots=True, eq=False, hash=True)
 class BaseClause(abc.ABC):
     @lru_cache(CACHE_SIZE)
     def compare_and_resolve_with(self, value: Tuple['Clausable', ...]) -> 'Clause':
@@ -32,7 +32,7 @@ class BaseClause(abc.ABC):
         raise NotImplementedError(f'must define an apply(to=) method')
 
 
-@attr.s(auto_attribs=True, slots=True)
+@attr.s(auto_attribs=True, slots=True, eq=False, hash=True)
 class ClauseWithResult:
     result: ResultStatus = ResultStatus.Pending
 
@@ -76,7 +76,7 @@ class ClauseWithResult:
         return ResultStatus.Pending
 
 
-@attr.s(auto_attribs=True, slots=True)
+@attr.s(auto_attribs=True, slots=True, eq=False, hash=True)
 class ResolvedClause(ClauseWithResult):
     resolved_with: Optional[Any] = None
     resolved_items: Tuple[Any, ...] = tuple()
@@ -93,7 +93,7 @@ class ResolvedClause(ClauseWithResult):
         }
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, eq=False, hash=True)
 class AndClause(BaseClause, ClauseWithResult):
     children: Tuple['Clause', ...] = tuple()
 
@@ -152,7 +152,7 @@ class AndClause(BaseClause, ClauseWithResult):
         return sum(c.max_rank() for c in self.children)
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, eq=False, hash=True)
 class OrClause(BaseClause, ClauseWithResult):
     children: Tuple['Clause', ...] = tuple()
 
@@ -221,7 +221,7 @@ def stringify_expected(expected: Any) -> Any:
     return expected
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, eq=False, hash=True)
 class SingleClause(BaseClause, ResolvedClause):
     key: str = "???"
     expected: Any = None
