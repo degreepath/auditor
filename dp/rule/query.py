@@ -139,7 +139,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         return data, inserted_clbids, force_inserted_clbids
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:  # noqa: C901
+    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:
         if ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple(), overridden=True)
@@ -151,21 +151,24 @@ class QueryRule(Rule, BaseQueryRule):
             yield QuerySolution.from_rule(rule=self, output=tuple(), inserted=inserted_clbids, force_inserted=force_inserted_clbids)
             return
 
-        did_iter = False
-        for item_set in self.limit.limited_transcripts(data):
-            if self.attempt_claims is False:
-                did_iter = True
+        if self.source in (QuerySource.Courses, QuerySource.Claimed):
+            did_iter = False
+            for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
+                if self.attempt_claims is False:
+                    did_iter = True
 
-                # If we want to make things go green sooner, turn this on
-                if self.source is QuerySource.Courses:
-                    selected_courses = cast(Tuple[CourseInstance, ...], item_set)
-                    only_completed = tuple(c for c in selected_courses if c.is_in_progress is False)
+                    # If we want to make things go green sooner, turn this on
+                    only_completed = tuple(c for c in item_set if c.is_in_progress is False)
                     yield QuerySolution.from_rule(rule=self, output=only_completed, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
-                yield QuerySolution.from_rule(rule=self, output=item_set, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
-                continue
+                    yield QuerySolution.from_rule(rule=self, output=item_set, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+                    continue
 
-            for combo in iterate_item_set(item_set, rule=self):
+                for combo in iterate_item_set(item_set, rule=self):
+                    did_iter = True
+                    yield QuerySolution.from_rule(output=combo, rule=self, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+        else:
+            for combo in iterate_item_set(data, rule=self):
                 did_iter = True
                 yield QuerySolution.from_rule(output=combo, rule=self, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
@@ -181,14 +184,15 @@ class QueryRule(Rule, BaseQueryRule):
         data, _, _ = self.get_filtered_data(ctx=ctx)
 
         acc = 0
-        for item_set in self.limit.limited_transcripts(data):
-            if self.attempt_claims is False:
-                if self.source is QuerySource.Courses:
+        if self.source in (QuerySource.Courses, QuerySource.Claimed):
+            for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
+                if self.attempt_claims is False:
+                    acc += 1
                     acc += 1
 
-                acc += 1
-
-            acc += estimate_item_set(item_set, rule=self)
+                acc += estimate_item_set(item_set, rule=self)
+        else:
+            acc += estimate_item_set(data, rule=self)
 
         if acc == 0:
             # be sure we always yield something
