@@ -121,7 +121,7 @@ def print_area(
     if rule['limit']:
         yield f"Subject to these limits:"
         for limit in rule['limit']:
-            yield f"- at most {limit['at_most']} where {str_clause(limit['where'])}"
+            yield f"- at most {limit['at_most']} {limit['at_most_what']} where {str_clause(limit['where'])}"
 
     yield ""
 
@@ -282,7 +282,7 @@ def print_query(
     if rule['limit']:
         yield f"{prefix} Subject to these limits:"
         for limit in rule['limit']:
-            yield f"{prefix} - at most {limit['at_most']} where {str_clause(limit['where'])}"
+            yield f"{prefix} - at most {limit['at_most']} {limit['at_most_what']} where {str_clause(limit['where'])}"
 
     if rule["claims"]:
         yield f"{prefix} Matching courses:"
