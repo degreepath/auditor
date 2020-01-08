@@ -462,6 +462,9 @@ def prepare_common_rules(
             (area_code == studio_art_code and art_history_code in other_area_codes)\
             or (area_code == art_history_code and studio_art_code in other_area_codes)
 
+        ba_music_code = '450'
+        is_ba_music = area_code == ba_music_code
+
         outside_rule: Dict
         if dept_code is None:
             outside_rule = {
@@ -484,6 +487,25 @@ def prepare_common_rules(
                     "allow_claimed": True,
                     "claim": False,
                     "assert": {"sum(credits)": {"$gte": 18}},
+                },
+            }
+
+        elif is_ba_music:
+            outside_rule = {
+                "message": f"21 total credits must be completed outside of the SIS 'subject' codes of the major: 'MUSIC', 'MUSPF', and 'MUSEN'.",
+                "result": {
+                    "from": "courses",
+                    "where": {
+                        "$and": [
+                            {"subject": {"$neq": "MUSIC"}},
+                            {"subject": {"$neq": "MUSPF"}},
+                            {"subject": {"$neq": "MUSEN"}},
+                            {"subject": {"$neq": "REG"}},
+                        ],
+                    },
+                    "allow_claimed": True,
+                    "claim": False,
+                    "assert": {"sum(credits)": {"$gte": 21}},
                 },
             }
 
