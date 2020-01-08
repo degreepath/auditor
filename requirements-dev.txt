@@ -1,5 +1,5 @@
 flake8==3.7.9
-mypy==0.740
+mypy==0.761
 pyinstrument==3.0.3
 pytest-benchmark==3.2.2
 pytest-cov==2.8.1
