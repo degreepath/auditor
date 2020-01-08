@@ -65,6 +65,7 @@ def batch() -> Iterator[Tuple[Dict, str]]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--run', type=int, nargs='?')
+    parser.add_argument('--code', type=str, nargs='?')
     args = parser.parse_args()
 
     assert SINGLE_URL
@@ -86,6 +87,10 @@ def main() -> None:
         for student, data in batch():
             for stnum, catalog, code in expand_student(student=student):
                 if (stnum, code) in DISABLED:
+                    continue
+
+                # allow filtering batches of audits
+                if args.code is not None and args.code != code:
                     continue
 
                 count += 1
