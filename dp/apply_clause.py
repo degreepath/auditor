@@ -123,6 +123,19 @@ def count_math_perspectives(data: Sequence[CourseInstance]) -> AppliedClauseResu
     return AppliedClauseResult(value=len(perspectives), data=tuple(sorted(perspectives)), courses=tuple(courses))
 
 
+def count_religion_traditions(data: Sequence[CourseInstance]) -> AppliedClauseResult:
+    traditions: Set[str] = set()
+    courses = set()
+
+    for c in data:
+        for bucket in c.attributes:
+            if bucket.startswith('rel_tradition_'):
+                traditions.add(bucket)
+                courses.add(c)
+
+    return AppliedClauseResult(value=len(traditions), data=tuple(sorted(traditions)), courses=tuple(courses))
+
+
 def count_years(data: Sequence[CourseInstance]) -> AppliedClauseResult:
     items: Set[str] = set()
     courses = set()
@@ -213,6 +226,7 @@ course_actions: Mapping[str, Callable[[Sequence[CourseInstance]], AppliedClauseR
     'count(terms_from_most_common_course)': count_terms_from_most_common_course,
     'count(terms_from_most_common_course_by_name)': count_terms_from_most_common_course_by_name,
     'count(math_perspectives)': count_math_perspectives,
+    'count(religion_traditions)': count_religion_traditions,
     'count(subjects)': count_subjects,
     'count(terms)': count_terms,
     'count(years)': count_years,
