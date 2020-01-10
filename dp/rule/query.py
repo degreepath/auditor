@@ -128,7 +128,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         inserted_clbids: Tuple[str, ...] = tuple()
         force_inserted_clbids: Tuple[str, ...] = tuple()
-        if self.source is QuerySource.Courses:
+        if self.source in (QuerySource.Courses, QuerySource.Claimed):
             for insert in ctx.get_insert_exceptions(self.path):
                 inserted_clbids = (*inserted_clbids, insert.clbid)
                 if insert.forced:
@@ -151,7 +151,7 @@ class QueryRule(Rule, BaseQueryRule):
             yield QuerySolution.from_rule(rule=self, output=tuple(), inserted=inserted_clbids, force_inserted=force_inserted_clbids)
             return
 
-        if self.source in (QuerySource.Courses, QuerySource.Claimed):
+        elif self.source is QuerySource.Courses:
             did_iter = False
             for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
                 if self.attempt_claims is False:
@@ -167,6 +167,7 @@ class QueryRule(Rule, BaseQueryRule):
                 for combo in iterate_item_set(item_set, rule=self):
                     did_iter = True
                     yield QuerySolution.from_rule(output=combo, rule=self, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+
         else:
             for combo in iterate_item_set(data, rule=self):
                 did_iter = True
