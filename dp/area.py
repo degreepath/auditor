@@ -395,7 +395,7 @@ def prepare_common_rules(
                                 "$or": [
                                     {"grade": {"$gte": "C"}},
                                     {"is_in_progress": {"$eq": True}},
-                                ]
+                                ],
                             },
                             {"credits": {"$gt": 0}},
                         ],
