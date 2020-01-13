@@ -18,6 +18,7 @@ class Student:
     curriculum: int = 0
     catalog: int = 0
     matriculation: int = 0
+    current_area_code: str = '000'
 
     courses: Tuple[CourseInstance, ...] = tuple()
     courses_with_failed: Tuple[CourseInstance, ...] = tuple()
@@ -32,7 +33,7 @@ class Student:
     music_proficiencies: MusicProficiencies = MusicProficiencies()
 
     @staticmethod
-    def load(data: Dict, *, now: datetime.datetime = datetime.datetime.now()) -> 'Student':
+    def load(data: Dict, *, code: str = '000', now: datetime.datetime = datetime.datetime.now()) -> 'Student':
         area_pointers = [AreaPointer.from_dict(a) for a in data.get('areas', [])]
 
         terms = [TermInfo.from_dict(t) for t in data.get('terms', [])]
@@ -66,6 +67,7 @@ class Student:
             stnum=data.get('stnum', '000000'),
             curriculum=int(data.get('curriculum', 0)),
             catalog=int(data.get('catalog', 0)),
+            current_area_code=code,
             matriculation=matriculation,
             areas=tuple(area_pointers),
             enrollments=enrollments,
@@ -82,6 +84,7 @@ class Student:
         return Constants(
             matriculation_year=self.matriculation,
             primary_performing_medium=self.music_mediums.ppm,
+            current_area_code=self.current_area_code,
         )
 
 

@@ -13,7 +13,8 @@ from .audit import audit, Message, Arguments
 
 
 def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]:
-    loaded = Student.load(student)
+    area_code = area_spec['code']
+    loaded = Student.load(student, code=area_code)
 
     if args.transcript_only:
         writer = csv.writer(sys.stdout)
@@ -35,8 +36,6 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
 
         writer.writerow(['---', 'gpa:', str(grade_point_average(loaded.courses_with_failed))])
         return
-
-    area_code = area_spec['code']
 
     exceptions = [
         load_exception(e)

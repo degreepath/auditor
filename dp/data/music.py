@@ -66,15 +66,14 @@ class MusicPerformanceStatus(enum.Enum):
 
 
 muspf_status_lookup = {
-    'e': MusicPerformanceStatus.Entrance,
-    'c': MusicPerformanceStatus.Continuance,
+    'E': MusicPerformanceStatus.Entrance,
+    'C': MusicPerformanceStatus.Continuance,
     '': None,
 }
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, eq=False, order=False, hash=True)
 class MusicPerformance(MusicSlip):
-    # TODO: make this be non-optional and look up the proper field to pull this data from
     status: Optional[MusicPerformanceStatus]
 
     @staticmethod
