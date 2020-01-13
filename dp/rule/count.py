@@ -448,7 +448,9 @@ class CountRule(Rule, BaseCountRule):
 
         independent_rule__results: Dict[Rule, Optional[Result]] = {}
         for child in independent_children:
+            logger.debug('claims before solving %s', list(ctx.claims.keys()))
             best_result = find_best_solution(rule=child, ctx=ctx, merge_claims=True)
+            logger.debug('claims after solving %s', list(ctx.claims.keys()))
             logger.debug("found solution for %s: %s", child.path, best_result)
             independent_rule__results[child] = best_result
 

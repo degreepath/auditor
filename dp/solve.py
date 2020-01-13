@@ -1,12 +1,17 @@
 from typing import Optional, Dict, List, TYPE_CHECKING
+import logging
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import Claim  # noqa: F401
     from .base import Result, Rule  # noqa: F401
     from .context import RequirementContext
 
+logger = logging.getLogger(__name__)
+
 
 def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims: bool = False) -> Optional['Result']:
+    logger.debug('solving rule at %s', rule.path)
+
     result: Optional['Result'] = None
 
     claims: Dict[str, List['Claim']] = dict()

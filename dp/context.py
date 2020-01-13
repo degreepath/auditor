@@ -195,8 +195,8 @@ class RequirementContext:
         # build a claim so it can be returned later
         claim = Claim(course=course, claimant_path=path, claimant_requirements=path_reqs_only)
 
-        # If the claimant is a CourseRule specified with the `.allow_claimed`
-        # option, the claim succeeds (and is not recorded).
+        # If the `.allow_claimed` option is set, the claim succeeds (and is
+        # not recorded).
         if allow_claimed:
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
             return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
