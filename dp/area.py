@@ -497,9 +497,7 @@ def prepare_common_rules(
                     "from": "courses",
                     "where": {
                         "$and": [
-                            {"subject": {"$neq": "MUSIC"}},
-                            {"subject": {"$neq": "MUSPF"}},
-                            {"subject": {"$neq": "MUSEN"}},
+                            {"subject": {"$nin": ["MUSIC", "MUSPF", "MUSEN"]}},
                             {"subject": {"$neq": "REG"}},
                         ],
                     },
