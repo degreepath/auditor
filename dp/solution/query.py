@@ -151,7 +151,9 @@ class QuerySolution(Solution, BaseQueryRule):
 
             assert claim.failed is False
 
-            successful_claims.append(claim)
+            if self.record_claims:
+                successful_claims.append(claim)
+
             claimed_items.append(course)
 
         return AuditResult(
