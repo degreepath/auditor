@@ -182,7 +182,12 @@ class AreaOfStudy(Base):
                 # `.audit()` calls in sequence directly from the generator;
                 # generating a full list of all solutions and then iterating
                 # over that will accidentally share state.
-                yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx.with_empty_claims())
+
+                yield AreaSolution.from_area(solution=sol, area=self, ctx=ctx)
+
+                # We need to clear the list of claims at the end of the loop,
+                # or else we accidentally clear the independently-solved claims
+                ctx = ctx.with_empty_claims()
 
         logger.debug("all solutions generated")
 
