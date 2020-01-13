@@ -98,8 +98,8 @@ def fetch__print_summary(args: argparse.Namespace, curs: Any) -> None:
     curs.execute("""
         SELECT run
              , min(ts AT TIME ZONE 'America/Chicago') AS first
-             , max(ts AT TIME ZONE 'America/Chicago') AS last
-             , extract(epoch from max(ts AT TIME ZONE 'America/Chicago') - min(ts AT TIME ZONE 'America/Chicago')) AS duration
+             , max((ts + duration) AT TIME ZONE 'America/Chicago') AS last
+             , extract(EPOCH FROM max((ts + duration)) - min(ts)) AS duration
              , count(*) AS total
              , sum(ok::integer) AS ok
              , sum((NOT ok)::integer) AS "not-ok"
