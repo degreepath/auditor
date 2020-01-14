@@ -1,8 +1,9 @@
 # mypy: warn_unreachable = False
 
+from typing import Dict, cast
 import json
 import logging
-from typing import Dict, cast
+import datetime
 
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
@@ -60,7 +61,38 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                 logger.info(f"{msg.iters:,} at {avg_iter_time} per audit")
 
             elif isinstance(msg, ResultMsg):
-                record(curs=curs, result_id=result_id, message=msg)
+                result = msg.result.to_dict()
+
+                curs.execute("""
+                    UPDATE result
+                    SET iterations = %(total_count)s
+                      , duration = interval %(elapsed)s
+                      , per_iteration = interval %(avg_iter_time)s
+                      , rank = %(rank)s
+                      , max_rank = %(max_rank)s
+                      , result = %(result)s::jsonb
+                      , ok = %(ok)s
+                      , ts = %(now)s
+                      , gpa = %(gpa)s
+                      , in_progress = false
+                      , claimed_courses = %(claimed_courses)s::jsonb
+                    WHERE id = %(result_id)s
+                """, {
+                    "result_id": result_id,
+                    "total_count": msg.iters,
+                    "elapsed": f"{msg.elapsed_ms}ms",
+                    "avg_iter_time": f"{msg.avg_iter_ms}ms",
+                    "result": json.dumps(result),
+                    "claimed_courses": json.dumps(msg.result.keyed_claims()),
+                    "rank": result["rank"],
+                    "max_rank": result["max_rank"],
+                    "gpa": result["gpa"],
+                    "ok": result["ok"],
+                    # we insert a Python now() instead of using the now() psql function
+                    # because sql's now() is the start time of the transaction, and we
+                    # want this to be the end of the transaction
+                    "now": datetime.datetime.now(),
+                })
 
             else:
                 logger.critical('unknown message %s', msg)
@@ -73,34 +105,3 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
             SET in_progress = false, error = %(error)s
             WHERE id = %(result_id)s
         """, {"result_id": result_id, "error": json.dumps({"error": str(ex)})})
-
-
-def record(*, message: ResultMsg, curs: psycopg2.extensions.cursor, result_id: int) -> None:
-    result = message.result.to_dict()
-
-    curs.execute("""
-        UPDATE result
-        SET iterations = %(total_count)s
-          , duration = interval %(elapsed)s
-          , per_iteration = interval %(avg_iter_time)s
-          , rank = %(rank)s
-          , max_rank = %(max_rank)s
-          , result = %(result)s::jsonb
-          , ok = %(ok)s
-          , ts = now()
-          , gpa = %(gpa)s
-          , in_progress = false
-          , claimed_courses = %(claimed_courses)s::jsonb
-        WHERE id = %(result_id)s
-    """, {
-        "result_id": result_id,
-        "total_count": message.iters,
-        "elapsed": f"{message.elapsed_ms}ms",
-        "avg_iter_time": f"{message.avg_iter_ms}ms",
-        "result": json.dumps(result),
-        "claimed_courses": json.dumps(message.result.keyed_claims()),
-        "rank": result["rank"],
-        "max_rank": result["max_rank"],
-        "gpa": result["gpa"],
-        "ok": result["ok"],
-    })
