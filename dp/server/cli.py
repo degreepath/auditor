@@ -27,7 +27,6 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file", required=True)
     parser.add_argument("--student", dest="student_file", required=True)
-    parser.add_argument("--db", dest="db_file")
     parser.add_argument("--run", dest="run", type=int, default=-1, required=True)
     args = parser.parse_args()
 
