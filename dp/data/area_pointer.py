@@ -21,6 +21,7 @@ class AreaPointer(Clausable):
     degree: str
     dept: Optional[str]
     gpa: Optional[decimal.Decimal]
+    terms_since_declaration: Optional[int]
 
     @staticmethod
     def with_code(code: str) -> 'AreaPointer':
@@ -58,6 +59,7 @@ class AreaPointer(Clausable):
             degree=data['degree'],
             gpa=decimal.Decimal(data['gpa']) if 'gpa' in data else None,
             dept=data.get('dept', None),
+            terms_since_declaration=data.get('terms_since_declaration', None),
         )
 
     def apply_single_clause(self, clause: 'SingleClause') -> bool:  # noqa: C901

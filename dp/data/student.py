@@ -1,4 +1,4 @@
-from typing import Tuple, FrozenSet, Dict, List, Any, Iterator, Optional
+from typing import Tuple, Dict, List, Any, Iterator, Optional
 import datetime
 
 import attr
@@ -9,7 +9,6 @@ from .course import load_course, CourseInstance
 from .course_enums import GradeOption, GradeCode, TranscriptCode
 from .area_pointer import AreaPointer
 from .music import MusicAttendance, MusicPerformance, MusicProficiencies, MusicMediums
-from .terminfo import TermInfo, find_current_or_next_term, TermType
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -24,9 +23,6 @@ class Student:
     courses_with_failed: Tuple[CourseInstance, ...] = tuple()
     areas: Tuple[AreaPointer, ...] = tuple()
 
-    enrollments: FrozenSet[str] = frozenset()
-    semesters: Tuple[TermInfo, ...] = tuple()
-
     music_performances: Tuple[MusicPerformance, ...] = tuple()
     music_recital_slips: Tuple[MusicAttendance, ...] = tuple()
     music_mediums: MusicMediums = MusicMediums()
@@ -36,11 +32,7 @@ class Student:
     def load(data: Dict, *, code: str = '000', now: datetime.datetime = datetime.datetime.now()) -> 'Student':
         area_pointers = [AreaPointer.from_dict(a) for a in data.get('areas', [])]
 
-        terms = [TermInfo.from_dict(t) for t in data.get('terms', [])]
-        current_term = find_current_or_next_term(terms, ts=now)
-        semesters = [t for t in terms if t.type is TermType.Semester]
-
-        enrollments = frozenset(data.get('enrollments', []))
+        current_term = data.get('current_term', None)
 
         courses = [c for c in load_transcript(data.get('courses', []), current_term=current_term)]
         courses = sorted(courses, key=lambda c: c.sort_order())
@@ -57,8 +49,8 @@ class Student:
         music_proficiencies = MusicProficiencies.from_dict(data.get('proficiencies', {}))
         music_mediums = MusicMediums.from_dict(data.get('mediums', {}))
 
-        matriculation = data.get('matriculation', '0')
-        if matriculation == '':
+        matriculation = data.get('matriculation', None)
+        if not matriculation:
             matriculation = 0
         else:
             matriculation = int(data.get('matriculation', '0'))
@@ -70,14 +62,12 @@ class Student:
             current_area_code=code,
             matriculation=matriculation,
             areas=tuple(area_pointers),
-            enrollments=enrollments,
             courses=tuple(courses),
             courses_with_failed=tuple(courses_with_failed),
             music_performances=tuple(music_performances),
             music_recital_slips=tuple(music_recital_slips),
             music_proficiencies=music_proficiencies,
             music_mediums=music_mediums,
-            semesters=tuple(semesters),
         )
 
     def constants(self) -> Constants:
@@ -88,7 +78,7 @@ class Student:
         )
 
 
-def load_transcript(courses: List[Dict[str, Any]], *, include_failed: bool = False, current_term: Optional[TermInfo] = None) -> Iterator[CourseInstance]:
+def load_transcript(courses: List[Dict[str, Any]], *, include_failed: bool = False, current_term: Optional[str] = None) -> Iterator[CourseInstance]:
     skip_grades = {
         GradeCode._N,  # NoPass
         GradeCode._U,  # Unsuccessful
