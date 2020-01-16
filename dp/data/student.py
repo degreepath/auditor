@@ -71,10 +71,19 @@ class Student:
         )
 
     def constants(self) -> Constants:
+        try:
+            current_area = next(a for a in self.areas if a.code == self.current_area_code)
+            terms_since_declaring_major = current_area.terms_since_declaration
+        except StopIteration:
+            terms_since_declaring_major = 0
+
+        terms_since_declaring_major = terms_since_declaring_major or 0
+
         return Constants(
             matriculation_year=self.matriculation,
             primary_performing_medium=self.music_mediums.ppm,
             current_area_code=self.current_area_code,
+            terms_since_declaring_major=terms_since_declaring_major,
         )
 
 

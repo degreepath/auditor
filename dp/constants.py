@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class KnownConstants(Enum):
     MatriculationYear = "$matriculation-year"
-    TermsOnCampusSinceMajorDeclaration = "$terms-on-campus-since-major-declaration"
+    TermsSinceDeclaringMajor = "$terms-since-declaring-major"
     PrimaryPerformingMedium = "$primary-performing-medium"
     CurrentAreaCode = "$current-area-code"
     CurrentAreaCodeMusicExam = "$current-area-code-music-exam"
@@ -20,6 +20,7 @@ class KnownConstants(Enum):
 @attr.s(slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Constants:
     matriculation_year: int = 0
+    terms_since_declaring_major: int = 0
     primary_performing_medium: str = ''
     current_area_code: str = ''
 
@@ -34,14 +35,19 @@ class Constants:
 
         if key is KnownConstants.MatriculationYear:
             return self.matriculation_year
-        elif key is KnownConstants.TermsOnCampusSinceMajorDeclaration:
-            return self.matriculation_year
+
+        elif key is KnownConstants.TermsSinceDeclaringMajor:
+            return self.terms_since_declaring_major
+
         elif key is KnownConstants.PrimaryPerformingMedium:
             return self.primary_performing_medium
+
         elif key is KnownConstants.CurrentAreaCode:
             return self.current_area_code
+
         elif key is KnownConstants.CurrentAreaCodeMusicExam:
             return f"Exam: {self.current_area_code}"
+
         else:
             logger.critical(f"TODO: support constant value `{v}`")
             return 0
