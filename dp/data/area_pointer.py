@@ -33,6 +33,7 @@ class AreaPointer(Clausable):
             degree='',
             gpa=None,
             dept=None,
+            terms_since_declaration=None,
         )
 
     def to_dict(self) -> Dict[str, Any]:

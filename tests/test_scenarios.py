@@ -17,6 +17,7 @@ def test_audit__double_history_and_studio():
                 degree='B.A.',
                 dept='ART',
                 gpa=None,
+                terms_since_declaration=None,
             ),
             AreaPointer(
                 code='135',
@@ -26,6 +27,7 @@ def test_audit__double_history_and_studio():
                 degree='B.A.',
                 dept='ART',
                 gpa=None,
+                terms_since_declaration=None,
             ),
         ],
         'courses': [
@@ -63,6 +65,7 @@ def test_audit__single_studio_art():
                 degree='B.A.',
                 dept='ART',
                 gpa=None,
+                terms_since_declaration=None,
             ),
         ],
         'courses': [
@@ -100,6 +103,7 @@ def test_audit__single_art_history():
                 degree='B.A.',
                 dept='ART',
                 gpa=None,
+                terms_since_declaration=None,
             ),
         ],
         'courses': [
@@ -137,6 +141,7 @@ def test_audit__double_art_history_and_other():
                 degree='B.A.',
                 dept='ART',
                 gpa=None,
+                terms_since_declaration=None,
             ),
             AreaPointer(
                 code='001',
@@ -146,6 +151,7 @@ def test_audit__double_art_history_and_other():
                 degree='B.A.',
                 dept='DEPT',
                 gpa=None,
+                terms_since_declaration=None,
             ),
         ],
         'courses': [
@@ -183,6 +189,7 @@ def test_audit__triple_arts_and_other():
                 degree='B.A.',
                 dept='ART',
                 gpa=None,
+                terms_since_declaration=None,
             ),
             AreaPointer(
                 code='140',
@@ -192,6 +199,7 @@ def test_audit__triple_arts_and_other():
                 degree='B.A.',
                 dept='ART',
                 gpa=None,
+                terms_since_declaration=None,
             ),
             AreaPointer(
                 code='001',
@@ -201,6 +209,7 @@ def test_audit__triple_arts_and_other():
                 degree='B.A.',
                 dept='DEPT',
                 gpa=None,
+                terms_since_declaration=None,
             ),
         ],
         'courses': [
