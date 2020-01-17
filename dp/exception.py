@@ -3,7 +3,7 @@ from typing import Tuple, Dict, Any
 import logging
 import enum
 from decimal import Decimal
-from .base import ResultStatus
+from .status import ResultStatus
 
 logger = logging.getLogger(__name__)
 
