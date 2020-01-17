@@ -271,7 +271,7 @@ def load_course(data: Dict[str, Any], *, current_term: Optional[str] = None) -> 
     grade_option = data['grade_option']
     grade_points = data['grade_points']
     institution = data['institution_short']
-    level = int(data['level'])
+    level = data['level']
     name = data['name']
     number = data['number']
     section = data['section']
@@ -285,6 +285,7 @@ def load_course(data: Dict[str, Any], *, current_term: Optional[str] = None) -> 
     term = int(term)
     credits = Decimal(credits)
     section = section or None
+    level = int(level)
 
     grade_code = GradeCode(grade_code)
     grade_points = Decimal(grade_points)
