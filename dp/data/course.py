@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, Any, Iterable, Callable, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, List, Any, Iterable, Callable, cast, TYPE_CHECKING
 import attr
 from decimal import Decimal, ROUND_DOWN
 import logging
@@ -6,6 +6,7 @@ import logging
 from .clausable import Clausable
 from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
 from ..lib import str_to_grade_points
+from ..exception import CourseOverrideException, ExceptionAction, CourseCreditOverride, CourseSubjectOverride
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause
@@ -252,7 +253,12 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
 }
 
 
-def load_course(data: Dict[str, Any], *, current_term: Optional[str] = None) -> CourseInstance:
+def load_course(
+    data: Dict[str, Any],
+    *,
+    current_term: Optional[str] = None,
+    overrides: List[CourseOverrideException],
+) -> CourseInstance:
     if isinstance(data, CourseInstance):
         return data  # type: ignore
 
@@ -281,7 +287,16 @@ def load_course(data: Dict[str, Any], *, current_term: Optional[str] = None) -> 
     transcript_code = data['transcript_code']
     year = data['year']
 
-    clbid = clbid
+    applicable_overrides = {o.type: o for o in overrides if o.clbid == clbid}
+    subject_override = applicable_overrides.get(ExceptionAction.CourseSubject, None)
+    credits_override = applicable_overrides.get(ExceptionAction.CourseCredits, None)
+
+    if credits_override:
+        credits = cast(CourseCreditOverride, credits_override).credits
+
+    if subject_override:
+        subject = cast(CourseSubjectOverride, subject_override).subject
+
     term = int(term)
     credits = Decimal(credits)
     section = section or None
@@ -393,4 +408,4 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "grade_code": grade_code,
         "grade_points": grade_points,
         "grade_points_gpa": grade_points_gpa,
-    })
+    }, overrides=[])

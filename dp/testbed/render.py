@@ -87,7 +87,7 @@ def render(args: argparse.Namespace) -> None:
 
 
 def render_result(student_data: Dict, result: Dict) -> str:
-    courses = [load_course(row) for row in student_data["courses"]]
+    courses = [load_course(row, overrides=[]) for row in student_data["courses"]]
     transcript = {c.clbid: c for c in courses}
 
     return "\n".join(print_result(result, transcript=transcript, show_paths=False))

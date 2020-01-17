@@ -14,6 +14,8 @@ class ExceptionAction(enum.Enum):
     ForceInsert = "force-insert"
     Override = "override"
     Value = "value"
+    CourseCredits = "course-credits"
+    CourseSubject = "course-subject"
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -23,6 +25,14 @@ class RuleException:
 
     def to_dict(self) -> Dict[str, Any]:
         return {"path": list(self.path), "type": self.type.value}
+
+
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+class CourseOverrideException(RuleException):
+    clbid: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {**super().to_dict(), "clbid": self.clbid}
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -50,6 +60,22 @@ class ValueException(RuleException):
         return {**super().to_dict(), "value": str(self.value)}
 
 
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+class CourseCreditOverride(CourseOverrideException):
+    credits: Decimal
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {**super().to_dict(), "credits": str(self.credits)}
+
+
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+class CourseSubjectOverride(CourseOverrideException):
+    subject: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {**super().to_dict(), "subject": self.subject}
+
+
 def load_exception(data: Dict[str, Any]) -> RuleException:
     ex_type = ExceptionAction(data['type'])
     ex_path = tuple(data['path'])
@@ -62,5 +88,9 @@ def load_exception(data: Dict[str, Any]) -> RuleException:
         return OverrideException(status=ResultStatus(data['status']), path=ex_path, type=ex_type)
     elif ex_type is ExceptionAction.Value:
         return ValueException(value=Decimal(data['value']), path=ex_path, type=ex_type)
+    elif ex_type is ExceptionAction.CourseCredits:
+        return CourseCreditOverride(clbid=data['clbid'], credits=Decimal(data['credits']), path=ex_path, type=ex_type)
+    elif ex_type is ExceptionAction.CourseSubject:
+        return CourseSubjectOverride(clbid=data['clbid'], subject=data['subject'], path=ex_path, type=ex_type)
 
     raise TypeError(f'expected a known "type"; got {data["type"]}')

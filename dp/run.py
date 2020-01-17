@@ -6,7 +6,7 @@ import csv
 import sys
 
 from .area import AreaOfStudy
-from .exception import load_exception
+from .exception import load_exception, CourseOverrideException
 from .lib import grade_point_average_items, grade_point_average
 from .data import Student
 from .audit import audit, Message, Arguments
@@ -14,7 +14,15 @@ from .audit import audit, Message, Arguments
 
 def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]:
     area_code = area_spec['code']
-    loaded = Student.load(student, code=area_code)
+
+    exceptions = [
+        load_exception(e)
+        for e in student.get("exceptions", [])
+        if e['area_code'] == area_code
+    ]
+    course_overrides = [e for e in exceptions if isinstance(e, CourseOverrideException)]
+
+    loaded = Student.load(student, code=area_code, overrides=course_overrides)
 
     if args.transcript_only:
         writer = csv.writer(sys.stdout)

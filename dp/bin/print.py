@@ -24,7 +24,7 @@ def main() -> None:
 
     transcript = {
         c.clbid: c
-        for c in (load_course(row) for row in student["courses"])
+        for c in (load_course(row, overrides=[]) for row in student["courses"])
     }
 
     summary = "\n".join(print_result(data, transcript=transcript))

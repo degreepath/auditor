@@ -1,9 +1,9 @@
-from typing import Tuple, Dict, List, Any, Iterator, Optional
-import datetime
+from typing import Tuple, Dict, List, Any, Iterator, Optional, Sequence
 
 import attr
 
 from ..constants import Constants
+from ..exception import CourseOverrideException
 
 from .course import load_course, CourseInstance
 from .course_enums import GradeOption, GradeCode, TranscriptCode
@@ -29,15 +29,22 @@ class Student:
     music_proficiencies: MusicProficiencies = MusicProficiencies()
 
     @staticmethod
-    def load(data: Dict, *, code: str = '000', now: datetime.datetime = datetime.datetime.now()) -> 'Student':
+    def load(
+        data: Dict,
+        *,
+        code: str = '000',
+        overrides: Sequence[CourseOverrideException] = tuple(),
+    ) -> 'Student':
+        overrides = list(overrides)
+
         area_pointers = [AreaPointer.from_dict(a) for a in data.get('areas', [])]
 
         current_term = data.get('current_term', None)
 
-        courses = [c for c in load_transcript(data.get('courses', []), current_term=current_term)]
+        courses = [c for c in load_transcript(data.get('courses', []), current_term=current_term, overrides=overrides)]
         courses = sorted(courses, key=lambda c: c.sort_order())
 
-        courses_with_failed = [c for c in load_transcript(data.get('courses', []), include_failed=True)]
+        courses_with_failed = [c for c in load_transcript(data.get('courses', []), include_failed=True, current_term=current_term, overrides=overrides)]
         courses_with_failed = sorted(courses_with_failed, key=lambda c: c.sort_order())
 
         music_performances = [MusicPerformance.from_dict(d) for d in data.get('performances', [])]
@@ -87,7 +94,13 @@ class Student:
         )
 
 
-def load_transcript(courses: List[Dict[str, Any]], *, include_failed: bool = False, current_term: Optional[str] = None) -> Iterator[CourseInstance]:
+def load_transcript(
+    courses: List[Dict[str, Any]],
+    *,
+    include_failed: bool = False,
+    current_term: Optional[str] = None,
+    overrides: List[CourseOverrideException],
+) -> Iterator[CourseInstance]:
     skip_grades = {
         GradeCode._N,  # NoPass
         GradeCode._U,  # Unsuccessful
@@ -99,7 +112,7 @@ def load_transcript(courses: List[Dict[str, Any]], *, include_failed: bool = Fal
     }
 
     for row in courses:
-        c = load_course(row, current_term=current_term)
+        c = load_course(row, current_term=current_term, overrides=overrides)
 
         # excluded Audited courses
         if c.grade_option is GradeOption.Audit:
