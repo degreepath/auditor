@@ -84,8 +84,20 @@ def main() -> None:
     count = 0
 
     with conn, conn.cursor() as curs:
+        curs.execute('''
+            SELECT student_id, area_code
+            FROM queue
+        ''')
+
+        queued_items = set()
+        for stnum, code in curs:
+            queued_items.add((stnum, code))
+
         for student, data in batch():
             for stnum, catalog, code in expand_student(student=student):
+                if (stnum, code) in queued_items:
+                    continue
+
                 if (stnum, code) in DISABLED:
                     continue
 
