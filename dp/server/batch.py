@@ -96,9 +96,11 @@ def main() -> None:
         for student, data in batch():
             for stnum, catalog, code in expand_student(student=student):
                 if (stnum, code) in queued_items:
+                    print('skipping', stnum, code, 'due to already being queued')
                     continue
 
                 if (stnum, code) in DISABLED:
+                    print('skipping', stnum, code, 'as it is blocked')
                     continue
 
                 # allow filtering batches of audits
