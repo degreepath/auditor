@@ -486,6 +486,7 @@ def prepare_common_rules(
                         "$and": [
                             {"subject": {"$neq": "ART"}},
                             {"subject": {"$neq": "REG"}},
+                            {"subject": {"$neq": "OFFC"}},
                             {"credits": {"$eq": 1}},
                         ],
                     },
@@ -504,6 +505,7 @@ def prepare_common_rules(
                         "$and": [
                             {"subject": {"$nin": ["MUSIC", "MUSPF", "MUSEN"]}},
                             {"subject": {"$neq": "REG"}},
+                            {"subject": {"$neq": "OFFC"}},
                         ],
                     },
                     "allow_claimed": True,
@@ -521,6 +523,7 @@ def prepare_common_rules(
                         "$and": [
                             {"subject": {"$neq": dept_code}},
                             {"subject": {"$neq": "REG"}},
+                            {"subject": {"$neq": "OFFC"}},
                         ],
                     },
                     "allow_claimed": True,
