@@ -22,7 +22,8 @@ validate:
 	python3 -m dp.bin.validate ../degreepath-areas/*/**.yaml --break
 
 profile:
-	echo 'use pyinstrument or py-spy'
+	echo 'use pyinstrument'
+	echo 'or use py-spy'
 
 nuitka:
 	python3 -m nuitka --standalone --follow-imports --plugin-enable=pylint-warnings --python-flag=no_site --warn-unusual-code --warn-implicit-exceptions dp/__main__.py
