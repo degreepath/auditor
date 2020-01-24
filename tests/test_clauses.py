@@ -1,4 +1,6 @@
-from dp.clause import SingleClause, Operator, apply_operator, compute_single_clause_diff
+from dp.clause import SingleClause
+from dp.operator import Operator, apply_operator
+from dp.load_clause import compute_single_clause_diff
 from dp.load_clause import load_clause
 from dp.context import RequirementContext
 from dp.data import course_from_str, Clausable, AreaPointer, MusicProficiencies
