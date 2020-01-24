@@ -13,6 +13,12 @@ from .status import ResultStatus
 if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext  # noqa: F401
 
+KEY_LOOKUP = {
+    "subjects": "subject",
+    "attribute": "attributes",
+    "gereq": "gereqs",
+}
+
 
 def load_clause(
     data: Dict[str, Any],
@@ -97,7 +103,10 @@ def load_single_clause(
     ctx: Optional['RequirementContext'] = None,
     forbid: Sequence[Operator] = tuple(),
 ) -> 'SingleClause':
-    assert isinstance(value, Dict), Exception(f'expected {value} to be a dictionary')
+    assert isinstance(value, Dict), TypeError(f'expected {value!r} to be a dictionary')
+
+    # TODO: replace with attribute whitelist based on input type
+    key = KEY_LOOKUP.get(key, key)
 
     operators = [k for k in value.keys() if k.startswith('$') and k != '$ifs']
     assert len(operators) == 1, f"{value}"
@@ -116,13 +125,6 @@ def load_single_clause(
         expected_value += expected_value_diff
 
     expected_verbatim = expected_value
-
-    key_lookup = {
-        "subjects": "subject",
-        "attribute": "attributes",
-        "gereq": "gereqs",
-    }
-    key = key_lookup.get(key, key)
 
     allowed_types = (bool, str, tuple, int, Decimal)
     assert type(expected_value) in allowed_types, f"expected_value should be {allowed_types}, not {type(expected_value)}"
