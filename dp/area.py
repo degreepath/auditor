@@ -14,7 +14,6 @@ from .load_rule import load_rule
 from .result.count import CountResult
 from .result.requirement import RequirementResult
 from .lib import grade_point_average
-from .solve import find_best_solution
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import ClaimAttempt  # noqa: F401
@@ -263,21 +262,16 @@ class AreaSolution(AreaOfStudy):
         whole_context = fresh_context.with_transcript(fresh_context.transcript_with_excluded())
         claimed_context = fresh_context.with_transcript(claimed)
 
-        c_or_better = find_best_solution(rule=self.common_rules[0], ctx=claimed_context)
-        assert c_or_better is not None, TypeError('no solutions found for c_or_better rule')
-
-        s_u_credits = find_best_solution(rule=self.common_rules[1], ctx=claimed_context)
-        assert s_u_credits is not None, TypeError('no solutions found for s_u_credits rule')
-
-        try:
-            outside_the_major = find_best_solution(rule=self.common_rules[2], ctx=whole_context)
-            assert outside_the_major is not None, TypeError('no solutions found for outside_the_major rule')
-        except IndexError:
-            outside_the_major = None
+        c_or_better = get_first_solution(self.common_rules[0], ctx=claimed_context)
+        s_u_credits = get_first_solution(self.common_rules[1], ctx=claimed_context)
 
         items = [c_or_better, s_u_credits]
-        if outside_the_major is not None:
+
+        try:
+            outside_the_major = get_first_solution(self.common_rules[2], ctx=whole_context)
             items.append(outside_the_major)
+        except IndexError:
+            pass
 
         return RequirementResult(
             name=f"Common {self.degree} Major Requirements",
@@ -368,6 +362,13 @@ class AreaResult(AreaOfStudy, Result):
 
     def was_overridden(self) -> bool:
         return self.result.was_overridden()
+
+
+def get_first_solution(rule: 'Rule', ctx: 'RequirementContext') -> 'Result':
+    solution = next(rule.solutions(ctx=ctx), None)
+    assert solution is not None
+    inner_ctx = ctx.with_empty_claims()
+    return solution.audit(ctx=inner_ctx)
 
 
 def prepare_common_rules(
