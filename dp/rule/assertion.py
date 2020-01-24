@@ -1,13 +1,17 @@
 import attr
-from typing import Dict, Sequence, Iterator, List, Collection, Any, Optional, Union, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, List, Collection, Any, Tuple, Optional, Union, TYPE_CHECKING
 import logging
+from decimal import Decimal
 
-from ..clause import SingleClause
+from ..clause import SingleClause, ResolvedSingleClause, apply_clause
 from ..load_clause import load_clause
 from ..constants import Constants
-from ..operator import Operator
+from ..operator import Operator, apply_operator
 from ..base.bases import Rule, Solution
 from ..base.assertion import BaseAssertionRule
+from ..apply_clause import apply_clause_to_assertion
+from ..status import ResultStatus
+from ..result.assertion import AssertionResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -44,6 +48,10 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         return AssertionRule(assertion=assertion, where=where, path=tuple(path), inserted=tuple(), message=message)
 
+    @staticmethod
+    def with_clause(clause: SingleClause) -> 'AssertionRule':
+        return AssertionRule(assertion=clause, where=None, path=(), inserted=(), message=None)
+
     def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.where:
             self.where.validate(ctx=ctx)
@@ -69,6 +77,94 @@ class AssertionRule(Rule, BaseAssertionRule):
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         raise Exception('this method should not be called')
+
+    def set_expected_value(self, value: Decimal) -> 'AssertionRule':
+        clause = self.assertion.override_expected(value)
+
+        return attr.evolve(self, assertion=clause)
+
+    def override(self) -> AssertionResult:
+        return AssertionResult.from_rule(self, overridden=True)
+
+    def resolve(self, value: Tuple['Clausable', ...], *, overridden: bool = False, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+        calculated_result = apply_clause_to_assertion(self.assertion, value)
+
+        reduced_value = calculated_result.value
+        value_items = calculated_result.data
+        clbids = calculated_result.clbids()
+        ip_clbids = calculated_result.ip_clbids()
+
+        # if we have `treat_in_progress_as_pass` set, we skip the ip_clbids check entirely
+        if ip_clbids and self.assertion.treat_in_progress_as_pass is False:
+            result = ResultStatus.InProgress
+        elif apply_operator(lhs=reduced_value, op=self.assertion.operator, rhs=self.assertion.expected) is True:
+            result = ResultStatus.Pass
+        elif clbids:
+            # we aren't "passing", but we've also got at least something
+            # counting towards this clause, so we'll mark it as in-progress.
+            result = ResultStatus.InProgress
+        else:
+            result = ResultStatus.Pending
+
+        if self.assertion.operator in (Operator.LessThan, Operator.LessThanOrEqualTo)\
+                and result == ResultStatus.InProgress\
+                and apply_operator(lhs=reduced_value, op=self.assertion.operator, rhs=self.assertion.expected) is True:
+            result = ResultStatus.Pass
+
+        assertion = ResolvedSingleClause(
+            key=self.assertion.key,
+            expected=self.assertion.expected,
+            expected_verbatim=self.assertion.expected_verbatim,
+            operator=self.assertion.operator,
+            at_most=self.assertion.at_most,
+            label=self.assertion.label,
+            resolved_with=Decimal(reduced_value),
+            resolved_items=tuple(value_items),
+            resolved_clbids=clbids,
+            in_progress_clbids=ip_clbids,
+            state=result,
+            treat_in_progress_as_pass=self.assertion.treat_in_progress_as_pass,
+        )
+
+        return AssertionResult.from_rule(self, assertion=assertion, inserted_clbids=inserted, overridden=False)
+
+    def input_size_range(self, *, maximum: int) -> Iterator[int]:
+        assertion = self.assertion
+
+        if type(assertion.expected) is not int:
+            raise TypeError('cannot find a range of values for a non-integer clause: %s', type(assertion.expected))
+
+        if assertion.operator == Operator.EqualTo or (assertion.operator == Operator.GreaterThanOrEqualTo and assertion.at_most is True):
+            if maximum < assertion.expected:
+                yield maximum
+                return
+            yield from range(assertion.expected, assertion.expected + 1)
+
+        elif assertion.operator == Operator.NotEqualTo:
+            # from 0-maximum, skipping "expected"
+            yield from range(0, assertion.expected)
+            yield from range(assertion.expected + 1, max(assertion.expected + 1, maximum + 1))
+
+        elif assertion.operator == Operator.GreaterThanOrEqualTo:
+            if maximum < assertion.expected:
+                yield maximum
+                return
+            yield from range(assertion.expected, max(assertion.expected + 1, maximum + 1))
+
+        elif assertion.operator == Operator.GreaterThan:
+            if maximum < assertion.expected:
+                yield maximum
+                return
+            yield from range(assertion.expected + 1, max(assertion.expected + 2, maximum + 1))
+
+        elif assertion.operator == Operator.LessThan:
+            yield from range(0, assertion.expected)
+
+        elif assertion.operator == Operator.LessThanOrEqualTo:
+            yield from range(0, assertion.expected + 1)
+
+        else:
+            raise TypeError('unsupported operator for ranges %s', assertion.operator)
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -132,13 +228,13 @@ class ConditionalAssertionRule(Rule):
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'ConditionalAssertionRule':
         return self
 
-    def resolve(self, input: Sequence['Clausable']) -> Optional[AssertionRule]:
+    def resolve_conditional(self, input: Sequence['Clausable']) -> Optional[AssertionRule]:
         if self.condition.where is not None:
-            filtered_input = tuple(item for item in input if self.condition.where.apply(item))
+            filtered_input = tuple(item for item in input if apply_clause(self.condition.where, item))
         else:
             filtered_input = tuple(input)
 
-        result = self.condition.assertion.compare_and_resolve_with(filtered_input)
+        result = self.condition.resolve(filtered_input)
 
         if result.ok():
             return self.when_yes

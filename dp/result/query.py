@@ -2,11 +2,11 @@ import attr
 from typing import Tuple, Sequence, List, Union, TYPE_CHECKING
 
 from .assertion import AssertionResult
-from ..base import Result, BaseQueryRule, Summable, BaseAssertionRule
+from ..base import Result, BaseQueryRule, Summable
 from ..claim import ClaimAttempt
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..rule.assertion import ConditionalAssertionRule  # noqa: F401
+    from ..rule.assertion import AssertionRule, ConditionalAssertionRule  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -48,7 +48,7 @@ class QueryResult(Result, BaseQueryRule):
     def only_failed_claims(self) -> Sequence[ClaimAttempt]:
         return self.failed_claims
 
-    def all_assertions(self) -> Sequence[Union[BaseAssertionRule, 'ConditionalAssertionRule']]:
+    def all_assertions(self) -> Sequence[Union['AssertionRule', 'ConditionalAssertionRule', AssertionResult]]:
         return self.resolved_assertions
 
     def claims(self) -> List[ClaimAttempt]:

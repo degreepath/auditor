@@ -7,7 +7,7 @@ import decimal
 from ..base import Rule, BaseQueryRule
 from ..base.query import QuerySource
 from ..limit import LimitSet
-from ..clause import Clause, SingleClause, OrClause, AndClause
+from ..clause import SingleClause, apply_clause
 from ..load_clause import load_clause
 from ..data.clausable import Clausable
 from ..ncr import ncr
@@ -15,7 +15,8 @@ from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..operator import Operator
 from ..data import CourseInstance
-from .assertion import AssertionRule, ConditionalAssertionRule, BaseAssertionRule
+from .assertion import AssertionRule, ConditionalAssertionRule
+from ..result.assertion import AssertionResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -122,7 +123,7 @@ class QueryRule(Rule, BaseQueryRule):
 
     def get_filtered_data(self, *, ctx: 'RequirementContext') -> Tuple[List[Clausable], Tuple[str, ...], Tuple[str, ...]]:
         if self.where is not None:
-            data = [item for item in self.get_data(ctx=ctx) if self.where.apply(item)]
+            data = [item for item in self.get_data(ctx=ctx) if apply_clause(self.where, item)]
         else:
             data = list(self.get_data(ctx=ctx))
 
@@ -213,10 +214,10 @@ class QueryRule(Rule, BaseQueryRule):
         if ctx.has_exception(self.path):
             return True
 
-        if has_assertion(self.assertions, key=get_lt_clauses):
+        if has_assertion(self.assertions, key=is_lt_clause):
             return True
 
-        if has_assertion(self.assertions, key=get_at_least_0_clauses):
+        if has_assertion(self.assertions, key=is_at_least_0_clause):
             return True
 
         if self.source is QuerySource.Claimed:
@@ -225,13 +226,13 @@ class QueryRule(Rule, BaseQueryRule):
         if self.where is None:
             return len(self.get_data(ctx=ctx)) > 0
 
-        return any(self.where.apply(item) for item in self.get_data(ctx=ctx))
+        return any(apply_clause(self.where, item) for item in self.get_data(ctx=ctx))
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
         matches = list(self.get_data(ctx=ctx))
 
         if self.where is not None:
-            matches = [item for item in matches if self.where.apply(item)]
+            matches = [item for item in matches if apply_clause(self.where, item)]
 
         for insert in ctx.get_insert_exceptions(self.path):
             matches.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
@@ -251,7 +252,7 @@ class QueryRule(Rule, BaseQueryRule):
         return False
 
 
-def has_assertion(assertions: Sequence[Union[AssertionRule, ConditionalAssertionRule]], key: Callable[[SingleClause], Iterator[Clause]]) -> bool:
+def has_assertion(assertions: Sequence[Union[AssertionRule, ConditionalAssertionRule]], key: Callable[[SingleClause], bool]) -> bool:
     if not assertions:
         return False
 
@@ -266,115 +267,96 @@ def has_assertion(assertions: Sequence[Union[AssertionRule, ConditionalAssertion
     return False
 
 
-def check_assertion(assertion: Optional[AssertionRule], key: Callable[[SingleClause], Iterator[Clause]]) -> Optional[bool]:
+def check_assertion(assertion: Optional[AssertionRule], key: Callable[[SingleClause], bool]) -> Optional[bool]:
     if not assertion:
         return None
     if assertion.where is not None:
         return None
-    if has_clause(assertion.assertion, key=key):
+    if key(assertion.assertion):
         return True
     return None
 
 
-def has_clause(clause: Clause, key: Callable[[SingleClause], Iterator[Clause]]) -> bool:
-    if isinstance(clause, SingleClause):
-        try:
-            next(key(clause))
-            return True
-        except StopIteration:
-            return False
-    elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
-        return any(has_clause(c, key) for c in clause.children)
+def is_simple_count_clause(clause: SingleClause) -> bool:
+    return clause.key in ('count(courses)', 'count(terms)')
 
 
-def get_clause_by(clause: Clause, key: Callable[[SingleClause], bool]) -> Iterator[SingleClause]:
-    if isinstance(clause, SingleClause) and key(clause):
-        yield clause
-    elif isinstance(clause, OrClause) or isinstance(clause, AndClause):
-        for c in clause.children:
-            yield from get_clause_by(c, key)
+def is_simple_sum_clause(clause: SingleClause) -> bool:
+    return clause.key in ('sum(credits)',)
 
 
-def get_simple_count_clauses(clause: Clause) -> Iterator[SingleClause]:
-    yield from get_clause_by(clause, lambda c: c.key in ('count(courses)', 'count(terms)'))
+def is_lt_clause(clause: SingleClause) -> bool:
+    return clause.operator in (Operator.LessThan, Operator.LessThanOrEqualTo)
 
 
-def get_simple_sum_clauses(clause: Clause) -> Iterator[SingleClause]:
-    yield from get_clause_by(clause, lambda c: c.key in ('sum(credits)',))
+def is_at_least_0_clause(clause: SingleClause) -> bool:
+    return clause.operator is Operator.GreaterThanOrEqualTo and clause.expected == 0
 
 
-def get_lt_clauses(clause: Clause) -> Iterator[SingleClause]:
-    yield from get_clause_by(clause, lambda c: c.operator in (Operator.LessThan, Operator.LessThanOrEqualTo))
-
-
-def get_at_least_0_clauses(clause: Clause) -> Iterator[SingleClause]:
-    yield from get_clause_by(clause, lambda c: c.operator is Operator.GreaterThanOrEqualTo and c.expected == 0)
-
-
-def get_largest_simple_count_assertion(assertions: Sequence[BaseAssertionRule]) -> Optional[SingleClause]:
+def find_largest_simple_count_assertion(assertions: Sequence[AssertionRule]) -> Optional[AssertionRule]:
     if not assertions:
         return None
 
-    largest_clause = None
+    largest_assertion = None
     largest_count = -1
     for assertion in assertions:
-        clauses = get_simple_count_clauses(assertion.assertion)
-        for clause in clauses:
-            if type(clause.expected) == int and clause.expected > largest_count:
-                largest_clause = clause
-                largest_count = clause.expected
+        if is_simple_count_clause(assertion.assertion):
+            if type(assertion.assertion.expected) == int and assertion.assertion.expected > largest_count:
+                largest_assertion = assertion
+                largest_count = assertion.assertion.expected
 
-    return largest_clause
+    return largest_assertion
 
 
-def get_largest_simple_sum_assertion(assertions: Sequence[BaseAssertionRule]) -> Optional[SingleClause]:
+def find_largest_simple_sum_assertion(assertions: Sequence[AssertionRule]) -> Optional[AssertionRule]:
     if not assertions:
         return None
 
-    largest_clause = None
+    largest_assertion = None
     largest_expected = -1
     for assertion in assertions:
-        clauses = get_simple_sum_clauses(assertion.assertion)
-        for clause in clauses:
-            if type(clause.expected) in (int, float, decimal.Decimal) and clause.expected > largest_expected:
-                largest_clause = clause
-                largest_expected = clause.expected
+        if is_simple_sum_clause(assertion.assertion):
+            if type(assertion.assertion.expected) in (int, decimal.Decimal) and assertion.assertion.expected > largest_expected:
+                largest_assertion = assertion
+                largest_expected = assertion.assertion.expected
 
-    return largest_clause
+    return largest_assertion
 
 
 def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Iterator[Tuple[Clausable, ...]]:
     assertions = []
 
     for a in rule.all_assertions():
-        if isinstance(a, BaseAssertionRule):
+        if isinstance(a, AssertionRule):
             assertions.append(a)
+        elif isinstance(a, AssertionResult):
+            raise TypeError('unexpected AssertionResult; expected AssertionRule')
         else:
             assertions.append(a.when_yes)
             if a.when_no:
                 assertions.append(a.when_no)
 
     if rule.source is QuerySource.Courses:
-        simple_count_assertion = get_largest_simple_count_assertion(assertions)
+        simple_count_assertion = find_largest_simple_count_assertion(assertions)
         if simple_count_assertion is not None:
             logger.debug("%s using simple assertion mode with %s", rule.path, simple_count_assertion)
             for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
                 yield from itertools.combinations(item_set, n)
             return
 
-        simple_sum_assertion = get_largest_simple_sum_assertion(assertions)
+        simple_sum_assertion = find_largest_simple_sum_assertion(assertions)
         if simple_sum_assertion is not None:
             logger.debug("%s using simple-sum assertion mode with %s", rule.path, simple_sum_assertion)
             item_set_courses = cast(Sequence[CourseInstance], item_set)
 
             # We can skip outputs with impunity here, because the calling
             # function will ensure that the fallback set is attempted
-            if sum(c.credits for c in item_set_courses) < simple_sum_assertion.expected:
+            if sum(c.credits for c in item_set_courses) < simple_sum_assertion.assertion.expected:
                 return
 
             for n in range(1, len(item_set_courses) + 1):
                 for combo in itertools.combinations(item_set_courses, n):
-                    if sum(c.credits for c in combo) >= simple_sum_assertion.expected:
+                    if sum(c.credits for c in combo) >= simple_sum_assertion.assertion.expected:
                         yield combo
             return
 
@@ -393,27 +375,29 @@ def estimate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> in
 
     assertions = []
     for a in rule.all_assertions():
-        if isinstance(a, BaseAssertionRule):
+        if isinstance(a, AssertionRule):
             assertions.append(a)
+        elif isinstance(a, AssertionResult):
+            raise TypeError('unexpected AssertionResult; expected AssertionRule')
         else:
             assertions.append(a.when_yes)
             if a.when_no:
                 assertions.append(a.when_no)
 
     if rule.source is QuerySource.Courses:
-        simple_count_assertion = get_largest_simple_count_assertion(assertions)
+        simple_count_assertion = find_largest_simple_count_assertion(assertions)
         if simple_count_assertion is not None:
             for n in simple_count_assertion.input_size_range(maximum=len(item_set)):
                 total += ncr(n=len(item_set), r=n)
             return total
 
-        simple_sum_assertion = get_largest_simple_sum_assertion(assertions)
+        simple_sum_assertion = find_largest_simple_sum_assertion(assertions)
         if simple_sum_assertion is not None:
             item_set_courses = cast(Sequence[CourseInstance], item_set)
 
             # We can skip outputs with impunity here, because the calling
             # function will ensure that the fallback set is attempted
-            if sum(c.credits for c in item_set_courses) < simple_sum_assertion.expected:
+            if sum(c.credits for c in item_set_courses) < simple_sum_assertion.assertion.expected:
                 return total
 
             for n in range(1, len(item_set_courses) + 1):

@@ -11,7 +11,7 @@ from .area import AreaOfStudy
 from .base import Base, BaseRequirementRule, BaseCountRule
 from .base.query import QuerySource
 from .rule.query import QueryRule
-from .clause import ClauseWithResult, AndClause, OrClause, SingleClause
+from .clause import Clause, AndClause, OrClause, SingleClause
 from .operator import Operator
 
 http = urllib3.PoolManager()
@@ -51,7 +51,7 @@ def discover_clause_potential(
     return result
 
 
-def find_all_clauses(rule: Union[Base, ClauseWithResult]) -> Iterator[ClauseWithResult]:
+def find_all_clauses(rule: Union[Base, Clause]) -> Iterator[Clause]:
     if isinstance(rule, (AreaOfStudy, BaseRequirementRule)):
         if rule.result:
             yield from find_all_clauses(rule.result)
@@ -62,11 +62,11 @@ def find_all_clauses(rule: Union[Base, ClauseWithResult]) -> Iterator[ClauseWith
         if rule.source is QuerySource.Courses:
             if rule.where and rule.load_potentials:
                 yield from find_all_clauses(rule.where)
-    elif isinstance(rule, ClauseWithResult):
+    elif isinstance(rule, (AndClause, OrClause, SingleClause)):
         yield from strip_pointless_clauses(rule)
 
 
-def strip_pointless_clauses(clause: ClauseWithResult) -> Iterator[ClauseWithResult]:
+def strip_pointless_clauses(clause: Clause) -> Iterator[Clause]:
     if isinstance(clause, (AndClause, OrClause)):
         children = []
         for c in clause.children:
@@ -81,7 +81,7 @@ def strip_pointless_clauses(clause: ClauseWithResult) -> Iterator[ClauseWithResu
         yield clause
 
 
-def extract_positive_buckets(clause: ClauseWithResult) -> Iterator[str]:
+def extract_positive_buckets(clause: Clause) -> Iterator[str]:
     if isinstance(clause, (AndClause, OrClause)):
         for child in clause.children:
             yield from extract_positive_buckets(child)
@@ -94,7 +94,7 @@ def extract_positive_buckets(clause: ClauseWithResult) -> Iterator[str]:
                 yield from clause.expected
 
 
-def extract_negative_buckets(clause: ClauseWithResult) -> Iterator[str]:
+def extract_negative_buckets(clause: Clause) -> Iterator[str]:
     if isinstance(clause, (AndClause, OrClause)):
         for child in clause.children:
             yield from extract_negative_buckets(child)

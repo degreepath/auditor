@@ -1,7 +1,7 @@
-from typing import List, Iterator, Any, Dict, Sequence
-from .clause import str_clause, get_resolved_items, get_resolved_clbids, get_in_progress_clbids
+from typing import List, Iterator, Any, Dict, Sequence, Set
 from .data import CourseInstance
 from .data.course_enums import CourseType
+from .operator import str_operator
 from .ms import pretty_ms
 import json
 
@@ -412,3 +412,70 @@ def print_conditional_assertion(
         yield from print_result(rule['when_no'], transcript, indent + 4, show_paths, show_ranks, inserted)
     else:
         yield f"{prefix}Otherwise, do nothing"
+
+
+def str_clause(clause: Dict[str, Any]) -> str:
+    if clause["type"] == "single-clause":
+        resolved_with = clause.get('resolved_with', None)
+        if resolved_with is not None:
+            resolved = f" ({repr(resolved_with)})"
+        else:
+            resolved = ""
+
+        if clause['expected'] != clause['expected_verbatim']:
+            postscript = f" (via {repr(clause['expected_verbatim'])})"
+        else:
+            postscript = ""
+
+        label = clause['label']
+        if label:
+            postscript += f' [label: "{label}"]'
+
+        op = str_operator(clause['operator'])
+
+        return f'"{clause["key"]}"{resolved} {op} "{clause["expected"]}"{postscript}'
+    elif clause["type"] == "or-clause":
+        return f'({" or ".join(str_clause(c) for c in clause["children"])})'
+    elif clause["type"] == "and-clause":
+        return f'({" and ".join(str_clause(c) for c in clause["children"])})'
+
+    raise Exception('not a clause')
+
+
+def get_resolved_items(clause: Dict[str, Any]) -> str:
+    if clause["type"] == "single-clause":
+        resolved_with = clause.get('resolved_with', None)
+        if resolved_with is not None:
+            return str(sorted(clause.get('resolved_items', [])))
+        else:
+            return ""
+    elif clause["type"] == "or-clause":
+        items = " or ".join(get_resolved_items(c) for c in clause["children"])
+        return f'({items})'
+    elif clause["type"] == "and-clause":
+        items = " and ".join(get_resolved_items(c) for c in clause["children"])
+        return f'({items})'
+
+    raise Exception('not a clause')
+
+
+def get_resolved_clbids(clause: Dict[str, Any]) -> List[str]:
+    if clause["type"] == "single-clause":
+        return sorted(clause.get('resolved_clbids', []))
+    elif clause["type"] == "or-clause":
+        return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
+    elif clause["type"] == "and-clause":
+        return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
+
+    raise Exception('not a clause')
+
+
+def get_in_progress_clbids(clause: Dict[str, Any]) -> Set[str]:
+    if clause["type"] == "single-clause":
+        return set(clause.get('in_progress_clbids', []))
+    elif clause["type"] == "or-clause":
+        return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
+    elif clause["type"] == "and-clause":
+        return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
+
+    raise Exception('not a clause')

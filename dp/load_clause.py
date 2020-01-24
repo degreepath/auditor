@@ -150,6 +150,7 @@ def load_single_clause(
         at_most=at_most,
         label=value.get('label', None),
         treat_in_progress_as_pass=value.get('treat_in_progress_as_pass', False),
+        state=ResultStatus.Pending,
     )
 
 
