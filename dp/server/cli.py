@@ -7,7 +7,7 @@ import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
-from dp.run import load_areas, load_students
+from dp.run import load_area, load_student
 from .audit import audit
 
 logger = logging.getLogger(__name__)
@@ -30,8 +30,8 @@ def main() -> None:
     parser.add_argument("--run", dest="run", type=int, default=-1, required=True)
     args = parser.parse_args()
 
-    student_data = load_students(args.student_file)[0]
-    area_spec = load_areas(args.area_file)[0]
+    student_data = load_student(args.student_file)
+    area_spec = load_area(args.area_file)
 
     area_catalog = str(pathlib.Path(args.area_file).parent)
     area_code = pathlib.Path(args.area_file).stem

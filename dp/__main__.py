@@ -9,7 +9,7 @@ import os
 import dotenv
 from collections import defaultdict
 
-from dp.run import run, load_students, load_areas
+from dp.run import run, load_student, load_area
 from dp.ms import pretty_ms
 from dp.stringify import summarize
 from dp.stringify_csv import to_csv
@@ -70,8 +70,8 @@ def main() -> int:  # noqa: C901
     top_mem_items: Dict[str, Dict[int, float]] = defaultdict(dict)
     tracemalloc_index = 0
 
-    student = load_students(cli_args.student_file)[0]
-    area_spec = load_areas(cli_args.area_file)[0]
+    student = load_student(cli_args.student_file)
+    area_spec = load_area(cli_args.area_file)
 
     if not cli_args.quiet:
         print(f"auditing #{student['stnum']} against {cli_args.area_file}", file=sys.stderr)
