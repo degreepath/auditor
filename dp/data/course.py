@@ -309,7 +309,7 @@ def load_course(
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
 
-    if current_term and grade_code == GradeCode._IP and f"{year}{term}" >= current_term:
+    if current_term and grade_code is GradeCode._IP and f"{year}{term}" >= current_term:
         grade_code = GradeCode._REG
 
     # GPA points are the (truncated to two decimal places!) result of GP * credits.
