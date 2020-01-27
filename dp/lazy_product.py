@@ -37,8 +37,9 @@ def lazy_product(*iter_funcs: Callable[[], Iterable], repeat: int = 1) -> Iterat
     step takes O(1) time; the only difference between itertools.product and
     lazy_product is at the time of initialization of the iterable p
     (including the call to next(p) to get the first element, as shown above).
+
     itertools.product's O(N) speed/memory overhead results from its saving the
-    full result of xrange(N) as a list (or similar data structure) in memory.
+    full result of range(N) as a list (or similar data structure) in memory.
     This is necessary as itertools.product takes iterables as input, and it is
     not generally possible to "reset" an iterator, so all of its values
     instead need to be stored. So, the input to lazy_product is an iterable
