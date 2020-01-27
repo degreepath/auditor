@@ -110,7 +110,7 @@ class CourseInstance(Clausable):
         return f"{self.subject} {self.number}{self.section or ''}{suffix} {self.year}-{self.term}"
 
     def apply_single_clause(self, clause: 'SingleClause') -> bool:
-        logger.debug("clause/compare/key=%s", clause.key)
+        # logger.debug("clause/compare/key=%s", clause.key)
         applicator = clause_application_lookup.get(clause.key, None)
         assert applicator is not None, TypeError(f'{clause.key} is not a known clause key')
         return applicator(self, clause)
