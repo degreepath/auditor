@@ -82,7 +82,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         audit_result = audit_mode[self.source](ctx)
 
-        resolved_assertions = tuple(self.apply_assertions(ctx=ctx, input=audit_result.claimed_items))
+        resolved_assertions = tuple(self.apply_assertions(audit_result.claimed_items, ctx=ctx))
         resolved_result = all(a.ok() for a in resolved_assertions)
 
         if debug:
@@ -172,16 +172,16 @@ class QuerySolution(Solution, BaseQueryRule):
     def audit_music_attendances(self, ctx: 'RequirementContext') -> AuditResult:
         return AuditResult(claimed_items=tuple(self.output))
 
-    def apply_assertions(self, *, ctx: 'RequirementContext', input: Sequence[Clausable]) -> Iterator[AssertionResult]:
+    def apply_assertions(self, data: Sequence[Clausable], *, ctx: 'RequirementContext') -> Iterator[AssertionResult]:
         for a in self.assertions:
-            assertion_result = self.apply_assertion(a, ctx=ctx, input=input)
+            assertion_result = self.apply_assertion(a, ctx=ctx, data=data)
             if assertion_result:
                 yield assertion_result
 
-    def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', input: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
+    def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', data: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        assertion = resolve_assertion(asrt, input=input)
+        assertion = resolve_conditional_assertion(asrt, data=data)
         if assertion is None:
             return None
 
@@ -198,9 +198,9 @@ class QuerySolution(Solution, BaseQueryRule):
             assertion = assertion.set_expected_value(override_value.value)
 
         if assertion.where:
-            filtered_output = [item for item in input if apply_clause(assertion.where, item)]
+            filtered_output = [item for item in data if apply_clause(assertion.where, item)]
         else:
-            filtered_output = list(input)
+            filtered_output = list(data)
 
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(assertion.path):
@@ -212,8 +212,8 @@ class QuerySolution(Solution, BaseQueryRule):
         return assertion.resolve(tuple(filtered_output), overridden=False, inserted=tuple(inserted_clbids))
 
 
-def resolve_assertion(asrt: Union[AssertionRule, ConditionalAssertionRule], *, input: Sequence[Clausable]) -> Optional[AssertionRule]:
+def resolve_conditional_assertion(asrt: Union[AssertionRule, ConditionalAssertionRule], *, data: Sequence[Clausable]) -> Optional[AssertionRule]:
     if isinstance(asrt, ConditionalAssertionRule):
-        return asrt.resolve_conditional(input)
+        return asrt.resolve_conditional(data)
     else:
         return asrt

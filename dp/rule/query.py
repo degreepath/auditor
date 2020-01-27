@@ -147,13 +147,13 @@ class QueryRule(Rule, BaseQueryRule):
             return
 
         data, inserted_clbids, force_inserted_clbids = self.get_filtered_data(ctx=ctx)
+        did_iter = False
 
         if self.source is QuerySource.Claimed:
             yield QuerySolution.from_rule(rule=self, output=tuple(), inserted=inserted_clbids, force_inserted=force_inserted_clbids)
             return
 
         elif self.source is QuerySource.Courses:
-            did_iter = False
             for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
                 if self.attempt_claims is False:
                     did_iter = True
@@ -348,15 +348,16 @@ def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Ite
         if simple_sum_assertion is not None:
             logger.debug("%s using simple-sum assertion mode with %s", rule.path, simple_sum_assertion)
             item_set_courses = cast(Sequence[CourseInstance], item_set)
+            expected_credits = simple_sum_assertion.assertion.expected
 
             # We can skip outputs with impunity here, because the calling
             # function will ensure that the fallback set is attempted
-            if sum(c.credits for c in item_set_courses) < simple_sum_assertion.assertion.expected:
+            if sum(c.credits for c in item_set_courses) < expected_credits:
                 return
 
             for n in range(1, len(item_set_courses) + 1):
                 for combo in itertools.combinations(item_set_courses, n):
-                    if sum(c.credits for c in combo) >= simple_sum_assertion.assertion.expected:
+                    if sum(c.credits for c in combo) >= expected_credits:
                         yield combo
             return
 
