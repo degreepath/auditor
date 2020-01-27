@@ -1,6 +1,7 @@
 import attr
 from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, FrozenSet, Optional, Union, TYPE_CHECKING
 import itertools
+from functools import partial
 import logging
 import sys
 import os
@@ -11,6 +12,7 @@ from ..solution.count import CountSolution
 from ..ncr import mult
 from ..solve import find_best_solution
 from .assertion import AssertionRule
+from ..lazy_product import lazy_product
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -270,42 +272,26 @@ class CountRule(Rule, BaseCountRule):
             return 1
 
         items = self.items
-        count = self.count
-
         lo, hi = self.range()
 
         all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
 
-        solved_results: Tuple[Result, ...]
-        solved_results__rules: Set[Rule]
-
         if depth == 1 and all_potential_rules and not self.audit_clauses:
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
-
-            independent_children = separated_children['disjoint']
-            codependent_children = separated_children['non_disjoint']
-
-            independent_rule__results = self.solve_independent_children(ctx=ctx, independent_children=independent_children)
-
-            solved_results = tuple(sorted((result for result in independent_rule__results.values() if result is not None), key=sort_by_path))
-            solved_results__rules = set(r for r, result in independent_rule__results.items() if result is not None)
+            independent_children, codependent_children = separated_children['disjoint'], separated_children['non_disjoint']
             potential_rules = tuple(sorted(codependent_children, key=sort_by_path))
         else:
-            solved_results = tuple()
-            solved_results__rules = set()
             potential_rules = tuple(sorted(all_potential_rules, key=sort_by_path))
 
         potential_len = len(potential_rules)
-        all_children = set(items)
-        all_but_results = set(all_children - solved_results__rules)
 
         acc = 0
 
         for size in range(lo, hi):
-            acc += self.count_combinations(items=potential_rules, results=solved_results, other_children=all_but_results, size=size, count=count, ctx=ctx)
+            acc += self.count_combinations(items=potential_rules, size=size, ctx=ctx)
 
         if acc == 0 and potential_len > 0:
-            acc += self.count_combinations(items=potential_rules, results=solved_results, other_children=all_but_results, size=potential_len, count=count, ctx=ctx)
+            acc += self.count_combinations(items=potential_rules, size=potential_len, ctx=ctx)
 
         if acc == 0:
             acc += 1
@@ -328,53 +314,26 @@ class CountRule(Rule, BaseCountRule):
 
             deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(other_children.difference(set(selected_children)))
 
-            # itertools.product does this internally, so we'll pre-compute the
-            # results here to make it obvious that it's not lazy
-            solutions_dict = {r: tuple(r.solutions(ctx=ctx)) for r in selected_children}
-            solutions = tuple(solutions_dict.values())
+            solutions = [partial(r.solutions, ctx=ctx) for r in selected_children]
 
-            if SHOW_ESTIMATES:
-                lengths = {r.path: len(s) for r, s in solutions_dict.items()}
-                ppath = ' → '.join(self.path)
-                lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
-                body = '\n\t'.join(lines)
-                estimated_count = mult(lengths.values())
-                word = 'solution' if estimated_count == 1 else 'solutions'
-                print(f"\nemitting {estimated_count:,} {word} at {ppath}\n\t{body}", file=sys.stderr)
-
-            solutionset: Tuple[Union[Rule, Solution, Result], ...]
-            for solset_i, solutionset in enumerate(itertools.product(*solutions)):
-                if debug and solset_i > 0 and solset_i % 10_000 == 0:
-                    logger.debug("%s, size=%s, combo=%s solset=%s: generating product(*solutions)", self.path, size, combo_i, solset_i)
-
-                to_yield = tuple(sorted(solutionset + deselected_children + results, key=sort_by_path))
+            solution_set: Tuple[Union[Rule, Solution, Result], ...]
+            for solution_set in lazy_product(*solutions):
+                to_yield = tuple(sorted(solution_set + deselected_children + results, key=sort_by_path))
                 yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
-    def count_combinations(
-        self, *,
-        ctx: 'RequirementContext',
-        items: Tuple[Rule, ...],
-        results: Tuple[Result, ...],
-        other_children: Set[Rule],
-        size: int,
-        count: int,
-    ) -> int:
+    def count_combinations(self, *, ctx: 'RequirementContext', items: Tuple[Rule, ...], size: int) -> int:
         acc = 0
 
         for combo_i, selected_children in enumerate(itertools.combinations(items, size)):
-            # itertools.product does this internally, so we'll pre-compute the
-            # results here to make it obvious that it's not lazy
-            solutions_dict = {r: r.estimate(ctx=ctx) for r in selected_children}
-
+            solutions_dict = {' → '.join(r.path): r.estimate(ctx=ctx) for r in selected_children}
             estimated_count = mult(solutions_dict.values())
 
             if SHOW_ESTIMATES:
-                lengths = {r.path: s for r, s in solutions_dict.items()}
-                ppath = ' → '.join(self.path)
-                lines = [': '.join([' → '.join(k), f'{v:,}']) for k, v in lengths.items()]
+                p_path = ' → '.join(self.path)
+                word = f"solution{'' if estimated_count == 1 else 's'}"
+                lines = (f"{r_path}: {s:,}" for r_path, s in solutions_dict.items())
                 body = '\n\t'.join(lines)
-                word = 'solution' if estimated_count == 1 else 'solutions'
-                print(f"\nemitting xxx {estimated_count:,} {word} at {ppath}\n\t{body}", file=sys.stderr)
+                print(f"\nestimating {estimated_count:,} {word} at {p_path}\n\t{body}", file=sys.stderr)
 
             acc += estimated_count
 

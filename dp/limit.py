@@ -1,5 +1,6 @@
 from typing import Dict, Tuple, Sequence, Optional, Iterator, Any, List, Set, TYPE_CHECKING
 from collections import defaultdict
+from functools import partial
 import itertools
 import logging
 import decimal
@@ -8,6 +9,7 @@ import enum
 import attr
 
 from .clause import Clause, str_clause
+from .lazy_product import lazy_product
 from .load_clause import load_clause
 from .constants import Constants
 from .ncr import ncr
@@ -221,12 +223,12 @@ class LimitSet:
 
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [
-            tuple(limit.iterate(match_set))
+            partial(limit.iterate, match_set)
             for limit, match_set in matched_items.items()
         ]
 
         emitted_solutions: Set[Tuple['CourseInstance', ...]] = set()
-        for results in itertools.product(*clause_iterators):
+        for results in lazy_product(*clause_iterators):
             these_items = tuple(sorted((item for group in results for item in group), key=lambda item: item.sort_order()))
 
             if not self.check(these_items):
