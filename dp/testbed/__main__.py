@@ -38,7 +38,7 @@ def main() -> None:
     parser.set_defaults(func=lambda args: parser.print_usage())
 
     parser.add_argument('--db', action='store', default='testbed_db.db')
-    parser.add_argument('-w', '--workers', action='store', type=int, help='how many workers to use to run parallel audits', default=math.floor((os.cpu_count() or 0) / 4 * 3))
+    parser.add_argument('-w', '--workers', action='store', type=int, help='how many workers to use to run parallel audits', default=max(math.floor((os.cpu_count() or 0) / 2), 1))
 
     subparsers = parser.add_subparsers(title='subcommands', description='valid subcommands')
 
