@@ -23,6 +23,7 @@ SHOW_ESTIMATES = False if int(os.getenv('DP_ESTIMATE', default='0')) == 0 else T
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountRule(Rule, BaseCountRule):
     items: Tuple[Rule, ...]
+    audit_clauses: Tuple[AssertionRule, ...]
 
     @staticmethod
     def can_load(data: Dict) -> bool:

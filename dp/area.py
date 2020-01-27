@@ -291,11 +291,10 @@ class AreaSolution(AreaOfStudy):
             result=CountResult(
                 path=('$', '%Common Requirements', '.count'),
                 count=len(items),
-                at_most=False,
-                audit_clauses=tuple(),
-                audit_results=tuple(),
-                overridden=False,
                 items=tuple(items),
+                audit_clauses=tuple(),
+                at_most=False,
+                overridden=False,
             ),
         )
 

@@ -1,10 +1,17 @@
-from dp.clause import SingleClause, Operator, apply_operator, compute_single_clause_diff
-from dp.load_clause import load_clause
+from dp.clause import SingleClause
+from dp.operator import Operator, apply_operator
+from dp.load_clause import compute_single_clause_diff, load_clause
 from dp.context import RequirementContext
 from dp.data import course_from_str, Clausable, AreaPointer, MusicProficiencies
 from dp.constants import Constants
+from dp.rule.assertion import AssertionRule
 import logging
 import pytest
+from typing import Any
+
+
+def load_clause_test(clause: Any, c: Any) -> AssertionRule:
+    return AssertionRule.with_clause(load_clause(clause, c=c))
 
 
 def test_clauses(caplog):
@@ -13,7 +20,7 @@ def test_clauses(caplog):
     c = Constants(matriculation_year=2000)
 
     x = load_clause({"attributes": {"$eq": "csci_elective"}}, c=c)
-    expected_single = SingleClause(key="attributes", expected="csci_elective", expected_verbatim="csci_elective", operator=Operator.EqualTo)
+    expected_single = SingleClause.from_args(key="attributes", expected="csci_elective", expected_verbatim="csci_elective", operator=Operator.EqualTo)
     assert x == expected_single
 
     crs = course_from_str(s="CSCI 121", attributes=["csci_elective"])
@@ -29,7 +36,7 @@ def test_clauses_in(caplog):
 
     values = tuple([296, 298, 396, 398])
     x = load_clause({"number": {"$in": values}}, c=c)
-    expected_single = SingleClause(key="number", expected=values, expected_verbatim=values, operator=Operator.In)
+    expected_single = SingleClause.from_args(key="number", expected=values, expected_verbatim=values, operator=Operator.In)
     assert x == expected_single
 
     assert x.apply(course) is True
@@ -137,14 +144,14 @@ def test_resolution(caplog):
         def sort_order(self):
             return (hash(self))
 
-    x = load_clause({"count(items)": {"$eq": 1}}, c=c)
-    expected_single = SingleClause(key="count(items)", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
-    assert x == expected_single
+    x = load_clause_test({"count(items)": {"$eq": 1}}, c=c)
+    expected_single = SingleClause.from_args(key="count(items)", expected=1, expected_verbatim=1, operator=Operator.EqualTo)
+    assert x.assertion == expected_single
 
-    result = x.compare_and_resolve_with(tuple([IntThing()]))
+    result = x.resolve(tuple([IntThing()]))
     assert result.ok() is True
 
-    result = x.compare_and_resolve_with(tuple([IntThing(), IntThing()]))
+    result = x.resolve(tuple([IntThing(), IntThing()]))
     assert result.ok() is False
 
 
@@ -152,7 +159,7 @@ def test_ranges_eq(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"count(courses)": {"$eq": 1}}, c=c)
+    x = load_clause_test({"count(courses)": {"$eq": 1}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [1]
 
@@ -162,22 +169,22 @@ def test_ranges_eq_2(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    result = load_clause({"count(courses)": {"$eq": 3}}, c=c).input_size_range(maximum=2)
+    result = load_clause_test({"count(courses)": {"$eq": 3}}, c=c).input_size_range(maximum=2)
     assert list(result) == [2]
 
-    result = load_clause({"count(courses)": {"$neq": 3}}, c=c).input_size_range(maximum=2)
+    result = load_clause_test({"count(courses)": {"$neq": 3}}, c=c).input_size_range(maximum=2)
     assert list(result) == [0, 1, 2]
 
-    result = load_clause({"count(courses)": {"$lt": 3}}, c=c).input_size_range(maximum=2)
+    result = load_clause_test({"count(courses)": {"$lt": 3}}, c=c).input_size_range(maximum=2)
     assert list(result) == [0, 1, 2]
 
-    result = load_clause({"count(courses)": {"$lte": 3}}, c=c).input_size_range(maximum=2)
+    result = load_clause_test({"count(courses)": {"$lte": 3}}, c=c).input_size_range(maximum=2)
     assert list(result) == [0, 1, 2, 3]
 
-    result = load_clause({"count(courses)": {"$gt": 3}}, c=c).input_size_range(maximum=2)
+    result = load_clause_test({"count(courses)": {"$gt": 3}}, c=c).input_size_range(maximum=2)
     assert list(result) == [2]
 
-    result = load_clause({"count(courses)": {"$gte": 3}}, c=c).input_size_range(maximum=2)
+    result = load_clause_test({"count(courses)": {"$gte": 3}}, c=c).input_size_range(maximum=2)
     assert list(result) == [2]
 
 
@@ -185,7 +192,7 @@ def test_ranges_gte(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"count(courses)": {"$gte": 1}}, c=c)
+    x = load_clause_test({"count(courses)": {"$gte": 1}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [1, 2, 3, 4, 5]
 
@@ -194,7 +201,7 @@ def test_ranges_gte_at_most(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"count(courses)": {"$gte": 1, "at_most": True}}, c=c)
+    x = load_clause_test({"count(courses)": {"$gte": 1, "at_most": True}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [1]
 
@@ -203,7 +210,7 @@ def test_ranges_gt(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"count(courses)": {"$gt": 1}}, c=c)
+    x = load_clause_test({"count(courses)": {"$gt": 1}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [2, 3, 4, 5]
 
@@ -212,7 +219,7 @@ def test_ranges_neq(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"count(courses)": {"$neq": 1}}, c=c)
+    x = load_clause_test({"count(courses)": {"$neq": 1}}, c=c)
     result = x.input_size_range(maximum=5)
     assert list(result) == [0, 2, 3, 4, 5]
 
@@ -221,7 +228,7 @@ def test_ranges_lt(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"count(courses)": {"$lt": 5}}, c=c)
+    x = load_clause_test({"count(courses)": {"$lt": 5}}, c=c)
     result = x.input_size_range(maximum=7)
     assert list(result) == [0, 1, 2, 3, 4]
 
@@ -230,7 +237,7 @@ def test_ranges_lte(caplog):
     caplog.set_level(logging.DEBUG)
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"count(courses)": {"$lte": 5}}, c=c)
+    x = load_clause_test({"count(courses)": {"$lte": 5}}, c=c)
     result = x.input_size_range(maximum=7)
     assert list(result) == [0, 1, 2, 3, 4, 5]
 

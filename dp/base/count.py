@@ -1,8 +1,8 @@
 import attr
-from typing import Tuple, Union, Dict, Any, Sequence, List
+from typing import Tuple, Dict, Any, Sequence, List
 import logging
 
-from .bases import Base, Rule, Solution, Result, Summable
+from .bases import Base, Summable
 from .assertion import BaseAssertionRule
 from ..claim import ClaimAttempt
 
@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCountRule(Base):
     count: int
-    items: Tuple[Union[Rule, Solution, Result], ...]
-    at_most: bool
+    items: Tuple[Base, ...]
     audit_clauses: Tuple[BaseAssertionRule, ...]
+    at_most: bool
     path: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:

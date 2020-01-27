@@ -1,5 +1,5 @@
 import json
-from typing import Iterator, List, Dict
+from typing import Iterator, Dict, cast
 
 import yaml
 import csv
@@ -67,21 +67,11 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
     )
 
 
-def load_students(*filenames: str) -> List[Dict]:
-    file_data = []
-
-    for student_file in filenames:
-        with open(student_file, "r", encoding="utf-8") as infile:
-            file_data.append(json.load(infile))
-
-    return file_data
+def load_student(filename: str) -> Dict:
+    with open(filename, "r", encoding="utf-8") as infile:
+        return cast(Dict, json.load(infile))
 
 
-def load_areas(*filenames: str) -> List[Dict]:
-    specs: List[Dict] = []
-
-    for area_file in filenames:
-        with open(area_file, "r", encoding="utf-8") as infile:
-            specs.append(yaml.load(stream=infile, Loader=yaml.SafeLoader))
-
-    return specs
+def load_area(filename: str) -> Dict:
+    with open(filename, "r", encoding="utf-8") as infile:
+        return cast(Dict, yaml.load(stream=infile, Loader=yaml.SafeLoader))

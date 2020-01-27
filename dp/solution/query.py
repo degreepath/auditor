@@ -8,6 +8,7 @@ from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule, ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, Clausable
+from ..clause import apply_clause
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..claim import ClaimAttempt  # noqa: F401
@@ -140,7 +141,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         output: List[CourseInstance] = ctx.all_claimed()
         if self.where:
-            output = [item for item in output if self.where.apply(item)]
+            output = [item for item in output if apply_clause(self.where, item)]
 
         for clbid in self.inserted:
             matched_course = ctx.forced_course_by_clbid(clbid, path=self.path)
@@ -180,55 +181,39 @@ class QuerySolution(Solution, BaseQueryRule):
     def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', input: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        clause = resolve_assertion(asrt, input=input)
-        if clause is None:
+        assertion = resolve_assertion(asrt, input=input)
+        if assertion is None:
             return None
 
-        assert isinstance(clause, AssertionRule), TypeError(f"expected a query assertion; found {clause} ({type(clause)})")
+        assert isinstance(assertion, AssertionRule), TypeError(f"expected a query assertion; found {assertion} ({type(assertion)})")
 
-        waive = ctx.get_waive_exception(clause.path)
+        waive = ctx.get_waive_exception(assertion.path)
         if waive:
             if debug: logger.debug("forced override on %s", self.path)
-            return AssertionResult(
-                where=clause.where,
-                assertion=clause.assertion,
-                path=clause.path,
-                message=clause.message,
-                overridden=True,
-                inserted=tuple(),
-            )
+            return assertion.override()
 
-        override_value = ctx.get_value_exception(clause.path)
+        override_value = ctx.get_value_exception(assertion.path)
         if override_value:
             if debug: logger.debug("override: new value on %s", self.path)
-            _clause = clause.override_expected_value(override_value.value)
-            clause = cast(AssertionRule, _clause)
+            assertion = assertion.set_expected_value(override_value.value)
 
-        if clause.where:
-            filtered_output = [item for item in input if clause.where.apply(item)]
+        if assertion.where:
+            filtered_output = [item for item in input if apply_clause(assertion.where, item)]
         else:
             filtered_output = list(input)
 
         inserted_clbids = []
-        for insert in ctx.get_insert_exceptions(clause.path):
+        for insert in ctx.get_insert_exceptions(assertion.path):
             if debug: logger.debug("inserted %s into %s", insert.clbid, self.path)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             filtered_output.append(matched_course)
             inserted_clbids.append(matched_course.clbid)
 
-        result = clause.assertion.compare_and_resolve_with(tuple(filtered_output))
-        return AssertionResult(
-            where=clause.where,
-            assertion=result,
-            path=clause.path,
-            message=clause.message,
-            overridden=False,
-            inserted=tuple(inserted_clbids),
-        )
+        return assertion.resolve(tuple(filtered_output), overridden=False, inserted=tuple(inserted_clbids))
 
 
 def resolve_assertion(asrt: Union[AssertionRule, ConditionalAssertionRule], *, input: Sequence[Clausable]) -> Optional[AssertionRule]:
     if isinstance(asrt, ConditionalAssertionRule):
-        return asrt.resolve(input)
+        return asrt.resolve_conditional(input)
     else:
         return asrt

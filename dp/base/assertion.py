@@ -1,6 +1,5 @@
 import attr
 from typing import Optional, Tuple, Dict, Any
-from decimal import Decimal
 
 from ..clause import Clause, SingleClause
 from .bases import Base, Summable
@@ -43,8 +42,3 @@ class BaseAssertionRule(Base):
 
     def in_progress(self) -> bool:
         return self.assertion.in_progress()
-
-    def override_expected_value(self, value: Decimal) -> 'BaseAssertionRule':
-        clause = self.assertion.override_expected(value)
-
-        return attr.evolve(self, assertion=clause)

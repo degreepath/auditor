@@ -7,7 +7,7 @@ from ..limit import LimitSet
 from ..clause import Clause
 from ..claim import ClaimAttempt
 from ..rule.assertion import AssertionRule, ConditionalAssertionRule
-from .assertion import BaseAssertionRule
+from ..result.assertion import AssertionResult
 
 
 @enum.unique
@@ -47,7 +47,7 @@ class BaseQueryRule(Base):
     def only_failed_claims(self) -> Sequence[ClaimAttempt]:
         return []
 
-    def all_assertions(self) -> Sequence[Union[BaseAssertionRule, ConditionalAssertionRule]]:
+    def all_assertions(self) -> Sequence[Union[AssertionRule, ConditionalAssertionRule, AssertionResult]]:
         return self.assertions
 
     def type(self) -> str:

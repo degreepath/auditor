@@ -7,7 +7,7 @@ import enum
 
 import attr
 
-from .clause import Clause, str_clause
+from .clause import Clause, apply_clause
 from .load_clause import load_clause
 from .constants import Constants
 from .ncr import ncr
@@ -71,9 +71,6 @@ class Limit:
                 raise ValueError(f'expected course|credits, got {at_most_what} (part of {_at_most})')
 
         return Limit(at_most=at_most, at_most_what=at_most_what, where=clause, message=data.get('message', None))
-
-    def __str__(self) -> str:
-        return f"Limit(at-most: {self.at_most} {self.at_most_what.name}, where: {str_clause(self.where)})"
 
     def iterate(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
         # Be sure to sort the input, so that the output from the iterator is
@@ -146,7 +143,7 @@ class LimitSet:
 
             for limit in self.limits:
                 logger.debug("limit/check: checking %s against %s (counter: %s)", c, limit, clause_counters[limit])
-                if limit.where.apply(c):
+                if apply_clause(limit.where, c):
                     if clause_counters[limit] >= limit.at_most:
                         logger.debug("limit/maximum: %s matched %s (counter: %s)", c, limit, clause_counters[limit])
                         may_yield = False
@@ -166,7 +163,7 @@ class LimitSet:
 
         for c in courses:
             for limit in self.limits:
-                if limit.where.apply(c):
+                if apply_clause(limit.where, c):
                     if limit.at_most_what is AtMostWhat.Courses:
                         if clause_counters[limit] >= limit.at_most:
                             # break out of the loop once we fill up any limit clause
@@ -211,7 +208,7 @@ class LimitSet:
         for limit in self.limits:
             for c in courses:
                 logger.debug("limit/probe: checking %s against %s", c, limit)
-                if limit.where.apply(c):
+                if apply_clause(limit.where, c):
                     matched_items[limit].add(c)
 
         all_matched_items = set(item for match_set in matched_items.values() for item in match_set)

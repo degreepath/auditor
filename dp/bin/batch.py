@@ -7,7 +7,7 @@ import sys
 import os
 
 from dp.ms import pretty_ms
-from dp.run import run, load_students, load_areas
+from dp.run import run, load_student, load_area
 from dp.stringify import summarize
 from dp.audit import ResultMsg, EstimateMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
@@ -51,8 +51,8 @@ def main() -> int:  # noqa: C901
             print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
             continue
 
-        student = load_students(student_file)[0]
-        area_spec = load_areas(area_file)[0]
+        student = load_student(student_file)
+        area_spec = load_area(area_file)
 
         if not cli_args.quiet and not cli_args.table:
             print(f"auditing #{student['stnum']} against {area_file}", file=sys.stderr)

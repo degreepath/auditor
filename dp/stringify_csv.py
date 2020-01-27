@@ -3,7 +3,7 @@ from io import StringIO
 import attr
 import csv
 
-from .clause import str_clause, get_resolved_clbids, get_in_progress_clbids
+from .stringify import str_clause, get_resolved_clbids, get_in_progress_clbids
 from .data import CourseInstance
 
 
