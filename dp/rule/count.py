@@ -278,7 +278,7 @@ class CountRule(Rule, BaseCountRule):
 
         if depth == 1 and all_potential_rules and not self.audit_clauses:
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
-            independent_children, codependent_children = separated_children['disjoint'], separated_children['non_disjoint']
+            codependent_children = separated_children['non_disjoint']
             potential_rules = tuple(sorted(codependent_children, key=sort_by_path))
         else:
             potential_rules = tuple(sorted(all_potential_rules, key=sort_by_path))
