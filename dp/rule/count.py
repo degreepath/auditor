@@ -332,9 +332,10 @@ class CountRule(Rule, BaseCountRule):
             if SHOW_ESTIMATES:
                 p_path = ' → '.join(self.path)
                 word = f"solution{'' if estimated_count == 1 else 's'}"
-                lines = (f"{r_path}: {s:,}" for r_path, s in solutions_dict.items())
+                longest = len(f"{max(solutions_dict.values()):,}")
+                lines = (f"{s:>{longest},} from {r_path}" for r_path, s in solutions_dict.items())
                 body = '\n\t'.join(lines)
-                print(f"\nestimating {estimated_count:,} {word} at {p_path}\n\t{body}", file=sys.stderr)
+                print(f"\nestimating ~{estimated_count:,} {word} at {p_path}\n\t{body}", file=sys.stderr)
 
             acc += estimated_count
 
