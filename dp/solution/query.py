@@ -178,10 +178,10 @@ class QuerySolution(Solution, BaseQueryRule):
             if assertion_result:
                 yield assertion_result
 
-    def apply_assertion(self, asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', data: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
+    def apply_assertion(self, maybe_asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', data: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        assertion = resolve_conditional_assertion(asrt, data=data)
+        assertion = maybe_asrt.resolve_conditional(data) if isinstance(maybe_asrt, ConditionalAssertionRule) else maybe_asrt
         if assertion is None:
             return None
 
@@ -210,10 +210,3 @@ class QuerySolution(Solution, BaseQueryRule):
             inserted_clbids.append(matched_course.clbid)
 
         return assertion.resolve(tuple(filtered_output), overridden=False, inserted=tuple(inserted_clbids))
-
-
-def resolve_conditional_assertion(asrt: Union[AssertionRule, ConditionalAssertionRule], *, data: Sequence[Clausable]) -> Optional[AssertionRule]:
-    if isinstance(asrt, ConditionalAssertionRule):
-        return asrt.resolve_conditional(data)
-    else:
-        return asrt
