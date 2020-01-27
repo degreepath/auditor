@@ -1,9 +1,9 @@
 # adapted from https://gist.github.com/jeffdonahue/12ff1b8e90bed6ed22221cbd9ba49578
 
-from typing import Iterable, Callable
+from typing import Iterable, Iterator, Callable
 
 
-def lazy_product(*iter_funcs: Callable[[], Iterable], repeat: int = 1):
+def lazy_product(*iter_funcs: Callable[[], Iterable], repeat: int = 1) -> Iterator:
     """
     If f1, f2, ..., are functions which have no (required) arguments and
     return iterables, then
