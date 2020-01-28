@@ -39,7 +39,7 @@ class Base(abc.ABC):
 
     @abc.abstractmethod
     def type(self) -> str:
-        raise NotImplementedError(f'must define a type() method')
+        raise NotImplementedError('must define a type() method')
 
     def state(self) -> RuleState:
         return RuleState.Rule
@@ -110,7 +110,7 @@ class Solution(Base):
 
     @abc.abstractmethod
     def audit(self, *, ctx: 'RequirementContext') -> Result:
-        raise NotImplementedError(f'must define an audit() method')
+        raise NotImplementedError('must define an audit() method')
 
 
 class Rule(Base):
@@ -121,35 +121,35 @@ class Rule(Base):
 
     @abc.abstractmethod
     def validate(self, *, ctx: 'RequirementContext') -> None:
-        raise NotImplementedError(f'must define a validate() method')
+        raise NotImplementedError('must define a validate() method')
 
     @abc.abstractmethod
     def get_requirement_names(self) -> List[str]:
-        raise NotImplementedError(f'must define a get_requirement_names() method')
+        raise NotImplementedError('must define a get_requirement_names() method')
 
     @abc.abstractmethod
     def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
-        raise NotImplementedError(f'must define a get_required_courses() method')
+        raise NotImplementedError('must define a get_required_courses() method')
 
     @abc.abstractmethod
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'Rule':
-        raise NotImplementedError(f'must define an exclude_required_courses() method')
+        raise NotImplementedError('must define an exclude_required_courses() method')
 
     @abc.abstractmethod
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
-        raise NotImplementedError(f'must define a solutions() method')
+        raise NotImplementedError('must define a solutions() method')
 
     @abc.abstractmethod
     def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
-        raise NotImplementedError(f'must define an estimate() method')
+        raise NotImplementedError('must define an estimate() method')
 
     @abc.abstractmethod
     def has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        raise NotImplementedError(f'must define a has_potential() method')
+        raise NotImplementedError('must define a has_potential() method')
 
     @abc.abstractmethod
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
-        raise NotImplementedError(f'must define an all_matches() method')
+        raise NotImplementedError('must define an all_matches() method')
 
 
 def compare_path_tuples(a: Base, b: Base) -> int:
