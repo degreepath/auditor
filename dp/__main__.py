@@ -1,13 +1,11 @@
 # mypy: warn_unreachable = False
 
-from typing import Any, Iterator, Tuple, Dict
 import argparse
 import logging
 import json
 import sys
 import os
 import dotenv
-from collections import defaultdict
 
 from dp.run import run, load_student, load_area
 from dp.ms import pretty_ms
