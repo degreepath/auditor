@@ -3,9 +3,11 @@ from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, Froze
 import itertools
 from functools import partial
 import logging
+import time
 import sys
 import os
 
+from ..ms import pretty_ms
 from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
 from ..constants import Constants
 from ..solution.count import CountSolution
@@ -405,15 +407,29 @@ class CountRule(Rule, BaseCountRule):
         guaranteed that there is no claimable overlap.
         """
 
-        logger.debug('%s: %s independent children', self.path, len(independent_children))
+        start = time.perf_counter()
+        logger.debug('solving %s independent children at %s', len(independent_children), self.path)
 
         independent_rule__results: Dict[Rule, Optional[Result]] = {}
         for child in independent_children:
-            logger.debug('claims before solving %s', list(ctx.claims.keys()))
+            loop_start = time.perf_counter()
+            logger.debug('solving %s independently', child.path)
+
             best_result = find_best_solution(rule=child, ctx=ctx, merge_claims=True)
-            logger.debug('claims after solving %s', list(ctx.claims.keys()))
             logger.debug("found solution for %s: %s", child.path, best_result)
             independent_rule__results[child] = best_result
+
+            logger.debug(
+                'solved %s in %s',
+                child.path,
+                pretty_ms((time.perf_counter() - loop_start) * 1000, format_sub_ms=True)
+            )
+
+        logger.debug(
+            'solved %s independent children in %s',
+            len(independent_children),
+            pretty_ms((time.perf_counter() - start) * 1000, format_sub_ms=True),
+        )
 
         return independent_rule__results
 
