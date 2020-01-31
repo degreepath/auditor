@@ -131,8 +131,11 @@ def load_single_clause(
 
     if type(expected_value) == str:
         expected_value = c.get_by_name(expected_value)
-    elif isinstance(expected_value, Iterable):
+    elif isinstance(expected_value, tuple):
         expected_value = tuple(c.get_by_name(v) for v in expected_value)
+        expected_value = tuple(flatten(expected_value))
+    elif isinstance(expected_value, Iterable):
+        raise TypeError(f'unexpected type {type(expected_value)} for {expected_value!r}')
 
     expected_value = process_clause_value(expected_value, key=key)
 
