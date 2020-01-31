@@ -40,7 +40,10 @@ class Constants:
             return self.terms_since_declaring_major
 
         elif key is KnownConstants.PrimaryPerformingMedium:
-            return self.primary_performing_medium
+            if ',' in self.primary_performing_medium:
+                return self.primary_performing_medium.split(', ')
+            else:
+                return self.primary_performing_medium
 
         elif key is KnownConstants.CurrentAreaCode:
             return self.current_area_code

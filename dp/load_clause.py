@@ -139,6 +139,7 @@ def load_single_clause(
 
     expected_value = process_clause_value(expected_value, key=key)
 
+    # forbid all null values in tuples or single-value clauses
     if operator in (Operator.In, Operator.NotIn):
         assert all(v is not None for v in expected_value)
     else:
@@ -204,6 +205,14 @@ def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional
             raise TypeError(f'unsupported single_clause_diff mode {cond_action_mode}')
 
     return diff_value
+
+
+def flatten(lst: Iterable) -> Iterator:
+    for el in lst:
+        if isinstance(el, Iterable) and not isinstance(el, (str, bytes)):
+            yield from flatten(el)
+        else:
+            yield el
 
 
 def process_clause__grade(expected_value: Any) -> Union[Decimal, Tuple[Decimal, ...]]:
