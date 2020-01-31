@@ -127,7 +127,7 @@ def load_single_clause(
     expected_verbatim = expected_value
 
     allowed_types = (bool, str, tuple, int, Decimal)
-    assert type(expected_value) in allowed_types, f"expected_value should be {allowed_types}, not {type(expected_value)}"
+    assert type(expected_value) in allowed_types, ValueError(f"expected_value should be one of {allowed_types!r}, not {type(expected_value)}")
 
     if type(expected_value) == str:
         expected_value = c.get_by_name(expected_value)
