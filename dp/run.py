@@ -1,9 +1,9 @@
-import json
 from typing import Iterator, Dict, cast
-
-import yaml
+import json
 import csv
 import sys
+
+import yaml
 
 from .area import AreaOfStudy
 from .exception import load_exception, CourseOverrideException
