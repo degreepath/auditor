@@ -313,7 +313,7 @@ class CountRule(Rule, BaseCountRule):
         for combo_i, selected_children in enumerate(itertools.combinations(items, size)):
             if debug: logger.debug("%s, size=%s, combo=%s: generating product(*solutions)", self.path, size, combo_i)
 
-            deselected_children: Tuple[Union[Rule, Result, Solution], ...] = tuple(other_children.difference(set(selected_children)))
+            deselected_children: Tuple[Rule, ...] = tuple(other_children.difference(set(selected_children)))
 
             solutions = [partial(r.solutions, ctx=ctx) for r in selected_children]
 
