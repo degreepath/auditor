@@ -1,4 +1,4 @@
-from typing import List, Iterator, Any, Dict, Sequence, Set
+from typing import List, Iterator, Any, Dict, Sequence, Set, Optional
 from .data import CourseInstance
 from .data.course_enums import CourseType
 from .operator import str_operator
@@ -10,7 +10,9 @@ def summarize(
     *,
     transcript: Sequence[CourseInstance],
     result: Dict[str, Any],
+    final_index: Optional[int] = None,
     count: int,
+    gen_count: int = 0,
     elapsed: str,
     avg_iter_ms: float,
     show_paths: bool = True,
@@ -21,8 +23,11 @@ def summarize(
     mapped_transcript = {c.clbid: c for c in transcript}
     endl = "\n"
 
-    word = "attempt" if count == 1 else "attempts"
-    yield f"{count:,} {word} in {elapsed} (avg {avg_iter_time} per attempt)"
+    if count == gen_count:
+        yield f"{count:,} checked in {elapsed} (audit #{final_index}); avg {avg_iter_time} per check"
+    else:
+        yield f"{count:,} checked (of {gen_count:,} generated) in {elapsed} (audit #{final_index}); avg {avg_iter_time} per check"
+
     yield endl
     yield endl
 

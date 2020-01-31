@@ -31,6 +31,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--stop-after", action='store', type=int)
     parser.add_argument("--progress-every", action='store', type=int, default=1_000)
+    parser.add_argument("--audit-each", action='store', type=int, default=1)
     parser.add_argument("--estimate", action='store_true')
     parser.add_argument("--transcript", action='store_true')
     parser.add_argument("--gpa", action='store_true')
@@ -52,6 +53,7 @@ def main() -> int:  # noqa: C901
         print_all=cli_args.print_all,
         progress_every=cli_args.progress_every,
         stop_after=cli_args.stop_after,
+        audit_each=cli_args.audit_each,
         transcript_only=cli_args.transcript,
         estimate_only=cli_args.estimate,
     )
@@ -74,7 +76,12 @@ def main() -> int:  # noqa: C901
         elif isinstance(msg, ProgressMsg):
             if not cli_args.quiet:
                 avg_iter_time = pretty_ms(msg.avg_iter_ms, format_sub_ms=True)
-                print(f"{msg.iters:,} at {avg_iter_time} per audit (best: {msg.best_rank})", file=sys.stderr)
+
+                addendum = ""
+                if msg.iters != msg.total_iters:
+                    addendum = f" (of {msg.total_iters:,} generated)"
+
+                print(f"{msg.iters:,} checked{addendum} at {avg_iter_time} per check (best: #{msg.best_i} at {msg.best_rank})", file=sys.stderr)
 
         elif isinstance(msg, ResultMsg):
             if not cli_args.quiet:
@@ -119,7 +126,9 @@ def result_str(
     return "\n" + "".join(summarize(
         result=dict_result,
         transcript=msg.transcript,
+        final_index=msg.best_i,
         count=msg.iters,
+        gen_count=msg.total_iters,
         avg_iter_ms=msg.avg_iter_ms,
         elapsed=pretty_ms(msg.elapsed_ms),
         show_paths=show_paths,
