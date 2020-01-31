@@ -142,6 +142,18 @@ def test_count_math_perspectives():
     assert len(result.courses) == 3
 
 
+def test_count_religion_traditions():
+    result = funcs.count_religion_traditions([
+        course_from_str("REL 111", attributes=('rel_tradition_a',)),
+        course_from_str("REL 123", attributes=('rel_tradition_a',)),
+        course_from_str("REL 125", attributes=('rel_tradition_c',)),
+    ])
+
+    assert result.value == 2
+    assert result.data == ('rel_tradition_a', 'rel_tradition_c')
+    assert len(result.courses) == 3
+
+
 def test_sum_credits():
     result = funcs.sum_credits([
         course_from_str("MUSIC 111", credits=1),
@@ -204,6 +216,14 @@ def test_sum_credits__sorts_output():
     assert result.data == (1, 2, 3)
     assert sorted(result.data) == sorted([1, 2, 3])
     assert len(result.courses) == 3
+
+
+def test_sum_credits_from_single_subject__empty():
+    result = funcs.sum_credits_from_single_subject([])
+
+    assert result.value == Decimal('0')
+    assert result.data == tuple([Decimal('0')])
+    assert len(result.courses) == 0
 
 
 def test_sum_credits_from_single_subject__partial():
