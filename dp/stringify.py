@@ -123,7 +123,7 @@ def print_area(
     if show_paths:
         yield from print_path(rule, indent)
 
-    if rule['ok']:
+    if rule['status'] in PassingStatusValues:
         title = f"{rule['name']!r} audit was successful."
     else:
         title = f"{rule['name']!r} audit failed."
