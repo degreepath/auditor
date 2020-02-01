@@ -29,6 +29,8 @@ class CourseInstance(Clausable):
     institution: str
     is_in_gpa: bool
     is_in_progress: bool
+    is_in_progress_this_term: bool
+    is_in_progress_in_future: bool
     is_incomplete: bool
     is_repeat: bool
     is_stolaf: bool
@@ -309,8 +311,14 @@ def load_course(
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
 
-    if current_term and grade_code is GradeCode._IP and f"{year}{term}" >= current_term:
-        grade_code = GradeCode._REG
+    in_progress_this_term = False
+    in_progress_in_future = False
+
+    if current_term and grade_code is GradeCode._IP:
+        if f"{year}{term}" == current_term:
+            in_progress_this_term = True
+        elif f"{year}{term}" >= current_term:
+            in_progress_in_future = True
 
     # GPA points are the (truncated to two decimal places!) result of GP * credits.
     # If someone gets an A- in a 0.25-credit course, they are supposed to
@@ -355,6 +363,8 @@ def load_course(
         institution=institution,
         is_in_gpa=flag_gpa,
         is_in_progress=flag_in_progress,
+        is_in_progress_this_term=in_progress_this_term,
+        is_in_progress_in_future=in_progress_in_future,
         is_incomplete=flag_incomplete,
         is_repeat=flag_repeat,
         is_stolaf=flag_stolaf,

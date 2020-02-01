@@ -60,15 +60,12 @@ class QuerySolution(Solution, BaseQueryRule):
         }
 
     def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
-        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
-
         if self.overridden:
             return QueryResult.from_solution(
                 solution=self,
                 resolved_assertions=tuple(),
                 successful_claims=tuple(),
                 failed_claims=tuple(),
-                success=self.overridden,
                 overridden=self.overridden,
             )
 
@@ -83,20 +80,12 @@ class QuerySolution(Solution, BaseQueryRule):
         audit_result = audit_mode[self.source](ctx)
 
         resolved_assertions = tuple(self.apply_assertions(audit_result.claimed_items, ctx=ctx))
-        resolved_result = all(a.ok() for a in resolved_assertions)
-
-        if debug:
-            if resolved_result:
-                logger.debug("%s might possibly succeed", self.path)
-            else:
-                logger.debug("%s did not succeed", self.path)
 
         return QueryResult.from_solution(
             solution=self,
             resolved_assertions=resolved_assertions,
             successful_claims=audit_result.successful_claims,
             failed_claims=audit_result.failed_claims,
-            success=resolved_result,
         )
 
     def audit_courses(self, ctx: 'RequirementContext') -> AuditResult:

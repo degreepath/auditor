@@ -1,10 +1,11 @@
 import attr
 from typing import Tuple, Union, Sequence, TYPE_CHECKING
 
+from .assertion import AssertionResult
 from ..base.bases import Result, Rule, Solution
 from ..base.count import BaseCountRule
-from .assertion import AssertionResult
 from ..rule.assertion import AssertionRule
+from ..status import ResultStatus, PassingStatuses
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..solution.count import CountSolution
@@ -36,13 +37,42 @@ class CountResult(Result, BaseCountRule):
     def audits(self) -> Sequence[Union[AssertionResult, AssertionRule]]:
         return self.audit_clauses
 
-    def was_overridden(self) -> bool:
+    def waived(self) -> bool:
         return self.overridden
 
-    def ok(self) -> bool:
-        if self.was_overridden():
-            return True
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
 
-        passed_count = sum(1 if r.ok() else 0 for r in self.items)
-        audit_passed = len(self.audit_clauses) == 0 or all(a.ok() for a in self.audit_clauses)
-        return passed_count >= self.count and audit_passed
+        # find the lowest common denominator of statuses from the children
+
+        all_child_statuses = [r.status() for r in self.items]
+        all_passing_child_statuses = [s for s in all_child_statuses if s in PassingStatuses]
+        passing_child_statuses = set(all_passing_child_statuses)
+        passing_child_count = len(all_passing_child_statuses)
+
+        all_audit_statuses = set(a.status() for a in self.audits())
+
+        # if all rules and audits have been waived, pretend that we're waived as well
+        if passing_child_statuses == {ResultStatus.Waived} and all_audit_statuses.issubset({ResultStatus.Waived}):
+            return ResultStatus.Waived
+
+        if passing_child_count == 0:
+            return ResultStatus.Empty
+
+        if passing_child_count < self.count:
+            return ResultStatus.NeedsMoreItems
+
+        checkable_statuses = {ResultStatus.Done, ResultStatus.Waived}
+        if passing_child_statuses.issubset(checkable_statuses) and all_audit_statuses.issubset(checkable_statuses):
+            return ResultStatus.Done
+
+        checkable_statuses = {ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent}
+        if passing_child_statuses.issubset(checkable_statuses) and all_audit_statuses.issubset(checkable_statuses):
+            return ResultStatus.PendingCurrent
+
+        checkable_statuses = {ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered}
+        if passing_child_statuses.issubset(checkable_statuses) and all_audit_statuses.issubset(checkable_statuses):
+            return ResultStatus.PendingRegistered
+
+        return ResultStatus.NeedsMoreItems

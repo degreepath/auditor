@@ -1,8 +1,10 @@
 import attr
-from typing import Optional, Tuple, Dict, Any, Sequence, Union
+from typing import Optional, Tuple, Dict, Any, Sequence, Union, cast
 import enum
+from fractions import Fraction
 
-from .bases import Base, Summable
+from .bases import Base
+from ..status import ResultStatus
 from ..limit import LimitSet
 from ..clause import Clause
 from ..claim import ClaimAttempt
@@ -53,20 +55,32 @@ class BaseQueryRule(Base):
     def type(self) -> str:
         return "query"
 
-    def rank(self) -> Summable:
-        return 0
+    def rank(self) -> Fraction:
+        if self.waived():
+            return Fraction(1, 1)
 
-    def max_rank(self) -> Summable:
-        return sum(a.max_rank() for a in self.assertions)
+        return cast(Fraction, sum(a.rank() for a in self.all_assertions()))
 
-    def in_progress(self) -> bool:
-        if 0 < self.rank() < self.max_rank():
-            return True
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
 
-        if any(c.is_in_progress for c in self.matched()):
-            return True
+        allowed_statuses = {ResultStatus.Done, ResultStatus.Waived}
+        statuses = set(a.status() for a in self.all_assertions())
 
-        if any(c.in_progress() for c in self.all_assertions()):
-            return True
+        if allowed_statuses.issuperset(statuses):
+            return ResultStatus.Done
 
-        return False
+        allowed_statuses.add(ResultStatus.PendingCurrent)
+        if allowed_statuses.issuperset(statuses):
+            return ResultStatus.PendingCurrent
+
+        allowed_statuses.add(ResultStatus.PendingRegistered)
+        if allowed_statuses.issuperset(statuses):
+            return ResultStatus.PendingRegistered
+
+        allowed_statuses.add(ResultStatus.NeedsMoreItems)
+        if allowed_statuses.issuperset(statuses):
+            return ResultStatus.NeedsMoreItems
+
+        return ResultStatus.Empty

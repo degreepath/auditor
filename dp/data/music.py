@@ -140,7 +140,7 @@ class MusicProficiencies:
             'Guitar': self.guitar,
         }
 
-        return ResultStatus.Pass if matcher[of] else ResultStatus.Pending
+        return ResultStatus.Done if matcher[of] else ResultStatus.Empty
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

@@ -1,15 +1,17 @@
 import attr
 from typing import Tuple, Dict, Any, Optional
-from decimal import Decimal
+from fractions import Fraction
 
 from .bases import Base
 from .course import BaseCourseRule
+from ..status import ResultStatus
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseProficiencyRule(Base):
     proficiency: str
     course: Optional[BaseCourseRule]
+    proficiency_status: ResultStatus = ResultStatus.Empty
     path: Tuple[str, ...] = tuple()
     overridden: bool = False
 
@@ -23,17 +25,22 @@ class BaseProficiencyRule(Base):
     def type(self) -> str:
         return "proficiency"
 
-    def rank(self) -> Decimal:
-        if self.in_progress():
-            return Decimal('0.5')
+    def rank(self) -> Fraction:
+        status = self.status()
 
-        if self.ok():
-            return Decimal('1')
+        if status in (ResultStatus.Done, ResultStatus.Waived):
+            return Fraction(3, 3)
 
-        return Decimal('0')
+        if status is ResultStatus.PendingCurrent:
+            return Fraction(2, 3)
 
-    def in_progress(self) -> bool:
-        return self.course.in_progress() if self.course else False
+        if status is ResultStatus.PendingRegistered:
+            return Fraction(1, 3)
 
-    def max_rank(self) -> int:
-        return 1
+        return Fraction(0, 3)
+
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
+
+        return self.course.status() if self.course else self.proficiency_status

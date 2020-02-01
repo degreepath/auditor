@@ -65,7 +65,7 @@ def load_clause(
         if not s:
             return when_no
 
-        if not s.ok():
+        if s.status() not in (ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered):
             return when_no
 
         return when_yes
@@ -156,7 +156,7 @@ def load_single_clause(
         at_most=at_most,
         label=value.get('label', None),
         treat_in_progress_as_pass=value.get('treat_in_progress_as_pass', False),
-        state=ResultStatus.Pending,
+        state=ResultStatus.Empty,
     )
 
 
@@ -188,7 +188,7 @@ def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional
 
                 proficiency = condition.split('(')[1].rstrip(')').strip()
 
-                if ctx.music_proficiencies.status(of=proficiency) is not ResultStatus.Pass:
+                if ctx.music_proficiencies.status(of=proficiency) is not ResultStatus.Done:
                     condition_results = False
 
             else:

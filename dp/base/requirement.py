@@ -1,17 +1,12 @@
 import attr
-from typing import Optional, Dict, Any, List, TYPE_CHECKING
-import enum
+from typing import Optional, Dict, Any, List, cast, TYPE_CHECKING
+from fractions import Fraction
 
-from .bases import Base, Summable
+from .bases import Base
+from ..status import ResultStatus, PassingStatuses
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..claim import ClaimAttempt  # noqa: F401
-
-
-@enum.unique
-class AuditedBy(enum.Enum):
-    Department = "department"
-    Registrar = "registrar"
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -19,7 +14,7 @@ class BaseRequirementRule(Base):
     name: str
     message: Optional[str]
     result: Optional[Base]
-    audited_by: Optional[AuditedBy]
+    is_audited: bool
     is_contract: bool
     in_gpa: bool
     disjoint: Optional[bool]
@@ -30,40 +25,38 @@ class BaseRequirementRule(Base):
             "name": self.name,
             "message": self.message,
             "result": self.result.to_dict() if self.result is not None else None,
-            "audited_by": self.audited_by.value if self.audited_by else None,
+            "audited_by": "department" if self.is_audited else None,
             "contract": self.is_contract,
         }
 
     def type(self) -> str:
         return "requirement"
 
-    def rank(self) -> Summable:
-        if self.audited_by is not None and self.ok():
-            return 1
+    def status(self) -> ResultStatus:
+        if self.result is None:
+            return super().status()
+
+        if self.is_audited:
+            return ResultStatus.PendingApproval
+
+        return self.result.status()
+
+    def rank(self) -> Fraction:
+        if self.is_audited and self.waived():
+            return Fraction(1, 1)
 
         if self.result is None:
-            return 0
+            return Fraction(0, 1)
 
-        boost = 1 if self.ok() else 0
-        return self.result.rank() + boost
+        status = self.status()
+        if status in PassingStatuses:
+            boost: Optional[int] = 1
+        else:
+            boost = None
 
-    def max_rank(self) -> Summable:
-        if self.audited_by is not None and self.ok():
-            return self.rank()
+        child_rank: Fraction = self.result.rank()
 
-        if self.result is None:
-            return 1
-
-        if self.ok():
-            return self.rank()
-
-        return self.result.max_rank() + 1
-
-    def in_progress(self) -> bool:
-        if self.result is None:
-            return super().in_progress()
-
-        return self.result.in_progress()
+        return cast(Fraction, child_rank + boost if boost else child_rank)
 
     def is_always_disjoint(self) -> bool:
         if self.disjoint is True:
@@ -87,13 +80,13 @@ class BaseRequirementRule(Base):
         return self.in_gpa
 
     def claims(self) -> List['ClaimAttempt']:
-        if self.audited_by or self.result is None:
+        if self.is_audited or self.result is None:
             return []
 
         return self.result.claims()
 
     def claims_for_gpa(self) -> List['ClaimAttempt']:
-        if self.is_in_gpa() and self.result is not None and not self.audited_by:
+        if self.is_in_gpa() and self.result and not self.is_audited:
             return self.result.claims_for_gpa()
 
         return []

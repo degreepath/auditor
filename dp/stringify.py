@@ -3,6 +3,7 @@ from .data import CourseInstance
 from .data.course_enums import CourseType
 from .operator import str_operator
 from .ms import pretty_ms
+from .status import PassingStatusValues
 import json
 
 
@@ -94,14 +95,20 @@ def print_path(rule: Dict[str, Any], indent: int) -> Iterator[str]:
 
 
 def calculate_emoji(rule: Dict[str, Any]) -> str:
-    if rule["overridden"]:
+    if rule["status"] == "waived":
         return "💜"
-    elif rule["status"] == "pass":
+    elif rule["status"] == "done":
         return "💚"
-    elif rule["status"] == "pending":
+    elif rule["status"] == "pending-current":
+        return "❤️"
+    elif rule["status"] == "pending-registered":
+        return "🧡"
+    elif rule["status"] == "needs-more-items":
+        return "💙"
+    elif rule["status"] == "pending-approval":
+        return "❓"
+    elif rule["status"] == "empty":
         return "🌀"
-    elif rule["status"] == "in-progress":
-        return "💛"
     else:
         return "🚫️"
 
@@ -159,13 +166,17 @@ def print_course(
     else:
         course = None
 
-    if not rule["overridden"]:
+    if rule["status"] != "waived":
         if course is None:
             status = "🌀      "
         elif course.is_incomplete:
             status = "⛔️ [dnf]"
+        elif course.is_in_progress_this_term:
+            status = "❤️ [ip!]"
+        elif course.is_in_progress_in_future:
+            status = "🧡 [ip-]"
         elif course.is_in_progress:
-            status = "💙 [ ip]"
+            status = "💙 [ip?]"
         elif course.is_repeat:
             status = "💕 [rep]"
         elif course:
@@ -175,7 +186,8 @@ def print_course(
 
         if course and course.course_type is CourseType.AP:
             display_course = course.name
-    elif rule["ok"] and rule["overridden"]:
+
+    else:
         if course:
             status = "💜 [ovr]"
             display_course = f"{course.course().strip()} {course.name}"

@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, Sequence, Iterator, List, Collection, Any, Tuple, Optional, Union, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, List, Collection, Any, Tuple, Optional, Union, cast, TYPE_CHECKING
 import logging
 from decimal import Decimal
 
@@ -9,13 +9,13 @@ from ..constants import Constants
 from ..operator import Operator, apply_operator
 from ..base.bases import Rule, Solution
 from ..base.assertion import BaseAssertionRule
-from ..apply_clause import apply_clause_to_assertion
-from ..status import ResultStatus
+from ..apply_clause import apply_clause_to_assertion_with_courses, apply_clause_to_assertion_with_areas, apply_clause_to_assertion_with_data, area_actions, course_actions, other_actions
+from ..status import ResultStatus, PassingStatuses
 from ..result.assertion import AssertionResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable, CourseInstance  # noqa: F401
+    from ..data import Clausable, CourseInstance, AreaPointer  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -87,46 +87,119 @@ class AssertionRule(Rule, BaseAssertionRule):
         return AssertionResult.from_rule(self, overridden=True)
 
     def resolve(self, value: Tuple['Clausable', ...], *, overridden: bool = False, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
-        calculated_result = apply_clause_to_assertion(self.assertion, value)
+        if overridden:
+            assertion = ResolvedSingleClause.as_overridden(self.assertion)
+            return AssertionResult.from_rule(self, assertion=assertion, overridden=False)
 
-        reduced_value = calculated_result.value
-        value_items = calculated_result.data
-        clbids = calculated_result.clbids()
-        ip_clbids = calculated_result.ip_clbids()
+        if self.assertion.key in course_actions.keys():
+            return self.resolve_with_courses(cast(Sequence['CourseInstance'], value), inserted=inserted)
 
-        # if we have `treat_in_progress_as_pass` set, we skip the ip_clbids check entirely
-        if ip_clbids and self.assertion.treat_in_progress_as_pass is False:
-            result = ResultStatus.InProgress
-        elif apply_operator(lhs=reduced_value, op=self.assertion.operator, rhs=self.assertion.expected) is True:
-            result = ResultStatus.Pass
-        elif clbids:
-            # we aren't "passing", but we've also got at least something
-            # counting towards this clause, so we'll mark it as in-progress.
-            result = ResultStatus.InProgress
+        if self.assertion.key in area_actions.keys():
+            return self.resolve_with_areas(cast(Sequence['AreaPointer'], value), inserted=inserted)
+
+        if self.assertion.key in other_actions.keys():
+            return self.resolve_with_items(value, inserted=inserted)
+
+        raise TypeError(f'unexpected key {self.assertion.key!r}')
+
+    def resolve_with_areas(self, value: Sequence['AreaPointer'], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+        calculated_result = apply_clause_to_assertion_with_areas(self.assertion, value)
+
+        computed_value = calculated_result.value
+        operator_result = apply_operator(lhs=computed_value, op=self.assertion.operator, rhs=self.assertion.expected)
+
+        if operator_result is True:
+            result = ResultStatus.Done
+        elif self.assertion.operator is Operator.GreaterThan and computed_value <= self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value < self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+        elif self.assertion.operator is Operator.EqualTo and computed_value < self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
         else:
-            result = ResultStatus.Pending
+            result = ResultStatus.Empty
 
-        if self.assertion.operator in (Operator.LessThan, Operator.LessThanOrEqualTo)\
-                and result == ResultStatus.InProgress\
-                and apply_operator(lhs=reduced_value, op=self.assertion.operator, rhs=self.assertion.expected) is True:
-            result = ResultStatus.Pass
-
-        assertion = ResolvedSingleClause(
-            key=self.assertion.key,
-            expected=self.assertion.expected,
-            expected_verbatim=self.assertion.expected_verbatim,
-            operator=self.assertion.operator,
-            at_most=self.assertion.at_most,
-            label=self.assertion.label,
-            resolved_with=Decimal(reduced_value),
-            resolved_items=tuple(value_items),
-            resolved_clbids=clbids,
-            in_progress_clbids=ip_clbids,
-            state=result,
-            treat_in_progress_as_pass=self.assertion.treat_in_progress_as_pass,
+        assertion = ResolvedSingleClause.from_clause(
+            self.assertion,
+            status=result,
+            resolved_with=computed_value,
+            resolved_items=calculated_result.data,
         )
 
-        return AssertionResult.from_rule(self, assertion=assertion, inserted_clbids=inserted, overridden=False)
+        return AssertionResult.from_rule(self, assertion=assertion)
+
+    def resolve_with_items(self, value: Sequence['Clausable'], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+        calculated_result = apply_clause_to_assertion_with_data(self.assertion, cast(Sequence[Any], value))
+
+        computed_value = calculated_result.value
+        operator_result = apply_operator(lhs=computed_value, op=self.assertion.operator, rhs=self.assertion.expected)
+
+        if operator_result is True:
+            result = ResultStatus.Done
+        elif self.assertion.operator is Operator.GreaterThan and computed_value <= self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value < self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+        elif self.assertion.operator is Operator.EqualTo and computed_value < self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+        else:
+            result = ResultStatus.Empty
+
+        assertion = ResolvedSingleClause.from_clause(
+            self.assertion,
+            status=result,
+            resolved_with=computed_value,
+            resolved_items=calculated_result.data,
+        )
+
+        return AssertionResult.from_rule(self, assertion=assertion)
+
+    def resolve_with_courses(self, value: Sequence['CourseInstance'], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+        calculated_result = apply_clause_to_assertion_with_courses(self.assertion, cast(Sequence[Any], value))
+
+        computed_value = calculated_result.value
+        operator_result = apply_operator(lhs=computed_value, op=self.assertion.operator, rhs=self.assertion.expected)
+
+        if operator_result is True:
+            if any(c.is_in_progress for c in calculated_result.courses):
+                has_enrolled_courses = any(c.is_in_progress_this_term for c in calculated_result.courses)
+                has_registered_courses = any(c.is_in_progress_in_future for c in calculated_result.courses)
+
+                # something has gone horribly wrong if there was an IP course that's neither this term nor future
+                assert has_enrolled_courses or has_registered_courses
+
+                if has_enrolled_courses and (not has_registered_courses):
+                    result = ResultStatus.PendingCurrent
+                elif has_registered_courses:
+                    result = ResultStatus.PendingRegistered
+                else:
+                    raise Exception('unreachable')
+
+            else:
+                result = ResultStatus.Done
+
+        elif self.assertion.operator is Operator.GreaterThan and computed_value <= self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+
+        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value < self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+
+        elif self.assertion.operator is Operator.EqualTo and computed_value < self.assertion.expected:
+            result = ResultStatus.NeedsMoreItems
+
+        else:
+            result = ResultStatus.Empty
+
+        assertion = ResolvedSingleClause.from_clause(
+            self.assertion,
+            status=result,
+            resolved_with=computed_value,
+            resolved_items=calculated_result.data,
+            resolved_clbids=tuple(c.clbid for c in calculated_result.courses),
+            in_progress_clbids=tuple(c.clbid for c in calculated_result.courses if c.is_in_progress),
+        )
+
+        return AssertionResult.from_rule(self, assertion=assertion, inserted_clbids=inserted)
 
     def input_size_range(self, *, maximum: int) -> Iterator[int]:
         assertion = self.assertion
@@ -236,7 +309,7 @@ class ConditionalAssertionRule(Rule):
 
         result = self.condition.resolve(filtered_input)
 
-        if result.ok():
+        if result.status() in PassingStatuses:
             return self.when_yes
         else:
             return self.when_no
