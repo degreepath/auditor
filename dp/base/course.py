@@ -59,6 +59,10 @@ class BaseCourseRule(Base):
 
         matched = self.matched()
         has_ip_courses = any(c.is_in_progress for c in matched)
+
+        if matched and not has_ip_courses:
+            return ResultStatus.Done
+
         has_enrolled_courses = any(c.is_in_progress_this_term for c in matched)
         has_registered_courses = any(c.is_in_progress_in_future for c in matched)
 
