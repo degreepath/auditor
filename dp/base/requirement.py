@@ -33,6 +33,9 @@ class BaseRequirementRule(Base):
         return "requirement"
 
     def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
+
         if self.result is None:
             return super().status()
 
