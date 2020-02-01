@@ -1,6 +1,6 @@
 # mypy: warn_unreachable = False
 
-from typing import Any, Union
+from typing import Any, Union, Tuple
 from enum import Enum
 import logging
 
@@ -21,7 +21,7 @@ class KnownConstants(Enum):
 class Constants:
     matriculation_year: int = 0
     terms_since_declaring_major: int = 0
-    primary_performing_medium: str = ''
+    primary_performing_medium: Union[str, Tuple[str, ...]] = ''
     current_area_code: str = ''
 
     def get_by_name(self, v: Union[str, Any]) -> Any:
@@ -40,10 +40,7 @@ class Constants:
             return self.terms_since_declaring_major
 
         elif key is KnownConstants.PrimaryPerformingMedium:
-            if ',' in self.primary_performing_medium:
-                return self.primary_performing_medium.split(', ')
-            else:
-                return self.primary_performing_medium
+            return self.primary_performing_medium
 
         elif key is KnownConstants.CurrentAreaCode:
             return self.current_area_code

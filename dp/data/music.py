@@ -1,4 +1,4 @@
-from typing import Dict, Any, Tuple, Optional, TYPE_CHECKING
+from typing import Dict, Union, Any, Tuple, Optional, TYPE_CHECKING
 import attr
 import logging
 import enum
@@ -145,19 +145,23 @@ class MusicProficiencies:
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class MusicMediums:
-    ppm: str = 'Unknown'
-    ppm2: str = 'Unknown'
-    spm: str = 'Unknown'
-    spm2: str = 'Unknown'
+    ppm: Union[str, Tuple[str, ...]] = 'Unknown'
+    ppm2: Union[str, Tuple[str, ...]] = 'Unknown'
+    spm: Union[str, Tuple[str, ...]] = 'Unknown'
+    spm2: Union[str, Tuple[str, ...]] = 'Unknown'
+
+    @staticmethod
+    def parse_medium(medium: str) -> Union[str, Tuple[str, ...]]:
+        if ',' in medium:
+            return tuple(m.strip() for m in medium.split(', '))
+        else:
+            return medium
 
     @staticmethod
     def from_dict(data: Dict) -> 'MusicMediums':
-        try:
-            return MusicMediums(
-                ppm=data.get('ppm', 'Unknown'),
-                ppm2=data.get('ppm2', 'Unknown'),
-                spm=data.get('spm', 'Unknown'),
-                spm2=data.get('spm2', 'Unknown'),
-            )
-        except AttributeError:
-            return MusicMediums()
+        ppm = MusicMediums.parse_medium(data.get('ppm', 'Unknown'))
+        ppm2 = MusicMediums.parse_medium(data.get('ppm2', 'Unknown'))
+        spm = MusicMediums.parse_medium(data.get('spm', 'Unknown'))
+        spm2 = MusicMediums.parse_medium(data.get('spm2', 'Unknown'))
+
+        return MusicMediums(ppm=ppm, ppm2=ppm2, spm=spm, spm2=spm2)
