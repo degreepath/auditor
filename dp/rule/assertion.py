@@ -110,11 +110,11 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         if operator_result is True:
             result = ResultStatus.Done
-        elif self.assertion.operator is Operator.GreaterThan and computed_value <= self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThan and computed_value > 0 and computed_value <= self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
-        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value > 0 and computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
-        elif self.assertion.operator is Operator.EqualTo and computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.EqualTo and computed_value > 0 and computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
         else:
             result = ResultStatus.Empty
@@ -136,11 +136,11 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         if operator_result is True:
             result = ResultStatus.Done
-        elif self.assertion.operator is Operator.GreaterThan and computed_value <= self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThan and computed_value > 0 and computed_value <= self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
-        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value > 0 and computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
-        elif self.assertion.operator is Operator.EqualTo and computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.EqualTo and computed_value > 0 and computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
         else:
             result = ResultStatus.Empty
@@ -178,13 +178,13 @@ class AssertionRule(Rule, BaseAssertionRule):
             else:
                 result = ResultStatus.Done
 
-        elif self.assertion.operator is Operator.GreaterThan and computed_value <= self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThan and computed_value > 0 and computed_value <= self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
 
-        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and computed_value > 0 and computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
 
-        elif self.assertion.operator is Operator.EqualTo and computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.EqualTo and computed_value > 0 and computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
 
         else:
