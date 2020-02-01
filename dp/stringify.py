@@ -310,7 +310,11 @@ def print_query(
                 continue
 
             inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
-            ip_msg = "[ip] " if course.is_in_progress else ""
+            ip_msg = ""
+            if course.is_in_progress_this_term:
+                ip_msg = "[ip!] "
+            elif course.is_in_progress_in_future:
+                ip_msg = "[ip-] "
             yield f"{prefix}    {inserted_msg}{ip_msg}{course.course()} \"{course.name}\" ({course.clbid})"
 
     if rule["failures"]:
