@@ -294,7 +294,7 @@ def print_query(
     emoji = calculate_emoji(rule)
 
     if rule['where']:
-        yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
+        yield f"{prefix}{emoji} [{rule['status']}] Given courses matching {str_clause(rule['where'])}"
 
     if rule['limit']:
         yield f"{prefix} Subject to these limits:"
@@ -344,10 +344,11 @@ def print_requirement(
 
     emoji = calculate_emoji(rule)
 
-    yield f"{prefix}{emoji} Requirement({rule['name']})"
-    if rule["audited_by"] is not None:
-        yield f"{prefix}    Audited by: {rule['audited_by']}"
+    yield f"{prefix}{emoji} Requirement({rule['name']}) [{rule['status']}]"
+    if rule["is_audited"]:
+        yield f"{prefix}    is manually audited"
         return
+
     if rule["result"]:
         yield from print_result(rule["result"], transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
 
@@ -369,7 +370,7 @@ def print_assertion(
 
     emoji = calculate_emoji(rule)
 
-    yield f"{prefix} - {emoji} {str_clause(rule['assertion'])}"
+    yield f"{prefix} - {emoji} {str_clause(rule['assertion'])} [{rule['status']}]"
 
     prefix += " " * 6
 
