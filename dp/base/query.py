@@ -70,22 +70,25 @@ class BaseQueryRule(Base):
         if self.waived():
             return ResultStatus.Waived
 
-        allowed_statuses = {ResultStatus.Done, ResultStatus.Waived}
         statuses = set(a.status() for a in self.all_assertions())
 
-        if allowed_statuses.issuperset(statuses):
+        if statuses.issubset(WAIVED_AND_DONE):
             return ResultStatus.Done
 
-        allowed_statuses.add(ResultStatus.PendingCurrent)
-        if allowed_statuses.issuperset(statuses):
+        if statuses.issubset(WAIVED_DONE_CURRENT):
             return ResultStatus.PendingCurrent
 
-        allowed_statuses.add(ResultStatus.PendingRegistered)
-        if allowed_statuses.issuperset(statuses):
+        if statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
             return ResultStatus.PendingRegistered
 
-        allowed_statuses.add(ResultStatus.NeedsMoreItems)
-        if allowed_statuses.issuperset(statuses):
+        if statuses.issubset(WAIVED_DONE_CURRENT_PENDING_INCOMPLETE):
             return ResultStatus.NeedsMoreItems
 
         return ResultStatus.Empty
+
+
+WAIVED_ONLY = frozenset({ResultStatus.Waived})
+WAIVED_AND_DONE = frozenset({ResultStatus.Done, ResultStatus.Waived})
+WAIVED_DONE_CURRENT = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent})
+WAIVED_DONE_CURRENT_PENDING = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered})
+WAIVED_DONE_CURRENT_PENDING_INCOMPLETE = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered})
