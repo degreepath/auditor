@@ -1,5 +1,5 @@
 from typing import Optional, Dict, List, TYPE_CHECKING
-from fractions import Fraction
+from decimal import Decimal
 import logging
 
 from .status import PassingStatuses
@@ -16,7 +16,7 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
     logger.debug('solving rule at %s', rule.path)
 
     result: Optional['Result'] = None
-    rank: Fraction = Fraction(0, 1)
+    rank: Decimal = Decimal(0)
 
     claims: Dict[str, List['Claim']] = dict()
     if merge_claims:
@@ -27,7 +27,7 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
             inner_ctx = ctx.with_empty_claims()
 
             tmp_result = s.audit(ctx=inner_ctx)
-            tmp_rank = tmp_result.rank()
+            tmp_rank, _tmp_max = tmp_result.rank()
 
             if result is None:
                 result, rank = tmp_result, tmp_rank

@@ -2,7 +2,6 @@ import attr
 from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
 import logging
 import decimal
-from fractions import Fraction
 from collections import defaultdict
 
 from .base import Solution, Result, Rule, Base
@@ -340,7 +339,7 @@ class AreaResult(AreaOfStudy, Result):
 
         return self.result.status()
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[decimal.Decimal, decimal.Decimal]:
         return self.result.rank()
 
     def claims(self) -> List['ClaimAttempt']:

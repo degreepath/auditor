@@ -140,19 +140,19 @@ def print_area(
     yield from print_result(rule['result'], transcript, show_ranks=show_ranks, show_paths=show_paths)
 
 
-def print_course(
+def print_course(  # noqa: C901
     rule: Dict[str, Any],
     transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
-) -> Iterator[str]:
+) -> Iterator[str]:  # noqa: C901
     if show_paths:
         yield from print_path(rule, indent)
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     display_course = rule['course']
     if not rule['course'] and rule['ap'] != '':
@@ -213,7 +213,7 @@ def print_proficiency(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     status = "🌀      "
     if rule["ok"]:
@@ -240,7 +240,7 @@ def print_count(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
@@ -289,7 +289,7 @@ def print_query(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
@@ -340,7 +340,7 @@ def print_requirement(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
@@ -365,7 +365,7 @@ def print_assertion(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 

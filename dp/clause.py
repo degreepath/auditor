@@ -1,6 +1,5 @@
 from typing import Union, Tuple, Dict, Any, Optional, TYPE_CHECKING
 from decimal import Decimal
-from fractions import Fraction
 import logging
 
 import attr
@@ -99,7 +98,7 @@ class SingleClause:
 
     def to_dict(self) -> Dict[str, Any]:
         status = self.status()
-        rank = self.rank()
+        rank, max_rank = self.rank()
 
         return {
             "type": "single-clause",
@@ -111,8 +110,8 @@ class SingleClause:
             "ip_as_passing": self.treat_in_progress_as_pass,
             "hash": str(hash((self.key, self.expected, self.operator))),
             "result": self.state.value,
-            "rank": rank.numerator,
-            "max_rank": rank.denominator,
+            "rank": str(rank),
+            "max_rank": str(max_rank),
             "status": status.value,
         }
 
@@ -122,11 +121,11 @@ class SingleClause:
     def status(self) -> ResultStatus:
         return self.state
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[Decimal, Decimal]:
         if self.state in (ResultStatus.Done, ResultStatus.Waived):
-            return Fraction(1, 1)
+            return Decimal(1), Decimal(1)
 
-        return Fraction(0, 1)
+        return Decimal(0), Decimal(1)
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
@@ -201,22 +200,16 @@ class ResolvedSingleClause(SingleClause):
             "in_progress_clbids": [x for x in self.in_progress_clbids],
         }
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[Decimal, Decimal]:
         if self.state in (ResultStatus.Done, ResultStatus.Waived):
-            return Fraction(1, 1)
+            return Decimal(1), Decimal(1)
 
         if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
             if type(self.expected) in (int, Decimal) and self.expected != 0:
-                if int(self.expected) == self.expected and int(self.resolved_with) == self.resolved_with:
-                    return Fraction(int(self.resolved_with), int(self.expected))
-
-                if int(self.expected * 100) == self.expected * 100 and int(self.resolved_with * 100) == self.resolved_with * 100:
-                    return Fraction(int(self.resolved_with * 100), int(self.expected * 100))
-
                 resolved = Decimal(self.resolved_with) / Decimal(self.expected)
-                return min(Fraction(1, 1), Fraction(resolved))
+                return min(Decimal(1), resolved), Decimal(1)
 
-        return Fraction(0, 0)
+        return Decimal(0), Decimal(1)
 
 
 def stringify_expected(expected: Any) -> Any:

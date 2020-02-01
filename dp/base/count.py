@@ -1,7 +1,7 @@
 import attr
 from typing import Tuple, Dict, Any, Sequence, List, cast
 import logging
-from fractions import Fraction
+from decimal import Decimal
 
 from .bases import Base
 from .assertion import BaseAssertionRule
@@ -39,14 +39,31 @@ class BaseCountRule(Base):
     def claims_for_gpa(self) -> List[ClaimAttempt]:
         return [claim for item in self.items for claim in item.claims_for_gpa()]
 
-    def rank(self) -> Fraction:
+    def max_rank(self, ranks: Sequence[Decimal]) -> Decimal:
+        audit_max_rank = sum(ranks)
+
+        if len(self.items) == 2 and self.count == 2:
+            return cast(Decimal, sum(sorted(m for m in ranks)[:2]) + audit_max_rank)
+
+        if self.count == 1 and self.at_most:
+            return max(m for m in ranks) + audit_max_rank
+
+        return cast(Decimal, sum(m for m in ranks) + audit_max_rank)
+
+    def rank(self) -> Tuple[Decimal, Decimal]:
         if self.waived():
-            return Fraction(1, 1)
+            return Decimal(1), Decimal(1)
 
-        item_rank = cast(Fraction, sum(r.rank() for r in self.items))
-        post_audit_rank = cast(Fraction, sum(c.rank() for c in self.audits()))
+        item_ranks = [r.rank() for r in self.items]
+        audit_ranks = [c.rank() for c in self.audits()]
 
-        return cast(Fraction, item_rank + post_audit_rank)
+        item_rank = cast(Decimal, sum(r for r, m in item_ranks))
+        item_max_rank = self.max_rank([m for r, m in item_ranks])
+
+        audit_rank = cast(Decimal, sum(r for r, m in audit_ranks))
+        audit_max_rank = self.max_rank([m for r, m in audit_ranks])
+
+        return item_rank + audit_rank, item_max_rank + audit_max_rank
 
     def status(self) -> ResultStatus:
         if self.waived():

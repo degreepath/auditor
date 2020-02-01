@@ -1,7 +1,6 @@
 import attr
 from typing import Optional, Tuple, Dict, Any
 from decimal import Decimal
-from fractions import Fraction
 
 from .bases import Base
 from ..data.course_enums import GradeOption
@@ -40,19 +39,19 @@ class BaseCourseRule(Base):
     def type(self) -> str:
         return "course"
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[Decimal, Decimal]:
         status = self.status()
 
         if status in (ResultStatus.Done, ResultStatus.Waived):
-            return Fraction(3, 3)
+            return Decimal(1), Decimal(1)
 
         if status is ResultStatus.PendingCurrent:
-            return Fraction(2, 3)
+            return Decimal('0.75'), Decimal(1)
 
         if status is ResultStatus.PendingRegistered:
-            return Fraction(1, 3)
+            return Decimal('0.5'), Decimal(1)
 
-        return Fraction(0, 3)
+        return Decimal(0), Decimal(1)
 
     def status(self) -> ResultStatus:
         if self.waived():

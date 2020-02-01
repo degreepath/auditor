@@ -1,6 +1,6 @@
 import attr
 from typing import Optional, Tuple, Dict, Any
-from fractions import Fraction
+from decimal import Decimal
 
 from ..clause import Clause, SingleClause
 from ..status import ResultStatus
@@ -27,11 +27,11 @@ class BaseAssertionRule(Base):
     def type(self) -> str:
         return "assertion"
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[Decimal, Decimal]:
         status = self.status()
 
         if status in (ResultStatus.Done, ResultStatus.Waived):
-            return Fraction(3, 3)
+            return Decimal(1), Decimal(1)
 
         return self.assertion.rank()
 

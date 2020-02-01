@@ -1,6 +1,6 @@
 import attr
-from typing import Optional, Dict, Any, List, cast, TYPE_CHECKING
-from fractions import Fraction
+from typing import Optional, Dict, Any, List, Tuple, TYPE_CHECKING
+from decimal import Decimal
 
 from .bases import Base
 from ..status import ResultStatus, PassingStatuses
@@ -41,12 +41,12 @@ class BaseRequirementRule(Base):
 
         return self.result.status()
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[Decimal, Decimal]:
         if self.is_audited and self.waived():
-            return Fraction(1, 1)
+            return Decimal(1), Decimal(1)
 
         if self.result is None:
-            return Fraction(0, 1)
+            return Decimal(0), Decimal(1)
 
         status = self.status()
         if status in PassingStatuses:
@@ -54,9 +54,9 @@ class BaseRequirementRule(Base):
         else:
             boost = None
 
-        child_rank: Fraction = self.result.rank()
+        child_rank, child_max = self.result.rank()
 
-        return cast(Fraction, child_rank + boost if boost else child_rank)
+        return child_rank + boost if boost else child_rank, child_max + boost if boost else child_max
 
     def is_always_disjoint(self) -> bool:
         if self.disjoint is True:

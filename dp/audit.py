@@ -1,6 +1,6 @@
 import attr
 from typing import List, Optional, Tuple, Iterator, Union, Dict
-from fractions import Fraction
+from decimal import Decimal
 import time
 
 from .constants import Constants
@@ -45,7 +45,7 @@ class EstimateMsg:
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ProgressMsg:
-    best_rank: Fraction
+    best_rank: Decimal
     best_i: Optional[int]
     iters: int
     total_iters: int
@@ -70,7 +70,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
     audit_count = 0
 
     best_sol: Optional[AreaResult] = None
-    best_rank: Fraction = Fraction(0, 1)
+    best_rank: Decimal = Decimal(0)
     best_i: Optional[int] = None
 
     estimate = area.estimate(student=student, exceptions=exceptions or [])
@@ -92,7 +92,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         audit_count += 1
 
         result = sol.audit()
-        result_rank = result.rank()
+        result_rank, _result_max = result.rank()
 
         # if this is the first solution, store it, because it's the best so far
         if best_sol is None:

@@ -1,6 +1,6 @@
 import abc
 from typing import Iterator, Dict, Set, Any, List, Tuple, Collection, Optional, TYPE_CHECKING
-from fractions import Fraction
+from decimal import Decimal
 import enum
 import attr
 from functools import cmp_to_key, lru_cache
@@ -26,15 +26,15 @@ class Base(abc.ABC):
 
     def to_dict(self) -> Dict[str, Any]:
         status = self.status()
-        rank = self.rank()
+        rank, max_rank = self.rank()
 
         return {
             "path": list(self.path),
             "type": self.type(),
             "status": status.value,
             "ok": status == ResultStatus.Done,
-            "rank": rank.numerator,
-            "max_rank": rank.denominator,
+            "rank": str(rank),
+            "max_rank": str(max_rank),
         }
 
     @abc.abstractmethod
@@ -58,18 +58,18 @@ class Base(abc.ABC):
         elif has_ip_courses and has_registered_courses:
             return ResultStatus.PendingRegistered
 
-        rank = self.rank()
+        rank, _max_rank = self.rank()
 
-        if rank < Fraction(1, 1):
+        if rank < 1:
             return ResultStatus.NeedsMoreItems
 
         return ResultStatus.Empty
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[Decimal, Decimal]:
         if self.waived():
-            return Fraction(1, 1)
+            return Decimal(1), Decimal(1)
 
-        return Fraction(0, 1)
+        return Decimal(0), Decimal(1)
 
     def claims(self) -> List['ClaimAttempt']:
         return []

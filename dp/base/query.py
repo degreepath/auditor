@@ -1,7 +1,7 @@
 import attr
 from typing import Optional, Tuple, Dict, Any, Sequence, Union, cast
 import enum
-from fractions import Fraction
+from decimal import Decimal
 
 from .bases import Base
 from ..status import ResultStatus
@@ -55,11 +55,16 @@ class BaseQueryRule(Base):
     def type(self) -> str:
         return "query"
 
-    def rank(self) -> Fraction:
+    def rank(self) -> Tuple[Decimal, Decimal]:
         if self.waived():
-            return Fraction(1, 1)
+            return Decimal(1), Decimal(1)
 
-        return cast(Fraction, sum(a.rank() for a in self.all_assertions()))
+        assertion_ranks = [a.rank() for a in self.all_assertions()]
+
+        rank = cast(Decimal, sum(r for r, m in assertion_ranks))
+        max_rank = cast(Decimal, sum(m for r, m in assertion_ranks))
+
+        return rank, max_rank
 
     def status(self) -> ResultStatus:
         if self.waived():
