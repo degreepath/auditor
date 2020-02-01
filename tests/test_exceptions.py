@@ -28,7 +28,7 @@ def test_insertion_on_course_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is True
+    assert result.waived() is True
     assert result.claims()[0].claim.course.clbid == course_b.clbid
 
 
@@ -59,7 +59,7 @@ def test_multi_insertion_on_course_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is True
+    assert result.waived() is True
     assert result.claims()[0].claim.course.clbid == course_b.clbid
     assert len(result.claims()) == 1
 
@@ -89,7 +89,7 @@ def test_insertion_on_query_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
     assert result.claims()[0].claim.course.clbid == course_a.clbid
 
 
@@ -124,7 +124,7 @@ def test_multi_insertion_on_query_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
     assert result.claims()[0].claim.course.clbid == course_a.clbid
     assert len(result.claims()) == 1
 
@@ -162,7 +162,7 @@ def test_insertion_on_count_rule__any(caplog):
 
     assert result.result.count == 1
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
     assert result.claims()[0].claim.course.clbid == course_b.clbid
 
 
@@ -205,7 +205,7 @@ def test_multi_insertion_on_count_rule__any(caplog):
 
     assert result.result.count == 1
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
     assert result.claims()[0].claim.course.clbid == course_b.clbid
     assert result.claims()[1].claim.course.clbid == course_c.clbid
 
@@ -249,7 +249,7 @@ def test_multi_insertion_on_count_rule__any_with_natural(caplog):
 
     assert result.result.count == 1
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
     assert result.claims()[0].claim.course.clbid == course_a.clbid
     assert result.claims()[1].claim.course.clbid == course_b.clbid
     assert result.claims()[2].claim.course.clbid == course_c.clbid
@@ -284,7 +284,7 @@ def test_insertion_on_count_rule__all(caplog):
 
     assert result.result.count == 3
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
 
 
 def test_insertion_on_requirement_rule(caplog):
@@ -317,7 +317,7 @@ def test_insertion_on_requirement_rule(caplog):
     print(result)
 
     assert result.ok() is False
-    assert result.was_overridden() is False
+    assert result.waived() is False
 
 
 def test_override_on_course_rule(caplog):
@@ -336,7 +336,7 @@ def test_override_on_course_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is True
+    assert result.waived() is True
 
 
 def test_override_on_query_rule(caplog):
@@ -360,7 +360,7 @@ def test_override_on_query_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is True
+    assert result.waived() is True
 
 
 def test_override_on_count_rule(caplog):
@@ -385,7 +385,7 @@ def test_override_on_count_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is True
+    assert result.waived() is True
 
 
 def test_override_on_requirement_rule(caplog):
@@ -409,7 +409,7 @@ def test_override_on_requirement_rule(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is True
+    assert result.waived() is True
 
 
 def test_override_on_count_rule_assertion_clause(caplog):
@@ -436,9 +436,9 @@ def test_override_on_count_rule_assertion_clause(caplog):
 
     result = solutions[0].audit()
 
-    assert result.result.audits()[0].was_overridden() is True
+    assert result.result.audits()[0].waived() is True
     assert result.ok() is False
-    assert result.was_overridden() is False
+    assert result.waived() is False
 
 
 def test_insertion_on_count_rule_assertion_clause(caplog):
@@ -466,8 +466,8 @@ def test_insertion_on_count_rule_assertion_clause(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is False
-    assert result.result.audits()[0].was_overridden() is False
+    assert result.waived() is False
+    assert result.result.audits()[0].waived() is False
     assert set(result.result.audits()[0].assertion.resolved_items) == set(['1', '0'])
 
     assert result.claims()[0].claim.course.clbid == course_a.clbid
@@ -505,8 +505,8 @@ def test_multi_insertion_on_count_rule_assertion_clause(caplog):
     result = solutions[0].audit()
 
     assert result.ok() is True
-    assert result.was_overridden() is False
-    assert result.result.audits()[0].was_overridden() is False
+    assert result.waived() is False
+    assert result.result.audits()[0].waived() is False
     assert set(result.result.audits()[0].assertion.resolved_items) == set(['1', '0', '2'])
 
     assert result.claims()[0].claim.course.clbid == course_a.clbid
@@ -533,9 +533,9 @@ def test_override_on_query_rule_audit_clause(caplog):
 
     result = solutions[0].audit()
 
-    assert result.result.resolved_assertions[0].was_overridden() is True
+    assert result.result.resolved_assertions[0].waived() is True
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
 
 
 def test_insertion_on_query_rule_audit_clause(caplog):
@@ -562,12 +562,12 @@ def test_insertion_on_query_rule_audit_clause(caplog):
 
     result = solutions[0].audit()
 
-    assert result.result.resolved_assertions[0].was_overridden() is False
+    assert result.result.resolved_assertions[0].waived() is False
 
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
 
-    assert result.result.resolved_assertions[0].was_overridden() is False
+    assert result.result.resolved_assertions[0].waived() is False
     assert set(result.result.resolved_assertions[0].assertion.resolved_items) == set(['1', '0'])
 
     assert result.claims()[0].claim.course.clbid == course_a.clbid
@@ -604,12 +604,12 @@ def test_multi_insertion_on_query_rule_audit_clause(caplog):
 
     result = solutions[0].audit()
 
-    assert result.result.resolved_assertions[0].was_overridden() is False
+    assert result.result.resolved_assertions[0].waived() is False
 
     assert result.ok() is True
-    assert result.was_overridden() is False
+    assert result.waived() is False
 
-    assert result.result.resolved_assertions[0].was_overridden() is False
+    assert result.result.resolved_assertions[0].waived() is False
     assert set(result.result.resolved_assertions[0].assertion.resolved_items) == set(['1', '0', '2'])
 
     assert result.claims()[0].claim.course.clbid == course_a.clbid
