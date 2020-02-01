@@ -25,7 +25,7 @@ class BaseRequirementRule(Base):
             "name": self.name,
             "message": self.message,
             "result": self.result.to_dict() if self.result is not None else None,
-            "audited_by": "department" if self.is_audited else None,
+            "is_audited": self.is_audited,
             "contract": self.is_contract,
         }
 
