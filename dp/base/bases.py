@@ -4,7 +4,7 @@ from decimal import Decimal
 import enum
 import attr
 from functools import cmp_to_key, lru_cache
-from ..status import ResultStatus
+from ..status import ResultStatus, PassingStatuses
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -94,6 +94,9 @@ class Base(abc.ABC):
 
     def is_never_disjoint(self) -> bool:
         return False
+
+    def ok(self) -> bool:
+        return self.status() in PassingStatuses
 
 
 class Result(Base, abc.ABC):
