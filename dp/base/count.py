@@ -73,7 +73,7 @@ class BaseCountRule(Base):
         allowed_statuses = {ResultStatus.Done, ResultStatus.Waived}
         item_statuses = set(r.status() for r in self.items)
         audit_statuses = set(a.status() for a in self.audits())
-        statuses = item_statuses.intersection(audit_statuses)
+        statuses = item_statuses.union(audit_statuses)
 
         if allowed_statuses.issuperset(statuses):
             return ResultStatus.Done
