@@ -4,7 +4,7 @@ import enum
 from decimal import Decimal
 
 from .bases import Base
-from ..status import ResultStatus
+from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, WAIVED_DONE_CURRENT_PENDING_INCOMPLETE
 from ..limit import LimitSet
 from ..clause import Clause
 from ..claim import ClaimAttempt
@@ -91,10 +91,3 @@ class BaseQueryRule(Base):
             return ResultStatus.NeedsMoreItems
 
         return ResultStatus.Empty
-
-
-WAIVED_ONLY = frozenset({ResultStatus.Waived})
-WAIVED_AND_DONE = frozenset({ResultStatus.Done, ResultStatus.Waived})
-WAIVED_DONE_CURRENT = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent})
-WAIVED_DONE_CURRENT_PENDING = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered})
-WAIVED_DONE_CURRENT_PENDING_INCOMPLETE = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered, ResultStatus.NeedsMoreItems})

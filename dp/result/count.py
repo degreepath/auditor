@@ -5,7 +5,7 @@ from .assertion import AssertionResult
 from ..base.bases import Result, Rule, Solution
 from ..base.count import BaseCountRule
 from ..rule.assertion import AssertionRule
-from ..status import ResultStatus, PassingStatuses
+from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..solution.count import CountSolution
@@ -71,9 +71,3 @@ class CountResult(Result, BaseCountRule):
             return ResultStatus.PendingRegistered
 
         return ResultStatus.NeedsMoreItems
-
-
-WAIVED_ONLY = frozenset({ResultStatus.Waived})
-WAIVED_AND_DONE = frozenset({ResultStatus.Done, ResultStatus.Waived})
-WAIVED_DONE_CURRENT = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent})
-WAIVED_DONE_CURRENT_PENDING = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered})
