@@ -12,7 +12,7 @@ class ResultStatus(enum.Enum):
     Waived = "waived"
 
 
-PassingStatuses = (ResultStatus.Waived, ResultStatus.Done, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered)
+PassingStatuses = frozenset({ResultStatus.Waived, ResultStatus.Done, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered})
 PassingStatusValues = tuple(v.value for v in PassingStatuses)
 
 
