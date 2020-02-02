@@ -402,12 +402,17 @@ def print_assertion(
 
         for clbid in resolved_clbids:
             inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
-            ip_msg = " [ip]" if clbid in ip_clbids else ""
+            ip_msg = ""
             if clbid in transcript:
                 course = transcript[clbid]
+                if course.is_in_progress_this_term:
+                    ip_msg = " [ip!]"
+                elif course.is_in_progress_in_future:
+                    ip_msg = " [ip-]"
                 chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
                 yield f'{prefix}  -{ip_msg}{inserted_msg} Course({", ".join(chunks)})'
             else:
+                ip_msg = " [ip?]" if clbid in ip_clbids else ""
                 yield f'{prefix}  -{ip_msg}{inserted_msg} Course(clbid={clbid})'
 
 
