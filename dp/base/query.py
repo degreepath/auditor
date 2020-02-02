@@ -72,6 +72,9 @@ class BaseQueryRule(Base):
 
         statuses = set(a.status() for a in self.all_assertions())
 
+        if statuses.issubset(WAIVED_ONLY):
+            return ResultStatus.Waived
+
         if statuses.issubset(WAIVED_AND_DONE):
             return ResultStatus.Done
 
