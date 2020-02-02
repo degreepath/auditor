@@ -87,6 +87,9 @@ class BaseQueryRule(Base):
         if statuses.issubset(WAIVED_DONE_CURRENT_PENDING_INCOMPLETE):
             return ResultStatus.NeedsMoreItems
 
+        if ResultStatus.Empty in statuses and statuses.intersection(WAIVED_DONE_CURRENT_PENDING_INCOMPLETE):
+            return ResultStatus.NeedsMoreItems
+
         return ResultStatus.Empty
 
 
