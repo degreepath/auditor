@@ -40,6 +40,9 @@ class BaseCountRule(Base):
         return [claim for item in self.items for claim in item.claims_for_gpa()]
 
     def max_rank(self, ranks: Sequence[Decimal]) -> Decimal:
+        if not ranks:
+            return Decimal(1)
+
         if len(self.items) == 2 and self.count == 2:
             return cast(Decimal, sum(sorted(m for m in ranks)[:2]))
 
@@ -56,10 +59,10 @@ class BaseCountRule(Base):
         audit_ranks = [c.rank() for c in self.audits()]
 
         item_rank = cast(Decimal, sum(r for r, m in item_ranks))
-        item_max_rank = self.max_rank([m for r, m in item_ranks])
+        item_max_rank = max(item_rank, self.max_rank([m for r, m in item_ranks]))
 
         audit_rank = cast(Decimal, sum(r for r, m in audit_ranks))
-        audit_max_rank = self.max_rank([m for r, m in audit_ranks])
+        audit_max_rank = max(audit_rank, self.max_rank([m for r, m in audit_ranks]))
 
         return item_rank + audit_rank, item_max_rank + audit_max_rank
 
