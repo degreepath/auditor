@@ -174,7 +174,8 @@ class AssertionRule(Rule, BaseAssertionRule):
                 has_registered_courses = any(c.is_in_progress_in_future for c in calculated_result.courses)
                 has_incomplete_courses = any(c.is_incomplete for c in calculated_result.courses)
 
-                # something has gone horribly wrong if there was an IP course that's neither this term nor future, and isn't just an incomplete
+                # something has gone horribly wrong if there was an IP course that's neither
+                # this term nor future, and isn't an incomplete
                 assert has_enrolled_courses or has_registered_courses or has_incomplete_courses
 
                 if (has_enrolled_courses or has_incomplete_courses) and (not has_registered_courses):
