@@ -6,7 +6,7 @@ from decimal import Decimal
 from .bases import Base
 from .assertion import BaseAssertionRule
 from ..claim import ClaimAttempt
-from ..status import ResultStatus
+from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING
 
 logger = logging.getLogger(__name__)
 
@@ -70,30 +70,30 @@ class BaseCountRule(Base):
         if self.waived():
             return ResultStatus.Waived
 
-        item_statuses = set(r.status() for r in self.items)
-        audit_statuses = set(a.status() for a in self.audits())
-        statuses = item_statuses.union(audit_statuses)
+        all_child_statuses = [r.status() for r in self.items]
+        all_passing_child_statuses = [s for s in all_child_statuses if s in PassingStatuses]
+        passing_child_statuses = set(all_passing_child_statuses)
+        passing_child_count = len(all_passing_child_statuses)
 
-        if statuses.issubset(WAIVED_ONLY):
+        all_audit_statuses = set(a.status() for a in self.audits())
+
+        # if all rules and audits have been waived, pretend that we're waived as well
+        if passing_child_statuses == WAIVED_ONLY and all_audit_statuses.issubset(WAIVED_ONLY):
             return ResultStatus.Waived
 
-        if statuses.issubset(WAIVED_AND_DONE):
-            return ResultStatus.Done
+        if passing_child_count == 0:
+            return ResultStatus.Empty
 
-        if statuses.issubset(WAIVED_DONE_CURRENT):
-            return ResultStatus.PendingCurrent
-
-        if statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
-            return ResultStatus.PendingRegistered
-
-        if statuses.issubset(WAIVED_DONE_CURRENT_PENDING_INCOMPLETE):
+        if passing_child_count < self.count:
             return ResultStatus.NeedsMoreItems
 
-        return ResultStatus.Empty
+        if passing_child_statuses.issubset(WAIVED_AND_DONE) and all_audit_statuses.issubset(WAIVED_AND_DONE):
+            return ResultStatus.Done
 
+        if passing_child_statuses.issubset(WAIVED_DONE_CURRENT) and all_audit_statuses.issubset(WAIVED_DONE_CURRENT):
+            return ResultStatus.PendingCurrent
 
-WAIVED_ONLY = frozenset({ResultStatus.Waived})
-WAIVED_AND_DONE = frozenset({ResultStatus.Done, ResultStatus.Waived})
-WAIVED_DONE_CURRENT = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent})
-WAIVED_DONE_CURRENT_PENDING = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered})
-WAIVED_DONE_CURRENT_PENDING_INCOMPLETE = frozenset({ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered, ResultStatus.NeedsMoreItems})
+        if passing_child_statuses.issubset(WAIVED_DONE_CURRENT_PENDING) and all_audit_statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
+            return ResultStatus.PendingRegistered
+
+        return ResultStatus.NeedsMoreItems

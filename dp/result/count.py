@@ -5,7 +5,6 @@ from .assertion import AssertionResult
 from ..base.bases import Result, Rule, Solution
 from ..base.count import BaseCountRule
 from ..rule.assertion import AssertionRule
-from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..solution.count import CountSolution
@@ -39,35 +38,3 @@ class CountResult(Result, BaseCountRule):
 
     def waived(self) -> bool:
         return self.overridden
-
-    def status(self) -> ResultStatus:
-        if self.waived():
-            return ResultStatus.Waived
-
-        all_child_statuses = [r.status() for r in self.items]
-        all_passing_child_statuses = [s for s in all_child_statuses if s in PassingStatuses]
-        passing_child_statuses = set(all_passing_child_statuses)
-        passing_child_count = len(all_passing_child_statuses)
-
-        all_audit_statuses = set(a.status() for a in self.audits())
-
-        # if all rules and audits have been waived, pretend that we're waived as well
-        if passing_child_statuses == WAIVED_ONLY and all_audit_statuses.issubset(WAIVED_ONLY):
-            return ResultStatus.Waived
-
-        if passing_child_count == 0:
-            return ResultStatus.Empty
-
-        if passing_child_count < self.count:
-            return ResultStatus.NeedsMoreItems
-
-        if passing_child_statuses.issubset(WAIVED_AND_DONE) and all_audit_statuses.issubset(WAIVED_AND_DONE):
-            return ResultStatus.Done
-
-        if passing_child_statuses.issubset(WAIVED_DONE_CURRENT) and all_audit_statuses.issubset(WAIVED_DONE_CURRENT):
-            return ResultStatus.PendingCurrent
-
-        if passing_child_statuses.issubset(WAIVED_DONE_CURRENT_PENDING) and all_audit_statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
-            return ResultStatus.PendingRegistered
-
-        return ResultStatus.NeedsMoreItems
