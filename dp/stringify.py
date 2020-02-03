@@ -126,7 +126,7 @@ def print_area(
     if rule['status'] in PassingStatusValues:
         title = f"{rule['name']!r} audit was successful."
     else:
-        title = f"{rule['name']!r} audit failed."
+        title = f"{rule['name']!r} audit status: {rule['status']}."
 
     yield f"{title} (rank {rule['rank']} of {rule['max_rank']}; gpa: {rule['gpa']})"
 
