@@ -5,7 +5,8 @@ import logging
 from ..base import Solution, BaseQueryRule
 from ..base.query import QuerySource
 from ..result.query import QueryResult
-from ..rule.assertion import AssertionRule, ConditionalAssertionRule
+from ..rule.assertion import AssertionRule
+from ..rule.conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, Clausable
 from ..clause import apply_clause

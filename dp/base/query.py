@@ -8,7 +8,8 @@ from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CUR
 from ..limit import LimitSet
 from ..clause import Clause
 from ..claim import ClaimAttempt
-from ..rule.assertion import AssertionRule, ConditionalAssertionRule
+from ..rule.assertion import AssertionRule
+from ..rule.conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 
 

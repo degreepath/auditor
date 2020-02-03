@@ -6,7 +6,8 @@ from ..base import Result, BaseQueryRule
 from ..claim import ClaimAttempt
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..rule.assertion import AssertionRule, ConditionalAssertionRule  # noqa: F401
+    from ..rule.assertion import AssertionRule  # noqa: F401
+    from ..rule.conditional_assertion import ConditionalAssertionRule  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

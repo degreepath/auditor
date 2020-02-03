@@ -15,7 +15,8 @@ from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..operator import Operator
 from ..data import CourseInstance
-from .assertion import AssertionRule, ConditionalAssertionRule
+from .assertion import AssertionRule
+from .conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 
 if TYPE_CHECKING:  # pragma: no cover
