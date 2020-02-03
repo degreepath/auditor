@@ -63,7 +63,7 @@ class BaseCourseRule(Base):
         if matched and not has_ip_courses:
             return ResultStatus.Done
 
-        has_enrolled_courses = any(c.is_in_progress_this_term for c in matched)
+        has_enrolled_courses = any(c.is_in_progress_this_term or c.is_incomplete for c in matched)
         has_registered_courses = any(c.is_in_progress_in_future for c in matched)
 
         if has_ip_courses and has_enrolled_courses and (not has_registered_courses):
