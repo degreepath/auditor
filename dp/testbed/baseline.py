@@ -70,7 +70,7 @@ def baseline(args: argparse.Namespace) -> None:
                     (stnum, catalog, code),
                     db=args.db,
                     area_spec=area_specs[f"{catalog}/{code}"],
-                    timeout=float(minimum_duration.sec()),
+                    timeout=float(minimum_duration.sec()) * 2.5,
                 ): (stnum, catalog, code)
                 for (stnum, catalog, code) in records
             }
