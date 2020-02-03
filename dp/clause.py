@@ -164,11 +164,11 @@ class ResolvedSingleClause(SingleClause):
             operator=clause.operator,
             at_most=clause.at_most,
             label=clause.label,
+            treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
             resolved_with=resolved_with,
             resolved_items=resolved_items,
             resolved_clbids=resolved_clbids,
             state=status,
-            treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
         )
 
     @staticmethod
@@ -180,11 +180,11 @@ class ResolvedSingleClause(SingleClause):
             operator=clause.operator,
             at_most=clause.at_most,
             label=clause.label,
+            treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
             resolved_with=Decimal(0),
             resolved_items=tuple(),
             resolved_clbids=tuple(),
             state=ResultStatus.Waived,
-            treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
         )
 
     def to_dict(self) -> Dict[str, Any]:
