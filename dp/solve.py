@@ -2,7 +2,7 @@ from typing import Optional, Dict, List, TYPE_CHECKING
 from decimal import Decimal
 import logging
 
-from .status import PassingStatuses
+from .status import WAIVED_AND_DONE
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import Claim  # noqa: F401
@@ -35,7 +35,7 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
             if tmp_rank > rank:
                 result, rank = tmp_result, tmp_rank
 
-            if tmp_result.status() in PassingStatuses:
+            if tmp_result.status() in WAIVED_AND_DONE:
                 result, rank = tmp_result, tmp_rank
                 break
 
