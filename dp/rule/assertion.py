@@ -167,7 +167,21 @@ class AssertionRule(Rule, BaseAssertionRule):
         operator_result = apply_operator(lhs=calculated_result.value, op=self.assertion.operator, rhs=self.assertion.expected)
 
         if operator_result is True:
-            if any(c.is_in_progress for c in calculated_result.courses):
+            has_ip_courses = any(c.is_in_progress for c in calculated_result.courses)
+
+            if has_ip_courses:
+                # does the clause still pass if it's given only non-IP courses?
+                non_ip_courses = (c for c in value if not c.is_in_progress)
+                calculated_result_no_ip = apply_clause_to_assertion_with_courses(self.assertion, non_ip_courses)
+                operator_result_no_ip = apply_operator(lhs=calculated_result_no_ip.value, op=self.assertion.operator, rhs=self.assertion.expected)
+            else:
+                # we don't need to check if there are no IP courses in the input
+                operator_result_no_ip = True
+
+            if self.assertion.treat_in_progress_as_pass or operator_result_no_ip is True:
+                result = ResultStatus.Done
+
+            elif has_ip_courses:
                 has_enrolled_courses = any(c.is_in_progress_this_term for c in calculated_result.courses)
                 has_registered_courses = any(c.is_in_progress_in_future for c in calculated_result.courses)
                 has_incomplete_courses = any(c.is_incomplete for c in calculated_result.courses)
