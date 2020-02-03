@@ -56,13 +56,25 @@ class BaseCountRule(Base):
             return Decimal(1), Decimal(1)
 
         item_ranks = [r.rank() for r in self.items]
+        item_ranks_actual = (r for r, m, in item_ranks)
+        item_ranks_max = (m for r, m, in item_ranks)
+
+        if len(self.items) == 2 and self.count == 2:
+            item_max_rank = cast(Decimal, sum(sorted(m for m in item_ranks_max)[:2]))
+        elif self.count == 1 and self.at_most:
+            item_max_rank = max(m for m in item_ranks_max)
+        else:
+            item_max_rank = cast(Decimal, sum(m for m in item_ranks_max))
+
+        item_rank = cast(Decimal, sum(item_ranks_actual))
+        item_max_rank = max(item_rank, item_max_rank)
+
         audit_ranks = [c.rank() for c in self.audits()]
+        audit_ranks_actual = (r for r, m in audit_ranks)
+        audit_ranks_max = (m for r, m in audit_ranks)
 
-        item_rank = cast(Decimal, sum(r for r, m in item_ranks))
-        item_max_rank = max(item_rank, self.max_rank([m for r, m in item_ranks]))
-
-        audit_rank = cast(Decimal, sum(r for r, m in audit_ranks))
-        audit_max_rank = max(audit_rank, self.max_rank([m for r, m in audit_ranks]))
+        audit_rank = cast(Decimal, sum(audit_ranks_actual))
+        audit_max_rank = max(audit_rank, cast(Decimal, sum(audit_ranks_max)))
 
         return item_rank + audit_rank, item_max_rank + audit_max_rank
 

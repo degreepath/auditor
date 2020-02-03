@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from .bases import Base
 from .course import BaseCourseRule
-from ..status import ResultStatus
+from ..status import ResultStatus, WAIVED_AND_DONE
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -43,4 +43,10 @@ class BaseProficiencyRule(Base):
         if self.waived():
             return ResultStatus.Waived
 
-        return self.course.status() if self.course else self.proficiency_status
+        if self.proficiency_status in WAIVED_AND_DONE:
+            return self.proficiency_status
+
+        if self.course:
+            return self.course.status()
+
+        return ResultStatus.Empty

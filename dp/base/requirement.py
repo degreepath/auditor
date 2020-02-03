@@ -45,8 +45,11 @@ class BaseRequirementRule(Base):
         return self.result.status()
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.is_audited and self.waived():
+        if self.waived():
             return Decimal(1), Decimal(1)
+
+        if self.is_audited:
+            return Decimal(0), Decimal(1)
 
         if self.result is None:
             return Decimal(0), Decimal(1)
