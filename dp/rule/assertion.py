@@ -163,10 +163,8 @@ class AssertionRule(Rule, BaseAssertionRule):
         return AssertionResult.from_rule(self, assertion=assertion)
 
     def resolve_with_courses(self, value: Sequence['CourseInstance'], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
-        calculated_result = apply_clause_to_assertion_with_courses(self.assertion, cast(Sequence[Any], value))
-
-        computed_value = calculated_result.value
-        operator_result = apply_operator(lhs=computed_value, op=self.assertion.operator, rhs=self.assertion.expected)
+        calculated_result = apply_clause_to_assertion_with_courses(self.assertion, value)
+        operator_result = apply_operator(lhs=calculated_result.value, op=self.assertion.operator, rhs=self.assertion.expected)
 
         if operator_result is True:
             if any(c.is_in_progress for c in calculated_result.courses):
@@ -188,13 +186,13 @@ class AssertionRule(Rule, BaseAssertionRule):
             else:
                 result = ResultStatus.Done
 
-        elif self.assertion.operator is Operator.GreaterThan and 0 < computed_value <= self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThan and 0 < calculated_result.value <= self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
 
-        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and 0 < computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.GreaterThanOrEqualTo and 0 < calculated_result.value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
 
-        elif self.assertion.operator is Operator.EqualTo and 0 < computed_value < self.assertion.expected:
+        elif self.assertion.operator is Operator.EqualTo and 0 < calculated_result.value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
 
         else:
@@ -203,7 +201,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         assertion = ResolvedSingleClause.from_clause(
             self.assertion,
             status=result,
-            resolved_with=computed_value,
+            resolved_with=calculated_result.value,
             resolved_items=calculated_result.data,
             resolved_clbids=tuple(c.clbid for c in calculated_result.courses),
         )
