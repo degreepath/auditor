@@ -216,11 +216,12 @@ def print_proficiency(
         prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     status = "🌀      "
-    if rule["ok"]:
-        if rule["overridden"]:
-            status = "💜 [wvd]"
-        else:
-            status = "💚 [ ok]"
+    if rule["status"] == 'waived':
+        status = "💜 [wvd]"
+    elif rule["status"] == 'done':
+        status = "💚 [ ok]"
+
+    print(rule['path'], rule['status'])
 
     yield f"{prefix}{status} Proficiency={rule['proficiency']}"
 
