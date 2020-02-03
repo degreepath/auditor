@@ -196,15 +196,17 @@ class ResolvedSingleClause(SingleClause):
         }
 
     def rank(self) -> Tuple[Decimal, Decimal]:
+        one_point_oh = Decimal(1)
         if self.state in (ResultStatus.Done, ResultStatus.Waived):
-            return Decimal(1), Decimal(1)
+            return one_point_oh, one_point_oh
 
         if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
             if type(self.expected) in (int, Decimal) and self.expected != 0:
                 resolved = Decimal(self.resolved_with) / Decimal(self.expected)
-                return min(Decimal(1), resolved), Decimal(1)
 
-        return Decimal(0), Decimal(1)
+                return min(one_point_oh, resolved), one_point_oh
+
+        return Decimal(0), one_point_oh
 
 
 def stringify_expected(expected: Any) -> Any:
