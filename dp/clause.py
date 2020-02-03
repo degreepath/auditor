@@ -144,7 +144,6 @@ class ResolvedSingleClause(SingleClause):
     resolved_with: Union[int, Decimal]
     resolved_items: Union[Tuple[str, ...], Tuple[Decimal, ...]] = tuple()
     resolved_clbids: Tuple[str, ...] = tuple()
-    in_progress_clbids: Tuple[str, ...] = tuple()
 
     def __repr__(self) -> str:
         return f"ResolvedClause({str_clause(self.to_dict())})"
@@ -157,7 +156,6 @@ class ResolvedSingleClause(SingleClause):
         resolved_with: Union[int, Decimal],
         resolved_items: Union[Tuple[str, ...], Tuple[Decimal, ...]],
         resolved_clbids: Tuple[str, ...] = tuple(),
-        in_progress_clbids: Tuple[str, ...] = tuple(),
     ) -> 'ResolvedSingleClause':
         return ResolvedSingleClause(
             key=clause.key,
@@ -169,7 +167,6 @@ class ResolvedSingleClause(SingleClause):
             resolved_with=resolved_with,
             resolved_items=resolved_items,
             resolved_clbids=resolved_clbids,
-            in_progress_clbids=in_progress_clbids,
             state=status,
             treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
         )
@@ -186,7 +183,6 @@ class ResolvedSingleClause(SingleClause):
             resolved_with=Decimal(0),
             resolved_items=tuple(),
             resolved_clbids=tuple(),
-            in_progress_clbids=tuple(),
             state=ResultStatus.Waived,
             treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
         )
@@ -197,7 +193,6 @@ class ResolvedSingleClause(SingleClause):
             "resolved_with": str(self.resolved_with),
             "resolved_items": [stringify_expected(x) for x in self.resolved_items],
             "resolved_clbids": [x for x in self.resolved_clbids],
-            "in_progress_clbids": [x for x in self.in_progress_clbids],
         }
 
     def rank(self) -> Tuple[Decimal, Decimal]:
