@@ -159,10 +159,6 @@ class QueryRule(Rule, BaseQueryRule):
                 if self.attempt_claims is False:
                     did_iter = True
 
-                    # If we want to make things go green sooner, turn this on
-                    only_completed = tuple(c for c in item_set if c.is_in_progress is False)
-                    yield QuerySolution.from_rule(rule=self, output=only_completed, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
-
                     yield QuerySolution.from_rule(rule=self, output=item_set, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
                     continue
 
