@@ -2,7 +2,7 @@ from typing import Optional, Dict, List, TYPE_CHECKING
 from decimal import Decimal
 import logging
 
-from .status import WAIVED_AND_DONE, ResultStatus
+from .status import WAIVED_AND_DONE
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import Claim  # noqa: F401
