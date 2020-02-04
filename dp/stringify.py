@@ -100,7 +100,7 @@ def calculate_emoji(rule: Dict[str, Any]) -> str:
     elif rule["status"] == "done":
         return "💚"
     elif rule["status"] == "pending-current":
-        return "❤️"
+        return "💖"
     elif rule["status"] == "pending-registered":
         return "🧡"
     elif rule["status"] == "needs-more-items":
