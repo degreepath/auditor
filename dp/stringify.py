@@ -149,7 +149,7 @@ def emojify_course(course: Optional[CourseInstance], status: Optional[str] = Non
     elif course.is_incomplete:
         return "⛔️ [dnf]"
     elif course.is_in_progress_this_term:
-        return "❤️ [ip!]"
+        return "💖 [ip!]"
     elif course.is_in_progress_in_future:
         return "🧡 [ip-]"
     elif course.is_in_progress:
