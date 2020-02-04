@@ -120,6 +120,9 @@ class AssertionRule(Rule, BaseAssertionRule):
         elif self.assertion.operator is Operator.EqualTo and 0 < computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
 
+        elif self.assertion.operator in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            result = ResultStatus.FailedInvariant
+
         else:
             result = ResultStatus.Empty
 
@@ -149,6 +152,9 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         elif self.assertion.operator is Operator.EqualTo and 0 < computed_value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
+
+        elif self.assertion.operator in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            result = ResultStatus.FailedInvariant
 
         else:
             result = ResultStatus.Empty
@@ -208,6 +214,9 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         elif self.assertion.operator is Operator.EqualTo and 0 < calculated_result.value < self.assertion.expected:
             result = ResultStatus.NeedsMoreItems
+
+        elif self.assertion.operator in (Operator.LessThan, Operator.LessThanOrEqualTo):
+            result = ResultStatus.FailedInvariant
 
         else:
             result = ResultStatus.Empty

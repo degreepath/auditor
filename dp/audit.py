@@ -7,7 +7,7 @@ from .constants import Constants
 from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
 from .data import CourseInstance, Student
-from .status import WAIVED_AND_DONE
+from .status import WAIVED_AND_DONE, ResultStatus
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -93,6 +93,10 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
 
         result = sol.audit()
         result_rank, _result_max = result.rank()
+        status = result.status()
+
+        if status is ResultStatus.FailedInvariant:
+            continue
 
         # if this is the first solution, store it, because it's the best so far
         if best_sol is None:
@@ -103,7 +107,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
             best_sol, best_rank, best_i = result, result_rank, total_count
 
         # if the current solution is OK, then store it, and end the loop
-        if result.status() in WAIVED_AND_DONE:
+        if status in WAIVED_AND_DONE:
             best_sol, best_rank, best_i = result, result_rank, total_count
             break
 

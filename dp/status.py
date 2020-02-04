@@ -10,6 +10,7 @@ class ResultStatus(enum.Enum):
     PendingCurrent = "pending-current"
     Done = "done"
     Waived = "waived"
+    FailedInvariant = "failed-invariant"
 
 
 PassingStatuses = frozenset({ResultStatus.Waived, ResultStatus.Done, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered})

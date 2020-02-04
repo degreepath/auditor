@@ -73,6 +73,9 @@ class BaseQueryRule(Base):
 
         statuses = set(a.status() for a in self.all_assertions())
 
+        if ResultStatus.FailedInvariant in statuses:
+            return ResultStatus.FailedInvariant
+
         if statuses.issubset(WAIVED_ONLY):
             return ResultStatus.Waived
 

@@ -87,6 +87,9 @@ class BaseCountRule(Base):
 
         all_audit_statuses = set(a.status() for a in self.audits())
 
+        if ResultStatus.FailedInvariant in all_child_statuses or ResultStatus.FailedInvariant in all_audit_statuses:
+            return ResultStatus.FailedInvariant
+
         # if all rules and audits have been waived, pretend that we're waived as well
         if passing_child_statuses == WAIVED_ONLY and all_audit_statuses.issubset(WAIVED_ONLY):
             return ResultStatus.Waived
