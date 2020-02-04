@@ -260,7 +260,11 @@ def load_course(
     *,
     current_term: Optional[str] = None,
     overrides: List[CourseOverrideException],
+    credits_overrides: Optional[Dict[str, str]],
 ) -> CourseInstance:
+    if not credits_overrides:
+        credits_overrides = {}
+
     if isinstance(data, CourseInstance):
         return data  # type: ignore
 
@@ -292,6 +296,12 @@ def load_course(
     applicable_overrides = {o.type: o for o in overrides if o.clbid == clbid}
     subject_override = applicable_overrides.get(ExceptionAction.CourseSubject, None)
     credits_override = applicable_overrides.get(ExceptionAction.CourseCredits, None)
+
+    # find a default credits override, if one exists in the area spec
+    credits_override_key = f"name={name}"
+    if not credits_override and credits_override_key in credits_overrides:
+        amount = Decimal(credits_overrides[credits_override_key])
+        credits_override = CourseCreditOverride(path=tuple(), clbid=clbid, type=ExceptionAction.CourseCredits, credits=amount)
 
     if credits_override:
         credits = cast(CourseCreditOverride, credits_override).credits

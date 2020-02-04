@@ -34,17 +34,23 @@ class Student:
         *,
         code: str = '000',
         overrides: Sequence[CourseOverrideException] = tuple(),
+        credits_overrides: Optional[Dict[str, str]] = None,
     ) -> 'Student':
+        if not credits_overrides:
+            credits_overrides = {}
+
         overrides = list(overrides)
 
         area_pointers = [AreaPointer.from_dict(a) for a in data.get('areas', [])]
 
         current_term = data.get('current_term', None)
 
-        courses = [c for c in load_transcript(data.get('courses', []), current_term=current_term, overrides=overrides)]
+        data_courses = data.get('courses', [])
+        load_transcript_args = dict(current_term=current_term, overrides=overrides, credits_overrides=credits_overrides)
+        courses = [c for c in load_transcript(data_courses, **load_transcript_args)]
         courses = sorted(courses, key=lambda c: c.sort_order())
 
-        courses_with_failed = [c for c in load_transcript(data.get('courses', []), include_failed=True, current_term=current_term, overrides=overrides)]
+        courses_with_failed = [c for c in load_transcript(data_courses, include_failed=True, **load_transcript_args)]
         courses_with_failed = sorted(courses_with_failed, key=lambda c: c.sort_order())
 
         music_performances = [MusicPerformance.from_dict(d) for d in data.get('performances', [])]
@@ -100,6 +106,7 @@ def load_transcript(
     include_failed: bool = False,
     current_term: Optional[str] = None,
     overrides: List[CourseOverrideException],
+    credits_overrides: Dict[str, str],
 ) -> Iterator[CourseInstance]:
     skip_grades = {
         GradeCode._N,  # NoPass
@@ -112,7 +119,7 @@ def load_transcript(
     }
 
     for row in courses:
-        c = load_course(row, current_term=current_term, overrides=overrides)
+        c = load_course(row, current_term=current_term, overrides=overrides, credits_overrides=credits_overrides)
 
         # excluded Audited courses
         if c.grade_option is GradeOption.Audit:

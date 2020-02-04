@@ -15,6 +15,8 @@ from .audit import audit, Message, Arguments
 def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]:
     area_code = area_spec['code']
 
+    credit_assignments = area_spec.get('credit', {})
+
     exceptions = [
         load_exception(e)
         for e in student.get("exceptions", [])
@@ -22,7 +24,7 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
     ]
     course_overrides = [e for e in exceptions if isinstance(e, CourseOverrideException)]
 
-    loaded = Student.load(student, code=area_code, overrides=course_overrides)
+    loaded = Student.load(student, code=area_code, overrides=course_overrides, credits_overrides=credit_assignments)
 
     if args.transcript_only:
         writer = csv.writer(sys.stdout)
