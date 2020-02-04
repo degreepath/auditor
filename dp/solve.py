@@ -30,9 +30,6 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
             tmp_rank, _tmp_max = tmp_result.rank()
             tmp_status = tmp_result.status()
 
-            if tmp_status is ResultStatus.FailedInvariant:
-                continue
-
             if result is None:
                 result, rank = tmp_result, tmp_rank
 

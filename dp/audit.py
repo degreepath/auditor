@@ -95,9 +95,6 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         result_rank, _result_max = result.rank()
         status = result.status()
 
-        if status is ResultStatus.FailedInvariant:
-            continue
-
         # if this is the first solution, store it, because it's the best so far
         if best_sol is None:
             best_sol, best_rank, best_i = result, result_rank, total_count
