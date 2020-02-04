@@ -186,7 +186,6 @@ class QueryRule(Rule, BaseQueryRule):
             for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
                 if self.attempt_claims is False:
                     acc += 1
-                    acc += 1
 
                 acc += estimate_item_set(item_set, rule=self)
         else:
