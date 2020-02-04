@@ -3,7 +3,7 @@ from .data import CourseInstance
 from .data.course_enums import CourseType
 from .operator import str_operator
 from .ms import pretty_ms
-from .status import PassingStatusValues
+from .status import WAIVED_AND_DONE, PassingStatusValues
 import json
 
 
@@ -123,12 +123,11 @@ def print_area(
     if show_paths:
         yield from print_path(rule, indent)
 
-    if rule['status'] in PassingStatusValues:
-        title = f"{rule['name']!r} audit was successful."
-    else:
-        title = f"{rule['name']!r} audit status: {rule['status']}."
+    title = f"{rule['name']!r} audit status: {rule['status']}."
+    rank = f"rank {rule['rank']} of {rule['max_rank']}"
+    gpa = f"gpa: {rule['gpa']}"
 
-    yield f"{title} (rank {rule['rank']} of {rule['max_rank']}; gpa: {rule['gpa']})"
+    yield f"{title} ({rank}; {gpa})"
 
     if rule['limit']:
         yield f"Subject to these limits:"
