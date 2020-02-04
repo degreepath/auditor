@@ -139,13 +139,36 @@ def print_area(
     yield from print_result(rule['result'], transcript, show_ranks=show_ranks, show_paths=show_paths)
 
 
-def print_course(  # noqa: C901
+def emojify_course(course: Optional[CourseInstance], status: Optional[str] = None) -> str:
+    if status == "waived" and course:
+        return "💜 [ovr]"
+    elif status == "waived":
+        return "💜 [wvd]"
+    elif course is None:
+        return "🌀      "
+    elif course.is_incomplete:
+        return "⛔️ [dnf]"
+    elif course.is_in_progress_this_term:
+        return "❤️ [ip!]"
+    elif course.is_in_progress_in_future:
+        return "🧡 [ip-]"
+    elif course.is_in_progress:
+        return "💙 [ip?]"
+    elif course.is_repeat:
+        return "💕 [rep]"
+    elif course:
+        return "💚 [ ok]"
+    else:
+        return "!!!!!!! "
+
+
+def print_course(
     rule: Dict[str, Any],
     transcript: Dict[str, CourseInstance],
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
-) -> Iterator[str]:  # noqa: C901
+) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
 
@@ -153,45 +176,21 @@ def print_course(  # noqa: C901
     if show_ranks:
         prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
-    display_course = rule['course']
-    if not rule['course'] and rule['ap'] != '':
-        display_course = rule['ap']
-
-    status = "🌀      "
-
     if len(rule["claims"]):
         claim = rule["claims"][0]["claim"]
         course = transcript.get(claim["clbid"], None)
     else:
         course = None
 
-    if rule["status"] != "waived":
-        if course is None:
-            status = "🌀      "
-        elif course.is_incomplete:
-            status = "⛔️ [dnf]"
-        elif course.is_in_progress_this_term:
-            status = "❤️ [ip!]"
-        elif course.is_in_progress_in_future:
-            status = "🧡 [ip-]"
-        elif course.is_in_progress:
-            status = "💙 [ip?]"
-        elif course.is_repeat:
-            status = "💕 [rep]"
-        elif course:
-            status = "💚 [ ok]"
-        else:
-            status = "!!!!!!! "
+    status = emojify_course(course, rule["status"])
 
-        if course and course.course_type is CourseType.AP:
-            display_course = course.name
-
-    else:
-        if course:
-            status = "💜 [ovr]"
-            display_course = f"{course.course().strip()} {course.name}"
-        else:
-            status = "💜 [wvd]"
+    display_course = rule['course']
+    if rule["status"] == "waived" and course:
+        display_course = f"{course.course().strip()} {course.name}"
+    elif rule["status"] != "waived" and course and course.course_type is CourseType.AP:
+        display_course = course.name
+    elif not rule["course"] and rule["ap"] != "":
+        display_course = rule["ap"]
 
     institution = ""
     if rule['institution']:
@@ -309,13 +308,9 @@ def print_query(
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
                 continue
 
+            status = emojify_course(course)
             inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
-            ip_msg = ""
-            if course.is_in_progress_this_term:
-                ip_msg = "[ip!] "
-            elif course.is_in_progress_in_future:
-                ip_msg = "[ip-] "
-            yield f"{prefix}    {inserted_msg}{ip_msg}{course.course()} \"{course.name}\" ({course.clbid})"
+            yield f"{prefix}    {inserted_msg}{status} {course.course()} \"{course.name}\" ({course.clbid})"
 
     if rule["failures"]:
         yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
@@ -402,18 +397,16 @@ def print_assertion(
 
         for clbid in resolved_clbids:
             inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
-            ip_msg = ""
-            if clbid in transcript:
-                course = transcript[clbid]
-                if course.is_in_progress_this_term:
-                    ip_msg = " [ip!]"
-                elif course.is_in_progress_in_future:
-                    ip_msg = " [ip-]"
-                chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
-                yield f'{prefix}  -{ip_msg}{inserted_msg} Course({", ".join(chunks)})'
-            else:
+
+            course = transcript.get(clbid, None)
+            if not course:
                 ip_msg = " [ip?]" if clbid in ip_clbids else ""
                 yield f'{prefix}  -{ip_msg}{inserted_msg} Course(clbid={clbid})'
+                continue
+
+            status = emojify_course(course)
+            chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
+            yield f'{prefix}  -{inserted_msg} {status} Course({", ".join(chunks)})'
 
 
 def print_conditional_assertion(
