@@ -3,7 +3,7 @@ from .data import CourseInstance
 from .data.course_enums import CourseType
 from .operator import str_operator
 from .ms import pretty_ms
-from .status import WAIVED_AND_DONE, PassingStatusValues
+from .status import PassingStatusValues
 import json
 
 
