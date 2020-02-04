@@ -219,8 +219,6 @@ def print_proficiency(
     elif rule["status"] == 'done':
         status = "💚 [ ok]"
 
-    print(rule['path'], rule['status'])
-
     yield f"{prefix}{status} Proficiency={rule['proficiency']}"
 
     if rule['course']['ok']:
