@@ -158,7 +158,6 @@ class QueryRule(Rule, BaseQueryRule):
             for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
                 if self.attempt_claims is False:
                     did_iter = True
-
                     yield QuerySolution.from_rule(rule=self, output=item_set, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
                     continue
 
