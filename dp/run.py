@@ -47,12 +47,6 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
         writer.writerow(['---', 'gpa:', str(grade_point_average(loaded.courses_with_failed))])
         return
 
-    exceptions = [
-        load_exception(e)
-        for e in student.get("exceptions", [])
-        if e['area_code'] == area_code
-    ]
-
     area = AreaOfStudy.load(
         specification=area_spec,
         c=loaded.constants(),
