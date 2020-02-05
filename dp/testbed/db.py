@@ -17,6 +17,7 @@ def init_local_db(args: argparse.Namespace) -> None:
                 rank numeric not null,
                 max_rank numeric not null,
                 result json not null,
+                status text not null,
                 input_data json not null
             )
         ''')
@@ -35,6 +36,7 @@ def init_local_db(args: argparse.Namespace) -> None:
                 ok boolean not null,
                 rank numeric not null,
                 max_rank numeric not null,
+                status text not null,
                 result json not null
             )
         ''')
@@ -63,6 +65,7 @@ def init_local_db(args: argparse.Namespace) -> None:
                 ok boolean not null,
                 rank numeric not null,
                 max_rank numeric not null,
+                status text not null,
                 result json not null
             )
         ''')

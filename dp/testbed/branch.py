@@ -102,8 +102,8 @@ def branch(args: argparse.Namespace) -> None:
 
                     try:
                         curs.execute('''
-                            INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
-                            VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                            INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
+                            VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
                         ''', db_args)
 
                         curs.execute('''

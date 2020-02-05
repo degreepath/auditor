@@ -54,6 +54,7 @@ def fetch(args: argparse.Namespace) -> None:
                  , max_rank
                  , result::text as result
                  , input_data::text as input_data
+                 , status
                  , run
             FROM result
             WHERE result IS NOT NULL AND run = %s
@@ -64,8 +65,8 @@ def fetch(args: argparse.Namespace) -> None:
                 try:
                     conn.execute('''
                         INSERT INTO server_data
-                                (run,  stnum,  catalog,  code,  iterations,  duration,  ok,  gpa,  rank,  max_rank,       result,        input_data)
-                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :ok, :gpa, :rank, :max_rank, json(:result), json(:input_data))
+                                (run,  stnum,  catalog,  code,  iterations,  duration,  ok,  gpa,  rank,  max_rank,  status,       result,        input_data)
+                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :ok, :gpa, :rank, :max_rank, :status, json(:result), json(:input_data))
                     ''', dict(row))
                 except Exception as e:
                     print(dict(row))

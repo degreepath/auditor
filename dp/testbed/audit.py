@@ -72,6 +72,7 @@ def audit(
                 "rank": result["rank"],
                 "max_rank": result["max_rank"],
                 "result": json.dumps(result, sort_keys=True),
+                "status": result["status"],
             }
         else:
             if timeout and time.perf_counter() - start_time >= timeout:

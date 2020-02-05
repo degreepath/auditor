@@ -100,8 +100,8 @@ def baseline(args: argparse.Namespace) -> None:
 
                     try:
                         curs.execute('''
-                            INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, result)
-                            VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, json(:result))
+                            INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
+                            VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
                         ''', db_args)
 
                         curs.execute('''
