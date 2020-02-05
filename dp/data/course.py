@@ -428,4 +428,4 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "grade_code": grade_code,
         "grade_points": grade_points,
         "grade_points_gpa": grade_points_gpa,
-    }, overrides=[])
+    }, overrides=[], credits_overrides={})
