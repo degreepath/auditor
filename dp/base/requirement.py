@@ -36,11 +36,11 @@ class BaseRequirementRule(Base):
         if self.waived():
             return ResultStatus.Waived
 
-        if self.result is None:
-            return super().status()
-
         if self.is_audited:
             return ResultStatus.PendingApproval
+
+        if self.result is None:
+            return super().status()
 
         return self.result.status()
 
