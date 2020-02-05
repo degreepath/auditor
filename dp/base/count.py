@@ -25,6 +25,7 @@ class BaseCountRule(Base):
             "count": self.count,
             "items": [item.to_dict() for item in self.items],
             "audit": [c.to_dict() for c in self.audits()],
+            "audit_status": self.audit_status().value,
         }
 
     def audits(self) -> Sequence[BaseAssertionRule]:
@@ -107,6 +108,30 @@ class BaseCountRule(Base):
             return ResultStatus.PendingCurrent
 
         if passing_child_statuses.issubset(WAIVED_DONE_CURRENT_PENDING) and all_audit_statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
+            return ResultStatus.PendingRegistered
+
+        return ResultStatus.NeedsMoreItems
+
+    def audit_status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
+
+        all_audit_statuses = set(a.status() for a in self.audits())
+
+        if ResultStatus.FailedInvariant in all_audit_statuses:
+            return ResultStatus.FailedInvariant
+
+        # if all rules and audits have been waived, pretend that we're waived as well
+        if all_audit_statuses.issubset(WAIVED_ONLY):
+            return ResultStatus.Waived
+
+        if all_audit_statuses.issubset(WAIVED_AND_DONE):
+            return ResultStatus.Done
+
+        if all_audit_statuses.issubset(WAIVED_DONE_CURRENT):
+            return ResultStatus.PendingCurrent
+
+        if all_audit_statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
             return ResultStatus.PendingRegistered
 
         return ResultStatus.NeedsMoreItems
