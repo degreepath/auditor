@@ -107,7 +107,6 @@ class SingleClause:
             "expected_verbatim": stringify_expected(self.expected_verbatim),
             "operator": self.operator.name,
             "label": self.label,
-            "ip_as_passing": self.treat_in_progress_as_pass,
             "hash": str(hash((self.key, self.expected, self.operator))),
             "result": self.state.value,
             "rank": str(rank),
