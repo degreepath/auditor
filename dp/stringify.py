@@ -6,7 +6,7 @@ from .ms import pretty_ms
 from .status import PassingStatusValues, WAIVED_AND_DONE
 import json
 
-WAIVED_AND_DONE = [v.value for v in WAIVED_AND_DONE]
+WAIVED_AND_DONE_VALUES = [v.value for v in WAIVED_AND_DONE]
 
 
 def summarize(
@@ -223,7 +223,7 @@ def print_proficiency(
 
     yield f"{prefix}{status} Proficiency={rule['proficiency']}"
 
-    if rule['course']['status'] in WAIVED_AND_DONE:
+    if rule['course']['status'] in WAIVED_AND_DONE_VALUES:
         yield from print_course(rule['course'], transcript, indent + 4, show_paths, show_ranks)
 
 
@@ -255,7 +255,7 @@ def print_count(
     else:
         descr = f"at least {rule['count']} of {size}"
 
-    ok_count = len([r for r in rule["items"] if r["status"] in WAIVED_AND_DONE])
+    ok_count = len([r for r in rule["items"] if r["status"] in WAIVED_AND_DONE_VALUES])
     descr += f" (ok: {ok_count}; need: {rule['count']})"
 
     yield f"{prefix}{emoji} {descr}"
