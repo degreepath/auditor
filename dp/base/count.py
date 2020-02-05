@@ -6,7 +6,7 @@ from decimal import Decimal
 from .bases import Base
 from .assertion import BaseAssertionRule
 from ..claim import ClaimAttempt
-from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING
+from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, EMPTY_AND_DEPARTMENTAL
 
 logger = logging.getLogger(__name__)
 
@@ -91,15 +91,16 @@ class BaseCountRule(Base):
         if ResultStatus.FailedInvariant in all_child_statuses or ResultStatus.FailedInvariant in all_audit_statuses:
             return ResultStatus.FailedInvariant
 
-        # if all rules and audits have been waived, pretend that we're waived as well
-        if passing_child_statuses == WAIVED_ONLY and all_audit_statuses.issubset(WAIVED_ONLY):
-            return ResultStatus.Waived
-
-        if passing_child_count == 0:
+        # if no child has a status other than Empty or PendingApproval, return Empty
+        if set(all_child_statuses).issubset(EMPTY_AND_DEPARTMENTAL):
             return ResultStatus.Empty
 
         if passing_child_count < self.count:
             return ResultStatus.NeedsMoreItems
+
+        # if all rules and audits have been waived, pretend that we're waived as well
+        if passing_child_statuses == WAIVED_ONLY and all_audit_statuses.issubset(WAIVED_ONLY):
+            return ResultStatus.Waived
 
         if passing_child_statuses.issubset(WAIVED_AND_DONE) and all_audit_statuses.issubset(WAIVED_AND_DONE):
             return ResultStatus.Done

@@ -23,3 +23,4 @@ WAIVED_AND_DONE = WAIVED_ONLY | {ResultStatus.Done}
 WAIVED_DONE_CURRENT = WAIVED_AND_DONE | {ResultStatus.PendingCurrent}
 WAIVED_DONE_CURRENT_PENDING = WAIVED_DONE_CURRENT | {ResultStatus.PendingRegistered}
 WAIVED_DONE_CURRENT_PENDING_INCOMPLETE = WAIVED_DONE_CURRENT_PENDING | {ResultStatus.NeedsMoreItems}
+EMPTY_AND_DEPARTMENTAL = frozenset({ResultStatus.Empty, ResultStatus.PendingApproval})
