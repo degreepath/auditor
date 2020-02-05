@@ -255,13 +255,13 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
 }
 
 
-def load_course(
+def load_course(  # noqa: C901
     data: Dict[str, Any],
     *,
     current_term: Optional[str] = None,
     overrides: List[CourseOverrideException],
     credits_overrides: Optional[Dict[str, str]],
-) -> CourseInstance:
+) -> CourseInstance:  # noqa: C901
     if not credits_overrides:
         credits_overrides = {}
 
