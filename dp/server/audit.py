@@ -76,6 +76,7 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                       , gpa = %(gpa)s
                       , in_progress = false
                       , claimed_courses = %(claimed_courses)s::jsonb
+                      , status = %(status)s
                     WHERE id = %(result_id)s
                 """, {
                     "result_id": result_id,
@@ -88,6 +89,7 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                     "max_rank": result["max_rank"],
                     "gpa": result["gpa"],
                     "ok": result["ok"],
+                    "status": result["status"],
                     # we insert a Python now() instead of using the now() psql function
                     # because sql's now() is the start time of the transaction, and we
                     # want this to be the end of the transaction
