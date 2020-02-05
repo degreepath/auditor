@@ -32,7 +32,6 @@ class Base(abc.ABC):
             "path": list(self.path),
             "type": self.type(),
             "status": status.value,
-            "ok": status == ResultStatus.Done,
             "rank": str(rank),
             "max_rank": str(max_rank),
         }

@@ -15,7 +15,7 @@ from .result.count import CountResult
 from .result.requirement import RequirementResult
 from .lib import grade_point_average
 from .solve import find_best_solution
-from .status import ResultStatus
+from .status import ResultStatus, WAIVED_AND_DONE
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import ClaimAttempt  # noqa: F401
@@ -50,6 +50,7 @@ class AreaOfStudy(Base):
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
             "limit": self.limit.to_dict(),
+            "ok": self.status() in WAIVED_AND_DONE,
         }
 
     def type(self) -> str:
