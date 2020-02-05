@@ -7,7 +7,7 @@ from .constants import Constants
 from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
 from .data import CourseInstance, Student
-from .status import WAIVED_AND_DONE, ResultStatus
+from .status import WAIVED_AND_DONE
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
