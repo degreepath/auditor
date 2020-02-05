@@ -50,7 +50,6 @@ class AreaOfStudy(Base):
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
             "limit": self.limit.to_dict(),
-            "excluded": sorted(clbid for clbid in self.excluded_clbids),
         }
 
     def type(self) -> str:
