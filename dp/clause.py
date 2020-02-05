@@ -80,7 +80,7 @@ class SingleClause:
         label: Optional[str] = None,
         at_most: bool = False,
         treat_in_progress_as_pass: bool = False,
-        state: ResultStatus = ResultStatus.Pending,
+        state: ResultStatus = ResultStatus.Empty,
     ) -> 'SingleClause':
         return SingleClause(
             key=key,
@@ -97,6 +97,9 @@ class SingleClause:
         return f"Clause({str_clause(self.to_dict())})"
 
     def to_dict(self) -> Dict[str, Any]:
+        status = self.status()
+        rank, max_rank = self.rank()
+
         return {
             "type": "single-clause",
             "key": self.key,
@@ -104,42 +107,24 @@ class SingleClause:
             "expected_verbatim": stringify_expected(self.expected_verbatim),
             "operator": self.operator.name,
             "label": self.label,
-            "ip_as_passing": self.treat_in_progress_as_pass,
             "hash": str(hash((self.key, self.expected, self.operator))),
             "result": self.state.value,
-            "rank": str(self.rank()),
-            "max_rank": str(self.max_rank()),
+            "rank": str(rank),
+            "max_rank": str(max_rank),
+            "status": status.value,
         }
 
     def override_expected(self, value: Decimal) -> 'SingleClause':
         return attr.evolve(self, expected=value, expected_verbatim=str(value))
 
     def status(self) -> ResultStatus:
-        if self.in_progress():
-            return ResultStatus.InProgress
+        return self.state
 
-        if self.ok():
-            return ResultStatus.Pass
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        if self.state in (ResultStatus.Done, ResultStatus.Waived):
+            return Decimal(1), Decimal(1)
 
-        return ResultStatus.Pending
-
-    def ok(self) -> bool:
-        return self.state is ResultStatus.Pass
-
-    def in_progress(self) -> bool:
-        return self.state is ResultStatus.InProgress
-
-    def rank(self) -> Decimal:
-        if self.state is ResultStatus.Pass:
-            return Decimal(1)
-
-        return Decimal(0)
-
-    def max_rank(self) -> Decimal:
-        if self.state is ResultStatus.Pass:
-            return self.rank()
-
-        return Decimal(1)
+        return Decimal(0), Decimal(1)
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
@@ -155,13 +140,51 @@ class SingleClause:
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class ResolvedSingleClause(SingleClause):
-    resolved_with: Decimal
-    resolved_items: Tuple[Any, ...] = tuple()
+    resolved_with: Union[int, Decimal]
+    resolved_items: Union[Tuple[str, ...], Tuple[Decimal, ...]] = tuple()
     resolved_clbids: Tuple[str, ...] = tuple()
-    in_progress_clbids: Tuple[str, ...] = tuple()
 
     def __repr__(self) -> str:
         return f"ResolvedClause({str_clause(self.to_dict())})"
+
+    @staticmethod
+    def from_clause(
+        clause: SingleClause,
+        *,
+        status: ResultStatus,
+        resolved_with: Union[int, Decimal],
+        resolved_items: Union[Tuple[str, ...], Tuple[Decimal, ...]],
+        resolved_clbids: Tuple[str, ...] = tuple(),
+    ) -> 'ResolvedSingleClause':
+        return ResolvedSingleClause(
+            key=clause.key,
+            expected=clause.expected,
+            expected_verbatim=clause.expected_verbatim,
+            operator=clause.operator,
+            at_most=clause.at_most,
+            label=clause.label,
+            treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
+            resolved_with=resolved_with,
+            resolved_items=resolved_items,
+            resolved_clbids=resolved_clbids,
+            state=status,
+        )
+
+    @staticmethod
+    def as_overridden(clause: SingleClause) -> 'ResolvedSingleClause':
+        return ResolvedSingleClause(
+            key=clause.key,
+            expected=clause.expected,
+            expected_verbatim=clause.expected_verbatim,
+            operator=clause.operator,
+            at_most=clause.at_most,
+            label=clause.label,
+            treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
+            resolved_with=Decimal(0),
+            resolved_items=tuple(),
+            resolved_clbids=tuple(),
+            state=ResultStatus.Waived,
+        )
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -169,19 +192,20 @@ class ResolvedSingleClause(SingleClause):
             "resolved_with": str(self.resolved_with),
             "resolved_items": [stringify_expected(x) for x in self.resolved_items],
             "resolved_clbids": [x for x in self.resolved_clbids],
-            "in_progress_clbids": [x for x in self.in_progress_clbids],
         }
 
-    def rank(self) -> Decimal:
-        if self.state is ResultStatus.Pass:
-            return Decimal(1)
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        one_point_oh = Decimal(1)
+        if self.state in (ResultStatus.Done, ResultStatus.Waived):
+            return one_point_oh, one_point_oh
 
         if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
             if type(self.expected) in (int, Decimal) and self.expected != 0:
                 resolved = Decimal(self.resolved_with) / Decimal(self.expected)
-                return min(Decimal(1), resolved)
 
-        return Decimal(0)
+                return min(one_point_oh, resolved), one_point_oh
+
+        return Decimal(0), one_point_oh
 
 
 def stringify_expected(expected: Any) -> Any:

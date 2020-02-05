@@ -85,7 +85,7 @@ def load_exception(data: Dict[str, Any]) -> RuleException:
     elif ex_type is ExceptionAction.ForceInsert:
         return InsertionException(clbid=data['clbid'], path=ex_path, type=ex_type, forced=True)
     elif ex_type is ExceptionAction.Override:
-        return OverrideException(status=ResultStatus(data['status']), path=ex_path, type=ex_type)
+        return OverrideException(status=ResultStatus.Done, path=ex_path, type=ex_type)
     elif ex_type is ExceptionAction.Value:
         return ValueException(value=Decimal(data['value']), path=ex_path, type=ex_type)
     elif ex_type is ExceptionAction.CourseCredits:

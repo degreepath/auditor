@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
-    waived: bool = False
+    auto_waived: bool = False
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -37,7 +37,7 @@ class CourseRule(Rule, BaseCourseRule):
         grade_option = data.get('grade_option', None)
         clbid = data.get('clbid', None)
         inserted = data.get('inserted', False)
-        waived = data.get('waived', False)
+        auto_waived = data.get('auto_waived', False)
 
         path_name = f"*{course or ap or name}"
         path_inst = f"(institution={institution})" if institution else ""
@@ -71,7 +71,7 @@ class CourseRule(Rule, BaseCourseRule):
             ap=ap,
             clbid=clbid,
             inserted=inserted,
-            waived=waived,
+            auto_waived=auto_waived,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -95,7 +95,7 @@ class CourseRule(Rule, BaseCourseRule):
         return self
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
-        if self.waived or ctx.get_waive_exception(self.path):
+        if self.auto_waived or ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield CourseSolution.from_rule(rule=self, overridden=True)
             return
@@ -116,7 +116,7 @@ class CourseRule(Rule, BaseCourseRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if self.waived or ctx.has_exception(self.path):
+        if self.auto_waived or ctx.has_exception(self.path):
             return True
 
         try:

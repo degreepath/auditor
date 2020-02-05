@@ -4,7 +4,7 @@ import logging
 import decimal
 from collections import defaultdict
 
-from .base import Solution, Result, Rule, Base, Summable
+from .base import Solution, Result, Rule, Base
 from .constants import Constants
 from .context import RequirementContext
 from .data import CourseInstance, AreaPointer, AreaType, Student
@@ -15,6 +15,7 @@ from .result.count import CountResult
 from .result.requirement import RequirementResult
 from .lib import grade_point_average
 from .solve import find_best_solution
+from .status import ResultStatus, WAIVED_AND_DONE
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import ClaimAttempt  # noqa: F401
@@ -49,7 +50,7 @@ class AreaOfStudy(Base):
             "result": self.result.to_dict(),
             "gpa": str(self.gpa()),
             "limit": self.limit.to_dict(),
-            "excluded": sorted(clbid for clbid in self.excluded_clbids),
+            "ok": self.status() in WAIVED_AND_DONE,
         }
 
     def type(self) -> str:
@@ -120,7 +121,7 @@ class AreaOfStudy(Base):
             for course, paths in specification.get("multicountable", {}).items()
         }
 
-        allowed_keys = {'name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable'}
+        allowed_keys = {'name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable', 'credit'}
         given_keys = set(specification.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
@@ -283,7 +284,7 @@ class AreaSolution(AreaOfStudy):
             name=f"Common {self.degree} Major Requirements",
             message=None,
             path=('$', '%Common Requirements'),
-            audited_by=None,
+            is_audited=False,
             in_gpa=False,
             is_contract=False,
             overridden=False,
@@ -332,17 +333,14 @@ class AreaResult(AreaOfStudy, Result):
 
         return grade_point_average(courses)
 
-    def ok(self) -> bool:
-        if self.was_overridden():
-            return True
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
 
-        return self.result.ok()
+        return self.result.status()
 
-    def rank(self) -> Summable:
+    def rank(self) -> Tuple[decimal.Decimal, decimal.Decimal]:
         return self.result.rank()
-
-    def max_rank(self) -> Summable:
-        return self.result.max_rank()
 
     def claims(self) -> List['ClaimAttempt']:
         return self.result.claims()
@@ -366,8 +364,8 @@ class AreaResult(AreaOfStudy, Result):
     def claims_for_gpa(self) -> List['ClaimAttempt']:
         return self.result.claims_for_gpa()
 
-    def was_overridden(self) -> bool:
-        return self.result.was_overridden()
+    def waived(self) -> bool:
+        return self.result.waived()
 
 
 def prepare_common_rules(
@@ -473,7 +471,7 @@ def prepare_common_rules(
         if dept_code is None:
             outside_rule = {
                 "message": "21 total credits must be completed outside of the courses in the major",
-                "registrar_audited": True,
+                "department-audited": True,
             }
 
         elif is_history_and_studio:

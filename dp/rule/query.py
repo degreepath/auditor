@@ -15,7 +15,8 @@ from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..operator import Operator
 from ..data import CourseInstance
-from .assertion import AssertionRule, ConditionalAssertionRule
+from .assertion import AssertionRule
+from .conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -157,11 +158,6 @@ class QueryRule(Rule, BaseQueryRule):
             for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
                 if self.attempt_claims is False:
                     did_iter = True
-
-                    # If we want to make things go green sooner, turn this on
-                    only_completed = tuple(c for c in item_set if c.is_in_progress is False)
-                    yield QuerySolution.from_rule(rule=self, output=only_completed, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
-
                     yield QuerySolution.from_rule(rule=self, output=item_set, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
                     continue
 
@@ -189,7 +185,6 @@ class QueryRule(Rule, BaseQueryRule):
         if self.source in (QuerySource.Courses, QuerySource.Claimed):
             for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
                 if self.attempt_claims is False:
-                    acc += 1
                     acc += 1
 
                 acc += estimate_item_set(item_set, rule=self)

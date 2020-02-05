@@ -20,7 +20,8 @@ except ImportError:
 from dp import AreaOfStudy, Constants
 from dp.base import Rule
 from dp.clause import AndClause, OrClause, Clause
-from dp.rule.assertion import AssertionRule, ConditionalAssertionRule
+from dp.rule.assertion import AssertionRule
+from dp.rule.conditional_assertion import ConditionalAssertionRule
 from dp.rule.course import CourseRule
 from dp.rule.count import CountRule
 from dp.rule.proficiency import ProficiencyRule

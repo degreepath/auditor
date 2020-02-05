@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from .bases import Base
 from ..data.course_enums import GradeOption
+from ..status import ResultStatus
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -38,20 +39,39 @@ class BaseCourseRule(Base):
     def type(self) -> str:
         return "course"
 
-    def rank(self) -> Decimal:
-        if self.in_progress():
-            return Decimal('0.5')
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        status = self.status()
 
-        if self.ok():
-            return Decimal('1')
+        if status in (ResultStatus.Done, ResultStatus.Waived):
+            return Decimal(1), Decimal(1)
 
-        return Decimal('0')
+        if status is ResultStatus.PendingCurrent:
+            return Decimal('0.75'), Decimal(1)
 
-    def in_progress(self) -> bool:
-        return any(c.is_in_progress for c in self.matched())
+        if status is ResultStatus.PendingRegistered:
+            return Decimal('0.5'), Decimal(1)
 
-    def max_rank(self) -> int:
-        return 1
+        return Decimal(0), Decimal(1)
+
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
+
+        matched = self.matched()
+        has_ip_courses = any(c.is_in_progress for c in matched)
+
+        if matched and not has_ip_courses:
+            return ResultStatus.Done
+
+        has_enrolled_courses = any(c.is_in_progress_this_term or c.is_incomplete for c in matched)
+        has_registered_courses = any(c.is_in_progress_in_future for c in matched)
+
+        if has_ip_courses and has_enrolled_courses and (not has_registered_courses):
+            return ResultStatus.PendingCurrent
+        elif has_ip_courses and has_registered_courses:
+            return ResultStatus.PendingRegistered
+
+        return ResultStatus.Empty
 
     def identifier(self) -> str:
         items = {'course': self.course, 'ap': self.ap, 'name': self.name, 'institution': self.institution}

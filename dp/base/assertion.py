@@ -1,8 +1,10 @@
 import attr
 from typing import Optional, Tuple, Dict, Any
+from decimal import Decimal
 
 from ..clause import Clause, SingleClause
-from .bases import Base, Summable
+from ..status import ResultStatus
+from .bases import Base
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -25,20 +27,16 @@ class BaseAssertionRule(Base):
     def type(self) -> str:
         return "assertion"
 
-    def rank(self) -> Summable:
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        status = self.status()
+
+        if status in (ResultStatus.Done, ResultStatus.Waived):
+            return Decimal(1), Decimal(1)
+
         return self.assertion.rank()
 
-    def max_rank(self) -> Summable:
-        if self.ok():
-            return self.assertion.rank()
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
 
-        return self.assertion.max_rank()
-
-    def ok(self) -> bool:
-        if self.was_overridden():
-            return True
-
-        return self.assertion.ok()
-
-    def in_progress(self) -> bool:
-        return self.assertion.in_progress()
+        return self.assertion.status()

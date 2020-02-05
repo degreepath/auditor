@@ -4,7 +4,7 @@ from typing import Optional, Dict
 
 from .sqlite import sqlite_connect
 
-from dp.data.course import load_course
+from dp.data.student import Student
 from dp.stringify import print_result
 
 
@@ -72,22 +72,26 @@ def render(args: argparse.Namespace) -> None:
         assert input_data
         assert baseline_result
 
+        student = Student.load(input_data)
+
         if not branch_result:
-            print(render_result(input_data, baseline_result))
+            print(render_result(student, baseline_result))
             return
 
         print('Baseline')
-        print('========\n')
-        print(render_result(input_data, baseline_result))
+        print('========')
+        print()
+        print(render_result(student, baseline_result))
         print()
         print()
-        print(f'Branch: {args.branch}')
-        print('========\n')
-        print(render_result(input_data, branch_result))
+        label = f'Branch: {args.branch}'
+        print(label)
+        print('=' * len(label))
+        print()
+        print(render_result(student, branch_result))
 
 
-def render_result(student_data: Dict, result: Dict) -> str:
-    courses = [load_course(row, overrides=[]) for row in student_data["courses"]]
-    transcript = {c.clbid: c for c in courses}
+def render_result(student: Student, result: Dict) -> str:
+    transcript = {c.clbid: c for c in student.courses}
 
     return "\n".join(print_result(result, transcript=transcript, show_paths=False))

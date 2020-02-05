@@ -165,19 +165,17 @@ class LimitSet:
 
         for c in courses:
             for limit in self.limits:
-                if apply_clause(limit.where, c):
-                    if limit.at_most_what is AtMostWhat.Courses:
-                        if clause_counters[limit] >= limit.at_most:
-                            # break out of the loop once we fill up any limit clause
-                            return False
+                if not apply_clause(limit.where, c):
+                    continue
 
-                        clause_counters[limit] += 1
-                    elif limit.at_most_what is AtMostWhat.Credits:
-                        if clause_counters[limit] >= limit.at_most:
-                            # break out of the loop once we fill up any limit clause
-                            return False
+                if clause_counters[limit] >= limit.at_most:
+                    # break out of the loop once we fill up any limit clause
+                    return False
 
-                        clause_counters[limit] += c.credits
+                if limit.at_most_what is AtMostWhat.Courses:
+                    clause_counters[limit] += 1
+                elif limit.at_most_what is AtMostWhat.Credits:
+                    clause_counters[limit] += c.credits
 
         return True
 

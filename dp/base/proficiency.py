@@ -4,12 +4,14 @@ from decimal import Decimal
 
 from .bases import Base
 from .course import BaseCourseRule
+from ..status import ResultStatus, WAIVED_AND_DONE
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseProficiencyRule(Base):
     proficiency: str
     course: Optional[BaseCourseRule]
+    proficiency_status: ResultStatus = ResultStatus.Empty
     path: Tuple[str, ...] = tuple()
     overridden: bool = False
 
@@ -23,17 +25,28 @@ class BaseProficiencyRule(Base):
     def type(self) -> str:
         return "proficiency"
 
-    def rank(self) -> Decimal:
-        if self.in_progress():
-            return Decimal('0.5')
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        status = self.status()
 
-        if self.ok():
-            return Decimal('1')
+        if status in (ResultStatus.Done, ResultStatus.Waived):
+            return Decimal(1), Decimal(1)
 
-        return Decimal('0')
+        if status is ResultStatus.PendingCurrent:
+            return Decimal('0.75'), Decimal(1)
 
-    def in_progress(self) -> bool:
-        return self.course.in_progress() if self.course else False
+        if status is ResultStatus.PendingRegistered:
+            return Decimal('0.5'), Decimal(1)
 
-    def max_rank(self) -> int:
-        return 1
+        return Decimal(0), Decimal(1)
+
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
+
+        if self.proficiency_status in WAIVED_AND_DONE:
+            return self.proficiency_status
+
+        if self.course:
+            return self.course.status()
+
+        return ResultStatus.Empty

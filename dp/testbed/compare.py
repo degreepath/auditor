@@ -63,6 +63,16 @@ def compare(args: argparse.Namespace) -> None:
             ORDER BY b.stnum, b.catalog, b.code
         '''.format(','.join(columns))
 
+    elif args.mode == 'gpa':
+        query = '''
+            SELECT {}
+            FROM baseline b
+                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
+            WHERE r.branch = ?
+                AND b.gpa != r.gpa
+            ORDER BY b.stnum, b.catalog, b.code
+        '''.format(','.join(columns))
+
     elif args.mode == 'speed':
         query = '''
             SELECT {}

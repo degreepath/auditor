@@ -98,7 +98,7 @@ def branch(args: argparse.Namespace) -> None:
                         print(f'{stnum} {catalog} {code} generated an exception: {exc}')
                         continue
 
-                    assert db_args is not None
+                    assert db_args is not None, f"{stnum}, {catalog}, {code} returned None"
 
                     try:
                         curs.execute('''

@@ -4,11 +4,11 @@ import attr
 import markdown2  # type: ignore
 
 from ..base import Rule, BaseRequirementRule
-from ..base.requirement import AuditedBy
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
 from ..rule.query import QueryRule
 from ..solve import find_best_solution
+from ..status import PassingStatuses
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -36,7 +36,6 @@ class RequirementRule(Rule, BaseRequirementRule):
             'if', 'in_gpa', 'name', 'else', 'then', 'result', 'disjoint',
             'message', 'contract', 'requirements',
             'department_audited', 'department-audited',
-            'registrar-audited', 'registrar_audited',
         }
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
@@ -56,13 +55,13 @@ class RequirementRule(Rule, BaseRequirementRule):
                 return None
 
             if 'then' in data and 'else' in data:
-                if s.ok():
+                if s.status() in PassingStatuses:
                     result = data['then']
                 else:
                     result = data['else']
             elif ('then' in data and 'else' not in data) or ('then' not in data and 'else' in data):
                 raise TypeError(f'{path} in an if:, with one of then: or else:; expected both then: and else:')
-            elif s.ok():
+            elif s.status() in PassingStatuses:
                 # we support some "Optional" requirements that are department-audited
                 result = data.get("result", None)
             else:
@@ -78,16 +77,12 @@ class RequirementRule(Rule, BaseRequirementRule):
             unused_child_names = all_child_names.difference(used_child_names)
             assert unused_child_names == set(), f"expected {unused_child_names} to be empty"
 
-        audited_by = None
-        if data.get("department_audited", data.get("department-audited", False)):
-            audited_by = AuditedBy.Department
-        elif data.get("registrar_audited", data.get("registrar-audited", False)):
-            audited_by = AuditedBy.Registrar
+        is_audited = data.get("department_audited", data.get("department-audited", False))
 
         if 'audit' in data:
             raise TypeError('you probably meant to indent that audit: key into the result: key')
 
-        if not audited_by and not result:
+        if not is_audited and not result:
             raise TypeError(f'requirements need either audited_by or result (at {path})')
 
         message = data.get("message", None)
@@ -101,7 +96,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             is_contract=data.get("contract", False),
             disjoint=data.get("disjoint", None),
             in_gpa=data.get("in_gpa", True),
-            audited_by=audited_by,
+            is_audited=is_audited,
             path=tuple(path),
         )
 
@@ -133,17 +128,10 @@ class RequirementRule(Rule, BaseRequirementRule):
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
         if ctx.get_waive_exception(self.path):
-            logger.debug("forced override on %s", self.path)
             yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
             return
 
-        logger.debug("%s auditing %s", self.path, self.name)
-
-        if self.audited_by is not None:
-            logger.debug("%s requirement \"%s\" is audited %s", self.path, self.name, self.audited_by)
-
         if not self.result:
-            logger.debug("%s requirement \"%s\" does not have a result", self.path, self.name)
             yield RequirementSolution.from_rule(rule=self, solution=None)
             return
 
@@ -171,7 +159,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         if ctx.has_exception(self.path):
             return True
 
-        if self.audited_by is not None:
+        if self.is_audited:
             return False
 
         if self.result:

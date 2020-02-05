@@ -1,12 +1,15 @@
 import attr
-from typing import Optional, Tuple, Dict, Any, Sequence, Union
+from typing import Optional, Tuple, Dict, Any, Sequence, Union, cast
 import enum
+from decimal import Decimal
 
-from .bases import Base, Summable
+from .bases import Base
+from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, WAIVED_DONE_CURRENT_PENDING_INCOMPLETE
 from ..limit import LimitSet
 from ..clause import Clause
 from ..claim import ClaimAttempt
-from ..rule.assertion import AssertionRule, ConditionalAssertionRule
+from ..rule.assertion import AssertionRule
+from ..rule.conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 
 
@@ -53,20 +56,42 @@ class BaseQueryRule(Base):
     def type(self) -> str:
         return "query"
 
-    def rank(self) -> Summable:
-        return 0
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        if self.waived():
+            return Decimal(1), Decimal(1)
 
-    def max_rank(self) -> Summable:
-        return sum(a.max_rank() for a in self.assertions)
+        assertion_ranks = [a.rank() for a in self.all_assertions()]
 
-    def in_progress(self) -> bool:
-        if 0 < self.rank() < self.max_rank():
-            return True
+        rank = cast(Decimal, sum(r for r, m in assertion_ranks))
+        max_rank = cast(Decimal, sum(m for r, m in assertion_ranks))
 
-        if any(c.is_in_progress for c in self.matched()):
-            return True
+        return rank, max_rank
 
-        if any(c.in_progress() for c in self.all_assertions()):
-            return True
+    def status(self) -> ResultStatus:
+        if self.waived():
+            return ResultStatus.Waived
 
-        return False
+        statuses = set(a.status() for a in self.all_assertions())
+
+        if ResultStatus.FailedInvariant in statuses:
+            return ResultStatus.FailedInvariant
+
+        if statuses.issubset(WAIVED_ONLY):
+            return ResultStatus.Waived
+
+        if statuses.issubset(WAIVED_AND_DONE):
+            return ResultStatus.Done
+
+        if statuses.issubset(WAIVED_DONE_CURRENT):
+            return ResultStatus.PendingCurrent
+
+        if statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
+            return ResultStatus.PendingRegistered
+
+        if statuses.issubset(WAIVED_DONE_CURRENT_PENDING_INCOMPLETE):
+            return ResultStatus.NeedsMoreItems
+
+        if ResultStatus.Empty in statuses and statuses.intersection(WAIVED_DONE_CURRENT_PENDING_INCOMPLETE):
+            return ResultStatus.NeedsMoreItems
+
+        return ResultStatus.Empty

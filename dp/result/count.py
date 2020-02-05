@@ -1,9 +1,9 @@
 import attr
 from typing import Tuple, Union, Sequence, TYPE_CHECKING
 
+from .assertion import AssertionResult
 from ..base.bases import Result, Rule, Solution
 from ..base.count import BaseCountRule
-from .assertion import AssertionResult
 from ..rule.assertion import AssertionRule
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -36,13 +36,5 @@ class CountResult(Result, BaseCountRule):
     def audits(self) -> Sequence[Union[AssertionResult, AssertionRule]]:
         return self.audit_clauses
 
-    def was_overridden(self) -> bool:
+    def waived(self) -> bool:
         return self.overridden
-
-    def ok(self) -> bool:
-        if self.was_overridden():
-            return True
-
-        passed_count = sum(1 if r.ok() else 0 for r in self.items)
-        audit_passed = len(self.audit_clauses) == 0 or all(a.ok() for a in self.audit_clauses)
-        return passed_count >= self.count and audit_passed

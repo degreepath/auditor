@@ -19,7 +19,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             result=solution,
             name=rule.name,
             message=rule.message,
-            audited_by=rule.audited_by,
+            is_audited=rule.is_audited,
             is_contract=rule.is_contract,
             disjoint=rule.disjoint,
             path=rule.path,
@@ -28,16 +28,10 @@ class RequirementSolution(Solution, BaseRequirementRule):
         )
 
     def state(self) -> RuleState:
-        if self.audited_by or self.result is None:
+        if self.is_audited or self.result is None:
             return RuleState.Solution
 
         return self.result.state()
-
-    def ok(self) -> bool:
-        if self.result is None:
-            return False
-
-        return self.result.ok()
 
     def audit(self, *, ctx: 'RequirementContext') -> RequirementResult:
         if self.overridden:
@@ -51,6 +45,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             return RequirementResult.from_solution(solution=self, result=None)
 
         if isinstance(self.result, Rule):
+            # TODO determine when this happens
             return RequirementResult.from_solution(solution=self, result=self.result)
 
         return RequirementResult.from_solution(solution=self, result=self.result.audit(ctx=ctx))

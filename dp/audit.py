@@ -7,6 +7,7 @@ from .constants import Constants
 from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
 from .data import CourseInstance, Student
+from .status import WAIVED_AND_DONE
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -44,7 +45,7 @@ class EstimateMsg:
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class ProgressMsg:
-    best_rank: Union[int, Decimal]
+    best_rank: Decimal
     best_i: Optional[int]
     iters: int
     total_iters: int
@@ -69,7 +70,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
     audit_count = 0
 
     best_sol: Optional[AreaResult] = None
-    best_rank: Union[int, Decimal] = 0
+    best_rank: Decimal = Decimal(0)
     best_i: Optional[int] = None
 
     estimate = area.estimate(student=student, exceptions=exceptions or [])
@@ -91,7 +92,8 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         audit_count += 1
 
         result = sol.audit()
-        result_rank = result.rank()
+        result_rank, _result_max = result.rank()
+        status = result.status()
 
         # if this is the first solution, store it, because it's the best so far
         if best_sol is None:
@@ -102,7 +104,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
             best_sol, best_rank, best_i = result, result_rank, total_count
 
         # if the current solution is OK, then store it, and end the loop
-        if result.ok():
+        if status in WAIVED_AND_DONE:
             best_sol, best_rank, best_i = result, result_rank, total_count
             break
 

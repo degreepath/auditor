@@ -1,18 +1,16 @@
 import abc
-from typing import Iterator, Dict, Set, Any, List, Tuple, Collection, Optional, Union, TYPE_CHECKING
+from typing import Iterator, Dict, Set, Any, List, Tuple, Collection, Optional, TYPE_CHECKING
 from decimal import Decimal
 import enum
 import attr
 from functools import cmp_to_key, lru_cache
-from ..status import ResultStatus
+from ..status import ResultStatus, PassingStatuses
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..claim import ClaimAttempt  # noqa: F401
     from ..data import CourseInstance  # noqa: F401
     from ..data import Clausable  # noqa: F401
-
-Summable = Union[int, Decimal]
 
 
 @enum.unique
@@ -27,14 +25,15 @@ class Base(abc.ABC):
     path: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:
+        status = self.status()
+        rank, max_rank = self.rank()
+
         return {
             "path": list(self.path),
             "type": self.type(),
-            "status": self.status().value,
-            "ok": self.ok(),
-            "rank": str(self.rank()),
-            "max_rank": str(self.max_rank()),
-            "overridden": self.was_overridden(),
+            "status": status.value,
+            "rank": str(rank),
+            "max_rank": str(max_rank),
         }
 
     @abc.abstractmethod
@@ -45,30 +44,31 @@ class Base(abc.ABC):
         return RuleState.Rule
 
     def status(self) -> ResultStatus:
-        if self.in_progress():
-            return ResultStatus.InProgress
+        if self.waived():
+            return ResultStatus.Waived
 
-        if self.ok():
-            return ResultStatus.Pass
+        matched = self.matched()
+        has_ip_courses = any(c.is_in_progress for c in matched)
+        has_enrolled_courses = any(c.is_in_progress_this_term for c in matched)
+        has_registered_courses = any(c.is_in_progress_in_future for c in matched)
 
-        return ResultStatus.Pending
+        if has_ip_courses and has_enrolled_courses and (not has_registered_courses):
+            return ResultStatus.PendingCurrent
+        elif has_ip_courses and has_registered_courses:
+            return ResultStatus.PendingRegistered
 
-    def ok(self) -> bool:
-        if self.was_overridden():
-            return True
+        rank, _max_rank = self.rank()
 
-        return False
+        if rank < 1:
+            return ResultStatus.NeedsMoreItems
 
-    def in_progress(self) -> bool:
-        return 0 < self.rank() < self.max_rank() or any(c.is_in_progress for c in self.matched())
+        return ResultStatus.Empty
 
-    def rank(self) -> Summable:
-        return 0
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        if self.waived():
+            return Decimal(1), Decimal(1)
 
-    def max_rank(self) -> Summable:
-        if self.ok():
-            return self.rank()
-        return 1
+        return Decimal(0), Decimal(1)
 
     def claims(self) -> List['ClaimAttempt']:
         return []
@@ -85,7 +85,7 @@ class Base(abc.ABC):
     def is_in_gpa(self) -> bool:
         return True
 
-    def was_overridden(self) -> bool:
+    def waived(self) -> bool:
         return False
 
     def is_always_disjoint(self) -> bool:
@@ -93,6 +93,9 @@ class Base(abc.ABC):
 
     def is_never_disjoint(self) -> bool:
         return False
+
+    def ok(self) -> bool:
+        return self.status() in PassingStatuses
 
 
 class Result(Base, abc.ABC):

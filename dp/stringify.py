@@ -3,7 +3,10 @@ from .data import CourseInstance
 from .data.course_enums import CourseType
 from .operator import str_operator
 from .ms import pretty_ms
+from .status import PassingStatusValues, WAIVED_AND_DONE
 import json
+
+WAIVED_AND_DONE = [v.value for v in WAIVED_AND_DONE]
 
 
 def summarize(
@@ -94,14 +97,20 @@ def print_path(rule: Dict[str, Any], indent: int) -> Iterator[str]:
 
 
 def calculate_emoji(rule: Dict[str, Any]) -> str:
-    if rule["overridden"]:
+    if rule["status"] == "waived":
         return "💜"
-    elif rule["status"] == "pass":
+    elif rule["status"] == "done":
         return "💚"
-    elif rule["status"] == "pending":
+    elif rule["status"] == "pending-current":
+        return "💖"
+    elif rule["status"] == "pending-registered":
+        return "🧡"
+    elif rule["status"] == "needs-more-items":
+        return "💙"
+    elif rule["status"] == "pending-approval":
+        return "❓"
+    elif rule["status"] == "empty":
         return "🌀"
-    elif rule["status"] == "in-progress":
-        return "💛"
     else:
         return "🚫️"
 
@@ -116,12 +125,11 @@ def print_area(
     if show_paths:
         yield from print_path(rule, indent)
 
-    if rule['ok']:
-        title = f"{rule['name']!r} audit was successful."
-    else:
-        title = f"{rule['name']!r} audit failed."
+    title = f"{rule['name']!r} audit status: {rule['status']}."
+    rank = f"rank {rule['rank']} of {rule['max_rank']}"
+    gpa = f"gpa: {rule['gpa']}"
 
-    yield f"{title} (rank {rule['rank']} of {rule['max_rank']}; gpa: {rule['gpa']})"
+    yield f"{title} ({rank}; {gpa})"
 
     if rule['limit']:
         yield f"Subject to these limits:"
@@ -131,6 +139,29 @@ def print_area(
     yield ""
 
     yield from print_result(rule['result'], transcript, show_ranks=show_ranks, show_paths=show_paths)
+
+
+def emojify_course(course: Optional[CourseInstance], status: Optional[str] = None) -> str:
+    if status == "waived" and course:
+        return "💜 [ovr]"
+    elif status == "waived":
+        return "💜 [wvd]"
+    elif course is None:
+        return "🌀      "
+    elif course.is_incomplete:
+        return "⛔️ [dnf]"
+    elif course.is_in_progress_this_term:
+        return "💖 [ip!]"
+    elif course.is_in_progress_in_future:
+        return "🧡 [ip-]"
+    elif course.is_in_progress:
+        return "💙 [ip?]"
+    elif course.is_repeat:
+        return "💕 [rep]"
+    elif course:
+        return "💚 [ ok]"
+    else:
+        return "!!!!!!! "
 
 
 def print_course(
@@ -145,13 +176,7 @@ def print_course(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
-
-    display_course = rule['course']
-    if not rule['course'] and rule['ap'] != '':
-        display_course = rule['ap']
-
-    status = "🌀      "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     if len(rule["claims"]):
         claim = rule["claims"][0]["claim"]
@@ -159,28 +184,15 @@ def print_course(
     else:
         course = None
 
-    if not rule["overridden"]:
-        if course is None:
-            status = "🌀      "
-        elif course.is_incomplete:
-            status = "⛔️ [dnf]"
-        elif course.is_in_progress:
-            status = "💙 [ ip]"
-        elif course.is_repeat:
-            status = "💕 [rep]"
-        elif course:
-            status = "💚 [ ok]"
-        else:
-            status = "!!!!!!! "
+    status = emojify_course(course, rule["status"])
 
-        if course and course.course_type is CourseType.AP:
-            display_course = course.name
-    elif rule["ok"] and rule["overridden"]:
-        if course:
-            status = "💜 [ovr]"
-            display_course = f"{course.course().strip()} {course.name}"
-        else:
-            status = "💜 [wvd]"
+    display_course = rule['course']
+    if rule["status"] == "waived" and course:
+        display_course = f"{course.course().strip()} {course.name}"
+    elif rule["status"] != "waived" and course and course.course_type is CourseType.AP:
+        display_course = course.name
+    elif not rule["course"] and rule["ap"] != "":
+        display_course = rule["ap"]
 
     institution = ""
     if rule['institution']:
@@ -201,18 +213,17 @@ def print_proficiency(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     status = "🌀      "
-    if rule["ok"]:
-        if rule["overridden"]:
-            status = "💜 [wvd]"
-        else:
-            status = "💚 [ ok]"
+    if rule["status"] == 'waived':
+        status = "💜 [wvd]"
+    elif rule["status"] == 'done':
+        status = "💚 [ ok]"
 
     yield f"{prefix}{status} Proficiency={rule['proficiency']}"
 
-    if rule['course']['ok']:
+    if rule['course']['status'] in WAIVED_AND_DONE:
         yield from print_course(rule['course'], transcript, indent + 4, show_paths, show_ranks)
 
 
@@ -228,7 +239,7 @@ def print_count(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
@@ -244,7 +255,7 @@ def print_count(
     else:
         descr = f"at least {rule['count']} of {size}"
 
-    ok_count = len([r for r in rule["items"] if r["ok"]])
+    ok_count = len([r for r in rule["items"] if r["status"] in WAIVED_AND_DONE])
     descr += f" (ok: {ok_count}; need: {rule['count']})"
 
     yield f"{prefix}{emoji} {descr}"
@@ -277,12 +288,12 @@ def print_query(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
     if rule['where']:
-        yield f"{prefix}{emoji} Given courses matching {str_clause(rule['where'])}"
+        yield f"{prefix}{emoji} [{rule['status']}] Given courses matching {str_clause(rule['where'])}"
 
     if rule['limit']:
         yield f"{prefix} Subject to these limits:"
@@ -297,9 +308,9 @@ def print_query(
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
                 continue
 
+            status = emojify_course(course)
             inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
-            ip_msg = "[ip] " if course.is_in_progress else ""
-            yield f"{prefix}    {inserted_msg}{ip_msg}{course.course()} \"{course.name}\" ({course.clbid})"
+            yield f"{prefix}    {inserted_msg}{status} {course.course()} \"{course.name}\" ({course.clbid})"
 
     if rule["failures"]:
         yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
@@ -328,14 +339,15 @@ def print_requirement(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
-    yield f"{prefix}{emoji} Requirement({rule['name']})"
-    if rule["audited_by"] is not None:
-        yield f"{prefix}    Audited by: {rule['audited_by']}"
+    yield f"{prefix}{emoji} Requirement({rule['name']}) [{rule['status']}]"
+    if rule["is_audited"]:
+        yield f"{prefix}    is manually audited"
         return
+
     if rule["result"]:
         yield from print_result(rule["result"], transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
 
@@ -353,11 +365,11 @@ def print_assertion(
 
     prefix = " " * indent
     if show_ranks:
-        prefix += f"({rule['rank']}|{rule['max_rank']}|{'t' if rule['ok'] else 'f'}) "
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
-    yield f"{prefix} - {emoji} {str_clause(rule['assertion'])}"
+    yield f"{prefix} - {emoji} {str_clause(rule['assertion'])} [{rule['status']}]"
 
     prefix += " " * 6
 
@@ -385,13 +397,16 @@ def print_assertion(
 
         for clbid in resolved_clbids:
             inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
-            ip_msg = " [ip]" if clbid in ip_clbids else ""
-            if clbid in transcript:
-                course = transcript[clbid]
-                chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
-                yield f'{prefix}  -{ip_msg}{inserted_msg} Course({", ".join(chunks)})'
-            else:
+
+            course = transcript.get(clbid, None)
+            if not course:
+                ip_msg = " [ip?]" if clbid in ip_clbids else ""
                 yield f'{prefix}  -{ip_msg}{inserted_msg} Course(clbid={clbid})'
+                continue
+
+            status = emojify_course(course)
+            chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
+            yield f'{prefix}  -{inserted_msg} {status} Course({", ".join(chunks)})'
 
 
 def print_conditional_assertion(

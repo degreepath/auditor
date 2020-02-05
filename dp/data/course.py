@@ -29,6 +29,8 @@ class CourseInstance(Clausable):
     institution: str
     is_in_gpa: bool
     is_in_progress: bool
+    is_in_progress_this_term: bool
+    is_in_progress_in_future: bool
     is_incomplete: bool
     is_repeat: bool
     is_stolaf: bool
@@ -253,12 +255,16 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
 }
 
 
-def load_course(
+def load_course(  # noqa: C901
     data: Dict[str, Any],
     *,
     current_term: Optional[str] = None,
     overrides: List[CourseOverrideException],
-) -> CourseInstance:
+    credits_overrides: Optional[Dict[str, str]],
+) -> CourseInstance:  # noqa: C901
+    if not credits_overrides:
+        credits_overrides = {}
+
     if isinstance(data, CourseInstance):
         return data  # type: ignore
 
@@ -291,6 +297,12 @@ def load_course(
     subject_override = applicable_overrides.get(ExceptionAction.CourseSubject, None)
     credits_override = applicable_overrides.get(ExceptionAction.CourseCredits, None)
 
+    # find a default credits override, if one exists in the area spec
+    credits_override_key = f"name={name}"
+    if not credits_override and credits_override_key in credits_overrides:
+        amount = Decimal(credits_overrides[credits_override_key])
+        credits_override = CourseCreditOverride(path=tuple(), clbid=clbid, type=ExceptionAction.CourseCredits, credits=amount)
+
     if credits_override:
         credits = cast(CourseCreditOverride, credits_override).credits
 
@@ -309,8 +321,14 @@ def load_course(
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
 
-    if current_term and grade_code is GradeCode._IP and f"{year}{term}" >= current_term:
-        grade_code = GradeCode._REG
+    in_progress_this_term = False
+    in_progress_in_future = False
+
+    if current_term and grade_code is GradeCode._IP:
+        if f"{year}{term}" == current_term:
+            in_progress_this_term = True
+        elif f"{year}{term}" >= current_term:
+            in_progress_in_future = True
 
     # GPA points are the (truncated to two decimal places!) result of GP * credits.
     # If someone gets an A- in a 0.25-credit course, they are supposed to
@@ -355,6 +373,8 @@ def load_course(
         institution=institution,
         is_in_gpa=flag_gpa,
         is_in_progress=flag_in_progress,
+        is_in_progress_this_term=in_progress_this_term,
+        is_in_progress_in_future=in_progress_in_future,
         is_incomplete=flag_incomplete,
         is_repeat=flag_repeat,
         is_stolaf=flag_stolaf,
@@ -408,4 +428,4 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "grade_code": grade_code,
         "grade_points": grade_points,
         "grade_points_gpa": grade_points_gpa,
-    }, overrides=[])
+    }, overrides=[], credits_overrides={})

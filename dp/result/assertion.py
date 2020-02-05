@@ -28,5 +28,5 @@ class AssertionResult(Result, BaseAssertionRule):
             inserted=inserted_clbids,
         )
 
-    def was_overridden(self) -> bool:
+    def waived(self) -> bool:
         return self.overridden

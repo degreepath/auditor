@@ -1,6 +1,8 @@
-from typing import Optional, Dict, List, Union, TYPE_CHECKING
+from typing import Optional, Dict, List, TYPE_CHECKING
 from decimal import Decimal
 import logging
+
+from .status import WAIVED_AND_DONE
 
 if TYPE_CHECKING:  # pragma: no cover
     from .claim import Claim  # noqa: F401
@@ -14,7 +16,7 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
     logger.debug('solving rule at %s', rule.path)
 
     result: Optional['Result'] = None
-    rank: Union[int, Decimal] = 0
+    rank: Decimal = Decimal(0)
 
     claims: Dict[str, List['Claim']] = dict()
     if merge_claims:
@@ -25,7 +27,8 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
             inner_ctx = ctx.with_empty_claims()
 
             tmp_result = s.audit(ctx=inner_ctx)
-            tmp_rank = tmp_result.rank()
+            tmp_rank, _tmp_max = tmp_result.rank()
+            tmp_status = tmp_result.status()
 
             if result is None:
                 result, rank = tmp_result, tmp_rank
@@ -33,7 +36,7 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
             if tmp_rank > rank:
                 result, rank = tmp_result, tmp_rank
 
-            if tmp_result.ok():
+            if tmp_status in WAIVED_AND_DONE:
                 result, rank = tmp_result, tmp_rank
                 break
 

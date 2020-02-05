@@ -11,8 +11,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class ProficiencyResult(Result, BaseProficiencyRule):
-    proficiency_status: ResultStatus
-
     @staticmethod
     def from_solution(
         *,
@@ -33,7 +31,7 @@ class ProficiencyResult(Result, BaseProficiencyRule):
     def overridden_from_solution(*, solution: BaseProficiencyRule) -> 'ProficiencyResult':
         return ProficiencyResult(
             proficiency=solution.proficiency,
-            proficiency_status=ResultStatus.Pass,
+            proficiency_status=ResultStatus.Waived,
             overridden=True,
             course=solution.course,
             path=solution.path,
@@ -42,8 +40,5 @@ class ProficiencyResult(Result, BaseProficiencyRule):
     def claims(self) -> List['ClaimAttempt']:
         return self.course.claims() if self.course else []
 
-    def was_overridden(self) -> bool:
+    def waived(self) -> bool:
         return self.overridden
-
-    def ok(self) -> bool:
-        return self.proficiency_status is ResultStatus.Pass or (self.course.ok() if self.course else False)

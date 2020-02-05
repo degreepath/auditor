@@ -2,7 +2,7 @@ import attr
 from typing import Optional
 import logging
 
-from ..base import Base, Result, BaseRequirementRule, RuleState
+from ..base import Base, Result, BaseRequirementRule
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class RequirementResult(Result, BaseRequirementRule):
         return RequirementResult(
             name=solution.name,
             message=solution.message,
-            audited_by=solution.audited_by,
+            is_audited=solution.is_audited,
             is_contract=solution.is_contract,
             path=solution.path,
             disjoint=solution.disjoint,
@@ -30,20 +30,5 @@ class RequirementResult(Result, BaseRequirementRule):
             overridden=overridden,
         )
 
-    def state(self) -> RuleState:
-        if self.result is None:
-            return RuleState.Result
-
-        return self.result.state()
-
-    def was_overridden(self) -> bool:
+    def waived(self) -> bool:
         return self.overridden
-
-    def ok(self) -> bool:
-        if self.was_overridden():
-            return self.overridden
-
-        if self.result is None:
-            return False
-
-        return self.result.ok()
