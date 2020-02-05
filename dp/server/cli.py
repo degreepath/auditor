@@ -33,8 +33,8 @@ def main() -> None:
     student_data = load_student(args.student_file)
     area_spec = load_area(args.area_file)
 
-    area_catalog = str(pathlib.Path(args.area_file).parent)
-    area_code = pathlib.Path(args.area_file).stem
+    area_catalog = str(pathlib.Path(args.area_file).resolve().parent.stem)
+    area_code = pathlib.Path(args.area_file).resolve().stem
 
     # empty string means "use the environment variables"
     conn = psycopg2.connect('', application_name='degreepath-cli')
