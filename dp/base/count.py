@@ -40,18 +40,6 @@ class BaseCountRule(Base):
     def claims_for_gpa(self) -> List[ClaimAttempt]:
         return [claim for item in self.items for claim in item.claims_for_gpa()]
 
-    def max_rank(self, ranks: Sequence[Decimal]) -> Decimal:
-        if not ranks:
-            return Decimal(1)
-
-        if len(self.items) == 2 and self.count == 2:
-            return cast(Decimal, sum(sorted(m for m in ranks)[:2]))
-
-        if self.count == 1 and self.at_most:
-            return max(m for m in ranks)
-
-        return cast(Decimal, sum(m for m in ranks))
-
     def rank(self) -> Tuple[Decimal, Decimal]:
         if self.waived():
             return Decimal(1), Decimal(1)
