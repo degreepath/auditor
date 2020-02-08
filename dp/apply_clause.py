@@ -147,7 +147,6 @@ def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
 
 def count_areas(data: Iterable[AreaPointer]) -> AppliedClauseResult:
     area_codes = tuple(sorted(set(a.code for a in data)))
-
     return AppliedClauseResult(value=len(area_codes), data=tuple(frozenset(area_codes)))
 
 
