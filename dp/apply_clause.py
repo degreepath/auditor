@@ -193,7 +193,7 @@ def sum_credits_from_single_subject(data: Iterable[CourseInstance]) -> AppliedCl
     items = tuple(sorted(c.credits for c in data if best_subject == c.subject))
     courses = tuple(c for c in data if best_subject == c.subject)
 
-    return AppliedClauseResult(value=sum(items), data=items, courses=tuple(courses))
+    return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
 
 def average_grades(data: Iterable[CourseInstance]) -> AppliedClauseResult:
