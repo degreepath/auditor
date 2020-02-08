@@ -63,6 +63,10 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
             elif isinstance(msg, ResultMsg):
                 result = msg.result.to_dict()
 
+                # we use clock_timestamp() instead of now() here, because
+                # now() is the start time of the transaction, and we instead
+                # want the time when the computation was finished.
+                # see https://stackoverflow.com/a/24169018
                 curs.execute("""
                     UPDATE result
                     SET iterations = %(total_count)s
@@ -72,7 +76,7 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                       , max_rank = %(max_rank)s
                       , result = %(result)s::jsonb
                       , ok = %(ok)s
-                      , ts = %(now)s
+                      , ts = clock_timestamp()
                       , gpa = %(gpa)s
                       , claimed_courses = %(claimed_courses)s::jsonb
                       , status = %(status)s
@@ -89,10 +93,6 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                     "gpa": result["gpa"],
                     "ok": result["ok"],
                     "status": result["status"],
-                    # we insert a Python now() instead of using the now() psql function
-                    # because sql's now() is the start time of the transaction, and we
-                    # want this to be the end of the transaction
-                    "now": datetime.datetime.now(),
                 })
 
             else:
