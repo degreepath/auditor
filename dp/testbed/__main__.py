@@ -114,4 +114,7 @@ if __name__ == "__main__":
     # Register the converter
     sqlite3.register_converter("decimal", convert_decimal)
 
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
