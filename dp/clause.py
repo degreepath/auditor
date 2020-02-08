@@ -189,7 +189,7 @@ class ResolvedSingleClause(SingleClause):
             **super().to_dict(),
             "resolved_with": str(self.resolved_with),
             "resolved_items": [stringify_expected(x) for x in self.resolved_items],
-            "resolved_clbids": [x for x in self.resolved_clbids],
+            "resolved_clbids": [clbid for clbid in self.resolved_clbids],
         }
 
     def rank(self) -> Tuple[Decimal, Decimal]:
