@@ -246,28 +246,19 @@ other_actions: Mapping[str, Callable[[Iterable[Any]], AppliedClauseResult]] = {
 
 def apply_clause_to_assertion_with_courses(clause: 'SingleClause', value: Iterable[CourseInstance]) -> AppliedClauseResult:
     action = course_actions.get(clause.key, None)
-
-    if action is None:
-        raise Exception(f'got {clause.key}; expected one of {sorted(course_actions.keys())}')
-
+    assert action is not None, KeyError(f'got {clause.key}; expected one of {sorted(course_actions.keys())}')
     return action(value)
 
 
 def apply_clause_to_assertion_with_areas(clause: 'SingleClause', value: Iterable[AreaPointer]) -> AppliedClauseResult:
     action = area_actions.get(clause.key, None)
-
-    if action is None:
-        raise Exception(f'got {clause.key}; expected one of {sorted(area_actions.keys())}')
-
+    assert action is not None, KeyError(f'got {clause.key}; expected one of {sorted(area_actions.keys())}')
     return action(value)
 
 
 def apply_clause_to_assertion_with_data(clause: 'SingleClause', value: Iterable[Any]) -> AppliedClauseResult:
     action = other_actions.get(clause.key, None)
-
-    if action is None:
-        raise Exception(f'got {clause.key}; expected one of {sorted(other_actions.keys())}')
-
+    assert action is not None, KeyError(f'got {clause.key}; expected one of {sorted(other_actions.keys())}')
     return action(value)
 
 
