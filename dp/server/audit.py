@@ -3,7 +3,6 @@
 from typing import Dict, cast
 import json
 import logging
-import datetime
 
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
