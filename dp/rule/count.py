@@ -22,6 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 logger = logging.getLogger(__name__)
 SHOW_ESTIMATES = False if int(os.getenv('DP_ESTIMATE', default='0')) == 0 else True
+FIND_INDEPENDENTS = True if int(os.getenv('DP_INDEPENDENT', default='1')) == 1 else False
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -213,7 +214,7 @@ class CountRule(Rule, BaseCountRule):
         solved_results: Tuple[Result, ...]
         solved_results__rules: Set[Rule]
 
-        if depth == 1 and all_potential_rules and not self.audit_clauses:
+        if FIND_INDEPENDENTS and depth == 1 and all_potential_rules and not self.audit_clauses:
             logger.debug('%s searching for disjoint children', self.path)
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
 
@@ -279,7 +280,7 @@ class CountRule(Rule, BaseCountRule):
 
         all_potential_rules = set(rule for rule in items if rule.has_potential(ctx=ctx))
 
-        if depth == 1 and all_potential_rules and not self.audit_clauses:
+        if FIND_INDEPENDENTS and depth == 1 and all_potential_rules and not self.audit_clauses:
             separated_children = self.find_independent_children(items=all_potential_rules, ctx=ctx)
             codependent_children = separated_children['non_disjoint']
             potential_rules = tuple(sorted(codependent_children, key=sort_by_path))
