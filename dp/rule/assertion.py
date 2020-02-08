@@ -226,7 +226,7 @@ class AssertionRule(Rule, BaseAssertionRule):
             status=result,
             resolved_with=calculated_result.value,
             resolved_items=calculated_result.data,
-            resolved_clbids=tuple(c.clbid for c in calculated_result.courses),
+            resolved_clbids=tuple(sorted(c.clbid for c in calculated_result.courses)),
         )
 
         return AssertionResult.from_rule(self, assertion=assertion, inserted_clbids=inserted)
