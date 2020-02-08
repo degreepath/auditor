@@ -53,8 +53,8 @@ def count_terms_from_most_common_course(data: Iterable[CourseInstance]) -> Appli
     most_common = counted.most_common(1)[0]
     most_common_crsid, _count = most_common
 
-    items = tuple(sorted(set(c.yearterm for c in data if c.crsid == most_common_crsid)))
     courses = tuple(c for c in data if c.crsid == most_common_crsid)
+    items = tuple(sorted(set(c.yearterm for c in courses)))
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
@@ -68,8 +68,8 @@ def count_terms_from_most_common_course_by_name(data: Iterable[CourseInstance]) 
     most_common = counted.most_common(1)[0]
     most_common_ident, _count = most_common
 
-    items = tuple(sorted(set(c.yearterm for c in data if f"{c.subject}: {c.name}" == most_common_ident)))
     courses = tuple(c for c in data if f"{c.subject}: {c.name}" == most_common_ident)
+    items = tuple(sorted(set(c.yearterm for c in courses)))
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
@@ -190,8 +190,8 @@ def sum_credits_from_single_subject(data: Iterable[CourseInstance]) -> AppliedCl
 
     _credits, best_subject = max((credits, subject) for subject, credits in by_credits.items())
 
-    items = tuple(sorted(c.credits for c in data if best_subject == c.subject))
     courses = tuple(c for c in data if best_subject == c.subject)
+    items = tuple(sorted(c.credits for c in courses))
 
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
