@@ -324,10 +324,10 @@ def load_course(  # noqa: C901
     in_progress_this_term = False
     in_progress_in_future = False
 
-    if current_term and grade_code is GradeCode._IP:
-        if f"{year}{term}" == current_term:
+    if current_term and grade_code in (GradeCode._IP, GradeCode._I):
+        if f"{year}{term}" <= current_term:
             in_progress_this_term = True
-        elif f"{year}{term}" >= current_term:
+        elif f"{year}{term}" > current_term:
             in_progress_in_future = True
 
     # GPA points are the (truncated to two decimal places!) result of GP * credits.
