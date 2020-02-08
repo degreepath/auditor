@@ -98,9 +98,9 @@ def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     courses = set()
 
     for c in data:
-        str_value = str(c.year) + str(c.term)
-        if str_value not in items:
-            items.add(str_value)
+        yearterm = c.yearterm
+        if yearterm not in items:
+            items.add(yearterm)
             courses.add(c)
 
     return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))

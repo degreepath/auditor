@@ -44,6 +44,7 @@ class CourseInstance(Clausable):
     term: str
     transcript_code: TranscriptCode
     year: int
+    yearterm: str
 
     identity_: str
     is_chbi_: Optional[int]
@@ -359,6 +360,8 @@ def load_course(  # noqa: C901
     elif course_identity == 'CH/BI 227':
         is_chbi = 227
 
+    yearterm = f"{year}{term}"
+
     return CourseInstance(
         attributes=attributes,
         clbid=clbid,
@@ -390,6 +393,7 @@ def load_course(  # noqa: C901
         year=year,
         identity_=course_identity,
         is_chbi_=is_chbi,
+        yearterm=yearterm,
     )
 
 
