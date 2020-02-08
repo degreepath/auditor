@@ -27,9 +27,8 @@ def count_items_test(data: Iterable[Any]) -> AppliedClauseResult:
 def count_courses(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     items = frozenset(c for c in data)
     clbids = tuple(sorted(c.clbid for c in items))
-    courses = tuple(items)
 
-    return AppliedClauseResult(value=len(items), data=clbids, courses=courses)
+    return AppliedClauseResult(value=len(items), data=clbids, courses=items)
 
 
 def count_distinct_courses(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -90,7 +89,7 @@ def count_subjects(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(subject)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
 
 
 def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -103,7 +102,7 @@ def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(yearterm)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
 
 
 def count_math_perspectives(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -116,7 +115,7 @@ def count_math_perspectives(data: Iterable[CourseInstance]) -> AppliedClauseResu
                 perspectives.add(bucket)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(perspectives), data=tuple(sorted(perspectives)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(perspectives), data=tuple(sorted(perspectives)), courses=courses)
 
 
 def count_religion_traditions(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -129,7 +128,7 @@ def count_religion_traditions(data: Iterable[CourseInstance]) -> AppliedClauseRe
                 traditions.add(bucket)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(traditions), data=tuple(sorted(traditions)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(traditions), data=tuple(sorted(traditions)), courses=courses)
 
 
 def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -142,7 +141,7 @@ def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(str_year)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
 
 
 def count_areas(data: Iterable[AreaPointer]) -> AppliedClauseResult:
