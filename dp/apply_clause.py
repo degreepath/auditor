@@ -66,10 +66,10 @@ def count_terms_from_most_common_course_by_name(data: Iterable[CourseInstance]) 
         return AppliedClauseResult(value=0)
 
     most_common = counted.most_common(1)[0]
-    most_common_crsid, _count = most_common
+    most_common_ident, _count = most_common
 
-    items = tuple(sorted(set(c.yearterm for c in data if f"{c.subject}: {c.name}" == most_common_crsid)))
-    courses = tuple(c for c in data if f"{c.subject}: {c.name}" == most_common_crsid)
+    items = tuple(sorted(set(c.yearterm for c in data if f"{c.subject}: {c.name}" == most_common_ident)))
+    courses = tuple(c for c in data if f"{c.subject}: {c.name}" == most_common_ident)
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
