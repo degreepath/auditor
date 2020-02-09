@@ -148,17 +148,17 @@ def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
 
 def count_areas(data: Iterable[AreaPointer]) -> AppliedClauseResult:
     area_codes = tuple(sorted(set(a.code for a in data)))
-    return AppliedClauseResult(value=len(area_codes), data=tuple(frozenset(area_codes)))
+    return AppliedClauseResult(value=len(area_codes), data=area_codes)
 
 
 def count_recitals(data: Iterable[MusicAttendance]) -> AppliedClauseResult:
     uniques = tuple(sorted(set(a.id for a in data)))
-    return AppliedClauseResult(value=len(uniques), data=tuple(frozenset(uniques)))
+    return AppliedClauseResult(value=len(uniques), data=uniques)
 
 
 def count_performances(data: Iterable[MusicPerformance]) -> AppliedClauseResult:
     uniques = tuple(sorted(set(a.id for a in data)))
-    return AppliedClauseResult(value=len(uniques), data=tuple(frozenset(uniques)))
+    return AppliedClauseResult(value=len(uniques), data=uniques)
 
 
 def count_seminars(data: Iterable[CourseInstance]) -> AppliedClauseResult:
