@@ -16,6 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
+debug: Optional[bool] = None
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -169,7 +170,9 @@ class QuerySolution(Solution, BaseQueryRule):
                 yield assertion_result
 
     def apply_assertion(self, maybe_asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', data: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
-        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+        global debug
+        if debug is None:
+            debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         assertion = maybe_asrt.resolve_conditional(data) if isinstance(maybe_asrt, ConditionalAssertionRule) else maybe_asrt
         if assertion is None:
