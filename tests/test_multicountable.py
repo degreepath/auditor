@@ -43,7 +43,7 @@ def test_mc__none(caplog):
     assert result_b.ok() is True
     assert result_c.ok() is True
 
-    assert list(c.claim.course.course() for c in result_c.claims() if c.failed is False) == [course.course()]
+    assert list(c.course.course() for c in result_c.claims() if c.failed is False) == [course.course()]
 
     assert result_c.result.items[0].result.claim_attempt.failed is False
     assert result_c.result.items[1].result.claim_attempt.failed is True
@@ -86,7 +86,7 @@ def test_mc__none_2(caplog):
     assert result_b.ok() is True
     assert result_c.ok() is True
 
-    assert list(c.claim.course.course() for c in result_c.claims() if c.failed is False) == [course.course()]
+    assert list(c.course.course() for c in result_c.claims() if c.failed is False) == [course.course()]
 
     assert result_c.result.items[0].result.claim_attempt.failed is False
     assert result_c.result.items[1].result.claim_attempt.failed is True
@@ -128,7 +128,7 @@ def test_mc__only_course_references(caplog):
     result_a = results[0]
     assert result_a.ok() is True
 
-    assert list(c.claim.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]
+    assert list(c.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]
 
     assert result_a.result.items[0].result.claim_attempt.failed is False
     assert result_a.result.items[1].result.claim_attempt.failed is False
@@ -172,7 +172,7 @@ def test_mc__only_query_references(caplog):
     result_a = results[0]
     assert result_a.ok() is True
 
-    assert list(c.claim.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]
+    assert list(c.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]
 
 
 def x_test_mc__mixed_course_query_references(caplog):
@@ -212,4 +212,4 @@ def x_test_mc__mixed_course_query_references(caplog):
     result_a = results[0]
     assert result_a.ok() is True
 
-    assert list(c.claim.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]
+    assert list(c.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]

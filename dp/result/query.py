@@ -3,7 +3,7 @@ from typing import Tuple, Sequence, List, Union, TYPE_CHECKING
 
 from .assertion import AssertionResult
 from ..base import Result, BaseQueryRule
-from ..claim import ClaimAttempt
+from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..rule.assertion import AssertionRule  # noqa: F401
@@ -12,8 +12,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryResult(Result, BaseQueryRule):
-    successful_claims: Tuple[ClaimAttempt, ...]
-    failed_claims: Tuple[ClaimAttempt, ...]
+    successful_claims: Tuple[Claim, ...]
+    failed_claims: Tuple[Claim, ...]
     resolved_assertions: Tuple[AssertionResult, ...]
     overridden: bool
 
@@ -22,8 +22,8 @@ class QueryResult(Result, BaseQueryRule):
         *,
         solution: BaseQueryRule,
         resolved_assertions: Tuple[AssertionResult, ...],
-        successful_claims: Tuple[ClaimAttempt, ...],
-        failed_claims: Tuple[ClaimAttempt, ...],
+        successful_claims: Tuple[Claim, ...],
+        failed_claims: Tuple[Claim, ...],
         overridden: bool = False,
     ) -> 'QueryResult':
         return QueryResult(
@@ -43,13 +43,13 @@ class QueryResult(Result, BaseQueryRule):
             force_inserted=solution.force_inserted,
         )
 
-    def only_failed_claims(self) -> Sequence[ClaimAttempt]:
+    def only_failed_claims(self) -> Sequence[Claim]:
         return self.failed_claims
 
     def all_assertions(self) -> Sequence[Union['AssertionRule', 'ConditionalAssertionRule', AssertionResult]]:
         return self.resolved_assertions
 
-    def claims(self) -> List[ClaimAttempt]:
+    def claims(self) -> List[Claim]:
         return list(self.successful_claims)
 
     def waived(self) -> bool:

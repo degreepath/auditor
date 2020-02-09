@@ -4,7 +4,7 @@ import logging
 
 from ..base import Solution, BaseCourseRule
 from ..result.course import CourseResult
-from ..claim import ClaimAttempt
+from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -36,7 +36,7 @@ class CourseSolution(Solution, BaseCourseRule):
         if self.overridden:
             return CourseResult.from_solution(solution=self, overridden=self.overridden)
 
-        claim: Optional[ClaimAttempt] = None
+        claim: Optional[Claim] = None
 
         for insert in ctx.get_insert_exceptions(self.path):
             logger.debug('inserting %s into %s due to override', insert.clbid, self)
@@ -66,7 +66,7 @@ class CourseSolution(Solution, BaseCourseRule):
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
                 return CourseResult.from_solution(solution=self, claim_attempt=claim)
 
-            logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, matched_course.course(), claim.conflict_with)
+            logger.debug('%s course "%s" exists, but has already been claimed by other rules', self.path, matched_course.course())
 
         logger.debug('%s course "%s" could not be claimed', self.path, self.identifier())
         return CourseResult.from_solution(solution=self, claim_attempt=claim)

@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any, TYPE_CHECKING
+from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any
 import logging
 import decimal
 from collections import defaultdict
@@ -16,9 +16,7 @@ from .result.requirement import RequirementResult
 from .lib import grade_point_average
 from .solve import find_best_solution
 from .status import ResultStatus, WAIVED_AND_DONE
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .claim import ClaimAttempt  # noqa: F401
+from .claim import Claim
 
 logger = logging.getLogger(__name__)
 
@@ -342,26 +340,26 @@ class AreaResult(AreaOfStudy, Result):
     def rank(self) -> Tuple[decimal.Decimal, decimal.Decimal]:
         return self.result.rank()
 
-    def claims(self) -> List['ClaimAttempt']:
+    def claims(self) -> List[Claim]:
         return self.result.claims()
 
     def keyed_claims(self) -> Dict[str, List[List[str]]]:
-        def sort_claims_by_time(cl: 'ClaimAttempt') -> Tuple:
-            c = cl.claim.course
+        def sort_claims_by_time(cl: Claim) -> Tuple:
+            c = cl.course
             return (c.subject, c.number, c.section or '', c.sub_type.value, c.year, c.term)
 
         claims = sorted((c for c in self.claims() if not c.failed), key=sort_claims_by_time)
 
-        by_clbid: Dict[str, List['ClaimAttempt']] = defaultdict(list)
+        by_clbid: Dict[str, List[Claim]] = defaultdict(list)
         for c in claims:
-            by_clbid[c.claim.course.clbid].append(c)
+            by_clbid[c.course.clbid].append(c)
 
         return {
-            clbid: [list(attempt.claim.claimant_path) for attempt in claim_attempts]
+            clbid: [list(attempt.claimed_by) for attempt in claim_attempts]
             for clbid, claim_attempts in by_clbid.items()
         }
 
-    def claims_for_gpa(self) -> List['ClaimAttempt']:
+    def claims_for_gpa(self) -> List[Claim]:
         return self.result.claims_for_gpa()
 
     def waived(self) -> bool:
