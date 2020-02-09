@@ -1,7 +1,8 @@
 import argparse
 import json
 from typing import Optional, Dict
-from pathlib import Path
+import subprocess
+import tempfile
 
 from .sqlite import sqlite_connect
 
@@ -94,21 +95,12 @@ def render(args: argparse.Namespace) -> None:
             return
 
         if args.diff:
-            import subprocess
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', suffix=f'={base}') as base_file:
+                with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', suffix=f'={branch}') as branch_file:
+                    base_file.write(render_result(student, baseline_result))
+                    branch_file.write(render_result(student, branch_result))
 
-            a = Path(f'{stnum}-{base}.txt')
-            with open(a, 'w', encoding='utf-8') as outfile:
-                outfile.write(render_result(student, baseline_result))
-
-            b = Path(f'{stnum}-{branch}.txt')
-            with open(f'./{stnum}-{branch}.txt', 'w', encoding='utf-8') as outfile:
-                outfile.write(render_result(student, branch_result))
-
-            subprocess.run(['git', 'diff', '--no-index', '--', str(a), str(b)])
-
-            a.unlink()
-            b.unlink()
-
+                    subprocess.run(['git', 'diff', '--no-index', '--', base_file.name, branch_file.name])
             return
 
         print('Baseline')
