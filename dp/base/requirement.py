@@ -1,12 +1,10 @@
 import attr
-from typing import Optional, Dict, Any, List, Tuple, TYPE_CHECKING
+from typing import Optional, Dict, Any, List, Tuple
 from decimal import Decimal
 
 from .bases import Base
 from ..status import ResultStatus, PassingStatuses
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..claim import ClaimAttempt  # noqa: F401
+from ..claim import Claim
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -85,13 +83,13 @@ class BaseRequirementRule(Base):
     def is_in_gpa(self) -> bool:
         return self.in_gpa
 
-    def claims(self) -> List['ClaimAttempt']:
+    def claims(self) -> List[Claim]:
         if self.is_audited or self.result is None:
             return []
 
         return self.result.claims()
 
-    def claims_for_gpa(self) -> List['ClaimAttempt']:
+    def claims_for_gpa(self) -> List[Claim]:
         if self.is_in_gpa() and self.result and not self.is_audited:
             return self.result.claims_for_gpa()
 

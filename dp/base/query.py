@@ -7,7 +7,7 @@ from .bases import Base
 from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, WAIVED_DONE_CURRENT_PENDING_INCOMPLETE
 from ..limit import LimitSet
 from ..clause import Clause
-from ..claim import ClaimAttempt
+from ..claim import Claim
 from ..rule.assertion import AssertionRule
 from ..rule.conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
@@ -47,7 +47,7 @@ class BaseQueryRule(Base):
             "inserted": list(self.inserted),
         }
 
-    def only_failed_claims(self) -> Sequence[ClaimAttempt]:
+    def only_failed_claims(self) -> Sequence[Claim]:
         return []
 
     def all_assertions(self) -> Sequence[Union[AssertionRule, ConditionalAssertionRule, AssertionResult]]:

@@ -31,7 +31,7 @@ def test_from(caplog):
 
     assert len(a.successful_claims) == 1
 
-    assert a.successful_claims[0].claim.course.clbid == transcript[0].clbid
+    assert a.successful_claims[0].course.clbid == transcript[0].clbid
 
 
 def __get_data(spec):

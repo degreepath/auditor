@@ -179,7 +179,7 @@ def print_course(
         prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     if len(rule["claims"]):
-        claim = rule["claims"][0]["claim"]
+        claim = rule["claims"][0]
         course = transcript.get(claim["clbid"], None)
     else:
         course = None
@@ -303,24 +303,24 @@ def print_query(
     if rule["claims"]:
         yield f"{prefix} Matching courses:"
         for clm in rule["claims"]:
-            course = transcript.get(clm['claim']["clbid"], None)
+            course = transcript.get(clm["clbid"], None)
             if not course:
-                yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
+                yield f"{prefix}    !!!!! \"!!!!!\" ({clm['clbid']})"
                 continue
 
             status = emojify_course(course)
-            inserted_msg = "[ins] " if clm['claim']["clbid"] in rule["inserted"] else ""
+            inserted_msg = "[ins] " if clm["clbid"] in rule["inserted"] else ""
             yield f"{prefix}    {inserted_msg}{status} {course.course()} \"{course.name}\" ({course.clbid})"
 
     if rule["failures"]:
         yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
         for clm in rule["failures"]:
-            course = transcript.get(clm['claim']["clbid"], None)
+            course = transcript.get(clm["clbid"], None)
             if course:
-                conflicts = [x['claimant_path'] for x in clm['conflict_with']]
-                yield f"{prefix}    {course.course()} \"{course.name}\" ({course.clbid}) [{conflicts}]"
+                # conflicts = [x['claimant_path'] for x in clm['conflict_with']]
+                yield f"{prefix}    {course.course()} \"{course.name}\" ({course.clbid})"
             else:
-                yield f"{prefix}    !!!!! \"!!!!!\" ({clm['claim']['clbid']})"
+                yield f"{prefix}    !!!!! \"!!!!!\" ({clm['clbid']})"
 
     yield f"{prefix} There must be:"
     for a in rule['assertions']:

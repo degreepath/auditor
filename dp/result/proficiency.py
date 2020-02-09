@@ -1,12 +1,9 @@
 import attr
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 
 from ..base import Result, BaseProficiencyRule, BaseCourseRule
 from ..status import ResultStatus
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..claim import ClaimAttempt  # noqa: F401
-    from ..data import CourseInstance  # noqa: F401
+from ..claim import Claim
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -37,7 +34,7 @@ class ProficiencyResult(Result, BaseProficiencyRule):
             path=solution.path,
         )
 
-    def claims(self) -> List['ClaimAttempt']:
+    def claims(self) -> List[Claim]:
         return self.course.claims() if self.course else []
 
     def waived(self) -> bool:

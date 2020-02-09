@@ -10,9 +10,9 @@ from ..rule.conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 from ..data import CourseInstance, Clausable
 from ..clause import apply_clause
+from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..claim import ClaimAttempt  # noqa: F401
     from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
@@ -22,8 +22,8 @@ debug: Optional[bool] = None
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
 class AuditResult:
     claimed_items: Tuple[Clausable, ...] = tuple()
-    successful_claims: Tuple['ClaimAttempt', ...] = tuple()
-    failed_claims: Tuple['ClaimAttempt', ...] = tuple()
+    successful_claims: Tuple[Claim, ...] = tuple()
+    failed_claims: Tuple[Claim, ...] = tuple()
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -95,28 +95,30 @@ class QuerySolution(Solution, BaseQueryRule):
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         claimed_items: List[Clausable] = []
-        successful_claims: List['ClaimAttempt'] = []
-        failed_claims: List['ClaimAttempt'] = []
+        successful_claims: List[Claim] = []
+        failed_claims: List[Claim] = []
 
-        output: Sequence[Clausable] = self.output
+        output: Sequence[CourseInstance] = cast(Sequence[CourseInstance], self.output)
         if self.attempt_claims:
-            for course in cast(Sequence[CourseInstance], output):
+            for course in output:
                 was_forced = course.clbid in self.force_inserted
                 claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed or was_forced)
 
                 if claim.failed:
-                    if debug: logger.debug('%s course "%s" exists, but has already been claimed by %s', self.path, course.clbid, claim.conflict_with)
+                    if debug: logger.debug('%s course "%s" exists, but has already been claimed by other rules', self.path, course.clbid)
                     failed_claims.append(claim)
                 else:
                     if debug: logger.debug('%s course "%s" exists, and is available', self.path, course.clbid)
                     successful_claims.append(claim)
                     claimed_items.append(course)
+
         elif self.record_claims:
-            for course in cast(Sequence[CourseInstance], output):
+            for course in output:
                 claim = ctx.make_claim(course=course, path=self.path, allow_claimed=True)
                 assert claim.failed is False
                 successful_claims.append(claim)
                 claimed_items.append(course)
+
         else:
             if debug: logger.debug('%s courses "%s" exist, and is available', self.path, output)
             claimed_items = list(output)
@@ -129,7 +131,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
     def audit_claimed_courses(self, ctx: 'RequirementContext') -> AuditResult:
         claimed_items: List[Clausable] = []
-        successful_claims: List['ClaimAttempt'] = []
+        successful_claims: List[Claim] = []
 
         output: List[CourseInstance] = ctx.all_claimed()
         if self.where:
