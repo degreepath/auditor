@@ -74,6 +74,7 @@ def main() -> None:
     parser_print.add_argument('stnum', help='')
     parser_print.add_argument('catalog')
     parser_print.add_argument('code')
+    parser_print.add_argument('base', default='baseline', nargs='?', help='the base run to compare against')
     parser_print.set_defaults(func=render)
 
     parser_query = subparsers.add_parser('query', help='query the database')

@@ -13,6 +13,7 @@ def render(args: argparse.Namespace) -> None:
     catalog = args.catalog
     code = args.code
     branch = args.branch
+    base = args.base
 
     input_data: Optional[Dict]
     baseline_result: Optional[Dict]
@@ -51,16 +52,29 @@ def render(args: argparse.Namespace) -> None:
             baseline_result = json.loads(record['output'])
 
         else:
-            results = conn.execute('''
-                SELECT d.input_data, b1.result as baseline, b2.result as branch
-                FROM server_data d
-                LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
-                LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
-                WHERE d.stnum = :stnum
-                    AND d.catalog = :catalog
-                    AND d.code = :code
-                    AND b2.branch = :branch
-            ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+            if base == 'baseline':
+                results = conn.execute('''
+                    SELECT d.input_data, b1.result as baseline, b2.result as branch
+                    FROM server_data d
+                    LEFT JOIN baseline b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
+                    LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
+                    WHERE d.stnum = :stnum
+                        AND d.catalog = :catalog
+                        AND d.code = :code
+                        AND b2.branch = :branch
+                ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch})
+            else:
+                results = conn.execute('''
+                    SELECT d.input_data, b1.result as baseline, b2.result as branch
+                    FROM server_data d
+                    LEFT JOIN branch b1 ON (b1.stnum, b1.catalog, b1.code) = (d.stnum, d.catalog, d.code)
+                    LEFT JOIN branch b2 ON (b2.stnum, b2.catalog, b2.code) = (d.stnum, d.catalog, d.code)
+                    WHERE d.stnum = :stnum
+                        AND d.catalog = :catalog
+                        AND d.code = :code
+                        AND b1.branch = :base
+                        AND b2.branch = :branch
+                ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch, 'base': base})
 
             record = results.fetchone()
             assert record, {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch}

@@ -21,6 +21,16 @@ def compare(args: argparse.Namespace) -> None:
 
         assert record['count'] > 0, f'no records found for branch "{args.run}"'
 
+    def status_col(table: str) -> str:
+        return f"""
+            case {table}.status
+                when 'done' then 'done'
+                when 'failed-invariant' then 'fail'
+                when 'needs-more-items' then 'part'
+                else {table}.status
+            end AS ok_{table}
+        """
+
     columns = [
         'b.stnum',
         'b.catalog',
@@ -31,8 +41,8 @@ def compare(args: argparse.Namespace) -> None:
         'r.iterations AS it_r',
         'round(b.duration, 4) AS dur_b',
         'round(r.duration, 4) AS dur_r',
-        'b.ok AS ok_b',
-        'r.ok AS ok_r',
+        status_col('b'),
+        status_col('r'),
         'round(b.rank, 2) AS rank_b',
         'round(r.rank, 2) AS rank_r',
         'b.max_rank AS max_b',
