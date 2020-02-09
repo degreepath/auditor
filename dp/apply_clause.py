@@ -102,7 +102,9 @@ def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(yearterm)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
+    processed_data = tuple(sorted(items))
+
+    return AppliedClauseResult(value=len(items), data=processed_data, courses=courses)
 
 
 def count_math_perspectives(data: Iterable[CourseInstance]) -> AppliedClauseResult:
