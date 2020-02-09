@@ -1,5 +1,5 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Callable, Iterator, cast, TYPE_CHECKING
+from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Iterator, cast, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseQueryRule
@@ -71,15 +71,16 @@ class QuerySolution(Solution, BaseQueryRule):
                 overridden=self.overridden,
             )
 
-        audit_mode: Dict[QuerySource, Callable[['RequirementContext'], AuditResult]] = {
-            QuerySource.Courses: self.audit_courses,
-            QuerySource.Claimed: self.audit_claimed_courses,
-            QuerySource.Areas: self.audit_areas,
-            QuerySource.MusicPerformances: self.audit_music_performances,
-            QuerySource.MusicAttendances: self.audit_music_attendances,
-        }
-
-        audit_result = audit_mode[self.source](ctx)
+        if self.source is QuerySource.Courses:
+            audit_result = self.audit_courses(ctx)
+        elif self.source is QuerySource.Claimed:
+            audit_result = self.audit_claimed_courses(ctx)
+        elif self.source is QuerySource.Areas:
+            audit_result = self.audit_areas(ctx)
+        elif self.source is QuerySource.MusicPerformances:
+            audit_result = self.audit_music_performances(ctx)
+        elif self.source is QuerySource.MusicAttendances:
+            audit_result = self.audit_music_attendances(ctx)
 
         resolved_assertions = tuple(self.apply_assertions(audit_result.claimed_items, ctx=ctx))
 
