@@ -2,7 +2,7 @@ from typing import Tuple, Dict, Any, TYPE_CHECKING
 import attr
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .data import CourseInstance  # noqa: F401
+    from .data.course import CourseInstance  # noqa: F401
 
 
 @attr.s(cache_hash=True, auto_attribs=True, slots=True, eq=False, order=False, hash=True)
