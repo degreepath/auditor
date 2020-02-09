@@ -1,6 +1,7 @@
 import argparse
 import json
 from typing import Optional, Dict
+from pathlib import Path
 
 from .sqlite import sqlite_connect
 
@@ -92,13 +93,31 @@ def render(args: argparse.Namespace) -> None:
             print(render_result(student, baseline_result))
             return
 
+        if args.diff:
+            import subprocess
+
+            a = Path(f'{stnum}-{base}.txt')
+            with open(a, 'w', encoding='utf-8') as outfile:
+                outfile.write(render_result(student, baseline_result))
+
+            b = Path(f'{stnum}-{branch}.txt')
+            with open(f'./{stnum}-{branch}.txt', 'w', encoding='utf-8') as outfile:
+                outfile.write(render_result(student, branch_result))
+
+            subprocess.run(['git', 'diff', '--no-index', '--', str(a), str(b)])
+
+            a.unlink()
+            b.unlink()
+
+            return
+
         print('Baseline')
         print('========')
         print()
         print(render_result(student, baseline_result))
         print()
         print()
-        label = f'Branch: {args.branch}'
+        label = f'Branch: {branch}'
         print(label)
         print('=' * len(label))
         print()
