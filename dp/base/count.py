@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from .bases import Base
 from .assertion import BaseAssertionRule
-from ..claim import ClaimAttempt
+from ..claim import Claim
 from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, EMPTY_AND_DEPARTMENTAL
 
 logger = logging.getLogger(__name__)
@@ -34,10 +34,10 @@ class BaseCountRule(Base):
     def type(self) -> str:
         return "count"
 
-    def claims(self) -> List[ClaimAttempt]:
+    def claims(self) -> List[Claim]:
         return [claim for item in self.items for claim in item.claims()]
 
-    def claims_for_gpa(self) -> List[ClaimAttempt]:
+    def claims_for_gpa(self) -> List[Claim]:
         return [claim for item in self.items for claim in item.claims_for_gpa()]
 
     def rank(self) -> Tuple[Decimal, Decimal]:

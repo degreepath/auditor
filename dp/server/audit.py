@@ -3,7 +3,6 @@
 from typing import Dict, cast
 import json
 import logging
-import datetime
 
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
@@ -25,8 +24,8 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
         scope.user = {"id": stnum}
 
     curs.execute("""
-        INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data, in_progress)
-        VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(student)s , true       )
+        INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data)
+        VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(student)s )
         RETURNING id
     """, {"student_id": stnum, "area_code": area_code, "catalog": area_catalog, "run": run_id, "student": json.dumps(student)})
 
@@ -63,6 +62,10 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
             elif isinstance(msg, ResultMsg):
                 result = msg.result.to_dict()
 
+                # we use clock_timestamp() instead of now() here, because
+                # now() is the start time of the transaction, and we instead
+                # want the time when the computation was finished.
+                # see https://stackoverflow.com/a/24169018
                 curs.execute("""
                     UPDATE result
                     SET iterations = %(total_count)s
@@ -72,9 +75,8 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                       , max_rank = %(max_rank)s
                       , result = %(result)s::jsonb
                       , ok = %(ok)s
-                      , ts = %(now)s
+                      , ts = clock_timestamp()
                       , gpa = %(gpa)s
-                      , in_progress = false
                       , claimed_courses = %(claimed_courses)s::jsonb
                       , status = %(status)s
                     WHERE id = %(result_id)s
@@ -90,10 +92,6 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                     "gpa": result["gpa"],
                     "ok": result["ok"],
                     "status": result["status"],
-                    # we insert a Python now() instead of using the now() psql function
-                    # because sql's now() is the start time of the transaction, and we
-                    # want this to be the end of the transaction
-                    "now": datetime.datetime.now(),
                 })
 
             else:
@@ -104,6 +102,6 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
 
         curs.execute("""
             UPDATE result
-            SET in_progress = false, error = %(error)s
+            SET error = %(error)s
             WHERE id = %(result_id)s
         """, {"result_id": result_id, "error": json.dumps({"error": str(ex)})})

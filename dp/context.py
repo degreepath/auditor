@@ -7,7 +7,7 @@ import logging
 from .base.course import BaseCourseRule
 from .data import CourseInstance, AreaPointer, MusicPerformance, MusicAttendance, MusicProficiencies
 from .data.course_enums import CourseType
-from .claim import ClaimAttempt, Claim
+from .claim import Claim
 from .exception import RuleException, OverrideException, InsertionException, ValueException
 
 logger = logging.getLogger(__name__)
@@ -177,7 +177,7 @@ class RequirementContext:
     def with_empty_claims(self) -> 'RequirementContext':
         return attr.evolve(self, claims=defaultdict(list))
 
-    def make_claim(self, *, course: CourseInstance, path: Tuple[str, ...], allow_claimed: bool = False) -> ClaimAttempt:
+    def make_claim(self, *, course: CourseInstance, path: Tuple[str, ...], allow_claimed: bool = False) -> Claim:
         """
         Make claims against courses, to ensure that they are only used once
         (with exceptions) in an audit.
@@ -190,22 +190,18 @@ class RequirementContext:
         if debug is None:
             debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
-        path_reqs_only = tuple(r for r in path if r[0] == '%')
-
-        # build a claim so it can be returned later
-        claim = Claim(course=course, claimant_path=path, claimant_requirements=path_reqs_only)
-
         # If the `.allow_claimed` option is set, the claim succeeds (and is
         # not recorded).
         if allow_claimed:
             if debug: logger.debug('claim for clbid=%s allowed due to rule having allow_claimed', course.clbid)
-            return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+            return Claim(course=course, claimed_by=path, failed=False)
 
         # If there are no prior claims, the claim is automatically allowed.
         if course.clbid not in self.claims:
             if debug: logger.debug('no prior claims for clbid=%s', course.clbid)
+            claim = Claim(course=course, claimed_by=path, failed=False)
             self.claims[course.clbid].append(claim)
-            return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+            return claim
 
         prior_claims = self.claims[course.clbid]
 
@@ -215,20 +211,21 @@ class RequirementContext:
 
         # See if any multicountable sets apply to this course.
         if course.course() in self.multicountable:
-            return self._make_multicountable_claim(course=course, path_reqs_only=path_reqs_only, allow_claimed=allow_claimed, claim=claim)
+            return self._make_multicountable_claim(course=course, path=path, allow_claimed=allow_claimed)
 
         # If there are no applicable multicountable sets, return a claim
         # attempt against the prior claims.
         if prior_claims:
             if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-            return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
+            return Claim(course=course, claimed_by=path, failed=True)
 
         # If there are no prior claims, it is automatically successful.
         if debug: logger.debug('no multicountable reqpaths for clbid=%s; the claim has no conflicts', course.clbid)
+        claim = Claim(course=course, claimed_by=path, failed=False)
         self.claims[course.clbid].append(claim)
-        return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+        return claim
 
-    def _make_multicountable_claim(self, *, claim: Claim, course: CourseInstance, path_reqs_only: Tuple[str, ...], allow_claimed: bool) -> ClaimAttempt:
+    def _make_multicountable_claim(self, *, course: CourseInstance, path: Tuple[str, ...], allow_claimed: bool) -> Claim:
         """
         We can allow a course to be claimed by multiple requirements, if
         that's what is required by the department.
@@ -248,10 +245,12 @@ class RequirementContext:
         to a requirement defined somewhere in the file.
         """
 
+        path_reqs_only = tuple(r for r in path if r[0] == '%')
+
         prior_claims = self.claims[course.clbid]
         applicable_reqpaths: List[Tuple[str, ...]] = self.multicountable.get(course.course(), [])
 
-        prior_claimers = list(set(cl.claimant_requirements for cl in prior_claims))
+        prior_claimers = list(set(tuple(r for r in cl.claimed_by if r[0] == '%') for cl in prior_claims))
 
         if debug: logger.debug('applicable reqpaths: %s', applicable_reqpaths)
 
@@ -270,11 +269,12 @@ class RequirementContext:
         if applicable_reqpath is None:
             if prior_claims:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim conflicts with %s', course.clbid, prior_claims)
-                return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
+                return Claim(course=course, claimed_by=path, failed=True)
             else:
                 if debug: logger.debug('no applicable multicountable reqpath was found for clbid=%s; the claim has no conflicts', course.clbid)
+                claim = Claim(course=course, claimed_by=path, failed=False)
                 self.claims[course.clbid].append(claim)
-                return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+                return claim
 
         # now limit to just the clauses in the reqpath which have not been used
         available_reqpaths = [
@@ -286,11 +286,13 @@ class RequirementContext:
         if not available_reqpaths:
             if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s; however, all of the clauses have already been matched', course.clbid)
             if prior_claims:
-                return ClaimAttempt(claim, conflict_with=tuple(prior_claims), failed=True)
+                return Claim(course=course, claimed_by=path, failed=True)
             else:
+                claim = Claim(course=course, claimed_by=path, failed=False)
                 self.claims[course.clbid].append(claim)
-                return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+                return claim
 
         if debug: logger.debug('there was an applicable multicountable reqpath for clbid=%s: %s', course.clbid, available_reqpaths)
+        claim = Claim(course=course, claimed_by=path, failed=False)
         self.claims[course.clbid].append(claim)
-        return ClaimAttempt(claim, conflict_with=tuple(), failed=False)
+        return claim

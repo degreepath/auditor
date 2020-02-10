@@ -5,10 +5,10 @@ import enum
 import attr
 from functools import cmp_to_key, lru_cache
 from ..status import ResultStatus, PassingStatuses
+from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..claim import ClaimAttempt  # noqa: F401
     from ..data import CourseInstance  # noqa: F401
     from ..data import Clausable  # noqa: F401
 
@@ -70,10 +70,10 @@ class Base(abc.ABC):
 
         return Decimal(0), Decimal(1)
 
-    def claims(self) -> List['ClaimAttempt']:
+    def claims(self) -> List[Claim]:
         return []
 
-    def claims_for_gpa(self) -> List['ClaimAttempt']:
+    def claims_for_gpa(self) -> List[Claim]:
         return self.claims()
 
     def matched(self) -> Set['CourseInstance']:

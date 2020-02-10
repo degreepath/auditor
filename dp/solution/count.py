@@ -5,12 +5,14 @@ import logging
 from ..base.bases import Rule, Solution, Result
 from ..base.count import BaseCountRule
 from ..rule.assertion import AssertionRule
+from ..result.assertion import AssertionResult
 from ..result.count import CountResult
 from ..clause import apply_clause
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
     from ..rule.count import CountRule
+    from ..data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -42,38 +44,32 @@ class CountSolution(Solution, BaseCountRule):
             )
 
         results = tuple(r.audit(ctx=ctx) if isinstance(r, Solution) else r for r in self.items)
-        initial_matched_items = tuple(item for sol in results for item in sol.matched())
+        matched_items = tuple(item for sol in results for item in sol.matched())
+        audit_results = tuple(self.audit_assertion(assertion, ctx=ctx, input_items=matched_items) for assertion in self.audit_clauses)
 
-        audit_results = []
-        for clause in self.audit_clauses:
-            exception = ctx.get_waive_exception(clause.path)
-            if exception:
-                logger.debug("forced override on %s", self.path)
-                audit_results.append(clause.override())
-                continue
+        return CountResult.from_solution(solution=self, items=results, audit_results=audit_results)
 
-            override_value = ctx.get_value_exception(clause.path)
-            if override_value:
-                logger.debug("override: new value on %s", self.path)
-                clause = clause.set_expected_value(override_value.value)
+    def audit_assertion(self, assertion: AssertionRule, *, input_items: Tuple['CourseInstance', ...], ctx: 'RequirementContext') -> AssertionResult:
+        exception = ctx.get_waive_exception(assertion.path)
+        if exception:
+            logger.debug("forced override on %s", self.path)
+            return assertion.override()
 
-            if clause.where:
-                matched_items = [item for item in initial_matched_items if apply_clause(clause.where, item)]
-            else:
-                matched_items = [item for item in initial_matched_items]
+        override_value = ctx.get_value_exception(assertion.path)
+        if override_value:
+            logger.debug("override: new value on %s", self.path)
+            assertion = assertion.set_expected_value(override_value.value)
 
-            inserted_clbids = []
-            for insert in ctx.get_insert_exceptions(clause.path):
-                logger.debug("inserted %s into %s", insert.clbid, self.path)
-                matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-                matched_items.append(matched_course)
-                inserted_clbids.append(matched_course.clbid)
+        if assertion.where:
+            matched_items = [item for item in input_items if apply_clause(assertion.where, item)]
+        else:
+            matched_items = list(input_items)
 
-            result = clause.resolve(tuple(matched_items), overridden=False, inserted=tuple(inserted_clbids),)
-            audit_results.append(result)
+        inserted_clbids = []
+        for insert in ctx.get_insert_exceptions(assertion.path):
+            logger.debug("inserted %s into %s", insert.clbid, self.path)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
+            matched_items.append(matched_course)
+            inserted_clbids.append(matched_course.clbid)
 
-        return CountResult.from_solution(
-            solution=self,
-            items=results,
-            audit_results=tuple(audit_results),
-        )
+        return assertion.resolve(tuple(matched_items), overridden=False, inserted=tuple(inserted_clbids))

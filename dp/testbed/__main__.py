@@ -74,6 +74,8 @@ def main() -> None:
     parser_print.add_argument('stnum', help='')
     parser_print.add_argument('catalog')
     parser_print.add_argument('code')
+    parser_print.add_argument('base', default='baseline', nargs='?', help='the base run to compare against')
+    parser_print.add_argument('--diff', action='store_true', default=False)
     parser_print.set_defaults(func=render)
 
     parser_query = subparsers.add_parser('query', help='query the database')
@@ -114,4 +116,7 @@ if __name__ == "__main__":
     # Register the converter
     sqlite3.register_converter("decimal", convert_decimal)
 
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass

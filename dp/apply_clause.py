@@ -27,9 +27,8 @@ def count_items_test(data: Iterable[Any]) -> AppliedClauseResult:
 def count_courses(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     items = frozenset(c for c in data)
     clbids = tuple(sorted(c.clbid for c in items))
-    courses = tuple(items)
 
-    return AppliedClauseResult(value=len(items), data=clbids, courses=courses)
+    return AppliedClauseResult(value=len(items), data=clbids, courses=items)
 
 
 def count_distinct_courses(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -53,8 +52,8 @@ def count_terms_from_most_common_course(data: Iterable[CourseInstance]) -> Appli
     most_common = counted.most_common(1)[0]
     most_common_crsid, _count = most_common
 
-    items = tuple(sorted(set(str(c.year) + str(c.term) for c in data if c.crsid == most_common_crsid)))
     courses = tuple(c for c in data if c.crsid == most_common_crsid)
+    items = tuple(sorted(set(c.yearterm for c in courses)))
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
@@ -66,10 +65,10 @@ def count_terms_from_most_common_course_by_name(data: Iterable[CourseInstance]) 
         return AppliedClauseResult(value=0)
 
     most_common = counted.most_common(1)[0]
-    most_common_crsid, _count = most_common
+    most_common_ident, _count = most_common
 
-    items = tuple(sorted(set(str(c.year) + str(c.term) for c in data if f"{c.subject}: {c.name}" == most_common_crsid)))
-    courses = tuple(c for c in data if f"{c.subject}: {c.name}" == most_common_crsid)
+    courses = tuple(c for c in data if f"{c.subject}: {c.name}" == most_common_ident)
+    items = tuple(sorted(set(c.yearterm for c in courses)))
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
@@ -90,7 +89,7 @@ def count_subjects(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(subject)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
 
 
 def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -98,12 +97,14 @@ def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     courses = set()
 
     for c in data:
-        str_value = str(c.year) + str(c.term)
-        if str_value not in items:
-            items.add(str_value)
+        yearterm = c.yearterm
+        if yearterm not in items:
+            items.add(yearterm)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
+    processed_data = tuple(sorted(items))
+
+    return AppliedClauseResult(value=len(items), data=processed_data, courses=courses)
 
 
 def count_math_perspectives(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -116,7 +117,7 @@ def count_math_perspectives(data: Iterable[CourseInstance]) -> AppliedClauseResu
                 perspectives.add(bucket)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(perspectives), data=tuple(sorted(perspectives)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(perspectives), data=tuple(sorted(perspectives)), courses=courses)
 
 
 def count_religion_traditions(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -129,7 +130,7 @@ def count_religion_traditions(data: Iterable[CourseInstance]) -> AppliedClauseRe
                 traditions.add(bucket)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(traditions), data=tuple(sorted(traditions)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(traditions), data=tuple(sorted(traditions)), courses=courses)
 
 
 def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -142,23 +143,22 @@ def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(str_year)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=tuple(courses))
+    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
 
 
 def count_areas(data: Iterable[AreaPointer]) -> AppliedClauseResult:
     area_codes = tuple(sorted(set(a.code for a in data)))
-
-    return AppliedClauseResult(value=len(area_codes), data=tuple(frozenset(area_codes)))
+    return AppliedClauseResult(value=len(area_codes), data=area_codes)
 
 
 def count_recitals(data: Iterable[MusicAttendance]) -> AppliedClauseResult:
     uniques = tuple(sorted(set(a.id for a in data)))
-    return AppliedClauseResult(value=len(uniques), data=tuple(frozenset(uniques)))
+    return AppliedClauseResult(value=len(uniques), data=uniques)
 
 
 def count_performances(data: Iterable[MusicPerformance]) -> AppliedClauseResult:
     uniques = tuple(sorted(set(a.id for a in data)))
-    return AppliedClauseResult(value=len(uniques), data=tuple(frozenset(uniques)))
+    return AppliedClauseResult(value=len(uniques), data=uniques)
 
 
 def count_seminars(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -191,10 +191,10 @@ def sum_credits_from_single_subject(data: Iterable[CourseInstance]) -> AppliedCl
 
     _credits, best_subject = max((credits, subject) for subject, credits in by_credits.items())
 
-    items = tuple(sorted(c.credits for c in data if best_subject == c.subject))
     courses = tuple(c for c in data if best_subject == c.subject)
+    items = tuple(sorted(c.credits for c in courses))
 
-    return AppliedClauseResult(value=sum(items), data=items, courses=tuple(courses))
+    return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
 
 def average_grades(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -248,28 +248,19 @@ other_actions: Mapping[str, Callable[[Iterable[Any]], AppliedClauseResult]] = {
 
 def apply_clause_to_assertion_with_courses(clause: 'SingleClause', value: Iterable[CourseInstance]) -> AppliedClauseResult:
     action = course_actions.get(clause.key, None)
-
-    if action is None:
-        raise Exception(f'got {clause.key}; expected one of {sorted(course_actions.keys())}')
-
+    assert action is not None, KeyError(f'got {clause.key}; expected one of {sorted(course_actions.keys())}')
     return action(value)
 
 
 def apply_clause_to_assertion_with_areas(clause: 'SingleClause', value: Iterable[AreaPointer]) -> AppliedClauseResult:
     action = area_actions.get(clause.key, None)
-
-    if action is None:
-        raise Exception(f'got {clause.key}; expected one of {sorted(area_actions.keys())}')
-
+    assert action is not None, KeyError(f'got {clause.key}; expected one of {sorted(area_actions.keys())}')
     return action(value)
 
 
 def apply_clause_to_assertion_with_data(clause: 'SingleClause', value: Iterable[Any]) -> AppliedClauseResult:
     action = other_actions.get(clause.key, None)
-
-    if action is None:
-        raise Exception(f'got {clause.key}; expected one of {sorted(other_actions.keys())}')
-
+    assert action is not None, KeyError(f'got {clause.key}; expected one of {sorted(other_actions.keys())}')
     return action(value)
 
 

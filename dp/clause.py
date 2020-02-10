@@ -97,7 +97,6 @@ class SingleClause:
         return f"Clause({str_clause(self.to_dict())})"
 
     def to_dict(self) -> Dict[str, Any]:
-        status = self.status()
         rank, max_rank = self.rank()
 
         return {
@@ -108,10 +107,9 @@ class SingleClause:
             "operator": self.operator.name,
             "label": self.label,
             "hash": str(hash((self.key, self.expected, self.operator))),
-            "result": self.state.value,
             "rank": str(rank),
             "max_rank": str(max_rank),
-            "status": status.value,
+            "status": self.state.value,
         }
 
     def override_expected(self, value: Decimal) -> 'SingleClause':
@@ -191,7 +189,7 @@ class ResolvedSingleClause(SingleClause):
             **super().to_dict(),
             "resolved_with": str(self.resolved_with),
             "resolved_items": [stringify_expected(x) for x in self.resolved_items],
-            "resolved_clbids": [x for x in self.resolved_clbids],
+            "resolved_clbids": [clbid for clbid in self.resolved_clbids],
         }
 
     def rank(self) -> Tuple[Decimal, Decimal]:

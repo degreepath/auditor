@@ -44,6 +44,7 @@ class CourseInstance(Clausable):
     term: str
     transcript_code: TranscriptCode
     year: int
+    yearterm: str
 
     identity_: str
     is_chbi_: Optional[int]
@@ -324,10 +325,10 @@ def load_course(  # noqa: C901
     in_progress_this_term = False
     in_progress_in_future = False
 
-    if current_term and grade_code is GradeCode._IP:
-        if f"{year}{term}" == current_term:
+    if current_term and grade_code in (GradeCode._IP, GradeCode._I):
+        if f"{year}{term}" <= current_term:
             in_progress_this_term = True
-        elif f"{year}{term}" >= current_term:
+        elif f"{year}{term}" > current_term:
             in_progress_in_future = True
 
     # GPA points are the (truncated to two decimal places!) result of GP * credits.
@@ -358,6 +359,8 @@ def load_course(  # noqa: C901
         is_chbi = 127
     elif course_identity == 'CH/BI 227':
         is_chbi = 227
+
+    yearterm = f"{year}{term}"
 
     return CourseInstance(
         attributes=attributes,
@@ -390,6 +393,7 @@ def load_course(  # noqa: C901
         year=year,
         identity_=course_identity,
         is_chbi_=is_chbi,
+        yearterm=yearterm,
     )
 
 
