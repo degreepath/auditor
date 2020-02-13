@@ -310,7 +310,7 @@ def print_query(
 
             status = emojify_course(course)
             inserted_msg = "[ins] " if clm["clbid"] in rule["inserted"] else ""
-            yield f"{prefix}    {inserted_msg}{status} {course.course()} \"{course.name}\" ({course.clbid})"
+            yield f"{prefix}    {inserted_msg}{status} {course.verbose()}"
 
     if rule["failures"]:
         yield f"{prefix} Pre-claimed courses which cannot be re-claimed:"
@@ -382,15 +382,6 @@ def print_assertion(
 
     resolved_clbids = get_resolved_clbids(rule['assertion'])
     if resolved_clbids:
-        def key(c: CourseInstance) -> str:
-            return ''
-        if rule['assertion']['key'] == 'sum(credits)':
-            def key(c: CourseInstance) -> str:  # noqa F811
-                return f'credits={c.credits}'
-        elif rule['assertion']['key'] == 'average(grades)':
-            def key(c: CourseInstance) -> str:  # noqa F811
-                return f'grade={c.grade_points}'
-
         yield f"{prefix}resolved courses:"
 
         ip_clbids = get_in_progress_clbids(rule['assertion'])
@@ -401,12 +392,11 @@ def print_assertion(
             course = transcript.get(clbid, None)
             if not course:
                 ip_msg = " [ip?]" if clbid in ip_clbids else ""
-                yield f'{prefix}  -{ip_msg}{inserted_msg} Course(clbid={clbid})'
+                yield f'{prefix}  -{ip_msg}{inserted_msg} #{int(clbid)}'
                 continue
 
             status = emojify_course(course)
-            chunks = [x for x in [f'"{course.course()}"', f'name="{course.name}"', f'clbid={course.clbid}', key(course)] if x]
-            yield f'{prefix}  -{inserted_msg} {status} Course({", ".join(chunks)})'
+            yield f'{prefix}  -{inserted_msg} {status} {course.verbose()}'
 
 
 def print_conditional_assertion(
@@ -436,13 +426,20 @@ def print_conditional_assertion(
 
 def str_clause(clause: Dict[str, Any]) -> str:
     if clause["type"] == "single-clause":
+        key = clause["key"]
+
+        if key == 'attributes':
+            key = 'bucket'
+        elif key == 'is_in_progress':
+            key = 'in-progress'
+
         resolved_with = clause.get('resolved_with', None)
         if resolved_with is not None:
             resolved = f" ({repr(resolved_with)})"
         else:
             resolved = ""
 
-        if clause['expected'] != clause['expected_verbatim']:
+        if str(clause['expected']) != str(clause['expected_verbatim']):
             postscript = f" (via {repr(clause['expected_verbatim'])})"
         else:
             postscript = ""
@@ -453,9 +450,16 @@ def str_clause(clause: Dict[str, Any]) -> str:
 
         op = str_operator(clause['operator'])
 
-        return f'"{clause["key"]}"{resolved} {op} "{clause["expected"]}"{postscript}'
+        if clause['operator'] == 'EqualTo' and clause['expected'] is True:
+            return f'"{key}"{resolved}{postscript}'
+        elif clause['operator'] == 'EqualTo' and clause['expected'] is False:
+            return f'not "{key}"{resolved}{postscript}'
+
+        return f'"{key}"{resolved} {op} "{clause["expected"]}"{postscript}'
+
     elif clause["type"] == "or-clause":
         return f'({" or ".join(str_clause(c) for c in clause["children"])})'
+
     elif clause["type"] == "and-clause":
         return f'({" and ".join(str_clause(c) for c in clause["children"])})'
 
