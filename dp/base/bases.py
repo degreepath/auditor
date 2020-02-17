@@ -97,6 +97,9 @@ class Base(abc.ABC):
     def ok(self) -> bool:
         return self.status() in PassingStatuses
 
+    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+        return []
+
 
 class Result(Base, abc.ABC):
     __slots__ = ()

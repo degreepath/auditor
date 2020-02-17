@@ -2,6 +2,7 @@ import attr
 from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any
 import logging
 import decimal
+import os
 from collections import defaultdict
 
 from .base import Solution, Result, Rule, Base
@@ -156,6 +157,11 @@ class AreaOfStudy(Base):
         forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)
         forced_courses = {c.clbid: c for c in student.courses if c.clbid in forced_clbids}
 
+        # has_multicountable = len(self.multicountable) > 0
+        # skip_areas = {'250', '220', '350', '455', '420', '570', 'B.A.', 'B.M.'}
+        # use_optimization = not has_multicountable and self.code not in (skip_areas)
+        use_optimization = f"{student.stnum}::{self.code}" in os.getenv('DP_WIP_MC_OPTIMIZATION', '').split(',')
+
         ctx = RequirementContext(
             areas=student.areas,
             music_performances=student.music_performances,
@@ -176,6 +182,12 @@ class AreaOfStudy(Base):
             )
 
             for sol in self.result.solutions(ctx=ctx, depth=1):
+                if use_optimization:
+                    all_claims = sol.all_courses(ctx=ctx)
+
+                    if len(all_claims) != len(set(all_claims)):
+                        continue
+
                 # be sure to start with an empty claims list - without
                 # clearing it here, these calls only work if you process the
                 # `.audit()` calls in sequence directly from the generator;

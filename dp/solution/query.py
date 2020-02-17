@@ -8,12 +8,13 @@ from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..rule.conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
-from ..data import CourseInstance, Clausable
+from ..data.clausable import Clausable
 from ..clause import apply_clause
 from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
+    from ..data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
@@ -98,7 +99,7 @@ class QuerySolution(Solution, BaseQueryRule):
         successful_claims: List[Claim] = []
         failed_claims: List[Claim] = []
 
-        output: Sequence[CourseInstance] = cast(Sequence[CourseInstance], self.output)
+        output: Sequence['CourseInstance'] = cast(Sequence['CourseInstance'], self.output)
         if self.attempt_claims:
             for course in output:
                 was_forced = course.clbid in self.force_inserted
@@ -133,7 +134,7 @@ class QuerySolution(Solution, BaseQueryRule):
         claimed_items: List[Clausable] = []
         successful_claims: List[Claim] = []
 
-        output: List[CourseInstance] = ctx.all_claimed()
+        output: List['CourseInstance'] = ctx.all_claimed()
         if self.where:
             output = [item for item in output if apply_clause(self.where, item)]
 
@@ -206,3 +207,9 @@ class QuerySolution(Solution, BaseQueryRule):
             inserted_clbids.append(matched_course.clbid)
 
         return assertion.resolve(tuple(filtered_output), overridden=False, inserted=tuple(inserted_clbids))
+
+    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+        if self.source in (QuerySource.Courses, QuerySource.Claimed):
+            return cast(List['CourseInstance'], [c for c in self.output])
+        else:
+            return []

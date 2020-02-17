@@ -1,10 +1,14 @@
 import attr
-from typing import Tuple, Dict, Any, Optional
+from typing import List, Tuple, Dict, Any, Optional, TYPE_CHECKING
 from decimal import Decimal
 
 from .bases import Base
 from .course import BaseCourseRule
 from ..status import ResultStatus, WAIVED_AND_DONE
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
+    from ..data.course import CourseInstance  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -50,3 +54,6 @@ class BaseProficiencyRule(Base):
             return self.course.status()
 
         return ResultStatus.Empty
+
+    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+        return self.course.all_courses(ctx=ctx) if self.course else []

@@ -14,7 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 logger = logging.getLogger(__name__)
 
 
-@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, order=False, hash=True)
+@attr.s(slots=True, kw_only=True, frozen=True, auto_attribs=True, order=False, hash=False)
 class CourseInstance(Clausable):
     clbid: str
     attributes: Tuple[str, ...]
@@ -54,6 +54,9 @@ class CourseInstance(Clausable):
 
     def __repr__(self) -> str:
         return f'Course("{self.identity_}")'
+
+    def __hash__(self) -> int:
+        return hash(self.clbid)
 
     def sort_order(self) -> Tuple[int, int, str, str]:
         key = CourseTypeSortOrder[self.course_type]

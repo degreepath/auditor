@@ -1,10 +1,14 @@
 import attr
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List, Tuple, TYPE_CHECKING
 from decimal import Decimal
 
 from .bases import Base
 from ..status import ResultStatus, PassingStatuses
 from ..claim import Claim
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
+    from ..data.course import CourseInstance  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -94,3 +98,6 @@ class BaseRequirementRule(Base):
             return self.result.claims_for_gpa()
 
         return []
+
+    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+        return self.result.all_courses(ctx=ctx) if self.result else []

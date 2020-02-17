@@ -1,5 +1,5 @@
 import attr
-from typing import Tuple, Dict, Any, Sequence, List, cast
+from typing import Tuple, Dict, Any, Sequence, List, cast, TYPE_CHECKING
 import logging
 from decimal import Decimal
 
@@ -7,6 +7,10 @@ from .bases import Base
 from .assertion import BaseAssertionRule
 from ..claim import Claim
 from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, EMPTY_AND_DEPARTMENTAL
+
+if TYPE_CHECKING:
+    from ..context import RequirementContext
+    from ..data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -124,3 +128,6 @@ class BaseCountRule(Base):
             return ResultStatus.PendingRegistered
 
         return ResultStatus.NeedsMoreItems
+
+    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+        return [c for cs in self.items for c in cs.all_courses(ctx=ctx)]

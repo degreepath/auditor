@@ -1,5 +1,5 @@
 import attr
-from typing import Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseCourseRule
@@ -70,3 +70,6 @@ class CourseSolution(Solution, BaseCourseRule):
 
         logger.debug('%s course "%s" could not be claimed', self.path, self.identifier())
         return CourseResult.from_solution(solution=self, claim_attempt=claim)
+
+    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+        return list(ctx.find_courses(rule=self, from_claimed=self.from_claimed))
