@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, List, Any, Iterable, Callable, cast, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Sequence, Any, Iterable, Callable, cast, TYPE_CHECKING
 import attr
 from decimal import Decimal, ROUND_DOWN
 import logging
@@ -71,13 +71,13 @@ class CourseInstance(Clausable):
             "grade_code": self.grade_code.value,
             "grade_option": self.grade_option.value,
             "grade_points": str(self.grade_points),
-            "institution": self.institution,
-            "is_in_gpa": self.is_in_gpa,
-            "is_in_progress": self.is_in_progress,
-            "is_incomplete": self.is_incomplete,
-            "is_repeat": self.is_repeat,
-            "is_stolaf": self.is_stolaf,
-            "is_lab": self.is_lab,
+            "institution_short": self.institution,
+            "flag_gpa": self.is_in_gpa,
+            "flag_in_progress": self.is_in_progress,
+            "flag_incomplete": self.is_incomplete,
+            "flag_repeat": self.is_repeat,
+            "flag_stolaf": self.is_stolaf,
+            "flag_lab": self.is_lab,
             "level": self.level,
             "name": self.name,
             "number": self.number,
@@ -85,6 +85,7 @@ class CourseInstance(Clausable):
             "subject": self.subject,
             "sub_type": self.sub_type.value,
             "term": self.term,
+            "year": self.year,
             "transcript_code": self.transcript_code.value,
             "type": "course",
         }
@@ -263,8 +264,8 @@ def load_course(  # noqa: C901
     data: Dict[str, Any],
     *,
     current_term: Optional[str] = None,
-    overrides: List[CourseOverrideException],
-    credits_overrides: Optional[Dict[str, str]],
+    overrides: Sequence[CourseOverrideException] = tuple(),
+    credits_overrides: Optional[Dict[str, str]] = None,
 ) -> CourseInstance:  # noqa: C901
     if not credits_overrides:
         credits_overrides = {}
