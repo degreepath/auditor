@@ -1,5 +1,6 @@
 attrs==19.3.0
 markdown2==2.3.8
+openpyxl==3.0.3
 python-dotenv==0.11.0
 pyyaml==5.3
 tqdm==4.42.1
