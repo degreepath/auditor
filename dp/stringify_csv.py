@@ -1,147 +1,181 @@
-from typing import Iterator, Any, Dict, Sequence, Tuple
+from typing import Iterator, Any, Dict, Sequence, Tuple, Callable
 from io import StringIO
-import attr
 import csv
+import json
+import textwrap
 
 from .stringify import str_clause, get_resolved_clbids, get_in_progress_clbids
 from .data import CourseInstance
+from .status import PassingStatusValues, ResultStatus
 
 
 def to_csv(result: Dict[str, Any], *, transcript: Sequence[CourseInstance]) -> str:
     with StringIO() as f:
         writer = csv.writer(f)
 
-        writer.writerow(['key', 'student'])
-        for key, val in Csvify(transcript={c.clbid: c for c in transcript}).csvify(result):
-            writer.writerow([' > '.join(k for k in key if k), val])
+        csvifier = Csvify(stnum='000000', transcript={c.clbid: c for c in transcript})
+
+        # header = csvifier.header_rows(result) | translate_newlines | merge
+
+        # IDEA: DictWriter and have the thing produce (key,value) for each item?
+        # Probably would error, but would also probably better identify mismatched items than a (keys...) pass and then N (values...) passes
+
+        # data = csvifier.process(result)
+        # print(list(data))
+        header = dict(csvifier.process(result))
+        print(json.dumps(header))
+        # for col in header:
+        #     print(col)
+
+        # writer.writerow(header)
+        # for key, val in Csvify(transcript={c.clbid: c for c in transcript}).csvify(result):
+        #     writer.writerow([' > '.join(k for k in key if k), val])
 
         return f.getvalue()
 
 
-@attr.s(slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Csvify:
+    stnum: str
     transcript: Dict[str, CourseInstance]
 
-    def csvify(self, root: Dict[str, Any]) -> Iterator[Tuple[Sequence[str], str]]:
-        yield from self.result(root, path=[], overridden=False)
+    def __init__(self, *, stnum: str, transcript: Dict[str, CourseInstance]) -> None:
+        self.transcript = transcript
+        self.stnum = stnum
 
-    def result(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
-        if rule["type"] == "area":
-            yield from self.area(rule, path=path)
-        elif rule["type"] == "course":
-            yield from self.course(rule, path=path, overridden=overridden)
-        elif rule["type"] == "count":
-            yield from self.count(rule, path=path, overridden=overridden)
-        elif rule["type"] == "query":
-            yield from self.query(rule, path=path, overridden=overridden)
-        elif rule["type"] == "requirement":
-            yield from self.requirement(rule, path=path, overridden=overridden)
-        elif rule["type"] == "assertion":
-            yield from self.assertion(rule, path=path, overridden=overridden)
-        else:
-            raise Exception(f'unknown type {rule["type"]}')
-
-    def area(self, rule: Dict[str, Any], *, path: Sequence[str]) -> Iterator[Tuple[Sequence[str], str]]:
-        yield (['progress'], f"{round(float(rule['rank']) / float(rule['max_rank'])):.2%}")
-        yield (['gpa'], rule['gpa'])
-        yield from self.result(rule['result'], path=path, overridden=rule['overridden'])
-
-    def course(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
-        if overridden:
-            yield (path, '[overridden]')
-            return
-
-        if rule["status"] == "in-progress":
-            yield (path, 'in-progress')
-            return
-
-        elif rule["status"] == "pass":
-            if len(rule["claims"]):
-                claim = rule["claims"][0]["claim"]
-                course = self.transcript.get(claim["clbid"], None)
-            else:
-                course = None
-
-            yield (path, f"{course.course_with_term()}" if course else '???')
-            return
-
-        yield (path, '-')
-
-    def count(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
-        overridden = overridden or rule['overridden']
-
-        for i, r in enumerate(rule["items"]):
-            if len(rule['path']) == 2:
-                pass
-            elif rule['count'] == len(rule['items']):
-                index = f"{i + 1}/{len(rule['items'])}"
-                path = [*path, index]
-            elif rule['count'] == 1:
-                pass
-            else:
-                index = f"{i + 1}/{len(rule['items'])}"
-                path = [*path, index]
-
-            for k, v in self.result(r, path=path, overridden=overridden):
-                if overridden:
-                    yield (k, '[overridden]')
-                    continue
-                if rule['count'] == 1 and v == '-':
-                    continue
-                yield (k, v)
-
-    def query(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
-        for a in rule['assertions']:
-            if a['assertion']['operator'] not in ('LessThan', 'LessThanOrEqualTo'):
-                yield from self.assertion(a, path=path, overridden=overridden or rule['overridden'])
-
-    def requirement(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
-        if rule["name"].startswith('Common ') and rule["name"].endswith(' Major Requirements'):
-            return
-
-        if rule["audited_by"] == 'department':
-            yield ([rule['name']], 'Requires departmental signature')
-            return
-
-        if rule["result"]:
-            yield from self.result(rule["result"], path=[*path, rule["name"]], overridden=overridden or rule['overridden'])
-
-    def assertion(self, rule: Dict[str, Any], *, path: Sequence[str], overridden: bool) -> Iterator[Tuple[Sequence[str], str]]:
-        where = f"{str_clause(rule['where'])}, " if rule['where'] else ''
-
-        kind_lookup = {
-            'count(courses)': 'courses',
-            'count(terms_from_most_common_course)': 'terms from the most common course',
-            'count(subjects)': 'subjects',
-            'count(terms)': 'terms',
-            'count(years)': 'years',
-            'count(distinct_courses)': 'distinct courses',
-            'sum(credits)': 'credits',
-            'sum(credits_from_single_subject)': 'credits from a single subject code',
-            'average(grades)': 'gpa',
-            'average(credits)': 'avg. credits',
-            'count(areas)': 'areas',
-            'count(items)': 'items',
-            'count(performances)': 'performances',
-            'count(seminars)': 'seminars',
+        self.lookup: Dict[str, Callable[[Dict[str, Any], bool], Iterator[Tuple[str, str]]]] = {
+            "area": self.area,
+            "course": self.course,
+            "proficiency": self.proficiency,
+            "count": self.count,
+            "query": self.query,
+            "requirement": self.requirement,
         }
 
-        kind = kind_lookup.get(rule['assertion']['key'], '???')
+    def process(self, root: Dict[str, Any]) -> Iterator[Tuple[str, str]]:
+        yield ('Student', self.stnum)
+        yield ('GPA', root['gpa'])
+        yield ('Status', root['status'])
+        yield ('Classification', '???')
+        yield ('Ant. Grad. Date', 'May 2000')
+        yield from self.dispatch(root, waived=False)
 
-        resolved_clbids = get_resolved_clbids(rule['assertion'])
-        ip_clbids = get_in_progress_clbids(rule['assertion'])
-        all_clbids = [*resolved_clbids, *ip_clbids]
+    def dispatch(self, rule: Dict[str, Any], *, waived: bool) -> Iterator[Tuple[str, str]]:
+        waived = waived or rule['status'] == ResultStatus.Waived.value or False
 
-        expected = rule['assertion']['expected']
-        for i in range(expected):
-            key = [*path, f"{where}{i + 1}/{expected} {kind}"]
-            if overridden or rule['overridden']:
-                yield (key, '[overridden]')
-                continue
+        # print(' > '.join(rule['path']))
+        yield from self.lookup[rule["type"]](rule, waived)
 
-            if len(all_clbids) <= i:
-                yield (key, '-')
-                continue
+    def area(self, rule: Dict[str, Any], waived: bool) -> Iterator[Tuple[str, str]]:
+        yield from self.dispatch(rule['result'], waived=waived)
 
-            course = self.transcript[all_clbids[i]]
-            yield (key, course.course_with_term())
+    def requirement(self, rule: Dict[str, Any], waived: bool) -> Iterator[Tuple[str, str]]:
+        waived = waived or rule['status'] == ResultStatus.Waived.value or False
+
+        name = rule['name']
+
+        if '→' in name:
+            name = "\n↳ ".join(p.strip() for p in name.split('→'))
+
+        if rule['result']['type'] == 'course':
+            yield (name, rule['result']['course'])
+            return
+
+        for child_key, child_val in self.dispatch(rule['result'], waived=waived):
+            # if child_key.startswith('where '):
+            #     child_key = textwrap.fill(child_key, width=40, subsequent_indent=' ' * 8)
+
+            yield (f"{name}\n↳ {child_key}", child_val)
+
+    def course(self, rule: Dict[str, Any], waived: bool) -> Iterator[Tuple[str, str]]:
+        waived = waived or rule['status'] == ResultStatus.Waived.value or False
+
+        if rule['status'] in PassingStatusValues:
+            yield (f"{rule['course']}", rule['course'])
+        else:
+            (f"{rule['course']}", '')
+
+    def proficiency(self, rule: Dict[str, Any], waived: bool) -> Iterator[Tuple[str, str]]:
+        waived = waived or rule['status'] == ResultStatus.Waived.value or False
+
+        yield (f"{rule['proficiency']}", rule['course']['course'] if rule['course'] else 'done' if rule['status'] in PassingStatusValues else '')
+
+    def query(self, rule: Dict[str, Any], waived: bool) -> Iterator[Tuple[str, str]]:
+        waived = waived or rule['status'] == ResultStatus.Waived.value or False
+
+        if rule['where']:
+            where = f"where {str_clause(rule['where'], raw_only=True)}"
+        else:
+            where = ""
+
+        assertions = rule['assertions']
+        # if len(assertions) == 1:
+        for assertion in assertions:
+            for assertion_key, assertion_val in self.assertion(assertion, waived=waived, source=rule['source']):
+                if where:
+                    yield (f"{where}\n↳ {assertion_key}", assertion_val)
+                else:
+                    yield (f"{assertion_key}", assertion_val)
+
+    def assertion(self, rule: Dict[str, Any], *, waived: bool, source: str) -> Iterator[Tuple[str, str]]:
+        waived = waived or rule['status'] == ResultStatus.Waived.value or False
+
+        assertion = rule['assertion']
+        where = rule.get('where', None)
+
+        expected = assertion['expected']
+
+        leader = "need"
+        if assertion['operator'] in ('LessThan', 'LessThanOrEqualTo'):
+            leader = "at most"
+        elif assertion['operator'] in ('EqualTo'):
+            leader = "exactly"
+        elif assertion['operator'] in ('NotEqualTo'):
+            leader = "not"
+
+        key = f"{leader} {expected} {assertion['key']}"
+
+        resolved_clbids = assertion.get('resolved_clbids', [])
+        resolved_courses = sorted(self.transcript[clbid].course() for clbid in resolved_clbids)
+
+        resolved_courses_str = ', '.join(resolved_courses)
+
+        # if where:
+        #     yield (f"{key} where {str_clause(where, raw_only=True)}\n↳ … ok?", assertion['status'])
+        #     yield (f"{key} where {str_clause(where, raw_only=True)}\n↳ … courses", resolved_courses_str)
+        # else:
+        #     yield (f"{key}\n↳ … ok?", assertion['status'])
+        #     yield (f"{key}\n↳ … courses", resolved_courses_str)
+        if where:
+            yield (f"{key} where {str_clause(where, raw_only=True)}", f"{assertion['status']}: {resolved_courses_str}")
+        else:
+            yield (key, f"{assertion['status']}: {resolved_courses_str}")
+
+    def count(self, rule: Dict[str, Any], waived: bool) -> Iterator[Tuple[str, str]]:
+        waived = waived or rule['status'] == ResultStatus.Waived.value or False
+
+        if rule["count"] == 1 and len(rule["items"]) >= 1:
+            key = 'need 1 course'
+
+            for r in rule['items']:
+                # if r['status'] not in ('empty', 'pending-approval'):
+                # if r['type'] == 'course':
+                #     yield (key, r['course'])
+                # elif r['type'] == 'count':
+                #     yield from self.count(r, waived=waived)
+                # # elif r['type'] == 'count':
+                # #     yield from self.count(r, waived=waived)
+                # else:
+                #     # assert None, KeyError(r['type'], r)
+                yield from self.dispatch(r, waived=waived)
+                return
+
+            if waived:
+                yield (key, '<waived>')
+                return
+
+            assert None, (self.stnum, rule['path'])
+            # if not None:
+            #     print()
+
+        for child in rule["items"]:
+            yield from self.dispatch(child, waived=waived)
