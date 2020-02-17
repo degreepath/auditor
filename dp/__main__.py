@@ -25,6 +25,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--student", dest="student_file")
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
+    parser.add_argument("--json-with-transcript", action='store_true')
     parser.add_argument("--csv", action='store_true')
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--stop-after", action='store', type=int)
@@ -86,6 +87,7 @@ def main() -> int:  # noqa: C901
                 print(result_str(
                     msg,
                     as_json=cli_args.json,
+                    as_json_and_transcript=cli_args.json_with_transcript,
                     as_csv=cli_args.csv,
                     gpa_only=cli_args.gpa,
                     show_paths=cli_args.show_paths,
@@ -103,6 +105,7 @@ def main() -> int:  # noqa: C901
 def result_str(
     msg: ResultMsg, *,
     as_json: bool,
+    as_json_and_transcript: bool,
     as_csv: bool,
     gpa_only: bool,
     show_paths: bool,
@@ -118,6 +121,10 @@ def result_str(
 
     if as_json:
         return json.dumps(dict_result)
+
+    if as_json_and_transcript:
+        transcript = [c.to_dict() for c in msg.transcript]
+        return json.dumps({'transcript': transcript, 'output': dict_result})
 
     dict_result = json.loads(json.dumps(dict_result))
 
