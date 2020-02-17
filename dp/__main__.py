@@ -10,7 +10,7 @@ import dotenv
 from dp.run import run, load_student, load_area
 from dp.ms import pretty_ms
 from dp.stringify import summarize
-from dp.stringify_csv import to_csv
+# from dp.stringify_csv import to_csv
 from dp.audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
 dotenv.load_dotenv(verbose=False)
@@ -26,7 +26,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true')
     parser.add_argument("--json-with-transcript", action='store_true')
-    parser.add_argument("--csv", action='store_true')
+    # parser.add_argument("--csv", action='store_true')
     parser.add_argument("--print-all", action='store_true')
     parser.add_argument("--stop-after", action='store', type=int)
     parser.add_argument("--progress-every", action='store', type=int, default=1_000)
@@ -88,7 +88,7 @@ def main() -> int:  # noqa: C901
                     msg,
                     as_json=cli_args.json,
                     as_json_and_transcript=cli_args.json_with_transcript,
-                    as_csv=cli_args.csv,
+                    # as_csv=cli_args.csv,
                     gpa_only=cli_args.gpa,
                     show_paths=cli_args.show_paths,
                     show_ranks=cli_args.show_ranks,
@@ -106,7 +106,7 @@ def result_str(
     msg: ResultMsg, *,
     as_json: bool,
     as_json_and_transcript: bool,
-    as_csv: bool,
+    # as_csv: bool,
     gpa_only: bool,
     show_paths: bool,
     show_ranks: bool,
@@ -116,8 +116,8 @@ def result_str(
 
     dict_result = msg.result.to_dict()
 
-    if as_csv:
-        return to_csv(dict_result, transcript=msg.transcript)
+    # if as_csv:
+    #     return to_csv(dict_result, transcript=msg.transcript)
 
     if as_json:
         return json.dumps(dict_result)

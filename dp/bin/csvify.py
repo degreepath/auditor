@@ -25,7 +25,7 @@ def main() -> int:
         transcript = [load_course(c) for c in data['transcript']]
         output = data['output']
 
-        csvifier = Csvify(transcript={c.clbid: c for c in transcript})
+        csvifier = Csvify(stnum='000000', transcript={c.clbid: c for c in transcript})
 
         rows.append(dict(csvifier.process(output)))
 

@@ -1,37 +1,37 @@
-from typing import Iterator, Any, Dict, Sequence, Tuple, Callable
-from io import StringIO
-import csv
-import json
-import textwrap
+from typing import Iterator, Any, Dict, Tuple, Callable
+# from io import StringIO
+# import csv
+# import json
+# import textwrap
 
-from .stringify import str_clause, get_resolved_clbids, get_in_progress_clbids
+from .stringify import str_clause
 from .data import CourseInstance
 from .status import PassingStatusValues, ResultStatus
 
 
-def to_csv(result: Dict[str, Any], *, transcript: Sequence[CourseInstance]) -> str:
-    with StringIO() as f:
-        writer = csv.writer(f)
-
-        csvifier = Csvify(stnum='000000', transcript={c.clbid: c for c in transcript})
-
-        # header = csvifier.header_rows(result) | translate_newlines | merge
-
-        # IDEA: DictWriter and have the thing produce (key,value) for each item?
-        # Probably would error, but would also probably better identify mismatched items than a (keys...) pass and then N (values...) passes
-
-        # data = csvifier.process(result)
-        # print(list(data))
-        header = dict(csvifier.process(result))
-        print(json.dumps(header))
-        # for col in header:
-        #     print(col)
-
-        # writer.writerow(header)
-        # for key, val in Csvify(transcript={c.clbid: c for c in transcript}).csvify(result):
-        #     writer.writerow([' > '.join(k for k in key if k), val])
-
-        return f.getvalue()
+# def to_csv(result: Dict[str, Any], *, transcript: Sequence[CourseInstance]) -> str:
+#     with StringIO() as f:
+#         writer = csv.writer(f)
+#
+#         csvifier = Csvify(stnum='000000', transcript={c.clbid: c for c in transcript})
+#
+#         # header = csvifier.header_rows(result) | translate_newlines | merge
+#
+#         # IDEA: DictWriter and have the thing produce (key,value) for each item?
+#         # Probably would error, but would also probably better identify mismatched items than a (keys...) pass and then N (values...) passes
+#
+#         # data = csvifier.process(result)
+#         # print(list(data))
+#         header = dict(csvifier.process(result))
+#         print(json.dumps(header))
+#         # for col in header:
+#         #     print(col)
+#
+#         # writer.writerow(header)
+#         # for key, val in Csvify(transcript={c.clbid: c for c in transcript}).csvify(result):
+#         #     writer.writerow([' > '.join(k for k in key if k), val])
+#
+#         return f.getvalue()
 
 
 class Csvify:
