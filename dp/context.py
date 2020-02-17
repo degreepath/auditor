@@ -134,6 +134,19 @@ class RequirementContext:
         if not did_yield:
             logger.debug("no exception for %s", path)
 
+    def get_insert_exceptions_beneath(self, path: Tuple[str, ...]) -> Iterator[InsertionException]:
+        path_len = len(path)
+        did_yield = False
+
+        for exception in self.exceptions:
+            if isinstance(exception, InsertionException) and exception.path[:path_len] == path:
+                logger.debug("exception found for %s: %s", path, exception)
+                did_yield = True
+                yield exception
+
+        if not did_yield:
+            logger.debug("no exception for %s", path)
+
     def get_waive_exception(self, path: Tuple[str, ...]) -> Optional[OverrideException]:
         if path not in self.exception_paths_:
             return None

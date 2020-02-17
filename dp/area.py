@@ -256,11 +256,20 @@ class AreaSolution(AreaOfStudy):
 
     def audit_common_major_requirements(self, result: Result) -> RequirementResult:
         claimed: Set[CourseInstance] = result.matched()
+
+        c_or_better__path = self.common_rules[0].path
+        exceptions = {}
+        if self.context.has_exception(c_or_better__path):
+            for e in self.context.get_insert_exceptions_beneath(c_or_better__path):
+                course = self.context.forced_course_by_clbid(e.clbid, path=c_or_better__path)
+                exceptions[course.clbid] = course
+
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)
+
         fresh_context = self.context.with_empty_claims()
         whole_context = fresh_context.with_transcript(fresh_context.transcript_with_excluded())
-        claimed_context = fresh_context.with_transcript(claimed)
+        claimed_context = fresh_context.with_transcript(claimed, forced=exceptions)
 
         c_or_better = find_best_solution(rule=self.common_rules[0], ctx=claimed_context)
         assert c_or_better is not None, TypeError('no solutions found for c_or_better rule')
