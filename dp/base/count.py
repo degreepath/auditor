@@ -111,6 +111,9 @@ class BaseCountRule(Base):
 
         all_audit_statuses = set(a.status() for a in self.audits())
 
+        if len(all_audit_statuses) == 1:
+            return list(all_audit_statuses)[0]
+
         if ResultStatus.FailedInvariant in all_audit_statuses:
             return ResultStatus.FailedInvariant
 
