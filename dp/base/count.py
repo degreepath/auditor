@@ -127,6 +127,9 @@ class BaseCountRule(Base):
         if all_audit_statuses.issubset(WAIVED_DONE_CURRENT_PENDING):
             return ResultStatus.PendingRegistered
 
+        if all_audit_statuses.issubset(EMPTY_AND_DEPARTMENTAL):
+            return ResultStatus.Empty
+
         return ResultStatus.NeedsMoreItems
 
     def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
