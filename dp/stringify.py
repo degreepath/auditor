@@ -261,7 +261,7 @@ def print_count(
     yield f"{prefix}{emoji} {descr}"
 
     if rule['audit']:
-        yield f'{prefix} This requirement has a post-audit:'
+        yield f'{prefix} This requirement has a post-audit [status={rule["audit_status"]}]:'
 
         yield f"{prefix} There must be:"
         for a in rule['audit']:
