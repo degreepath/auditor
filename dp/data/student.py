@@ -4,9 +4,11 @@ import attr
 
 from ..constants import Constants
 from ..exception import CourseOverrideException
+from ..grades import GradeCode
+from ..load_course import load_course
 
-from .course import load_course, CourseInstance
-from .course_enums import GradeOption, GradeCode, TranscriptCode
+from .course import CourseInstance
+from .course_enums import GradeOption, TranscriptCode
 from .area_pointer import AreaPointer
 from .music import MusicAttendance, MusicPerformance, MusicProficiencies, MusicMediums
 

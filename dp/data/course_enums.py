@@ -1,6 +1,5 @@
 import enum
-from typing import Any, Dict
-from decimal import Decimal
+from typing import Dict
 
 
 @enum.unique
@@ -74,76 +73,4 @@ CourseTypeSortOrder: Dict[CourseType, int] = {
     CourseType.Other: 2,
     CourseType.Transfer: 2,
     CourseType.ParaCollege: 2,
-}
-
-
-class OrderedEnum(enum.Enum):
-    def __ge__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value >= other.value
-        return NotImplemented
-
-    def __gt__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value > other.value
-        return NotImplemented
-
-    def __le__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value <= other.value
-        return NotImplemented
-
-    def __lt__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value < other.value
-        return NotImplemented
-
-
-@enum.unique
-class GradeCode(OrderedEnum):
-    A = "A"
-    A_plus = "A+"
-    A_minus = "A-"
-    B = "B"
-    B_plus = "B+"
-    B_minus = "B-"
-    C = "C"
-    C_plus = "C+"
-    C_minus = "C-"
-    D = "D"
-    D_plus = "D+"
-    D_minus = "D-"
-    F = "F"
-
-    _BC = "BC"
-    _AB = "AB"
-    _NG = "NG"
-    _IP = "IP"
-    _I = "I"
-    _P = "P"
-    _N = "N"
-    _S = "S"
-    _U = "U"
-    _AU = "AU"
-    _UA = "UA"
-    _WF = "WF"
-    _WP = "WP"
-    _W = "W"
-    _REG = "DP_REG"
-
-
-grade_code_to_points: Dict[GradeCode, Decimal] = {
-    GradeCode.A_plus: Decimal("4.00"),
-    GradeCode.A: Decimal("4.00"),
-    GradeCode.A_minus: Decimal("3.70"),
-    GradeCode.B_plus: Decimal("3.30"),
-    GradeCode.B: Decimal("3.00"),
-    GradeCode.B_minus: Decimal("2.70"),
-    GradeCode.C_plus: Decimal("2.30"),
-    GradeCode.C: Decimal("2.00"),
-    GradeCode.C_minus: Decimal("1.70"),
-    GradeCode.D_plus: Decimal("1.30"),
-    GradeCode.D: Decimal("1.00"),
-    GradeCode.D_minus: Decimal("0.70"),
-    GradeCode.F: Decimal("0.00"),
 }

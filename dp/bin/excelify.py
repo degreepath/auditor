@@ -11,7 +11,7 @@ import pathlib
 import openpyxl  # type: ignore
 
 from dp.stringify_csv import Csvify
-from dp.data.course import load_course
+from dp.load_course import load_course
 
 DEFAULT_STYLE = 'default'
 default = openpyxl.styles.NamedStyle(DEFAULT_STYLE)

@@ -8,7 +8,7 @@ import sys
 import csv
 
 from dp.stringify_csv import Csvify
-from dp.data.course import load_course
+from dp.load_course import load_course
 
 
 def main() -> int:

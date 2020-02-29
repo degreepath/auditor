@@ -12,7 +12,8 @@ from ..status import PassingStatuses
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable, CourseInstance  # noqa: F401
+    from ..data.course import CourseInstance  # noqa: F401
+    from ..data.clausable import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 

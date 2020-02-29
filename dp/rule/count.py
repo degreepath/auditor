@@ -7,18 +7,19 @@ import time
 import sys
 import os
 
+from .assertion import AssertionRule
 from ..ms import pretty_ms
 from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
 from ..constants import Constants
 from ..solution.count import CountSolution
 from ..ncr import mult
 from ..solve import find_best_solution
-from .assertion import AssertionRule
 from ..lazy_product import lazy_product
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable, CourseInstance  # noqa: F401
+    from ..data.clausable import Clausable  # noqa: F401
+    from ..data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 SHOW_ESTIMATES = False if int(os.getenv('DP_ESTIMATE', default='0')) == 0 else True

@@ -5,7 +5,7 @@ from decimal import Decimal, InvalidOperation
 from .clause import Clause, AndClause, OrClause, SingleClause
 from .constants import Constants
 from .data.course_enums import GradeOption
-from .lib import str_to_grade_points
+from .grades import str_to_grade_points
 from .operator import Operator
 from .solve import find_best_solution
 from .status import ResultStatus

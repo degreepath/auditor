@@ -5,7 +5,7 @@ from typing import Iterator, Any, Dict, Tuple, Callable
 # import textwrap
 
 from .stringify import str_clause
-from .data import CourseInstance
+from .data.course import CourseInstance
 from .status import PassingStatusValues, ResultStatus
 
 

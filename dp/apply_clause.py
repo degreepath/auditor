@@ -4,8 +4,10 @@ from decimal import Decimal
 
 import attr
 
-from .data import CourseInstance, AreaPointer, MusicAttendance, MusicPerformance
-from .lib import grade_point_average_items, grade_point_average
+from .data.course import CourseInstance
+from .data.area_pointer import AreaPointer
+from .data.music import MusicPerformance, MusicAttendance
+from .grades import grade_point_average_items, grade_point_average
 
 if TYPE_CHECKING:  # pragma: no cover
     from .clause import SingleClause

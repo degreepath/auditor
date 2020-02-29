@@ -1,4 +1,4 @@
-from dp.data import course_from_str
+from .course_from_str import course_from_str
 from decimal import Decimal
 import dp.apply_clause as funcs
 

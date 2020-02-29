@@ -8,7 +8,7 @@ from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import CourseInstance  # noqa: F401
+    from ..data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 

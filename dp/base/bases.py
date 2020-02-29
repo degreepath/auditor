@@ -9,8 +9,8 @@ from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import CourseInstance  # noqa: F401
-    from ..data import Clausable  # noqa: F401
+    from ..data.course import CourseInstance  # noqa: F401
+    from ..data.clausable import Clausable  # noqa: F401
 
 
 @enum.unique

@@ -5,14 +5,15 @@ import logging
 import attr
 
 from .operator import Operator, apply_operator
-from .data.course_enums import GradeOption, GradeCode
+from .data.course_enums import GradeOption
+from .grades import GradeCode
 from .status import ResultStatus
 from .stringify import str_clause
 from functools import lru_cache
 
 if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext
-    from .data import Clausable  # noqa: F401
+    from .data.clausable import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 CACHE_SIZE = 2048

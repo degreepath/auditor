@@ -4,13 +4,14 @@ import logging
 
 from ..base import Rule, BaseCourseRule
 from ..constants import Constants
-from ..lib import str_to_grade_points
+from ..grades import str_to_grade_points
 from ..solution.course import CourseSolution
 from ..data.course_enums import GradeOption
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
-    from ..data import Clausable, CourseInstance  # noqa: F401
+    from ..data.course import CourseInstance  # noqa: F401
+    from ..data.clausable import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 

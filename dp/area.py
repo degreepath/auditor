@@ -8,13 +8,16 @@ from collections import defaultdict
 from .base import Solution, Result, Rule, Base
 from .constants import Constants
 from .context import RequirementContext
-from .data import CourseInstance, AreaPointer, AreaType, Student
+from .data.course import CourseInstance
+from .data.area_pointer import AreaPointer
+from .data.area_enums import AreaType
+from .data.student import Student
 from .exception import RuleException, InsertionException
 from .limit import LimitSet
 from .load_rule import load_rule
 from .result.count import CountResult
 from .result.requirement import RequirementResult
-from .lib import grade_point_average
+from .grades import grade_point_average
 from .solve import find_best_solution
 from .status import ResultStatus, WAIVED_AND_DONE
 from .claim import Claim

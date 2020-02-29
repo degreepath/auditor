@@ -7,8 +7,8 @@ import yaml
 
 from .area import AreaOfStudy
 from .exception import load_exception, CourseOverrideException
-from .lib import grade_point_average_items, grade_point_average
-from .data import Student
+from .grades import grade_point_average_items, grade_point_average
+from .data.student import Student
 from .audit import audit, Message, Arguments
 
 

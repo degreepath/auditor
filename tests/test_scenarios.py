@@ -1,6 +1,6 @@
+from .course_from_str import course_from_str
 from dp import AreaOfStudy, Constants, AreaPointer
-from dp.audit import audit, Arguments
-from dp.data.course import course_from_str
+from dp.audit import audit
 from dp.data.student import Student
 from dp.data.area_enums import AreaStatus, AreaType
 from typing import Dict, Any

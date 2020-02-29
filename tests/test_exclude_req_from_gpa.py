@@ -1,5 +1,6 @@
+from .course_from_str import course_from_str
+from dp.data.student import Student
 from dp import AreaOfStudy
-from dp.data import course_from_str, Student
 from dp.constants import Constants
 from decimal import Decimal
 

@@ -6,7 +6,8 @@ import time
 from .constants import Constants
 from .exception import RuleException
 from .area import AreaOfStudy, AreaResult
-from .data import CourseInstance, Student
+from .data.student import Student
+from .data.course import CourseInstance
 from .status import WAIVED_AND_DONE
 
 
