@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from .base import Solution, Result, Rule, Base
 from .constants import Constants
-from .context import RequirementContext
+from .context import RequirementContext, ContextExceptions, ContextClaims
 from .data.course import CourseInstance
 from .data.area_pointer import AreaPointer
 from .data.area_enums import AreaType
@@ -87,7 +87,7 @@ class AreaOfStudy(Base):
 
         ctx = RequirementContext(
             areas=student.areas,
-            exceptions=list(exceptions),
+            exceptions=ContextExceptions(exceptions=list(exceptions)),
         ).with_transcript(student.courses)
 
         result = load_rule(
@@ -170,8 +170,8 @@ class AreaOfStudy(Base):
             music_performances=student.music_performances,
             music_attendances=student.music_recital_slips,
             music_proficiencies=student.music_proficiencies,
-            exceptions=exceptions,
-            multicountable=self.multicountable,
+            exceptions=ContextExceptions(exceptions=exceptions),
+            claims=ContextClaims(multicountable=self.multicountable),
         )
 
         for limited_transcript in self.limit.limited_transcripts(courses=student.courses):
@@ -183,6 +183,8 @@ class AreaOfStudy(Base):
                 forced=forced_courses,
                 including_failed=student.courses_with_failed,
             )
+
+            ctx.claims = ctx.claims.empty()
 
             for sol in self.result.solutions(ctx=ctx, depth=1):
                 if use_optimization:
@@ -201,7 +203,7 @@ class AreaOfStudy(Base):
 
                 # We need to clear the list of claims at the end of the loop,
                 # or else we accidentally clear the independently-solved claims
-                ctx = ctx.with_empty_claims()
+                ctx.claims = ctx.claims.empty()
 
         logger.debug("all solutions generated")
 
@@ -214,8 +216,8 @@ class AreaOfStudy(Base):
             music_performances=student.music_performances,
             music_attendances=student.music_recital_slips,
             music_proficiencies=student.music_proficiencies,
-            exceptions=exceptions,
-            multicountable=self.multicountable,
+            exceptions=ContextExceptions(exceptions=exceptions),
+            claims=ContextClaims(multicountable=self.multicountable),
         )
 
         acc = 0
@@ -228,7 +230,9 @@ class AreaOfStudy(Base):
                 including_failed=student.courses_with_failed,
             )
 
-            acc += self.result.estimate(ctx=ctx.with_empty_claims(), depth=1)
+            ctx.claims = ctx.claims.empty()
+
+            acc += self.result.estimate(ctx=ctx, depth=1)
 
         return acc
 
@@ -274,8 +278,8 @@ class AreaSolution(AreaOfStudy):
 
         c_or_better__path = self.common_rules[0].path
         exceptions = {}
-        if self.context.has_exception(c_or_better__path):
-            for e in self.context.get_insert_exceptions_beneath(c_or_better__path):
+        if self.context.exceptions.has_exception(c_or_better__path):
+            for e in self.context.exceptions.get_insert_exceptions_beneath(c_or_better__path):
                 course = self.context.forced_course_by_clbid(e.clbid, path=c_or_better__path)
                 exceptions[course.clbid] = course
 

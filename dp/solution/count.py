@@ -50,12 +50,12 @@ class CountSolution(Solution, BaseCountRule):
         return CountResult.from_solution(solution=self, items=results, audit_results=audit_results)
 
     def audit_assertion(self, assertion: AssertionRule, *, input_items: Tuple['CourseInstance', ...], ctx: 'RequirementContext') -> AssertionResult:
-        exception = ctx.get_waive_exception(assertion.path)
+        exception = ctx.exceptions.get_waive_exception(assertion.path)
         if exception:
             logger.debug("forced override on %s", self.path)
             return assertion.override()
 
-        override_value = ctx.get_value_exception(assertion.path)
+        override_value = ctx.exceptions.get_value_exception(assertion.path)
         if override_value:
             logger.debug("override: new value on %s", self.path)
             assertion = assertion.set_expected_value(override_value.value)
@@ -66,7 +66,7 @@ class CountSolution(Solution, BaseCountRule):
             matched_items = list(input_items)
 
         inserted_clbids = []
-        for insert in ctx.get_insert_exceptions(assertion.path):
+        for insert in ctx.exceptions.get_insert_exceptions(assertion.path):
             logger.debug("inserted %s into %s", insert.clbid, self.path)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             matched_items.append(matched_course)

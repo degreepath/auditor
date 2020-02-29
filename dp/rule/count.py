@@ -98,7 +98,7 @@ class CountRule(Rule, BaseCountRule):
                 items.append({"requirement": emphasis_key})
 
         did_insert = False
-        for insert in ctx.get_insert_exceptions(tuple(path)):
+        for insert in ctx.exceptions.get_insert_exceptions(tuple(path)):
             logger.debug("%s inserting new choice: %s", path, insert)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=path)
             items.append({
@@ -199,7 +199,7 @@ class CountRule(Rule, BaseCountRule):
         return lo, hi
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
-        if ctx.get_waive_exception(self.path):
+        if ctx.exceptions.get_waive_exception(self.path):
             logger.debug("%s forced override", self.path)
             yield CountSolution.from_rule(rule=self, count=self.count, items=self.items, overridden=True)
             return
@@ -273,7 +273,7 @@ class CountRule(Rule, BaseCountRule):
             yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
     def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
-        if ctx.get_waive_exception(self.path):
+        if ctx.exceptions.get_waive_exception(self.path):
             return 1
 
         items = self.items
@@ -444,7 +444,7 @@ class CountRule(Rule, BaseCountRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.has_exception(self.path):
+        if ctx.exceptions.has_exception(self.path):
             return True
 
         return any(r.has_potential(ctx=ctx) for r in self.items)

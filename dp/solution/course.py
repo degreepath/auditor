@@ -38,11 +38,11 @@ class CourseSolution(Solution, BaseCourseRule):
 
         claim: Optional[Claim] = None
 
-        for insert in ctx.get_insert_exceptions(self.path):
+        for insert in ctx.exceptions.get_insert_exceptions(self.path):
             logger.debug('inserting %s into %s due to override', insert.clbid, self)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
 
-            claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=insert.forced or self.allow_claimed)
+            claim = ctx.claims.make_claim(course=matched_course, path=self.path, allow_claimed=insert.forced or self.allow_claimed)
 
             if not claim.failed:
                 logger.debug('%s course "%s" exists, and has not been claimed', self.path, matched_course.course())
@@ -57,7 +57,7 @@ class CourseSolution(Solution, BaseCourseRule):
                 logger.debug('%s course "%s" exists, but the course was taken %s, and the area requires that it be taken %s', self.path, self.identifier(), matched_course.grade_option, self.grade_option)
                 continue
 
-            claim = ctx.make_claim(course=matched_course, path=self.path, allow_claimed=self.allow_claimed)
+            claim = ctx.claims.make_claim(course=matched_course, path=self.path, allow_claimed=self.allow_claimed)
 
             if self.from_claimed:
                 assert claim.failed is False

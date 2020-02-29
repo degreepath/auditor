@@ -96,7 +96,7 @@ class CourseRule(Rule, BaseCourseRule):
         return self
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
-        if self.auto_waived or ctx.get_waive_exception(self.path):
+        if self.auto_waived or ctx.exceptions.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield CourseSolution.from_rule(rule=self, overridden=True)
             return
@@ -117,7 +117,7 @@ class CourseRule(Rule, BaseCourseRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if self.auto_waived or ctx.has_exception(self.path):
+        if self.auto_waived or ctx.exceptions.has_exception(self.path):
             return True
 
         try:
@@ -127,7 +127,7 @@ class CourseRule(Rule, BaseCourseRule):
             return False
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
-        for insert in ctx.get_insert_exceptions(self.path):
+        for insert in ctx.exceptions.get_insert_exceptions(self.path):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []
 

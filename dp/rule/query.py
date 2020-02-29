@@ -131,7 +131,7 @@ class QueryRule(Rule, BaseQueryRule):
         inserted_clbids: Tuple[str, ...] = tuple()
         force_inserted_clbids: Tuple[str, ...] = tuple()
         if self.source in (QuerySource.Courses, QuerySource.Claimed):
-            for insert in ctx.get_insert_exceptions(self.path):
+            for insert in ctx.exceptions.get_insert_exceptions(self.path):
                 inserted_clbids = (*inserted_clbids, insert.clbid)
                 if insert.forced:
                     force_inserted_clbids = (*force_inserted_clbids, insert.clbid)
@@ -142,7 +142,7 @@ class QueryRule(Rule, BaseQueryRule):
         return data, inserted_clbids, force_inserted_clbids
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:
-        if ctx.get_waive_exception(self.path):
+        if ctx.exceptions.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple(), overridden=True)
             return
@@ -176,7 +176,7 @@ class QueryRule(Rule, BaseQueryRule):
             yield QuerySolution.from_rule(rule=self, output=tuple(), inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
     def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
-        if ctx.get_waive_exception(self.path):
+        if ctx.exceptions.get_waive_exception(self.path):
             return 1
 
         data, _, _ = self.get_filtered_data(ctx=ctx)
@@ -206,7 +206,7 @@ class QueryRule(Rule, BaseQueryRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.has_exception(self.path):
+        if ctx.exceptions.has_exception(self.path):
             return True
 
         if has_assertion(self.assertions, key=is_lt_clause):
@@ -229,7 +229,7 @@ class QueryRule(Rule, BaseQueryRule):
         if self.where is not None:
             matches = [item for item in matches if apply_clause(self.where, item)]
 
-        for insert in ctx.get_insert_exceptions(self.path):
+        for insert in ctx.exceptions.get_insert_exceptions(self.path):
             matches.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
 
         return matches

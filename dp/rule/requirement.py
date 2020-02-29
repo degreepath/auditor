@@ -128,7 +128,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return attr.evolve(self, result=result)
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
-        if ctx.get_waive_exception(self.path):
+        if ctx.exceptions.get_waive_exception(self.path):
             yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
             return
 
@@ -140,7 +140,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
 
     def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
-        if ctx.get_waive_exception(self.path):
+        if ctx.exceptions.get_waive_exception(self.path):
             return 1
 
         if not self.result:
@@ -157,7 +157,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.has_exception(self.path):
+        if ctx.exceptions.has_exception(self.path):
             return True
 
         if self.is_audited:

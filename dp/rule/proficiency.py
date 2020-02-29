@@ -56,7 +56,7 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
         return self
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[ProficiencySolution]:
-        if ctx.get_waive_exception(self.path):
+        if ctx.exceptions.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield ProficiencySolution.overridden_from_rule(rule=self)
             return

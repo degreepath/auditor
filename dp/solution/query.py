@@ -101,7 +101,7 @@ class QuerySolution(Solution, BaseQueryRule):
         if self.attempt_claims:
             for course in output:
                 was_forced = course.clbid in self.force_inserted
-                claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed or was_forced)
+                claim = ctx.claims.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed or was_forced)
 
                 if claim.failed:
                     if debug: logger.debug('%s course "%s" exists, but has already been claimed by other rules', self.path, course.clbid)
@@ -113,7 +113,7 @@ class QuerySolution(Solution, BaseQueryRule):
 
         elif self.record_claims:
             for course in output:
-                claim = ctx.make_claim(course=course, path=self.path, allow_claimed=True)
+                claim = ctx.claims.make_claim(course=course, path=self.path, allow_claimed=True)
                 assert claim.failed is False
                 successful_claims.append(claim)
                 claimed_items.append(course)
@@ -135,7 +135,7 @@ class QuerySolution(Solution, BaseQueryRule):
         output: List[CourseInstance] = ctx.courses__claimed(where=self.where, inserted=self.inserted, path=self.path)
 
         for course in output:
-            claim = ctx.make_claim(course=course, path=self.path, allow_claimed=True)
+            claim = ctx.claims.make_claim(course=course, path=self.path, allow_claimed=True)
 
             assert claim.failed is False
 
@@ -176,12 +176,12 @@ class QuerySolution(Solution, BaseQueryRule):
 
         assert isinstance(assertion, AssertionRule), TypeError(f"expected a query assertion; found {assertion} ({type(assertion)})")
 
-        waive = ctx.get_waive_exception(assertion.path)
+        waive = ctx.exceptions.get_waive_exception(assertion.path)
         if waive:
             if debug: logger.debug("forced override on %s", self.path)
             return assertion.override()
 
-        override_value = ctx.get_value_exception(assertion.path)
+        override_value = ctx.exceptions.get_value_exception(assertion.path)
         if override_value:
             if debug: logger.debug("override: new value on %s", self.path)
             assertion = assertion.set_expected_value(override_value.value)
@@ -192,7 +192,7 @@ class QuerySolution(Solution, BaseQueryRule):
             filtered_output = list(data)
 
         inserted_clbids = []
-        for insert in ctx.get_insert_exceptions(assertion.path):
+        for insert in ctx.exceptions.get_insert_exceptions(assertion.path):
             if debug: logger.debug("inserted %s into %s", insert.clbid, self.path)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             filtered_output.append(matched_course)
