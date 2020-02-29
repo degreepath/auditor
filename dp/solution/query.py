@@ -1,5 +1,5 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Iterator, cast, TYPE_CHECKING
+from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Iterator, cast
 import logging
 
 from ..base import Solution, BaseQueryRule
@@ -9,12 +9,10 @@ from ..rule.assertion import AssertionRule
 from ..rule.conditional_assertion import ConditionalAssertionRule
 from ..result.assertion import AssertionResult
 from ..data.clausable import Clausable
+from ..data.course import CourseInstance
 from ..clause import apply_clause
 from ..claim import Claim
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
+from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
@@ -62,7 +60,7 @@ class QuerySolution(Solution, BaseQueryRule):
             "output": [x.to_dict() for x in self.output],
         }
 
-    def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
+    def audit(self, *, ctx: RequirementContext) -> QueryResult:
         if self.overridden:
             return QueryResult.from_solution(
                 solution=self,
@@ -92,14 +90,14 @@ class QuerySolution(Solution, BaseQueryRule):
             failed_claims=audit_result.failed_claims,
         )
 
-    def audit_courses(self, ctx: 'RequirementContext') -> AuditResult:
+    def audit_courses(self, ctx: RequirementContext) -> AuditResult:
         debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         claimed_items: List[Clausable] = []
         successful_claims: List[Claim] = []
         failed_claims: List[Claim] = []
 
-        output: Sequence['CourseInstance'] = cast(Sequence['CourseInstance'], self.output)
+        output: Sequence[CourseInstance] = cast(Sequence[CourseInstance], self.output)
         if self.attempt_claims:
             for course in output:
                 was_forced = course.clbid in self.force_inserted
@@ -130,17 +128,11 @@ class QuerySolution(Solution, BaseQueryRule):
             failed_claims=tuple(failed_claims),
         )
 
-    def audit_claimed_courses(self, ctx: 'RequirementContext') -> AuditResult:
+    def audit_claimed_courses(self, ctx: RequirementContext) -> AuditResult:
         claimed_items: List[Clausable] = []
         successful_claims: List[Claim] = []
 
-        output: List['CourseInstance'] = ctx.all_claimed()
-        if self.where:
-            output = [item for item in output if apply_clause(self.where, item)]
-
-        for clbid in self.inserted:
-            matched_course = ctx.forced_course_by_clbid(clbid, path=self.path)
-            output.append(matched_course)
+        output: List[CourseInstance] = ctx.courses__claimed(where=self.where, inserted=self.inserted, path=self.path)
 
         for course in output:
             claim = ctx.make_claim(course=course, path=self.path, allow_claimed=True)
@@ -158,22 +150,22 @@ class QuerySolution(Solution, BaseQueryRule):
             failed_claims=tuple(),
         )
 
-    def audit_areas(self, ctx: 'RequirementContext') -> AuditResult:
+    def audit_areas(self, ctx: RequirementContext) -> AuditResult:
         return AuditResult(claimed_items=tuple(self.output))
 
-    def audit_music_performances(self, ctx: 'RequirementContext') -> AuditResult:
+    def audit_music_performances(self, ctx: RequirementContext) -> AuditResult:
         return AuditResult(claimed_items=tuple(self.output))
 
-    def audit_music_attendances(self, ctx: 'RequirementContext') -> AuditResult:
+    def audit_music_attendances(self, ctx: RequirementContext) -> AuditResult:
         return AuditResult(claimed_items=tuple(self.output))
 
-    def apply_assertions(self, data: Sequence[Clausable], *, ctx: 'RequirementContext') -> Iterator[AssertionResult]:
+    def apply_assertions(self, data: Sequence[Clausable], *, ctx: RequirementContext) -> Iterator[AssertionResult]:
         for a in self.assertions:
             assertion_result = self.apply_assertion(a, ctx=ctx, data=data)
             if assertion_result:
                 yield assertion_result
 
-    def apply_assertion(self, maybe_asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', data: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
+    def apply_assertion(self, maybe_asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: RequirementContext, data: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
         global debug
         if debug is None:
             debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
@@ -208,8 +200,8 @@ class QuerySolution(Solution, BaseQueryRule):
 
         return assertion.resolve(tuple(filtered_output), overridden=False, inserted=tuple(inserted_clbids))
 
-    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+    def all_courses(self, ctx: RequirementContext) -> List[CourseInstance]:
         if self.source in (QuerySource.Courses, QuerySource.Claimed):
-            return cast(List['CourseInstance'], [c for c in self.output])
+            return cast(List[CourseInstance], [c for c in self.output])
         else:
             return []

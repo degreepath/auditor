@@ -1,5 +1,5 @@
 import attr
-from typing import List, Optional, Tuple, Dict, Set, Sequence, Iterable, Iterator
+from typing import List, Optional, Tuple, Dict, Set, Sequence, Collection, Iterable, Iterator
 from collections import defaultdict
 from contextlib import contextmanager
 import logging
@@ -11,6 +11,7 @@ from .data.area_pointer import AreaPointer
 from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
 from .claim import Claim
 from .exception import RuleException, OverrideException, InsertionException, ValueException
+from .clause import Clause, apply_clause
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
@@ -61,6 +62,18 @@ class RequirementContext:
             clbid_lookup_map_=clbid_lookup_map,
             forced_clbid_lookup_map_=forced or {},
         )
+
+    def courses__claimed(self, *, path: Sequence[str], where: Optional[Clause], inserted: Collection[str] = tuple()) -> List[CourseInstance]:
+        output: List[CourseInstance] = self.all_claimed()
+
+        if where:
+            output = [item for item in output if apply_clause(where, item)]
+
+        for clbid in inserted:
+            matched_course = self.forced_course_by_clbid(clbid, path=path)
+            output.append(matched_course)
+
+        return output
 
     def transcript(self) -> List[CourseInstance]:
         return self.transcript_
