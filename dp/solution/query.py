@@ -1,18 +1,19 @@
-import attr
 from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Iterator, cast
 import logging
 
-from ..base import Solution, BaseQueryRule
-from ..base.query import QuerySource
+import attr
+
+from ..base.bases import Solution
+from ..base.query import BaseQueryRule, QuerySource
+from ..claim import Claim
+from ..clause import apply_clause
+from ..context import RequirementContext
+from ..data.clausable import Clausable
+from ..data.course import CourseInstance
+from ..result.assertion import AssertionResult
 from ..result.query import QueryResult
 from ..rule.assertion import AssertionRule
 from ..rule.conditional_assertion import ConditionalAssertionRule
-from ..result.assertion import AssertionResult
-from ..data.clausable import Clausable
-from ..data.course import CourseInstance
-from ..clause import apply_clause
-from ..claim import Claim
-from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None

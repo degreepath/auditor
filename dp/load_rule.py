@@ -1,15 +1,13 @@
-from typing import Dict, Sequence, List, Optional, TYPE_CHECKING
-from .constants import Constants
+from typing import Dict, Sequence, List, Optional
 
-from .base import Rule
+from .base.bases import Rule
+from .constants import Constants
+from .context import RequirementContext
 from .rule.count import CountRule
 from .rule.course import CourseRule
+from .rule.proficiency import ProficiencyRule
 from .rule.query import QueryRule
 from .rule.requirement import RequirementRule
-from .rule.proficiency import ProficiencyRule
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .context import RequirementContext  # noqa: F401
 
 
 def load_rule(
@@ -19,7 +17,7 @@ def load_rule(
     path: List[str],
     children: Dict[str, Dict],
     emphases: Sequence[Dict[str, Dict]] = tuple(),
-    ctx: 'RequirementContext',
+    ctx: RequirementContext,
 ) -> Optional[Rule]:
     # This only runs at the top level of an area, because we don't pass
     # emphases down below that. This is how we attach the requirements

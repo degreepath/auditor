@@ -1,26 +1,26 @@
-import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, FrozenSet, Union, Tuple, cast, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, FrozenSet, Union, Tuple, cast
 import itertools
 import logging
 import decimal
 
-from ..base import Rule, BaseQueryRule
-from ..base.query import QuerySource
-from ..limit import LimitSet
+import attr
+
+from ..base.bases import Rule
+from ..base.query import BaseQueryRule, QuerySource
 from ..clause import SingleClause, apply_clause
-from ..load_clause import load_clause
-from ..data.clausable import Clausable
-from ..ncr import ncr
-from ..solution.query import QuerySolution
 from ..constants import Constants
-from ..operator import Operator
+from ..context import RequirementContext
+from ..data.clausable import Clausable
 from ..data.course import CourseInstance
+from ..limit import LimitSet
+from ..load_clause import load_clause
+from ..ncr import ncr
+from ..operator import Operator
 from ..result.assertion import AssertionResult
+from ..solution.query import QuerySolution
+
 from .assertion import AssertionRule
 from .conditional_assertion import ConditionalAssertionRule
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class QueryRule(Rule, BaseQueryRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: List[str], ctx: Optional['RequirementContext'] = None) -> 'QueryRule':
+    def load(data: Dict, *, c: Constants, path: List[str], ctx: Optional[RequirementContext] = None) -> 'QueryRule':
         path = [*path, f".query"]
 
         where = data.get("where", None)
@@ -86,12 +86,12 @@ class QueryRule(Rule, BaseQueryRule):
             force_inserted=tuple(),
         )
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'QueryRule':
+    def exclude_required_courses(self, to_exclude: Collection[CourseInstance]) -> 'QueryRule':
         clbids = frozenset(c.clbid for c in to_exclude)
         logger.debug(f'{self.path} excluding required courses: {sorted(c for c in clbids)}')
         return attr.evolve(self, excluded_clbids=clbids)
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
+    def validate(self, *, ctx: RequirementContext) -> None:
         if self.assertions:
             for a in self.assertions:
                 a.validate(ctx=ctx)
@@ -99,10 +99,10 @@ class QueryRule(Rule, BaseQueryRule):
     def get_requirement_names(self) -> List[str]:
         return []
 
-    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def get_required_courses(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         return tuple()
 
-    def get_data(self, *, ctx: 'RequirementContext') -> Sequence[Clausable]:
+    def get_data(self, *, ctx: RequirementContext) -> Sequence[Clausable]:
         if self.source is QuerySource.Courses:
             all_courses = ctx.transcript()
             return [c for c in all_courses if c.clbid not in self.excluded_clbids]
@@ -122,7 +122,7 @@ class QueryRule(Rule, BaseQueryRule):
         else:
             raise TypeError(f'unknown type of data for query, {self.source}')
 
-    def get_filtered_data(self, *, ctx: 'RequirementContext') -> Tuple[List[Clausable], Tuple[str, ...], Tuple[str, ...]]:
+    def get_filtered_data(self, *, ctx: RequirementContext) -> Tuple[List[Clausable], Tuple[str, ...], Tuple[str, ...]]:
         if self.where is not None:
             data = [item for item in self.get_data(ctx=ctx) if apply_clause(self.where, item)]
         else:
@@ -141,7 +141,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         return data, inserted_clbids, force_inserted_clbids
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[QuerySolution]:
+    def solutions(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> Iterator[QuerySolution]:
         if ctx.exceptions.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple(), overridden=True)
@@ -175,7 +175,7 @@ class QueryRule(Rule, BaseQueryRule):
             logger.debug("%s did not yield anything; yielding empty collection", self.path)
             yield QuerySolution.from_rule(rule=self, output=tuple(), inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
-    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+    def estimate(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> int:
         if ctx.exceptions.get_waive_exception(self.path):
             return 1
 
@@ -197,7 +197,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         return acc
 
-    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def has_potential(self, *, ctx: RequirementContext) -> bool:
         if self._has_potential(ctx=ctx):
             logger.debug('%s has potential: yes', self.path)
             return True
@@ -205,7 +205,7 @@ class QueryRule(Rule, BaseQueryRule):
             logger.debug('%s has potential: no', self.path)
             return False
 
-    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def _has_potential(self, *, ctx: RequirementContext) -> bool:
         if ctx.exceptions.has_exception(self.path):
             return True
 
@@ -223,7 +223,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         return any(apply_clause(self.where, item) for item in self.get_data(ctx=ctx))
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: RequirementContext) -> Collection[Clausable]:
         matches = list(self.get_data(ctx=ctx))
 
         if self.where is not None:

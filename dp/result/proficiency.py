@@ -1,9 +1,12 @@
-import attr
 from typing import List, Optional
 
-from ..base import Result, BaseProficiencyRule, BaseCourseRule
-from ..status import ResultStatus
+import attr
+
+from ..base.bases import Result
+from ..base.course import BaseCourseRule
+from ..base.proficiency import BaseProficiencyRule
 from ..claim import Claim
+from ..status import ResultStatus
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

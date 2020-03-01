@@ -1,6 +1,6 @@
+from typing import Iterable
 import operator as op
 from functools import reduce
-from typing import Iterable
 
 
 def ncr(n: int, r: int) -> int:

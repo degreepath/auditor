@@ -1,13 +1,14 @@
-import attr
 from typing import List, Optional, Tuple, Iterator, Union, Dict
 from decimal import Decimal
 import time
 
-from .constants import Constants
-from .exception import RuleException
+import attr
+
 from .area import AreaOfStudy, AreaResult
-from .data.student import Student
+from .constants import Constants
 from .data.course import CourseInstance
+from .data.student import Student
+from .exception import RuleException
 from .status import WAIVED_AND_DONE
 
 

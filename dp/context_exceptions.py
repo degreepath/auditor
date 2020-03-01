@@ -1,6 +1,7 @@
-import attr
 from typing import List, Optional, Tuple, Set, Iterator
 import logging
+
+import attr
 
 from .exception import RuleException, OverrideException, InsertionException, ValueException
 

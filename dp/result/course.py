@@ -1,11 +1,10 @@
+from typing import Optional, List
+
 import attr
-from typing import Optional, List, TYPE_CHECKING
 
-from ..base import Result, BaseCourseRule
+from ..base.bases import Result
+from ..base.course import BaseCourseRule
 from ..claim import Claim
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..data.course import CourseInstance  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

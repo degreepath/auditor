@@ -1,14 +1,14 @@
-import attr
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 import logging
 
-from ..base import Solution, BaseCourseRule
-from ..result.course import CourseResult
-from ..claim import Claim
+import attr
 
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
+from ..base.bases import Solution
+from ..base.course import BaseCourseRule
+from ..claim import Claim
+from ..context import RequirementContext
+from ..data.course import CourseInstance
+from ..result.course import CourseResult
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class CourseSolution(Solution, BaseCourseRule):
             grade_option=rule.grade_option,
         )
 
-    def audit(self, *, ctx: 'RequirementContext') -> CourseResult:
+    def audit(self, *, ctx: RequirementContext) -> CourseResult:
         if self.overridden:
             return CourseResult.from_solution(solution=self, overridden=self.overridden)
 
@@ -71,5 +71,5 @@ class CourseSolution(Solution, BaseCourseRule):
         logger.debug('%s course "%s" could not be claimed', self.path, self.identifier())
         return CourseResult.from_solution(solution=self, claim_attempt=claim)
 
-    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+    def all_courses(self, ctx: RequirementContext) -> List[CourseInstance]:
         return list(ctx.find_courses(rule=self, from_claimed=self.from_claimed))

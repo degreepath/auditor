@@ -1,6 +1,6 @@
-import abc
 from typing import Dict, Tuple, Any, TYPE_CHECKING
 import logging
+import abc
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..clause import SingleClause

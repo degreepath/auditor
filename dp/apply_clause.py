@@ -1,16 +1,14 @@
-from typing import Any, Sequence, Iterable, Tuple, Set, Dict, Mapping, Callable, Collection, Union, TYPE_CHECKING
+from typing import Any, Sequence, Iterable, Tuple, Set, Dict, Mapping, Callable, Collection, Union
 from collections import Counter, defaultdict
 from decimal import Decimal
 
 import attr
 
-from .data.course import CourseInstance
+from .clause import SingleClause
 from .data.area_pointer import AreaPointer
+from .data.course import CourseInstance
 from .data.music import MusicPerformance, MusicAttendance
 from .grades import grade_point_average_items, grade_point_average
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .clause import SingleClause
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)

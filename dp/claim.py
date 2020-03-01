@@ -1,13 +1,13 @@
-from typing import Tuple, Dict, Any, TYPE_CHECKING
+from typing import Tuple, Dict, Any
+
 import attr
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .data.course import CourseInstance  # noqa: F401
+from .data.course import CourseInstance
 
 
 @attr.s(cache_hash=True, auto_attribs=True, slots=True, eq=False, order=False, hash=True)
 class Claim:
-    course: 'CourseInstance'
+    course: CourseInstance
     claimed_by: Tuple[str, ...]
     failed: bool
 
@@ -18,5 +18,5 @@ class Claim:
             "claimed_by": self.claimed_by,
         }
 
-    def get_course(self) -> 'CourseInstance':
+    def get_course(self) -> CourseInstance:
         return self.course

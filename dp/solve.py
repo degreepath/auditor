@@ -1,21 +1,18 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from decimal import Decimal
 import logging
 
+from .base.bases import Result, Rule
+from .context import RequirementContext
 from .status import WAIVED_AND_DONE
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .claim import Claim  # noqa: F401
-    from .base import Result, Rule  # noqa: F401
-    from .context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
 
-def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims: bool = False) -> Optional['Result']:
+def find_best_solution(*, rule: Rule, ctx: RequirementContext, merge_claims: bool) -> Optional[Result]:
     logger.debug('solving rule at %s', rule.path)
 
-    best_result: Optional['Result'] = None
+    best_result: Optional[Result] = None
     best_result_index: Optional[int] = None
     best_rank: Decimal = Decimal(0)
 
@@ -50,6 +47,8 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
 
     if merge_claims and solved_claims.has_claims():
         ctx.claims = original_claims.merge(solved_claims)
+    else:
+        ctx.claims = original_claims
 
     logger.debug('rule at %s solved: rank %s, iteration %s', rule.path, best_rank, best_result_index)
 

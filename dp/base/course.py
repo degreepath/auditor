@@ -1,10 +1,12 @@
-import attr
 from typing import Optional, Tuple, Dict, Any
 from decimal import Decimal
 
-from .bases import Base
+import attr
+
 from ..data.course_enums import GradeOption
 from ..status import ResultStatus
+
+from .bases import Base
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

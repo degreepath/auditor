@@ -6,10 +6,10 @@ import sys
 import yaml
 
 from .area import AreaOfStudy
+from .audit import audit, Message, Arguments
+from .data.student import Student
 from .exception import load_exception, CourseOverrideException
 from .grades import grade_point_average_items, grade_point_average
-from .data.student import Student
-from .audit import audit, Message, Arguments
 
 
 def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]:

@@ -1,26 +1,27 @@
-import attr
 from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any
+from collections import defaultdict
 import logging
 import decimal
 import os
-from collections import defaultdict
 
-from .base import Solution, Result, Rule, Base
+import attr
+
+from .base.bases import Solution, Result, Rule, Base
+from .claim import Claim
 from .constants import Constants
 from .context import RequirementContext, ContextExceptions, ContextClaims
-from .data.course import CourseInstance
-from .data.area_pointer import AreaPointer
 from .data.area_enums import AreaType
+from .data.area_pointer import AreaPointer
+from .data.course import CourseInstance
 from .data.student import Student
 from .exception import RuleException, InsertionException
+from .grades import grade_point_average
 from .limit import LimitSet
 from .load_rule import load_rule
 from .result.count import CountResult
 from .result.requirement import RequirementResult
-from .grades import grade_point_average
 from .solve import find_best_solution
 from .status import ResultStatus, WAIVED_AND_DONE
-from .claim import Claim
 
 logger = logging.getLogger(__name__)
 
@@ -290,14 +291,14 @@ class AreaSolution(AreaOfStudy):
         whole_context = fresh_context.with_transcript(fresh_context.transcript_with_excluded())
         claimed_context = fresh_context.with_transcript(claimed, forced=exceptions)
 
-        c_or_better = find_best_solution(rule=self.common_rules[0], ctx=claimed_context)
+        c_or_better = find_best_solution(rule=self.common_rules[0], ctx=claimed_context, merge_claims=False)
         assert c_or_better is not None, TypeError('no solutions found for c_or_better rule')
 
-        s_u_credits = find_best_solution(rule=self.common_rules[1], ctx=claimed_context)
+        s_u_credits = find_best_solution(rule=self.common_rules[1], ctx=claimed_context, merge_claims=False)
         assert s_u_credits is not None, TypeError('no solutions found for s_u_credits rule')
 
         try:
-            outside_the_major = find_best_solution(rule=self.common_rules[2], ctx=whole_context)
+            outside_the_major = find_best_solution(rule=self.common_rules[2], ctx=whole_context, merge_claims=False)
             assert outside_the_major is not None, TypeError('no solutions found for outside_the_major rule')
         except IndexError:
             outside_the_major = None

@@ -1,16 +1,18 @@
-import attr
 from typing import Optional, Tuple, Dict, Any, Sequence, Union, cast
-import enum
 from decimal import Decimal
+import enum
 
-from .bases import Base
-from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, WAIVED_DONE_CURRENT_PENDING_INCOMPLETE
-from ..limit import LimitSet
-from ..clause import Clause
+import attr
+
 from ..claim import Claim
+from ..clause import Clause
+from ..limit import LimitSet
+from ..result.assertion import AssertionResult
 from ..rule.assertion import AssertionRule
 from ..rule.conditional_assertion import ConditionalAssertionRule
-from ..result.assertion import AssertionResult
+from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, WAIVED_DONE_CURRENT_PENDING_INCOMPLETE
+
+from .bases import Base
 
 
 @enum.unique

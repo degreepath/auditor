@@ -1,16 +1,14 @@
-from typing import Optional, Tuple, Dict, Any, Iterable, TYPE_CHECKING
-import attr
+from typing import Optional, Tuple, Dict, Any, Iterable
 from decimal import Decimal
 import logging
 
-from ..grades import GradeCode
+import attr
+
+from ..clause import SingleClause
+
 from .clausable import Clausable
-from .course_enums import GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
-
+from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
 from .course_filters import clause_application_lookup
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)
 

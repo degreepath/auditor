@@ -1,18 +1,19 @@
-import attr
 from typing import Tuple, Union, TYPE_CHECKING
 import logging
 
+import attr
+
 from ..base.bases import Rule, Solution, Result
 from ..base.count import BaseCountRule
-from ..rule.assertion import AssertionRule
+from ..clause import apply_clause
+from ..context import RequirementContext
+from ..data.course import CourseInstance
 from ..result.assertion import AssertionResult
 from ..result.count import CountResult
-from ..clause import apply_clause
+from ..rule.assertion import AssertionRule
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
     from ..rule.count import CountRule
-    from ..data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class CountSolution(Solution, BaseCountRule):
             overridden=overridden,
         )
 
-    def audit(self, *, ctx: 'RequirementContext') -> CountResult:
+    def audit(self, *, ctx: RequirementContext) -> CountResult:
         if self.overridden:
             return CountResult.from_solution(
                 solution=self,
@@ -49,7 +50,7 @@ class CountSolution(Solution, BaseCountRule):
 
         return CountResult.from_solution(solution=self, items=results, audit_results=audit_results)
 
-    def audit_assertion(self, assertion: AssertionRule, *, input_items: Tuple['CourseInstance', ...], ctx: 'RequirementContext') -> AssertionResult:
+    def audit_assertion(self, assertion: AssertionRule, *, input_items: Tuple[CourseInstance, ...], ctx: RequirementContext) -> AssertionResult:
         exception = ctx.exceptions.get_waive_exception(assertion.path)
         if exception:
             logger.debug("forced override on %s", self.path)

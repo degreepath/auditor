@@ -1,19 +1,19 @@
-from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
+from typing import Any, Mapping, Optional, List, Iterator, Collection
 import logging
+
 import attr
 import markdown2  # type: ignore
 
-from ..base import Rule, BaseRequirementRule
+from ..base.bases import Rule
+from ..base.requirement import BaseRequirementRule
 from ..constants import Constants
-from ..solution.requirement import RequirementSolution
+from ..context import RequirementContext
+from ..data.clausable import Clausable
+from ..data.course import CourseInstance
 from ..rule.query import QueryRule
+from ..solution.requirement import RequirementSolution
 from ..solve import find_best_solution
 from ..status import PassingStatuses
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
-    from ..data.clausable import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return "requirement" in data or "name" in data
 
     @staticmethod
-    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: 'RequirementContext') -> Optional['RequirementRule']:
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: RequirementContext) -> Optional['RequirementRule']:
         from ..load_rule import load_rule
 
         path = [*path, f"%{name}"]
@@ -49,8 +49,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
             rule = QueryRule.load(data['if'], c=c, path=[*path, '#if'], ctx=ctx)
 
-            with ctx.fresh_claims():
-                s = find_best_solution(rule=rule, ctx=ctx)
+            s = find_best_solution(rule=rule, ctx=ctx, merge_claims=False)
 
             if not s:
                 return None
@@ -101,7 +100,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             path=tuple(path),
         )
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
+    def validate(self, *, ctx: RequirementContext) -> None:
         assert isinstance(self.name, str)
         assert self.name.strip() != ""
 
@@ -115,19 +114,19 @@ class RequirementRule(Rule, BaseRequirementRule):
     def get_requirement_names(self) -> List[str]:
         return [self.name]
 
-    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def get_required_courses(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         if self.result:
             return self.result.get_required_courses(ctx=ctx)
         return tuple()
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'RequirementRule':
+    def exclude_required_courses(self, to_exclude: Collection[CourseInstance]) -> 'RequirementRule':
         if not self.result:
             return self
 
         result = self.result.exclude_required_courses(to_exclude)
         return attr.evolve(self, result=result)
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
+    def solutions(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> Iterator[RequirementSolution]:
         if ctx.exceptions.get_waive_exception(self.path):
             yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
             return
@@ -139,7 +138,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         for solution in self.result.solutions(ctx=ctx):
             yield RequirementSolution.from_rule(rule=self, solution=solution)
 
-    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+    def estimate(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> int:
         if ctx.exceptions.get_waive_exception(self.path):
             return 1
 
@@ -148,7 +147,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         return self.result.estimate(ctx=ctx)
 
-    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def has_potential(self, *, ctx: RequirementContext) -> bool:
         if self._has_potential(ctx=ctx):
             logger.debug('%s has potential: yes', self.path)
             return True
@@ -156,7 +155,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             logger.debug('%s has potential: no', self.path)
             return False
 
-    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def _has_potential(self, *, ctx: RequirementContext) -> bool:
         if ctx.exceptions.has_exception(self.path):
             return True
 
@@ -168,7 +167,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         return False
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: RequirementContext) -> Collection[Clausable]:
         if not self.result:
             return []
 

@@ -1,8 +1,10 @@
-import attr
 from typing import Optional
 import logging
 
-from ..base import Base, Result, BaseRequirementRule
+import attr
+
+from ..base.bases import Base, Result
+from ..base.requirement import BaseRequirementRule
 
 logger = logging.getLogger(__name__)
 

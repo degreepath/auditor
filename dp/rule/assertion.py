@@ -1,23 +1,22 @@
-import attr
-from typing import Dict, Sequence, Iterator, List, Collection, Any, Tuple, Optional, cast, TYPE_CHECKING
-import logging
+from typing import Dict, Sequence, Iterator, List, Collection, Any, Tuple, Optional, cast
 from decimal import Decimal
+import logging
 
-from ..clause import SingleClause, ResolvedSingleClause
-from ..load_clause import load_clause
-from ..constants import Constants
-from ..operator import Operator, apply_operator
-from ..base.bases import Rule, Solution
-from ..base.assertion import BaseAssertionRule
+import attr
+
 from ..apply_clause import apply_clause_to_assertion_with_courses, apply_clause_to_assertion_with_areas, apply_clause_to_assertion_with_data, area_actions, course_actions, other_actions
-from ..status import ResultStatus
+from ..base.assertion import BaseAssertionRule
+from ..base.bases import Rule, Solution
+from ..clause import SingleClause, ResolvedSingleClause
+from ..constants import Constants
+from ..context import RequirementContext
+from ..data.area_pointer import AreaPointer
+from ..data.clausable import Clausable
+from ..data.course import CourseInstance
+from ..load_clause import load_clause
+from ..operator import Operator, apply_operator
 from ..result.assertion import AssertionResult
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
-    from ..data.clausable import Clausable  # noqa: F401
-    from ..data.area_pointer import AreaPointer  # noqa: F401
+from ..status import ResultStatus
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +30,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, ctx: Optional['RequirementContext'], path: Sequence[str]) -> 'AssertionRule':
+    def load(data: Dict, *, c: Constants, ctx: Optional[RequirementContext], path: Sequence[str]) -> 'AssertionRule':
         path = [*path, ".assert"]
 
         where = data.get("where", None)
@@ -54,30 +53,28 @@ class AssertionRule(Rule, BaseAssertionRule):
     def with_clause(clause: SingleClause) -> 'AssertionRule':
         return AssertionRule(assertion=clause, where=None, path=(), inserted=(), message=None)
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        if self.where:
-            self.where.validate(ctx=ctx)
-        self.assertion.validate(ctx=ctx)
+    def validate(self, *, ctx: RequirementContext) -> None:
+        pass
 
     def get_requirement_names(self) -> List[str]:
         return []
 
-    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def get_required_courses(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         return tuple()
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'AssertionRule':
+    def exclude_required_courses(self, to_exclude: Collection[CourseInstance]) -> 'AssertionRule':
         return self
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
+    def solutions(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> Iterator[Solution]:
         raise Exception('this method should not be called')
 
-    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+    def estimate(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> int:
         raise Exception('this method should not be called')
 
-    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def has_potential(self, *, ctx: RequirementContext) -> bool:
         raise Exception('this method should not be called')
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: RequirementContext) -> Collection[Clausable]:
         raise Exception('this method should not be called')
 
     def set_expected_value(self, value: Decimal) -> 'AssertionRule':
@@ -88,23 +85,23 @@ class AssertionRule(Rule, BaseAssertionRule):
     def override(self) -> AssertionResult:
         return AssertionResult.from_rule(self, overridden=True)
 
-    def resolve(self, value: Tuple['Clausable', ...], *, overridden: bool = False, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+    def resolve(self, value: Tuple[Clausable, ...], *, overridden: bool = False, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
         if overridden:
             assertion = ResolvedSingleClause.as_overridden(self.assertion)
             return AssertionResult.from_rule(self, assertion=assertion, overridden=False)
 
         if self.assertion.key in course_actions.keys():
-            return self.resolve_with_courses(cast(Sequence['CourseInstance'], value), inserted=inserted)
+            return self.resolve_with_courses(cast(Sequence[CourseInstance], value), inserted=inserted)
 
         if self.assertion.key in area_actions.keys():
-            return self.resolve_with_areas(cast(Sequence['AreaPointer'], value), inserted=inserted)
+            return self.resolve_with_areas(cast(Sequence[AreaPointer], value), inserted=inserted)
 
         if self.assertion.key in other_actions.keys():
             return self.resolve_with_items(value, inserted=inserted)
 
         raise TypeError(f'unexpected key {self.assertion.key!r}')
 
-    def resolve_with_areas(self, value: Sequence['AreaPointer'], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+    def resolve_with_areas(self, value: Sequence[AreaPointer], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
         calculated_result = apply_clause_to_assertion_with_areas(self.assertion, value)
 
         computed_value = calculated_result.value
@@ -137,7 +134,7 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         return AssertionResult.from_rule(self, assertion=assertion)
 
-    def resolve_with_items(self, value: Sequence['Clausable'], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+    def resolve_with_items(self, value: Sequence[Clausable], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
         calculated_result = apply_clause_to_assertion_with_data(self.assertion, cast(Sequence[Any], value))
 
         computed_value = calculated_result.value
@@ -170,7 +167,7 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         return AssertionResult.from_rule(self, assertion=assertion)
 
-    def resolve_with_courses(self, value: Sequence['CourseInstance'], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
+    def resolve_with_courses(self, value: Sequence[CourseInstance], *, inserted: Tuple[str, ...] = tuple()) -> AssertionResult:
         calculated_result = apply_clause_to_assertion_with_courses(self.assertion, value)
         operator_result = apply_operator(lhs=calculated_result.value, op=self.assertion.operator, rhs=self.assertion.expected)
 

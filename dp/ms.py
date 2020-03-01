@@ -3,10 +3,11 @@
 # https://github.com/sindresorhus/parse-ms, MIT
 
 from typing import Optional, Union
-import attr
 import decimal
 import math
 import re
+
+import attr
 
 
 def to_zero(dec: decimal.Decimal) -> decimal.Decimal:

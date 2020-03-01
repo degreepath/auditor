@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Sequence, Optional, Iterator, Any, List, Set, TYPE_CHECKING
+from typing import Dict, Tuple, Sequence, Optional, Iterator, Any, List, Set
 from collections import defaultdict
 from functools import partial
 import itertools
@@ -9,13 +9,11 @@ import enum
 import attr
 
 from .clause import Clause, apply_clause
+from .constants import Constants
+from .data.course import CourseInstance
 from .lazy_product import lazy_product
 from .load_clause import load_clause
-from .constants import Constants
 from .ncr import ncr
-
-if TYPE_CHECKING:
-    from .data.course import CourseInstance  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +72,7 @@ class Limit:
 
         return Limit(at_most=at_most, at_most_what=at_most_what, where=clause, message=data.get('message', None))
 
-    def iterate(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate(self, courses: Sequence[CourseInstance]) -> Iterator[Tuple[CourseInstance, ...]]:
         # Be sure to sort the input, so that the output from the iterator is
         # sorted the same way each time. We need this because our input may
         # be a set, in which case there is no inherent ordering.
@@ -87,14 +85,14 @@ class Limit:
         elif self.at_most_what is AtMostWhat.Credits:
             yield from self.iterate_credits(courses)
 
-    def iterate_courses(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate_courses(self, courses: Sequence[CourseInstance]) -> Iterator[Tuple[CourseInstance, ...]]:
         for n in range(0, int(self.at_most) + 1):
             # logger.debug("limit/loop(%s..<%s): n=%s applying %s", 0, self.at_most + 1, n, self.where)
             for combo in itertools.combinations(courses, n):
                 # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                 yield combo
 
-    def iterate_credits(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate_credits(self, courses: Sequence[CourseInstance]) -> Iterator[Tuple[CourseInstance, ...]]:
         if sum(c.credits for c in courses) <= self.at_most:
             yield tuple(courses)
             return
@@ -106,7 +104,7 @@ class Limit:
                     # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                     yield combo
 
-    def estimate(self, courses: Sequence['CourseInstance']) -> int:
+    def estimate(self, courses: Sequence[CourseInstance]) -> int:
         acc = 0
 
         if self.at_most_what is AtMostWhat.Courses:
@@ -136,7 +134,7 @@ class LimitSet:
             return LimitSet(limits=tuple())
         return LimitSet(limits=tuple(Limit.load(limit, c) for limit in data))
 
-    def apply_limits(self, courses: Sequence['CourseInstance']) -> Iterator['CourseInstance']:
+    def apply_limits(self, courses: Sequence[CourseInstance]) -> Iterator[CourseInstance]:
         clause_counters: Dict = defaultdict(int)
         logger.debug("limit/before: %s", courses)
 
@@ -160,7 +158,7 @@ class LimitSet:
                 logger.debug("limit/allow: %s", c)
                 yield c
 
-    def check(self, courses: Sequence['CourseInstance']) -> bool:
+    def check(self, courses: Sequence[CourseInstance]) -> bool:
         clause_counters: Dict = defaultdict(decimal.Decimal)
 
         for c in courses:
@@ -179,7 +177,7 @@ class LimitSet:
 
         return True
 
-    def limited_transcripts(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def limited_transcripts(self, courses: Sequence[CourseInstance]) -> Iterator[Tuple[CourseInstance, ...]]:
         """
         We need to iterate over each combination of limited courses.
 
@@ -222,7 +220,7 @@ class LimitSet:
             for limit, match_set in matched_items.items()
         ]
 
-        emitted_solutions: Set[Tuple['CourseInstance', ...]] = set()
+        emitted_solutions: Set[Tuple[CourseInstance, ...]] = set()
         for results in lazy_product(*clause_iterators):
             these_items = tuple(sorted((item for group in results for item in group), key=lambda item: item.sort_order()))
 
@@ -240,6 +238,6 @@ class LimitSet:
             logger.debug("limit/combos: %s", this_combo)
             yield tuple(this_combo)
 
-    def estimate(self, courses: Sequence['CourseInstance']) -> int:
+    def estimate(self, courses: Sequence[CourseInstance]) -> int:
         # TODO: optimize this so that it doesn't need to actually build the results
         return sum(1 for _ in self.limited_transcripts(courses))

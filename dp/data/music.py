@@ -1,14 +1,14 @@
-from typing import Dict, Union, Any, Tuple, Optional, TYPE_CHECKING
-import attr
+from typing import Dict, Union, Any, Tuple, Optional
 import logging
 import enum
 import abc
 
-from .clausable import Clausable
+import attr
+
+from ..clause import SingleClause
 from ..status import ResultStatus
 
-if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
+from .clausable import Clausable
 
 logger = logging.getLogger(__name__)
 

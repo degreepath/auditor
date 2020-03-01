@@ -1,11 +1,13 @@
-import abc
 from typing import Iterator, Dict, Set, Any, List, Tuple, Collection, Optional, TYPE_CHECKING
-from decimal import Decimal
-import enum
-import attr
 from functools import cmp_to_key, lru_cache
-from ..status import ResultStatus, PassingStatuses
+from decimal import Decimal
+import abc
+import enum
+
+import attr
+
 from ..claim import Claim
+from ..status import ResultStatus, PassingStatuses
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext

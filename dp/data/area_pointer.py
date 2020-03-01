@@ -1,13 +1,13 @@
-from typing import Dict, Any, Optional, Tuple, TYPE_CHECKING
-import attr
+from typing import Dict, Any, Optional, Tuple
 import logging
 import decimal
 
+import attr
+
+from ..clause import SingleClause
+
 from .area_enums import AreaStatus, AreaType
 from .clausable import Clausable
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
 
 logger = logging.getLogger(__name__)
 

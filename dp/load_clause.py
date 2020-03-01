@@ -1,17 +1,15 @@
-from typing import Dict, Sequence, Optional, Any, Mapping, Iterator, Union, Tuple, Callable, TYPE_CHECKING
+from typing import Dict, Sequence, Optional, Any, Mapping, Iterator, Union, Tuple, Callable
 from collections.abc import Iterable
 from decimal import Decimal, InvalidOperation
 
 from .clause import Clause, AndClause, OrClause, SingleClause
 from .constants import Constants
+from .context import RequirementContext
 from .data.course_enums import GradeOption
 from .grades import str_to_grade_points
 from .operator import Operator
 from .solve import find_best_solution
 from .status import ResultStatus
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .context import RequirementContext  # noqa: F401
 
 KEY_LOOKUP = {
     "subjects": "subject",
@@ -24,7 +22,7 @@ def load_clause(
     data: Dict[str, Any],
     *,
     c: Constants,
-    ctx: Optional['RequirementContext'] = None,
+    ctx: Optional[RequirementContext] = None,
     allow_boolean: bool = True,
     forbid: Sequence[Operator] = tuple(),
 ) -> Optional[Clause]:
@@ -52,8 +50,7 @@ def load_clause(
         from .rule.query import QueryRule
         rule = QueryRule.load(data['$if'], c=c, path=[], ctx=ctx)
 
-        with ctx.fresh_claims():
-            s = find_best_solution(rule=rule, ctx=ctx)
+        s = find_best_solution(rule=rule, ctx=ctx, merge_claims=False)
 
         when_yes = load_clause(data['$then'], c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid)
 
@@ -84,7 +81,7 @@ def load_clauses(
     data: Sequence[Any],
     *,
     c: Constants,
-    ctx: Optional['RequirementContext'] = None,
+    ctx: Optional[RequirementContext] = None,
     allow_boolean: bool = True,
     forbid: Sequence[Operator] = tuple(),
 ) -> Iterator[Clause]:
@@ -100,7 +97,7 @@ def load_single_clause(
     value: Dict,
     *,
     c: Constants,
-    ctx: Optional['RequirementContext'] = None,
+    ctx: Optional[RequirementContext] = None,
     forbid: Sequence[Operator] = tuple(),
 ) -> 'SingleClause':
     assert isinstance(value, Dict), TypeError(f'expected {value!r} to be a dictionary')
@@ -160,7 +157,7 @@ def load_single_clause(
     )
 
 
-def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional['RequirementContext']) -> Decimal:
+def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional[RequirementContext]) -> Decimal:
     diff_value = Decimal(0)
 
     for cond, cond_action in conditionals.items():

@@ -4,8 +4,8 @@ import logging
 
 from .data.course import CourseInstance
 from .data.course_enums import GradeOption, SubType, CourseType, TranscriptCode
-from .grades import GradeCode
 from .exception import CourseOverrideException, ExceptionAction, CourseCreditOverride, CourseSubjectOverride
+from .grades import GradeCode
 
 
 logger = logging.getLogger(__name__)

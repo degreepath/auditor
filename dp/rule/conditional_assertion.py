@@ -1,18 +1,17 @@
-import attr
-from typing import Dict, Sequence, Iterator, List, Collection, Any, Optional, Union, TYPE_CHECKING
+from typing import Dict, Sequence, Iterator, List, Collection, Any, Optional, Union
 import logging
 
+import attr
+
+from ..base.bases import Rule, Solution
 from ..clause import apply_clause
 from ..constants import Constants
-from ..base.bases import Rule, Solution
+from ..context import RequirementContext
+from ..data.clausable import Clausable
+from ..data.course import CourseInstance
 from ..status import PassingStatuses
-from .assertion import AssertionRule
 
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
-    from ..data.clausable import Clausable  # noqa: F401
-    from ..data.area_pointer import AreaPointer  # noqa: F401
+from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +23,7 @@ class ConditionalAssertionRule(Rule):
     when_no: Optional[AssertionRule]
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, ctx: Optional['RequirementContext'], path: Sequence[str]) -> Union['ConditionalAssertionRule', AssertionRule]:
+    def load(data: Dict, *, c: Constants, ctx: Optional[RequirementContext], path: Sequence[str]) -> Union['ConditionalAssertionRule', AssertionRule]:
         if 'if' not in data:
             return AssertionRule.load(data, c=c, path=path, ctx=ctx)
 
@@ -38,7 +37,7 @@ class ConditionalAssertionRule(Rule):
 
         return ConditionalAssertionRule(condition=condition, when_yes=when_yes, when_no=when_no, path=tuple(path))
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
+    def validate(self, *, ctx: RequirementContext) -> None:
         self.condition.validate(ctx=ctx)
         self.when_yes.validate(ctx=ctx)
         if self.when_no:
@@ -57,28 +56,28 @@ class ConditionalAssertionRule(Rule):
     def type(self) -> str:
         return "conditional-assertion"
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
+    def solutions(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> Iterator[Solution]:
         return self.when_yes.solutions(ctx=ctx, depth=depth)
 
-    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+    def estimate(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> int:
         return self.when_yes.estimate(ctx=ctx)
 
-    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def has_potential(self, *, ctx: RequirementContext) -> bool:
         return self.when_yes.has_potential(ctx=ctx)
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: RequirementContext) -> Collection[Clausable]:
         return self.when_yes.all_matches(ctx=ctx)
 
     def get_requirement_names(self) -> List[str]:
         return self.when_yes.get_requirement_names()
 
-    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def get_required_courses(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         return self.when_yes.get_required_courses(ctx=ctx)
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'ConditionalAssertionRule':
+    def exclude_required_courses(self, to_exclude: Collection[CourseInstance]) -> 'ConditionalAssertionRule':
         return self
 
-    def resolve_conditional(self, input: Sequence['Clausable']) -> Optional[AssertionRule]:
+    def resolve_conditional(self, input: Sequence[Clausable]) -> Optional[AssertionRule]:
         if self.condition.where is not None:
             filtered_input = tuple(item for item in input if apply_clause(self.condition.where, item))
         else:

@@ -1,8 +1,10 @@
-import attr
 from typing import Tuple, Dict, Any
+from decimal import Decimal
 import logging
 import enum
-from decimal import Decimal
+
+import attr
+
 from .status import ResultStatus
 
 logger = logging.getLogger(__name__)

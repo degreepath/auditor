@@ -1,26 +1,22 @@
-from typing import Union, Tuple, Dict, Any, Optional, TYPE_CHECKING
+from typing import Union, Tuple, Dict, Any, Optional
 from decimal import Decimal
+from functools import lru_cache
 import logging
 
 import attr
 
+from .data.clausable import Clausable
+from .data.course_enums import GradeOption, GradeCode
 from .operator import Operator, apply_operator
-from .data.course_enums import GradeOption
-from .grades import GradeCode
 from .status import ResultStatus
-from .stringify import str_clause
-from functools import lru_cache
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .context import RequirementContext
-    from .data.clausable import Clausable  # noqa: F401
+from .stringify_clause import str_clause
 
 logger = logging.getLogger(__name__)
 CACHE_SIZE = 2048
 
 
 @lru_cache(CACHE_SIZE)
-def apply_clause(clause: 'Clause', to: 'Clausable') -> bool:
+def apply_clause(clause: 'Clause', to: Clausable) -> bool:
     if isinstance(clause, AndClause):
         return all(apply_clause(subclause, to=to) for subclause in clause.children)
     elif isinstance(clause, OrClause):
@@ -40,10 +36,6 @@ class AndClause:
             "hash": str(hash(self.children)),
         }
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        for c in self.children:
-            c.validate(ctx=ctx)
-
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class OrClause:
@@ -55,10 +47,6 @@ class OrClause:
             "children": [c.to_dict() for c in self.children],
             "hash": str(hash(self.children)),
         }
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        for c in self.children:
-            c.validate(ctx=ctx)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -125,11 +113,8 @@ class SingleClause:
 
         return Decimal(0), Decimal(1)
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        pass
-
     @lru_cache(CACHE_SIZE)
-    def apply(self, to: 'Clausable') -> bool:
+    def apply(self, to: Clausable) -> bool:
         return to.apply_single_clause(self)
 
     @lru_cache(CACHE_SIZE)

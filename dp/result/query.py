@@ -1,13 +1,14 @@
+from typing import Tuple, Sequence, List, Union
+
 import attr
-from typing import Tuple, Sequence, List, Union, TYPE_CHECKING
+
+from ..base.bases import Result
+from ..base.query import BaseQueryRule
+from ..claim import Claim
+from ..rule.assertion import AssertionRule
+from ..rule.conditional_assertion import ConditionalAssertionRule
 
 from .assertion import AssertionResult
-from ..base import Result, BaseQueryRule
-from ..claim import Claim
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..rule.assertion import AssertionRule  # noqa: F401
-    from ..rule.conditional_assertion import ConditionalAssertionRule  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -46,7 +47,7 @@ class QueryResult(Result, BaseQueryRule):
     def only_failed_claims(self) -> Sequence[Claim]:
         return self.failed_claims
 
-    def all_assertions(self) -> Sequence[Union['AssertionRule', 'ConditionalAssertionRule', AssertionResult]]:
+    def all_assertions(self) -> Sequence[Union[AssertionRule, ConditionalAssertionRule, AssertionResult]]:
         return self.resolved_assertions
 
     def claims(self) -> List[Claim]:

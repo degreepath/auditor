@@ -1,11 +1,11 @@
+from typing import Optional, Union
+
 import attr
-from typing import Optional, Union, TYPE_CHECKING
 
-from ..base import BaseRequirementRule, Solution, RuleState, Rule
+from ..base.bases import Solution, Rule, RuleState
+from ..base.requirement import BaseRequirementRule
+from ..context import RequirementContext
 from ..result.requirement import RequirementResult
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -33,7 +33,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
 
         return self.result.state()
 
-    def audit(self, *, ctx: 'RequirementContext') -> RequirementResult:
+    def audit(self, *, ctx: RequirementContext) -> RequirementResult:
         if self.overridden:
             return RequirementResult.from_solution(
                 solution=self,

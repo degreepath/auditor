@@ -18,7 +18,7 @@ except ImportError:
     psycopg2 = None
 
 from dp import AreaOfStudy, Constants
-from dp.base import Rule
+from dp.base.bases import Rule
 from dp.clause import AndClause, OrClause, Clause
 from dp.rule.assertion import AssertionRule
 from dp.rule.conditional_assertion import ConditionalAssertionRule

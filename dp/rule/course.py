@@ -1,17 +1,16 @@
-import attr
-from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
+from typing import Dict, List, Iterator, Collection, Optional
 import logging
 
-from ..base import Rule, BaseCourseRule
+import attr
+
+from ..base.bases import Rule
+from ..base.course import BaseCourseRule
 from ..constants import Constants
+from ..context import RequirementContext
+from ..data.course import CourseInstance
+from ..data.course_enums import GradeOption
 from ..grades import str_to_grade_points
 from ..solution.course import CourseSolution
-from ..data.course_enums import GradeOption
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
-    from ..data.clausable import Clausable  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -75,13 +74,13 @@ class CourseRule(Rule, BaseCourseRule):
             auto_waived=auto_waived,
         )
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
+    def validate(self, *, ctx: RequirementContext) -> None:
         assert self.course or self.ap or (self.institution and self.name)
 
     def get_requirement_names(self) -> List[str]:
         return []
 
-    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def get_required_courses(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         if self.from_claimed:
             return tuple()
 
@@ -92,10 +91,10 @@ class CourseRule(Rule, BaseCourseRule):
 
         return tuple()
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'CourseRule':
+    def exclude_required_courses(self, to_exclude: Collection[CourseInstance]) -> 'CourseRule':
         return self
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
+    def solutions(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> Iterator[CourseSolution]:
         if self.auto_waived or ctx.exceptions.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield CourseSolution.from_rule(rule=self, overridden=True)
@@ -105,10 +104,10 @@ class CourseRule(Rule, BaseCourseRule):
 
         yield CourseSolution.from_rule(rule=self)
 
-    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+    def estimate(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> int:
         return 1
 
-    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def has_potential(self, *, ctx: RequirementContext) -> bool:
         if self._has_potential(ctx=ctx):
             logger.debug('%s has potential: yes', self.path)
             return True
@@ -116,7 +115,7 @@ class CourseRule(Rule, BaseCourseRule):
             logger.debug('%s has potential: no', self.path)
             return False
 
-    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def _has_potential(self, *, ctx: RequirementContext) -> bool:
         if self.auto_waived or ctx.exceptions.has_exception(self.path):
             return True
 
@@ -126,7 +125,7 @@ class CourseRule(Rule, BaseCourseRule):
         except StopIteration:
             return False
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def all_matches(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         for insert in ctx.exceptions.get_insert_exceptions(self.path):
             match = ctx.find_course_by_clbid(insert.clbid)
             return [match] if match else []

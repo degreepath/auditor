@@ -1,14 +1,14 @@
-import attr
-from typing import Optional, Dict, Any, List, Tuple, TYPE_CHECKING
+from typing import Optional, Dict, Any, List, Tuple
 from decimal import Decimal
 
-from .bases import Base
-from ..status import ResultStatus, PassingStatuses
-from ..claim import Claim
+import attr
 
-if TYPE_CHECKING:
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
+from ..claim import Claim
+from ..context import RequirementContext
+from ..data.course import CourseInstance
+from ..status import ResultStatus, PassingStatuses
+
+from .bases import Base
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -99,5 +99,5 @@ class BaseRequirementRule(Base):
 
         return []
 
-    def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
+    def all_courses(self, ctx: RequirementContext) -> List[CourseInstance]:
         return self.result.all_courses(ctx=ctx) if self.result else []

@@ -1,16 +1,17 @@
-import attr
-from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
+from typing import Dict, List, Iterator, Collection, Optional
 import logging
 
-from ..base import Rule, BaseProficiencyRule
-from ..constants import Constants
-from ..solution.proficiency import ProficiencySolution
-from .course import CourseRule
+import attr
 
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.course import CourseInstance  # noqa: F401
-    from ..data.clausable import Clausable  # noqa: F401
+from ..base.bases import Rule
+from ..base.proficiency import BaseProficiencyRule
+from ..constants import Constants
+from ..context import RequirementContext
+from ..data.clausable import Clausable
+from ..data.course import CourseInstance
+from ..solution.proficiency import ProficiencySolution
+
+from .course import CourseRule
 
 logger = logging.getLogger(__name__)
 
@@ -41,21 +42,21 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
             path=tuple(path),
         )
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
+    def validate(self, *, ctx: RequirementContext) -> None:
         pass
 
     def get_requirement_names(self) -> List[str]:
         return []
 
-    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def get_required_courses(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         if self.course:
             return self.course.get_required_courses(ctx=ctx)
         return tuple()
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'ProficiencyRule':
+    def exclude_required_courses(self, to_exclude: Collection[CourseInstance]) -> 'ProficiencyRule':
         return self
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[ProficiencySolution]:
+    def solutions(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> Iterator[ProficiencySolution]:
         if ctx.exceptions.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
             yield ProficiencySolution.overridden_from_rule(rule=self)
@@ -66,11 +67,11 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
 
         yield ProficiencySolution.from_rule(rule=self, course_solution=course_solution)
 
-    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+    def estimate(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> int:
         return 1
 
-    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def has_potential(self, *, ctx: RequirementContext) -> bool:
         return True
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: RequirementContext) -> Collection[Clausable]:
         return self.course.all_matches(ctx=ctx) if self.course else []

@@ -1,9 +1,11 @@
-import attr
 from typing import Optional, Tuple, Dict, Any
 from decimal import Decimal
 
+import attr
+
 from ..clause import Clause, SingleClause
 from ..status import ResultStatus
+
 from .bases import Base
 
 

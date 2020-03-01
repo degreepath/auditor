@@ -1,25 +1,26 @@
-import attr
-from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, FrozenSet, Optional, Union, TYPE_CHECKING
-import itertools
+from typing import Dict, List, Sequence, Tuple, Iterator, Collection, Set, FrozenSet, Optional, Union
 from functools import partial
+import itertools
 import logging
 import time
 import sys
 import os
 
-from .assertion import AssertionRule
-from ..ms import pretty_ms
-from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
-from ..constants import Constants
-from ..solution.count import CountSolution
-from ..ncr import mult
-from ..solve import find_best_solution
-from ..lazy_product import lazy_product
+import attr
 
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
-    from ..data.clausable import Clausable  # noqa: F401
-    from ..data.course import CourseInstance  # noqa: F401
+from ..base.bases import Rule, Result, Solution, sort_by_path
+from ..base.count import BaseCountRule
+from ..constants import Constants
+from ..context import RequirementContext
+from ..data.clausable import Clausable
+from ..data.course import CourseInstance
+from ..lazy_product import lazy_product
+from ..ms import pretty_ms
+from ..ncr import mult
+from ..solution.count import CountSolution
+from ..solve import find_best_solution
+
+from .assertion import AssertionRule
 
 logger = logging.getLogger(__name__)
 SHOW_ESTIMATES = False if int(os.getenv('DP_ESTIMATE', default='0')) == 0 else True
@@ -52,7 +53,7 @@ class CountRule(Rule, BaseCountRule):
         children: Dict[str, Dict],
         path: List[str],
         emphases: Sequence[Dict[str, Dict]] = tuple(),
-        ctx: 'RequirementContext',
+        ctx: RequirementContext,
     ) -> 'CountRule':  # noqa: C901
         from ..load_rule import load_rule
 
@@ -164,7 +165,7 @@ class CountRule(Rule, BaseCountRule):
 
         return rule
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
+    def validate(self, *, ctx: RequirementContext) -> None:
         assert isinstance(self.count, int), f"{self.count} should be an integer"
 
         lo = self.count
@@ -179,13 +180,13 @@ class CountRule(Rule, BaseCountRule):
     def get_requirement_names(self) -> List[str]:
         return [name for rule in self.items for name in rule.get_requirement_names()]
 
-    def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+    def get_required_courses(self, *, ctx: RequirementContext) -> Collection[CourseInstance]:
         if self.count != len(self.items):
             return tuple()
 
         return [c for rule in self.items for c in rule.get_required_courses(ctx=ctx)]
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'CountRule':
+    def exclude_required_courses(self, to_exclude: Collection[CourseInstance]) -> 'CountRule':
         items = tuple(r.exclude_required_courses(to_exclude) for r in self.items)
         return attr.evolve(self, items=items)
 
@@ -198,7 +199,7 @@ class CountRule(Rule, BaseCountRule):
 
         return lo, hi
 
-    def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CountSolution]:
+    def solutions(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> Iterator[CountSolution]:
         if ctx.exceptions.get_waive_exception(self.path):
             logger.debug("%s forced override", self.path)
             yield CountSolution.from_rule(rule=self, count=self.count, items=self.items, overridden=True)
@@ -272,7 +273,7 @@ class CountRule(Rule, BaseCountRule):
 
             yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
-    def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
+    def estimate(self, *, ctx: RequirementContext, depth: Optional[int] = None) -> int:
         if ctx.exceptions.get_waive_exception(self.path):
             return 1
 
@@ -305,7 +306,7 @@ class CountRule(Rule, BaseCountRule):
 
     def make_combinations(
         self, *,
-        ctx: 'RequirementContext',
+        ctx: RequirementContext,
         items: Tuple[Rule, ...],
         results: Tuple[Result, ...],
         other_children: Set[Rule],
@@ -326,7 +327,7 @@ class CountRule(Rule, BaseCountRule):
                 to_yield = tuple(sorted(solution_set + deselected_children + results, key=sort_by_path))
                 yield CountSolution.from_rule(rule=self, count=count, items=to_yield)
 
-    def count_combinations(self, *, ctx: 'RequirementContext', items: Tuple[Rule, ...], size: int) -> int:
+    def count_combinations(self, *, ctx: RequirementContext, items: Tuple[Rule, ...], size: int) -> int:
         acc = 0
 
         for combo_i, selected_children in enumerate(itertools.combinations(items, size)):
@@ -345,7 +346,7 @@ class CountRule(Rule, BaseCountRule):
 
         return acc
 
-    def find_independent_children(self, *, items: Collection[Rule], ctx: 'RequirementContext') -> Dict[str, Collection[Rule]]:
+    def find_independent_children(self, *, items: Collection[Rule], ctx: RequirementContext) -> Dict[str, Collection[Rule]]:
         """
         We want to find each child rule that has no claimable overlap with any other child rule.
 
@@ -361,7 +362,7 @@ class CountRule(Rule, BaseCountRule):
 
         logger.debug("%s searching the following for independence %s", self.path, [r.path for r in items])
 
-        all_rule_matches: Dict[Rule, FrozenSet['Clausable']] = {
+        all_rule_matches: Dict[Rule, FrozenSet[Clausable]] = {
             r: frozenset(r.all_matches(ctx=ctx))
             for r in items
         }
@@ -398,7 +399,7 @@ class CountRule(Rule, BaseCountRule):
 
         return {'disjoint': disjoint_rules, 'non_disjoint': non_disjoint_rules}
 
-    def solve_independent_children(self, *, ctx: 'RequirementContext', independent_children: Collection[Rule]) -> Dict[Rule, Optional[Result]]:
+    def solve_independent_children(self, *, ctx: RequirementContext, independent_children: Collection[Rule]) -> Dict[Rule, Optional[Result]]:
         """
         We can go ahead and find the "best" solution for each independent
         child rule here, instead of trying them in combination with the
@@ -435,7 +436,7 @@ class CountRule(Rule, BaseCountRule):
 
         return independent_rule__results
 
-    def has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def has_potential(self, *, ctx: RequirementContext) -> bool:
         if self._has_potential(ctx=ctx):
             logger.debug('%s has potential: yes', self.path)
             return True
@@ -443,11 +444,11 @@ class CountRule(Rule, BaseCountRule):
             logger.debug('%s has potential: no', self.path)
             return False
 
-    def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
+    def _has_potential(self, *, ctx: RequirementContext) -> bool:
         if ctx.exceptions.has_exception(self.path):
             return True
 
         return any(r.has_potential(ctx=ctx) for r in self.items)
 
-    def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
+    def all_matches(self, *, ctx: RequirementContext) -> Collection[Clausable]:
         return [course for rule in self.items for course in rule.all_matches(ctx=ctx)]

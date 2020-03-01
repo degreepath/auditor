@@ -1,5 +1,5 @@
+from typing import Dict, Any
 import enum
-from typing import Dict
 
 
 @enum.unique
@@ -74,3 +74,58 @@ CourseTypeSortOrder: Dict[CourseType, int] = {
     CourseType.Transfer: 2,
     CourseType.ParaCollege: 2,
 }
+
+
+class OrderedEnum(enum.Enum):
+    def __ge__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value >= other.value
+        return NotImplemented
+
+    def __gt__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value > other.value
+        return NotImplemented
+
+    def __le__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value <= other.value
+        return NotImplemented
+
+    def __lt__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            return self.value < other.value
+        return NotImplemented
+
+
+@enum.unique
+class GradeCode(OrderedEnum):
+    A = "A"
+    A_plus = "A+"
+    A_minus = "A-"
+    B = "B"
+    B_plus = "B+"
+    B_minus = "B-"
+    C = "C"
+    C_plus = "C+"
+    C_minus = "C-"
+    D = "D"
+    D_plus = "D+"
+    D_minus = "D-"
+    F = "F"
+
+    _BC = "BC"
+    _AB = "AB"
+    _NG = "NG"
+    _IP = "IP"
+    _I = "I"
+    _P = "P"
+    _N = "N"
+    _S = "S"
+    _U = "U"
+    _AU = "AU"
+    _UA = "UA"
+    _WF = "WF"
+    _WP = "WP"
+    _W = "W"
+    _REG = "DP_REG"

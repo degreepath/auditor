@@ -1,10 +1,11 @@
-import attr
 from typing import List, Optional, Tuple, Dict
 from collections import defaultdict
 import logging
 
-from .data.course import CourseInstance
+import attr
+
 from .claim import Claim
+from .data.course import CourseInstance
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None

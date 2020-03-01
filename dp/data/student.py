@@ -7,9 +7,9 @@ from ..exception import CourseOverrideException
 from ..grades import GradeCode
 from ..load_course import load_course
 
+from .area_pointer import AreaPointer
 from .course import CourseInstance
 from .course_enums import GradeOption, TranscriptCode
-from .area_pointer import AreaPointer
 from .music import MusicAttendance, MusicPerformance, MusicProficiencies, MusicMediums
 
 

@@ -1,7 +1,7 @@
 from typing import Any, Tuple, Union
+from functools import lru_cache
 import enum
 import logging
-from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 

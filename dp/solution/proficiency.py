@@ -1,13 +1,14 @@
-import attr
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 import logging
 
-from ..base import Solution, BaseProficiencyRule
-from ..result.proficiency import ProficiencyResult
-from .course import CourseSolution
+import attr
 
-if TYPE_CHECKING:  # pragma: no cover
-    from ..context import RequirementContext
+from ..base.bases import Solution
+from ..base.proficiency import BaseProficiencyRule
+from ..context import RequirementContext
+from ..result.proficiency import ProficiencyResult
+
+from .course import CourseSolution
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class ProficiencySolution(Solution, BaseProficiencyRule):
             overridden=True,
         )
 
-    def audit(self, *, ctx: 'RequirementContext') -> ProficiencyResult:
+    def audit(self, *, ctx: RequirementContext) -> ProficiencyResult:
         if self.overridden:
             return ProficiencyResult.overridden_from_solution(solution=self)
 

@@ -1,13 +1,12 @@
-import attr
-from typing import Tuple, Union, Sequence, TYPE_CHECKING
+from typing import Tuple, Union, Sequence
 
-from .assertion import AssertionResult
+import attr
+
 from ..base.bases import Result, Rule, Solution
 from ..base.count import BaseCountRule
 from ..rule.assertion import AssertionRule
 
-if TYPE_CHECKING:  # pragma: no cover
-    from ..solution.count import CountSolution
+from .assertion import AssertionResult
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -19,7 +18,7 @@ class CountResult(Result, BaseCountRule):
     @staticmethod
     def from_solution(
         *,
-        solution: 'CountSolution',
+        solution: BaseCountRule,
         items: Tuple[Union[Rule, Solution, Result], ...],
         audit_results: Tuple[Union[AssertionResult, AssertionRule], ...],
         overridden: bool = False,

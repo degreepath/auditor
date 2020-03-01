@@ -2,8 +2,8 @@ from typing import Tuple, Optional
 
 import attr
 
-from ..base.bases import Result
 from ..base.assertion import BaseAssertionRule
+from ..base.bases import Result
 from ..clause import SingleClause
 
 

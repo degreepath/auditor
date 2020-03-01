@@ -1,17 +1,17 @@
-import attr
 from typing import List, Optional, Tuple, Dict, Set, Sequence, Collection, Iterable, Iterator
-import logging
 from contextlib import contextmanager
+import logging
+
+import attr
 
 from .base.course import BaseCourseRule
-from .data.course_enums import CourseType
-from .data.course import CourseInstance
-from .data.area_pointer import AreaPointer
-from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
 from .clause import Clause, apply_clause
-
 from .context_claims import ContextClaims
 from .context_exceptions import ContextExceptions
+from .data.area_pointer import AreaPointer
+from .data.course import CourseInstance
+from .data.course_enums import CourseType
+from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
 
 logger = logging.getLogger(__name__)
 

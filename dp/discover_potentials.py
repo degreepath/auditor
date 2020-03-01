@@ -8,7 +8,9 @@ import urllib3  # type: ignore
 from .constants import Constants
 from .area import AreaOfStudy
 
-from .base import Base, BaseRequirementRule, BaseCountRule
+from .base.bases import Base
+from .base.requirement import BaseRequirementRule
+from .base.count import BaseCountRule
 from .base.query import QuerySource
 from .rule.query import QueryRule
 from .clause import Clause, AndClause, OrClause, SingleClause
