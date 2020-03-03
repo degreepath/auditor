@@ -10,6 +10,11 @@ import sentry_sdk
 from dp.run import load_area, load_student
 from .audit import audit
 
+from dp.dotenv import load as load_dotenv
+# always resolve to the local .env file
+dotenv_path = pathlib.Path(__file__).parent.parent.parent / '.env'
+load_dotenv(filepath=dotenv_path)
+
 logger = logging.getLogger(__name__)
 
 if os.environ.get('SENTRY_DSN', None):
@@ -17,13 +22,6 @@ if os.environ.get('SENTRY_DSN', None):
 
 
 def main() -> None:
-    import dotenv
-    from pathlib import Path
-
-    # always resolve to the local .env file
-    dotenv_path = Path(__file__).parent.parent.parent / '.env'
-    dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file", required=True)
     parser.add_argument("--student", dest="student_file", required=True)

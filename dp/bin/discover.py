@@ -6,11 +6,8 @@ import sys
 
 import yaml
 
-try:
-    import dotenv
-    dotenv.load_dotenv(verbose=True)
-except ImportError:
-    pass
+from dp.dotenv import load as load_dotenv
+load_dotenv()
 
 try:
     import psycopg2  # type: ignore

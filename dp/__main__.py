@@ -5,15 +5,15 @@ import logging
 import json
 import sys
 import os
-import dotenv
 
+from dp.dotenv import load as load_dotenv
 from dp.run import run, load_student, load_area
 from dp.ms import pretty_ms
 from dp.stringify import summarize
 # from dp.stringify_csv import to_csv
 from dp.audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
-dotenv.load_dotenv(verbose=False)
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"

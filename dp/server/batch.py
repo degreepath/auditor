@@ -10,13 +10,13 @@ import tqdm  # type: ignore
 import urllib3  # type: ignore
 import psycopg2  # type: ignore
 import sentry_sdk
-import dotenv
 
+from dp.dotenv import load as load_dotenv
 from dp.bin.expand import expand_student
 
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
-dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+load_dotenv(filepath=dotenv_path)
 
 if os.environ.get('SENTRY_DSN', None):
     sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))

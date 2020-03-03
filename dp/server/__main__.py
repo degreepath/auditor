@@ -9,16 +9,16 @@ import math
 import json
 import os
 
-import dotenv
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
+from dp.dotenv import load as load_dotenv
 from dp.run import load_area
 
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
-dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+load_dotenv(filepath=dotenv_path)
 
 logger = logging.getLogger(__name__)
 
