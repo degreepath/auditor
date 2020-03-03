@@ -4,7 +4,7 @@ import json
 
 import psycopg2  # type: ignore
 
-from .dotenv import load as load_dotenv
+from dp.dotenv import load as load_dotenv
 
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'

@@ -1,7 +1,9 @@
+from typing import Union, Dict
+from pathlib import Path
 import os
 
 
-def read(*, filepath):
+def read(*, filepath: Union[Path, str]) -> Dict:
     args = {}
 
     with open(filepath, 'r', encoding='UTF-8') as infile:
@@ -25,7 +27,7 @@ def read(*, filepath):
     return args
 
 
-def load(filepath='./.env'):
+def load(filepath: Union[Path, str] = './.env') -> None:
     args = read(filepath=filepath)
 
     for key, value in args.items():
