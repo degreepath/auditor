@@ -6,23 +6,26 @@ import os
 def read(*, filepath: Union[Path, str]) -> Dict:
     args = {}
 
-    with open(filepath, 'r', encoding='UTF-8') as infile:
-        for line in infile:
-            line = line.strip()
+    try:
+        with open(filepath, 'r', encoding='UTF-8') as infile:
+            for line in infile:
+                line = line.strip()
 
-            if line.startswith('#'):
-                continue
+                if line.startswith('#'):
+                    continue
 
-            if not line:
-                continue
+                if not line:
+                    continue
 
-            key, value = line.split('=')
-            key = key.strip()
-            value = value.strip()
+                key, value = line.split('=')
+                key = key.strip()
+                value = value.strip()
 
-            assert key
+                assert key
 
-            args[key] = value
+                args[key] = value
+    except FileNotFoundError:
+        return {}
 
     return args
 
