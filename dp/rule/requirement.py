@@ -1,7 +1,6 @@
 from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 import attr
-import markdown2  # type: ignore
 
 from ..base import Rule, BaseRequirementRule
 from ..constants import Constants
@@ -9,6 +8,8 @@ from ..solution.requirement import RequirementSolution
 from ..rule.query import QueryRule
 from ..solve import find_best_solution
 from ..status import PassingStatuses
+
+from ..autop import autop
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -87,7 +88,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         message = data.get("message", None)
         if message:
-            message = markdown2.markdown(message)
+            message = autop(message)
 
         return RequirementRule(
             name=name,
