@@ -25,11 +25,11 @@ def main() -> int:
         for future in concurrent.futures.as_completed(future_to_url):
             f = future_to_url[future]
             longest = max(longest, len(f))
-            print(f'\r{f.ljust(longest)}', end='')
+            print(f'\r{f.ljust(longest)}', end='', file=sys.stderr)
             try:
                 future.result()
             except Exception:
-                print(f'\n{f} generated an exception: {traceback.format_exc()}')
+                print(f'\n{f} generated an exception: {traceback.format_exc()}', file=sys.stderr)
 
     print()
 
