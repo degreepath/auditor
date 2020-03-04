@@ -1,7 +1,6 @@
 from typing import Any, Mapping, Optional, List, Iterator, Collection, TYPE_CHECKING
 import logging
 import attr
-import markdown2  # type: ignore
 
 from ..base import Rule, BaseRequirementRule
 from ..constants import Constants
