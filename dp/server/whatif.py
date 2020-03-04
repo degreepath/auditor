@@ -3,11 +3,12 @@ import argparse
 import json
 
 import psycopg2  # type: ignore
-import dotenv
+
+from dp.dotenv import load as load_dotenv
 
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
-dotenv.load_dotenv(verbose=True, dotenv_path=dotenv_path)
+load_dotenv(filepath=dotenv_path)
 
 
 def main() -> None:

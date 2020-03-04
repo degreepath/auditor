@@ -9,6 +9,8 @@ import math
 import os
 from typing import Any
 
+from dp.dotenv import load as load_dotenv
+
 from .extract import extract_one
 from .fetch import fetch, summarize
 from .baseline import baseline
@@ -19,8 +21,6 @@ from .query import query
 from .run import run_one
 from .invoke import print_invocation
 from .db import init_local_db
-
-import dotenv
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +108,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    dotenv.load_dotenv(verbose=True)
+    load_dotenv()
 
     # Register the adapter
     sqlite3.register_adapter(decimal.Decimal, adapt_decimal)

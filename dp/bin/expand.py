@@ -5,9 +5,10 @@ import os
 import sys
 from typing import Dict, Iterator, Tuple, Optional
 from os.path import abspath, join
-import dotenv
 
-dotenv.load_dotenv(verbose=True)
+from dp.dotenv import load as load_dotenv
+
+load_dotenv()
 
 
 def cli() -> None:

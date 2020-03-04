@@ -6,11 +6,7 @@ import sys
 
 import yaml
 
-try:
-    import dotenv
-    dotenv.load_dotenv(verbose=True)
-except ImportError:
-    pass
+from dp.dotenv import load as load_dotenv
 
 try:
     import psycopg2  # type: ignore
@@ -27,6 +23,8 @@ from dp.rule.count import CountRule
 from dp.rule.proficiency import ProficiencyRule
 from dp.rule.query import QueryRule
 from dp.rule.requirement import RequirementRule
+
+load_dotenv()
 
 CourseReference = namedtuple('CourseReference', ['code', 'course'])
 BucketReference = namedtuple('BucketReference', ['code', 'catalog', 'bucket'])
