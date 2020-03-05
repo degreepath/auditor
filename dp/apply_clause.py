@@ -133,6 +133,19 @@ def count_religion_traditions(data: Iterable[CourseInstance]) -> AppliedClauseRe
     return AppliedClauseResult(value=len(traditions), data=tuple(sorted(traditions)), courses=courses)
 
 
+def count_intlr_regions(data: Iterable[CourseInstance]) -> AppliedClauseResult:
+    regions: Set[str] = set()
+    courses = set()
+
+    for c in data:
+        for bucket in c.attributes:
+            if bucket.startswith('intlr_region_'):
+                regions.add(bucket)
+                courses.add(c)
+
+    return AppliedClauseResult(value=len(regions), data=tuple(sorted(regions)), courses=courses)
+
+
 def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     items: Set[str] = set()
     courses = set()
@@ -223,6 +236,7 @@ course_actions: Mapping[str, Callable[[Iterable[CourseInstance]], AppliedClauseR
     'count(terms_from_most_common_course_by_name)': count_terms_from_most_common_course_by_name,
     'count(math_perspectives)': count_math_perspectives,
     'count(religion_traditions)': count_religion_traditions,
+    'count(intlr_regions)': count_intlr_regions,
     'count(subjects)': count_subjects,
     'count(terms)': count_terms,
     'count(years)': count_years,
