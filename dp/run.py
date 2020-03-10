@@ -37,14 +37,7 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
         return
 
     if args.gpa_only:
-        writer = csv.writer(sys.stdout)
-        writer.writerow(['course', 'grade', 'points'])
-
-        applicable = sorted(grade_point_average_items(loaded.courses_with_failed), key=lambda c: (c.year, c.term, c.course(), c.clbid))
-        for c in applicable:
-            writer.writerow([c.course(), c.grade_code.value, str(c.grade_points)])
-
-        writer.writerow(['---', 'gpa:', str(grade_point_average(loaded.courses_with_failed))])
+        gpa_only(loaded)
         return
 
     area = AreaOfStudy.load(
@@ -71,3 +64,38 @@ def load_student(filename: str) -> Dict:
 def load_area(filename: str) -> Dict:
     with open(filename, "r", encoding="utf-8") as infile:
         return cast(Dict, yaml.load(stream=infile, Loader=yaml.SafeLoader))
+
+
+def gpa_only(student: Student) -> None:
+    writer = csv.writer(sys.stdout)
+    writer.writerow(['course', 'term', 'grade', 'points'])
+
+    courses = student.courses_with_failed
+
+    terms = sorted({c.year_term() for c in courses})
+
+    cumulative = set()
+
+    for term in terms:
+        term_courses = {c for c in courses if c.year_term() == term}
+        applicable = set(grade_point_average_items(term_courses))
+
+        if not applicable:
+            writer.writerow([term, ' ', '0 courses', ' '])
+            continue
+        else:
+            # writer.writerow([term, ' ', f"{len(applicable)} courses", ' '])
+            writer.writerow([term, ' ', ' ', ' '])
+
+        ordered = sorted(applicable, key=lambda c: (c.year, c.term, c.course(), c.clbid))
+        for c in ordered:
+            writer.writerow([c.course(), c.year_term(), c.grade_code.value, str(c.grade_points)])
+
+        writer.writerow([' ', ' ', 'gpa:', str(grade_point_average(term_courses))])
+
+        for c in applicable:
+            cumulative.add(c)
+
+        writer.writerow([' ', ' ', 'cum. gpa:', str(grade_point_average(cumulative))])
+
+    writer.writerow(['overall', '---', 'gpa:', str(grade_point_average(courses))])
