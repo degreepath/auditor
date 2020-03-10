@@ -139,7 +139,9 @@ class CountRule(Rule, BaseCountRule):
             # one source of turmoil from the count[index] format.
             emphasis_part = r.get('__emphasis', None)
             if emphasis_part:
-                child_path = [*path, f"%{emphasis_part}"]
+                # if we're in an emphasis requirement, we'll just let the
+                # emphasis label itself
+                child_path = [*path]
             else:
                 child_path = [*path, f"[{i}]"]
 
