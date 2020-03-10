@@ -83,16 +83,24 @@ class CountRule(Rule, BaseCountRule):
             # short-circuiting if there's a post-audit clause on the emphasis.
 
             is_all_rule = 'all' in emph['result']
-            has_requirements = 'requirements' in emph
+            has_requirements = 'requirements' in emph or any('name' in rule for rule in emph['result']['all'])
             no_post_audit = 'audit' not in emph['result']
-            all_rules_are_requirements = is_all_rule and all('requirement' in r for r in emph['result']['all'])
+            all_rules_are_requirements = is_all_rule and all('requirement' in r or 'name' in r for r in emph['result']['all'])
 
             if is_all_rule and has_requirements and no_post_audit and all_rules_are_requirements:
-                for emph_req_name, emph_req_body in emph['requirements'].items():
+                logger.debug(f"flattening emphasis {emphasis_key}")
+                if 'requirements' in emph:
+                    reqs = emph['requirements']
+                else:
+                    reqs = {r['name']: r for r in emph['result']['all']}
+
+                for emph_req_name, emph_req_body in reqs.items():
+                    logger.debug(f"flattening emphasis {emph_req_name}")
                     key = f"{emphasis_key} → {emph_req_name}"
                     children_with_emphases[key] = emph_req_body
                     items.append({"requirement": key})
             else:
+                logger.debug(f"not flattening emphasis {emphasis_key}")
                 children_with_emphases[emphasis_key] = emph
                 items.append({"requirement": emphasis_key})
 
