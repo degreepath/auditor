@@ -98,11 +98,12 @@ class CountRule(Rule, BaseCountRule):
                     logger.debug(f"flattening emphasis {emph_req_name}")
                     key = f"{emphasis_key} → {emph_req_name}"
                     children_with_emphases[key] = emph_req_body
-                    items.append({"requirement": key})
+                    items.append({"requirement": key, "__emphasis": emph['name']})
+
             else:
                 logger.debug(f"not flattening emphasis {emphasis_key}")
                 children_with_emphases[emphasis_key] = emph
-                items.append({"requirement": emphasis_key})
+                items.append({"requirement": emphasis_key, "__emphasis": emph['name']})
 
         did_insert = False
         for insert in ctx.get_insert_exceptions(tuple(path)):
@@ -130,10 +131,21 @@ class CountRule(Rule, BaseCountRule):
             else:
                 audit_clauses = tuple([AssertionRule.load(audit_clause, c=c, ctx=ctx, path=[*path, ".audit", "[0]"])])
 
-        loaded_items = tuple(r for r in (
-            load_rule(data=r, c=c, children=children_with_emphases, path=[*path, f"[{i}]"], ctx=ctx)
-            for i, r in enumerate(items)
-        ) if r is not None)
+        loaded_items = []
+        for i, r in enumerate(items):
+            # without this block, emphases could be rearranged if someone
+            # declared a second emphasis with a lower ID value. This preserves
+            # the ordering of emphases by basing it on their names, removing
+            # one source of turmoil from the count[index] format.
+            emphasis_part = r.get('__emphasis', None)
+            if emphasis_part:
+                child_path = [*path, f"%{emphasis_part}"]
+            else:
+                child_path = [*path, f"[{i}]"]
+
+            loaded = load_rule(data=r, c=c, children=children_with_emphases, path=child_path, ctx=ctx)
+            if loaded is not None:
+                loaded_items.append(loaded)
 
         if "all" in data or ("count" in data and data["count"] == "all"):
             count = len(loaded_items)
@@ -158,7 +170,7 @@ class CountRule(Rule, BaseCountRule):
 
         rule = CountRule(
             count=count,
-            items=loaded_items,
+            items=tuple(loaded_items),
             at_most=at_most,
             audit_clauses=audit_clauses,
             path=tuple(path),
