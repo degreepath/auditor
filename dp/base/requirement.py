@@ -35,7 +35,12 @@ class BaseRequirementRule(Base):
         return "requirement"
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        is_waived = self.waived()
+
+        if is_waived and (self.is_audited or self.is_contract):
+            return ResultStatus.Done
+
+        if is_waived:
             return ResultStatus.Waived
 
         if self.is_audited:
