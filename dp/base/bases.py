@@ -213,8 +213,10 @@ def compare_path_tuples__lt(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
                 return True
             else:
                 return False
+
         elif type(_1) == int:
             return True
+
         else:
             return False
 
