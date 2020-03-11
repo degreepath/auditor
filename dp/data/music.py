@@ -74,6 +74,7 @@ muspf_status_lookup = {
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, eq=False, order=False, hash=True)
 class MusicPerformance(MusicSlip):
+    role: Optional[str]
     status: Optional[MusicPerformanceStatus]
 
     @staticmethod
@@ -83,6 +84,7 @@ class MusicPerformance(MusicSlip):
             id=data['id'],
             year=int(data['year']),
             term=int(data['term']),
+            role=data.get('role', None),
             status=muspf_status_lookup[data.get('status', '')],
         )
 
@@ -91,6 +93,11 @@ class MusicPerformance(MusicSlip):
             if not self.status:
                 return False
             return clause.compare(self.status.value)
+
+        if clause.key == 'role':
+            if not self.role:
+                return False
+            return clause.compare(self.role)
 
         return super().apply_single_clause(clause)
 
