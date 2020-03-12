@@ -465,7 +465,7 @@ class CountRule(Rule, BaseCountRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.has_exception(self.path):
+        if ctx.has_exception_beneath(self.path):
             return True
 
         return any(r.has_potential(ctx=ctx) for r in self.items)

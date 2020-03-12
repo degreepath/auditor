@@ -206,7 +206,7 @@ class QueryRule(Rule, BaseQueryRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.has_exception(self.path):
+        if ctx.has_exception_beneath(self.path):
             return True
 
         if has_assertion(self.assertions, key=is_lt_clause):

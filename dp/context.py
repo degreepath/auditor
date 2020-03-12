@@ -124,7 +124,7 @@ class RequirementContext:
     def has_course(self, c: str) -> bool:
         return c in self.course_set_
 
-    def has_exception(self, path: Tuple[str, ...]) -> bool:
+    def has_exception_beneath(self, path: Tuple[str, ...]) -> bool:
         cached_lookup = self.exceptions_path_lookup_cache.get(path, None)
 
         if cached_lookup is not None:

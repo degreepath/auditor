@@ -271,10 +271,9 @@ class AreaSolution(AreaOfStudy):
 
         c_or_better__path = self.common_rules[0].path
         exceptions = {}
-        if self.context.has_exception(c_or_better__path):
-            for e in self.context.get_insert_exceptions_beneath(c_or_better__path):
-                course = self.context.forced_course_by_clbid(e.clbid, path=c_or_better__path)
-                exceptions[course.clbid] = course
+        for e in self.context.get_insert_exceptions_beneath(c_or_better__path):
+            course = self.context.forced_course_by_clbid(e.clbid, path=c_or_better__path)
+            exceptions[course.clbid] = course
 
         # unclaimed = list(set(self.context.transcript()) - claimed)
         # unclaimed_context = RequirementContext().with_transcript(unclaimed)

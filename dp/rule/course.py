@@ -116,7 +116,7 @@ class CourseRule(Rule, BaseCourseRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if self.auto_waived or ctx.has_exception(self.path):
+        if self.auto_waived or ctx.has_exception_beneath(self.path):
             return True
 
         try:

@@ -157,7 +157,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             return False
 
     def _has_potential(self, *, ctx: 'RequirementContext') -> bool:
-        if ctx.has_exception(self.path):
+        if ctx.has_exception_beneath(self.path):
             return True
 
         if self.is_audited:
