@@ -1,5 +1,5 @@
 import attr
-from typing import List, Optional, Tuple, Dict, Set, Sequence, Iterable, Iterator
+from typing import List, Optional, Mapping, Tuple, Dict, Set, Sequence, Iterable, Iterator
 from collections import defaultdict
 from contextlib import contextmanager
 import logging
@@ -12,6 +12,17 @@ from .exception import RuleException, OverrideException, InsertionException, Val
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
+
+ExceptionsDict = Mapping[Tuple[str, ...], List[RuleException]]
+
+
+def group_exceptions(exceptions: Sequence[RuleException]) -> ExceptionsDict:
+    grouped: Dict[Tuple[str, ...], List[RuleException]] = defaultdict(list)
+
+    for e in exceptions:
+        grouped[e.path].append(e)
+
+    return grouped
 
 
 @attr.s(slots=True, kw_only=True, frozen=False, auto_attribs=True)
@@ -26,17 +37,13 @@ class RequirementContext:
     multicountable: Dict[str, List[Tuple[str, ...]]] = attr.ib(factory=dict)
     claims: Dict[str, List[Claim]] = attr.ib(factory=lambda: defaultdict(list))
 
-    exceptions: List[RuleException] = attr.ib(factory=list)
-    exception_paths_: List[Tuple[str, ...]] = attr.ib(init=False)
+    exceptions: ExceptionsDict = attr.ib(factory=dict)
+    exceptions_path_lookup_cache: Dict[Tuple[str, ...], bool] = attr.ib(factory=dict)
 
     areas: Tuple[AreaPointer, ...] = tuple()
     music_performances: Tuple[MusicPerformance, ...] = tuple()
     music_attendances: Tuple[MusicAttendance, ...] = tuple()
     music_proficiencies: MusicProficiencies = MusicProficiencies()
-
-    def __attrs_post_init__(self) -> None:
-        exception_paths = list({e.path for e in self.exceptions})
-        object.__setattr__(self, "exception_paths_", exception_paths)
 
     def with_transcript(
         self,
@@ -118,57 +125,61 @@ class RequirementContext:
         return c in self.course_set_
 
     def has_exception(self, path: Tuple[str, ...]) -> bool:
-        return any(e.path[:len(path)] == path for e in self.exceptions)
+        cached_lookup = self.exceptions_path_lookup_cache.get(path, None)
+
+        if cached_lookup is not None:
+            return cached_lookup
+
+        exists = (
+            path in self.exceptions or any(
+                e.path[:len(path)] == path
+                for group in self.exceptions.values()
+                for e in group
+            )
+        )
+
+        self.exceptions_path_lookup_cache[path] = exists
+
+        return exists
 
     def get_insert_exceptions(self, path: Tuple[str, ...]) -> Iterator[InsertionException]:
-        if path not in self.exception_paths_:
+        if path not in self.exceptions:
             return
 
-        did_yield = False
-        for exception in self.exceptions:
-            if isinstance(exception, InsertionException) and exception.path == path:
-                logger.debug("exception found for %s: %s", path, exception)
-                did_yield = True
-                yield exception
-
-        if not did_yield:
-            logger.debug("no exception for %s", path)
+        for group in self.exceptions.values():
+            for exception in group:
+                if isinstance(exception, InsertionException):
+                    yield exception
 
     def get_insert_exceptions_beneath(self, path: Tuple[str, ...]) -> Iterator[InsertionException]:
         path_len = len(path)
-        did_yield = False
+        groups = [known_path for known_path in self.exceptions if known_path[:path_len] == path]
 
-        for exception in self.exceptions:
-            if isinstance(exception, InsertionException) and exception.path[:path_len] == path:
-                logger.debug("exception found for %s: %s", path, exception)
-                did_yield = True
-                yield exception
-
-        if not did_yield:
-            logger.debug("no exception for %s", path)
+        for group in groups:
+            for exception in self.exceptions[group]:
+                if isinstance(exception, InsertionException):
+                    yield exception
 
     def get_waive_exception(self, path: Tuple[str, ...]) -> Optional[OverrideException]:
-        if path not in self.exception_paths_:
+        if path not in self.exceptions:
             return None
 
-        for e in self.exceptions:
-            if isinstance(e, OverrideException) and e.path == path:
-                logger.debug("exception found for %s: %s", path, e)
-                return e
+        for group in self.exceptions.values():
+            for exception in group:
+                if isinstance(exception, OverrideException):
+                    return exception
 
-        logger.debug("no exception for %s", path)
         return None
 
     def get_value_exception(self, path: Tuple[str, ...]) -> Optional[ValueException]:
-        if path not in self.exception_paths_:
+        if path not in self.exceptions:
             return None
 
-        for e in self.exceptions:
-            if isinstance(e, ValueException) and e.path == path:
-                logger.debug("exception found for %s: %s", path, e)
-                return e
+        for group in self.exceptions.values():
+            for exception in group:
+                if isinstance(exception, ValueException):
+                    return exception
 
-        logger.debug("no exception for %s", path)
         return None
 
     @contextmanager

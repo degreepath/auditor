@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from .base import Solution, Result, Rule, Base
 from .constants import Constants
-from .context import RequirementContext
+from .context import RequirementContext, group_exceptions
 from .data import CourseInstance, AreaPointer, AreaType, Student
 from .exception import RuleException, InsertionException
 from .limit import LimitSet
@@ -84,7 +84,7 @@ class AreaOfStudy(Base):
 
         ctx = RequirementContext(
             areas=student.areas,
-            exceptions=list(exceptions),
+            exceptions=group_exceptions(exceptions),
         ).with_transcript(student.courses)
 
         result = load_rule(
@@ -167,7 +167,7 @@ class AreaOfStudy(Base):
             music_performances=student.music_performances,
             music_attendances=student.music_recital_slips,
             music_proficiencies=student.music_proficiencies,
-            exceptions=exceptions,
+            exceptions=group_exceptions(exceptions),
             multicountable=self.multicountable,
         )
 
@@ -211,7 +211,7 @@ class AreaOfStudy(Base):
             music_performances=student.music_performances,
             music_attendances=student.music_recital_slips,
             music_proficiencies=student.music_proficiencies,
-            exceptions=exceptions,
+            exceptions=group_exceptions(exceptions),
             multicountable=self.multicountable,
         )
 
