@@ -151,6 +151,9 @@ class RequirementContext:
                 yield exception
 
     def get_insert_exceptions_beneath(self, path: Tuple[str, ...]) -> Iterator[InsertionException]:
+        if not self.has_exception_beneath(path):
+            return
+
         path_len = len(path)
         groups = [known_path for known_path in self.exceptions if known_path[:path_len] == path]
 
