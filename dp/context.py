@@ -146,10 +146,9 @@ class RequirementContext:
         if path not in self.exceptions:
             return
 
-        for group in self.exceptions.values():
-            for exception in group:
-                if isinstance(exception, InsertionException):
-                    yield exception
+        for exception in self.exceptions.get(path, []):
+            if isinstance(exception, InsertionException):
+                yield exception
 
     def get_insert_exceptions_beneath(self, path: Tuple[str, ...]) -> Iterator[InsertionException]:
         path_len = len(path)
@@ -164,10 +163,9 @@ class RequirementContext:
         if path not in self.exceptions:
             return None
 
-        for group in self.exceptions.values():
-            for exception in group:
-                if isinstance(exception, OverrideException):
-                    return exception
+        for exception in self.exceptions.get(path, []):
+            if isinstance(exception, OverrideException):
+                return exception
 
         return None
 
@@ -175,10 +173,9 @@ class RequirementContext:
         if path not in self.exceptions:
             return None
 
-        for group in self.exceptions.values():
-            for exception in group:
-                if isinstance(exception, ValueException):
-                    return exception
+        for exception in self.exceptions.get(path, []):
+            if isinstance(exception, ValueException):
+                return exception
 
         return None
 
