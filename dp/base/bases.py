@@ -174,7 +174,7 @@ sort_by_path = cmp_to_key(compare_path_tuples)
 
 
 @lru_cache(2048)
-def compare_path_tuples__lt(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
+def compare_path_tuples__lt(path_a: Tuple[str, ...], path_b: Tuple[str, ...]) -> bool:
     """
     >>> compare_path_tuples__lt(('$', '.count', '[2]'), ('$', '.count', '[10]'))
     True
@@ -186,9 +186,13 @@ def compare_path_tuples__lt(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
     False
     >>> compare_path_tuples__lt(('$', '.count', '[2]'), ('$', '.count', '[3]', '.count', '[1]'))
     True
+    >>> compare_path_tuples__lt(('$', '.count', '[2]'), ('$', '.count', '%Emphasis: Public Policy'))
+    True
+    >>> compare_path_tuples__lt(('$', '.count', '.emphasis', '%Emphasis: Public Policy'), ('$', '.count', '[2]', '.stuff'))
+    False
     """
-    a_len = len(a)
-    b_len = len(b)
+    a_len = len(path_a)
+    b_len = len(path_b)
 
     if a_len < b_len:
         return True
@@ -196,25 +200,27 @@ def compare_path_tuples__lt(a: Tuple[str, ...], b: Tuple[str, ...]) -> bool:
     if b_len < a_len:
         return False
 
-    _1: Any
-    _2: Any
-    for _1, _2 in zip(a, b):
+    a: Any
+    b: Any
+
+    for a, b in zip(path_a, path_b):
         # convert indices to integers
-        if _1 and _1[0] == '[':
-            _1 = int(_1[1:-1])
+        if a and a[0] == '[':
+            a = int(a[1:-1])
 
-        if _2 and _2[0] == '[':
-            _2 = int(_2[1:-1])
+        if b and b[0] == '[':
+            b = int(b[1:-1])
 
-        if type(_1) == type(_2):
-            if _1 == _2:
+        if type(a) == type(b):
+            if a == b:
                 continue
-            if _1 < _2:
+
+            if a < b:
                 return True
             else:
                 return False
 
-        elif type(_1) == int:
+        elif type(a) == int:
             return True
 
         else:
