@@ -141,7 +141,7 @@ class CountRule(Rule, BaseCountRule):
             if emphasis_part:
                 # if we're in an emphasis requirement, we'll just let the
                 # emphasis label itself
-                child_path = [*path]
+                child_path = [*path, f".emphasis"]
             else:
                 child_path = [*path, f"[{i}]"]
 
