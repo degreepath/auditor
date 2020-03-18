@@ -105,7 +105,7 @@ class CourseInstance(Clausable):
         return self.identity_
 
     def verbose(self) -> str:
-        return f'{self.course_with_term()} "{self.name}" {self.credits} {self.grade_code.value} #{int(self.clbid)}'
+        return f'{self.course_with_term()} "{self.name}" {self.credits} {self.grade_code.value} #{self.clbid}'
 
     def course_with_term(self) -> str:
         if self.sub_type is SubType.Lab:
