@@ -138,26 +138,26 @@ class LimitSet:
 
     def apply_limits(self, courses: Collection['CourseInstance']) -> Iterator['CourseInstance']:
         clause_counters: Dict = defaultdict(int)
-        logger.debug("limit/before: %s", courses)
+        # logger.debug("limit/before: %s", courses)
 
         for c in courses:
             may_yield = True
 
             for limit in self.limits:
-                logger.debug("limit/check: checking %s against %s (counter: %s)", c, limit, clause_counters[limit])
+                logger.debug("limit/check: checking %s against %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
                 if apply_clause(limit.where, c):
                     if clause_counters[limit] >= limit.at_most:
-                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c, limit, clause_counters[limit])
+                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
                         may_yield = False
                         # break out of the loop once we fill up any limit clause
                         break
 
-                    logger.debug("limit/increment: %s matched %s (counter: %s)", c, limit, clause_counters[limit])
+                    logger.debug("limit/increment: %s matched %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
                     clause_counters[limit] += 1
 
             if may_yield is True:
                 logger.debug("limit/state: %s", clause_counters)
-                logger.debug("limit/allow: %s", c)
+                logger.debug("limit/allow: %s", c.verbose())
                 yield c
 
     def check(self, courses: Collection['CourseInstance']) -> bool:
@@ -206,15 +206,16 @@ class LimitSet:
         # step 1: find the number of extra iterations we will need for each limiting clause
         matched_items: Dict = defaultdict(set)
         for limit in self.limits:
+            logger.debug("limit/probe: checking against %s", limit)
             for c in courses:
-                logger.debug("limit/probe: checking %s against %s", c, limit)
+                logger.debug("limit/probe: checking %s", c.verbose())
                 if apply_clause(limit.where, c):
                     matched_items[limit].add(c)
 
         all_matched_items = set(item for match_set in matched_items.values() for item in match_set)
         unmatched_items = list(all_courses.difference(all_matched_items))
 
-        logger.debug("limit: unmatched items: %s", unmatched_items)
+        logger.debug("limit: unmatched items: %s", [c.course_with_term() for c in unmatched_items])
 
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [
@@ -237,7 +238,7 @@ class LimitSet:
             this_combo = [*unmatched_items, *these_items]
             this_combo.sort(key=lambda c: c.sort_order())
 
-            logger.debug("limit/combos: %s", this_combo)
+            logger.debug("limit: emitting: %s", [c.course_with_term() for c in this_combo])
             yield tuple(this_combo)
 
     def estimate(self, courses: Collection['CourseInstance']) -> int:
