@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, Sequence, Any, Iterable, Callable, cast, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Sequence, Any, Iterable, Callable, Union, cast, TYPE_CHECKING
 import attr
 from decimal import Decimal, ROUND_DOWN
 import logging
@@ -267,7 +267,7 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
 
 
 def load_course(  # noqa: C901
-    data: Dict[str, Any],
+    data: Union[Dict, CourseInstance],
     *,
     current_term: Optional[str] = None,
     overrides: Sequence[CourseOverrideException] = tuple(),
@@ -277,7 +277,7 @@ def load_course(  # noqa: C901
         credits_overrides = {}
 
     if isinstance(data, CourseInstance):
-        return data  # type: ignore
+        return data
 
     attributes = data.get('attributes', tuple())
     clbid = data['clbid']
