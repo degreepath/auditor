@@ -163,12 +163,12 @@ class QueryRule(Rule, BaseQueryRule):
 
                 for combo in iterate_item_set(item_set, rule=self):
                     did_iter = True
-                    yield QuerySolution.from_rule(output=combo, rule=self, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+                    yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
         else:
             for combo in iterate_item_set(data, rule=self):
                 did_iter = True
-                yield QuerySolution.from_rule(output=combo, rule=self, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+                yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
         if not did_iter:
             # be sure we always yield something
