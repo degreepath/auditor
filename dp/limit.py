@@ -222,9 +222,9 @@ class LimitSet:
             for limit, match_set in matched_items.items()
         ]
 
-        emitted_solutions: Set[Tuple['CourseInstance', ...]] = set()
+        emitted_solutions: Set[FrozenSet['CourseInstance']] = set()
         for results in lazy_product(*clause_iterators):
-            these_items = tuple(sorted((item for group in results for item in group), key=lambda item: item.sort_order()))
+            these_items = frozenset(item for group in results for item in group)
 
             if not self.check(these_items):
                 continue
@@ -234,7 +234,7 @@ class LimitSet:
             else:
                 emitted_solutions.add(these_items)
 
-            this_combo = unmatched_items + list(these_items)
+            this_combo = [*unmatched_items, *these_items]
             this_combo.sort(key=lambda c: c.sort_order())
 
             logger.debug("limit/combos: %s", this_combo)
