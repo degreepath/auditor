@@ -163,12 +163,12 @@ class QueryRule(Rule, BaseQueryRule):
 
                 for combo in iterate_item_set(item_set, rule=self):
                     did_iter = True
-                    yield QuerySolution.from_rule(output=combo, rule=self, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+                    yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
         else:
             for combo in iterate_item_set(data, rule=self):
                 did_iter = True
-                yield QuerySolution.from_rule(output=combo, rule=self, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+                yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
         if not did_iter:
             # be sure we always yield something
@@ -347,13 +347,17 @@ def iterate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> Ite
 
             # We can skip outputs with impunity here, because the calling
             # function will ensure that the fallback set is attempted
-            if sum(c.credits for c in item_set_courses) < expected_credits:
+            known_credits = sum(c.credits for c in item_set_courses)
+            if known_credits < expected_credits:
+                logger.debug("%s bailing because %s is less than %s", rule.path, known_credits, expected_credits)
+                yield tuple(item_set)
                 return
 
             for n in range(1, len(item_set_courses) + 1):
                 for combo in itertools.combinations(item_set_courses, n):
                     if sum(c.credits for c in combo) >= expected_credits:
                         yield combo
+
             return
 
         logger.debug("%s not running single assertion mode", rule.path)
@@ -394,7 +398,7 @@ def estimate_item_set(item_set: Collection[Clausable], *, rule: QueryRule) -> in
             # We can skip outputs with impunity here, because the calling
             # function will ensure that the fallback set is attempted
             if sum(c.credits for c in item_set_courses) < simple_sum_assertion.assertion.expected:
-                return total
+                return total + 1
 
             for n in range(1, len(item_set_courses) + 1):
                 total += ncr(n=len(item_set_courses), r=n)

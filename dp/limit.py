@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Sequence, Optional, Iterator, Any, List, Set, TYPE_CHECKING
+from typing import Dict, Tuple, Collection, Optional, Iterator, Any, List, Set, FrozenSet, TYPE_CHECKING
 from collections import defaultdict
 from functools import partial
 import itertools
@@ -74,7 +74,7 @@ class Limit:
 
         return Limit(at_most=at_most, at_most_what=at_most_what, where=clause, message=data.get('message', None))
 
-    def iterate(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
         # Be sure to sort the input, so that the output from the iterator is
         # sorted the same way each time. We need this because our input may
         # be a set, in which case there is no inherent ordering.
@@ -87,14 +87,14 @@ class Limit:
         elif self.at_most_what is AtMostWhat.Credits:
             yield from self.iterate_credits(courses)
 
-    def iterate_courses(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate_courses(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
         for n in range(0, int(self.at_most) + 1):
             # logger.debug("limit/loop(%s..<%s): n=%s applying %s", 0, self.at_most + 1, n, self.where)
             for combo in itertools.combinations(courses, n):
                 # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                 yield combo
 
-    def iterate_credits(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate_credits(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
         if sum(c.credits for c in courses) <= self.at_most:
             yield tuple(courses)
             return
@@ -106,7 +106,7 @@ class Limit:
                     # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                     yield combo
 
-    def estimate(self, courses: Sequence['CourseInstance']) -> int:
+    def estimate(self, courses: Collection['CourseInstance']) -> int:
         acc = 0
 
         if self.at_most_what is AtMostWhat.Courses:
@@ -131,36 +131,36 @@ class LimitSet:
         return [limit.to_dict() for limit in self.limits]
 
     @staticmethod
-    def load(data: Optional[Sequence[Dict]], c: Constants) -> 'LimitSet':
+    def load(data: Optional[Collection[Dict]], c: Constants) -> 'LimitSet':
         if data is None:
             return LimitSet(limits=tuple())
         return LimitSet(limits=tuple(Limit.load(limit, c) for limit in data))
 
-    def apply_limits(self, courses: Sequence['CourseInstance']) -> Iterator['CourseInstance']:
+    def apply_limits(self, courses: Collection['CourseInstance']) -> Iterator['CourseInstance']:
         clause_counters: Dict = defaultdict(int)
-        logger.debug("limit/before: %s", courses)
+        # logger.debug("limit/before: %s", courses)
 
         for c in courses:
             may_yield = True
 
             for limit in self.limits:
-                logger.debug("limit/check: checking %s against %s (counter: %s)", c, limit, clause_counters[limit])
+                logger.debug("limit/check: checking %s against %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
                 if apply_clause(limit.where, c):
                     if clause_counters[limit] >= limit.at_most:
-                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c, limit, clause_counters[limit])
+                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
                         may_yield = False
                         # break out of the loop once we fill up any limit clause
                         break
 
-                    logger.debug("limit/increment: %s matched %s (counter: %s)", c, limit, clause_counters[limit])
+                    logger.debug("limit/increment: %s matched %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
                     clause_counters[limit] += 1
 
             if may_yield is True:
                 logger.debug("limit/state: %s", clause_counters)
-                logger.debug("limit/allow: %s", c)
+                logger.debug("limit/allow: %s", c.verbose())
                 yield c
 
-    def check(self, courses: Sequence['CourseInstance']) -> bool:
+    def check(self, courses: Collection['CourseInstance']) -> bool:
         clause_counters: Dict = defaultdict(decimal.Decimal)
 
         for c in courses:
@@ -179,7 +179,7 @@ class LimitSet:
 
         return True
 
-    def limited_transcripts(self, courses: Sequence['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def limited_transcripts(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
         """
         We need to iterate over each combination of limited courses.
 
@@ -206,15 +206,16 @@ class LimitSet:
         # step 1: find the number of extra iterations we will need for each limiting clause
         matched_items: Dict = defaultdict(set)
         for limit in self.limits:
+            logger.debug("limit/probe: checking against %s", limit)
             for c in courses:
-                logger.debug("limit/probe: checking %s against %s", c, limit)
+                logger.debug("limit/probe: checking %s", c.verbose())
                 if apply_clause(limit.where, c):
                     matched_items[limit].add(c)
 
         all_matched_items = set(item for match_set in matched_items.values() for item in match_set)
         unmatched_items = list(all_courses.difference(all_matched_items))
 
-        logger.debug("limit: unmatched items: %s", unmatched_items)
+        logger.debug("limit: unmatched items: %s", [c.course_with_term() for c in unmatched_items])
 
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [
@@ -222,24 +223,26 @@ class LimitSet:
             for limit, match_set in matched_items.items()
         ]
 
-        emitted_solutions: Set[Tuple['CourseInstance', ...]] = set()
+        emitted_solutions: Set[FrozenSet['CourseInstance']] = set()
         for results in lazy_product(*clause_iterators):
-            these_items = tuple(sorted((item for group in results for item in group), key=lambda item: item.sort_order()))
+            these_items = frozenset(item for group in results for item in group)
 
             if not self.check(these_items):
+                logger.debug("limit: invalid collection: %s", [c.course_with_term() for c in unmatched_items])
                 continue
 
             if these_items in emitted_solutions:
+                logger.debug("limit: duplicate collection: %s", [c.course_with_term() for c in unmatched_items])
                 continue
             else:
                 emitted_solutions.add(these_items)
 
-            this_combo = unmatched_items + list(these_items)
+            this_combo = [*unmatched_items, *these_items]
             this_combo.sort(key=lambda c: c.sort_order())
 
-            logger.debug("limit/combos: %s", this_combo)
+            logger.debug("limit: emitting: %s", [c.course_with_term() for c in this_combo])
             yield tuple(this_combo)
 
-    def estimate(self, courses: Sequence['CourseInstance']) -> int:
+    def estimate(self, courses: Collection['CourseInstance']) -> int:
         # TODO: optimize this so that it doesn't need to actually build the results
         return sum(1 for _ in self.limited_transcripts(courses))
