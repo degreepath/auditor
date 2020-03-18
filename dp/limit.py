@@ -228,9 +228,11 @@ class LimitSet:
             these_items = frozenset(item for group in results for item in group)
 
             if not self.check(these_items):
+                logger.debug("limit: invalid collection: %s", [c.course_with_term() for c in unmatched_items])
                 continue
 
             if these_items in emitted_solutions:
+                logger.debug("limit: duplicate collection: %s", [c.course_with_term() for c in unmatched_items])
                 continue
             else:
                 emitted_solutions.add(these_items)
