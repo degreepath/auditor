@@ -19,6 +19,8 @@ class Student:
     matriculation: int = 0
     current_area_code: str = '000'
 
+    active_during_covid: bool = False
+
     courses: Tuple[CourseInstance, ...] = tuple()
     courses_with_failed: Tuple[CourseInstance, ...] = tuple()
     areas: Tuple[AreaPointer, ...] = tuple()
@@ -62,6 +64,8 @@ class Student:
         music_proficiencies = MusicProficiencies.from_dict(data.get('proficiencies', {}))
         music_mediums = MusicMediums.from_dict(data.get('mediums', {}))
 
+        covid = data.get('covid', False)
+
         matriculation = data.get('matriculation', None)
         if not matriculation:
             matriculation = 0
@@ -81,6 +85,7 @@ class Student:
             music_recital_slips=tuple(music_recital_slips),
             music_proficiencies=music_proficiencies,
             music_mediums=music_mediums,
+            active_during_covid=covid,
         )
 
     def constants(self) -> Constants:

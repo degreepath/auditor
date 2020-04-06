@@ -143,6 +143,7 @@ class AreaOfStudy(Base):
                 dept_code=dept,
                 degree=degree,
                 area_code=this_code,
+                student=student,
             ))
         )
 
@@ -392,6 +393,7 @@ def prepare_common_rules(
     dept_code: Optional[str],
     other_areas: Tuple[AreaPointer, ...] = tuple(),
     area_code: str,
+    student: Student,
 ) -> Iterator[Rule]:
     c = Constants(matriculation_year=0)
 
@@ -399,6 +401,33 @@ def prepare_common_rules(
         is_bm_major = True
     else:
         is_bm_major = False
+
+    # grade >= C
+    # OR in-progress
+    c_or_better__filter = {
+        "$and": [
+            {"$or": [
+                {"grade": {"$gte": "C"}},
+                {"is_in_progress": {"$eq": True}},
+            ]},
+            {"credits": {"$gt": 0}},
+        ],
+    }
+
+    # we only need to check for this if the student was active during the
+    # COVID-19 epidemic
+    if student.active_during_covid:
+        # ... OR (term == 2019-3 AND grade >= C-)
+        c_or_better__filter = {
+            "$and": [
+                {"$or": [
+                    {"grade": {"$gte": "C"}},
+                    {"is_in_progress": {"$eq": True}},
+                    {"$and": [{"yearterm": {"$eq": "2019-3"}}, {"grade": {"$gte": "C-"}}]}
+                ]},
+                {"credits": {"$gt": 0}},
+            ],
+        }
 
     c_or_better = load_rule(
         data={"requirement": "Credits at a C or higher"},
@@ -409,17 +438,7 @@ def prepare_common_rules(
                     "from": "courses",
                     "allow_claimed": True,
                     "claim": False,
-                    "where": {
-                        "$and": [
-                            {
-                                "$or": [
-                                    {"grade": {"$gte": "C"}},
-                                    {"is_in_progress": {"$eq": True}},
-                                ],
-                            },
-                            {"credits": {"$gt": 0}},
-                        ],
-                    },
+                    "where": c_or_better__filter,
                     "assert": {"sum(credits)": {"$gte": 6}},
                 },
             },
