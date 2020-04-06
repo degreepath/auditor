@@ -38,6 +38,7 @@ class CourseInstance(Clausable):
     level: int
     name: str
     number: str
+    schedid: Optional[str]
     section: Optional[str]
     sub_type: SubType
     subject: str
@@ -100,6 +101,9 @@ class CourseInstance(Clausable):
             attributes = tuple()
 
         return attr.evolve(self, attributes=tuple(attributes))
+
+    def unique_clbid_via_schedid(self) -> 'CourseInstance':
+        return attr.evolve(self, clbid=f"{self.clbid}:{self.schedid}")
 
     def course(self) -> str:
         return self.identity_
@@ -297,6 +301,7 @@ def load_course(  # noqa: C901
     level = data['level']
     name = data['name']
     number = data['number']
+    schedid = data.get('schedid', None)
     section = data['section']
     sub_type = data['sub_type']
     subject = data['subject']
@@ -395,6 +400,7 @@ def load_course(  # noqa: C901
         level=level,
         name=name,
         number=number,
+        schedid=schedid,
         section=section,
         sub_type=sub_type,
         subject=subject,
