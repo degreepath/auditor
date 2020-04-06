@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List, Any, Iterator, Optional, Sequence
+from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence
 
 import attr
 
@@ -118,8 +118,23 @@ def load_transcript(
         GradeCode._W,  # Withdrawn
     }
 
+    # If someone has managed to be enrolled in the same CLBID twice, we prefer
+    # the first one, such that the first one retains the actual CLBID, and the
+    # second gets a generated ID of the form "clbid:schedid" instead.
+    clbids: Set[str] = set()
+
     for row in courses:
         c = load_course(row, current_term=current_term, overrides=overrides, credits_overrides=credits_overrides)
+
+        if c.clbid in clbids:
+            old_clbid = c.clbid
+            c = c.unique_clbid_via_schedid()
+            new_clbid = c.clbid
+            assert old_clbid != new_clbid
+            assert new_clbid not in clbids
+            clbids.add(c.clbid)
+        else:
+            clbids.add(c.clbid)
 
         # excluded Audited courses
         if c.grade_option is GradeOption.Audit:
