@@ -413,7 +413,7 @@ def prepare_common_rules(
                         "$and": [
                             {
                                 "$or": [
-                                    {"grade": {"$gte": "C"}},
+                                    {"grade": {"$gte": "C", "$during_covid": "C-"}},
                                     {"is_in_progress": {"$eq": True}},
                                 ],
                             },
