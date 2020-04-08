@@ -45,6 +45,7 @@ class BaseQueryRule(Base):
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.only_failed_claims()],
             "inserted": list(self.inserted),
+            "allow_claimed": self.allow_claimed,
         }
 
     def only_failed_claims(self) -> Sequence[Claim]:
