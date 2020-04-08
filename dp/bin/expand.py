@@ -53,7 +53,7 @@ def expand_student(*, student: Dict, area_code: Optional[str] = None, catalog: O
             return
 
     if area_code:
-        items = {area_code}
+        items = set([area_code])
     else:
         items = set(a['code'] for a in areas)
 
