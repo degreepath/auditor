@@ -70,6 +70,7 @@ class SingleClause:
     at_most: bool
     treat_in_progress_as_pass: bool
     state: ResultStatus
+    during_covid: Optional[Any]
 
     @staticmethod
     def from_args(
@@ -81,6 +82,7 @@ class SingleClause:
         at_most: bool = False,
         treat_in_progress_as_pass: bool = False,
         state: ResultStatus = ResultStatus.Empty,
+        during_covid: Optional[Any] = None,
     ) -> 'SingleClause':
         return SingleClause(
             key=key,
@@ -90,6 +92,7 @@ class SingleClause:
             label=label,
             at_most=at_most,
             treat_in_progress_as_pass=treat_in_progress_as_pass,
+            during_covid=during_covid,
             state=state,
         )
 
@@ -135,6 +138,10 @@ class SingleClause:
     def compare(self, to_value: Any) -> bool:
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.expected)
 
+    @lru_cache(CACHE_SIZE)
+    def compare_in_covid(self, to_value: Any) -> bool:
+        return apply_operator(lhs=to_value, op=self.operator, rhs=self.during_covid)
+
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class ResolvedSingleClause(SingleClause):
@@ -162,6 +169,7 @@ class ResolvedSingleClause(SingleClause):
             at_most=clause.at_most,
             label=clause.label,
             treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
+            during_covid=clause.during_covid,
             resolved_with=resolved_with,
             resolved_items=resolved_items,
             resolved_clbids=resolved_clbids,
@@ -178,6 +186,7 @@ class ResolvedSingleClause(SingleClause):
             at_most=clause.at_most,
             label=clause.label,
             treat_in_progress_as_pass=clause.treat_in_progress_as_pass,
+            during_covid=clause.during_covid,
             resolved_with=Decimal(0),
             resolved_items=tuple(),
             resolved_clbids=tuple(),

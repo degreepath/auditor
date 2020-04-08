@@ -35,6 +35,7 @@ class CourseInstance(Clausable):
     is_repeat: bool
     is_stolaf: bool
     is_lab: bool
+    is_during_covid: bool
     level: int
     name: str
     number: str
@@ -170,11 +171,21 @@ def apply_single_clause__subject(course: CourseInstance, clause: 'SingleClause')
 
 
 def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -> bool:
-    return clause.compare(course.grade_points)
+    value = course.grade_points
+
+    if course.is_during_covid:
+        return clause.compare_in_covid(value)
+    else:
+        return clause.compare(value)
 
 
 def apply_single_clause__grade_code(course: CourseInstance, clause: 'SingleClause') -> bool:
-    return clause.compare(course.grade_code.value)
+    value = course.grade_code.value
+
+    if course.is_during_covid:
+        return clause.compare_in_covid(value)
+    else:
+        return clause.compare(value)
 
 
 def apply_single_clause__credits(course: CourseInstance, clause: 'SingleClause') -> bool:
@@ -377,6 +388,8 @@ def load_course(  # noqa: C901
 
     yearterm = f"{year}{term}"
 
+    is_during_covid = yearterm == "20193"
+
     return CourseInstance(
         attributes=attributes,
         clbid=clbid,
@@ -397,6 +410,7 @@ def load_course(  # noqa: C901
         is_repeat=flag_repeat,
         is_stolaf=flag_stolaf,
         is_lab=sub_type is SubType.Lab,
+        is_during_covid=is_during_covid,
         level=level,
         name=name,
         number=number,

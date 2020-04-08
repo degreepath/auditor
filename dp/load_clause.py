@@ -108,12 +108,41 @@ def load_single_clause(
     # TODO: replace with attribute whitelist based on input type
     key = KEY_LOOKUP.get(key, key)
 
-    operators = [k for k in value.keys() if k.startswith('$') and k != '$ifs']
+    operators = [k for k in value.keys() if k in ('$eq', '$neq', '$in', '$nin', '$gte', '$gt', '$lte', '$lt')]
     assert len(operators) == 1, f"{value}"
     op = operators[0]
     operator = Operator(op)
     assert operator not in forbid, ValueError(f'operator {operator} is forbidden here - {forbid}')
 
+    expected_value, expected_verbatim = load_expected_value(key=key, value=value, op=op, ctx=ctx, c=c)
+
+    expected_value_covid = None
+    if value.get('$during_covid', None):
+        expected_value_covid, _ = load_expected_value(key=key, value=value, op='$during_covid', ctx=ctx, c=c)
+
+    # forbid all null values in tuples or single-value clauses
+    if operator in (Operator.In, Operator.NotIn):
+        assert all(v is not None for v in expected_value)
+    else:
+        assert expected_value is not None
+
+    at_most = value.get('at_most', False)
+    assert type(at_most) is bool
+
+    return SingleClause(
+        key=key,
+        expected=expected_value,
+        operator=operator,
+        expected_verbatim=expected_verbatim,
+        at_most=at_most,
+        label=value.get('label', None),
+        treat_in_progress_as_pass=value.get('treat_in_progress_as_pass', False),
+        state=ResultStatus.Empty,
+        during_covid=expected_value_covid,
+    )
+
+
+def load_expected_value(*, key: str, value: Dict, op: str, ctx: Optional['RequirementContext'], c: Constants) -> Tuple[Any, Any]:
     expected_value = value[op]
     if isinstance(expected_value, list):
         expected_value = tuple(expected_value)
@@ -139,25 +168,7 @@ def load_single_clause(
 
     expected_value = process_clause_value(expected_value, key=key)
 
-    # forbid all null values in tuples or single-value clauses
-    if operator in (Operator.In, Operator.NotIn):
-        assert all(v is not None for v in expected_value)
-    else:
-        assert expected_value is not None
-
-    at_most = value.get('at_most', False)
-    assert type(at_most) is bool
-
-    return SingleClause(
-        key=key,
-        expected=expected_value,
-        operator=operator,
-        expected_verbatim=expected_verbatim,
-        at_most=at_most,
-        label=value.get('label', None),
-        treat_in_progress_as_pass=value.get('treat_in_progress_as_pass', False),
-        state=ResultStatus.Empty,
-    )
+    return expected_value, expected_verbatim
 
 
 def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional['RequirementContext']) -> Decimal:
