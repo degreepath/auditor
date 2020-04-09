@@ -5,6 +5,7 @@ import attr
 from ..constants import Constants
 from ..exception import CourseOverrideException
 
+from .area_enums import AreaStatus
 from .course import load_course, CourseInstance
 from .course_enums import GradeOption, GradeCode, TranscriptCode
 from .area_pointer import AreaPointer
@@ -42,6 +43,8 @@ class Student:
         overrides = list(overrides)
 
         area_pointers = [AreaPointer.from_dict(a) for a in data.get('areas', [])]
+        # pretend that they've dropped any what-if-dropped areas
+        area_pointers = [a for a in area_pointers if a.status is not AreaStatus.WhatIfDrop or a.code == code]
 
         current_term = data.get('current_term', None)
 

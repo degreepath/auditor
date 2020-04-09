@@ -4,6 +4,7 @@ import enum
 @enum.unique
 class AreaStatus(enum.Enum):
     WhatIf = "what-if"
+    WhatIfDrop = "what-if-drop"
     Declared = "declared"
     Certified = "certified"
     Awarded = "awarded"
