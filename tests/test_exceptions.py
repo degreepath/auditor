@@ -1,4 +1,5 @@
-from dp.data import course_from_str, Student
+from dp.data.student import Student
+from dp.data.course import course_from_str
 from dp.area import AreaOfStudy
 from dp.constants import Constants
 from dp.result.course import CourseResult

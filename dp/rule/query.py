@@ -14,10 +14,10 @@ from ..ncr import ncr
 from ..solution.query import QuerySolution
 from ..constants import Constants
 from ..operator import Operator
-from ..data import CourseInstance
+from ..data.course import CourseInstance
+from ..result.assertion import AssertionResult
 from .assertion import AssertionRule
 from .conditional_assertion import ConditionalAssertionRule
-from ..result.assertion import AssertionResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext

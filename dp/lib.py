@@ -3,7 +3,7 @@ from typing import Iterable, TYPE_CHECKING
 from .data.course_enums import GradeCode, grade_code_to_points
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .data import CourseInstance  # noqa: F401
+    from .data.course import CourseInstance  # noqa: F401
 
 
 def grade_point_average_items(courses: Iterable['CourseInstance']) -> Iterable['CourseInstance']:

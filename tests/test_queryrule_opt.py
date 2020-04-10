@@ -1,4 +1,4 @@
-from dp.data import course_from_str
+from dp.data.course import course_from_str
 from dp.rule.query import iterate_item_set, QueryRule
 from dp import Constants
 from decimal import Decimal

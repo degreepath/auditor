@@ -5,7 +5,9 @@ from contextlib import contextmanager
 import logging
 
 from .base.course import BaseCourseRule
-from .data import CourseInstance, AreaPointer, MusicPerformance, MusicAttendance, MusicProficiencies
+from .data.course import CourseInstance
+from .data.area_pointer import AreaPointer
+from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
 from .data.course_enums import CourseType
 from .claim import Claim
 from .exception import RuleException, OverrideException, InsertionException, ValueException

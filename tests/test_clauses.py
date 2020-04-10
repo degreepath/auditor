@@ -2,7 +2,10 @@ from dp.clause import SingleClause
 from dp.operator import Operator, apply_operator
 from dp.load_clause import compute_single_clause_diff, load_clause
 from dp.context import RequirementContext
-from dp.data import course_from_str, Clausable, AreaPointer, MusicProficiencies
+from dp.data.music import MusicProficiencies
+from dp.data.area_pointer import AreaPointer
+from dp.data.clausable import Clausable
+from dp.data.course import course_from_str
 from dp.constants import Constants
 from dp.rule.assertion import AssertionRule
 import logging
