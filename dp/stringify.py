@@ -444,9 +444,10 @@ def str_clause(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool =
         expected = clause['expected']
 
         if raw_only:
-            expected = clause['expected_verbatim']
+            expected = clause.get('expected_verbatim', clause['expected'])
             postscript = f""
-        if str(expected) != str(clause['expected_verbatim']):
+
+        if 'expected_verbatim' in clause:
             postscript = f" [via {repr(clause['expected_verbatim'])}]"
         else:
             postscript = ""

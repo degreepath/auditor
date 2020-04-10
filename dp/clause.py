@@ -103,11 +103,13 @@ class SingleClause:
     def to_dict(self) -> Dict[str, Any]:
         rank, max_rank = self.rank()
 
+        expected = stringify_expected(self.expected)
+        expected_verbatim = stringify_expected(self.expected_verbatim)
+
         dictified = {
             "type": "single-clause",
             "key": self.key,
-            "expected": stringify_expected(self.expected),
-            "expected_verbatim": stringify_expected(self.expected_verbatim),
+            "expected": expected,
             "operator": self.operator.name,
             "rank": str(rank),
             "max_rank": str(max_rank),
@@ -117,6 +119,9 @@ class SingleClause:
         # omit label unless it has a set value
         if self.label:
             dictified["label"] = self.label
+
+        if expected != expected_verbatim:
+            dictified["expected_verbatim"] = expected_verbatim
 
         return dictified
 
