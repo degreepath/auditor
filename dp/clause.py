@@ -17,6 +17,9 @@ if TYPE_CHECKING:  # pragma: no cover
 logger = logging.getLogger(__name__)
 CACHE_SIZE = 2048
 
+ONE_POINT_OH = Decimal(1)
+ZERO_POINT_OH = Decimal(0)
+
 
 @lru_cache(CACHE_SIZE)
 def apply_clause(clause: 'Clause', to: 'Clausable') -> bool:
@@ -119,10 +122,12 @@ class SingleClause:
         return self.state
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.state in (ResultStatus.Done, ResultStatus.Waived):
-            return Decimal(1), Decimal(1)
+        global ZERO_POINT_OH, ONE_POINT_OH
 
-        return Decimal(0), Decimal(1)
+        if self.state in (ResultStatus.Done, ResultStatus.Waived):
+            return ONE_POINT_OH, ONE_POINT_OH
+
+        return ZERO_POINT_OH, ONE_POINT_OH
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
@@ -199,17 +204,16 @@ class ResolvedSingleClause(SingleClause):
         }
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        one_point_oh = Decimal(1)
         if self.state in (ResultStatus.Done, ResultStatus.Waived):
-            return one_point_oh, one_point_oh
+            return ONE_POINT_OH, ONE_POINT_OH
 
         if self.operator not in (Operator.LessThan, Operator.LessThanOrEqualTo):
             if type(self.expected) in (int, Decimal) and self.expected != 0:
                 resolved = Decimal(self.resolved_with) / Decimal(self.expected)
 
-                return min(one_point_oh, resolved), one_point_oh
+                return min(ONE_POINT_OH, resolved), ONE_POINT_OH
 
-        return Decimal(0), one_point_oh
+        return ZERO_POINT_OH, ONE_POINT_OH
 
 
 def stringify_expected(expected: Any) -> Any:
