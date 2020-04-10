@@ -36,7 +36,6 @@ class AndClause:
         return {
             "type": "and-clause",
             "children": [c.to_dict() for c in self.children],
-            "hash": str(hash(self.children)),
         }
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -52,7 +51,6 @@ class OrClause:
         return {
             "type": "or-clause",
             "children": [c.to_dict() for c in self.children],
-            "hash": str(hash(self.children)),
         }
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -109,7 +107,6 @@ class SingleClause:
             "expected_verbatim": stringify_expected(self.expected_verbatim),
             "operator": self.operator.name,
             "label": self.label,
-            "hash": str(hash((self.key, self.expected, self.operator))),
             "rank": str(rank),
             "max_rank": str(max_rank),
             "status": self.state.value,
