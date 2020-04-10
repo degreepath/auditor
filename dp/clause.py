@@ -1,5 +1,6 @@
 from typing import Union, Tuple, Dict, Any, Optional, TYPE_CHECKING
 from decimal import Decimal
+from functools import lru_cache
 import logging
 
 import attr
@@ -8,7 +9,6 @@ from .operator import Operator, apply_operator
 from .data.course_enums import GradeOption, GradeCode
 from .status import ResultStatus
 from .stringify import str_clause
-from functools import lru_cache
 
 if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext
