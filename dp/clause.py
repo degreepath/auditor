@@ -103,17 +103,22 @@ class SingleClause:
     def to_dict(self) -> Dict[str, Any]:
         rank, max_rank = self.rank()
 
-        return {
+        dictified = {
             "type": "single-clause",
             "key": self.key,
             "expected": stringify_expected(self.expected),
             "expected_verbatim": stringify_expected(self.expected_verbatim),
             "operator": self.operator.name,
-            "label": self.label,
             "rank": str(rank),
             "max_rank": str(max_rank),
             "status": self.state.value,
         }
+
+        # omit label unless it has a set value
+        if self.label:
+            dictified["label"] = self.label
+
+        return dictified
 
     def override_expected(self, value: Decimal) -> 'SingleClause':
         return attr.evolve(self, expected=value, expected_verbatim=str(value))

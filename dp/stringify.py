@@ -451,7 +451,7 @@ def str_clause(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool =
         else:
             postscript = ""
 
-        label = clause['label']
+        label = clause.get('label', None)
         if label:
             postscript += f' [label: "{label}"]'
 
