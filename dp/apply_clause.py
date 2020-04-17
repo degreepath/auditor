@@ -182,7 +182,7 @@ def count_seminars(data: Iterable[CourseInstance]) -> AppliedClauseResult:
 
 
 def sum_credits(data: Iterable[CourseInstance]) -> AppliedClauseResult:
-    data = [c for c in data if c.credits > 0]
+    data = [c for c in data if c.credits != 0]
     items = tuple(sorted(c.credits for c in data))
     courses = tuple(data)
 
@@ -190,7 +190,7 @@ def sum_credits(data: Iterable[CourseInstance]) -> AppliedClauseResult:
 
 
 def sum_credits_from_single_subject(data: Iterable[CourseInstance]) -> AppliedClauseResult:
-    data = [c for c in data if c.credits > 0]
+    data = [c for c in data if c.credits != 0]
 
     if not data:
         return AppliedClauseResult(value=0, data=tuple([Decimal(0)]))
@@ -221,8 +221,8 @@ def average_grades(data: Iterable[CourseInstance]) -> AppliedClauseResult:
 
 
 def average_credits(data: Iterable[CourseInstance]) -> AppliedClauseResult:
-    items = tuple(sorted(c.credits for c in data))
-    courses = tuple(data)
+    items = tuple(sorted(c.credits for c in data if c.credits != 0))
+    courses = tuple(c for c in data if c.credits != 0)
     avg = avg_or_0(items)
 
     return AppliedClauseResult(value=avg, data=items, courses=courses)
