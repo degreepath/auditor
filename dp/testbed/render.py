@@ -79,7 +79,7 @@ def render(args: argparse.Namespace) -> None:
                 ''', {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch, 'base': base})
 
             record = results.fetchone()
-            assert record, {'catalog': catalog, 'code': code, 'stnum': stnum, 'branch': branch}
+            assert record, f"could not find record matching catalog={catalog}, code={code}, stnum={stnum}, branch={branch}"
 
             input_data = json.loads(record['input_data'])
             baseline_result = json.loads(record['baseline'])
