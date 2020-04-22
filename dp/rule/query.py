@@ -155,7 +155,8 @@ class QueryRule(Rule, BaseQueryRule):
             return
 
         elif self.source is QuerySource.Courses:
-            for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
+            courses = cast(Tuple[CourseInstance, ...], data)
+            for item_set in self.limit.limited_transcripts(courses, forced_clbids=force_inserted_clbids):
                 if self.attempt_claims is False:
                     did_iter = True
                     yield QuerySolution.from_rule(rule=self, output=item_set, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
@@ -179,11 +180,12 @@ class QueryRule(Rule, BaseQueryRule):
         if ctx.get_waive_exception(self.path):
             return 1
 
-        data, _, _ = self.get_filtered_data(ctx=ctx)
+        data, _, force_inserted_clbids = self.get_filtered_data(ctx=ctx)
 
         acc = 0
         if self.source in (QuerySource.Courses, QuerySource.Claimed):
-            for item_set in self.limit.limited_transcripts(cast(Tuple[CourseInstance, ...], data)):
+            courses = cast(Tuple[CourseInstance, ...], data)
+            for item_set in self.limit.limited_transcripts(courses, forced_clbids=force_inserted_clbids):
                 if self.attempt_claims is False:
                     acc += 1
 

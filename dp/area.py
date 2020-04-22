@@ -174,7 +174,7 @@ class AreaOfStudy(Base):
             multicountable=self.multicountable,
         )
 
-        for limited_transcript in self.limit.limited_transcripts(courses=student.courses):
+        for limited_transcript in self.limit.limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
             logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
 
             ctx = ctx.with_transcript(
@@ -220,7 +220,7 @@ class AreaOfStudy(Base):
 
         acc = 0
 
-        for limited_transcript in self.limit.limited_transcripts(courses=student.courses):
+        for limited_transcript in self.limit.limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
             ctx = ctx.with_transcript(
                 limited_transcript,
                 full=student.courses,
