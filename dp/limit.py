@@ -179,7 +179,12 @@ class LimitSet:
 
         return True
 
-    def limited_transcripts(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def limited_transcripts(
+        self,
+        courses: Collection['CourseInstance'],
+        *,
+        forced_clbids: Tuple[str, ...] = tuple(),
+    ) -> Iterator[Tuple['CourseInstance', ...]]:
         """
         We need to iterate over each combination of limited courses.
 
@@ -203,11 +208,18 @@ class LimitSet:
 
         all_courses = set(courses)
 
+        # step 0: figure out which courses have been force-inserted and will thus bypass the limit check
+        forced_items = {c.clbid: c for c in all_courses if c.clbid in forced_clbids}
+        logger.debug("limit: forced items: %s", [c.course_with_term() for c in forced_items.values()])
+
         # step 1: find the number of extra iterations we will need for each limiting clause
         matched_items: Dict = defaultdict(set)
         for limit in self.limits:
             logger.debug("limit/probe: checking against %s", limit)
             for c in courses:
+                if c.clbid in forced_items:
+                    logger.debug("limit/probe: skipping check of %s as it has been forced", c.verbose())
+                    continue
                 logger.debug("limit/probe: checking %s", c.verbose())
                 if apply_clause(limit.where, c):
                     matched_items[limit].add(c)
