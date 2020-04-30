@@ -54,7 +54,7 @@ class CountRule(Rule, BaseCountRule):
         emphases: Sequence[Dict[str, Dict]] = tuple(),
         ctx: 'RequirementContext',
     ) -> 'CountRule':  # noqa: C901
-        from ..load_rule import load_rule
+        from ..load_rule import load_rule, expand_template
 
         path = [*path, f".count"]
 
@@ -69,7 +69,7 @@ class CountRule(Rule, BaseCountRule):
         else:
             items = data["of"]
 
-        items = list(items)
+        items = list(expand_template(items, ctx=ctx))
 
         children_with_emphases = {**children}
         for emph in emphases:
