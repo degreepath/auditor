@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence
+from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence, Mapping
 
 import attr
 
@@ -28,6 +28,8 @@ class Student:
     music_recital_slips: Tuple[MusicAttendance, ...] = tuple()
     music_mediums: MusicMediums = MusicMediums()
     music_proficiencies: MusicProficiencies = MusicProficiencies()
+
+    templates: Tuple[Tuple[str, str], ...] = tuple()
 
     @staticmethod
     def load(
@@ -70,6 +72,10 @@ class Student:
             matriculation = 0
         else:
             matriculation = int(data.get('matriculation', '0'))
+        
+        print(data['templates'])
+        templates_set = {(key, course) for key, courses in data.get('templates', {}).items() for course in courses}
+        templates = tuple(sorted(templates_set))
 
         return Student(
             stnum=data.get('stnum', '000000'),
@@ -84,6 +90,7 @@ class Student:
             music_recital_slips=tuple(music_recital_slips),
             music_proficiencies=music_proficiencies,
             music_mediums=music_mediums,
+            templates=templates,
         )
 
     def constants(self) -> Constants:
@@ -101,6 +108,13 @@ class Student:
             current_area_code=self.current_area_code,
             terms_since_declaring_major=terms_since_declaring_major,
         )
+
+    def templates_as_dict(self) -> Mapping[str, Tuple[str, ...]]:
+        result: Dict[str, List[str]] = dict()
+        for key, course in self.templates:
+            result.setdefault(key, []).append(course)
+
+        return {key: tuple(courses) for key, courses in result.items()}
 
 
 def load_transcript(

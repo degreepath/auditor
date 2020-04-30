@@ -1,4 +1,4 @@
-from typing import Dict, Sequence, List, Optional, TYPE_CHECKING
+from typing import Dict, Sequence, Iterable, Iterator, List, Optional, TYPE_CHECKING
 from .constants import Constants
 
 from .base import Rule
@@ -47,3 +47,18 @@ def load_rule(
             return RequirementRule.load(children[req_name], name=req_name, c=c, path=path, ctx=ctx)
 
     raise ValueError(f"expected Course, Query, Count, or Reference; found none of those (in {data}, {type(data)})")
+
+
+def expand_template(items: Iterable[Dict], *, ctx: 'RequirementContext') -> Iterator[Dict]:
+    for item in items:
+        if 'template' in item:
+            yield from expand_template_item(key=item['template'], ctx=ctx)
+        else:
+            yield item
+
+
+def expand_template_item(*, key: str, ctx: 'RequirementContext') -> Iterator[Dict]:
+    courses: Iterable[str] = ctx.templates.get(key, [])
+
+    for course in courses:
+        yield {'course': course}

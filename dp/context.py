@@ -47,6 +47,8 @@ class RequirementContext:
     music_attendances: Tuple[MusicAttendance, ...] = tuple()
     music_proficiencies: MusicProficiencies = MusicProficiencies()
 
+    templates: Mapping[str, Tuple[str, ...]] = attr.ib(factory=dict)
+
     def with_transcript(
         self,
         transcript: Iterable[CourseInstance],
