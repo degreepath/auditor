@@ -72,8 +72,7 @@ class Student:
             matriculation = 0
         else:
             matriculation = int(data.get('matriculation', '0'))
-        
-        print(data['templates'])
+
         templates_set = {(key, course) for key, courses in data.get('templates', {}).items() for course in courses}
         templates = tuple(sorted(templates_set))
 
