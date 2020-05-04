@@ -1,4 +1,6 @@
-from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence
+from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence, Mapping, Iterable
+import re
+import logging
 
 import attr
 
@@ -7,9 +9,47 @@ from ..exception import CourseOverrideException
 
 from .area_enums import AreaStatus
 from .course import load_course, CourseInstance
-from .course_enums import GradeOption, GradeCode, TranscriptCode
+from .course_enums import GradeOption, GradeCode, TranscriptCode, SubType
 from .area_pointer import AreaPointer
 from .music import MusicAttendance, MusicPerformance, MusicProficiencies, MusicMediums
+
+logger = logging.getLogger(__name__)
+
+
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+class TemplateCourse:
+    subject: str = ''
+    num: str = ''
+    section: Optional[str] = None
+    subtype: Optional[str] = None
+    year: Optional[int] = None
+    term: Optional[str] = None
+    institution: str = ''
+    name: Optional[str] = None
+    clbid: str = ''
+
+    def to_course_rule_as_dict(self) -> Dict:
+        course = dict()
+
+        if self.clbid:
+            course['clbid'] = self.clbid
+
+        if self.subject:
+            course['course'] = f"{self.subject} {self.num}"
+
+        if self.section:
+            course['course'] += self.section
+
+        if self.subtype:
+            course['course'] += self.subtype
+
+        if self.institution:
+            course['institution'] = self.institution
+
+        if self.name:
+            course['name'] = self.name
+
+        return course
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -28,6 +68,8 @@ class Student:
     music_recital_slips: Tuple[MusicAttendance, ...] = tuple()
     music_mediums: MusicMediums = MusicMediums()
     music_proficiencies: MusicProficiencies = MusicProficiencies()
+
+    templates: Tuple[Tuple[str, TemplateCourse], ...] = tuple()
 
     @staticmethod
     def load(
@@ -71,6 +113,14 @@ class Student:
         else:
             matriculation = int(data.get('matriculation', '0'))
 
+        templates_set = set(
+            (key, parse_template_course_rule(course, transcript=courses))
+            for key, course_items in data.get('templates', {}).items()
+            for course in course_items
+        )
+        # exclude the None items from the parsing
+        templates = tuple(sorted((key, parsed) for key, parsed in templates_set if parsed))
+
         return Student(
             stnum=data.get('stnum', '000000'),
             curriculum=int(data.get('curriculum', 0)),
@@ -84,6 +134,7 @@ class Student:
             music_recital_slips=tuple(music_recital_slips),
             music_proficiencies=music_proficiencies,
             music_mediums=music_mediums,
+            templates=templates,
         )
 
     def constants(self) -> Constants:
@@ -101,6 +152,134 @@ class Student:
             current_area_code=self.current_area_code,
             terms_since_declaring_major=terms_since_declaring_major,
         )
+
+    def templates_as_dict(self) -> Mapping[str, Tuple[TemplateCourse, ...]]:
+        result: Dict[str, List[TemplateCourse]] = dict()
+        for key, course in self.templates:
+            result.setdefault(key, []).append(course)
+
+        return {key: tuple(courses) for key, courses in result.items()}
+
+
+DEPTNUM_REGEX = re.compile(r"""
+    (?P<subject>[A-Z/]{2,5})          # the subject code
+    [ ]                               # a space
+    (?P<num>[0-9]{3})                 # the course number
+    (?P<section>[A-Z])?               # (optional) the section
+    (?P<subtype>.[A-Z])?              # (optional) the subtype: .L for lab, .F for flac, etc
+    (\ (?P<year>\d{4})-(?P<term>\d))?  # (optional) the year-term
+    (\ \[(?P<inst>[A-Z]+)\])?          # (optional) the [INSTITUTION] code
+""", re.VERBOSE)
+
+NAME_REGEX = re.compile(r"""
+    name=(?P<name>.*)         # the course name
+    ( (?P<inst>\[[A-Z]+\]))?  # (optional) the [INSTITUTION] code
+""", re.VERBOSE)
+
+
+def parse_template_course_rule(course_label: str, *, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
+    logger.debug(course_label)
+
+    match = DEPTNUM_REGEX.match(course_label)
+    if match is not None:
+        return parse_identified_course(course_label, match_groups=match.groupdict(), transcript=transcript)
+
+    match = NAME_REGEX.match(course_label)
+    if match is not None:
+        return parse_named_course(course_label, match_groups=match.groupdict(), transcript=transcript)
+
+    logger.debug('skipping %s', course_label)
+    return None
+
+
+def parse_identified_course(course_label: str, *, match_groups: Dict, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
+    logger.debug('%s: %s', course_label, match_groups)
+
+    subject = match_groups['subject']
+    num = match_groups['num']
+    section = match_groups['section']
+    subtype = match_groups['subtype']
+    term = match_groups['term']
+    year = int(match_groups['year']) if match_groups['year'] else None
+    institution = match_groups['inst']
+
+    for crs in transcript:
+        if subject and (crs.subject != subject or crs.number != num):
+            continue
+
+        if section and crs.section != section:
+            continue
+
+        if subtype and crs.sub_type != subtype:
+            continue
+
+        if year and (crs.year != year or crs.term != term):
+            continue
+
+        if institution and crs.institution != institution:
+            continue
+
+        logger.debug('found match for %s: %s', course_label, crs)
+
+        return TemplateCourse(
+            subject=crs.subject,
+            num=crs.number,
+            section=section,
+            subtype=subtype if subtype else crs.sub_type.value if crs.sub_type in (SubType.Flac, SubType.Ensemble, SubType.Lab) else None,
+            term=term,
+            year=year,
+            institution=institution,
+            name=None,
+            clbid=crs.clbid,
+        )
+
+    logger.debug('did not find existing match for %s', course_label)
+
+    return TemplateCourse(
+        subject=subject,
+        num=num,
+        section=section,
+        subtype=subtype,
+        term=term,
+        year=year,
+        institution=institution,
+        name=None,
+    )
+
+
+def parse_named_course(course_label: str, *, match_groups: Dict, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
+    logger.debug('%s: %s', course_label, match_groups)
+
+    name = match_groups['name']
+    institution = match_groups['inst']
+
+    for crs in transcript:
+        if name and crs.name != name:
+            continue
+
+        if institution and crs.institution != institution:
+            continue
+
+        logger.debug('found match for %s: %s', course_label, crs)
+
+        return TemplateCourse(
+            name=name,
+            institution=institution,
+            subject=crs.subject,
+            num=crs.number,
+            clbid=crs.clbid,
+            section=None,
+            subtype=None,
+            term=None,
+            year=None,
+        )
+
+    logger.debug('did not find existing match for %s', course_label)
+
+    return TemplateCourse(
+        institution=institution,
+        name=name,
+    )
 
 
 def load_transcript(

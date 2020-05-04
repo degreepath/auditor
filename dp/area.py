@@ -88,6 +88,7 @@ class AreaOfStudy(Base):
         ctx = RequirementContext(
             areas=student.areas,
             exceptions=group_exceptions(exceptions),
+            templates=student.templates_as_dict(),
         ).with_transcript(student.courses)
 
         result = load_rule(
@@ -172,6 +173,7 @@ class AreaOfStudy(Base):
             music_proficiencies=student.music_proficiencies,
             exceptions=group_exceptions(exceptions),
             multicountable=self.multicountable,
+            templates=student.templates_as_dict(),
         )
 
         for limited_transcript in self.limit.limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
@@ -216,6 +218,7 @@ class AreaOfStudy(Base):
             music_proficiencies=student.music_proficiencies,
             exceptions=group_exceptions(exceptions),
             multicountable=self.multicountable,
+            templates=student.templates_as_dict(),
         )
 
         acc = 0

@@ -24,6 +24,8 @@ class CourseRule(Rule, BaseCourseRule):
     def can_load(data: Dict) -> bool:
         if "course" in data:
             return True
+        if "clbid" in data:
+            return True
         if "ap" in data:
             return True
         return False
@@ -40,7 +42,7 @@ class CourseRule(Rule, BaseCourseRule):
         inserted = data.get('inserted', False)
         auto_waived = data.get('auto_waived', False)
 
-        path_name = f"*{course or ap or name}"
+        path_name = f"*{course or ap or name or clbid}"
         path_inst = f"(institution={institution})" if institution else ""
         path_grade = f"(grade >= {min_grade})" if min_grade else ""
         path = [*path, f"{path_name}{path_inst}{path_grade}"]
@@ -76,7 +78,7 @@ class CourseRule(Rule, BaseCourseRule):
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
-        assert self.course or self.ap or (self.institution and self.name)
+        assert self.course or self.ap or (self.institution and self.name) or self.clbid
 
     def get_requirement_names(self) -> List[str]:
         return []
