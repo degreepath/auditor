@@ -7,6 +7,7 @@ from .rule.course import CourseRule
 from .rule.query import QueryRule
 from .rule.requirement import RequirementRule
 from .rule.proficiency import ProficiencyRule
+from .data.student import TemplateCourse
 
 if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext  # noqa: F401
@@ -58,7 +59,7 @@ def expand_template(items: Iterable[Dict], *, ctx: 'RequirementContext') -> Iter
 
 
 def expand_template_item(*, key: str, ctx: 'RequirementContext') -> Iterator[Dict]:
-    courses: Iterable[str] = ctx.templates.get(key, [])
+    courses: Iterable[TemplateCourse] = ctx.templates.get(key, [])
 
     for course in courses:
-        yield {'course': course}
+        yield course.to_course_rule_as_dict()

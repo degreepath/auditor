@@ -9,6 +9,7 @@ from .data.course import CourseInstance
 from .data.area_pointer import AreaPointer
 from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
 from .data.course_enums import CourseType
+from .data.student import TemplateCourse
 from .claim import Claim
 from .exception import RuleException, OverrideException, InsertionException, ValueException
 
@@ -47,7 +48,7 @@ class RequirementContext:
     music_attendances: Tuple[MusicAttendance, ...] = tuple()
     music_proficiencies: MusicProficiencies = MusicProficiencies()
 
-    templates: Mapping[str, Tuple[str, ...]] = attr.ib(factory=dict)
+    templates: Mapping[str, Tuple[TemplateCourse, ...]] = attr.ib(factory=dict)
 
     def with_transcript(
         self,
