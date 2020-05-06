@@ -83,9 +83,9 @@ class RequirementContext:
 
     def find_courses(self, *, rule: BaseCourseRule, from_claimed: bool = False) -> Iterator[CourseInstance]:
         if rule.clbid:
-            match_by_clbid = self.find_course_by_clbid(rule.clbid)
-            if match_by_clbid:
-                yield match_by_clbid
+            clbid_match = self.find_course_by_clbid(rule.clbid)
+            if clbid_match:
+                yield clbid_match
             return
 
         ap = rule.ap
