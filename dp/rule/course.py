@@ -52,7 +52,7 @@ class CourseRule(Rule, BaseCourseRule):
 
         if from_claimed:
             allow_claimed = True
-        
+
         optional = data.get("optional", False)
 
         allowed_keys = {
