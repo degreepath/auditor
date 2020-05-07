@@ -22,6 +22,7 @@ class BaseCourseRule(Base):
     path: Tuple[str, ...] = tuple()
     inserted: bool = False
     overridden: bool = False
+    optional: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -41,6 +42,9 @@ class BaseCourseRule(Base):
 
     def rank(self) -> Tuple[Decimal, Decimal]:
         status = self.status()
+
+        if self.optional:
+            return Decimal(1), Decimal(1)
 
         if status in (ResultStatus.Done, ResultStatus.Waived):
             return Decimal(1), Decimal(1)
@@ -70,6 +74,9 @@ class BaseCourseRule(Base):
             return ResultStatus.PendingCurrent
         elif has_ip_courses and has_registered_courses:
             return ResultStatus.PendingRegistered
+
+        if self.optional:
+            return ResultStatus.Waived
 
         return ResultStatus.Empty
 

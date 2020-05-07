@@ -30,6 +30,7 @@ class CourseSolution(Solution, BaseCourseRule):
             name=rule.name,
             inserted=rule.inserted,
             grade_option=rule.grade_option,
+            optional=rule.optional,
         )
 
     def audit(self, *, ctx: 'RequirementContext') -> CourseResult:

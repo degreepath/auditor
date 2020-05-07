@@ -52,11 +52,13 @@ class CourseRule(Rule, BaseCourseRule):
 
         if from_claimed:
             allow_claimed = True
+        
+        optional = data.get("optional", False)
 
         allowed_keys = {
             'course', 'grade', 'allow_claimed', 'from_claimed',
             'hidden', 'ap', 'grade_option', 'institution',
-            'name', 'clbid', 'inserted', 'waived',
+            'name', 'clbid', 'inserted', 'waived', 'optional',
         }
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
@@ -75,6 +77,7 @@ class CourseRule(Rule, BaseCourseRule):
             clbid=clbid,
             inserted=inserted,
             auto_waived=auto_waived,
+            optional=optional,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
