@@ -92,25 +92,53 @@ class RequirementContext:
         course = rule.course
         institution = rule.institution
         name = rule.name
-
-        query = (course, name, ap, institution, CourseType.AP if ap else None)
+        year = rule.year
+        term = rule.term
+        section = rule.section
+        sub_type = rule.sub_type
 
         source = self.transcript() if not from_claimed else self.all_claimed()
 
         for c in source:
-            if not c.is_stolaf and institution is None and ap is None:
+            # skip non-STOLAF courses if we're not given an institution
+            # and aren't looking for an AP course
+            if institution is None and ap is None and not c.is_stolaf:
                 continue
 
-            matcher = (
-                c.identity_ if course else None,
-                c.name if name else None,
-                c.name if ap else None,
-                c.institution if institution else None,
-                c.course_type if ap else None,
-            )
+            # compare course identity
+            if course is not None:
+                if c.identity_ != course:
+                    continue
 
-            if query == matcher:
-                yield c
+                # compare sections (given by template majors)
+                if section is not None and c.section != section:
+                    continue
+
+                # compare years (given by template majors)
+                if year is not None:
+                    assert term is not None
+                    if c.year != year or c.term != term:
+                        continue
+
+                if sub_type is not None and c.sub_type.value != sub_type:
+                    continue
+
+            # compare course names
+            if name is not None and c.name != name:
+                continue
+
+            # compare course institutions
+            if institution is not None and c.institution != institution:
+                continue
+
+            # compare for AP courses
+            if ap is not None:
+                if c.course_type != CourseType.AP or c.name != ap:
+                    continue
+
+            # if all of the previous have matched, we pass the checks
+            # and yield the course
+            yield c
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self.clbid_lookup_map_.get(clbid, None)

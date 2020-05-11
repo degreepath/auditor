@@ -41,11 +41,24 @@ class CourseRule(Rule, BaseCourseRule):
         clbid = data.get('clbid', None)
         inserted = data.get('inserted', False)
         auto_waived = data.get('auto_waived', False)
+        section: Optional[str] = data.get("section", None)
+        sub_type: Optional[str] = data.get("sub_type", None)
+        year: Optional[int] = data.get("year", None)
+        term: Optional[int] = data.get("term", None)
 
         path_name = f"*{course or ap or name or clbid}"
-        path_inst = f"(institution={institution})" if institution else ""
-        path_grade = f"(grade >= {min_grade})" if min_grade else ""
-        path = [*path, f"{path_name}{path_inst}{path_grade}"]
+        if section:
+            path_name = f"{path_name}{section}"
+        if sub_type:
+            path_name = f"{path_name}.{sub_type}"
+        if year is not None:
+            assert term is not None
+            path_name = f"{path_name} {year}-{term}"
+        if institution:
+            path_name = f"{path_name}(institution={institution})"
+        if min_grade:
+            path_name = f"{path_name}(grade >= {min_grade})"
+        path = [*path, path_name]
 
         from_claimed = data.get("from_claimed", False)
         allow_claimed = data.get("allow_claimed", False)
@@ -59,6 +72,7 @@ class CourseRule(Rule, BaseCourseRule):
             'course', 'grade', 'allow_claimed', 'from_claimed',
             'hidden', 'ap', 'grade_option', 'institution',
             'name', 'clbid', 'inserted', 'waived', 'optional',
+            'year', 'term', 'section', 'sub_type',
         }
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
@@ -78,6 +92,10 @@ class CourseRule(Rule, BaseCourseRule):
             inserted=inserted,
             auto_waived=auto_waived,
             optional=optional,
+            year=year,
+            term=term,
+            section=section,
+            sub_type=sub_type,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

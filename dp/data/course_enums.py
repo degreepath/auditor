@@ -34,6 +34,14 @@ class SubType(enum.Enum):
     Normal = ""
 
 
+SUB_TYPE_LOOKUP: Dict[SubType, str] = {
+    SubType.Ensemble: 'E',
+    SubType.Lab: 'L',
+    SubType.Flac: 'F',
+    SubType.Discussion: 'D',
+}
+
+
 @enum.unique
 class CourseType(enum.Enum):
     Semester = "SE"

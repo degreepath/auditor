@@ -22,7 +22,11 @@ class BaseCourseRule(Base):
     path: Tuple[str, ...] = tuple()
     inserted: bool = False
     overridden: bool = False
-    optional: bool
+    optional: bool = False
+    year: Optional[int] = None
+    term: Optional[int] = None
+    section: Optional[str] = None
+    sub_type: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {

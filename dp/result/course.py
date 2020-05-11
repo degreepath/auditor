@@ -32,6 +32,10 @@ class CourseResult(Result, BaseCourseRule):
             name=solution.name,
             inserted=solution.inserted,
             optional=solution.optional,
+            year=solution.year,
+            term=solution.term,
+            section=solution.section,
+            sub_type=solution.sub_type,
         )
 
     def claims(self) -> List[Claim]:

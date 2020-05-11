@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence, Mapping, Iterable
+from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence, Mapping, Iterable, Union
 import re
 import logging
 
@@ -9,7 +9,7 @@ from ..exception import CourseOverrideException
 
 from .area_enums import AreaStatus
 from .course import load_course, CourseInstance
-from .course_enums import GradeOption, GradeCode, TranscriptCode, SubType
+from .course_enums import GradeOption, GradeCode, TranscriptCode, SUB_TYPE_LOOKUP
 from .area_pointer import AreaPointer
 from .music import MusicAttendance, MusicPerformance, MusicProficiencies, MusicMediums
 
@@ -21,15 +21,15 @@ class TemplateCourse:
     subject: str = ''
     num: str = ''
     section: Optional[str] = None
-    subtype: Optional[str] = None
+    sub_type: Optional[str] = None
     year: Optional[int] = None
-    term: Optional[str] = None
+    term: Optional[int] = None
     institution: str = ''
     name: Optional[str] = None
     clbid: str = ''
 
     def to_course_rule_as_dict(self) -> Dict:
-        course = dict()
+        course: Dict[str, Union[int, str]] = dict()
 
         if self.clbid:
             course['clbid'] = self.clbid
@@ -38,16 +38,21 @@ class TemplateCourse:
             course['course'] = f"{self.subject} {self.num}"
 
         if self.section:
-            course['course'] += self.section
+            course['section'] = self.section
 
-        if self.subtype:
-            course['course'] += self.subtype
+        if self.sub_type:
+            course['sub_type'] = self.sub_type
 
         if self.institution:
             course['institution'] = self.institution
 
         if self.name:
             course['name'] = self.name
+
+        if self.year is not None:
+            assert self.term is not None
+            course['year'] = self.year
+            course['term'] = self.term
 
         return course
 
@@ -162,11 +167,11 @@ class Student:
 
 
 DEPTNUM_REGEX = re.compile(r"""
-    (?P<subject>[A-Z/]{2,5})          # the subject code
-    [ ]                               # a space
-    (?P<num>[0-9]{3})                 # the course number
-    (?P<section>[A-Z])?               # (optional) the section
-    (?P<subtype>.[A-Z])?              # (optional) the subtype: .L for lab, .F for flac, etc
+    (?P<subject>[A-Z/]{2,5})           # the subject code
+    [ ]                                # a space
+    (?P<num>[0-9]{3})                  # the course number
+    (?P<section>[A-Z])?                # (optional) the section
+    (.(?P<sub_type>[A-Z]))?            # (optional) the sub_type: .L for lab, .F for flac, etc
     (\ (?P<year>\d{4})-(?P<term>\d))?  # (optional) the year-term
     (\ \[(?P<inst>[A-Z]+)\])?          # (optional) the [INSTITUTION] code
 """, re.VERBOSE)
@@ -198,8 +203,8 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
     subject = match_groups['subject']
     num = match_groups['num']
     section = match_groups['section']
-    subtype = match_groups['subtype']
-    term = match_groups['term']
+    sub_type = match_groups['sub_type']
+    term = int(match_groups['term']) if match_groups['term'] else None
     year = int(match_groups['year']) if match_groups['year'] else None
     institution = match_groups['inst']
 
@@ -210,7 +215,7 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
         if section and crs.section != section:
             continue
 
-        if subtype and crs.sub_type != subtype:
+        if sub_type and (crs.sub_type not in SUB_TYPE_LOOKUP or SUB_TYPE_LOOKUP[crs.sub_type] != sub_type):
             continue
 
         if year and (crs.year != year or crs.term != term):
@@ -225,7 +230,7 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
             subject=crs.subject,
             num=crs.number,
             section=section,
-            subtype=subtype if subtype else crs.sub_type.value if crs.sub_type in (SubType.Flac, SubType.Ensemble, SubType.Lab) else None,
+            sub_type=sub_type,
             term=term,
             year=year,
             institution=institution,
@@ -239,7 +244,7 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
         subject=subject,
         num=num,
         section=section,
-        subtype=subtype,
+        sub_type=sub_type,
         term=term,
         year=year,
         institution=institution,
@@ -269,7 +274,7 @@ def parse_named_course(course_label: str, *, match_groups: Dict, transcript: Ite
             num=crs.number,
             clbid=crs.clbid,
             section=None,
-            subtype=None,
+            sub_type=None,
             term=None,
             year=None,
         )
