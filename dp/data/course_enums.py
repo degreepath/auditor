@@ -34,11 +34,11 @@ class SubType(enum.Enum):
     Normal = ""
 
 
-SUB_TYPE_LOOKUP: Dict[SubType, str] = {
-    SubType.Ensemble: 'E',
-    SubType.Lab: 'L',
-    SubType.Flac: 'F',
-    SubType.Discussion: 'D',
+SUB_TYPE_LOOKUP: Dict[str, SubType] = {
+    'E': SubType.Ensemble,
+    'L': SubType.Lab,
+    'F': SubType.Flac,
+    'D': SubType.Discussion,
 }
 
 

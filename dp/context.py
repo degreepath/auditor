@@ -8,8 +8,7 @@ from .base.course import BaseCourseRule
 from .data.course import CourseInstance
 from .data.area_pointer import AreaPointer
 from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
-from .data.course_enums import CourseType
-from .data.student import TemplateCourse
+from .data.student import TemplateCourse, filter_courses, SUB_TYPE_LOOKUP
 from .claim import Claim
 from .exception import RuleException, OverrideException, InsertionException, ValueException
 
@@ -88,57 +87,19 @@ class RequirementContext:
                 yield clbid_match
             return
 
-        ap = rule.ap
-        course = rule.course
-        institution = rule.institution
-        name = rule.name
-        year = rule.year
-        term = rule.term
-        section = rule.section
-        sub_type = rule.sub_type
-
         source = self.transcript() if not from_claimed else self.all_claimed()
 
-        for c in source:
-            # skip non-STOLAF courses if we're not given an institution
-            # and aren't looking for an AP course
-            if institution is None and ap is None and not c.is_stolaf:
-                continue
-
-            # compare course identity
-            if course is not None:
-                if c.identity_ != course:
-                    continue
-
-                # compare sections (given by template majors)
-                if section is not None and c.section != section:
-                    continue
-
-                # compare years (given by template majors)
-                if year is not None:
-                    assert term is not None
-                    if c.year != year or c.term != term:
-                        continue
-
-                if sub_type is not None and c.sub_type.value != sub_type:
-                    continue
-
-            # compare course names
-            if name is not None and c.name != name:
-                continue
-
-            # compare course institutions
-            if institution is not None and c.institution != institution:
-                continue
-
-            # compare for AP courses
-            if ap is not None:
-                if c.course_type != CourseType.AP or c.name != ap:
-                    continue
-
-            # if all of the previous have matched, we pass the checks
-            # and yield the course
-            yield c
+        yield from filter_courses(
+            source,
+            ap=rule.ap,
+            course=rule.course,
+            institution=rule.institution,
+            name=rule.name,
+            year=rule.year,
+            term=rule.term,
+            section=rule.section,
+            sub_type=SUB_TYPE_LOOKUP.get(rule.sub_type or '', None),
+        )
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self.clbid_lookup_map_.get(clbid, None)

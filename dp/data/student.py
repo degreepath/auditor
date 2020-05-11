@@ -9,7 +9,7 @@ from ..exception import CourseOverrideException
 
 from .area_enums import AreaStatus
 from .course import load_course, CourseInstance
-from .course_enums import GradeOption, GradeCode, TranscriptCode, SUB_TYPE_LOOKUP
+from .course_enums import GradeOption, GradeCode, TranscriptCode, CourseType, SubType, SUB_TYPE_LOOKUP
 from .area_pointer import AreaPointer
 from .music import MusicAttendance, MusicPerformance, MusicProficiencies, MusicMediums
 
@@ -208,22 +208,15 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
     year = int(match_groups['year']) if match_groups['year'] else None
     institution = match_groups['inst']
 
-    for crs in transcript:
-        if subject and (crs.subject != subject or crs.number != num):
-            continue
+    iterable = filter_courses(
+        transcript,
+        course=f"{subject} {num}" if subject else None,
+        section=section,
+        sub_type=SUB_TYPE_LOOKUP.get(sub_type, None),
+        institution=institution,
+    )
 
-        if section and crs.section != section:
-            continue
-
-        if sub_type and (crs.sub_type not in SUB_TYPE_LOOKUP or SUB_TYPE_LOOKUP[crs.sub_type] != sub_type):
-            continue
-
-        if year and (crs.year != year or crs.term != term):
-            continue
-
-        if institution and crs.institution != institution:
-            continue
-
+    for crs in iterable:
         logger.debug('found match for %s: %s', course_label, crs)
 
         return TemplateCourse(
@@ -341,4 +334,58 @@ def load_transcript(
             else:
                 continue
 
+        yield c
+
+
+def filter_courses(
+    courses: Iterable[CourseInstance],
+    *,
+    ap: Optional[str] = None,
+    course: Optional[str] = None,
+    institution: Optional[str] = None,
+    name: Optional[str] = None,
+    year: Optional[int] = None,
+    term: Optional[int] = None,
+    section: Optional[str] = None,
+    sub_type: Optional[SubType] = None,
+) -> Iterator[CourseInstance]:
+    for c in courses:
+        # skip non-STOLAF courses if we're not given an institution
+        # and aren't looking for an AP course
+        if institution is None and ap is None and not c.is_stolaf:
+            continue
+
+        # compare course identity
+        if course is not None:
+            if c.identity_ != course:
+                continue
+
+            # compare sections (given by template majors)
+            if section is not None and c.section != section:
+                continue
+
+            # compare years (given by template majors)
+            if year is not None:
+                assert term is not None
+                if c.year != year or c.term != term:
+                    continue
+
+            if sub_type is not None and c.sub_type != sub_type:
+                continue
+
+        # compare course names
+        if name is not None and c.name != name:
+            continue
+
+        # compare course institutions
+        if institution is not None and c.institution != institution:
+            continue
+
+        # compare for AP courses
+        if ap is not None:
+            if c.course_type != CourseType.AP or c.name != ap:
+                continue
+
+        # if all of the previous have matched, we pass the checks
+        # and yield the course
         yield c
