@@ -34,10 +34,10 @@ def audit(
         scope.user = {"id": stnum}
 
     curs.execute("""
-        INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data,   expires_at,     link_only)
-        VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(student)s , %(expires_at)s, %(link_only)s)
+        INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data,     expires_at,     link_only)
+        VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(input_data)s, %(expires_at)s, %(link_only)s)
         RETURNING id
-    """, {"student_id": stnum, "area_code": area_code, "catalog": area_catalog, "run": run_id, "student": json.dumps(student), "expires_at": expires_at, "link_only": link_only})
+    """, {"student_id": stnum, "area_code": area_code, "catalog": area_catalog, "run": run_id, "input_data": json.dumps(student), "expires_at": expires_at, "link_only": link_only})
 
     row = curs.fetchone()
     result_id: int = cast(int, row[0])
