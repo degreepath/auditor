@@ -95,6 +95,30 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                     "status": result["status"],
                 })
 
+                # check if this exact result exists already; if so, delete the old one(s)
+                curs.execute("""
+                    SELECT 1 FROM result
+                    WHERE student_id = %(student_id)s AND area_code = %(area_code)s AND result = %(result)s::jsonb
+                    FETCH FIRST ROW ONLY
+                """, {"student_id": stnum, "area_code": area_code, "result": result_str})
+
+                row = curs.fetchone()
+                if row is not None:
+                    # we select all results for a student/area combo, then partition them
+                    # by the contents of their result, sorting them by id since it autoincrements.
+                    curs.execute("""
+                        DELETE FROM result
+                        WHERE id IN (
+                            SELECT id
+                            FROM (
+                                SELECT id, row_number() OVER (PARTITION BY student_id, area_code, result ORDER BY id DESC) AS index
+                                FROM result
+                                WHERE student_id = %(student_id)s AND area_code = %(area_code)s
+                            ) dups
+                            WHERE dups.index > 1
+                        )
+                    """, {"student_id": stnum, "area_code": area_code})
+
             else:
                 logger.critical('unknown message %s', msg)
 
