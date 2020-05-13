@@ -61,6 +61,7 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
 
             elif isinstance(msg, ResultMsg):
                 result = msg.result.to_dict()
+                result_str = json.dumps(result)
 
                 # we use clock_timestamp() instead of now() here, because
                 # now() is the start time of the transaction, and we instead
@@ -85,7 +86,7 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
                     "total_count": msg.iters,
                     "elapsed": f"{msg.elapsed_ms}ms",
                     "avg_iter_time": f"{msg.avg_iter_ms}ms",
-                    "result": json.dumps(result),
+                    "result": result_str,
                     "claimed_courses": json.dumps(msg.result.keyed_claims()),
                     "rank": result["rank"],
                     "max_rank": result["max_rank"],
