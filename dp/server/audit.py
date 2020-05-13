@@ -1,6 +1,6 @@
 # mypy: warn_unreachable = False
 
-from typing import Dict, cast
+from typing import Dict, Optional, cast
 import json
 import logging
 
@@ -14,7 +14,17 @@ from dp.audit import ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, Es
 logger = logging.getLogger(__name__)
 
 
-def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, run_id: int, curs: psycopg2.extensions.cursor) -> None:
+def audit(
+    *,
+    area_spec: Dict,
+    area_code: str,
+    area_catalog: str,
+    student: Dict,
+    run_id: int,
+    expires_at: Optional[str],
+    link_only: bool,
+    curs: psycopg2.extensions.cursor,
+) -> None:
     args = Arguments()
 
     stnum = student['stnum']
@@ -24,10 +34,10 @@ def audit(*, area_spec: Dict, area_code: str, area_catalog: str, student: Dict, 
         scope.user = {"id": stnum}
 
     curs.execute("""
-        INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data)
-        VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(student)s )
+        INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data,   expires_at,     link_only)
+        VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(student)s , %(expires_at)s, %(link_only)s)
         RETURNING id
-    """, {"student_id": stnum, "area_code": area_code, "catalog": area_catalog, "run": run_id, "student": json.dumps(student)})
+    """, {"student_id": stnum, "area_code": area_code, "catalog": area_catalog, "run": run_id, "student": json.dumps(student), "expires_at": expires_at, "link_only": link_only})
 
     row = curs.fetchone()
     result_id: int = cast(int, row[0])

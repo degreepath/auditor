@@ -96,7 +96,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
                         SKIP LOCKED
                 LIMIT 1
             )
-            RETURNING id, run, student_id, area_catalog, area_code, input_data::text;
+            RETURNING id, run, student_id, area_catalog, area_code, input_data::text, expires_at, link_only;
         ''')
 
         # fetch the next available queued item
@@ -108,7 +108,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
             break
 
         try:
-            queue_id, run_id, student_id, area_catalog, area_code, input_data = row
+            queue_id, run_id, student_id, area_catalog, area_code, input_data, expires_at, link_only = row
         except Exception:
             curs.execute('COMMIT;')
             break
@@ -128,6 +128,8 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
                 area_catalog=area_catalog,
                 area_code=area_code,
                 run_id=run_id,
+                expires_at=expires_at,
+                link_only=link_only,
             )
 
             # once the audit is done, commit the queue's DELETE
