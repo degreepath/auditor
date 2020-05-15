@@ -1,5 +1,7 @@
 # mypy: warn_unreachable = False
 
+from typing import List, Optional
+
 import argparse
 import logging
 import json
@@ -35,6 +37,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--transcript", action='store_true')
     parser.add_argument("--gpa", action='store_true')
     parser.add_argument("--quiet", "-q", action='store_true')
+    parser.add_argument("--print-path", action='store', help='the JSON array of text that indicates a requirement path')
     parser.add_argument("--paths", dest='show_paths', action='store_const', const=True, default=True)
     parser.add_argument("--no-paths", dest='show_paths', action='store_const', const=False)
     parser.add_argument("--ranks", dest='show_ranks', action='store_const', const=True, default=True)
@@ -46,6 +49,10 @@ def main() -> int:  # noqa: C901
 
     if cli_args.estimate:
         os.environ['DP_ESTIMATE'] = '1'
+
+    if cli_args.print_path:
+        cli_args.print_path = json.loads(cli_args.print_path)
+        assert isinstance(cli_args.print_path, list)
 
     args = Arguments(
         gpa_only=cli_args.gpa,
@@ -92,6 +99,7 @@ def main() -> int:  # noqa: C901
                     gpa_only=cli_args.gpa,
                     show_paths=cli_args.show_paths,
                     show_ranks=cli_args.show_ranks,
+                    print_path=cli_args.print_path,
                 ))
 
         else:
@@ -110,6 +118,7 @@ def result_str(
     gpa_only: bool,
     show_paths: bool,
     show_ranks: bool,
+    print_path: Optional[List[str]] = None,
 ) -> str:
     if gpa_only:
         return f"GPA: {msg.result.gpa()}"
@@ -139,6 +148,7 @@ def result_str(
         show_paths=show_paths,
         show_ranks=show_ranks,
         claims=msg.result.keyed_claims(),
+        only_path=print_path,
     ))
 
 

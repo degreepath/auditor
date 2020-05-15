@@ -21,6 +21,7 @@ def summarize(
     show_paths: bool = True,
     show_ranks: bool = True,
     claims: Dict[str, List[List[str]]],
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     avg_iter_time = pretty_ms(avg_iter_ms, format_sub_ms=True)
     mapped_transcript = {c.clbid: c for c in transcript}
@@ -34,7 +35,10 @@ def summarize(
     yield endl
     yield endl
 
-    yield endl.join(print_result(result, transcript=mapped_transcript, show_paths=show_paths, show_ranks=show_ranks))
+    yield endl.join(print_result(result, transcript=mapped_transcript, show_paths=show_paths, show_ranks=show_ranks, only_path=only_path))
+
+    if only_path:
+        return
 
     yield endl
     yield endl
@@ -61,30 +65,31 @@ def print_result(
     show_paths: bool = True,
     show_ranks: bool = True,
     inserted: Sequence[str] = tuple(),
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if rule["type"] == "area":
-        yield from print_area(rule, transcript, indent, show_paths, show_ranks)
+        yield from print_area(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
     elif rule["type"] == "course":
-        yield from print_course(rule, transcript, indent, show_paths, show_ranks)
+        yield from print_course(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
     elif rule["type"] == "count":
-        yield from print_count(rule, transcript, indent, show_paths, show_ranks)
+        yield from print_count(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
     elif rule["type"] == "query":
-        yield from print_query(rule, transcript, indent, show_paths, show_ranks)
+        yield from print_query(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
     elif rule["type"] == "requirement":
-        yield from print_requirement(rule, transcript, indent, show_paths, show_ranks)
+        yield from print_requirement(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
     elif rule["type"] == "assertion":
-        yield from print_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted)
+        yield from print_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
 
     elif rule["type"] == "conditional-assertion":
-        yield from print_conditional_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted)
+        yield from print_conditional_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
 
     elif rule["type"] == "proficiency":
-        yield from print_proficiency(rule, transcript, indent, show_paths, show_ranks)
+        yield from print_proficiency(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
     else:
         yield json.dumps(rule, indent=2)
@@ -121,6 +126,7 @@ def print_area(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
@@ -138,7 +144,7 @@ def print_area(
 
     yield ""
 
-    yield from print_result(rule['result'], transcript, show_ranks=show_ranks, show_paths=show_paths)
+    yield from print_result(rule['result'], transcript, show_ranks=show_ranks, show_paths=show_paths, only_path=only_path)
 
 
 def emojify_course(course: Optional[CourseInstance], status: Optional[str] = None) -> str:
@@ -170,6 +176,7 @@ def print_course(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
@@ -207,6 +214,7 @@ def print_proficiency(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
@@ -233,6 +241,7 @@ def print_count(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
@@ -265,12 +274,12 @@ def print_count(
 
         yield f"{prefix} There must be:"
         for a in rule['audit']:
-            yield from print_result(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
+            yield from print_result(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, only_path=only_path)
 
         yield ''
 
     for i, r in enumerate(rule["items"]):
-        yield from print_result(r, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
+        yield from print_result(r, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, only_path=only_path)
 
         if size != 2 and i < len(rule['items']) - 1:
             yield ''
@@ -282,6 +291,7 @@ def print_query(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
@@ -333,7 +343,11 @@ def print_requirement(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
+    if only_path and rule['path'][:len(only_path)] != only_path:
+        return
+
     if show_paths:
         yield from print_path(rule, indent)
 
@@ -349,7 +363,7 @@ def print_requirement(
         return
 
     if rule["result"]:
-        yield from print_result(rule["result"], transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
+        yield from print_result(rule["result"], transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, only_path=only_path)
 
 
 def print_assertion(
@@ -359,6 +373,7 @@ def print_assertion(
     show_paths: bool = True,
     show_ranks: bool = True,
     inserted: Sequence[str] = tuple(),
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
@@ -406,6 +421,7 @@ def print_conditional_assertion(
     show_paths: bool = True,
     show_ranks: bool = True,
     inserted: Sequence[str] = tuple(),
+    only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if show_paths:
         yield from print_path(rule, indent)
