@@ -107,7 +107,7 @@ def main() -> int:
         if key == 'Status':
             dims[column] = 15
         else:
-            longest_line = max(max(estimate_line_length(l) for l in key.split('\n')), 5)
+            longest_line = max(max(estimate_line_length(ln) for ln in key.split('\n')), 5)
             dims[column] = max(dims.get(column, 0), float(longest_line))
 
     for _col, width in dims.items():

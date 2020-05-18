@@ -132,7 +132,7 @@ def print_area(
     yield f"{title} ({rank}; {gpa})"
 
     if rule['limit']:
-        yield f"Subject to these limits:"
+        yield "Subject to these limits:"
         for limit in rule['limit']:
             yield f"- at most {limit['at_most']} {limit['at_most_what']} where {str_clause(limit['where'])}"
 
@@ -445,7 +445,7 @@ def str_clause(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool =
 
         if raw_only:
             expected = clause.get('expected_verbatim', clause['expected'])
-            postscript = f""
+            postscript = ""
 
         if 'expected_verbatim' in clause:
             postscript = f" [via {repr(clause['expected_verbatim'])}]"

@@ -38,7 +38,7 @@ class QueryRule(Rule, BaseQueryRule):
 
     @staticmethod
     def load(data: Dict, *, c: Constants, path: List[str], ctx: Optional['RequirementContext'] = None) -> 'QueryRule':
-        path = [*path, f".query"]
+        path = [*path, ".query"]
 
         where = data.get("where", None)
         if where is not None:

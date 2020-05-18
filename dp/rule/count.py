@@ -56,7 +56,7 @@ class CountRule(Rule, BaseCountRule):
     ) -> 'CountRule':  # noqa: C901
         from ..load_rule import load_rule, expand_template
 
-        path = [*path, f".count"]
+        path = [*path, ".count"]
 
         if "all" in data:
             items = data["all"]
@@ -142,7 +142,7 @@ class CountRule(Rule, BaseCountRule):
             if emphasis_part:
                 # if we're in an emphasis requirement, we'll just let the
                 # emphasis label itself
-                child_path = [*path, f".emphasis"]
+                child_path = [*path, ".emphasis"]
             else:
                 child_path = [*path, f"[{i}]"]
 
