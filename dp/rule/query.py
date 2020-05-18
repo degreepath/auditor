@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Callable, Collection, FrozenSet, Union, Tuple, cast, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Iterable, Callable, Collection, FrozenSet, Union, Tuple, cast, TYPE_CHECKING
 import itertools
 import logging
 import decimal
@@ -102,7 +102,7 @@ class QueryRule(Rule, BaseQueryRule):
     def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
         return tuple()
 
-    def get_data(self, *, ctx: 'RequirementContext') -> Sequence[Clausable]:
+    def get_data(self, *, ctx: 'RequirementContext') -> Iterable[Clausable]:
         if self.source is QuerySource.Courses:
             all_courses = ctx.transcript()
             return [c for c in all_courses if c.clbid not in self.excluded_clbids]
@@ -111,13 +111,13 @@ class QueryRule(Rule, BaseQueryRule):
             return []
 
         elif self.source is QuerySource.Areas:
-            return list(ctx.areas)
+            return ctx.areas
 
         elif self.source is QuerySource.MusicPerformances:
-            return list(ctx.music_performances)
+            return ctx.music_performances
 
         elif self.source is QuerySource.MusicAttendances:
-            return list(ctx.music_attendances)
+            return ctx.music_attendances
 
         else:
             raise TypeError(f'unknown type of data for query, {self.source}')
@@ -221,7 +221,9 @@ class QueryRule(Rule, BaseQueryRule):
             return True
 
         if self.where is None:
-            return len(self.get_data(ctx=ctx)) > 0
+            for _ in self.get_data(ctx=ctx):
+                return True
+            return False
 
         return any(apply_clause(self.where, item) for item in self.get_data(ctx=ctx))
 
