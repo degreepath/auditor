@@ -105,7 +105,10 @@ class QueryRule(Rule, BaseQueryRule):
     def get_data(self, *, ctx: 'RequirementContext') -> Iterable[Clausable]:
         if self.source is QuerySource.Courses:
             all_courses = ctx.transcript()
-            return [c for c in all_courses if c.clbid not in self.excluded_clbids]
+            if self.excluded_clbids:
+                return (c for c in all_courses if c.clbid not in self.excluded_clbids)
+            else:
+                return all_courses
 
         if self.source is QuerySource.Claimed:
             return []
