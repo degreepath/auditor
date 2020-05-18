@@ -21,7 +21,10 @@ logger = logging.getLogger(__name__)
 logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
-def main(sys_args: List[str] = sys.argv) -> int:  # noqa: C901
+def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
+    if not sys_args:
+        sys_args = sys.argv[1:]
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file")
     parser.add_argument("--student", dest="student_file")
