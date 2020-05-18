@@ -30,7 +30,7 @@ class BaseAssertionRule(Base):
     def rank(self) -> Tuple[Decimal, Decimal]:
         status = self.status()
 
-        if status in (ResultStatus.Done, ResultStatus.Waived):
+        if status is ResultStatus.Done or status is ResultStatus.Waived:
             return Decimal(1), Decimal(1)
 
         return self.assertion.rank()
