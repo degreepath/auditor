@@ -152,6 +152,8 @@ class SingleClause:
 
     @lru_cache(CACHE_SIZE)
     def compare_in_covid(self, to_value: Any) -> bool:
+        if self.during_covid is None and self.during_covid != self.expected:
+            return self.compare(to_value)
         return apply_operator(lhs=to_value, op=self.operator, rhs=self.during_covid)
 
 
