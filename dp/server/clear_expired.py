@@ -29,6 +29,8 @@ def main() -> None:
             WHERE expires_at <= CURRENT_TIMESTAMP
         """)
 
+        print(f"cleared {curs.rowcount:,} expired audit results")
+
 
 if __name__ == "__main__":
     main()
