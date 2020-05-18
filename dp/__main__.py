@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
-def main() -> int:  # noqa: C901
+def main(sys_args: List[str] = sys.argv) -> int:  # noqa: C901
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file")
     parser.add_argument("--student", dest="student_file")
@@ -42,7 +42,7 @@ def main() -> int:  # noqa: C901
     parser.add_argument("--no-paths", dest='show_paths', action='store_const', const=False)
     parser.add_argument("--ranks", dest='show_ranks', action='store_const', const=True, default=True)
     parser.add_argument("--no-ranks", dest='show_ranks', action='store_const', const=False)
-    cli_args = parser.parse_args()
+    cli_args = parser.parse_args(sys_args)
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
     logging.basicConfig(level=loglevel, format=logformat)
