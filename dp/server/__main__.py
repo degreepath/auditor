@@ -28,7 +28,7 @@ else:
     logger.warning('SENTRY_DSN not set; skipping')
 
 # we need to import this after dotenv and sentry have loaded
-from .audit import audit  # noqa: F402
+from .audit import audit  # noqa: E402
 
 logformat = "%(asctime)s %(name)s [pid=%(process)d] %(processName)s [%(levelname)s] %(message)s"
 logger.setLevel(logging.INFO)
@@ -46,13 +46,13 @@ def wrapper(*, area_root: str) -> None:
 
 
 def worker(*, area_root: str) -> None:
-    logger.info(f'connect')
+    logger.info('connect')
 
     # empty string means "use the environment variables"
     conn = psycopg2.connect('', application_name='degreepath')
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
-    logger.info(f'connected')
+    logger.info('connected')
 
     with conn.cursor() as curs:
         # process any already-existing items
@@ -147,7 +147,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
             # log the exception
             logger.error(f'[q={queue_id}] error  {student_id}::{area_id}')
 
-    logger.info(f'queue is empty')
+    logger.info('queue is empty')
 
 
 def main() -> None:

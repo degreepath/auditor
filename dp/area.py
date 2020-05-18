@@ -519,7 +519,7 @@ def prepare_common_rules(
 
         elif is_ba_music:
             outside_rule = {
-                "message": f"21 total credits must be completed outside of the SIS 'subject' codes of the major: 'MUSIC', 'MUSPF', and 'MUSEN'.",
+                "message": "21 total credits must be completed outside of the SIS 'subject' codes of the major: 'MUSIC', 'MUSPF', and 'MUSEN'.",
                 "result": {
                     "from": "courses",
                     "where": {
