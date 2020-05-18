@@ -61,7 +61,7 @@ class CourseInstance(Clausable):
     def __hash__(self) -> int:
         if self.hash_cache_ is None:
             object.__setattr__(self, 'hash_cache_', hash(self.clbid))
-        return self.hash_cache_
+        return cast(int, self.hash_cache_)
 
     def sort_order(self) -> Tuple[int, int, str, str]:
         key = CourseTypeSortOrder[self.course_type]
