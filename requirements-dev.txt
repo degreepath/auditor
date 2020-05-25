@@ -1,4 +1,4 @@
-flake8==3.8.1
+flake8==3.8.2
 mypy==0.770
 pytest-benchmark==3.2.3
 pytest-cov==2.8.1
