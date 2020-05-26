@@ -206,14 +206,6 @@ def apply_single_clause__semester(course: CourseInstance, clause: 'SingleClause'
     return clause.compare(course.term)
 
 
-def apply_single_clause__su(course: CourseInstance, clause: 'SingleClause') -> bool:
-    return clause.compare(course.grade_option is GradeOption.SU)
-
-
-def apply_single_clause__pn(course: CourseInstance, clause: 'SingleClause') -> bool:
-    return clause.compare(course.grade_option is GradeOption.PN)
-
-
 def apply_single_clause__type(course: CourseInstance, clause: 'SingleClause') -> bool:
     return clause.compare(course.sub_type.name)
 
@@ -278,8 +270,6 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
     'level': apply_single_clause__level,
     'name': apply_single_clause__name,
     'number': apply_single_clause__number,
-    'p/n': apply_single_clause__pn,
-    's/u': apply_single_clause__su,
     'semester': apply_single_clause__semester,
     'subject': apply_single_clause__subject,
     'type': apply_single_clause__type,
