@@ -149,12 +149,12 @@ class RequirementContext:
             return
 
         path_len = len(path)
-        groups = [known_path for known_path in self.exceptions if known_path[:path_len] == path]
 
-        for group in groups:
-            for exception in self.exceptions[group]:
-                if isinstance(exception, InsertionException):
-                    yield exception
+        for known_path, group in self.exceptions.items():
+            if known_path[:path_len] == path:
+                for exception in group:
+                    if isinstance(exception, InsertionException):
+                        yield exception
 
     def get_waive_exception(self, path: Tuple[str, ...]) -> Optional[OverrideException]:
         if path not in self.exceptions:
