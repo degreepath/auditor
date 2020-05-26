@@ -185,15 +185,6 @@ def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -
         return clause.compare(value)
 
 
-def apply_single_clause__grade_code(course: CourseInstance, clause: 'SingleClause') -> bool:
-    value = course.grade_code.value
-
-    if course.is_during_covid:
-        return clause.compare_in_covid(value)
-    else:
-        return clause.compare(value)
-
-
 def apply_single_clause__credits(course: CourseInstance, clause: 'SingleClause') -> bool:
     return clause.compare(course.credits)
 
@@ -260,7 +251,6 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
     'crsid': apply_single_clause__crsid,
     'gereqs': apply_single_clause__gereqs,
     'grade': apply_single_clause__grade,
-    'grade_code': apply_single_clause__grade_code,
     'grade_option': apply_single_clause__grade_option,
     'institution': apply_single_clause__institution,
     'is_in_gpa': apply_single_clause__is_in_gpa,
