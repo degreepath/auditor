@@ -446,7 +446,7 @@ def prepare_common_rules(
                 "from": "courses",
                 "allow_claimed": True,
                 "claim": False,
-                "where": {"s/u": {"$eq": True}},
+                "where": {"grade_option": {"$eq": "s/u"}},
                 "assert": {"count(courses)": {"$eq": 0}},
             },
         }
@@ -459,7 +459,7 @@ def prepare_common_rules(
                 "claim": False,
                 "where": {
                     "$and": [
-                        {"s/u": {"$eq": True}},
+                        {"grade_option": {"$eq": "s/u"}},
                         {"credits": {"$eq": 1}},
                     ],
                 },

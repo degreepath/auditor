@@ -245,18 +245,6 @@ def test_ranges_lte(caplog):
     assert list(result) == [0, 1, 2, 3, 4, 5]
 
 
-def test_clause__grade_code():
-    c = Constants(matriculation_year=2000)
-
-    clause = load_clause({"grade_code": {"$in": ["P", "IP", "S"]}}, c=c)
-
-    y_course = course_from_str(s="CSCI 296", grade_code="P")
-    n_course = course_from_str(s="CSCI 296", grade_code="F")
-
-    assert clause.apply(y_course) is True
-    assert clause.apply(n_course) is False
-
-
 def test_compute_single_clause_diff():
     from decimal import Decimal
     ctx = RequirementContext(areas=(AreaPointer.with_code('711'),))
