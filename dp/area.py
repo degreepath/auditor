@@ -177,7 +177,7 @@ class AreaOfStudy(Base):
         )
 
         for limited_transcript in self.limit.limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
-            logger.debug("%s evaluating area.result with limited transcript", limited_transcript)
+            logger.debug("evaluating area.result with limited transcript: %s", [c.course_with_term() for c in limited_transcript])
 
             ctx = ctx.with_transcript(
                 limited_transcript,
