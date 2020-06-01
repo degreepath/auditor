@@ -76,7 +76,7 @@ def audit(
             }
         else:
             if timeout and time.perf_counter() - start_time >= timeout:
-                raise TimeoutError(f'cancelling {repr(row)} after {time.perf_counter() - start_time}', db_keys)
+                raise TimeoutError(f'cancelling {" ".join(row)} after {time.perf_counter() - start_time}', db_keys)
             pass
 
     return None
