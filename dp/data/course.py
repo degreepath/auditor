@@ -270,58 +270,6 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
     'year': apply_single_clause__year,
 }
 
-'''
-So... grades.
-You get a "letter grade", which has an associated "grade point value".
-You also have a "grade type", which is "graded", "no grade", "audited", "s/u", or "p/n".
-There is also a "St. Olaf Grade Point Value", which is computed as follows:
-    If the grade type is graded, and the course is from STOLAF, then we use the normal grade point value
-        Otherwise, we skip the course
-    If the grade type is no-grade, we skip the course
-    If the grade type is audited, we skip the course
-    If the grade type is s/u, we skip the course
-    If the grade type is p/n, we skip the course
-
-Course {
-    subject: "CHEM",
-    number: "121",
-    grade: GradeOption::GradedButInProgress,
-    term: Term{year: 2019, term: 1},
-}
-
-Course {
-    subject: "CHEM",
-    number: "121",
-    grade: GradeOption::SU { letter: GradeLetter::Aplus },
-    term: Term{year: 2019, term: 1},
-}
-
-enum GradeOption {
-    GradedButInProgress,
-    Graded {letter: GradeLetter},
-    SU {letter: GradeLetter},
-    PN {pass: bool},
-    Audit,
-    NoGrade,
-}
-
-enum GradeLetter {
-    Aplus,
-    Aflat,
-    Aminus,
-    Bplus,
-    Bflat,
-    Bminus,
-    Cplus,
-    Cflat,
-    Cminus,
-    Dplus,
-    D,
-    Dminus,
-    F
-}
-'''
-
 
 def load_course(  # noqa: C901
     data: Union[Dict, CourseInstance],
