@@ -290,8 +290,8 @@ def test_sum_credits_from_single_subject__multiple_solutions():
 
 def test_average_grades__same():
     result = funcs.average_grades([
-        course_from_str("A 100", grade_points=Decimal('4.0'), grade_points_gpa=Decimal('4.0')),
-        course_from_str("B 200", grade_points=Decimal('4.0'), grade_points_gpa=Decimal('4.0')),
+        course_from_str("A 100", grade_points=Decimal('4.0')),
+        course_from_str("B 200", grade_points=Decimal('4.0')),
     ])
 
     assert result.value == Decimal('4.0')
@@ -301,8 +301,8 @@ def test_average_grades__same():
 
 def test_average_grades__mixed():
     result = funcs.average_grades([
-        course_from_str("A 100", grade_points=Decimal('2.0'), grade_points_gpa=Decimal('2.0')),
-        course_from_str("B 200", grade_points=Decimal('4.0'), grade_points_gpa=Decimal('4.0')),
+        course_from_str("A 100", grade_points=Decimal('2.0')),
+        course_from_str("B 200", grade_points=Decimal('4.0')),
     ])
 
     assert result.value == Decimal('3.0')
@@ -312,8 +312,8 @@ def test_average_grades__mixed():
 
 def test_average_grades__all_zeroes():
     result = funcs.average_grades([
-        course_from_str("A 100", grade_points=Decimal('0.0'), grade_points_gpa=Decimal('0.0')),
-        course_from_str("B 200", grade_points=Decimal('0.0'), grade_points_gpa=Decimal('0.0')),
+        course_from_str("A 100", grade_points=Decimal('0.0')),
+        course_from_str("B 200", grade_points=Decimal('0.0')),
     ])
 
     assert result.value == Decimal('0.0')

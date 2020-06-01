@@ -418,7 +418,6 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
 
     grade_code = kwargs.get('grade_code', 'B')
     grade_points = kwargs.get('grade_points', str_to_grade_points(grade_code))
-    grade_points_gpa = kwargs.get('grade_points_gpa', grade_points)
 
     return load_course({
         "attributes": tuple(),
@@ -447,5 +446,4 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         **kwargs,
         "grade_code": grade_code,
         "grade_points": grade_points,
-        "grade_points_gpa": grade_points_gpa,
     }, overrides=[], credits_overrides={})
