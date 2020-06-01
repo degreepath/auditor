@@ -180,10 +180,11 @@ def apply_single_clause__subject(course: CourseInstance, clause: 'SingleClause')
 def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -> bool:
     value = course.grade_code
 
-    if course.grade_code is GradeCode._S and course.su_grade_code is not None:
-        value = course.su_grade_code
-
     if course.is_during_covid:
+        # if the course was taken during COVID, we pass through the internal grade code
+        if course.grade_code is GradeCode._S and course.su_grade_code is not None:
+            value = course.su_grade_code
+
         return clause.compare_in_covid(value)
     else:
         return clause.compare(value)
