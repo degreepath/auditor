@@ -43,6 +43,7 @@ class CourseInstance(Clausable):
     section: Optional[str]
     sub_type: SubType
     subject: str
+    su_grade_code: Optional[GradeCode]
     term: str
     transcript_code: TranscriptCode
     year: int
@@ -179,6 +180,9 @@ def apply_single_clause__subject(course: CourseInstance, clause: 'SingleClause')
 def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -> bool:
     value = course.grade_code
 
+    if course.grade_code is GradeCode._S and course.su_grade_code is not None:
+        value = course.su_grade_code
+
     if course.is_during_covid:
         return clause.compare_in_covid(value)
     else:
@@ -266,6 +270,58 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], 
     'year': apply_single_clause__year,
 }
 
+'''
+So... grades.
+You get a "letter grade", which has an associated "grade point value".
+You also have a "grade type", which is "graded", "no grade", "audited", "s/u", or "p/n".
+There is also a "St. Olaf Grade Point Value", which is computed as follows:
+    If the grade type is graded, and the course is from STOLAF, then we use the normal grade point value
+        Otherwise, we skip the course
+    If the grade type is no-grade, we skip the course
+    If the grade type is audited, we skip the course
+    If the grade type is s/u, we skip the course
+    If the grade type is p/n, we skip the course
+
+Course {
+    subject: "CHEM",
+    number: "121",
+    grade: GradeOption::GradedButInProgress,
+    term: Term{year: 2019, term: 1},
+}
+
+Course {
+    subject: "CHEM",
+    number: "121",
+    grade: GradeOption::SU { letter: GradeLetter::Aplus },
+    term: Term{year: 2019, term: 1},
+}
+
+enum GradeOption {
+    GradedButInProgress,
+    Graded {letter: GradeLetter},
+    SU {letter: GradeLetter},
+    PN {pass: bool},
+    Audit,
+    NoGrade,
+}
+
+enum GradeLetter {
+    Aplus,
+    Aflat,
+    Aminus,
+    Bplus,
+    Bflat,
+    Bminus,
+    Cplus,
+    Cflat,
+    Cminus,
+    Dplus,
+    D,
+    Dminus,
+    F
+}
+'''
+
 
 def load_course(  # noqa: C901
     data: Union[Dict, CourseInstance],
@@ -302,6 +358,7 @@ def load_course(  # noqa: C901
     section = data['section']
     sub_type = data['sub_type']
     subject = data['subject']
+    su_grade_code = data.get('su_grade_code', '?')
     term = data['term']
     transcript_code = data['transcript_code']
     year = data['year']
@@ -333,6 +390,11 @@ def load_course(  # noqa: C901
     sub_type = SubType(sub_type)
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
+
+    if su_grade_code == '?':
+        su_grade_code = None
+    else:
+        su_grade_code = GradeCode(su_grade_code)
 
     in_progress_this_term = False
     in_progress_in_future = False
@@ -404,6 +466,7 @@ def load_course(  # noqa: C901
         section=section,
         sub_type=sub_type,
         subject=subject,
+        su_grade_code=su_grade_code,
         term=term,
         transcript_code=transcript_code,
         year=year,
