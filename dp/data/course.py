@@ -43,6 +43,7 @@ class CourseInstance(Clausable):
     section: Optional[str]
     sub_type: SubType
     subject: str
+    su_grade_code: Optional[GradeCode]
     term: str
     transcript_code: TranscriptCode
     year: int
@@ -180,6 +181,10 @@ def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -
     value = course.grade_code
 
     if course.is_during_covid:
+        # if the course was taken during COVID, we pass through the internal grade code
+        if course.grade_code is GradeCode._S and course.su_grade_code is not None:
+            value = course.su_grade_code
+
         return clause.compare_in_covid(value)
     else:
         return clause.compare(value)
@@ -302,6 +307,7 @@ def load_course(  # noqa: C901
     section = data['section']
     sub_type = data['sub_type']
     subject = data['subject']
+    su_grade_code = data.get('su_grade_code', '?')
     term = data['term']
     transcript_code = data['transcript_code']
     year = data['year']
@@ -333,6 +339,11 @@ def load_course(  # noqa: C901
     sub_type = SubType(sub_type)
     course_type = CourseType(course_type)
     transcript_code = TranscriptCode(transcript_code)
+
+    if su_grade_code == '?':
+        su_grade_code = None
+    else:
+        su_grade_code = GradeCode(su_grade_code)
 
     in_progress_this_term = False
     in_progress_in_future = False
@@ -404,6 +415,7 @@ def load_course(  # noqa: C901
         section=section,
         sub_type=sub_type,
         subject=subject,
+        su_grade_code=su_grade_code,
         term=term,
         transcript_code=transcript_code,
         year=year,
