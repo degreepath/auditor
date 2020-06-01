@@ -177,7 +177,7 @@ def apply_single_clause__subject(course: CourseInstance, clause: 'SingleClause')
 
 
 def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -> bool:
-    value = course.grade_points
+    value = course.grade_code
 
     if course.is_during_covid:
         return clause.compare_in_covid(value)

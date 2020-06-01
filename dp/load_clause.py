@@ -1,11 +1,10 @@
 from typing import Dict, Sequence, Optional, Any, Mapping, Iterator, Union, Tuple, Callable, TYPE_CHECKING
 from collections.abc import Iterable
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 
 from .clause import Clause, AndClause, OrClause, SingleClause
 from .constants import Constants
-from .data.course_enums import GradeOption
-from .lib import str_to_grade_points
+from .data.course_enums import GradeOption, GradeCode
 from .operator import Operator
 from .solve import find_best_solution
 from .status import ResultStatus
@@ -226,19 +225,11 @@ def flatten(lst: Iterable) -> Iterator:
             yield el
 
 
-def process_clause__grade(expected_value: Any) -> Union[Decimal, Tuple[Decimal, ...]]:
-    if type(expected_value) is str:
-        try:
-            return Decimal(expected_value)
-        except InvalidOperation:
-            return str_to_grade_points(expected_value)
-    elif isinstance(expected_value, Iterable):
-        return tuple(
-            str_to_grade_points(v) if type(v) is str else Decimal(v)
-            for v in expected_value
-        )
+def process_clause__grade(expected_value: Any) -> Union[GradeCode, Tuple[GradeCode, ...]]:
+    if not type(expected_value) is str and isinstance(expected_value, Iterable):
+        return tuple(GradeCode(v) for v in expected_value)
     else:
-        return Decimal(expected_value)
+        return GradeCode(expected_value)
 
 
 def process_clause__grade_option(expected_value: Any) -> GradeOption:
@@ -253,7 +244,7 @@ def process_clause__gpa(expected_value: Any) -> Decimal:
     return Decimal(expected_value)
 
 
-clause_value_process: Mapping[str, Callable[[Sequence[Any]], Union[GradeOption, Decimal, Tuple[Decimal, ...]]]] = {
+clause_value_process: Mapping[str, Callable[[Sequence[Any]], Union[GradeOption, GradeCode, Tuple[GradeCode, ...], Decimal, Tuple[Decimal, ...]]]] = {
     'grade': process_clause__grade,
     'grade_option': process_clause__grade_option,
     'credits': process_clause__credits,
@@ -261,7 +252,7 @@ clause_value_process: Mapping[str, Callable[[Sequence[Any]], Union[GradeOption, 
 }
 
 
-def process_clause_value(expected_value: Any, *, key: str) -> Union[Any, GradeOption, Decimal, Tuple[Decimal, ...]]:
+def process_clause_value(expected_value: Any, *, key: str) -> Union[Any, GradeOption, GradeCode, Tuple[GradeCode, ...], Decimal, Tuple[Decimal, ...]]:
     if key in clause_value_process:
         return clause_value_process[key](expected_value)
 

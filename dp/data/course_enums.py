@@ -85,30 +85,8 @@ CourseTypeSortOrder: Dict[CourseType, int] = {
 }
 
 
-class OrderedEnum(enum.Enum):
-    def __ge__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value >= other.value
-        return NotImplemented
-
-    def __gt__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value > other.value
-        return NotImplemented
-
-    def __le__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value <= other.value
-        return NotImplemented
-
-    def __lt__(self, other: Any) -> Any:
-        if self.__class__ is other.__class__:
-            return self.value < other.value
-        return NotImplemented
-
-
 @enum.unique
-class GradeCode(OrderedEnum):
+class GradeCode(enum.Enum):
     A = "A"
     A_plus = "A+"
     A_minus = "A-"
@@ -138,6 +116,63 @@ class GradeCode(OrderedEnum):
     _WP = "WP"
     _W = "W"
     _REG = "DP_REG"
+
+    def __ge__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            order = grade_code_ordering
+            return order.index(self) >= order.index(other)
+        return NotImplemented
+
+    def __gt__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            order = grade_code_ordering
+            return order.index(self) > order.index(other)
+        return NotImplemented
+
+    def __le__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            order = grade_code_ordering
+            return order.index(self) <= order.index(other)
+        return NotImplemented
+
+    def __lt__(self, other: Any) -> Any:
+        if self.__class__ is other.__class__:
+            order = grade_code_ordering
+            return order.index(self) < order.index(other)
+        return NotImplemented
+
+
+grade_code_ordering = (
+    GradeCode._BC,
+    GradeCode._AB,
+    GradeCode._NG,
+    GradeCode._IP,
+    GradeCode._I,
+    GradeCode._P,
+    GradeCode._N,
+    GradeCode._S,
+    GradeCode._U,
+    GradeCode._AU,
+    GradeCode._UA,
+    GradeCode._WF,
+    GradeCode._WP,
+    GradeCode._W,
+    GradeCode._REG,
+
+    GradeCode.F,
+    GradeCode.D_minus,
+    GradeCode.D,
+    GradeCode.D_plus,
+    GradeCode.C_minus,
+    GradeCode.C,
+    GradeCode.C_plus,
+    GradeCode.B_minus,
+    GradeCode.B,
+    GradeCode.B_plus,
+    GradeCode.A_minus,
+    GradeCode.A,
+    GradeCode.A_plus,
+)
 
 
 grade_code_to_points: Dict[GradeCode, Decimal] = {
