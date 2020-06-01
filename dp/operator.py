@@ -61,8 +61,10 @@ def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:
     if not isinstance(lhs, str) and isinstance(rhs, str):
         lhs = str(lhs)
 
+    result: bool
+
     if op is Operator.EqualTo:
-        result: bool = lhs == rhs
+        result = lhs == rhs
         # logger.debug("`%s` %s `%s` == %s", lhs, op, rhs, result)
         return result
 
