@@ -28,7 +28,7 @@ def count_items_test(data: Iterable[Any]) -> AppliedClauseResult:
 
 def count_courses(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     items = frozenset(c for c in data)
-    clbids = tuple(sorted(c.clbid for c in items))
+    clbids = tuple(c.clbid for c in items)
 
     return AppliedClauseResult(value=len(items), data=clbids, courses=items)
 
@@ -42,7 +42,7 @@ def count_distinct_courses(data: Iterable[CourseInstance]) -> AppliedClauseResul
             items.add(c.crsid)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
+    return AppliedClauseResult(value=len(items), data=tuple(items), courses=courses)
 
 
 def count_terms_from_most_common_course(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -55,7 +55,7 @@ def count_terms_from_most_common_course(data: Iterable[CourseInstance]) -> Appli
     most_common_crsid, _count = most_common
 
     courses = tuple(c for c in data if c.crsid == most_common_crsid)
-    items = tuple(sorted(set(c.yearterm for c in courses)))
+    items = tuple(set(c.yearterm for c in courses))
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
@@ -70,7 +70,7 @@ def count_terms_from_most_common_course_by_name(data: Iterable[CourseInstance]) 
     most_common_ident, _count = most_common
 
     courses = tuple(c for c in data if f"{c.subject}: {c.name}" == most_common_ident)
-    items = tuple(sorted(set(c.yearterm for c in courses)))
+    items = tuple(set(c.yearterm for c in courses))
 
     return AppliedClauseResult(value=len(items), data=items, courses=courses)
 
@@ -91,7 +91,7 @@ def count_subjects(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(subject)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
+    return AppliedClauseResult(value=len(items), data=tuple(items), courses=courses)
 
 
 def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -104,9 +104,7 @@ def count_terms(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(yearterm)
             courses.add(c)
 
-    processed_data = tuple(sorted(items))
-
-    return AppliedClauseResult(value=len(items), data=processed_data, courses=courses)
+    return AppliedClauseResult(value=len(items), data=tuple(items), courses=courses)
 
 
 def count_math_perspectives(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -119,7 +117,7 @@ def count_math_perspectives(data: Iterable[CourseInstance]) -> AppliedClauseResu
                 perspectives.add(bucket)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(perspectives), data=tuple(sorted(perspectives)), courses=courses)
+    return AppliedClauseResult(value=len(perspectives), data=tuple(perspectives), courses=courses)
 
 
 def count_religion_traditions(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -132,7 +130,7 @@ def count_religion_traditions(data: Iterable[CourseInstance]) -> AppliedClauseRe
                 traditions.add(bucket)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(traditions), data=tuple(sorted(traditions)), courses=courses)
+    return AppliedClauseResult(value=len(traditions), data=tuple(traditions), courses=courses)
 
 
 def count_intlr_regions(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -145,7 +143,7 @@ def count_intlr_regions(data: Iterable[CourseInstance]) -> AppliedClauseResult:
                 regions.add(bucket)
                 courses.add(c)
 
-    return AppliedClauseResult(value=len(regions), data=tuple(sorted(regions)), courses=courses)
+    return AppliedClauseResult(value=len(regions), data=tuple(regions), courses=courses)
 
 
 def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
@@ -158,21 +156,21 @@ def count_years(data: Iterable[CourseInstance]) -> AppliedClauseResult:
             items.add(str_year)
             courses.add(c)
 
-    return AppliedClauseResult(value=len(items), data=tuple(sorted(items)), courses=courses)
+    return AppliedClauseResult(value=len(items), data=tuple(items), courses=courses)
 
 
 def count_areas(data: Iterable[AreaPointer]) -> AppliedClauseResult:
-    area_codes = tuple(sorted(set(a.code for a in data)))
+    area_codes = tuple(set(a.code for a in data))
     return AppliedClauseResult(value=len(area_codes), data=area_codes)
 
 
 def count_recitals(data: Iterable[MusicAttendance]) -> AppliedClauseResult:
-    uniques = tuple(sorted(set(a.id for a in data)))
+    uniques = tuple(set(a.id for a in data))
     return AppliedClauseResult(value=len(uniques), data=uniques)
 
 
 def count_performances(data: Iterable[MusicPerformance]) -> AppliedClauseResult:
-    uniques = tuple(sorted(set(a.id for a in data)))
+    uniques = tuple(set(a.id for a in data))
     return AppliedClauseResult(value=len(uniques), data=uniques)
 
 
@@ -183,7 +181,7 @@ def count_seminars(data: Iterable[CourseInstance]) -> AppliedClauseResult:
 
 def sum_credits(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     data = [c for c in data if c.credits != 0]
-    items = tuple(sorted(c.credits for c in data))
+    items = tuple(c.credits for c in data)
     courses = tuple(data)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
@@ -207,7 +205,7 @@ def sum_credits_from_single_subject(data: Iterable[CourseInstance]) -> AppliedCl
     _credits, best_subject = max((credits, subject) for subject, credits in by_credits.items())
 
     courses = tuple(c for c in data if best_subject == c.subject)
-    items = tuple(sorted(c.credits for c in courses))
+    items = tuple(c.credits for c in courses)
 
     return AppliedClauseResult(value=sum(items), data=items, courses=courses)
 
@@ -215,13 +213,13 @@ def sum_credits_from_single_subject(data: Iterable[CourseInstance]) -> AppliedCl
 def average_grades(data: Iterable[CourseInstance]) -> AppliedClauseResult:
     avg = grade_point_average(data)
     courses = tuple(grade_point_average_items(data))
-    items = tuple(sorted(c.gpa_points for c in courses))
+    items = tuple(c.gpa_points for c in courses)
 
     return AppliedClauseResult(value=avg, data=items, courses=courses)
 
 
 def average_credits(data: Iterable[CourseInstance]) -> AppliedClauseResult:
-    items = tuple(sorted(c.credits for c in data if c.credits != 0))
+    items = tuple(c.credits for c in data if c.credits != 0)
     courses = tuple(c for c in data if c.credits != 0)
     avg = avg_or_0(items)
 
