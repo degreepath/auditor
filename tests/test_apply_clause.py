@@ -11,7 +11,7 @@ def test_count_courses__all_different():
     ])
 
     assert result.value == 3
-    assert result.data == ('1', '2', '3')
+    assert sorted(result.data) == ['1', '2', '3']
     assert len(result.courses) == 3
 
 
@@ -23,7 +23,7 @@ def test_count_courses__all_same():
     ])
 
     assert result.value == 1
-    assert result.data == tuple(['1'])
+    assert sorted(result.data) == ['1']
     assert len(result.courses) == 1
 
 
@@ -35,7 +35,7 @@ def test_count_terms_from_most_common_course():
     ])
 
     assert result.value == 2
-    assert result.data == ('20091', '20093')
+    assert sorted(result.data) == ['20091', '20093']
     assert len(result.courses) == 2
 
 
@@ -43,7 +43,7 @@ def test_count_terms_from_most_common_course__empty():
     result = funcs.count_terms_from_most_common_course([])
 
     assert result.value == 0
-    assert result.data == ()
+    assert sorted(result.data) == []
     assert len(result.courses) == 0
 
 
@@ -54,7 +54,7 @@ def test_count_terms_from_most_common_course__two_sections_same_term():
     ])
 
     assert result.value == 1
-    assert result.data == ('20093',)
+    assert sorted(result.data) == ['20093']
     assert len(result.courses) == 2
 
 
@@ -64,7 +64,7 @@ def test_count_subjects__one_course():
     ])
 
     assert result.value == 1
-    assert result.data == ('ECON',)
+    assert sorted(result.data) == ['ECON']
     assert len(result.courses) == 1
 
 
@@ -76,7 +76,7 @@ def test_count_subjects__chbi():
     ])
 
     assert result.value == 2
-    assert result.data == ('BIO', 'CHEM')
+    assert sorted(result.data) == ['BIO', 'CHEM']
     assert len(result.courses) == 2
 
 
@@ -88,7 +88,7 @@ def test_count_subjects__several_courses_same_dept():
     ])
 
     assert result.value == 1
-    assert result.data == ('ECON',)
+    assert sorted(result.data) == ['ECON']
     assert len(result.courses) == 1
 
 
@@ -100,7 +100,7 @@ def test_count_subjects__several_courses():
     ])
 
     assert result.value == 3
-    assert result.data == ('ASIAN', 'CSCI', 'ECON')
+    assert sorted(result.data) == ['ASIAN', 'CSCI', 'ECON']
     assert len(result.courses) == 3
 
 
@@ -113,7 +113,7 @@ def test_count_terms():
     ])
 
     assert result.value == 3
-    assert result.data == ('20071', '20091', '20093')
+    assert sorted(result.data) == ['20071', '20091', '20093']
     assert len(result.courses) == 3
 
 
@@ -126,7 +126,7 @@ def test_count_years():
     ])
 
     assert result.value == 2
-    assert result.data == ('2007', '2009')
+    assert sorted(result.data) == ['2007', '2009']
     assert len(result.courses) == 2
 
 
@@ -138,7 +138,7 @@ def test_count_math_perspectives():
     ])
 
     assert result.value == 2
-    assert result.data == ('math_perspective_a', 'math_perspective_c')
+    assert sorted(result.data) == ['math_perspective_a', 'math_perspective_c']
     assert len(result.courses) == 3
 
 
@@ -150,7 +150,7 @@ def test_count_religion_traditions():
     ])
 
     assert result.value == 2
-    assert result.data == ('rel_tradition_a', 'rel_tradition_c')
+    assert sorted(result.data) == ['rel_tradition_a', 'rel_tradition_c']
     assert len(result.courses) == 3
 
 
@@ -162,7 +162,7 @@ def test_sum_credits():
     ])
 
     assert result.value == 3
-    assert result.data == (1, 1, 1)
+    assert sorted(result.data) == [1, 1, 1]
     assert len(result.courses) == 3
 
 
@@ -175,7 +175,7 @@ def test_sum_credits__fractional():
     ])
 
     assert result.value == Decimal('2.00')
-    assert result.data == (Decimal('0.25'), Decimal('0.25'), Decimal('0.5'), Decimal('1'))
+    assert sorted(result.data) == [Decimal('0.25'), Decimal('0.25'), Decimal('0.5'), Decimal('1')]
     assert len(result.courses) == 4
 
 
@@ -186,7 +186,7 @@ def test_sum_credits__large():
     ])
 
     assert result.value == Decimal('3')
-    assert result.data == (Decimal('1'), Decimal('2'))
+    assert sorted(result.data) == [Decimal('1'), Decimal('2')]
     assert len(result.courses) == 2
 
 
@@ -198,7 +198,7 @@ def test_sum_credits__ignores_zeroes():
     ])
 
     assert result.value == 2
-    assert result.data == (1, 1)
+    assert sorted(result.data) == [1, 1]
     # this is where we assert that we ignore 0-credit courses.
     # if we didn't ignore them, this would report 3 courses.
     assert len(result.courses) == 2
@@ -213,8 +213,8 @@ def test_sum_credits__sorts_output():
 
     assert result.value == 6
     # we assert that the output data does not match the input data, but is instead sorted
-    assert result.data == (1, 2, 3)
-    assert sorted(result.data) == sorted([1, 2, 3])
+    # assert result.data == (1, 2, 3)
+    assert sorted(result.data) == [1, 2, 3]
     assert len(result.courses) == 3
 
 
@@ -222,7 +222,7 @@ def test_sum_credits_from_single_subject__empty():
     result = funcs.sum_credits_from_single_subject([])
 
     assert result.value == Decimal('0')
-    assert result.data == tuple([Decimal('0')])
+    assert sorted(result.data) == [Decimal('0')]
     assert len(result.courses) == 0
 
 
@@ -233,7 +233,7 @@ def test_sum_credits_from_single_subject__partial():
     ])
 
     assert result.value == Decimal('0.5')
-    assert result.data == tuple([Decimal('0.25'), Decimal('0.25')])
+    assert sorted(result.data) == [Decimal('0.25'), Decimal('0.25')]
     assert len(result.courses) == 2
 
 
@@ -246,7 +246,7 @@ def test_sum_credits_from_single_subject__full():
     ])
 
     assert result.value == Decimal('1.0')
-    assert result.data == tuple([Decimal('0.25'), Decimal('0.25'), Decimal('0.25'), Decimal('0.25')])
+    assert sorted(result.data) == [Decimal('0.25'), Decimal('0.25'), Decimal('0.25'), Decimal('0.25')]
     assert len(result.courses) == 4
 
 
@@ -259,7 +259,7 @@ def test_sum_credits_from_single_subject__mixed():
     ])
 
     assert result.value == Decimal('1.0')
-    assert result.data == tuple([Decimal('1')])
+    assert sorted(result.data) == [Decimal('1')]
     assert len(result.courses) == 1
 
 
@@ -270,7 +270,7 @@ def test_sum_credits_from_single_subject__multiple_solutions():
     ])
 
     assert result.value == Decimal('1.0')
-    assert result.data == tuple([Decimal('1')])
+    assert sorted(result.data) == [Decimal('1')]
     assert len(result.courses) == 1
     result_a = list(result.courses)[0]
 
@@ -295,7 +295,7 @@ def test_average_grades__same():
     ])
 
     assert result.value == Decimal('4.0')
-    assert result.data == (Decimal('4.0'), Decimal('4.0'))
+    assert sorted(result.data) == [Decimal('4.0'), Decimal('4.0')]
     assert len(result.courses) == 2
 
 
@@ -306,7 +306,7 @@ def test_average_grades__mixed():
     ])
 
     assert result.value == Decimal('3.0')
-    assert result.data == (Decimal('2.0'), Decimal('4.0'))
+    assert sorted(result.data) == [Decimal('2.0'), Decimal('4.0')]
     assert len(result.courses) == 2
 
 
@@ -317,7 +317,7 @@ def test_average_grades__all_zeroes():
     ])
 
     assert result.value == Decimal('0.0')
-    assert result.data == (Decimal('0.0'), Decimal('0.0'))
+    assert sorted(result.data) == [Decimal('0.0'), Decimal('0.0')]
     assert len(result.courses) == 2
 
 
@@ -330,7 +330,7 @@ def test_average_credits():
     ])
 
     assert result.value == Decimal('0.4375')
-    assert result.data == (Decimal('0.25'), Decimal('0.25'), Decimal('0.25'), Decimal('1'))
+    assert sorted(result.data) == [Decimal('0.25'), Decimal('0.25'), Decimal('0.25'), Decimal('1')]
     assert len(result.courses) == 4
 
 
