@@ -22,11 +22,17 @@ def main() -> None:
     conn = psycopg2.connect('', application_name='degreepath-cli')
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
+    # ensure that we only delete audits that aren't the most recent audit
     with conn.cursor() as curs:
         curs.execute("""
             DELETE
-            FROM result
+            FROM result r
             WHERE expires_at <= CURRENT_TIMESTAMP
+                AND ts < (
+                    SELECT max(ts)
+                    FROM result i
+                    WHERE i.student_id = r.student_id AND i.catalog = r.catalog AND i.area_code = r.area_code
+                )
         """)
 
         print(f"cleared {curs.rowcount:,} expired audit results")
