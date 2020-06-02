@@ -63,7 +63,7 @@ class AreaPointer(Clausable):
             terms_since_declaration=data.get('terms_since_declaration', None),
         )
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:  # noqa: C901
+    def apply_single_clause(self, clause: 'SingleClause') -> bool:
         if clause.key == 'code':
             return clause.compare(self.code)
 
