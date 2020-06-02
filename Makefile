@@ -27,3 +27,22 @@ profile:
 
 nuitka:
 	python3 -m nuitka --standalone --follow-imports --plugin-enable=pylint-warnings --python-flag=no_site --warn-unusual-code --warn-implicit-exceptions dp/__main__.py
+
+requirements: requirements.txt requirements-dev.txt requirements-test.txt requirements-server.txt requirements-excel.txt
+	pip install -U -r requirements-piptools.txt
+	pip-sync $^
+
+requirements.txt: requirements.in
+	pip-compile --generate-hashes $<
+
+requirements-dev.txt: requirements-dev.in
+	pip-compile --generate-hashes $<
+
+requirements-test.txt: requirements-test.in
+	pip-compile --generate-hashes $<
+
+requirements-server.txt: requirements-server.in
+	pip-compile --generate-hashes $<
+
+requirements-excel.txt: requirements-excel.in
+	pip-compile --generate-hashes $<

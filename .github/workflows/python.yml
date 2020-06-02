@@ -33,6 +33,7 @@ jobs:
             -r requirements.txt
             -r requirements-dev.txt
             -r requirements-server.txt
+            -r requirements-test.txt
 
       - name: Lint with flake8
         run: |
@@ -68,10 +69,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-
-      - name: Install Pytest
-        run: pip install pytest
+          pip install -r requirements.txt -r requirements-test.txt
 
       - name: Test with pytest
         run: |
