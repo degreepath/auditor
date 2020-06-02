@@ -1,3 +1,4 @@
+'''
 from typing import List, Iterator, Union, Dict, Optional
 import os
 import json
@@ -105,3 +106,4 @@ def extract_negative_buckets(clause: Clause) -> Iterator[str]:
                 yield clause.expected
             elif clause.operator is Operator.NotIn:
                 yield from clause.expected
+'''
