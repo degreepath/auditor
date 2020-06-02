@@ -29,7 +29,6 @@ nuitka:
 	python3 -m nuitka --standalone --follow-imports --plugin-enable=pylint-warnings --python-flag=no_site --warn-unusual-code --warn-implicit-exceptions dp/__main__.py
 
 requirements: requirements.txt requirements-dev.txt requirements-test.txt requirements-server.txt requirements-excel.txt
-	pip install -U -r requirements-piptools.txt
 	pip-sync $^
 
 requirements.txt: requirements.in
@@ -46,3 +45,5 @@ requirements-server.txt: requirements-server.in
 
 requirements-excel.txt: requirements-excel.in
 	pip-compile --generate-hashes $<
+
+.PHONY: requirements nuitka profile validate push watch test mypy lint flake check all

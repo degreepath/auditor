@@ -17,7 +17,8 @@ Requires Python 3.6+.
 ```shell script
 $ python3 -m venv ./venv
 $ source ./venv/bin/activate  # or ./venv/bin/activate.fish
-$ pip install -r requirements.txt
+$ pip install pip-tools
+$ pip-sync requirements.txt
 $ python3 -m dp --help
 ```
 
