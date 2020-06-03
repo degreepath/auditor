@@ -38,7 +38,7 @@ def batch() -> Iterator[Tuple[Dict, str]]:
     print('fetching stnums to audit')
     r = http.request('GET', BATCH_URL)
 
-    student_ids = set(r.data.decode('utf-8').splitlines())
+    student_ids = set(r.data.decode('utf-8').split())
     student_ids.add('122932')
 
     print(f'fetched list of {len(student_ids):,} stnums to audit')
