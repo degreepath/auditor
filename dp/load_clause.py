@@ -5,7 +5,7 @@ from decimal import Decimal
 from .clause import Clause, AndClause, OrClause, SingleClause
 from .constants import Constants
 from .data.course_enums import GradeOption, GradeCode
-from .operator import Operator
+from .op import Operator
 from .solve import find_best_solution
 from .status import ResultStatus
 

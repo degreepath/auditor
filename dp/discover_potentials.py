@@ -13,7 +13,7 @@ from .base import Base, BaseRequirementRule, BaseCountRule
 from .base.query import QuerySource
 from .rule.query import QueryRule
 from .clause import Clause, AndClause, OrClause, SingleClause
-from .operator import Operator
+from .op import Operator
 
 http = urllib3.PoolManager()
 

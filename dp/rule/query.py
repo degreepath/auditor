@@ -13,7 +13,7 @@ from ..data.clausable import Clausable
 from ..ncr import ncr
 from ..solution.query import QuerySolution
 from ..constants import Constants
-from ..operator import Operator
+from ..op import Operator
 from ..data.course import CourseInstance
 from ..result.assertion import AssertionResult
 from .assertion import AssertionRule

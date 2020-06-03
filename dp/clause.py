@@ -5,7 +5,7 @@ import logging
 
 import attr
 
-from .operator import Operator, apply_operator
+from .op import Operator, apply_operator
 from .data.course_enums import GradeOption, GradeCode
 from .status import ResultStatus
 from .stringify import str_clause

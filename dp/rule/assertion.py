@@ -6,7 +6,7 @@ from decimal import Decimal
 from ..clause import SingleClause, ResolvedSingleClause
 from ..load_clause import load_clause
 from ..constants import Constants
-from ..operator import Operator, apply_operator
+from ..op import Operator, apply_operator
 from ..base.bases import Rule, Solution
 from ..base.assertion import BaseAssertionRule
 from ..apply_clause import apply_clause_to_assertion_with_courses, apply_clause_to_assertion_with_areas, apply_clause_to_assertion_with_data, area_actions, course_actions, other_actions
