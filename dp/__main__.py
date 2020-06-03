@@ -8,12 +8,12 @@ import json
 import sys
 import os
 
-from dp.dotenv import load as load_dotenv
-from dp.run import run, load_student, load_area
-from dp.ms import pretty_ms
-from dp.stringify import summarize
-# from dp.stringify_csv import to_csv
-from dp.audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
+from .dotenv import load as load_dotenv
+from .run import run, load_student, load_area
+from .ms import pretty_ms
+from .stringify import summarize
+# from .stringify_csv import to_csv
+from .audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
 load_dotenv()
 
