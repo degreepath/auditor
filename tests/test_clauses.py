@@ -1,5 +1,5 @@
 from dp.clause import SingleClause
-from dp.operator import Operator, apply_operator
+from dp.op import Operator, apply_operator
 from dp.load_clause import compute_single_clause_diff, load_clause
 from dp.context import RequirementContext
 from dp.data.music import MusicProficiencies
