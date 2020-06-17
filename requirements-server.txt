@@ -40,9 +40,9 @@ psycopg2-binary==2.8.5 \
     --hash=sha256:eb2f43ae3037f1ef5e19339c41cf56947021ac892f668765cd65f8ab9814192e \
     --hash=sha256:fa466306fcf6b39b8a61d003123d442b23707d635a5cb05ac4e1b62cc79105cd \
     # via -r requirements-server.in
-sentry-sdk==0.14.4 \
-    --hash=sha256:0e5e947d0f7a969314aa23669a94a9712be5a688ff069ff7b9fc36c66adc160c \
-    --hash=sha256:799a8bf76b012e3030a881be00e97bc0b922ce35dde699c6537122b751d80e2c \
+sentry-sdk==0.15.0 \
+    --hash=sha256:c24428f04eb7fc77c6f2a4d32c58656bf347855b39930dc8947384226ac55daa \
+    --hash=sha256:ce5493d5ce4f0760661381c156a93667003c97c92ce04282d399d19fa79c8941 \
     # via -r requirements-server.in
 urllib3==1.25.9 \
     --hash=sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527 \
