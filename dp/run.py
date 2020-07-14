@@ -87,7 +87,7 @@ def find_area(*, root: Union[str, pathlib.Path], catalog: str, code: str) -> pat
     return root / earliest / (code + '.yaml')
 
 
-def load_area(filename: str) -> Dict:
+def load_area(filename: Union[str, pathlib.Path]) -> Dict:
     with open(filename, "r", encoding="utf-8") as infile:
         return cast(Dict, yaml.load(stream=infile, Loader=yaml.SafeLoader))
 
