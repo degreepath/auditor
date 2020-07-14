@@ -1,7 +1,8 @@
-from typing import Iterator, Dict, cast
+from typing import Iterator, Dict, Union, cast
 import json
 import csv
 import sys
+import pathlib
 
 import yaml
 
@@ -59,6 +60,31 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
 def load_student(filename: str) -> Dict:
     with open(filename, "r", encoding="utf-8") as infile:
         return cast(Dict, json.load(infile))
+
+
+def find_area(*, root: Union[str, pathlib.Path], catalog: str, code: str) -> pathlib.Path:
+    """Locates the area file for a (catalog, name) identifier.
+
+    The algorithm here goes something like this: If we get (2012, BA), and we have 2008/BA, we first
+    check 2012/BA, then 2011/BA, then 2010/BA... etc, until we find (2008, BA).
+    """
+
+    if len(catalog) == 4:
+        int_catalog = int(catalog)
+        catalog = f"{int_catalog}-{str(int_catalog+1)[2:]}"
+
+    root = pathlib.Path(root)
+
+    options = root.glob(f'*/{code}.yaml')
+    all_years = [opt.parent.name for opt in options]
+    years = [year for year in all_years if year >= catalog]
+
+    if not years:
+        raise FileNotFoundError(f'no area specification file located in {root} for catalog >= {catalog!r} and code = {code!r}')
+
+    earliest = min(years)
+
+    return root / earliest / (code + '.yaml')
 
 
 def load_area(filename: str) -> Dict:

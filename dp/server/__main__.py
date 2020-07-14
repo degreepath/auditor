@@ -14,7 +14,7 @@ import psycopg2.extensions  # type: ignore
 import sentry_sdk
 
 from dp.dotenv import load as load_dotenv
-from dp.run import load_area
+from dp.run import load_area, find_area
 
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
@@ -114,10 +114,10 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
             break
 
         area_id = area_catalog + '/' + area_code
-        area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
         try:
             logger.info(f'[q={queue_id}] begin  {student_id}::{area_id}')
 
+            area_path = find_area(root=area_root, catalog=area_catalog, code=area_code)
             area_spec = load_area(area_path)
 
             # run the audit

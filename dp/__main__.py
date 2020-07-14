@@ -9,7 +9,7 @@ import sys
 import os
 
 from .dotenv import load as load_dotenv
-from .run import run, load_student, load_area
+from .run import run, load_student, load_area, find_area
 from .ms import pretty_ms
 from .stringify import summarize
 # from .stringify_csv import to_csv
@@ -27,6 +27,8 @@ def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--area", dest="area_file", help="the area specification file")
+    parser.add_argument("--area-root", dest="area_root", help="")
+    parser.add_argument("--area-code", dest="area_code", help="")
     parser.add_argument("--student", dest="student_file", help="the student data file")
     parser.add_argument("--loglevel", dest="loglevel", choices=("warn", "debug", "info", "critical"), default="info")
     parser.add_argument("--json", action='store_true', help="output results as json")
@@ -68,10 +70,17 @@ def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
     )
 
     student = load_student(cli_args.student_file)
-    area_spec = load_area(cli_args.area_file)
+    if cli_args.area_file:
+        area_path = cli_args.area_file
+    elif cli_args.area_root:
+        area_path = find_area(root=cli_args.area_root, catalog=student['catalog'], code=cli_args.area_code)
+    else:
+        raise Exception('expected --area or --area-root')
+
+    area_spec = load_area(area_path)
 
     if not cli_args.quiet:
-        print(f"auditing #{student['stnum']} against {cli_args.area_file}", file=sys.stderr)
+        print(f"auditing #{student['stnum']} against {area_path}", file=sys.stderr)
 
     for msg in run(args, student=student, area_spec=area_spec):
         if isinstance(msg, NoAuditsCompletedMsg):
