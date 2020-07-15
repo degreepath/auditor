@@ -135,6 +135,9 @@ class QueryRule(Rule, BaseQueryRule):
         force_inserted_clbids: Tuple[str, ...] = tuple()
         if self.source in (QuerySource.Courses, QuerySource.Claimed):
             for insert in ctx.get_insert_exceptions(self.path):
+                if insert.clbid in self.excluded_clbids:
+                    continue
+
                 inserted_clbids = (*inserted_clbids, insert.clbid)
                 if insert.forced:
                     force_inserted_clbids = (*force_inserted_clbids, insert.clbid)
@@ -231,14 +234,7 @@ class QueryRule(Rule, BaseQueryRule):
         return any(apply_clause(self.where, item) for item in self.get_data(ctx=ctx))
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['Clausable']:
-        matches = list(self.get_data(ctx=ctx))
-
-        if self.where is not None:
-            matches = [item for item in matches if apply_clause(self.where, item)]
-
-        for insert in ctx.get_insert_exceptions(self.path):
-            matches.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
-
+        matches, _, _ = self.get_filtered_data(ctx=ctx)
         return matches
 
     def is_always_disjoint(self) -> bool:
