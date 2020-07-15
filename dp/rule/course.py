@@ -142,6 +142,9 @@ class CourseRule(Rule, BaseCourseRule):
         for insert in ctx.get_insert_exceptions(self.path):
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
 
+            if matched_course.clbid in self.excluded_clbids:
+                continue
+
             did_yield = True
             if insert.forced:
                 logger.debug('force-inserting %r into %s due to override', matched_course, self.path)
@@ -155,6 +158,9 @@ class CourseRule(Rule, BaseCourseRule):
         # claim courses while generating possibilities, so the from_claimed
         # list is always empty.
         for matched_course in ctx.find_courses(rule=self):
+            if matched_course.clbid in self.excluded_clbids:
+                continue
+
             if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
                 logger.debug('course matching %r exists, but the grade of %s is below the allowed minimum grade of %s [at %s]', self.identifier(), matched_course.grade_points, self.grade, self.path)
                 continue
