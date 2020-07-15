@@ -199,11 +199,20 @@ class CourseRule(Rule, BaseCourseRule):
             return False
 
     def all_matches(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
+        return list(self._all_matches(ctx=ctx))
+
+    def _all_matches(self, *, ctx: 'RequirementContext') -> Iterator['CourseInstance']:
         for insert in ctx.get_insert_exceptions(self.path):
+            if insert.clbid in self.excluded_clbids:
+                continue
             match = ctx.find_course_by_clbid(insert.clbid)
-            return [match] if match else []
+            if match:
+                yield match
 
         if self.from_claimed:
-            return []
+            return
 
-        return list(ctx.find_courses(rule=self))
+        for c in ctx.find_courses(rule=self):
+            if c.clbid in self.excluded_clbids:
+                continue
+            yield c
