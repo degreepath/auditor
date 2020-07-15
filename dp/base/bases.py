@@ -6,6 +6,7 @@ import attr
 from functools import cmp_to_key, lru_cache
 from ..status import ResultStatus, PassingStatuses
 from ..claim import Claim
+from ..exception import BlockException
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -138,6 +139,9 @@ class Rule(Base):
         raise NotImplementedError('must define a get_required_courses() method')
 
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'Rule':
+        return self
+
+    def apply_block_exception(self, to_block: BlockException) -> 'Rule':
         return self
 
     @abc.abstractmethod

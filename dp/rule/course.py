@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
+from typing import Dict, List, FrozenSet, Iterator, Collection, Optional, TYPE_CHECKING
 import logging
 
 from ..base import Rule, BaseCourseRule
@@ -7,6 +7,7 @@ from ..constants import Constants
 from ..lib import str_to_grade_points
 from ..solution.course import CourseSolution
 from ..data.course_enums import GradeOption
+from ..exception import BlockException
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -19,6 +20,7 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
     auto_waived: bool = False
+    excluded_clbids: FrozenSet[str] = frozenset()
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -119,6 +121,13 @@ class CourseRule(Rule, BaseCourseRule):
             return tuple(matches)
 
         return tuple()
+
+    def apply_block_exception(self, to_block: BlockException) -> 'CourseRule':
+        if self.path != to_block.path:
+            return self
+
+        logger.debug('%s excluding blocked clbid %s', self.path, to_block.clbid)
+        return attr.evolve(self, excluded_clbids=frozenset([*self.excluded_clbids, to_block.clbid]))
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         if self.auto_waived or ctx.get_waive_exception(self.path):

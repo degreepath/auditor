@@ -8,6 +8,7 @@ from ..solution.requirement import RequirementSolution
 from ..rule.query import QueryRule
 from ..solve import find_best_solution
 from ..status import PassingStatuses
+from ..exception import BlockException
 
 from ..autop import autop
 
@@ -126,6 +127,13 @@ class RequirementRule(Rule, BaseRequirementRule):
             return self
 
         result = self.result.exclude_required_courses(to_exclude)
+        return attr.evolve(self, result=result)
+
+    def apply_block_exception(self, to_block: BlockException) -> 'RequirementRule':
+        if not self.result:
+            return self
+
+        result = self.result.apply_block_exception(to_block)
         return attr.evolve(self, result=result)
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
