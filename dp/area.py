@@ -12,7 +12,7 @@ from .data.course import CourseInstance
 from .data.area_pointer import AreaPointer
 from .data.area_enums import AreaType
 from .data.student import Student
-from .exception import RuleException, InsertionException
+from .exception import RuleException, InsertionException, BlockException
 from .limit import LimitSet
 from .load_rule import load_rule
 from .result.count import CountResult
@@ -113,6 +113,13 @@ class AreaOfStudy(Base):
 
             excluded_idents = sorted(set(f"{crs.identity_}:{crs.clbid}" for crs in required_courses))
             logger.debug('excluding %s', excluded_idents)
+
+        # Apply "block" exceptions to prevent courses from going places they shouldn't
+        for exception in exceptions:
+            if not isinstance(exception, BlockException):
+                continue
+
+            result = result.apply_block_exception(exception)
 
         limit = LimitSet.load(data=specification.get("limit", None), c=c)
 
