@@ -147,7 +147,7 @@ class AreaOfStudy(Base):
                 dept_code=dept,
                 degree=degree,
                 area_code=this_code,
-            ))
+            )),
         )
 
     def validate(self) -> None:
