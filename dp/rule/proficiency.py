@@ -52,9 +52,6 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
             return self.course.get_required_courses(ctx=ctx)
         return tuple()
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'ProficiencyRule':
-        return self
-
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[ProficiencySolution]:
         if ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)

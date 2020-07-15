@@ -65,9 +65,6 @@ class AssertionRule(Rule, BaseAssertionRule):
     def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
         return tuple()
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'AssertionRule':
-        return self
-
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:
         raise Exception('this method should not be called')
 

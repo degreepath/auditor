@@ -115,9 +115,6 @@ class CourseRule(Rule, BaseCourseRule):
 
         return tuple()
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'CourseRule':
-        return self
-
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         if self.auto_waived or ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)

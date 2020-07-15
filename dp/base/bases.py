@@ -137,9 +137,8 @@ class Rule(Base):
     def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
         raise NotImplementedError('must define a get_required_courses() method')
 
-    @abc.abstractmethod
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'Rule':
-        raise NotImplementedError('must define an exclude_required_courses() method')
+        return self
 
     @abc.abstractmethod
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[Solution]:

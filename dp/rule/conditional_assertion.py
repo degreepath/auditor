@@ -75,9 +75,6 @@ class ConditionalAssertionRule(Rule):
     def get_required_courses(self, *, ctx: 'RequirementContext') -> Collection['CourseInstance']:
         return self.when_yes.get_required_courses(ctx=ctx)
 
-    def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'ConditionalAssertionRule':
-        return self
-
     def resolve_conditional(self, input: Sequence['Clausable']) -> Optional[AssertionRule]:
         if self.condition.where is not None:
             filtered_input = tuple(item for item in input if apply_clause(self.condition.where, item))
