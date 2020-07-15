@@ -1,4 +1,5 @@
-from typing import Iterator, Dict, cast
+from typing import Iterator, Dict, Union, cast
+import pathlib
 import json
 import csv
 import sys
@@ -61,9 +62,27 @@ def load_student(filename: str) -> Dict:
         return cast(Dict, json.load(infile))
 
 
-def load_area(filename: str) -> Dict:
-    with open(filename, "r", encoding="utf-8") as infile:
-        return cast(Dict, yaml.load(stream=infile, Loader=yaml.SafeLoader))
+def load_area(filename: Union[str, pathlib.Path]) -> Dict:
+    try:
+        with open(filename, "r", encoding="utf-8") as infile:
+            return cast(Dict, yaml.load(stream=infile, Loader=yaml.SafeLoader))
+
+    except FileNotFoundError:
+        filepath = pathlib.Path(filename)
+
+        return {
+            'name': filepath.stem,
+            'type': 'error',
+            'code': filepath.stem,
+
+            'result': {
+                'all': [{
+                    'name': 'Error',
+                    'message': f'The {filepath.stem!r} area specification for this catalog year has not yet been transcribed.',
+                    'department_audited': True,
+                }],
+            },
+        }
 
 
 def gpa_only(student: Student) -> None:
