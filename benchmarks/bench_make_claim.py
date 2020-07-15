@@ -2,7 +2,7 @@ import pytest
 from collections import defaultdict
 
 from dp.context import RequirementContext
-from dp.data import course_from_str
+from dp.data.course import course_from_str
 
 
 def do_claim(*, course, path, context, allow_claimed):
