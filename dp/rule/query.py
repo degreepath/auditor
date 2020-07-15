@@ -87,9 +87,9 @@ class QueryRule(Rule, BaseQueryRule):
         )
 
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'QueryRule':
-        clbids = frozenset(c.clbid for c in to_exclude)
+        clbids = set(c.clbid for c in to_exclude)
         logger.debug('%s excluding required courses: %s', self.path, clbids)
-        return attr.evolve(self, excluded_clbids=clbids)
+        return attr.evolve(self, excluded_clbids=frozenset([*self.excluded_clbids, *clbids]))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.assertions:
