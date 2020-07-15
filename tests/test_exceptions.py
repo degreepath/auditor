@@ -50,12 +50,12 @@ def test_multi_insertion_on_course_rule(caplog):
 
     course_a = course_from_str("OTHER 123", clbid="0")
     course_b = course_from_str("OTHER 234", clbid="1")
-    course_c = course_from_str("OTHER 235", clbid="1")
+    course_c = course_from_str("OTHER 235", clbid="2")
     transcript = [course_a, course_b, course_c]
 
     area = AreaOfStudy.load(specification={"result": {"course": "DEPT 345"}}, c=c, student=Student.load(dict(courses=transcript)), exceptions=[exception, exception2])
     solutions = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[exception, exception2]))
-    assert len(solutions) == 1
+    assert len(solutions) == 2
 
     result = solutions[0].audit()
 

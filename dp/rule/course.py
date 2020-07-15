@@ -135,7 +135,10 @@ class CourseRule(Rule, BaseCourseRule):
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
 
             did_yield = True
-            yield CourseSolution.from_rule(rule=self, course=matched_course, was_forced=True)
+            if insert.forced:
+                yield CourseSolution.from_rule(rule=self, course=matched_course, was_inserted=True, was_forced=True)
+            else:
+                yield CourseSolution.from_rule(rule=self, course=matched_course, was_inserted=True, was_forced=False)
 
         for matched_course in ctx.find_courses(rule=self, from_claimed=self.from_claimed):
             if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:

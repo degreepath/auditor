@@ -19,7 +19,7 @@ class CourseSolution(Solution, BaseCourseRule):
     was_forced: bool = False
 
     @staticmethod
-    def from_rule(*, rule: BaseCourseRule, course: Optional['CourseInstance'], was_forced: bool = False, overridden: bool = False) -> 'CourseSolution':
+    def from_rule(*, rule: BaseCourseRule, course: Optional['CourseInstance'], was_inserted: bool = False, was_forced: bool = False, overridden: bool = False) -> 'CourseSolution':
         return CourseSolution(
             course=rule.course,
             clbid=rule.clbid,
@@ -31,7 +31,7 @@ class CourseSolution(Solution, BaseCourseRule):
             ap=rule.ap,
             institution=rule.institution,
             name=rule.name,
-            inserted=rule.inserted,
+            inserted=rule.inserted or was_inserted,
             grade_option=rule.grade_option,
             optional=rule.optional,
             year=rule.year,
