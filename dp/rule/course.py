@@ -123,12 +123,34 @@ class CourseRule(Rule, BaseCourseRule):
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[CourseSolution]:
         if self.auto_waived or ctx.get_waive_exception(self.path):
             logger.debug("forced override on %s", self.path)
-            yield CourseSolution.from_rule(rule=self, overridden=True)
+            yield CourseSolution.from_rule(rule=self, course=None, overridden=True)
             return
 
         logger.debug('%s reference to course "%s"', self.path, self.course)
 
-        yield CourseSolution.from_rule(rule=self)
+        did_yield = False
+
+        for insert in ctx.get_insert_exceptions(self.path):
+            logger.debug('inserting %s into %s due to override', insert.clbid, self)
+            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
+
+            did_yield = True
+            yield CourseSolution.from_rule(rule=self, course=matched_course, was_forced=True)
+
+        for matched_course in ctx.find_courses(rule=self, from_claimed=self.from_claimed):
+            if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
+                logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.identifier(), matched_course.grade_points, self.grade)
+                continue
+
+            if self.grade_option is not None and matched_course.grade_option != self.grade_option:
+                logger.debug('%s course "%s" exists, but the course was taken %s, and the area requires that it be taken %s', self.path, self.identifier(), matched_course.grade_option, self.grade_option)
+                continue
+
+            did_yield = True
+            yield CourseSolution.from_rule(rule=self, course=matched_course)
+
+        if not did_yield:
+            yield CourseSolution.from_rule(rule=self, course=None)
 
     def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
         return 1
