@@ -4,7 +4,6 @@ import logging
 
 from ..base import Solution, BaseCourseRule
 from ..result.course import CourseResult
-from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
