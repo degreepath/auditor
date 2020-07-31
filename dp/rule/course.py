@@ -110,6 +110,11 @@ class CourseRule(Rule, BaseCourseRule):
 
         matches = self.all_matches(ctx=ctx)
 
+        # prevent inserted clbids from being counted as "required" courses,
+        # because required courses are automatically excluded from query rules
+        for insert in ctx.get_insert_exceptions(self.path):
+            matches = [m for m in matches if m.clbid != insert.clbid]
+
         if len(matches) == 1:
             return tuple(matches)
 
