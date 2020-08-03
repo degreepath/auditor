@@ -144,20 +144,20 @@ class LimitSet:
             may_yield = True
 
             for limit in self.limits:
-                logger.debug("limit/check: checking %s against %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
+                logger.debug("limit/check: checking %r against %s (counter: %s)", c, limit, clause_counters[limit])
                 if apply_clause(limit.where, c):
                     if clause_counters[limit] >= limit.at_most:
-                        logger.debug("limit/maximum: %s matched %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
+                        logger.debug("limit/maximum: %r matched %s (counter: %s)", c, limit, clause_counters[limit])
                         may_yield = False
                         # break out of the loop once we fill up any limit clause
                         break
 
-                    logger.debug("limit/increment: %s matched %s (counter: %s)", c.verbose(), limit, clause_counters[limit])
+                    logger.debug("limit/increment: %r matched %s (counter: %s)", c, limit, clause_counters[limit])
                     clause_counters[limit] += 1
 
             if may_yield is True:
-                logger.debug("limit/state: %s", clause_counters)
-                logger.debug("limit/allow: %s", c.verbose())
+                logger.debug("limit/state: %r", clause_counters)
+                logger.debug("limit/allow: %r", c)
                 yield c
 
     def check(self, courses: Collection['CourseInstance']) -> bool:
@@ -210,7 +210,7 @@ class LimitSet:
 
         # step 0: figure out which courses have been force-inserted and will thus bypass the limit check
         forced_items = {c.clbid: c for c in all_courses if c.clbid in forced_clbids}
-        logger.debug("limit: forced items: %s", [c.course_with_term() for c in forced_items.values()])
+        logger.debug("limit: forced items: %r", forced_items)
 
         # step 1: find the number of extra iterations we will need for each limiting clause
         matched_items: Dict = defaultdict(set)
@@ -218,16 +218,16 @@ class LimitSet:
             logger.debug("limit/probe: checking against %s", limit)
             for c in courses:
                 if c.clbid in forced_items:
-                    logger.debug("limit/probe: skipping check of %s as it has been forced", c.verbose())
+                    logger.debug("limit/probe: skipping check of %r as it has been forced", c)
                     continue
-                logger.debug("limit/probe: checking %s", c.verbose())
+                logger.debug("limit/probe: checking %r")
                 if apply_clause(limit.where, c):
                     matched_items[limit].add(c)
 
         all_matched_items = set(item for match_set in matched_items.values() for item in match_set)
         unmatched_items = list(all_courses.difference(all_matched_items))
 
-        logger.debug("limit: unmatched items: %s", [c.course_with_term() for c in unmatched_items])
+        logger.debug("limit: unmatched items: %r", unmatched_items)
 
         # we need to attach _a_ combo from each limit clause
         clause_iterators = [
@@ -240,11 +240,11 @@ class LimitSet:
             these_items = frozenset(item for group in results for item in group)
 
             if not self.check(these_items):
-                logger.debug("limit: invalid collection: %s", [c.course_with_term() for c in unmatched_items])
+                logger.debug("limit: invalid collection: %r", unmatched_items)
                 continue
 
             if these_items in emitted_solutions:
-                logger.debug("limit: duplicate collection: %s", [c.course_with_term() for c in unmatched_items])
+                logger.debug("limit: duplicate collection: %r", unmatched_items)
                 continue
             else:
                 emitted_solutions.add(these_items)
@@ -252,7 +252,7 @@ class LimitSet:
             this_combo = [*unmatched_items, *these_items]
             this_combo.sort(key=lambda c: c.sort_order())
 
-            logger.debug("limit: emitting: %s", [c.course_with_term() for c in this_combo])
+            logger.debug("limit: emitting: %r", this_combo)
             yield tuple(this_combo)
 
     def estimate(self, courses: Collection['CourseInstance']) -> int:

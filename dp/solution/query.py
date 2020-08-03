@@ -106,10 +106,10 @@ class QuerySolution(Solution, BaseQueryRule):
                 claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed or was_forced)
 
                 if claim.failed:
-                    if debug: logger.debug('%s course "%s" exists, but has already been claimed by other rules', self.path, course.clbid)
+                    if debug: logger.debug('%r exists, but has already been claimed by other rules (at %s)', course, self.path)
                     failed_claims.append(claim)
                 else:
-                    if debug: logger.debug('%s course "%s" exists, and is available', self.path, course.clbid)
+                    if debug: logger.debug('%r exists, and is available (at %s)', course, self.path)
                     successful_claims.append(claim)
                     claimed_items.append(course)
 
@@ -121,7 +121,7 @@ class QuerySolution(Solution, BaseQueryRule):
                 claimed_items.append(course)
 
         else:
-            if debug: logger.debug('%s courses "%s" exist, and is available', self.path, output)
+            if debug: logger.debug('%s courses "%s" exist, and are available', self.path, output)
             claimed_items = list(output)
 
         return AuditResult(

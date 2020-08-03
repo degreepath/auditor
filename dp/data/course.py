@@ -14,7 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 logger = logging.getLogger(__name__)
 
 
-@attr.s(slots=True, kw_only=True, frozen=True, auto_attribs=True, order=False, hash=False)
+@attr.s(slots=True, kw_only=True, frozen=True, auto_attribs=True, order=False, hash=False, repr=False)
 class CourseInstance(Clausable):
     clbid: str
     attributes: Tuple[str, ...]
@@ -54,10 +54,10 @@ class CourseInstance(Clausable):
     hash_cache_: Optional[int] = None
 
     def __str__(self) -> str:
-        return self.identity_
+        return self.verbose()
 
     def __repr__(self) -> str:
-        return f'Course("{self.identity_}")'
+        return f'Course({self.verbose()!r})'
 
     def __hash__(self) -> int:
         if self.hash_cache_ is None:

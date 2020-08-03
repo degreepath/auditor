@@ -55,10 +55,10 @@ class CourseSolution(Solution, BaseCourseRule):
             assert claim.failed is False
 
         if claim.failed:
-            logger.debug('%s course "%s" could not be claimed', self.path, self.identifier())
+            logger.debug('%r exists, but has already been claimed by other rules (at %s)', self.matched_course, self.path)
             return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=False)
 
-        logger.debug('%s course "%s" exists, and has not been claimed', self.path, self.matched_course.course())
+        logger.debug('%r exists, and is available (at %s)', self.matched_course, self.path)
         return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=False)
 
     def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
