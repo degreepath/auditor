@@ -46,9 +46,14 @@ class CourseSolution(Solution, BaseCourseRule):
             return CourseResult.from_solution(solution=self, overridden=self.overridden)
 
         if self.matched_course is None:
-            logger.debug('%s no courses matching "%s" were found', self.path, self.identifier())
+            logger.debug('%s no courses matching "%s"', self.path, self.identifier())
             return CourseResult.from_solution(solution=self, claim_attempt=None, overridden=False)
 
+        if self.from_claimed and not ctx.has_claim(clbid=self.matched_course.clbid):
+            logger.debug('%s no pre-claimed courses matching "%s"', self.path, self.identifier())
+            return CourseResult.from_solution(solution=self, claim_attempt=None, overridden=False)
+
+        logger.debug('attempting claim for %s at %s', self.matched_course, self.path)
         claim = ctx.make_claim(course=self.matched_course, path=self.path, allow_claimed=self.was_forced or self.allow_claimed)
 
         if self.from_claimed:

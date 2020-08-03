@@ -86,4 +86,4 @@ class BaseCourseRule(Base):
 
     def identifier(self) -> str:
         items = {'course': self.course, 'ap': self.ap, 'name': self.name, 'institution': self.institution}
-        return ' '.join(f"{k}:{v}" for k, v in items.items())
+        return ', '.join(f"{k}={v}" for k, v in items.items())

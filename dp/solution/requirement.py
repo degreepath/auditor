@@ -1,11 +1,14 @@
 import attr
 from typing import Optional, Union, TYPE_CHECKING
+import logging
 
 from ..base import BaseRequirementRule, Solution, RuleState, Rule
 from ..result.requirement import RequirementResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
+
+logger = logging.getLogger(__name__)
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -34,6 +37,8 @@ class RequirementSolution(Solution, BaseRequirementRule):
         return self.result.state()
 
     def audit(self, *, ctx: 'RequirementContext') -> RequirementResult:
+        logger.debug('auditing requirement %s', self.path)
+
         if self.overridden:
             return RequirementResult.from_solution(
                 solution=self,

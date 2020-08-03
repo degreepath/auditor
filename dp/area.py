@@ -207,6 +207,8 @@ class AreaOfStudy(Base):
                 # or else we accidentally clear the independently-solved claims
                 ctx = ctx.with_empty_claims()
 
+                logger.debug('completed solution #%d', i)
+
         logger.debug("all solutions generated")
 
     def estimate(self, *, student: Student, exceptions: List[RuleException]) -> int:
@@ -262,6 +264,7 @@ class AreaSolution(AreaOfStudy):
         )
 
     def audit(self) -> 'AreaResult':
+        logger.debug("auditing area solution")
         result = self.solution.audit(ctx=self.context)
 
         # Append the "common" major requirements, if we've audited a major.
@@ -272,9 +275,12 @@ class AreaSolution(AreaOfStudy):
 
             result = attr.evolve(result, items=tuple([*result.items, common_req_results]), count=result.count + 1)
 
+        logger.debug("audit complete")
+
         return AreaResult.from_solution(area=self, result=result, ctx=self.context)
 
     def audit_common_major_requirements(self, result: Result) -> RequirementResult:
+        logger.debug("auditing area solution's common major requirements")
         claimed: Set[CourseInstance] = result.matched()
 
         c_or_better__path = self.common_rules[0].path
@@ -360,13 +366,20 @@ class AreaResult(AreaOfStudy, Result):
         return grade_point_average(courses)
 
     def status(self) -> ResultStatus:
+        logger.debug("computing status: start")
         if self.waived():
+            logger.debug("computing status: end")
             return ResultStatus.Waived
 
-        return self.result.status()
+        s = self.result.status()
+        logger.debug("computing status: end")
+        return s
 
     def rank(self) -> Tuple[decimal.Decimal, decimal.Decimal]:
-        return self.result.rank()
+        logger.debug("computing rank: start")
+        r = self.result.rank()
+        logger.debug("computing rank: end")
+        return r
 
     def claims(self) -> List[Claim]:
         return self.result.claims()

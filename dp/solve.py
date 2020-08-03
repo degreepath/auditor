@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims: bool = False) -> Optional['Result']:
-    logger.debug('solving rule at %s', rule.path)
+    logger.debug('solving rule: start; at %s', rule.path)
 
     best_result: Optional['Result'] = None
     best_result_index: Optional[int] = None
@@ -50,6 +50,6 @@ def find_best_solution(*, rule: 'Rule', ctx: 'RequirementContext', merge_claims:
     if merge_claims and inner_ctx:
         ctx.set_claims({**claims, **inner_ctx.claims})
 
-    logger.debug('rule at %s solved: rank %s, iteration %s', rule.path, best_rank, best_result_index)
+    logger.debug('solving rule: done; at %s solved: rank %s, iteration %s', rule.path, best_rank, best_result_index)
 
     return best_result

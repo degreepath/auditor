@@ -63,6 +63,9 @@ class QuerySolution(Solution, BaseQueryRule):
         }
 
     def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
+        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+        if debug: logger.debug("auditing data for %s", self.path)
+
         if self.overridden:
             return QueryResult.from_solution(
                 solution=self,
@@ -85,6 +88,8 @@ class QuerySolution(Solution, BaseQueryRule):
 
         resolved_assertions = tuple(self.apply_assertions(audit_result.claimed_items, ctx=ctx))
 
+        logger.debug("done auditing data for %s", self.path)
+
         return QueryResult.from_solution(
             solution=self,
             resolved_assertions=resolved_assertions,
@@ -98,6 +103,8 @@ class QuerySolution(Solution, BaseQueryRule):
         claimed_items: List[Clausable] = []
         successful_claims: List[Claim] = []
         failed_claims: List[Claim] = []
+
+        if debug: logger.debug("auditing courses for %s", self.path)
 
         output: Sequence['CourseInstance'] = cast(Sequence['CourseInstance'], self.output)
         if self.attempt_claims:
@@ -123,6 +130,8 @@ class QuerySolution(Solution, BaseQueryRule):
         else:
             if debug: logger.debug('%s courses "%s" exist, and are available', self.path, output)
             claimed_items = list(output)
+
+        if debug: logger.debug("done auditing courses for %s", self.path)
 
         return AuditResult(
             claimed_items=tuple(claimed_items),
