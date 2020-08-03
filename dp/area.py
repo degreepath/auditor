@@ -186,7 +186,9 @@ class AreaOfStudy(Base):
                 including_failed=student.courses_with_failed,
             )
 
-            for sol in self.result.solutions(ctx=ctx, depth=1):
+            for i, sol in enumerate(self.result.solutions(ctx=ctx, depth=1)):
+                logger.debug('beginning solution #%d', i)
+
                 if use_optimization:
                     all_claims = sol.all_courses(ctx=ctx)
 
