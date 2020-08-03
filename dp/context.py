@@ -80,6 +80,9 @@ class RequirementContext:
     def all_claimed(self) -> List[CourseInstance]:
         return [self.clbid_lookup_map_[clbid] for clbid in self.claims.keys()]
 
+    def has_claim(self, *, clbid: str) -> bool:
+        return clbid in self.claims and len(self.claims[clbid]) > 0
+
     def find_courses(self, *, rule: BaseCourseRule, from_claimed: bool = False) -> Iterator[CourseInstance]:
         if rule.clbid:
             clbid_match = self.find_course_by_clbid(rule.clbid)

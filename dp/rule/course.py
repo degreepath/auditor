@@ -140,7 +140,11 @@ class CourseRule(Rule, BaseCourseRule):
             else:
                 yield CourseSolution.from_rule(rule=self, course=matched_course, was_inserted=True, was_forced=False)
 
-        for matched_course in ctx.find_courses(rule=self, from_claimed=self.from_claimed):
+        # we ignore from_claimed here, because we check it again in
+        # CourseSolution.audit; we cannot check it here because we do not
+        # claim courses while generating possibilities, so the from_claimed
+        # list is always empty.
+        for matched_course in ctx.find_courses(rule=self):
             if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
                 logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.identifier(), matched_course.grade_points, self.grade)
                 continue
