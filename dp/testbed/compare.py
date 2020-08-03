@@ -123,6 +123,6 @@ def compare(args: argparse.Namespace) -> None:
             writer.writerow(record)
 
         counter = {k: v.quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN) for k, v in counter.items()}
-        writer.writerow({**counter, 'stnum': 'totals', 'catalog': '=======', 'code': '==='})
+        writer.writerow({**counter, 'stnum': 'totals', 'catalog': '=======', 'code': '===='})
         averages = {k: (v / len(results)).quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN) for k, v in counter.items()}
-        writer.writerow({**averages, 'stnum': 'avg', 'catalog': '=======', 'code': '==='})
+        writer.writerow({**averages, 'stnum': 'avg', 'catalog': '=======', 'code': '===='})
