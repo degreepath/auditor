@@ -139,6 +139,10 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         yield NoAuditsCompletedMsg()
         return
 
+    if args.print_all:
+        # avoid printing the "best" solution twice
+        return
+
     elapsed_ms = ms_since(start)
     yield ResultMsg(
         result=best_sol,
