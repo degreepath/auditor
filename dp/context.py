@@ -212,7 +212,7 @@ class RequirementContext:
             debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         if debug:
-            logger.debug('attempting claim for %r at %s', course, path)
+            logger.debug('attempting claim for %r [at %s]', course, path)
 
         # If the `.allow_claimed` option is set, the claim succeeds (and is
         # not recorded).

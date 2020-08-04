@@ -43,6 +43,7 @@ class CourseSolution(Solution, BaseCourseRule):
 
     def audit(self, *, ctx: 'RequirementContext') -> CourseResult:
         if self.overridden:
+            logger.debug('overridden course requirement %r [at %s]', self.identifier(), self.path)
             return CourseResult.from_solution(solution=self, overridden=self.overridden)
 
         if self.matched_course is None:
@@ -53,7 +54,6 @@ class CourseSolution(Solution, BaseCourseRule):
             logger.debug('no pre-claimed courses matching %r [at %s]', self.identifier(), self.path)
             return CourseResult.from_solution(solution=self, claim_attempt=None, overridden=False)
 
-        logger.debug('attempting claim for %r [at %s]', self.matched_course, self.path)
         claim = ctx.make_claim(course=self.matched_course, path=self.path, allow_claimed=self.was_forced or self.allow_claimed)
 
         if self.from_claimed:
