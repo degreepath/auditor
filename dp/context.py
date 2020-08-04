@@ -240,11 +240,11 @@ class RequirementContext:
         # If there are no applicable multicountable sets, return a claim
         # attempt against the prior claims.
         if prior_claims:
-            if debug: logger.debug('claim denied; no multicountable reqpaths; conflicts with %s', course, prior_claims)
+            if debug: logger.debug('claim denied; no multicountable reqpaths; conflicts with %s', prior_claims)
             return Claim(course=course, claimed_by=path, failed=True)
 
         # If there are no prior claims, it is automatically successful.
-        if debug: logger.debug('claim approved; no multicountable reqpaths; no conflicts', course)
+        if debug: logger.debug('claim approved; no multicountable reqpaths; no conflicts')
         claim = Claim(course=course, claimed_by=path, failed=False)
         self.claims[course.clbid].append(claim)
         return claim

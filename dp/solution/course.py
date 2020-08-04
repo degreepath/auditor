@@ -46,24 +46,24 @@ class CourseSolution(Solution, BaseCourseRule):
             return CourseResult.from_solution(solution=self, overridden=self.overridden)
 
         if self.matched_course is None:
-            logger.debug('%s no courses matching "%s"', self.path, self.identifier())
+            logger.debug('no courses matching %r [at %s]', self.identifier(), self.path)
             return CourseResult.from_solution(solution=self, claim_attempt=None, overridden=False)
 
         if self.from_claimed and not ctx.has_claim(clbid=self.matched_course.clbid):
-            logger.debug('%s no pre-claimed courses matching "%s"', self.path, self.identifier())
+            logger.debug('no pre-claimed courses matching %r [at %s]', self.identifier(), self.path)
             return CourseResult.from_solution(solution=self, claim_attempt=None, overridden=False)
 
-        logger.debug('attempting claim for %r at %s', self.matched_course, self.path)
+        logger.debug('attempting claim for %r [at %s]', self.matched_course, self.path)
         claim = ctx.make_claim(course=self.matched_course, path=self.path, allow_claimed=self.was_forced or self.allow_claimed)
 
         if self.from_claimed:
             assert claim.failed is False
 
         if claim.failed:
-            logger.debug('%r exists, but has already been claimed by other rules (at %s)', self.matched_course, self.path)
+            logger.debug('%r exists, but has already been claimed by other rules [at %s]', self.matched_course, self.path)
             return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=False)
 
-        logger.debug('%r exists, and is available (at %s)', self.matched_course, self.path)
+        logger.debug('%r exists, and is available [at %s]', self.matched_course, self.path)
         return CourseResult.from_solution(solution=self, claim_attempt=claim, overridden=False)
 
     def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
