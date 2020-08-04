@@ -379,25 +379,27 @@ def print_assertion(
         yield from print_path(rule, indent)
 
     prefix = " " * indent
+    rank_prefix = ""
     if show_ranks:
-        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
+        rank_prefix = f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
+    rank_prefix_spaces = "             "
 
     emoji = calculate_emoji(rule)
 
-    yield f"{prefix} - {emoji} {str_clause(rule['assertion'])} [{rule['status']}]"
+    yield f"{prefix}{rank_prefix} - {emoji} {str_clause(rule['assertion'])} [{rule['status']}]"
 
     prefix += " " * 6
 
     if rule['where']:
-        yield f"{prefix}where {str_clause(rule['where'])}"
+        yield f"{prefix}{rank_prefix_spaces}where {str_clause(rule['where'])}"
 
     resolved_items = get_resolved_items(rule['assertion'])
     if resolved_items:
-        yield f"{prefix}resolved items: {resolved_items}"
+        yield f"{prefix}{rank_prefix_spaces}resolved items: {resolved_items}"
 
     resolved_clbids = get_resolved_clbids(rule['assertion'])
     if resolved_clbids:
-        yield f"{prefix}resolved courses:"
+        yield f"{prefix}{rank_prefix_spaces}resolved courses:"
 
         ip_clbids = get_in_progress_clbids(rule['assertion'])
 
@@ -411,7 +413,7 @@ def print_assertion(
                 continue
 
             status = emojify_course(course)
-            yield f'{prefix}  -{inserted_msg} {status} {course.verbose()}'
+            yield f'{prefix}{rank_prefix_spaces}  -{inserted_msg} {status} {course.verbose()}'
 
 
 def print_conditional_assertion(
