@@ -45,4 +45,7 @@ class CourseResult(Result, BaseCourseRule):
             return []
 
     def waived(self) -> bool:
+        if self.claim_attempt is not None and self.claim_attempt.failed is True:
+            return False
+
         return self.inserted or self.overridden
