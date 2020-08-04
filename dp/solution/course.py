@@ -53,7 +53,7 @@ class CourseSolution(Solution, BaseCourseRule):
             logger.debug('%s no pre-claimed courses matching "%s"', self.path, self.identifier())
             return CourseResult.from_solution(solution=self, claim_attempt=None, overridden=False)
 
-        logger.debug('attempting claim for %s at %s', self.matched_course, self.path)
+        logger.debug('attempting claim for %r at %s', self.matched_course, self.path)
         claim = ctx.make_claim(course=self.matched_course, path=self.path, allow_claimed=self.was_forced or self.allow_claimed)
 
         if self.from_claimed:

@@ -104,7 +104,7 @@ class QuerySolution(Solution, BaseQueryRule):
         successful_claims: List[Claim] = []
         failed_claims: List[Claim] = []
 
-        if debug: logger.debug("auditing courses for %s", self.path)
+        if debug: logger.debug("auditing courses [at %s]", self.path)
 
         output: Sequence['CourseInstance'] = cast(Sequence['CourseInstance'], self.output)
         if self.attempt_claims:
@@ -113,10 +113,10 @@ class QuerySolution(Solution, BaseQueryRule):
                 claim = ctx.make_claim(course=course, path=self.path, allow_claimed=self.allow_claimed or was_forced)
 
                 if claim.failed:
-                    if debug: logger.debug('%r exists, but has already been claimed by other rules (at %s)', course, self.path)
+                    if debug: logger.debug('%r exists, but has already been claimed by other rules [at %s]', course, self.path)
                     failed_claims.append(claim)
                 else:
-                    if debug: logger.debug('%r exists, and is available (at %s)', course, self.path)
+                    if debug: logger.debug('%r exists, and is available [at %s]', course, self.path)
                     successful_claims.append(claim)
                     claimed_items.append(course)
 
@@ -128,7 +128,9 @@ class QuerySolution(Solution, BaseQueryRule):
                 claimed_items.append(course)
 
         else:
-            if debug: logger.debug('%s courses "%s" exist, and are available', self.path, output)
+            if debug:
+                for _c in output:
+                    logger.debug('%r exists, and is available [at %s]', _c, self.path)
             claimed_items = list(output)
 
         if debug: logger.debug("done auditing courses for %s", self.path)

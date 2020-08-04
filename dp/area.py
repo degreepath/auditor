@@ -176,8 +176,12 @@ class AreaOfStudy(Base):
             templates=student.templates_as_dict(),
         )
 
+        for i, _c in enumerate(student.courses):
+            logger.debug("initial transcript [%d]: %r", i, _c)
+
         for limited_transcript in self.limit.limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
-            logger.debug("evaluating area.result with limited transcript: %s", [c.course_with_term() for c in limited_transcript])
+            for i, _c in enumerate(limited_transcript):
+                logger.debug("evaluating area.result with limited transcript [%d]: %r", i, _c)
 
             ctx = ctx.with_transcript(
                 limited_transcript,
@@ -187,7 +191,7 @@ class AreaOfStudy(Base):
             )
 
             for i, sol in enumerate(self.result.solutions(ctx=ctx, depth=1)):
-                logger.debug('beginning solution #%d', i)
+                logger.debug('beginning solution #%d', i + 1)
 
                 if use_optimization:
                     all_claims = sol.all_courses(ctx=ctx)
@@ -207,7 +211,7 @@ class AreaOfStudy(Base):
                 # or else we accidentally clear the independently-solved claims
                 ctx = ctx.with_empty_claims()
 
-                logger.debug('completed solution #%d', i)
+                logger.debug('completed solution #%d', i + 1)
 
         logger.debug("all solutions generated")
 

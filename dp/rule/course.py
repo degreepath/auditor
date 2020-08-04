@@ -126,37 +126,40 @@ class CourseRule(Rule, BaseCourseRule):
             yield CourseSolution.from_rule(rule=self, course=None, overridden=True)
             return
 
-        logger.debug('%s reference to course "%s"', self.path, self.course)
+        logger.debug('reference to %r [at %s]', self.identifier(), self.path)
 
         did_yield = False
 
         for insert in ctx.get_insert_exceptions(self.path):
-            logger.debug('inserting %s into %s due to override', insert.clbid, self)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
 
             did_yield = True
             if insert.forced:
+                logger.debug('force-inserting %r into %s due to override', matched_course, self.path)
                 yield CourseSolution.from_rule(rule=self, course=matched_course, was_inserted=True, was_forced=True)
             else:
+                logger.debug('inserting %r into %s due to override', matched_course, self.path)
                 yield CourseSolution.from_rule(rule=self, course=matched_course, was_inserted=True, was_forced=False)
 
         # we ignore from_claimed here, because we check it again in
-        # CourseSolution.audit; we cannot check it here because we do not
+        # CourseSolution.audit; we cannot check it here because we don't
         # claim courses while generating possibilities, so the from_claimed
         # list is always empty.
         for matched_course in ctx.find_courses(rule=self):
             if self.grade is not None and matched_course.is_in_progress is False and matched_course.grade_points < self.grade:
-                logger.debug('%s course "%s" exists, but the grade of %s is below the allowed minimum grade of %s', self.path, self.identifier(), matched_course.grade_points, self.grade)
+                logger.debug('course matching %r exists, but the grade of %s is below the allowed minimum grade of %s [at %s]', self.identifier(), matched_course.grade_points, self.grade, self.path)
                 continue
 
             if self.grade_option is not None and matched_course.grade_option != self.grade_option:
-                logger.debug('%s course "%s" exists, but the course was taken %s, and the area requires that it be taken %s', self.path, self.identifier(), matched_course.grade_option, self.grade_option)
+                logger.debug('course matching %r exists, but the course was taken %s, and the area requires that it be taken %s [at %s]', self.identifier(), matched_course.grade_option, self.grade_option, self.path)
                 continue
 
             did_yield = True
+            logger.debug('course matching %r exists [%r], and was generated as a possible solution [at %s]', self.identifier(), matched_course, self.path)
             yield CourseSolution.from_rule(rule=self, course=matched_course)
 
         if not did_yield:
+            logger.debug('no possibilities for course %r was not found [at %s]', self.identifier(), self.path)
             yield CourseSolution.from_rule(rule=self, course=None)
 
     def estimate(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> int:
