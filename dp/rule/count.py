@@ -12,6 +12,7 @@ from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
 from ..constants import Constants
 from ..solution.count import CountSolution
 from ..ncr import mult
+from ..exception import BlockException
 from ..solve import find_best_solution
 from ..lazy_product import lazy_product
 from .assertion import AssertionRule
@@ -209,6 +210,10 @@ class CountRule(Rule, BaseCountRule):
 
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'CountRule':
         items = tuple(r.exclude_required_courses(to_exclude) for r in self.items)
+        return attr.evolve(self, items=items)
+
+    def apply_block_exception(self, to_block: BlockException) -> 'CountRule':
+        items = tuple(r.apply_block_exception(to_block) for r in self.items)
         return attr.evolve(self, items=items)
 
     def range(self) -> Tuple[int, int]:

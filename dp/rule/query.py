@@ -16,6 +16,7 @@ from ..constants import Constants
 from ..op import Operator
 from ..data.course import CourseInstance
 from ..result.assertion import AssertionResult
+from ..exception import BlockException
 from .assertion import AssertionRule
 from .conditional_assertion import ConditionalAssertionRule
 
@@ -90,6 +91,13 @@ class QueryRule(Rule, BaseQueryRule):
         clbids = set(c.clbid for c in to_exclude)
         logger.debug('%s excluding required courses: %s', self.path, clbids)
         return attr.evolve(self, excluded_clbids=frozenset([*self.excluded_clbids, *clbids]))
+
+    def apply_block_exception(self, to_block: BlockException) -> 'QueryRule':
+        if self.path != to_block.path:
+            return self
+
+        logger.debug('%s excluding blocked clbid %s', self.path, to_block.clbid)
+        return attr.evolve(self, excluded_clbids=frozenset([*self.excluded_clbids, to_block.clbid]))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         if self.assertions:

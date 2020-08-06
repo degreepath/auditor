@@ -14,6 +14,7 @@ class ExceptionAction(enum.Enum):
     ForceInsert = "force-insert"
     Override = "override"
     Value = "value"
+    Block = "block"
     CourseCredits = "course-credits"
     CourseSubject = "course-subject"
 
@@ -53,6 +54,14 @@ class OverrideException(RuleException):
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+class BlockException(RuleException):
+    clbid: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {**super().to_dict(), "clbid": self.clbid}
+
+
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class ValueException(RuleException):
     value: Decimal
 
@@ -86,6 +95,8 @@ def load_exception(data: Dict[str, Any]) -> RuleException:
         return InsertionException(clbid=data['clbid'], path=ex_path, type=ex_type, forced=True)
     elif ex_type is ExceptionAction.Override:
         return OverrideException(status=ResultStatus.Done, path=ex_path, type=ex_type)
+    elif ex_type is ExceptionAction.Block:
+        return BlockException(clbid=data['clbid'], path=ex_path, type=ex_type)
     elif ex_type is ExceptionAction.Value:
         return ValueException(value=Decimal(data['value']), path=ex_path, type=ex_type)
     elif ex_type is ExceptionAction.CourseCredits:
