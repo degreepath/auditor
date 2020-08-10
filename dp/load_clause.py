@@ -175,36 +175,8 @@ def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional
 
     for cond, cond_action in conditionals.items():
         conditions = cond.split(' + ')
-        condition_results = True
 
-        for condition in conditions:
-            key = condition.split('(')[0]
-
-            if key == 'has-area-code':
-                assert ctx
-
-                area_code = condition.split('(')[1].rstrip(')').strip()
-                if not ctx.has_area_code(area_code):
-                    condition_results = False
-
-            elif key == 'passed-proficiency-exam':
-                # note: this was prototyped for BM Performance, but they
-                # actually want to check for proficiency _exams_ and make you
-                # take extra credits if you tested out of the courses, so this
-                # check needs to be extended to check for proficiency exams -
-                # we don't currently store exam status in MusicProficiencies,
-                # just whether you have the proficiency or not.
-                assert ctx
-
-                proficiency = condition.split('(')[1].rstrip(')').strip()
-
-                if ctx.music_proficiencies.status(of=proficiency) is not ResultStatus.Done:
-                    condition_results = False
-
-            else:
-                raise TypeError(f"unknown $ifs key {key}")
-
-        if not condition_results:
+        if not all(check_simple_clause(condition, ctx=ctx) for condition in conditions):
             continue
 
         cond_action_mode, cond_action_inc = cond_action.split(' ', maxsplit=1)
@@ -215,6 +187,54 @@ def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional
             raise TypeError(f'unsupported single_clause_diff mode {cond_action_mode}')
 
     return diff_value
+
+
+def check_simple_clause(condition: str, *, ctx: Optional['RequirementContext']) -> bool:
+    '''
+    > has-area-code(716) + has-area-code(711)
+    > has-area-code(711) + passed-proficiency-exam(Keyboard Level IV)
+    '''
+    key = condition.split('(')[0]
+
+    if key == 'has-area-code':
+        assert ctx
+
+        area_code = condition.split('(')[1].rstrip(')').strip()
+        return ctx.has_area_code(area_code)
+
+    elif key == 'has-course':
+        assert ctx
+
+        course_ident = condition.split('(')[1].rstrip(')').strip()
+        return ctx.has_course(course_ident)
+
+    elif key == 'has-ip-course':
+        assert ctx
+
+        course_ident = condition.split('(')[1].rstrip(')').strip()
+        return ctx.has_ip_course(course_ident)
+
+    elif key == 'has-completed-course':
+        assert ctx
+
+        course_ident = condition.split('(')[1].rstrip(')').strip()
+        return ctx.has_completed_course(course_ident)
+
+    elif key == 'passed-proficiency-exam':
+        # note: this was prototyped for BM Performance, but they
+        # actually want to check for proficiency _exams_ and make you
+        # take extra credits if you tested out of the courses, so this
+        # check needs to be extended to check for proficiency exams -
+        # we don't currently store exam status in MusicProficiencies,
+        # just whether you have the proficiency or not.
+        assert ctx
+
+        proficiency = condition.split('(')[1].rstrip(')').strip()
+
+        return ctx.music_proficiencies.status(of=proficiency) is ResultStatus.Done
+
+    else:
+        raise TypeError(f"unknown $ifs key {key}")
 
 
 def flatten(lst: Iterable) -> Iterator:
