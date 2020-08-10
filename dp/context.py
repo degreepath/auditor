@@ -120,6 +120,18 @@ class RequirementContext:
     def has_course(self, c: str) -> bool:
         return c in self.course_set_
 
+    def has_ip_course(self, c: str) -> bool:
+        for _ in filter(course_filter(course=c, in_progress=True), self.transcript()):
+            return True
+
+        return False
+
+    def has_completed_course(self, c: str) -> bool:
+        for _ in filter(course_filter(course=c, in_progress=False), self.transcript()):
+            return True
+
+        return False
+
     def has_exception_beneath(self, path: Tuple[str, ...]) -> bool:
         cached_lookup = self.exceptions_path_lookup_cache.get(path, None)
 
