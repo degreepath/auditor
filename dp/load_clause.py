@@ -46,13 +46,24 @@ def load_clause(
         return OrClause(children=clauses)
 
     elif "$if" in data:
-        assert ctx, '$if clauses are not allowed here'
+        assert ctx, '$if clauses are not allowed here (no context provided)'
 
-        from .rule.query import QueryRule
-        rule = QueryRule.load(data['$if'], c=c, path=[], ctx=ctx)
+        if '$or' in data['$if']:
+            rule_pass = any(check_simple_clause(condition, ctx=ctx) for condition in data['$if']['$or'])
 
-        with ctx.fresh_claims():
-            s = find_best_solution(rule=rule, ctx=ctx)
+        elif '$all' in data['$if']:
+            rule_pass = all(check_simple_clause(condition, ctx=ctx) for condition in data['$if']['$all'])
+
+        else:
+            from .rule.query import QueryRule
+            rule = QueryRule.load(data['$if'], c=c, path=[], ctx=ctx)
+
+            with ctx.fresh_claims():
+                s = find_best_solution(rule=rule, ctx=ctx)
+
+            rule_pass = True
+            if not s or s.status() not in (ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered):
+                rule_pass = False
 
         when_yes = load_clause(data['$then'], c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid)
 
@@ -61,13 +72,10 @@ def load_clause(
         if when_no_clause:
             when_no = load_clause(when_no_clause, c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid)
 
-        if not s:
+        if rule_pass:
+            return when_yes
+        else:
             return when_no
-
-        if s.status() not in (ResultStatus.Done, ResultStatus.Waived, ResultStatus.PendingCurrent, ResultStatus.PendingRegistered):
-            return when_no
-
-        return when_yes
 
     assert len(data.keys()) == 1, "only one key allowed in single-clauses"
 
