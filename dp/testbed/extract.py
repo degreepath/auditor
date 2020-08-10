@@ -1,5 +1,6 @@
 import argparse
 import json
+import sys
 
 from .sqlite import sqlite_connect
 
@@ -17,6 +18,10 @@ def do_extract(args: argparse.Namespace) -> None:
         ''', {'catalog': catalog, 'code': code, 'stnum': stnum})
 
         record = results.fetchone()
+        if record is None:
+            print('no record found', file=sys.stderr)
+            sys.exit(1)
+
         input_data = json.loads(record['input_data'])
 
     with open(f'./{stnum}.json', 'w', encoding='utf-8') as outfile:
