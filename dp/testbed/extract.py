@@ -7,15 +7,14 @@ from .sqlite import sqlite_connect
 
 def do_extract(args: argparse.Namespace) -> None:
     stnum = args.stnum
-    catalog = args.catalog
     code = args.code
 
     with sqlite_connect(args.db, readonly=True) as conn:
         results = conn.execute('''
             SELECT d.input_data
             FROM server_data d
-            WHERE (d.stnum, d.catalog, d.code) = (:stnum, :catalog, :code)
-        ''', {'catalog': catalog, 'code': code, 'stnum': stnum})
+            WHERE (d.stnum, d.code) = (:stnum, :code)
+        ''', {'code': code, 'stnum': stnum})
 
         record = results.fetchone()
         if record is None:
