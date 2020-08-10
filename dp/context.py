@@ -8,7 +8,7 @@ from .base.course import BaseCourseRule
 from .data.course import CourseInstance
 from .data.area_pointer import AreaPointer
 from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
-from .data.student import TemplateCourse, filter_courses, SUB_TYPE_LOOKUP
+from .data.student import TemplateCourse, course_filter, SUB_TYPE_LOOKUP
 from .claim import Claim
 from .exception import RuleException, OverrideException, InsertionException, ValueException
 
@@ -92,8 +92,7 @@ class RequirementContext:
 
         source = self.transcript() if not from_claimed else self.all_claimed()
 
-        yield from filter_courses(
-            source,
+        yield from filter(course_filter(
             ap=rule.ap,
             course=rule.course,
             institution=rule.institution,
@@ -102,7 +101,7 @@ class RequirementContext:
             term=rule.term,
             section=rule.section,
             sub_type=SUB_TYPE_LOOKUP.get(rule.sub_type or '', None),
-        )
+        ), source)
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
         return self.clbid_lookup_map_.get(clbid, None)

@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence, Mapping, Iterable, Union
+from typing import Tuple, Dict, List, Set, Any, Iterator, Optional, Sequence, Mapping, Iterable, Union, Callable
 import re
 import logging
 
@@ -208,13 +208,12 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
     year = int(match_groups['year']) if match_groups['year'] else None
     institution = match_groups['inst']
 
-    iterable = filter_courses(
-        transcript,
+    iterable = filter(course_filter(
         course=f"{subject} {num}" if subject else None,
         section=section,
         sub_type=SUB_TYPE_LOOKUP.get(sub_type, None),
         institution=institution,
-    )
+    ), transcript)
 
     for crs in iterable:
         logger.debug('found match for %s: %s', course_label, crs)
@@ -337,8 +336,20 @@ def load_transcript(
         yield c
 
 
-def filter_courses(
-    courses: Iterable[CourseInstance],
+@attr.s(slots=True, kw_only=True, frozen=False, auto_attribs=True, order=False, hash=False, repr=False)
+class CourseFilterArgs:
+    ap: Optional[str] = None
+    course: Optional[str] = None
+    institution: Optional[str] = None
+    name: Optional[str] = None
+    year: Optional[int] = None
+    term: Optional[int] = None
+    section: Optional[str] = None
+    sub_type: Optional[SubType] = None
+    in_progress: Optional[bool] = None
+
+
+def course_filter(
     *,
     ap: Optional[str] = None,
     course: Optional[str] = None,
@@ -348,44 +359,64 @@ def filter_courses(
     term: Optional[int] = None,
     section: Optional[str] = None,
     sub_type: Optional[SubType] = None,
-) -> Iterator[CourseInstance]:
-    for c in courses:
-        # skip non-STOLAF courses if we're not given an institution
-        # and aren't looking for an AP course
-        if institution is None and ap is None and not c.is_stolaf:
-            continue
+    in_progress: Optional[bool] = None,
+) -> Callable[[CourseInstance], bool]:
+    filter_args = CourseFilterArgs(
+        ap=ap,
+        course=course,
+        institution=institution,
+        name=name,
+        year=year,
+        term=term,
+        section=section,
+        sub_type=sub_type,
+        in_progress=in_progress,
+    )
+    return lambda c: _course_filter(c, filter_args)
 
-        # compare course identity
-        if course is not None:
-            if c.identity_ != course:
-                continue
 
-            # compare sections (given by template majors)
-            if section is not None and c.section != section:
-                continue
+def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
+    # skip non-STOLAF courses if we're not given an institution
+    # and aren't looking for an AP course
+    if f.institution is None and f.ap is None and not c.is_stolaf:
+        return False
 
-            # compare years (given by template majors)
-            if year is not None:
-                assert term is not None
-                if c.year != year or c.term != term:
-                    continue
+    # compare course identity
+    if f.course is not None:
+        if c.identity_ != f.course:
+            return False
 
-            if sub_type is not None and c.sub_type != sub_type:
-                continue
+        # compare sections (given by template majors)
+        if f.section is not None and c.section != f.section:
+            return False
 
-        # compare course names
-        if name is not None and c.name != name:
-            continue
+        # compare years (given by template majors)
+        if f.year is not None:
+            assert f.term is not None
+            if c.year != f.year or c.term != f.term:
+                return False
 
-        # compare course institutions
-        if institution is not None and c.institution != institution:
-            continue
+        if f.sub_type is not None and c.sub_type != f.sub_type:
+            return False
 
-        # compare for AP courses
-        if ap is not None:
-            if c.course_type != CourseType.AP or c.name != ap:
-                continue
+    # compare course names
+    if f.name is not None and c.name != f.name:
+        return False
 
-        # if all of the previous have matched, we pass the checks
-        # and yield the course
-        yield c
+    # compare course institutions
+    if f.institution is not None and c.institution != f.institution:
+        return False
+
+    # compare for AP courses
+    if f.ap is not None:
+        if c.course_type != CourseType.AP or c.name != f.ap:
+            return False
+
+    if f.in_progress is not None:
+        # if we've requested only IP or non-IP courses, and this course
+        # doesn't match, then skip it
+        if f.in_progress != c.is_in_progress:
+            return False
+
+    # if all of the previous have matched, we pass the checks
+    return True
