@@ -124,8 +124,9 @@ def load_single_clause(
     expected_value, expected_verbatim = load_expected_value(key=key, value=value, op=op, ctx=ctx, c=c)
 
     expected_value_covid = None
-    if value.get('$during_covid', None):
+    if '$during_covid' in value:
         expected_value_covid, _ = load_expected_value(key=key, value=value, op='$during_covid', ctx=ctx, c=c)
+        assert expected_value_covid is not None
 
     # forbid all null values in tuples or single-value clauses
     if operator in (Operator.In, Operator.NotIn):
