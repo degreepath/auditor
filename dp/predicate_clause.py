@@ -87,6 +87,7 @@ import attr
 
 from .constants import Constants
 from .data.course_enums import GradeOption, GradeCode
+from .data.course import clause_application_lookup
 from .data_type import DataType
 from .op import Operator, apply_operator
 from .clause_helpers import stringify_expected, flatten
@@ -190,7 +191,7 @@ class ConditionalPredicate:
 class Predicate:
     key: str
     expected: Any
-    expected_verbatim: Any
+    original: Any
     operator: Operator
     during_covid: Optional[Any]
 
@@ -198,21 +199,21 @@ class Predicate:
     def from_args(
         key: str = "???",
         expected: Any = None,
-        expected_verbatim: Any = None,
+        original: Any = None,
         operator: Operator = Operator.EqualTo,
         during_covid: Optional[Any] = None,
     ) -> 'Predicate':
         return Predicate(
             key=key,
             expected=expected,
-            expected_verbatim=expected_verbatim,
+            original=original,
             operator=operator,
             during_covid=during_covid,
         )
 
     def to_dict(self) -> Dict[str, Any]:
         expected = stringify_expected(self.expected)
-        expected_verbatim = stringify_expected(self.expected_verbatim)
+        original = stringify_expected(self.original)
 
         as_dict = {
             "type": "predicate",
@@ -221,13 +222,13 @@ class Predicate:
             "operator": self.operator.name,
         }
 
-        if expected != expected_verbatim:
-            as_dict["expected_verbatim"] = expected_verbatim
+        if expected != original:
+            as_dict["original"] = original
 
         return as_dict
 
     def override_expected(self, value: Decimal) -> 'Predicate':
-        return attr.evolve(self, expected=value, expected_verbatim=str(value))
+        return attr.evolve(self, expected=value, original=str(value))
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
@@ -325,7 +326,8 @@ def load_single_predicate(
     assert isinstance(value, Dict), TypeError(f'expected {value!r} to be a dictionary')
 
     if mode is DataType.Course:
-        assert key in {'subject', 'attributes', 'course', 'number', 'gereqs'}
+        assert key in clause_application_lookup, \
+            KeyError(f'unknown course key {key}; expected {clause_application_lookup.keys()}')
     elif mode is DataType.Area:
         assert key in {'name', 'type'}
 
@@ -335,7 +337,7 @@ def load_single_predicate(
     operator = Operator(op)
     assert operator not in forbid, ValueError(f'operator {operator!r} is forbidden here - {forbid}')
 
-    expected_value, expected_verbatim = load_expected_value(key=key, value=value, op=op, c=c)
+    expected_value, original = load_expected_value(key=key, value=value, op=op, c=c)
 
     expected_value_covid = None
     if '$during_covid' in value:
@@ -352,7 +354,7 @@ def load_single_predicate(
         key=key,
         expected=expected_value,
         operator=operator,
-        expected_verbatim=expected_verbatim,
+        original=original,
         during_covid=expected_value_covid,
     )
 
@@ -366,7 +368,7 @@ def load_expected_value(*, key: str, value: Dict, op: str, c: Constants) -> Tupl
     elif isinstance(expected_value, float):
         raise TypeError(f'expected_value must not be a float: {expected_value!r}')
 
-    expected_verbatim = expected_value
+    original = expected_value
 
     allowed_types = (bool, str, tuple, int, Decimal)
     assert type(expected_value) in allowed_types, \
@@ -381,7 +383,7 @@ def load_expected_value(*, key: str, value: Dict, op: str, c: Constants) -> Tupl
     if key in clause_value_process:
         expected_value = clause_value_process[key](expected_value)
 
-    return expected_value, expected_verbatim
+    return expected_value, original
 
 
 def predicate_value_map__grade(expected_value: Any) -> Union[GradeCode, Tuple[GradeCode, ...]]:

@@ -14,7 +14,7 @@ from .op import Operator, apply_operator
 from .predicate_clause import SomePredicate, load_predicate
 from .status import ResultStatus
 from .clause_helpers import stringify_expected
-from .stringify import str_clause
+from .stringify import str_predicate
 from .conditional_expression import load_predicate_expression, SomePredicateExpression
 from .data.clausable import Clausable
 
@@ -139,7 +139,7 @@ class Assertion:
         )
 
     def __repr__(self) -> str:
-        return f"Assertion({str_clause(self.to_dict())})"
+        return f"Assertion({str_predicate(self.to_dict())})"
 
     def to_dict(self) -> Dict[str, Any]:
         rank, max_rank = self.rank()
@@ -149,13 +149,14 @@ class Assertion:
 
         as_dict = {
             "type": "assertion",
+            "path": list(self.path),
             "status": self.state.value,
+            "rank": str(rank),
+            "max_rank": str(max_rank),
             "where": self.where.to_dict() if self.where else None,
             "key": self.key,
             "operator": self.operator.name,
             "expected": expected,
-            "rank": str(rank),
-            "max_rank": str(max_rank),
             "data-type": self.data_type.value,
             "evaluated": self.evaluated,
             "resolved": str(self.resolved) if self.resolved is not None else None,
@@ -172,7 +173,7 @@ class Assertion:
             as_dict["message"] = self.message
 
         # only insert the original value if it's different from the main one
-        if expected != original:
+        if expected != original and original is not None:
             as_dict["original"] = original
 
         return as_dict
@@ -207,7 +208,7 @@ class Assertion:
         return attr.evolve(
             self,
             evaluated=True,
-            status=result_status,
+            state=result_status,
             resolved=calculated_result.value,
             resolved_items=calculated_result.data,
             resolved_clbids=tuple(c.clbid for c in calculated_result.courses),
@@ -607,7 +608,7 @@ def load_expected_value(*, value: Dict, key: str, c: Constants) -> Tuple[Any, An
     return expected, original
 
 
-def compute_change_diff(changes: Iterable[ValueChange]) -> Decimal:
+def compute_change_diff(changes: Sequence[ValueChange]) -> Decimal:
     diff_value = Decimal(0)
 
     for change in changes:

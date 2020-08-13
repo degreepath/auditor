@@ -249,6 +249,7 @@ def apply_predicate__name(course: CourseInstance, clause: 'Predicate') -> bool:
 clause_application_lookup: Dict[str, Callable[[CourseInstance, 'Predicate'], bool]] = {
     'ap': apply_predicate__ap,
     'attributes': apply_predicate__attributes,
+    'attribute': apply_predicate__attributes,
     'clbid': apply_predicate__clbid,
     'course': apply_predicate__course,
     'course_type': apply_predicate__course_type,

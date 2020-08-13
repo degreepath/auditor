@@ -140,7 +140,7 @@ def print_area(
     if rule['limit']:
         yield "Subject to these limits:"
         for limit in rule['limit']:
-            yield f"- at most {limit['at_most']} {limit['at_most_what']} where {str_clause(limit['where'])}"
+            yield f"- at most {limit['at_most']} {limit['at_most_what']} where {str_predicate(limit['where'])}"
 
     yield ""
 
@@ -303,12 +303,12 @@ def print_query(
     emoji = calculate_emoji(rule)
 
     if rule['where']:
-        yield f"{prefix}{emoji} [{rule['status']}] Given courses matching {str_clause(rule['where'])}"
+        yield f"{prefix}{emoji} [{rule['status']}] Given courses matching {str_predicate(rule['where'])}"
 
     if rule['limit']:
         yield f"{prefix} Subject to these limits:"
         for limit in rule['limit']:
-            yield f"{prefix} - at most {limit['at_most']} {limit['at_most_what']} where {str_clause(limit['where'])}"
+            yield f"{prefix} - at most {limit['at_most']} {limit['at_most_what']} where {str_predicate(limit['where'])}"
 
     if rule["claims"]:
         yield f"{prefix} Matching courses:"
@@ -386,25 +386,25 @@ def print_assertion(
 
     emoji = calculate_emoji(rule)
 
-    yield f"{prefix}{rank_prefix} - {emoji} {str_clause(rule['assertion'])} [{rule['status']}]"
+    yield f"{prefix}{rank_prefix} - {emoji} {str_assertion(rule)} [{rule['status']}]"
 
     prefix += " " * 6
 
     if rule['where']:
-        yield f"{prefix}{rank_prefix_spaces}where {str_clause(rule['where'])}"
+        yield f"{prefix}{rank_prefix_spaces}where {str_predicate(rule['where'])}"
 
-    resolved_items = get_resolved_items(rule['assertion'])
+    resolved_items = get_resolved_items(rule)
     if resolved_items:
         yield f"{prefix}{rank_prefix_spaces}resolved items: {resolved_items}"
 
-    resolved_clbids = get_resolved_clbids(rule['assertion'])
+    resolved_clbids = get_resolved_clbids(rule)
     if resolved_clbids:
         yield f"{prefix}{rank_prefix_spaces}resolved courses:"
 
-        ip_clbids = get_in_progress_clbids(rule['assertion'])
+        ip_clbids = get_in_progress_clbids(rule)
 
         for clbid in resolved_clbids:
-            inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted'] else ""
+            inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted_clbids'] else ""
 
             course = transcript.get(clbid, None)
             if not course:
@@ -442,8 +442,8 @@ def print_conditional_assertion(
         yield f"{prefix}Otherwise, do nothing"
 
 
-def str_clause(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
-    if clause["type"] == "single-clause":
+def str_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
+    if clause["type"] == "predicate":
         key = clause["key"]
 
         if key == 'attributes':
@@ -483,57 +483,137 @@ def str_clause(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool =
 
         return f'{key}{resolved} {op} {expected}{postscript}'
 
-    elif clause["type"] == "or-clause":
-        text = " or ".join(str_clause(c, nested=True, raw_only=raw_only) for c in clause["children"])
+    elif clause["type"] == "pred--or":
+        text = " or ".join(str_predicate(c, nested=True, raw_only=raw_only) for c in clause["predicates"])
         if not nested:
             return text
         else:
             return f'({text})'
 
-    elif clause["type"] == "and-clause":
-        text = " and ".join(str_clause(c, nested=True, raw_only=raw_only) for c in clause["children"])
+    elif clause["type"] == "pred--and":
+        text = " and ".join(str_predicate(c, nested=True, raw_only=raw_only) for c in clause["predicates"])
         if not nested:
             return text
         else:
             return f'({text})'
+
+    elif clause["type"] == "pred--if":
+        cond = str_expression(clause['condition'])
+        then = str_predicate(clause['when_true'])
+        branch = clause['condition']['result']
+        print(clause)
+        true_branch = 't.' if branch is True else ''
+        false_branch = 'f!' if branch is False else ''
+        if clause['when_false']:
+            other = str_predicate(clause['when_false'])
+        else:
+            other = "do nothing"
+        return f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
 
     raise Exception('not a clause')
 
 
-def get_resolved_items(clause: Dict[str, Any]) -> str:
-    if clause["type"] == "single-clause":
+def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
+    if expr["type"] == "pred-expr":
+        headline = "??"
+        if expr['result'] is True:
+            headline = 't.'
+        elif expr['result'] is False:
+            headline = 'f!'
+        return f"({headline} {expr['function']} {expr['argument']!r})"
+
+    elif expr["type"] == "pred-expr--or":
+        text = " or ".join(str_expression(c, nested=True) for c in expr["expressions"])
+        if not nested:
+            return text
+        else:
+            return f'({text})'
+
+    elif expr["type"] == "pred-expr--and":
+        text = " and ".join(str_expression(c, nested=True) for c in expr["expressions"])
+        if not nested:
+            return text
+        else:
+            return f'({text})'
+
+    raise Exception('not an expression')
+
+
+def str_assertion(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
+    if clause["type"] == "assertion":
+        key = clause["key"]
+
         resolved_with = clause.get('resolved_with', None)
+        if resolved_with is not None:
+            resolved = f" [{repr(resolved_with)}]"
+        else:
+            resolved = ""
+
+        expected = clause['expected']
+
+        if raw_only:
+            expected = clause.get('original', clause['expected'])
+            postscript = ""
+
+        if 'original' in clause:
+            postscript = f" [via {repr(clause['original'])}]"
+        else:
+            postscript = ""
+
+        label = clause.get('label', None)
+        if label:
+            postscript += f' [label: "{label}"]'
+
+        op = str_operator(clause['operator'])
+
+        if clause['operator'] == 'EqualTo' and expected is True:
+            return f'{key}{resolved}{postscript}'
+        elif clause['operator'] == 'EqualTo' and expected is False:
+            return f'not "{key}"{resolved}{postscript}'
+
+        return f'{key}{resolved} {op} {expected}{postscript}'
+
+    elif clause["type"] == "assertion--if":
+        text = " conditional-assertion "
+        if not nested:
+            return text
+        else:
+            return f'({text})'
+
+    raise Exception('not an assertion')
+
+
+def get_resolved_items(clause: Dict[str, Any]) -> str:
+    if clause["type"] == "assertion":
+        resolved_with = clause.get('resolved', None)
         if resolved_with is not None:
             return str(sorted(clause.get('resolved_items', [])))
         else:
             return ""
-    elif clause["type"] == "or-clause":
-        items = " or ".join(get_resolved_items(c) for c in clause["children"])
-        return f'({items})'
-    elif clause["type"] == "and-clause":
-        items = " and ".join(get_resolved_items(c) for c in clause["children"])
+    elif clause["type"] == "assertion--if":
+        items = " conditional assertion "
         return f'({items})'
 
     raise Exception('not a clause')
 
 
 def get_resolved_clbids(clause: Dict[str, Any]) -> List[str]:
-    if clause["type"] == "single-clause":
+    if clause["type"] == "assertion":
         return sorted(clause.get('resolved_clbids', []))
-    elif clause["type"] == "or-clause":
-        return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
-    elif clause["type"] == "and-clause":
-        return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
+    # elif clause["type"] == "or-clause":
+    #     return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
+    # elif clause["type"] == "and-clause":
+    #     return [clbid for c in clause["children"] for clbid in get_resolved_clbids(c)]
 
     raise Exception('not a clause')
 
 
 def get_in_progress_clbids(clause: Dict[str, Any]) -> Set[str]:
-    if clause["type"] == "single-clause":
+    if clause["type"] == "assertion":
         return set(clause.get('in_progress_clbids', []))
-    elif clause["type"] == "or-clause":
-        return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
-    elif clause["type"] == "and-clause":
-        return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
+    # elif clause["type"] == "or-clause":
+    #     return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
+    # elif clause["type"] == "and-clause":
+    #     return set(clbid for c in clause["children"] for clbid in get_in_progress_clbids(c))
 
     raise Exception('not a clause')

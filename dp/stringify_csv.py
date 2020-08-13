@@ -4,7 +4,7 @@ from typing import Iterator, Any, Dict, Tuple, Callable
 # import json
 # import textwrap
 
-from .stringify import str_clause
+from .stringify import str_predicate
 from .data.course import CourseInstance
 from .status import PassingStatusValues, ResultStatus
 
@@ -103,7 +103,7 @@ class Csvify:
         waived = waived or rule['status'] == ResultStatus.Waived.value or False
 
         if rule['where']:
-            where = f"where {str_clause(rule['where'], raw_only=True)}"
+            where = f"where {str_predicate(rule['where'], raw_only=True)}"
         else:
             where = ""
 
@@ -146,7 +146,7 @@ class Csvify:
         #     yield (f"{key}\n↳ … ok?", assertion['status'])
         #     yield (f"{key}\n↳ … courses", resolved_courses_str)
         if where:
-            yield (f"{key} where {str_clause(where, raw_only=True)}", f"{assertion['status']}: {resolved_courses_str}")
+            yield (f"{key} where {str_predicate(where, raw_only=True)}", f"{assertion['status']}: {resolved_courses_str}")
         else:
             yield (key, f"{assertion['status']}: {resolved_courses_str}")
 

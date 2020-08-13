@@ -82,7 +82,7 @@ class PredicateExpressionCompoundAnd:
         assert len(data.keys()) == 1
         assert type(data['$and']) == list
         clauses = tuple(load_predicate_expression(e, ctx=ctx) for e in data['$and'])
-        return PredicateExpressionCompoundAnd(expressions=clauses)
+        return PredicateExpressionCompoundAnd(expressions=clauses, result=all(e.result for e in clauses))
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -113,11 +113,11 @@ class PredicateExpressionCompoundOr:
 
     @staticmethod
     def load(data: Mapping, *, ctx: 'RequirementContext') -> 'PredicateExpressionCompoundOr':
-        # ensure that the data looks like {$and: []}, with no extra keys
+        # ensure that the data looks like {$or: []}, with no extra keys
         assert len(data.keys()) == 1
-        assert type(data['$and']) == list
+        assert type(data['$or']) == list
         clauses = tuple(load_predicate_expression(e, ctx=ctx) for e in data['$or'])
-        return PredicateExpressionCompoundOr(expressions=clauses)
+        return PredicateExpressionCompoundOr(expressions=clauses, result=any(e.result for e in clauses))
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -151,7 +151,7 @@ class PredicateExpressionNot:
         # ensure that the data looks like {$not: {}}, with no extra keys
         assert len(data.keys()) == 1
         expression = load_predicate_expression(data['$not'], ctx=ctx)
-        return PredicateExpressionNot(expression=expression)
+        return PredicateExpressionNot(expression=expression, result=expression.result)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -263,6 +263,7 @@ def load_predicate_expression(
     """
 
     if PredicateExpressionCompoundAnd.can_load(data):
+        print(data)
         return PredicateExpressionCompoundAnd.load(data, ctx=ctx)
 
     elif PredicateExpressionCompoundOr.can_load(data):
