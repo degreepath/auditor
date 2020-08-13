@@ -122,7 +122,7 @@ class AreaOfStudy(Base):
 
             result = result.apply_block_exception(exception)
 
-        limit = LimitSet.load(data=specification.get("limit", None), c=c)
+        limit = LimitSet.load(data=specification.get("limit", None), c=c, ctx=ctx)
 
         multicountable_rules: Dict[str, List[Tuple[str, ...]]] = {
             course: [

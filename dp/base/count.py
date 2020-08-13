@@ -4,7 +4,7 @@ import logging
 from decimal import Decimal
 
 from .bases import Base
-from .assertion import BaseAssertionRule
+from ..assertion_clause import SomeAssertion
 from ..claim import Claim
 from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, EMPTY_AND_DEPARTMENTAL
 
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class BaseCountRule(Base):
     count: int
     items: Tuple[Base, ...]
-    audit_clauses: Tuple[BaseAssertionRule, ...]
+    audit_clauses: Tuple[SomeAssertion, ...]
     at_most: bool
     path: Tuple[str, ...]
 
@@ -32,7 +32,7 @@ class BaseCountRule(Base):
             "audit_status": self.audit_status().value,
         }
 
-    def audits(self) -> Sequence[BaseAssertionRule]:
+    def audits(self) -> Sequence[SomeAssertion]:
         return self.audit_clauses
 
     def type(self) -> str:

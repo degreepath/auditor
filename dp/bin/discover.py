@@ -15,9 +15,8 @@ except ImportError:
 
 from dp import AreaOfStudy, Constants
 from dp.base import Rule
-from dp.clause import AndClause, OrClause, Clause
-from dp.rule.assertion import AssertionRule
-from dp.rule.conditional_assertion import ConditionalAssertionRule
+from dp.predicate_clause import PredicateCompoundAnd, PredicateCompoundOr, PredicateNot, Predicate, ConditionalPredicate, SomePredicate
+from dp.assertion_clause import SomeAssertion, Assertion, ConditionalAssertion
 from dp.rule.course import CourseRule
 from dp.rule.count import CountRule
 from dp.rule.proficiency import ProficiencyRule
@@ -184,16 +183,7 @@ def find_buckets_in_rule(rule: Rule) -> Iterator[str]:
             yield from find_buckets_in_clause(rule.where)
 
         for assertion in rule.assertions:
-            yield from find_buckets_in_rule(assertion)
-
-    elif isinstance(rule, AssertionRule):
-        if rule.where:
-            yield from find_buckets_in_clause(rule.where)
-
-    elif isinstance(rule, ConditionalAssertionRule):
-        yield from find_buckets_in_rule(rule.when_yes)
-        if rule.when_no:
-            yield from find_buckets_in_rule(rule.when_no)
+            yield from find_buckets_in_assertion(assertion)
 
     elif isinstance(rule, CountRule):
         for sub_rule in rule.items:
@@ -206,17 +196,39 @@ def find_buckets_in_rule(rule: Rule) -> Iterator[str]:
         yield from find_buckets_in_rule(rule.result)
 
 
-def find_buckets_in_clause(clause: Clause) -> Iterator[str]:
-    if isinstance(clause, (AndClause, OrClause)):
-        for sub_clause in clause.children:
-            yield from find_buckets_in_clause(sub_clause)
+def find_buckets_in_assertion(assertion: SomeAssertion) -> Iterator[str]:
+    if isinstance(assertion, Assertion):
+        if assertion.where:
+            yield from find_buckets_in_clause(assertion.where)
 
-    else:
+    elif isinstance(assertion, ConditionalAssertion):
+        yield from find_buckets_in_assertion(assertion.when_true)
+        if assertion.when_false:
+            yield from find_buckets_in_assertion(assertion.when_false)
+
+
+def find_buckets_in_clause(clause: SomePredicate) -> Iterator[str]:
+    if isinstance(clause, (PredicateCompoundAnd, PredicateCompoundOr)):
+        for pred in clause.predicates:
+            yield from find_buckets_in_clause(pred)
+
+    elif isinstance(clause, ConditionalPredicate):
+        yield from find_buckets_in_clause(clause.when_true)
+        if clause.when_false is not None:
+            yield from find_buckets_in_clause(clause.when_false)
+
+    elif isinstance(clause, PredicateNot):
+        yield from find_buckets_in_clause(clause.predicate)
+
+    elif isinstance(clause, Predicate):
         if clause.key == 'attributes':
             if type(clause.expected) is str:
                 yield clause.expected
             elif type(clause.expected) is tuple:
                 yield from clause.expected
+
+    else:
+        raise TypeError('unexpected predicate clause type')
 
 
 if __name__ == '__main__':

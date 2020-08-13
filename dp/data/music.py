@@ -8,7 +8,7 @@ from .clausable import Clausable
 from ..status import ResultStatus
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
+    from ..predicate_clause import Predicate
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class MusicSlip(Clausable):
     def type(self) -> str:
         raise NotImplementedError('not implemented')
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+    def apply_predicate(self, clause: 'Predicate') -> bool:
         if clause.key == 'name':
             return clause.compare(self.name)
 
@@ -88,7 +88,7 @@ class MusicPerformance(MusicSlip):
             status=muspf_status_lookup[data.get('status', '')],
         )
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+    def apply_predicate(self, clause: 'Predicate') -> bool:
         if clause.key == 'status':
             if not self.status:
                 return False
@@ -99,7 +99,7 @@ class MusicPerformance(MusicSlip):
                 return False
             return clause.compare(self.role)
 
-        return super().apply_single_clause(clause)
+        return super().apply_predicate(clause)
 
     def type(self) -> str:
         return 'music performance'
@@ -179,6 +179,23 @@ class MusicProficiencies:
         logger.debug('comparing %r to %r: %r %r', of, compare_against, result, self)
 
         return result
+
+    def passed_exam(self, *, of: str) -> bool:
+        # TODO: this was prototyped for BM Performance, but they
+        # TODO: actually want to check for proficiency _exams_ andl make you
+        # TODO: take extra credits if you tested out of the courses, so this
+        # TODO: check needs to be extended to check for proficiency exams -
+        # TODO: we don't currently store exam status in MusicProficiencies,
+        # TODO: just whether you have the proficiency or not.
+        matcher = {
+            'Keyboard Level I': self.keyboard_1,
+            'Keyboard Level II': self.keyboard_2,
+            'Keyboard Level III': self.keyboard_3,
+            'Keyboard Level IV': self.keyboard_4,
+            'Guitar': self.guitar,
+        }
+
+        return True if matcher[of] else False
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

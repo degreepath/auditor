@@ -7,6 +7,7 @@ import time
 import sys
 import os
 
+from ..data_type import DataType
 from ..ms import pretty_ms
 from ..base import Rule, BaseCountRule, Result, Solution, sort_by_path
 from ..constants import Constants
@@ -15,7 +16,7 @@ from ..ncr import mult
 from ..exception import BlockException
 from ..solve import find_best_solution
 from ..lazy_product import lazy_product
-from .assertion import AssertionRule
+from ..assertion_clause import SomeAssertion, Assertion
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
@@ -30,7 +31,6 @@ FIND_INDEPENDENTS = True if int(os.getenv('DP_INDEPENDENT', default='1')) == 1 e
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountRule(Rule, BaseCountRule):
     items: Tuple[Rule, ...]
-    audit_clauses: Tuple[AssertionRule, ...]
 
     @staticmethod
     def can_load(data: Dict) -> bool:
@@ -122,16 +122,18 @@ class CountRule(Rule, BaseCountRule):
         at_most = data.get('at_most', False)
 
         audit_clause = data.get('audit', None)
-        audit_clauses: Tuple[AssertionRule, ...] = tuple()
+        audit_clauses: Tuple[SomeAssertion, ...] = tuple()
 
         if audit_clause is not None:
             if 'all' in audit_clause:
                 audit_clauses = tuple(
-                    AssertionRule.load(audit, c=c, ctx=ctx, path=[*path, ".audit", f"[{i}]"])
+                    Assertion.load(audit, data_type=DataType.Course, c=c, ctx=ctx, path=[*path, ".audit", f"[{i}]"])
                     for i, audit in enumerate(audit_clause['all'])
                 )
             else:
-                audit_clauses = tuple([AssertionRule.load(audit_clause, c=c, ctx=ctx, path=[*path, ".audit", "[0]"])])
+                audit_clauses = tuple([
+                    Assertion.load(audit_clause, data_type=DataType.Course, c=c, ctx=ctx, path=[*path, ".audit", "[0]"])
+                ])
 
         loaded_items = []
         for i, r in enumerate(items):

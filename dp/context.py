@@ -114,7 +114,7 @@ class RequirementContext:
             raise Exception(f'attempted to use CLBID={clbid} at {list(path)}, but it was not found in the transcript')
         return match
 
-    def has_area_code(self, code: str) -> bool:
+    def has_declared_area_code(self, code: str) -> bool:
         return any(code == c.code for c in self.areas)
 
     def has_course(self, c: str) -> bool:

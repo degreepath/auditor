@@ -7,7 +7,7 @@ from .area_enums import AreaStatus, AreaType
 from .clausable import Clausable
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
+    from ..predicate_clause import Predicate
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class AreaPointer(Clausable):
             terms_since_declaration=data.get('terms_since_declaration', None),
         )
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+    def apply_predicate(self, clause: 'Predicate') -> bool:
         if clause.key == 'code':
             return clause.compare(self.code)
 

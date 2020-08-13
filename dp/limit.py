@@ -8,14 +8,15 @@ import enum
 
 import attr
 
-from .clause import Clause, apply_clause
+from .predicate_clause import SomePredicate, load_predicate
+from .data_type import DataType
 from .lazy_product import lazy_product
-from .load_clause import load_clause
 from .constants import Constants
 from .ncr import ncr
 
 if TYPE_CHECKING:
     from .data.course import CourseInstance  # noqa: F401
+    from .context import RequirementContext  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class AtMostWhat(enum.Enum):
 class Limit:
     at_most: decimal.Decimal
     at_most_what: AtMostWhat = AtMostWhat.Courses
-    where: Clause
+    where: SomePredicate
     message: Optional[str]
 
     def to_dict(self) -> Dict[str, Any]:
@@ -43,7 +44,7 @@ class Limit:
         }
 
     @staticmethod
-    def load(data: Dict, c: Constants) -> 'Limit':
+    def load(data: Dict, c: Constants, ctx: 'RequirementContext') -> 'Limit':
         at_most = data.get("at most", data.get("at-most", data.get("at_most", None)))
 
         if at_most is None:
@@ -53,7 +54,7 @@ class Limit:
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty"
 
-        clause = load_clause(data["where"], c=c)
+        clause = load_predicate(data["where"], c=c, ctx=ctx, mode=DataType.Course)
         assert clause, 'limits are not allowed to have conditional clauses'
 
         try:
@@ -131,10 +132,10 @@ class LimitSet:
         return [limit.to_dict() for limit in self.limits]
 
     @staticmethod
-    def load(data: Optional[Collection[Dict]], c: Constants) -> 'LimitSet':
+    def load(data: Optional[Collection[Dict]], *, c: Constants, ctx: 'RequirementContext') -> 'LimitSet':
         if data is None:
             return LimitSet(limits=tuple())
-        return LimitSet(limits=tuple(Limit.load(limit, c) for limit in data))
+        return LimitSet(limits=tuple(Limit.load(limit, c=c, ctx=ctx) for limit in data))
 
     def apply_limits(self, courses: Collection['CourseInstance']) -> Iterator['CourseInstance']:
         clause_counters: Dict = defaultdict(int)
@@ -145,7 +146,7 @@ class LimitSet:
 
             for limit in self.limits:
                 logger.debug("limit/check: checking %r against %s (counter: %s)", c, limit, clause_counters[limit])
-                if apply_clause(limit.where, c):
+                if limit.where.apply(c):
                     if clause_counters[limit] >= limit.at_most:
                         logger.debug("limit/maximum: %r matched %s (counter: %s)", c, limit, clause_counters[limit])
                         may_yield = False
@@ -165,7 +166,7 @@ class LimitSet:
 
         for c in courses:
             for limit in self.limits:
-                if not apply_clause(limit.where, c):
+                if not limit.where.apply(c):
                     continue
 
                 if clause_counters[limit] >= limit.at_most:
@@ -221,7 +222,7 @@ class LimitSet:
                     logger.debug("limit/probe: skipping check of %r as it has been forced", c)
                     continue
                 logger.debug("limit/probe: checking %r")
-                if apply_clause(limit.where, c):
+                if limit.where.apply(c):
                     matched_items[limit].add(c)
 
         all_matched_items = set(item for match_set in matched_items.values() for item in match_set)
