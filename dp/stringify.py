@@ -444,44 +444,7 @@ def print_conditional_assertion(
 
 def str_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
     if clause["type"] == "predicate":
-        key = clause["key"]
-
-        if key == 'attributes':
-            key = 'bucket'
-        elif key == 'is_in_progress':
-            key = 'in-progress'
-        elif key == 'is_stolaf':
-            key = 'from STOLAF'
-
-        resolved_with = clause.get('resolved_with', None)
-        if resolved_with is not None:
-            resolved = f" [{repr(resolved_with)}]"
-        else:
-            resolved = ""
-
-        expected = clause['expected']
-
-        if raw_only:
-            expected = clause.get('expected_verbatim', clause['expected'])
-            postscript = ""
-
-        if 'expected_verbatim' in clause:
-            postscript = f" [via {repr(clause['expected_verbatim'])}]"
-        else:
-            postscript = ""
-
-        label = clause.get('label', None)
-        if label:
-            postscript += f' [label: "{label}"]'
-
-        op = str_operator(clause['operator'])
-
-        if clause['operator'] == 'EqualTo' and expected is True:
-            return f'{key}{resolved}{postscript}'
-        elif clause['operator'] == 'EqualTo' and expected is False:
-            return f'not "{key}"{resolved}{postscript}'
-
-        return f'{key}{resolved} {op} {expected}{postscript}'
+        return str_single_predicate(clause, nested=nested, raw_only=raw_only)
 
     elif clause["type"] == "pred--or":
         text = " or ".join(str_predicate(c, nested=True, raw_only=raw_only) for c in clause["predicates"])
@@ -511,6 +474,47 @@ def str_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_only: boo
         return f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
 
     raise Exception('not a clause')
+
+
+def str_single_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
+    key = clause["key"]
+
+    if key == 'attributes':
+        key = 'bucket'
+    elif key == 'is_in_progress':
+        key = 'in-progress'
+    elif key == 'is_stolaf':
+        key = 'from STOLAF'
+
+    resolved_with = clause.get('resolved_with', None)
+    if resolved_with is not None:
+        resolved = f" [{repr(resolved_with)}]"
+    else:
+        resolved = ""
+
+    expected = clause['expected']
+
+    if raw_only:
+        expected = clause.get('expected_verbatim', clause['expected'])
+        postscript = ""
+
+    if 'expected_verbatim' in clause:
+        postscript = f" [via {repr(clause['expected_verbatim'])}]"
+    else:
+        postscript = ""
+
+    label = clause.get('label', None)
+    if label:
+        postscript += f' [label: "{label}"]'
+
+    op = str_operator(clause['operator'])
+
+    if clause['operator'] == 'EqualTo' and expected is True:
+        return f'{key}{resolved}{postscript}'
+    elif clause['operator'] == 'EqualTo' and expected is False:
+        return f'not "{key}"{resolved}{postscript}'
+
+    return f'{key}{resolved} {op} {expected}{postscript}'
 
 
 def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
