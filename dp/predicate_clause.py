@@ -88,6 +88,7 @@ import attr
 from .constants import Constants
 from .data.course_enums import GradeOption, GradeCode
 from .data.course import clause_application_lookup
+from .data.area_pointer import ALLOWED_KEYS as ALLOWED_AREA_KEYS
 from .data_type import DataType
 from .op import Operator, apply_operator
 from .clause_helpers import stringify_expected, flatten
@@ -326,10 +327,11 @@ def load_single_predicate(
     assert isinstance(value, Dict), TypeError(f'expected {value!r} to be a dictionary')
 
     if mode is DataType.Course:
-        assert key in clause_application_lookup, \
-            KeyError(f'unknown course key {key}; expected {clause_application_lookup.keys()}')
+        allowed_keys = set(clause_application_lookup.keys())
     elif mode is DataType.Area:
-        assert key in {'name', 'type'}
+        allowed_keys = ALLOWED_AREA_KEYS
+
+    assert key in allowed_keys, KeyError(f"expected {key!r} to be one of {sorted(allowed_keys)}")
 
     operators = [k for k in value.keys() if Operator.is_operator(k)]
     assert len(operators) == 1, ValueError(f"there must be only one operator in {value!r}")

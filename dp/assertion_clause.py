@@ -594,7 +594,7 @@ def load_single_assertion(
     )
 
 
-def load_expected_value(*, value: Dict, key: str, c: Constants) -> Tuple[Any, Any]:
+def load_expected_value(*, value: Dict, key: str, c: Constants) -> Tuple[Decimal, Any]:
     expected = value[key]
     if isinstance(expected, list):
         raise TypeError('lists are forbidden.')
@@ -608,9 +608,11 @@ def load_expected_value(*, value: Dict, key: str, c: Constants) -> Tuple[Any, An
     elif isinstance(expected, Iterable):
         raise TypeError(f'unexpected type {type(expected)} for {expected!r}')
 
-    allowed_types = {int}
+    allowed_types = {int, str}
     assert type(expected) in allowed_types, \
         ValueError(f"expected should be one of {allowed_types}, not {type(expected)}")
+
+    expected = Decimal(expected)
 
     return expected, original
 

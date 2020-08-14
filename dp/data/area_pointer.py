@@ -11,6 +11,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 logger = logging.getLogger(__name__)
 
+ALLOWED_KEYS = {'code', 'status', 'kind', 'type', 'name', 'degree', 'gpa'}
+
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, eq=False, order=False, hash=True)
 class AreaPointer(Clausable):
