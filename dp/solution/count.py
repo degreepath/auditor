@@ -5,7 +5,6 @@ import logging
 from ..base.bases import Rule, Solution, Result
 from ..base.count import BaseCountRule
 from ..result.count import CountResult
-from ..assertion_clause import SomeAssertion
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext

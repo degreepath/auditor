@@ -1,5 +1,5 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Iterator, cast, TYPE_CHECKING
+from typing import List, Sequence, Any, Tuple, Dict, Optional, cast, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseQueryRule
@@ -7,7 +7,6 @@ from ..base.query import QuerySource
 from ..result.query import QueryResult
 from ..data.clausable import Clausable
 from ..claim import Claim
-from ..assertion_clause import SomeAssertion
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..context import RequirementContext
