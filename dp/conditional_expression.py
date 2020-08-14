@@ -263,7 +263,6 @@ def load_predicate_expression(
     """
 
     if PredicateExpressionCompoundAnd.can_load(data):
-        print(data)
         return PredicateExpressionCompoundAnd.load(data, ctx=ctx)
 
     elif PredicateExpressionCompoundOr.can_load(data):

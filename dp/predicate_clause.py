@@ -361,7 +361,9 @@ def load_single_predicate(
 
 def load_expected_value(*, key: str, value: Dict, op: str, c: Constants) -> Tuple[Any, Any]:
     expected_value = value[op]
-    if isinstance(expected_value, list):
+    if isinstance(expected_value, tuple):
+        pass
+    elif isinstance(expected_value, list):
         expected_value = tuple(expected_value)
     elif isinstance(expected_value, Iterable) and type(expected_value) != str:
         raise TypeError(f'unexpected type {type(expected_value)} for {expected_value!r}')

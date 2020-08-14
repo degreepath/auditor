@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any
+from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Any
 import logging
 import decimal
 import os
@@ -163,7 +163,7 @@ class AreaOfStudy(Base):
 
         self.result.validate(ctx=ctx)
 
-    def solutions(self, *, student: Student, exceptions: List[RuleException]) -> Iterable['AreaSolution']:
+    def solutions(self, *, student: Student, exceptions: List[RuleException]) -> Iterator['AreaSolution']:
         logger.debug("evaluating area.result")
 
         forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)

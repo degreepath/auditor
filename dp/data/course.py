@@ -46,7 +46,7 @@ class CourseInstance(Clausable):
     su_grade_code: Optional[GradeCode]
     term: str
     transcript_code: TranscriptCode
-    year: int
+    year: str
     yearterm: str
 
     identity_: str
@@ -64,7 +64,7 @@ class CourseInstance(Clausable):
             object.__setattr__(self, 'hash_cache_', hash(self.clbid))
         return cast(int, self.hash_cache_)
 
-    def sort_order(self) -> Tuple[int, int, str, str]:
+    def sort_order(self) -> Tuple[int, str, str, str]:
         key = CourseTypeSortOrder[self.course_type]
         return (key, self.year, self.term, self.clbid)
 
@@ -329,7 +329,7 @@ def load_course(  # noqa: C901
     if subject_override:
         subject = cast(CourseSubjectOverride, subject_override).subject
 
-    term = int(term)
+    term = term
     credits = Decimal(credits)
     section = section or None
     level = int(level)
@@ -426,21 +426,27 @@ def load_course(  # noqa: C901
     )
 
 
-def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
+def course_from_str(s: str, *, in_progress: bool = False, **kwargs: Any) -> CourseInstance:
     number = s.split(' ')[1]
 
-    grade_code = kwargs.get('grade_code', 'B')
+    if in_progress:
+        flag_in_progress = True
+        grade_code = 'IP'
+    else:
+        flag_in_progress = False
+        grade_code = kwargs.get('grade_code', 'B')
+
     grade_points = kwargs.get('grade_points', str_to_grade_points(grade_code))
 
     return load_course({
         "attributes": tuple(),
-        "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
+        "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('year', 'na'))}/{str(kwargs.get('term', 'na'))}>",
         "course": s,
         "course_type": "SE",
         "credits": '1.00',
         "crsid": f"<crsid={str(hash(s))}>",
         "flag_gpa": True,
-        "flag_in_progress": False,
+        "flag_in_progress": flag_in_progress,
         "flag_incomplete": False,
         "flag_repeat": False,
         "flag_stolaf": True,
@@ -455,7 +461,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "subject": s.split(' ')[0],
         "term": "1",
         "transcript_code": "",
-        "year": 2000,
+        "year": "2000",
         **kwargs,
         "grade_code": grade_code,
         "grade_points": grade_points,

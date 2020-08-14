@@ -12,9 +12,9 @@ from .constants import Constants
 from .data_type import DataType
 from .op import Operator, apply_operator
 from .predicate_clause import SomePredicate, load_predicate
-from .status import ResultStatus
+from .status import ResultStatus, PassingStatuses
 from .clause_helpers import stringify_expected
-from .stringify import str_predicate
+from .stringify import str_assertion
 from .conditional_expression import load_predicate_expression, SomePredicateExpression
 from .data.clausable import Clausable
 
@@ -60,7 +60,7 @@ class ValueChange:
         return ValueChange(mode=mode, expression=predicate_key, amount=Decimal(cond_action_inc))
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, repr=False)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class Assertion:
     path: Tuple[str, ...]
     state: ResultStatus
@@ -139,7 +139,7 @@ class Assertion:
         )
 
     def __repr__(self) -> str:
-        return f"Assertion({str_predicate(self.to_dict())})"
+        return f"Assertion({str_assertion(self.to_dict())})"
 
     def to_dict(self) -> Dict[str, Any]:
         rank, max_rank = self.rank()
@@ -177,6 +177,9 @@ class Assertion:
             as_dict["original"] = original
 
         return as_dict
+
+    def waived(self) -> bool:
+        return self.overridden
 
     def waive(self) -> 'Assertion':
         return attr.evolve(
@@ -234,13 +237,17 @@ class Assertion:
     def status(self) -> ResultStatus:
         return self.state
 
+    def ok(self) -> bool:
+        return self.status() in PassingStatuses
+
     def rank(self) -> Tuple[Decimal, Decimal]:
         global ZERO_POINT_OH, ONE_POINT_OH
 
         if self.state in (ResultStatus.Done, ResultStatus.Waived):
             return ONE_POINT_OH, ONE_POINT_OH
 
-        assert self.resolved is not None
+        if self.resolved is None:
+            return ZERO_POINT_OH, ONE_POINT_OH
 
         if self.operator in (Operator.LessThan, Operator.LessThanOrEqualTo):
             return ZERO_POINT_OH, ONE_POINT_OH
@@ -570,7 +577,7 @@ def load_single_assertion(
 
     return Assertion(
         path=path,
-        state=ResultStatus.Empty,
+        state=ResultStatus.Empty if not overridden else ResultStatus.Waived,
         data_type=data_type,
         where=where,
         evaluated=False,
