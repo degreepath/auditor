@@ -553,7 +553,7 @@ def load_single_assertion(
 
     changes = tuple(
         ValueChange.load(cond, action=action, ctx=ctx)
-        for cond, action in value.get('$changes', {}).items()
+        for cond, action in value.get('$changes', {})
     )
 
     expected, original = load_expected_value(value=value, key=op, c=c)
@@ -597,9 +597,9 @@ def load_single_assertion(
 def load_expected_value(*, value: Dict, key: str, c: Constants) -> Tuple[Decimal, Any]:
     expected = value[key]
     if isinstance(expected, list):
-        raise TypeError('lists are forbidden.')
+        raise TypeError(f'lists are forbidden: {expected}.')
     elif isinstance(expected, float):
-        raise TypeError('float values are forbidden.')
+        raise TypeError(f'float values are forbidden: {expected}.')
 
     original = expected
 

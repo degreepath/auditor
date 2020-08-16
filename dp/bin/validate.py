@@ -16,16 +16,23 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("areas", nargs="+")
     parser.add_argument("--break", dest="break_on_err", action="store_true")
+    parser.add_argument("--list", dest="list", action="store_true")
     parser.add_argument("-w", dest="workers", type=int, action="store", default=os.cpu_count())
     args = parser.parse_args()
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.workers) as executor:
-        future_to_url = {executor.submit(one, f, args.break_on_err): f for f in args.areas}
+        future_to_result = {executor.submit(one, f, args.break_on_err): f for f in args.areas}
+
         longest = 0
-        for future in concurrent.futures.as_completed(future_to_url):
-            f = future_to_url[future]
+        for future in concurrent.futures.as_completed(future_to_result):
+            f = future_to_result[future]
             longest = max(longest, len(f))
-            print(f'\r{f.ljust(longest)}', end='', file=sys.stderr)
+
+            if args.list:
+                print(f'{f.ljust(longest)}', file=sys.stderr)
+            else:
+                print(f'\r{f.ljust(longest)}', end='', file=sys.stderr)
+
             try:
                 future.result()
             except Exception:

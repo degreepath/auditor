@@ -330,6 +330,10 @@ def load_single_predicate(
         allowed_keys = set(clause_application_lookup.keys())
     elif mode is DataType.Area:
         allowed_keys = ALLOWED_AREA_KEYS
+    elif mode is DataType.MusicPerformance:
+        allowed_keys = {'name', 'status', 'role'}
+    else:
+        raise Exception(f'unexpected predicate mode {mode}')
 
     assert key in allowed_keys, KeyError(f"expected {key!r} to be one of {sorted(allowed_keys)}")
 
