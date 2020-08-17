@@ -55,6 +55,16 @@ class PredicateExpressionFunction(enum.Enum):
     HasCourse = 'has-course'
     PassedProficiencyExam = 'passed-proficiency-exam'
     HasDeclaredAreaCode = 'has-declared-area-code'
+    RequirementIsSatisfied = 'requirement-is-satisfied'
+
+
+STATIC_PREDICATE_FUNCTIONS = {
+    PredicateExpressionFunction.HasDeclaredAreaCode,
+    PredicateExpressionFunction.PassedProficiencyExam,
+    PredicateExpressionFunction.HasCourse,
+    PredicateExpressionFunction.HasCompletedCourse,
+    PredicateExpressionFunction.HasIpCourse,
+}
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -86,10 +96,10 @@ class PredicateExpressionCompoundAnd:
             c.validate(ctx=ctx)
 
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpressionCompoundAnd':
-        if self.result is not None:
-            return self
-        evaluated = tuple(e.evaluate(ctx=ctx) for e in self.expressions)
-        return attr.evolve(self, expressions=evaluated, result=all(e.result for e in evaluated))
+        return attr.evolve(self, result=self.check(ctx=ctx))
+
+    def check(self, *, ctx: 'RequirementContext') -> bool:
+        return all(expression.evaluate(ctx=ctx) for expression in self.expressions)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -121,10 +131,10 @@ class PredicateExpressionCompoundOr:
             c.validate(ctx=ctx)
 
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpressionCompoundOr':
-        if self.result is not None:
-            return self
-        evaluated = tuple(e.evaluate(ctx=ctx) for e in self.expressions)
-        return attr.evolve(self, expressions=evaluated, result=any(e.result for e in evaluated))
+        return attr.evolve(self, result=self.check(ctx=ctx))
+
+    def check(self, *, ctx: 'RequirementContext') -> bool:
+        return any(expression.evaluate(ctx=ctx) for expression in self.expressions)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -141,7 +151,7 @@ class PredicateExpressionNot:
         # ensure that the data looks like {$not: {}}, with no extra keys
         assert len(data.keys()) == 1
         expression = load_predicate_expression(data['$not'], ctx=ctx)
-        return PredicateExpressionNot(expression=expression, result=not expression.result)
+        return PredicateExpressionNot(expression=expression, result=expression.result)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -154,10 +164,10 @@ class PredicateExpressionNot:
         self.expression.validate(ctx=ctx)
 
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpressionNot':
-        if self.result is not None:
-            return self
-        evaluated = self.expression.evaluate(ctx=ctx)
-        return attr.evolve(self, expression=evaluated, result=not evaluated.result)
+        return attr.evolve(self, result=self.check(ctx=ctx))
+
+    def check(self, *, ctx: 'RequirementContext') -> bool:
+        return not self.expression.evaluate(ctx=ctx)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -191,7 +201,9 @@ class PredicateExpression:
         assert type(argument) is str, \
             TypeError(f'invalid argument type for predicate expression {type(argument)}')
 
-        result = evaluate_predicate_function(function, argument, ctx=ctx)
+        result = None
+        if function in STATIC_PREDICATE_FUNCTIONS:
+            result = evaluate_predicate_function(function, argument, ctx=ctx)
 
         return PredicateExpression(function=function, argument=argument, result=result)
 
@@ -207,14 +219,13 @@ class PredicateExpression:
         pass
 
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpression':
-        if self.result is not None:
-            return self
-        result = evaluate_predicate_function(self.function, self.argument, ctx=ctx)
-        return attr.evolve(self, result=result)
+        return attr.evolve(self, result=self.check(ctx=ctx))
+
+    def check(self, *, ctx: 'RequirementContext') -> bool:
+        return evaluate_predicate_function(self.function, self.argument, ctx=ctx)
 
 
 def evaluate_predicate_function(function: PredicateExpressionFunction, argument: str, *, ctx: 'RequirementContext') -> bool:
-    logger.debug('evaluate: (%r %r)', function, argument)
     if function is PredicateExpressionFunction.HasDeclaredAreaCode:
         return ctx.has_declared_area_code(argument)
 
@@ -229,6 +240,9 @@ def evaluate_predicate_function(function: PredicateExpressionFunction, argument:
 
     elif function is PredicateExpressionFunction.PassedProficiencyExam:
         return ctx.music_proficiencies.passed_exam(of=argument)
+
+    # elif function is PredicateExpressionFunction.RequirementIsSatisfied:
+    #     return None
 
     else:
         raise TypeError(f"unknown static PredicateExpressionFunction {function}")
