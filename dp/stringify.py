@@ -140,7 +140,7 @@ def print_area(
     if rule['limit']:
         yield "Subject to these limits:"
         for limit in rule['limit']:
-            yield f"- at most {limit['at_most']} {limit['at_most_what']} where {str_predicate(limit['where'])}"
+            yield str_limit(limit)
 
     yield ""
 
@@ -308,7 +308,7 @@ def print_query(
     if rule['limit']:
         yield f"{prefix} Subject to these limits:"
         for limit in rule['limit']:
-            yield f"{prefix} - at most {limit['at_most']} {limit['at_most_what']} where {str_predicate(limit['where'])}"
+            yield prefix + " " + str_limit(limit)
 
     if rule["claims"]:
         yield f"{prefix} Matching courses:"
@@ -464,16 +464,22 @@ def str_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_only: boo
         cond = str_expression(clause['condition'])
         then = str_predicate(clause['when_true'])
         branch = clause['condition']['result']
-        print(clause)
+        # print(clause)
         true_branch = 't.' if branch is True else ''
         false_branch = 'f!' if branch is False else ''
         if clause['when_false']:
             other = str_predicate(clause['when_false'])
         else:
             other = "do nothing"
-        return f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
 
-    raise Exception('not a clause')
+        text = f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
+
+        if not nested:
+            return text
+        else:
+            return f'({text})'
+
+    raise Exception(f'not an expression: {clause["type"]}')
 
 
 def str_single_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
@@ -540,7 +546,7 @@ def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
         else:
             return f'({text})'
 
-    raise Exception('not an expression')
+    raise Exception(f'not a predicate expression: {expr["type"]}')
 
 
 def str_assertion(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
@@ -578,13 +584,49 @@ def str_assertion(clause: Dict[str, Any], *, nested: bool = False, raw_only: boo
         return f'{key}{resolved} {op} {expected}{postscript}'
 
     elif clause["type"] == "assertion--if":
-        text = " conditional-assertion "
+        cond = str_expression(clause['condition'])
+        then = str_assertion(clause['when_true'])
+        branch = clause['condition']['result']
+        # print(clause)
+        true_branch = 't.' if branch is True else ''
+        false_branch = 'f!' if branch is False else ''
+        if clause['when_false']:
+            other = str_assertion(clause['when_false'])
+        else:
+            other = "do nothing"
+        text = f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
+
         if not nested:
             return text
         else:
             return f'({text})'
 
-    raise Exception('not an assertion')
+    raise Exception(f'not an assertion: {clause["type"]}')
+
+
+def str_limit(limit: Dict[str, Any], *, nested: bool = False) -> str:
+    if limit["type"] == "limit":
+        return f"at most {limit['at_most']} {limit['at_most_what']} where {str_predicate(limit['where'])}"
+
+    elif limit["type"] == "limit--if":
+        cond = str_expression(limit['condition'])
+        then = str_limit(limit['when_true'])
+        branch = limit['condition']['result']
+        # print(limit)
+        true_branch = 't.' if branch is True else ''
+        false_branch = 'f!' if branch is False else ''
+        if limit['when_false']:
+            other = str_limit(limit['when_false'])
+        else:
+            other = "do nothing"
+        text = f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
+
+        if not nested:
+            return text
+        else:
+            return f'({text})'
+
+    raise Exception(f'not a limit: {limit["type"]}')
 
 
 def get_resolved_items(clause: Dict[str, Any]) -> str:

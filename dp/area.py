@@ -187,7 +187,7 @@ class AreaOfStudy(Base):
         for i, _c in enumerate(student.courses):
             logger.debug("initial transcript [%d]: %r", i, _c)
 
-        for limited_transcript in self.limit.limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
+        for limited_transcript in self.limit.evaluate_conditionals().limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
             for i, _c in enumerate(limited_transcript):
                 logger.debug("evaluating area.result with limited transcript [%d]: %r", i, _c)
 
@@ -239,7 +239,7 @@ class AreaOfStudy(Base):
 
         acc = 0
 
-        for limited_transcript in self.limit.limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
+        for limited_transcript in self.limit.evaluate_conditionals().limited_transcripts(courses=student.courses, forced_clbids=tuple(forced_clbids)):
             ctx = ctx.with_transcript(
                 limited_transcript,
                 full=student.courses,

@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Collection, Optional, Iterator, Any, List, Set, FrozenSet, TYPE_CHECKING
+from typing import Dict, Tuple, Collection, Union, Optional, Iterator, Any, List, Set, FrozenSet, TYPE_CHECKING
 from collections import defaultdict
 from functools import partial
 import itertools
@@ -8,6 +8,7 @@ import enum
 
 import attr
 
+from .conditional_expression import SomePredicateExpression, load_predicate_expression
 from .predicate_clause import SomePredicate, load_predicate
 from .data_type import DataType
 from .lazy_product import lazy_product
@@ -15,6 +16,7 @@ from .constants import Constants
 from .ncr import ncr
 
 if TYPE_CHECKING:
+    from .data.clausable import Clausable
     from .data.course import CourseInstance  # noqa: F401
     from .context import RequirementContext  # noqa: F401
 
@@ -25,6 +27,9 @@ logger = logging.getLogger(__name__)
 class AtMostWhat(enum.Enum):
     Courses = 0
     Credits = 1
+
+
+SomeLimit = Union['Limit', 'ConditionalLimit']
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -44,7 +49,10 @@ class Limit:
         }
 
     @staticmethod
-    def load(data: Dict, c: Constants, ctx: 'RequirementContext') -> 'Limit':
+    def load(data: Dict, *, c: Constants, ctx: 'RequirementContext') -> SomeLimit:
+        if '$if' in data:
+            return ConditionalLimit.load(data, c=c, ctx=ctx)
+
         at_most = data.get("at most", data.get("at-most", data.get("at_most", None)))
 
         if at_most is None:
@@ -55,7 +63,6 @@ class Limit:
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty"
 
         clause = load_predicate(data["where"], c=c, ctx=ctx, mode=DataType.Course)
-        assert clause, 'limits are not allowed to have conditional clauses'
 
         try:
             at_most = decimal.Decimal(int(at_most))
@@ -74,6 +81,9 @@ class Limit:
                 raise ValueError(f'expected course|credits, got {at_most_what} (part of {_at_most})')
 
         return Limit(at_most=at_most, at_most_what=at_most_what, where=clause, message=data.get('message', None))
+
+    def applies(self, to: 'Clausable') -> bool:
+        return self.where.apply(to)
 
     def iterate(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
         # Be sure to sort the input, so that the output from the iterator is
@@ -122,14 +132,87 @@ class Limit:
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+class ConditionalLimit:
+    condition: SomePredicateExpression
+    when_true: Limit
+    when_false: Optional[Limit]
+    selected_branch: Optional[Limit] = None
+
+    @staticmethod
+    def load(
+        data: Dict[str, Any],
+        *,
+        c: Constants,
+        ctx: 'RequirementContext',
+    ) -> 'ConditionalLimit':
+        condition = load_predicate_expression(data['$if'], ctx=ctx)
+
+        when_true = Limit.load(data['$then'], c=c, ctx=ctx)
+        when_false = None
+        if data.get('$else', None) is not None:
+            when_false = Limit.load(data['$else'], c=c, ctx=ctx)
+
+        selected_branch = when_false
+        if condition.result is True:
+            selected_branch = when_true
+
+        return ConditionalLimit(
+            condition=condition,
+            when_true=when_true,
+            when_false=when_false,
+            selected_branch=selected_branch,
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "type": "limit--if",
+            "condition": self.condition.to_dict(),
+            "when_true": self.when_true.to_dict(),
+            "when_false": self.when_false.to_dict() if self.when_false else None,
+        }
+
+    def applies(self, to: 'Clausable') -> bool:
+        if not self.selected_branch:
+            return False
+        return self.selected_branch.where.apply(to)
+
+    def evaluate(self, *, ctx: 'RequirementContext') -> 'ConditionalLimit':
+        if self.condition.result is not None:
+            return self
+
+        evaluated_condition = self.condition.evaluate(ctx=ctx)
+
+        selected_branch = self.when_false
+        if evaluated_condition.result is True:
+            selected_branch = self.when_true
+
+        return attr.evolve(self, condition=evaluated_condition, selected_branch=selected_branch)
+
+    def iterate(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+        if self.selected_branch:
+            yield from self.selected_branch.iterate(courses)
+
+    def estimate(self, courses: Collection['CourseInstance']) -> int:
+        if self.selected_branch:
+            return self.selected_branch.estimate(courses)
+
+
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class LimitSet:
-    limits: Tuple[Limit, ...]
+    limits: Tuple[SomeLimit, ...]
 
     def has_limits(self) -> bool:
-        return len(self.limits) > 0
+        return bool(self.limits)
 
     def to_dict(self) -> List[Dict[str, Any]]:
         return [limit.to_dict() for limit in self.limits]
+
+    def evaluate_conditionals(self) -> 'LimitSet':
+        limits = tuple(
+            limit.evaluate() if isinstance(limit, ConditionalLimit) else limit
+            for limit in self.limits
+        )
+        return attr.evolve(self, limits=limits)
 
     @staticmethod
     def load(data: Optional[Collection[Dict]], *, c: Constants, ctx: 'RequirementContext') -> 'LimitSet':
@@ -137,36 +220,12 @@ class LimitSet:
             return LimitSet(limits=tuple())
         return LimitSet(limits=tuple(Limit.load(limit, c=c, ctx=ctx) for limit in data))
 
-    def apply_limits(self, courses: Collection['CourseInstance']) -> Iterator['CourseInstance']:
-        clause_counters: Dict = defaultdict(int)
-        # logger.debug("limit/before: %s", courses)
-
-        for c in courses:
-            may_yield = True
-
-            for limit in self.limits:
-                logger.debug("limit/check: checking %r against %s (counter: %s)", c, limit, clause_counters[limit])
-                if limit.where.apply(c):
-                    if clause_counters[limit] >= limit.at_most:
-                        logger.debug("limit/maximum: %r matched %s (counter: %s)", c, limit, clause_counters[limit])
-                        may_yield = False
-                        # break out of the loop once we fill up any limit clause
-                        break
-
-                    logger.debug("limit/increment: %r matched %s (counter: %s)", c, limit, clause_counters[limit])
-                    clause_counters[limit] += 1
-
-            if may_yield is True:
-                logger.debug("limit/state: %r", clause_counters)
-                logger.debug("limit/allow: %r", c)
-                yield c
-
     def check(self, courses: Collection['CourseInstance']) -> bool:
         clause_counters: Dict = defaultdict(decimal.Decimal)
 
         for c in courses:
             for limit in self.limits:
-                if not limit.where.apply(c):
+                if not limit.applies(c):
                     continue
 
                 if clause_counters[limit] >= limit.at_most:
@@ -216,13 +275,13 @@ class LimitSet:
         # step 1: find the number of extra iterations we will need for each limiting clause
         matched_items: Dict = defaultdict(set)
         for limit in self.limits:
-            logger.debug("limit/probe: checking against %s", limit)
+            logger.debug("limit/probe: checking against %r", limit)
             for c in courses:
                 if c.clbid in forced_items:
                     logger.debug("limit/probe: skipping check of %r as it has been forced", c)
                     continue
-                logger.debug("limit/probe: checking %r")
-                if limit.where.apply(c):
+                logger.debug("limit/probe: checking %r", c)
+                if limit.applies(c):
                     matched_items[limit].add(c)
 
         all_matched_items = set(item for match_set in matched_items.values() for item in match_set)
