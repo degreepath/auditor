@@ -160,9 +160,9 @@ class Assertion:
             "data-type": self.data_type.value,
             "evaluated": self.evaluated,
             "resolved": str(self.resolved) if self.resolved is not None else None,
-            "resolved_items": sorted(stringify_expected(x) for x in self.resolved_items) if self.resolved_items is not None else None,
-            "resolved_clbids": sorted(self.resolved_clbids) if self.resolved_clbids is not None else None,
-            "inserted_clbids": sorted(self.inserted_clbids) if self.inserted_clbids is not None else None,
+            "resolved_items": sorted(stringify_expected(x) for x in self.resolved_items) if self.resolved_items is not None else [],
+            "resolved_clbids": sorted(self.resolved_clbids) if self.resolved_clbids is not None else [],
+            "inserted_clbids": sorted(self.inserted_clbids) if self.inserted_clbids is not None else [],
         }
 
         # omit label and message unless they have a set value
@@ -322,16 +322,17 @@ class ConditionalAssertion:
             self.when_false.validate(ctx=ctx)
 
     def audit_and_resolve(self, data: Sequence['Clausable'] = tuple(), *, ctx: 'RequirementContext') -> 'SomeAssertion':
-        if self.condition.result is True:
-            when_true = self.when_true.audit_and_resolve(data, ctx=ctx)
-            return attr.evolve(self, when_true=when_true)
-        elif self.condition.result is False:
+        evaluated_condition = self.condition.evaluate(ctx=ctx)
+
+        if evaluated_condition.result is True:
+            evaluated_branch = self.when_true.audit_and_resolve(data, ctx=ctx)
+            return attr.evolve(self, condition=evaluated_condition, when_true=evaluated_branch)
+        elif evaluated_condition.result is False:
             if self.when_false:
-                when_false = self.when_false.audit_and_resolve(data, ctx=ctx)
-                return attr.evolve(self, when_false=when_false)
+                evaluated_branch = self.when_false.audit_and_resolve(data, ctx=ctx)
+                return attr.evolve(self, condition=evaluated_condition, when_false=evaluated_branch)
             else:
                 return self
-        # elif self.condition.result is None:
         else:
             raise Exception('conditional assertion condition not evaluated!')
 

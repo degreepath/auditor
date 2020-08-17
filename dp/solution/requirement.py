@@ -50,7 +50,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             return RequirementResult.from_solution(solution=self, result=None)
 
         if isinstance(self.result, Rule):
-            # TODO determine when this happens
+            # TODO: determine when this happens
             return RequirementResult.from_solution(solution=self, result=self.result)
 
         return RequirementResult.from_solution(solution=self, result=self.result.audit(ctx=ctx))
