@@ -349,6 +349,7 @@ class CourseFilterArgs:
     section: Optional[str] = None
     sub_type: Optional[SubType] = None
     in_progress: Optional[bool] = None
+    attribute: Optional[str] = None
 
 
 def course_filter(
@@ -362,6 +363,7 @@ def course_filter(
     section: Optional[str] = None,
     sub_type: Optional[SubType] = None,
     in_progress: Optional[bool] = None,
+    attribute: Optional[str] = None,
 ) -> Callable[[CourseInstance], bool]:
     filter_args = CourseFilterArgs(
         ap=ap,
@@ -373,6 +375,7 @@ def course_filter(
         section=section,
         sub_type=sub_type,
         in_progress=in_progress,
+        attribute=attribute,
     )
     return lambda c: _course_filter(c, filter_args)
 
@@ -400,6 +403,10 @@ def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
 
         if f.sub_type is not None and c.sub_type != f.sub_type:
             return False
+
+    # compare course attributes
+    if f.attribute is not None and f.attribute not in c.attributes:
+        return False
 
     # compare course names
     if f.name is not None and c.name != f.name:
