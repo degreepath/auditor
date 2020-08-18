@@ -33,6 +33,7 @@ def fetch(args: argparse.Namespace) -> None:
         with sqlite_connect(args.db) as conn:
             print('clearing cached data... ', end='', flush=True)
             # noinspection SqlWithoutWhere
+            # language=SQLite
             conn.execute('DELETE FROM server_data')
             conn.commit()
             print('cleared')
@@ -40,6 +41,8 @@ def fetch(args: argparse.Namespace) -> None:
     # named cursors only allow one execute() call, so this must be its own block
     with pg_conn.cursor(name="degreepath_testbed") as curs:
         curs.itersize = 50
+
+        latest = args.latest
 
         # language=PostgreSQL
         curs.execute('''
@@ -57,8 +60,13 @@ def fetch(args: argparse.Namespace) -> None:
                  , status
                  , run
             FROM result
-            WHERE result IS NOT NULL AND run = %s
-        ''', [selected_run])
+            WHERE result IS NOT NULL 
+                AND CASE 
+                    WHEN %(run)s IS NOT NULL THEN run = %(run)s 
+                    WHEN %(latest)s IS NOT NULL THEN is_active = true 
+                    ELSE run = (select max(run) from result) 
+                END
+        ''', dict(run=selected_run, latest=latest))
 
         with sqlite_connect(args.db) as conn:
             for row in tqdm.tqdm(curs, total=total_items, unit_scale=True):
