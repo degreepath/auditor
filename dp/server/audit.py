@@ -73,29 +73,19 @@ def audit(
                         result = msg.result.to_dict()
                         result_str = json.dumps(result)
 
-                        # check if this exact result exists already; if so, delete the old one(s)
+                        # fetch the previous revision number
                         curs.execute("""
-                            SELECT 1 FROM result
-                            WHERE student_id = %(student_id)s AND area_code = %(area_code)s AND result = %(result)s::jsonb
-                            FETCH FIRST ROW ONLY
-                        """, {"student_id": stnum, "area_code": area_code, "result": result_str})
+                            SELECT coalesce(max(revision), 0) 
+                            FROM result 
+                            WHERE student_id = %(student_id)s AND area_code = %(area_code)s
+                        """, {"student_id": stnum, "area_code": area_code})
+                        revision: int = curs.fetchone()
 
-                        row = curs.fetchone()
-                        if row is not None:
-                            # we select all results for a student/area combo, then partition them
-                            # by the contents of their result, sorting them by id since it autoincrements.
-                            curs.execute("""
-                                DELETE FROM result
-                                WHERE id IN (
-                                    SELECT id
-                                    FROM (
-                                        SELECT id, row_number() OVER (PARTITION BY student_id, area_code, result ORDER BY id DESC) AS index
-                                        FROM result
-                                        WHERE student_id = %(student_id)s AND area_code = %(area_code)s
-                                    ) dups
-                                    WHERE dups.index > 1
-                                )
-                            """, {"student_id": stnum, "area_code": area_code})
+                        # delete any old copies of this exact result
+                        curs.execute("""
+                            DELETE FROM result
+                            WHERE student_id = %(student_id)s AND area_code = %(area_code)s AND result = %(result)s::jsonb
+                        """, {"student_id": stnum, "area_code": area_code, "result": result_str})
 
                         # deactivate all existing records
                         curs.execute("""
@@ -125,7 +115,7 @@ def audit(
                               , claimed_courses = %(claimed_courses)s::jsonb
                               , status = %(status)s
                               , is_active = true
-                              , revision = coalesce((SELECT max(revision) + 1 FROM result WHERE student_id = %(student_id)s AND area_code = %(area_code)s), 0)
+                              , revision = %(revision)s + 1
                             WHERE id = %(result_id)s
                         """, {
                             "result_id": result_id,
@@ -139,8 +129,7 @@ def audit(
                             "gpa": result["gpa"],
                             "ok": result["ok"],
                             "status": result["status"],
-                            "student_id": stnum,
-                            "area_code": area_code,
+                            "revision": revision,
                         })
 
                     else:
