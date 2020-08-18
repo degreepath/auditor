@@ -101,8 +101,8 @@ def audit(
                         curs.execute("""
                             UPDATE result
                             SET is_active = false
-                            WHERE 
-                                student_id = %(student_id)s 
+                            WHERE
+                                student_id = %(student_id)s
                                 AND area_code = %(area_code)s
                                 AND is_active = true
                         """, {"student_id": stnum, "area_code": area_code})

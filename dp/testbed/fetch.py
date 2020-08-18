@@ -60,11 +60,11 @@ def fetch(args: argparse.Namespace) -> None:
                  , status
                  , run
             FROM result
-            WHERE result IS NOT NULL 
-                AND CASE 
-                    WHEN %(run)s IS NOT NULL THEN run = %(run)s 
-                    WHEN %(latest)s IS NOT NULL THEN is_active = true 
-                    ELSE run = (select max(run) from result) 
+            WHERE result IS NOT NULL
+                AND CASE
+                    WHEN %(run)s IS NOT NULL THEN run = %(run)s
+                    WHEN %(latest)s IS NOT NULL THEN is_active = true
+                    ELSE run = (select max(run) from result)
                 END
         ''', dict(run=selected_run, latest=latest))
 
