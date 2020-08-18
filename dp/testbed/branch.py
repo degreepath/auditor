@@ -1,6 +1,7 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import argparse
 import sqlite3
+import traceback
 
 import tqdm  # type: ignore
 
@@ -94,8 +95,8 @@ def branch(args: argparse.Namespace) -> None:
                         ''', timeout.args[1])
                         conn.commit()
                         continue
-                    except Exception as exc:
-                        print(f'{stnum} {catalog} {code} generated an exception: {exc}')
+                    except Exception:
+                        print(f'{stnum} {catalog} {code} generated an exception: {traceback.format_exc()}')
                         continue
 
                     assert db_args is not None, f"{stnum}, {catalog}, {code} returned None"
