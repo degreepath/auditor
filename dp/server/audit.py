@@ -75,8 +75,8 @@ def audit(
 
                         # fetch the previous revision number
                         curs.execute("""
-                            SELECT coalesce(max(revision), 0) 
-                            FROM result 
+                            SELECT coalesce(max(revision), 0)
+                            FROM result
                             WHERE student_id = %(student_id)s AND area_code = %(area_code)s
                         """, {"student_id": stnum, "area_code": area_code})
                         revision: int = curs.fetchone()
