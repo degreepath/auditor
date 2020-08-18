@@ -42,6 +42,16 @@ def baseline(args: argparse.Namespace) -> None:
         pretty_dur = pretty_ms(estimated_duration_s * 1000)
         print(f'{count:,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
 
+        if args.copy:
+            conn.execute('''
+                INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
+                SELECT stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result
+                FROM server_data
+                WHERE duration < :min
+            ''', {'min': minimum_duration.sec()})
+            conn.commit()
+            return
+
         results = conn.execute('''
             SELECT catalog, code
             FROM server_data
