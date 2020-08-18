@@ -34,8 +34,8 @@ def audit(
         outer_scope.user = {"id": stnum}
 
         curs.execute("""
-            INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data,     expires_at,     link_only)
-            VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(input_data)s, %(expires_at)s, %(link_only)s)
+            INSERT INTO result (  student_id,     area_code,     catalog,     run,     input_data,     expires_at,     link_only,   result_version)
+            VALUES             (%(student_id)s, %(area_code)s, %(catalog)s, %(run)s, %(input_data)s, %(expires_at)s, %(link_only)s, 2)
             RETURNING id
         """, {"student_id": stnum, "area_code": area_code, "catalog": area_catalog, "run": run_id, "input_data": json.dumps(student), "expires_at": expires_at, "link_only": link_only})
 
@@ -73,38 +73,6 @@ def audit(
                         result = msg.result.to_dict()
                         result_str = json.dumps(result)
 
-                        # we use clock_timestamp() instead of now() here, because
-                        # now() is the start time of the transaction, and we instead
-                        # want the time when the computation was finished.
-                        # see https://stackoverflow.com/a/24169018
-                        curs.execute("""
-                            UPDATE result
-                            SET iterations = %(total_count)s
-                              , duration = interval %(elapsed)s
-                              , per_iteration = interval %(avg_iter_time)s
-                              , rank = %(rank)s
-                              , max_rank = %(max_rank)s
-                              , result = %(result)s::jsonb
-                              , ok = %(ok)s
-                              , ts = clock_timestamp()
-                              , gpa = %(gpa)s
-                              , claimed_courses = %(claimed_courses)s::jsonb
-                              , status = %(status)s
-                            WHERE id = %(result_id)s
-                        """, {
-                            "result_id": result_id,
-                            "total_count": msg.iters,
-                            "elapsed": f"{msg.elapsed_ms}ms",
-                            "avg_iter_time": f"{msg.avg_iter_ms}ms",
-                            "result": result_str,
-                            "claimed_courses": json.dumps(msg.result.keyed_claims()),
-                            "rank": result["rank"],
-                            "max_rank": result["max_rank"],
-                            "gpa": result["gpa"],
-                            "ok": result["ok"],
-                            "status": result["status"],
-                        })
-
                         # check if this exact result exists already; if so, delete the old one(s)
                         curs.execute("""
                             SELECT 1 FROM result
@@ -128,6 +96,52 @@ def audit(
                                     WHERE dups.index > 1
                                 )
                             """, {"student_id": stnum, "area_code": area_code})
+
+                        # deactivate all existing records
+                        curs.execute("""
+                            UPDATE result
+                            SET is_active = false
+                            WHERE 
+                                student_id = %(student_id)s 
+                                AND area_code = %(area_code)s
+                                AND is_active = true
+                        """, {"student_id": stnum, "area_code": area_code})
+
+                        # we use clock_timestamp() instead of now() here, because
+                        # now() is the start time of the transaction, and we instead
+                        # want the time when the computation was finished.
+                        # see https://stackoverflow.com/a/24169018
+                        curs.execute("""
+                            UPDATE result
+                            SET iterations = %(total_count)s
+                              , duration = interval %(elapsed)s
+                              , per_iteration = interval %(avg_iter_time)s
+                              , rank = %(rank)s
+                              , max_rank = %(max_rank)s
+                              , result = %(result)s::jsonb
+                              , ok = %(ok)s
+                              , ts = clock_timestamp()
+                              , gpa = %(gpa)s
+                              , claimed_courses = %(claimed_courses)s::jsonb
+                              , status = %(status)s
+                              , is_active = true
+                              , revision = coalesce((SELECT max(revision) + 1 FROM result WHERE student_id = %(student_id)s AND area_code = %(area_code)s), 0)
+                            WHERE id = %(result_id)s
+                        """, {
+                            "result_id": result_id,
+                            "total_count": msg.iters,
+                            "elapsed": f"{msg.elapsed_ms}ms",
+                            "avg_iter_time": f"{msg.avg_iter_ms}ms",
+                            "result": result_str,
+                            "claimed_courses": json.dumps(msg.result.keyed_claims()),
+                            "rank": result["rank"],
+                            "max_rank": result["max_rank"],
+                            "gpa": result["gpa"],
+                            "ok": result["ok"],
+                            "status": result["status"],
+                            "student_id": stnum,
+                            "area_code": area_code,
+                        })
 
                     else:
                         logger.critical('unknown message %s', msg)
