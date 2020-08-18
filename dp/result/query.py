@@ -1,7 +1,7 @@
 import attr
 from typing import Tuple, Sequence, List
 
-from ..assertion_clause import SomeAssertion
+from ..assertion_clause import AnyAssertion
 from ..base import Result, BaseQueryRule
 from ..claim import Claim
 
@@ -15,7 +15,7 @@ class QueryResult(Result, BaseQueryRule):
     def from_solution(
         *,
         solution: BaseQueryRule,
-        assertions: Tuple[SomeAssertion, ...],
+        assertions: Tuple[AnyAssertion, ...],
         successful_claims: Tuple[Claim, ...],
         failed_claims: Tuple[Claim, ...],
         overridden: bool = False,

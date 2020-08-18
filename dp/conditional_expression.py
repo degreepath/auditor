@@ -29,14 +29,17 @@ Examples
 )
 """
 
-from typing import Dict, Optional, Any, Mapping, Union, Tuple, TYPE_CHECKING
+from typing import Dict, Optional, Any, Mapping, Sequence, Union, Tuple, TYPE_CHECKING
 import logging
 import enum
 
 import attr
 
+from .data.student import course_filter
+
 if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext
+    from .data.course import CourseInstance
 
 logger = logging.getLogger(__name__)
 
@@ -55,16 +58,11 @@ class PredicateExpressionFunction(enum.Enum):
     HasCourse = 'has-course'
     PassedProficiencyExam = 'passed-proficiency-exam'
     HasDeclaredAreaCode = 'has-declared-area-code'
-    RequirementIsSatisfied = 'requirement-is-satisfied'
 
 
-STATIC_PREDICATE_FUNCTIONS = {
-    PredicateExpressionFunction.HasDeclaredAreaCode,
-    PredicateExpressionFunction.PassedProficiencyExam,
-    PredicateExpressionFunction.HasCourse,
-    PredicateExpressionFunction.HasCompletedCourse,
-    PredicateExpressionFunction.HasIpCourse,
-}
+@enum.unique
+class DynamicPredicateExpressionFunction(enum.Enum):
+    QueryHasCourseWithAttribute = 'query-has-course-with-attribute'
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -173,7 +171,6 @@ class PredicateExpressionNot:
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class PredicateExpression:
     function: PredicateExpressionFunction
-    # arguments: Tuple[Union[str, int, Decimal], ...]
     argument: str
     result: Optional[bool] = None
 
@@ -191,6 +188,7 @@ class PredicateExpression:
 
     @staticmethod
     def load(data: Mapping, *, ctx: 'RequirementContext') -> 'PredicateExpression':
+        assert type(data) is dict, TypeError('predicate expressions must be dicts')
         assert len(data.keys()) == 1, ValueError("only one key allowed in predicate expressions")
 
         function_name = list(data.keys())[0]
@@ -201,9 +199,7 @@ class PredicateExpression:
         assert type(argument) is str, \
             TypeError(f'invalid argument type for predicate expression {type(argument)}')
 
-        result = None
-        if function in STATIC_PREDICATE_FUNCTIONS:
-            result = evaluate_predicate_function(function, argument, ctx=ctx)
+        result = evaluate_predicate_function(function, argument, ctx=ctx)
 
         return PredicateExpression(function=function, argument=argument, result=result)
 
@@ -225,6 +221,55 @@ class PredicateExpression:
         return attr.evolve(self, result=result)
 
 
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+class DynamicPredicateExpression:
+    function: DynamicPredicateExpressionFunction
+    argument: str
+    result: Optional[bool] = None
+
+    @staticmethod
+    def can_load(data: Mapping) -> bool:
+        if len(data.keys()) != 1:
+            return False
+
+        try:
+            function_name = list(data.keys())[0]
+            DynamicPredicateExpressionFunction(function_name)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def load(data: Mapping) -> 'DynamicPredicateExpression':
+        assert type(data) is dict, TypeError('predicate expressions must be dicts')
+        assert len(data.keys()) == 1, ValueError("only one key allowed in predicate expressions")
+
+        function_name = list(data.keys())[0]
+        function = DynamicPredicateExpressionFunction(function_name)
+
+        argument = data[function_name]
+
+        assert type(argument) is str, \
+            TypeError(f'invalid argument type for predicate expression {type(argument)}')
+
+        return DynamicPredicateExpression(function=function, argument=argument, result=None)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "type": "pred-dyn-expr",
+            "function": self.function.value,
+            "argument": self.argument,
+            "result": self.result,
+        }
+
+    def validate(self, *, ctx: 'RequirementContext') -> None:
+        pass
+
+    def evaluate_against_data(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpression':
+        result = evaluate_dynamic_predicate_function(self.function, self.argument, data=data)
+        return attr.evolve(self, result=result)
+
+
 def evaluate_predicate_function(function: PredicateExpressionFunction, argument: str, *, ctx: 'RequirementContext') -> bool:
     logger.debug('evaluate: (%r %r)', function, argument)
     if function is PredicateExpressionFunction.HasDeclaredAreaCode:
@@ -242,11 +287,20 @@ def evaluate_predicate_function(function: PredicateExpressionFunction, argument:
     elif function is PredicateExpressionFunction.PassedProficiencyExam:
         return ctx.music_proficiencies.passed_exam(of=argument)
 
-    # elif function is PredicateExpressionFunction.RequirementIsSatisfied:
-    #     return None
-
     else:
         raise TypeError(f"unknown static PredicateExpressionFunction {function}")
+
+
+def evaluate_dynamic_predicate_function(function: DynamicPredicateExpressionFunction, argument: str, *, data: Sequence['CourseInstance']) -> bool:
+    logger.debug('evaluate-dynamic: (%r %r)', function, argument)
+
+    if function is DynamicPredicateExpressionFunction.QueryHasCourseWithAttribute:
+        for _ in filter(course_filter(attribute=argument), data):
+            return True
+        return False
+
+    else:
+        raise TypeError(f"unknown DynamicPredicateExpressionFunction {function}")
 
 
 def load_predicate_expression(

@@ -85,8 +85,11 @@ def print_result(
     elif rule["type"] == "assertion":
         yield from print_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
 
-    elif rule["type"] == "conditional-assertion":
+    elif rule["type"] == "assertion--if":
         yield from print_conditional_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
+
+    elif rule["type"] == "assertion--when":
+        yield from print_dynamic_conditional_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
 
     elif rule["type"] == "proficiency":
         yield from print_proficiency(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
@@ -386,7 +389,7 @@ def print_assertion(
 
     emoji = calculate_emoji(rule)
 
-    yield f"{prefix}{rank_prefix} - {emoji} {str_assertion(rule)} [{rule['status']}]"
+    yield f"{prefix}{rank_prefix} - {emoji} {str_assertion_clause(rule)} [{rule['status']}]"
 
     prefix += " " * 6
 
@@ -433,11 +436,36 @@ def print_conditional_assertion(
     yield from print_result(rule['condition'], transcript, indent + 4, show_paths, show_ranks, inserted)
 
     yield f"{prefix}Then:"
-    yield from print_result(rule['when_yes'], transcript, indent + 4, show_paths, show_ranks, inserted)
+    yield from print_assertion(rule['when_true'], transcript, indent + 4, show_paths, show_ranks, inserted)
 
-    if rule['when_no']:
+    if rule.get('when_false', None):
         yield f"{prefix}Otherwise:"
-        yield from print_result(rule['when_no'], transcript, indent + 4, show_paths, show_ranks, inserted)
+        yield from print_assertion(rule['when_false'], transcript, indent + 4, show_paths, show_ranks, inserted)
+    else:
+        yield f"{prefix}Otherwise, do nothing"
+
+
+def print_dynamic_conditional_assertion(
+    rule: Dict[str, Any],
+    transcript: Dict[str, CourseInstance],
+    indent: int = 0,
+    show_paths: bool = True,
+    show_ranks: bool = True,
+    inserted: Sequence[str] = tuple(),
+    only_path: Optional[List[str]] = None,
+) -> Iterator[str]:
+    if show_paths:
+        yield from print_path(rule, indent)
+
+    prefix = " " * indent
+    yield f"{prefix}If: {str_expression(rule['condition'])}"
+
+    yield f"{prefix}Then:"
+    yield from print_assertion(rule['when_true'], transcript, indent + 4, show_paths, show_ranks, inserted)
+
+    if rule.get('when_false', None):
+        yield f"{prefix}Otherwise:"
+        yield from print_assertion(rule['when_false'], transcript, indent + 4, show_paths, show_ranks, inserted)
     else:
         yield f"{prefix}Otherwise, do nothing"
 
@@ -492,12 +520,6 @@ def str_single_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_on
     elif key == 'is_stolaf':
         key = 'from STOLAF'
 
-    resolved_with = clause.get('resolved_with', None)
-    if resolved_with is not None:
-        resolved = f" [{repr(resolved_with)}]"
-    else:
-        resolved = ""
-
     expected = clause['expected']
 
     if raw_only:
@@ -516,15 +538,23 @@ def str_single_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_on
     op = str_operator(clause['operator'])
 
     if clause['operator'] == 'EqualTo' and expected is True:
-        return f'{key}{resolved}{postscript}'
+        return f'{key}{postscript}'
     elif clause['operator'] == 'EqualTo' and expected is False:
-        return f'not "{key}"{resolved}{postscript}'
+        return f'not "{key}"{postscript}'
 
-    return f'{key}{resolved} {op} {expected}{postscript}'
+    return f'{key} {op} {expected}{postscript}'
 
 
 def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
     if expr["type"] == "pred-expr":
+        headline = "??"
+        if expr['result'] is True:
+            headline = 't.'
+        elif expr['result'] is False:
+            headline = 'f!'
+        return f"({headline} {expr['function']} {expr['argument']!r})"
+
+    elif expr["type"] == "pred-dyn-expr":
         headline = "??"
         if expr['result'] is True:
             headline = 't.'
@@ -549,11 +579,11 @@ def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
     raise Exception(f'not a predicate expression: {expr["type"]}')
 
 
-def str_assertion(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
+def str_assertion_clause(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
     if clause["type"] == "assertion":
         key = clause["key"]
 
-        resolved_with = clause.get('resolved_with', None)
+        resolved_with = clause.get('resolved', None)
         if resolved_with is not None:
             resolved = f" [{repr(resolved_with)}]"
         else:
@@ -585,16 +615,30 @@ def str_assertion(clause: Dict[str, Any], *, nested: bool = False, raw_only: boo
 
     elif clause["type"] == "assertion--if":
         cond = str_expression(clause['condition'])
-        then = str_assertion(clause['when_true'])
+        then = str_assertion_clause(clause['when_true'])
         branch = clause['condition']['result']
         # print(clause)
         true_branch = 't.' if branch is True else ''
         false_branch = 'f!' if branch is False else ''
         if clause['when_false']:
-            other = str_assertion(clause['when_false'])
+            other = str_assertion_clause(clause['when_false'])
         else:
             other = "do nothing"
         text = f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
+
+        if not nested:
+            return text
+        else:
+            return f'({text})'
+
+    elif clause["type"] == "assertion--when":
+        cond = str_expression(clause['condition'])
+        then = str_assertion_clause(clause['when_true'])
+        branch = clause['condition']['result']
+        # print(clause)
+        true_branch = 't.' if branch is True else ''
+        false_branch = 'f!' if branch is False else ''
+        text = f"If: [{cond}] Then ({true_branch}): [{then}] Else [nothing]"
 
         if not nested:
             return text

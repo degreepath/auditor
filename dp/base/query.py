@@ -5,7 +5,7 @@ import enum
 import attr
 
 from .bases import Base
-from ..assertion_clause import SomeAssertion
+from ..assertion_clause import AnyAssertion
 from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, WAIVED_DONE_CURRENT_PENDING_INCOMPLETE
 from ..limit import LimitSet
 from ..predicate_clause import SomePredicate
@@ -26,7 +26,7 @@ class QuerySource(enum.Enum):
 class BaseQueryRule(Base):
     source: QuerySource
     data_type: DataType
-    assertions: Tuple[SomeAssertion, ...]
+    assertions: Tuple[AnyAssertion, ...]
     limit: LimitSet
     where: Optional[SomePredicate]
     allow_claimed: bool
@@ -54,7 +54,7 @@ class BaseQueryRule(Base):
     def only_failed_claims(self) -> Sequence[Claim]:
         return []
 
-    def all_assertions(self) -> Sequence[SomeAssertion]:
+    def all_assertions(self) -> Sequence[AnyAssertion]:
         return self.assertions
 
     def type(self) -> str:

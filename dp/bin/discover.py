@@ -16,7 +16,7 @@ except ImportError:
 from dp import AreaOfStudy, Constants
 from dp.base import Rule
 from dp.predicate_clause import PredicateCompoundAnd, PredicateCompoundOr, PredicateNot, Predicate, ConditionalPredicate, SomePredicate
-from dp.assertion_clause import SomeAssertion, Assertion, ConditionalAssertion
+from dp.assertion_clause import SomeAssertion, Assertion, ConditionalAssertion, AnyAssertion, DynamicConditionalAssertion
 from dp.rule.course import CourseRule
 from dp.rule.count import CountRule
 from dp.rule.proficiency import ProficiencyRule
@@ -196,7 +196,7 @@ def find_buckets_in_rule(rule: Rule) -> Iterator[str]:
         yield from find_buckets_in_rule(rule.result)
 
 
-def find_buckets_in_assertion(assertion: SomeAssertion) -> Iterator[str]:
+def find_buckets_in_assertion(assertion: AnyAssertion) -> Iterator[str]:
     if isinstance(assertion, Assertion):
         if assertion.where:
             yield from find_buckets_in_clause(assertion.where)
@@ -205,6 +205,9 @@ def find_buckets_in_assertion(assertion: SomeAssertion) -> Iterator[str]:
         yield from find_buckets_in_assertion(assertion.when_true)
         if assertion.when_false:
             yield from find_buckets_in_assertion(assertion.when_false)
+
+    elif isinstance(assertion, DynamicConditionalAssertion):
+        yield from find_buckets_in_assertion(assertion.when_true)
 
 
 def find_buckets_in_clause(clause: SomePredicate) -> Iterator[str]:

@@ -9,7 +9,7 @@ from ..base.query import QuerySource
 from ..data_type import DataType
 from ..limit import LimitSet
 from ..predicate_clause import load_predicate
-from ..assertion_clause import SomeAssertion, Assertion, ConditionalAssertion
+from ..assertion_clause import AnyAssertion, SomeAssertion, Assertion, ConditionalAssertion, DynamicConditionalAssertion
 from ..data.clausable import Clausable
 from ..ncr import ncr
 from ..solution.query import QuerySolution
@@ -60,13 +60,13 @@ class QueryRule(Rule, BaseQueryRule):
         if 'limits' in data:
             raise ValueError(f'the key is "limit", not "limits": {data}')
 
-        assertions: Tuple[SomeAssertion, ...]
+        assertions: Tuple[AnyAssertion, ...]
         if "assert" in data:
-            a = Assertion.load({'assert': data["assert"]}, data_type=data_type, c=c, ctx=ctx, path=[*path, ".assertions", "[0]"])
+            a = DynamicConditionalAssertion.load({'assert': data["assert"]}, data_type=data_type, c=c, ctx=ctx, path=[*path, ".assertions", "[0]"])
             assertions = tuple([a])
         elif "all" in data:
             assertions = tuple(
-                Assertion.load(d, data_type=data_type, c=c, ctx=ctx, path=[*path, ".assertions", f"[{i}]"])
+                DynamicConditionalAssertion.load(d, data_type=data_type, c=c, ctx=ctx, path=[*path, ".assertions", f"[{i}]"])
                 for i, d in enumerate(data["all"])
             )
         else:
@@ -296,7 +296,7 @@ def find_largest_simple_sum_assertion(assertions: Sequence[SomeAssertion]) -> Op
     return max(simple_clauses, key=_expected, default=None)
 
 
-def flatten_assertions(it: Iterable[SomeAssertion]) -> Iterator[Assertion]:
+def flatten_assertions(it: Iterable[AnyAssertion]) -> Iterator[Assertion]:
     for a in it:
         if isinstance(a, Assertion):
             yield a
@@ -304,6 +304,8 @@ def flatten_assertions(it: Iterable[SomeAssertion]) -> Iterator[Assertion]:
             yield a.when_true
             if a.when_false:
                 yield a.when_false
+        elif isinstance(a, DynamicConditionalAssertion):
+            yield a.when_true
         else:
             raise ValueError('uh oh')
 

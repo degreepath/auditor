@@ -14,14 +14,13 @@ from .op import Operator, apply_operator
 from .predicate_clause import SomePredicate, load_predicate
 from .status import ResultStatus, PassingStatuses
 from .clause_helpers import stringify_expected
-from .stringify import str_assertion
-from .conditional_expression import load_predicate_expression, SomePredicateExpression
+from .conditional_expression import load_predicate_expression, SomePredicateExpression, DynamicPredicateExpression
 from .data.clausable import Clausable
 
 if TYPE_CHECKING:  # pragma: no cover
     from .context import RequirementContext
-    from .data.course import CourseInstance  # noqa: F401
-    from .data.area_pointer import AreaPointer  # noqa: F401
+    from .data.course import CourseInstance
+    from .data.area_pointer import AreaPointer
 
 logger = logging.getLogger(__name__)
 CACHE_SIZE = 2048
@@ -30,6 +29,7 @@ ONE_POINT_OH = Decimal(1)
 ZERO_POINT_OH = Decimal(0)
 
 SomeAssertion = Union['Assertion', 'ConditionalAssertion']
+AnyAssertion = Union[SomeAssertion, 'DynamicConditionalAssertion']
 
 
 @enum.unique
@@ -103,7 +103,7 @@ class Assertion:
         if not isinstance(data, Mapping):
             raise Exception(f'expected {data} to be a dictionary')
 
-        if "$if" in data:
+        if ConditionalAssertion.can_load(data):
             return ConditionalAssertion.load(data, path=path, c=c, ctx=ctx, forbid=forbid, data_type=data_type)
 
         return load_single_assertion(data, path=path, c=c, ctx=ctx, forbid=forbid, data_type=data_type)
@@ -137,9 +137,6 @@ class Assertion:
             overridden=False,
             resolved=None,
         )
-
-    def __repr__(self) -> str:
-        return f"Assertion({str_assertion(self.to_dict())})"
 
     def to_dict(self) -> Dict[str, Any]:
         rank, max_rank = self.rank()
@@ -284,6 +281,10 @@ class ConditionalAssertion:
     when_false: Optional[Assertion]
 
     @staticmethod
+    def can_load(data: Dict[str, Any]) -> bool:
+        return '$if' in data
+
+    @staticmethod
     def load(
         data: Dict[str, Any],
         *,
@@ -310,6 +311,7 @@ class ConditionalAssertion:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "type": "assertion--if",
+            "path": list(self.path),
             "condition": self.condition.to_dict(),
             "when_true": self.when_true.to_dict(),
             "when_false": self.when_false.to_dict() if self.when_false else None,
@@ -335,12 +337,6 @@ class ConditionalAssertion:
                 return self
         else:
             raise Exception('conditional assertion condition not evaluated!')
-
-    def evaluate_dynamic_conditions(self) -> SomeAssertion:
-        # condition = self.condition.evaluate_dynamic()
-
-        # return attr.evolve(self, condition=condition)
-        raise Exception('uh oh')
 
     def status(self) -> ResultStatus:
         if self.condition.result is True:
@@ -388,6 +384,91 @@ class ConditionalAssertion:
     def is_at_least_0_clause(self) -> bool:
         if self.when_false is not None:
             return self.when_true.is_at_least_0_clause() or self.when_false.is_at_least_0_clause()
+        return self.when_true.is_at_least_0_clause()
+
+
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+class DynamicConditionalAssertion:
+    path: Tuple[str, ...]
+    condition: DynamicPredicateExpression
+    when_true: Assertion
+
+    @staticmethod
+    def can_load(data: Dict[str, Any]) -> bool:
+        return '$when' in data
+
+    @staticmethod
+    def load(
+        data: Dict[str, Any],
+        *,
+        c: Constants,
+        ctx: 'RequirementContext',
+        forbid: Sequence[Operator] = tuple(),
+        path: List[str],
+        data_type: DataType,
+    ) -> 'AnyAssertion':
+        if not DynamicConditionalAssertion.can_load(data):
+            return Assertion.load(data, c=c, ctx=ctx, forbid=forbid, path=path, data_type=data_type)
+
+        assert data_type is DataType.Course, TypeError(f'DynamicConditionalAssertion can only operate on courses, not {data_type}')
+
+        return DynamicConditionalAssertion(
+            condition=DynamicPredicateExpression.load(data['$when']),
+            when_true=load_single_assertion(data['$then'], c=c, ctx=ctx, forbid=forbid, path=[*path, '/t'], data_type=data_type),
+            path=tuple(path),
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "type": "assertion--when",
+            "path": list(self.path),
+            "condition": self.condition.to_dict(),
+            "when_true": self.when_true.to_dict(),
+        }
+
+    def validate(self, *, ctx: 'RequirementContext') -> None:
+        self.condition.validate(ctx=ctx)
+        self.when_true.validate(ctx=ctx)
+
+    def audit_and_resolve(self, data: Sequence['Clausable'] = tuple(), *, ctx: 'RequirementContext') -> 'DynamicConditionalAssertion':
+        evaluated_condition = self.condition.evaluate_against_data(data=cast(Sequence['CourseInstance'], data))
+
+        if evaluated_condition.result is True:
+            evaluated_branch = self.when_true.audit_and_resolve(data, ctx=ctx)
+            return attr.evolve(self, condition=evaluated_condition, when_true=evaluated_branch)
+        else:
+            return self
+
+    def status(self) -> ResultStatus:
+        if self.condition.result is True:
+            return self.when_true.status()
+        else:
+            return ResultStatus.Empty
+
+    def rank(self) -> Tuple[Decimal, Decimal]:
+        if self.condition.result is True:
+            return self.when_true.rank()
+        else:
+            return (ZERO_POINT_OH, ONE_POINT_OH)
+
+    def max_expected(self) -> Decimal:
+        return self.when_true.expected
+
+    def input_size_range(self, *, maximum: int) -> Iterator[int]:
+        if self.condition.result is True:
+            return input_size_range(self.when_true, maximum)
+        return input_size_range(self.when_true, maximum)
+
+    def is_simple_count_clause(self) -> bool:
+        return self.when_true.is_simple_count_clause()
+
+    def is_simple_sum_clause(self) -> bool:
+        return self.when_true.is_simple_sum_clause()
+
+    def is_lt_clause(self) -> bool:
+        return self.when_true.is_lt_clause()
+
+    def is_at_least_0_clause(self) -> bool:
         return self.when_true.is_at_least_0_clause()
 
 
