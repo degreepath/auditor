@@ -16,7 +16,7 @@ except ImportError:
 from dp import AreaOfStudy, Constants
 from dp.base import Rule
 from dp.predicate_clause import PredicateCompoundAnd, PredicateCompoundOr, PredicateNot, Predicate, ConditionalPredicate, SomePredicate
-from dp.assertion_clause import SomeAssertion, Assertion, ConditionalAssertion, AnyAssertion, DynamicConditionalAssertion
+from dp.assertion_clause import Assertion, ConditionalAssertion, AnyAssertion, DynamicConditionalAssertion
 from dp.rule.course import CourseRule
 from dp.rule.count import CountRule
 from dp.rule.proficiency import ProficiencyRule
