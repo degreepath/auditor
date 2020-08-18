@@ -15,19 +15,27 @@ def fetch(args: argparse.Namespace) -> None:
     pg_conn = psycopg2.connect('', application_name='degreepath-testbed', cursor_factory=psycopg2.extras.DictCursor)
     pg_conn.set_session(readonly=True)
 
-    selected_run = fetch__select_run(args, pg_conn)
+    selected_run = None
+    if not args.latest:
+        selected_run = fetch__select_run(args, pg_conn)
 
     with pg_conn.cursor() as curs:
         # language=PostgreSQL
         curs.execute('''
             SELECT count(*) total_count
             FROM result
-            WHERE run = %s
-        ''', [selected_run])
+            WHERE CASE
+                WHEN %(run)s IS NOT NULL THEN run = %(run)s
+                ELSE is_active = true
+            END
+        ''', dict(run=selected_run))
 
         total_items = curs.fetchone()['total_count']
 
-    print(f"Fetching run #{selected_run} with {total_items:,} audits into '{args.db}'")
+    if args.latest:
+        print(f"Fetching all {total_items:,} audits into {args.db!r}")
+    else:
+        print(f"Fetching run #{selected_run} with {total_items:,} audits into {args.db!r}")
 
     if args.clear:
         with sqlite_connect(args.db) as conn:
@@ -40,9 +48,7 @@ def fetch(args: argparse.Namespace) -> None:
 
     # named cursors only allow one execute() call, so this must be its own block
     with pg_conn.cursor(name="degreepath_testbed") as curs:
-        curs.itersize = 50
-
-        latest = args.latest
+        curs.itersize = 75
 
         # language=PostgreSQL
         curs.execute('''
@@ -63,10 +69,9 @@ def fetch(args: argparse.Namespace) -> None:
             WHERE result IS NOT NULL
                 AND CASE
                     WHEN %(run)s IS NOT NULL THEN run = %(run)s
-                    WHEN %(latest)s IS NOT NULL THEN is_active = true
-                    ELSE run = (select max(run) from result)
+                    ELSE is_active = true
                 END
-        ''', dict(run=selected_run, latest=latest))
+        ''', dict(run=selected_run))
 
         with sqlite_connect(args.db) as conn:
             for row in tqdm.tqdm(curs, total=total_items, unit_scale=True):
