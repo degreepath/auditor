@@ -36,7 +36,7 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         # "name" is allowed due to emphasis requirements
         allowed_keys = {
-            'if', 'in_gpa', 'name', 'else', 'then', 'result', 'disjoint',
+            'in_gpa', 'name', 'result', 'disjoint',
             'message', 'contract', 'requirements',
             'department_audited', 'department-audited',
         }

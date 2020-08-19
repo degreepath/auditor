@@ -36,7 +36,7 @@ class BaseConditionalRule(Base):
         elif self.condition.result is False and self.when_false:
             return self.when_false.status()
         else:
-            return ResultStatus.Empty
+            return ResultStatus.Done
 
     def rank(self) -> Tuple[Decimal, Decimal]:
         if self.condition.result is True:
@@ -44,7 +44,7 @@ class BaseConditionalRule(Base):
         elif self.condition.result is False and self.when_false:
             return self.when_false.rank()
         else:
-            return Decimal(0), Decimal(1)
+            return Decimal(1), Decimal(1)
 
     def is_in_gpa(self) -> bool:
         if self.condition.result is True:

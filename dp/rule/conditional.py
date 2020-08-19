@@ -1,4 +1,4 @@
-from typing import Any, Mapping, Optional, List, Sequence, Iterator, Collection, TYPE_CHECKING
+from typing import Any, Mapping, Dict, Optional, List, Sequence, Iterator, Collection, TYPE_CHECKING
 import logging
 import attr
 
@@ -26,25 +26,31 @@ class ConditionalRule(Rule, BaseConditionalRule):
         return "$if" in data
 
     @staticmethod
-    def load(data: Mapping[str, Any], *, c: Constants, path: Sequence[str], ctx: 'RequirementContext') -> Optional['ConditionalRule']:
+    def load(data: Mapping[str, Any], *, children: Dict[str, Dict], c: Constants, path: Sequence[str], ctx: 'RequirementContext') -> Optional['ConditionalRule']:
         from ..load_rule import load_rule
 
         path = tuple([*path, ".cond"])
 
         # "name" is allowed due to emphasis requirements
-        allowed_keys = {'$if', '$then', '$else'}
+        allowed_keys = {'$if', '$then', '$else', '$hide-when-false'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
         condition = load_predicate_expression(data['$if'], ctx=ctx)
 
-        when_true = load_rule(data=data['$then'], children={}, c=c, ctx=ctx, path=[*path, '/t'])
+        when_true = load_rule(data=data['$then'], children=children, c=c, ctx=ctx, path=[*path, '/t'])
         assert when_true
+
         when_false = None
         if data.get('$else', None) is not None:
-            when_false = load_rule(data=data['$else'], children={}, c=c, ctx=ctx, path=[*path, '/f'])
+            when_false = load_rule(data=data['$else'], children=children, c=c, ctx=ctx, path=[*path, '/f'])
 
         overridden = bool(ctx.get_waive_exception(path))
+
+        hide_when_false = data.get('$hide-when-false', False)
+
+        if not overridden and condition.result is False and hide_when_false:
+            return None
 
         return ConditionalRule(
             path=path,
