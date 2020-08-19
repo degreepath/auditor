@@ -64,7 +64,6 @@ def print_result(
     indent: int = 0,
     show_paths: bool = True,
     show_ranks: bool = True,
-    inserted: Sequence[str] = tuple(),
     only_path: Optional[List[str]] = None,
 ) -> Iterator[str]:
     if rule["type"] == "area":
@@ -82,14 +81,8 @@ def print_result(
     elif rule["type"] == "requirement":
         yield from print_requirement(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
-    elif rule["type"] == "assertion":
-        yield from print_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
-
-    elif rule["type"] == "assertion--if":
-        yield from print_conditional_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
-
-    elif rule["type"] == "assertion--when":
-        yield from print_dynamic_conditional_assertion(rule, transcript, indent, show_paths, show_ranks, inserted=inserted, only_path=only_path)
+    elif rule["type"] == "conditional":
+        yield from print_conditional(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
 
     elif rule["type"] == "proficiency":
         yield from print_proficiency(rule, transcript, indent, show_paths, show_ranks, only_path=only_path)
@@ -277,7 +270,7 @@ def print_count(
 
         yield f"{prefix} There must be:"
         for a in rule['audit']:
-            yield from print_result(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, only_path=only_path)
+            yield from str_assertion_clause(a, transcript=transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths)
 
         yield ''
 
@@ -337,7 +330,7 @@ def print_query(
 
     yield f"{prefix} There must be:"
     for a in rule['assertions']:
-        yield from print_result(a, transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, inserted=rule["inserted"])
+        yield from str_assertion_clause(a, transcript=transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, inserted=rule["inserted"])
 
 
 def print_requirement(
@@ -369,7 +362,7 @@ def print_requirement(
         yield from print_result(rule["result"], transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, only_path=only_path)
 
 
-def print_assertion(
+def print_conditional(
     rule: Dict[str, Any],
     transcript: Dict[str, CourseInstance],
     indent: int = 0,
@@ -382,90 +375,14 @@ def print_assertion(
         yield from print_path(rule, indent)
 
     prefix = " " * indent
-    rank_prefix = ""
-    if show_ranks:
-        rank_prefix = f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
-    rank_prefix_spaces = "             "
-
-    emoji = calculate_emoji(rule)
-
-    yield f"{prefix}{rank_prefix} - {emoji} {str_assertion_clause(rule)} [{rule['status']}]"
-
-    prefix += " " * 6
-
-    if rule['where']:
-        yield f"{prefix}{rank_prefix_spaces}where {str_predicate(rule['where'])}"
-
-    resolved_items = get_resolved_items(rule)
-    if resolved_items:
-        yield f"{prefix}{rank_prefix_spaces}resolved items: {resolved_items}"
-
-    resolved_clbids = get_resolved_clbids(rule)
-    if resolved_clbids:
-        yield f"{prefix}{rank_prefix_spaces}resolved courses:"
-
-        ip_clbids = get_in_progress_clbids(rule)
-
-        for clbid in resolved_clbids:
-            inserted_msg = " [ins]" if clbid in inserted or clbid in rule['inserted_clbids'] else ""
-
-            course = transcript.get(clbid, None)
-            if not course:
-                ip_msg = " [ip?]" if clbid in ip_clbids else ""
-                yield f'{prefix}  -{ip_msg}{inserted_msg} #{int(clbid)}'
-                continue
-
-            status = emojify_course(course)
-            yield f'{prefix}{rank_prefix_spaces}  -{inserted_msg} {status} {course.verbose()}'
-
-
-def print_conditional_assertion(
-    rule: Dict[str, Any],
-    transcript: Dict[str, CourseInstance],
-    indent: int = 0,
-    show_paths: bool = True,
-    show_ranks: bool = True,
-    inserted: Sequence[str] = tuple(),
-    only_path: Optional[List[str]] = None,
-) -> Iterator[str]:
-    if show_paths:
-        yield from print_path(rule, indent)
-
-    prefix = " " * indent
-    yield f"{prefix}If:"
-    yield from print_result(rule['condition'], transcript, indent + 4, show_paths, show_ranks, inserted)
+    yield f"{prefix}If {str_expression(rule['condition'], nested=False)}:"
 
     yield f"{prefix}Then:"
-    yield from print_assertion(rule['when_true'], transcript, indent + 4, show_paths, show_ranks, inserted)
+    yield from print_result(rule['when_true'], transcript, indent + 4, show_paths, show_ranks)
 
     if rule.get('when_false', None):
         yield f"{prefix}Otherwise:"
-        yield from print_assertion(rule['when_false'], transcript, indent + 4, show_paths, show_ranks, inserted)
-    else:
-        yield f"{prefix}Otherwise, do nothing"
-
-
-def print_dynamic_conditional_assertion(
-    rule: Dict[str, Any],
-    transcript: Dict[str, CourseInstance],
-    indent: int = 0,
-    show_paths: bool = True,
-    show_ranks: bool = True,
-    inserted: Sequence[str] = tuple(),
-    only_path: Optional[List[str]] = None,
-) -> Iterator[str]:
-    if show_paths:
-        yield from print_path(rule, indent)
-
-    prefix = " " * indent
-    yield f"{prefix}If: {str_expression(rule['condition'])}"
-
-    yield f"{prefix}Then:"
-    yield from print_assertion(rule['when_true'], transcript, indent + 4, show_paths, show_ranks, inserted)
-
-    if rule.get('when_false', None):
-        yield f"{prefix}Otherwise:"
-        yield from print_assertion(rule['when_false'], transcript, indent + 4, show_paths, show_ranks, inserted)
+        yield from print_result(rule['when_false'], transcript, indent + 4, show_paths, show_ranks)
     else:
         yield f"{prefix}Otherwise, do nothing"
 
@@ -552,7 +469,15 @@ def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
             headline = 't.'
         elif expr['result'] is False:
             headline = 'f!'
-        return f"({headline} {expr['function']} {expr['argument']!r})"
+        return f"({expr['function']} {expr['argument']!r} => {headline})"
+
+    if expr["type"] == "pred-expr--not":
+        headline = "??"
+        if expr['result'] is True:
+            headline = 't.'
+        elif expr['result'] is False:
+            headline = 'f!'
+        return f"(NOT {str_expression(expr['expression'], nested=True)} => {headline})"
 
     elif expr["type"] == "pred-dyn-expr":
         headline = "??"
@@ -560,7 +485,7 @@ def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
             headline = 't.'
         elif expr['result'] is False:
             headline = 'f!'
-        return f"({headline} {expr['function']} {expr['argument']!r})"
+        return f"({expr['function']} {expr['argument']!r} => {headline})"
 
     elif expr["type"] == "pred-expr--or":
         text = " or ".join(str_expression(c, nested=True) for c in expr["expressions"])
@@ -579,73 +504,141 @@ def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
     raise Exception(f'not a predicate expression: {expr["type"]}')
 
 
-def str_assertion_clause(clause: Dict[str, Any], *, nested: bool = False, raw_only: bool = False) -> str:
+def str_assertion_clause(
+    clause: Dict[str, Any],
+    *,
+    transcript: Dict[str, CourseInstance],
+    indent: int = 0,
+    show_paths: bool = True,
+    show_ranks: bool = True,
+    inserted: Sequence[str] = tuple(),
+    raw_only: bool = False,
+) -> Iterator[str]:
     if clause["type"] == "assertion":
-        key = clause["key"]
-
-        resolved_with = clause.get('resolved', None)
-        if resolved_with is not None:
-            resolved = f" [{repr(resolved_with)}]"
-        else:
-            resolved = ""
-
-        expected = clause['expected']
-
-        if raw_only:
-            expected = clause.get('original', clause['expected'])
-            postscript = ""
-
-        if 'original' in clause:
-            postscript = f" [via {repr(clause['original'])}]"
-        else:
-            postscript = ""
-
-        label = clause.get('label', None)
-        if label:
-            postscript += f' [label: "{label}"]'
-
-        op = str_operator(clause['operator'])
-
-        if clause['operator'] == 'EqualTo' and expected is True:
-            return f'{key}{resolved}{postscript}'
-        elif clause['operator'] == 'EqualTo' and expected is False:
-            return f'not "{key}"{resolved}{postscript}'
-
-        return f'{key}{resolved} {op} {expected}{postscript}'
+        return str_single_assertion(clause, transcript=transcript, indent=indent, show_paths=show_paths, show_ranks=show_ranks, inserted=inserted, raw_only=raw_only)
 
     elif clause["type"] == "assertion--if":
-        cond = str_expression(clause['condition'])
-        then = str_assertion_clause(clause['when_true'])
-        branch = clause['condition']['result']
-        # print(clause)
-        true_branch = 't.' if branch is True else ''
-        false_branch = 'f!' if branch is False else ''
-        if clause['when_false']:
-            other = str_assertion_clause(clause['when_false'])
-        else:
-            other = "do nothing"
-        text = f"If: [{cond}] Then ({true_branch}): [{then}] Else ({false_branch}): [{other}]"
-
-        if not nested:
-            return text
-        else:
-            return f'({text})'
+        return str_conditional_assertion(clause, transcript=transcript, indent=indent, show_paths=show_paths, show_ranks=show_ranks, inserted=inserted, raw_only=raw_only)
 
     elif clause["type"] == "assertion--when":
-        cond = str_expression(clause['condition'])
-        then = str_assertion_clause(clause['when_true'])
-        branch = clause['condition']['result']
-        # print(clause)
-        true_branch = 't.' if branch is True else ''
-        false_branch = 'f!' if branch is False else ''
-        text = f"If: [{cond}] Then ({true_branch}): [{then}] Else [nothing]"
-
-        if not nested:
-            return text
-        else:
-            return f'({text})'
+        return str_conditional_assertion(clause, transcript=transcript, indent=indent, show_paths=show_paths, show_ranks=show_ranks, inserted=inserted, raw_only=raw_only)
 
     raise Exception(f'not an assertion: {clause["type"]}')
+
+
+def str_single_assertion(
+    clause: Dict[str, Any],
+    *,
+    transcript: Dict[str, CourseInstance],
+    indent: int = 0,
+    show_paths: bool = True,
+    show_ranks: bool = True,
+    inserted: Sequence[str] = tuple(),
+    raw_only: bool = False,
+) -> Iterator[str]:
+    if show_paths:
+        yield from print_path(clause, indent)
+
+    prefix = " " * indent
+    rank_prefix = ""
+    if show_ranks:
+        rank_prefix = f"({float(clause['rank']):.4g}|{clause['max_rank']}|{'t' if clause['status'] in PassingStatusValues else 'f'}) "
+    rank_prefix_spaces = "             "
+
+    emoji = calculate_emoji(clause)
+
+    str_clause_line = ''
+    key = clause["key"]
+
+    resolved_with = clause.get('resolved', None)
+    if resolved_with is not None:
+        resolved = f" [{repr(resolved_with)}]"
+    else:
+        resolved = ""
+
+    expected = clause['expected']
+
+    if raw_only:
+        expected = clause.get('original', clause['expected'])
+        postscript = ""
+
+    if 'original' in clause:
+        postscript = f" [via {repr(clause['original'])}]"
+    else:
+        postscript = ""
+
+    label = clause.get('label', None)
+    if label:
+        postscript += f' [label: "{label}"]'
+
+    op = str_operator(clause['operator'])
+
+    if clause['operator'] == 'EqualTo' and expected is True:
+        str_clause_line = f'{key}{resolved}{postscript}'
+    elif clause['operator'] == 'EqualTo' and expected is False:
+        str_clause_line = f'not "{key}"{resolved}{postscript}'
+    else:
+        str_clause_line = f'{key}{resolved} {op} {expected}{postscript}'
+
+    yield f"{prefix}{rank_prefix} - {emoji} {str_clause_line} [{clause['status']}]"
+
+    prefix += " " * 6
+
+    if clause['where']:
+        yield f"{prefix}{rank_prefix_spaces}where {str_predicate(clause['where'])}"
+
+    resolved_items = get_resolved_items(clause)
+    if resolved_items:
+        yield f"{prefix}{rank_prefix_spaces}resolved items: {resolved_items}"
+
+    resolved_clbids = get_resolved_clbids(clause)
+    if resolved_clbids:
+        yield f"{prefix}{rank_prefix_spaces}resolved courses:"
+
+        ip_clbids = get_in_progress_clbids(clause)
+
+        for clbid in resolved_clbids:
+            inserted_msg = " [ins]" if clbid in inserted or clbid in clause['inserted_clbids'] else ""
+
+            course = transcript.get(clbid, None)
+            if not course:
+                ip_msg = " [ip?]" if clbid in ip_clbids else ""
+                yield f'{prefix}  -{ip_msg}{inserted_msg} #{int(clbid)}'
+                continue
+
+            status = emojify_course(course)
+            yield f'{prefix}{rank_prefix_spaces}  -{inserted_msg} {status} {course.verbose()}'
+
+
+def str_conditional_assertion(
+    clause: Dict[str, Any],
+    *,
+    transcript: Dict[str, CourseInstance],
+    indent: int = 0,
+    show_paths: bool = True,
+    show_ranks: bool = True,
+    inserted: Sequence[str] = tuple(),
+    raw_only: bool = False,
+) -> Iterator[str]:
+    if show_paths:
+        yield from print_path(clause, indent)
+
+    prefix = " " * indent
+    yield f"{prefix}If: {str_expression(clause['condition'])}"
+
+    branch = clause['condition']['result']
+
+    true_branch = 't.' if branch is True else ''
+    false_branch = 'f!' if branch is False else ''
+
+    yield f"{prefix}Then: {true_branch}"
+    yield from str_assertion_clause(clause['when_true'], transcript=transcript, indent=indent + 4, show_paths=show_paths, show_ranks=show_ranks, inserted=inserted)
+
+    if clause.get('when_false', None):
+        yield f"{prefix}Otherwise: {false_branch}"
+        yield from str_assertion_clause(clause['when_false'], transcript=transcript, indent=indent + 4, show_paths=show_paths, show_ranks=show_ranks, inserted=inserted)
+    else:
+        yield f"{prefix}Otherwise ({false_branch}): do nothing"
 
 
 def get_resolved_items(clause: Dict[str, Any]) -> str:

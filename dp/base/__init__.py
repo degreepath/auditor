@@ -6,3 +6,4 @@ from .count import BaseCountRule
 from .query import BaseQueryRule
 from .requirement import BaseRequirementRule
 from .proficiency import BaseProficiencyRule
+from .conditional import BaseConditionalRule

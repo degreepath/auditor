@@ -58,6 +58,7 @@ class PredicateExpressionFunction(enum.Enum):
     HasCourse = 'has-course'
     PassedProficiencyExam = 'passed-proficiency-exam'
     HasDeclaredAreaCode = 'has-declared-area-code'
+    StudentHasCourseWithAttribute = 'student-has-course-with-attribute'
 
 
 @enum.unique
@@ -283,6 +284,11 @@ def evaluate_predicate_function(function: PredicateExpressionFunction, argument:
 
     elif function is PredicateExpressionFunction.HasCompletedCourse:
         return ctx.has_completed_course(argument)
+
+    elif function is PredicateExpressionFunction.StudentHasCourseWithAttribute:
+        for _ in filter(course_filter(attribute=argument), ctx.transcript()):
+            return True
+        return False
 
     elif function is PredicateExpressionFunction.PassedProficiencyExam:
         return ctx.music_proficiencies.passed_exam(of=argument)

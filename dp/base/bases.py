@@ -13,6 +13,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..data.course import CourseInstance  # noqa: F401
     from ..data.clausable import Clausable  # noqa: F401
 
+# TODO: rename waived() to is_waived(), matched() to collect_matches(), ok() to is_ok()
+
 
 @enum.unique
 class RuleState(enum.Enum):

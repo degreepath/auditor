@@ -7,6 +7,7 @@ from .rule.course import CourseRule
 from .rule.query import QueryRule
 from .rule.requirement import RequirementRule
 from .rule.proficiency import ProficiencyRule
+from .rule.conditional import ConditionalRule
 from .data.student import TemplateCourse
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -36,6 +37,9 @@ def load_rule(
 
     elif QueryRule.can_load(data):
         return QueryRule.load(data, c=c, path=path, ctx=ctx)
+
+    elif ConditionalRule.can_load(data):
+        return ConditionalRule.load(data, c=c, path=path, ctx=ctx)
 
     elif CountRule.can_load(data):
         return CountRule.load(data, c=c, children=children, path=path, emphases=emphases, ctx=ctx)
