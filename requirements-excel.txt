@@ -11,6 +11,7 @@ jdcal==1.4.1 \
     --hash=sha256:1abf1305fce18b4e8aa248cf8fe0c56ce2032392bc64bbd61b5dff2a19ec8bba \
     --hash=sha256:472872e096eb8df219c23f2689fc336668bdb43d194094b5cc1707e1640acfc8 \
     # via openpyxl
-openpyxl==3.0.4 \
-    --hash=sha256:6e62f058d19b09b95d20ebfbfb04857ad08d0833190516c1660675f699c6186f \
+openpyxl==3.0.5 \
+    --hash=sha256:18e11f9a650128a12580a58e3daba14e00a11d9e907c554a17ea016bf1a2c71b \
+    --hash=sha256:f7d666b569f729257082cf7ddc56262431878f602dcc2bc3980775c59439cdab \
     # via -r requirements-excel.in
