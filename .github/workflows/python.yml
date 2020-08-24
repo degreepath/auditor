@@ -44,7 +44,7 @@ jobs:
         run: |
           pytest tests/ dp/
 
-  cpython-check-runs:
+  check-runs:
     runs-on: ubuntu-latest
 
     strategy:
@@ -54,6 +54,7 @@ jobs:
           - '3.6'
           - '3.7'
           - '3.8'
+          - pypy3
 
     steps:
       - uses: actions/checkout@v1
@@ -71,33 +72,6 @@ jobs:
           python3 -m dp --help
           python3 -m dp.bin.validate --help
           python3 -m dp.bin.discover --help
-
-  pypy-test:
-    runs-on: ubuntu-latest
-
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [pypy3]
-
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Update pip
-        run: python -m pip install --upgrade pip
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt -r requirements-test.txt
-
-      - name: Test with pytest
-        run: |
-          pytest tests/ dp/
 
   docker:
     runs-on: ubuntu-latest
