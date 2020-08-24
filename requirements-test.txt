@@ -74,9 +74,9 @@ pytest-benchmark==3.2.3 \
     --hash=sha256:01f79d38d506f5a3a0a9ada22ded714537bbdfc8147a881a35c1655db07289d9 \
     --hash=sha256:ad4314d093a3089701b24c80a05121994c7765ce373478c8f4ba8d23c9ba9528 \
     # via -r requirements-test.in
-pytest-cov==2.10.0 \
-    --hash=sha256:1a629dc9f48e53512fcbfda6b07de490c374b0c83c55ff7a1720b3fccff0ac87 \
-    --hash=sha256:6e6d18092dce6fad667cd7020deed816f858ad3b49d5b5e2b1cc1c97a4dba65c \
+pytest-cov==2.10.1 \
+    --hash=sha256:45ec2d5182f89a81fc3eb29e3d1ed3113b9e9a873bcddb2a71faaab066110191 \
+    --hash=sha256:47bd0ce14056fdd79f93e1713f88fad7bdcc583dcd7783da86ef2f085a0bb88e \
     # via -r requirements-test.in
 pytest-tldr==0.2.2 \
     --hash=sha256:3f6ec72b8653a048024424ff0cd288d7b6bb520d111a5efb4675ad2f6ab43eaf \
