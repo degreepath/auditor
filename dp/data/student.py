@@ -173,12 +173,12 @@ DEPTNUM_REGEX = re.compile(r"""
     (?P<section>[A-Z])?                # (optional) the section
     (.(?P<sub_type>[A-Z]))?            # (optional) the sub_type: .L for lab, .F for flac, etc
     (\ (?P<year>\d{4})-(?P<term>\d))?  # (optional) the year-term
-    (\ \[(?P<inst>[.*]+)\])?          # (optional) the [INSTITUTION] code
+    (\ \[(?P<inst>.+)\])?              # (optional) the [INSTITUTION] code
 """, re.VERBOSE)
 
 NAME_REGEX = re.compile(r"""
     name=(?P<name>.*)         # the course name
-    ( (?P<inst>\[[.*]+\]))?  # (optional) the [INSTITUTION] code
+    ( \[(?P<inst>.+)\])?      # (optional) the [INSTITUTION] code
 """, re.VERBOSE)
 
 
