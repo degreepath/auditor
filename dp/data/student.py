@@ -47,7 +47,7 @@ class TemplateCourse:
             course['institution'] = self.institution
 
         if self.name:
-            course['name'] = self.name
+            course['ap'] = self.name
 
         if self.year is not None:
             assert self.term is not None
@@ -176,10 +176,7 @@ DEPTNUM_REGEX = re.compile(r"""
     (\ \[(?P<inst>.+)\])?              # (optional) the [INSTITUTION] code
 """, re.VERBOSE)
 
-NAME_REGEX = re.compile(r"""
-    name=(?P<name>.*)         # the course name
-    ( \[(?P<inst>.+)\])?      # (optional) the [INSTITUTION] code
-""", re.VERBOSE)
+NAME_REGEX = re.compile(r"name=(?P<name>.*) (?:\[(?P<inst>.+)\])?")
 
 
 def parse_template_course_rule(course_label: str, *, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
