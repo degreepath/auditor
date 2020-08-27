@@ -59,7 +59,7 @@ def expand_template(items: Iterable[Dict], *, ctx: 'RequirementContext') -> Iter
 
 
 def expand_template_item(*, key: str, ctx: 'RequirementContext') -> Iterator[Dict]:
-    courses: Iterable[TemplateCourse] = ctx.templates.get(key, [])
+    template_courses: Iterable[TemplateCourse] = ctx.templates.get(key, [])
 
-    for course in courses:
-        yield course.to_course_rule_as_dict()
+    for template in template_courses:
+        yield template.to_course_rule_as_dict()
