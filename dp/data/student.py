@@ -176,7 +176,12 @@ DEPTNUM_REGEX = re.compile(r"""
     (\ \[(?P<inst>.+)\])?              # (optional) the [INSTITUTION] code
 """, re.VERBOSE)
 
-NAME_REGEX = re.compile(r"name=(?P<name>.*) (?:\[(?P<inst>.+)\])?")
+NAME_REGEX = re.compile(r"""
+    ^
+    name=(?P<name>[^(\[]*)    # the course name
+    ([ ]\[(?P<inst>.+)\])?  # (optional) the institution
+    $
+""", re.VERBOSE)
 
 
 def parse_template_course_rule(course_label: str, *, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
@@ -203,7 +208,7 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
     sub_type = match_groups['sub_type']
     term = int(match_groups['term']) if match_groups['term'] else None
     year = int(match_groups['year']) if match_groups['year'] else None
-    institution = match_groups['inst']
+    institution: str = match_groups.get('inst', '') or ''
 
     iterable = filter(course_filter(
         course=f"{subject} {num}" if subject else None,
@@ -245,7 +250,7 @@ def parse_named_course(course_label: str, *, match_groups: Dict, transcript: Ite
     logger.debug('%s: %s', course_label, match_groups)
 
     name = match_groups['name']
-    institution = match_groups['inst']
+    institution: str = match_groups.get('inst', '') or ''
 
     for crs in transcript:
         if name and crs.name != name:
