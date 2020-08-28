@@ -73,6 +73,7 @@ def baseline(args: argparse.Namespace) -> None:
                     timeout=float(minimum_duration.sec()) * 2.5,
                 ): (stnum, catalog, code)
                 for (stnum, catalog, code) in records
+                if f"{catalog}/{code}" in area_specs
             }
 
             for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
