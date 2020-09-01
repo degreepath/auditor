@@ -73,20 +73,19 @@ jobs:
           python3 -m dp.bin.validate --help
           python3 -m dp.bin.discover --help
 
-  docker:
+  docker-registry:
     runs-on: ubuntu-latest
-
     needs: cpython-test
-
     if: github.ref == 'refs/heads/stable'
 
     env:
       REPO: docker.io/degreepath/degreepath
 
+
     steps:
       - uses: actions/checkout@v1
 
-      - name: Docker Login
+      - name: Login
         uses: Azure/docker-login@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -96,15 +95,53 @@ jobs:
         run: |
           echo ::set-env name=TAG::"$(date +%s)"
 
-      - name: Docker Build
+      - name: Build
         run: |
           docker build . --file Dockerfile --tag "$REPO:$TAG"
 
-      - name: Docker Push (timestamp)
+      - name: Push (timestamp)
         run: |
           docker push "$REPO:$TAG"
 
-      - name: Docker Push (branch)
+      - name: Push (branch)
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          docker tag "$REPO:$TAG" "$REPO:$BRANCH"
+          docker push "$REPO:$BRANCH"
+
+  github-registry:
+    runs-on: ubuntu-latest
+    needs: cpython-test
+    if: github.ref == 'refs/heads/stable'
+
+    env:
+      REPO: ghcr.io/degreepath/degreepath
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Login
+        run: |
+          echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u hawkrives --password-stdin
+
+      - name: Set tag
+        run: |
+          echo ::set-env name=TAG::"$(date +%s)"
+    
+#      - name: Build
+#        run: |
+#          # docker pull "$REPO:stable"
+#          docker build . --file Dockerfile --tag "$REPO:$TAG" --cache-from "$REPO:stable"
+
+      - name: Build
+        run: |
+          docker build . --file Dockerfile --tag "$REPO:$TAG"
+
+      - name: Push (timestamp)
+        run: |
+          docker push "$REPO:$TAG"
+
+      - name: Push (branch)
         run: |
           BRANCH="${GITHUB_REF#refs/heads/}"
           docker tag "$REPO:$TAG" "$REPO:$BRANCH"
