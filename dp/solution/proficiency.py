@@ -36,7 +36,7 @@ class ProficiencySolution(Solution, BaseProficiencyRule):
         if self.overridden:
             return ProficiencyResult.overridden_from_solution(solution=self)
 
-        proficiency_status = ctx.music_proficiencies.status(of=self.proficiency)
+        proficiency_status = ctx.music_proficiencies.status(of=self.proficiency, exam_only=False)
         course_result = self.course.audit(ctx=ctx) if isinstance(self.course, CourseSolution) else self.course
 
         logger.debug('%s proficiency in "%s" is %s', self.path, self.proficiency, proficiency_status)

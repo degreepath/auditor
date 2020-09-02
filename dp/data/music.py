@@ -120,34 +120,63 @@ class MusicAttendance(MusicSlip):
         return 'music attendance'
 
 
+class MusicProficiencyStatus(enum.Enum):
+    No = "N"
+    Yes = "Y"
+    Exam = "E"
+    Class = "C"
+
+    @staticmethod
+    def parse(data: Union[str, bool]) -> 'MusicProficiencyStatus':
+        if data is True:
+            return MusicProficiencyStatus.Yes
+        elif data is False:
+            return MusicProficiencyStatus.No
+        else:
+            return MusicProficiencyStatus(data)
+
+
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class MusicProficiencies:
-    guitar: bool = False
-    keyboard_1: bool = False
-    keyboard_2: bool = False
-    keyboard_3: bool = False
-    keyboard_4: bool = False
+    guitar: MusicProficiencyStatus = MusicProficiencyStatus.No
+    keyboard_1: MusicProficiencyStatus = MusicProficiencyStatus.No
+    keyboard_2: MusicProficiencyStatus = MusicProficiencyStatus.No
+    keyboard_3: MusicProficiencyStatus = MusicProficiencyStatus.No
+    keyboard_4: MusicProficiencyStatus = MusicProficiencyStatus.No
 
     @staticmethod
     def from_dict(data: Dict) -> 'MusicProficiencies':
         return MusicProficiencies(
-            guitar=data.get('guitar', False),
-            keyboard_1=data.get('keyboard_1', False),
-            keyboard_2=data.get('keyboard_2', False),
-            keyboard_3=data.get('keyboard_3', False),
-            keyboard_4=data.get('keyboard_4', False),
+            guitar=MusicProficiencyStatus.parse(data.get('guitar', 'N')),
+            keyboard_1=MusicProficiencyStatus.parse(data.get('keyboard_1', 'N')),
+            keyboard_2=MusicProficiencyStatus.parse(data.get('keyboard_2', 'N')),
+            keyboard_3=MusicProficiencyStatus.parse(data.get('keyboard_3', 'N')),
+            keyboard_4=MusicProficiencyStatus.parse(data.get('keyboard_4', 'N')),
         )
 
-    def status(self, *, of: str) -> ResultStatus:
-        matcher = {
-            'Keyboard Level I': self.keyboard_1,
-            'Keyboard Level II': self.keyboard_2,
-            'Keyboard Level III': self.keyboard_3,
-            'Keyboard Level IV': self.keyboard_4,
-            'Guitar': self.guitar,
-        }
+    def status(self, *, of: str, exam_only: bool) -> ResultStatus:
+        compare_against: Tuple[MusicProficiencyStatus, ...]
+        if exam_only:
+            compare_against = (MusicProficiencyStatus.Exam,)
+        else:
+            compare_against = (MusicProficiencyStatus.Yes, MusicProficiencyStatus.Exam, MusicProficiencyStatus.Class)
 
-        return ResultStatus.Done if matcher[of] else ResultStatus.Empty
+        if of == 'Keyboard Level I':
+            result = ResultStatus.Done if self.keyboard_1 in compare_against else ResultStatus.Empty
+        elif of == 'Keyboard Level II':
+            result = ResultStatus.Done if self.keyboard_2 in compare_against else ResultStatus.Empty
+        elif of == 'Keyboard Level III':
+            result = ResultStatus.Done if self.keyboard_3 in compare_against else ResultStatus.Empty
+        elif of == 'Keyboard Level IV':
+            result = ResultStatus.Done if self.keyboard_4 in compare_against else ResultStatus.Empty
+        elif of == 'Guitar':
+            result = ResultStatus.Done if self.guitar in compare_against else ResultStatus.Empty
+        else:
+            raise KeyError(f'unknown proficiency status key {of!r}')
+
+        print(f'comparing {of!r} to {compare_against}: {result} (exam-only: {exam_only}) {self!r}')
+
+        return result
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

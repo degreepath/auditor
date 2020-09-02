@@ -230,17 +230,14 @@ def check_simple_clause(condition: str, *, ctx: Optional['RequirementContext']) 
         return ctx.has_completed_course(course_ident)
 
     elif key == 'passed-proficiency-exam':
-        # note: this was prototyped for BM Performance, but they
-        # actually want to check for proficiency _exams_ and make you
-        # take extra credits if you tested out of the courses, so this
-        # check needs to be extended to check for proficiency exams -
-        # we don't currently store exam status in MusicProficiencies,
-        # just whether you have the proficiency or not.
+        # note: this is for BM Performance; they actually want to check for
+        # proficiency _exams_ and make you take extra credits if you tested
+        # out of the course versions.
         assert ctx
 
         proficiency = condition.split('(')[1].rstrip(')').strip()
 
-        return ctx.music_proficiencies.status(of=proficiency) is ResultStatus.Done
+        return ctx.music_proficiencies.status(of=proficiency, exam_only=True) is ResultStatus.Done
 
     else:
         raise TypeError(f"unknown $ifs key {key}")
