@@ -1,6 +1,6 @@
 # mypy: warn_unreachable = False
 
-from typing import Dict, Optional, Any, cast
+from typing import Dict, Optional, cast
 import json
 import logging
 
