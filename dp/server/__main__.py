@@ -83,69 +83,72 @@ def worker(*, area_root: str) -> None:
 def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
     # loop until the queue is empty
     while True:
-        curs.execute('BEGIN;')
+        with sentry_sdk.start_transaction(op="audit", name="audit") as transaction:
+            curs.execute('BEGIN;')
 
-        curs.execute('''
-            DELETE
-            FROM public.queue
-            WHERE id = (
-                SELECT id
-                FROM public.queue
-                ORDER BY priority DESC, ts
-                    FOR UPDATE
-                        SKIP LOCKED
-                LIMIT 1
-            )
-            RETURNING id, run, student_id, area_catalog, area_code, input_data::text, expires_at, link_only;
-        ''')
+            with transaction.start_child(op="db", description="DELETE FROM queue"):
+                curs.execute('''
+                    DELETE
+                    FROM public.queue
+                    WHERE id = (
+                        SELECT id
+                        FROM public.queue
+                        ORDER BY priority DESC, ts
+                            FOR UPDATE
+                                SKIP LOCKED
+                        LIMIT 1
+                    )
+                    RETURNING id, run, student_id, area_catalog, area_code, input_data::text, expires_at, link_only;
+                ''')
 
-        # fetch the next available queued item
-        row = curs.fetchone()
+                # fetch the next available queued item
+                row = curs.fetchone()
 
-        # if there are no more, return to waiting
-        if row is None:
-            curs.execute('COMMIT;')
-            break
+            # if there are no more, return to waiting
+            if row is None:
+                curs.execute('COMMIT;')
+                break
 
-        try:
-            queue_id, run_id, student_id, area_catalog, area_code, input_data, expires_at, link_only = row
-        except Exception:
-            curs.execute('COMMIT;')
-            break
+            try:
+                queue_id, run_id, student_id, area_catalog, area_code, input_data, expires_at, link_only = row
+            except Exception:
+                curs.execute('COMMIT;')
+                break
 
-        area_id = area_catalog + '/' + area_code
-        area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
-        try:
-            logger.info(f'[q={queue_id}] begin  {student_id}::{area_id}')
+            area_id = area_catalog + '/' + area_code
+            area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
+            try:
+                logger.info(f'[q={queue_id}] begin  {student_id}::{area_id}')
 
-            area_spec = load_area(area_path)
+                area_spec = load_area(area_path)
 
-            # run the audit
-            audit(
-                curs=curs,
-                student=json.loads(input_data),
-                area_spec=area_spec,
-                area_catalog=area_catalog,
-                area_code=area_code,
-                run_id=run_id,
-                expires_at=expires_at,
-                link_only=link_only,
-            )
+                # run the audit
+                audit(
+                    curs=curs,
+                    student=json.loads(input_data),
+                    area_spec=area_spec,
+                    area_catalog=area_catalog,
+                    area_code=area_code,
+                    run_id=run_id,
+                    expires_at=expires_at,
+                    link_only=link_only,
+                    sentry_transaction=transaction,
+                )
 
-            # once the audit is done, commit the queue's DELETE
-            curs.execute('COMMIT;')
+                # once the audit is done, commit the queue's DELETE
+                curs.execute('COMMIT;')
 
-            logger.info(f'[q={queue_id}] commit {student_id}::{area_id}')
+                logger.info(f'[q={queue_id}] commit {student_id}::{area_id}')
 
-        except Exception as exc:
-            # commit the deletion, just so it doesn't endlessly re-run itself
-            curs.execute('COMMIT;')
+            except Exception as exc:
+                # commit the deletion, just so it doesn't endlessly re-run itself
+                curs.execute('COMMIT;')
 
-            # record the exception in Sentry for debugging
-            sentry_sdk.capture_exception(exc)
+                # record the exception in Sentry for debugging
+                sentry_sdk.capture_exception(exc)
 
-            # log the exception
-            logger.error(f'[q={queue_id}] error  {student_id}::{area_id}')
+                # log the exception
+                logger.error(f'[q={queue_id}] error  {student_id}::{area_id}')
 
     logger.info('queue is empty')
 
