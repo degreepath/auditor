@@ -2,7 +2,7 @@ from dp.clause import SingleClause
 from dp.op import Operator, apply_operator
 from dp.load_clause import compute_single_clause_diff, load_clause
 from dp.context import RequirementContext
-from dp.data.music import MusicProficiencies
+from dp.data.music import MusicProficiencies, MusicProficiencyStatus
 from dp.data.area_pointer import AreaPointer
 from dp.data.clausable import Clausable
 from dp.data.course import course_from_str
@@ -257,7 +257,7 @@ def test_compute_single_clause_diff():
 
     ctx = RequirementContext(
         areas=(AreaPointer.with_code('711'),),
-        music_proficiencies=MusicProficiencies(keyboard_3=True, keyboard_4=False),
+        music_proficiencies=MusicProficiencies(keyboard_3=MusicProficiencyStatus.Exam, keyboard_4=MusicProficiencyStatus.No),
     )
 
     assert compute_single_clause_diff({'has-area-code(711) + passed-proficiency-exam(Keyboard Level III)': '+ 0.50'}, ctx=ctx) == Decimal(0.5)
