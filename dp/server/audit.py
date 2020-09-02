@@ -5,7 +5,7 @@ import json
 import logging
 
 import psycopg2.extensions  # type: ignore
-from sentry_sdk import push_scope, capture_exception
+from sentry_sdk import push_scope, capture_exception, start_transaction
 
 from dp.run import run
 from dp.ms import pretty_ms
@@ -24,16 +24,13 @@ def audit(
     expires_at: Optional[str],
     link_only: bool,
     curs: psycopg2.extensions.cursor,
-    sentry_transaction: Optional[Any],
 ) -> None:
     args = Arguments()
 
     stnum = student['stnum']
 
-    assert sentry_transaction is not None
-
     logger.info("auditing #%s against %s %s", stnum, area_catalog, area_code)
-    with push_scope() as outer_scope:
+    with push_scope() as outer_scope, start_transaction(op="audit", name="audit") as sentry_transaction:
         outer_scope.user = {"id": stnum}
 
         with sentry_transaction.start_child(op="db", description="INSERT INTO result"):
@@ -87,14 +84,14 @@ def audit(
                             """, {"student_id": stnum, "area_code": area_code})
                             revision: int = curs.fetchone()
 
-                        with sentry_transaction.start_child(op="db", description="DELETE ... WHERE result = :result"):
+                        with sentry_transaction.start_child(op="db", description="DELETE PRIOR COPIES"):
                             # delete any old copies of this exact result
                             curs.execute("""
                                 DELETE FROM result
                                 WHERE student_id = %(student_id)s AND area_code = %(area_code)s AND result = %(result)s::jsonb
                             """, {"student_id": stnum, "area_code": area_code, "result": result_str})
 
-                        with sentry_transaction.start_child(op="db", description="DEACTIVATE ... WHERE (:student_id, :area_code)"):
+                        with sentry_transaction.start_child(op="db", description="DEACTIVATE"):
                             # deactivate all existing records
                             curs.execute("""
                                 UPDATE result
@@ -105,7 +102,7 @@ def audit(
                                     AND is_active = true
                             """, {"student_id": stnum, "area_code": area_code})
 
-                        with sentry_transaction.start_child(op="db", description="UPDATE result WHERE id = :id"):
+                        with sentry_transaction.start_child(op="db", description="INSERT FINAL"):
                             # we use clock_timestamp() instead of now() here, because
                             # now() is the start time of the transaction, and we instead
                             # want the time when the computation was finished.
