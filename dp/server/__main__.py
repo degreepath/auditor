@@ -23,7 +23,7 @@ load_dotenv(filepath=dotenv_path)
 logger = logging.getLogger(__name__)
 
 if os.environ.get('SENTRY_DSN', None):
-    sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
+    sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'), traces_sample_rate=0.5)
 else:
     logger.warning('SENTRY_DSN not set; skipping')
 
