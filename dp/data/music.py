@@ -132,6 +132,8 @@ class MusicProficiencyStatus(enum.Enum):
             return MusicProficiencyStatus.Yes
         elif data is False:
             return MusicProficiencyStatus.No
+        elif data == "":
+            return MusicProficiencyStatus.No
         else:
             return MusicProficiencyStatus(data)
 
