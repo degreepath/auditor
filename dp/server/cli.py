@@ -39,7 +39,7 @@ def main() -> None:
     conn = psycopg2.connect('', application_name='degreepath-cli')
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
-    with conn.cursor() as curs:
+    with conn.cursor() as curs, sentry_sdk.start_transaction(op="audit", name="audit") as transaction:
         curs.execute('BEGIN;')
         try:
             audit(
@@ -51,6 +51,7 @@ def main() -> None:
                 run_id=args.run,
                 link_only=True,
                 expires_at=None,
+                sentry_transaction=transaction,
             )
             curs.execute('COMMIT;')
         except Exception:
