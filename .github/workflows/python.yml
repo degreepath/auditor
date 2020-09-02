@@ -91,7 +91,7 @@ jobs:
       - name: Set tag
         run: |
           echo ::set-env name=TAG::"$(date +%s)"
-    
+
       - name: Build
         run: |
           docker pull "$REPO:stable"
