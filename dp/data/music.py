@@ -174,7 +174,7 @@ class MusicProficiencies:
         else:
             raise KeyError(f'unknown proficiency status key {of!r}')
 
-        print(f'comparing {of!r} to {compare_against}: {result} (exam-only: {exam_only}) {self!r}')
+        logger.debug('comparing %r to %r: %r %r', of, compare_against, result, self)
 
         return result
 
