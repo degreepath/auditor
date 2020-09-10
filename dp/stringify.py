@@ -293,8 +293,9 @@ def print_query(
         yield from print_path(rule, indent)
 
     prefix = " " * indent
+    rank_prefix = ""
     if show_ranks:
-        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
+        rank_prefix = f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
 
     emoji = calculate_emoji(rule)
 
@@ -328,7 +329,7 @@ def print_query(
             else:
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['clbid']})"
 
-    yield f"{prefix} There must be:"
+    yield f"{rank_prefix} There must be:"
     for a in rule['assertions']:
         yield from str_assertion_clause(a, transcript=transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, inserted=rule["inserted"])
 
