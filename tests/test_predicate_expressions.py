@@ -3,7 +3,7 @@ from dp.conditional_expression import PredicateExpression, PredicateExpressionNo
 from dp.conditional_expression import PredicateExpressionCompoundAnd, PredicateExpressionCompoundOr
 from dp.conditional_expression import load_predicate_expression, evaluate_predicate_function
 from dp.context import RequirementContext
-from dp.data.music import MusicProficiencies
+from dp.data.music import MusicProficiencies, MusicProficiencyStatus
 from dp.data.area_pointer import AreaPointer
 from dp.data.course import course_from_str
 import pytest
@@ -16,7 +16,7 @@ def test_pred_expr_has_area_code():
 
 
 def test_pred_expr_passed_proficiency_exam():
-    ctx = RequirementContext(music_proficiencies=MusicProficiencies(keyboard_3=True))
+    ctx = RequirementContext(music_proficiencies=MusicProficiencies(keyboard_3=MusicProficiencyStatus.Exam))
     assert load_predicate_expression({'passed-proficiency-exam': 'Keyboard Level III'}, ctx=ctx).result is True
 
 
@@ -46,7 +46,7 @@ def test_pred_expr_has_ip_course():
 def test_pred_and_expr():
     ctx = RequirementContext(
         areas=(AreaPointer.with_code('711'),),
-        music_proficiencies=MusicProficiencies(keyboard_3=True, keyboard_4=False),
+        music_proficiencies=MusicProficiencies(keyboard_3=MusicProficiencyStatus.Exam, keyboard_4=MusicProficiencyStatus.No),
     )
 
     both_true = {
@@ -71,7 +71,7 @@ def test_pred_and_expr():
 def test_pred_or_expr():
     ctx = RequirementContext(
         areas=(AreaPointer.with_code('711'),),
-        music_proficiencies=MusicProficiencies(keyboard_3=True, keyboard_4=False),
+        music_proficiencies=MusicProficiencies(keyboard_3=MusicProficiencyStatus.Exam, keyboard_4=MusicProficiencyStatus.No),
     )
 
     both_true = {

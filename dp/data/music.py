@@ -181,21 +181,10 @@ class MusicProficiencies:
         return result
 
     def passed_exam(self, *, of: str) -> bool:
-        # TODO: this was prototyped for BM Performance, but they
-        # TODO: actually want to check for proficiency _exams_ andl make you
-        # TODO: take extra credits if you tested out of the courses, so this
-        # TODO: check needs to be extended to check for proficiency exams -
-        # TODO: we don't currently store exam status in MusicProficiencies,
-        # TODO: just whether you have the proficiency or not.
-        matcher = {
-            'Keyboard Level I': self.keyboard_1,
-            'Keyboard Level II': self.keyboard_2,
-            'Keyboard Level III': self.keyboard_3,
-            'Keyboard Level IV': self.keyboard_4,
-            'Guitar': self.guitar,
-        }
-
-        return True if matcher[of] else False
+        # note: this is for BM Performance; they actually want to check for
+        # proficiency _exams_ and make you take extra credits if you tested
+        # out of the course versions.
+        return self.status(of=of, exam_only=True) is ResultStatus.Done
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
