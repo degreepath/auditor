@@ -29,7 +29,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return "requirement" in data or "name" in data
 
     @staticmethod
-    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: 'RequirementContext') -> Optional['RequirementRule']:
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: 'RequirementContext') -> 'RequirementRule':
         from ..load_rule import load_rule
 
         path = [*path, f"%{name}"]
@@ -45,35 +45,8 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         result = data.get("result", None)
 
-        # be able to exclude requirements if they shouldn't exist
-        if 'if' in data:
-            assert ctx, TypeError('conditional requirements are only supported at the top-level')
-
-            rule = QueryRule.load(data['if'], c=c, path=[*path, '#if'], ctx=ctx)
-
-            with ctx.fresh_claims():
-                s = find_best_solution(rule=rule, ctx=ctx)
-
-            if not s:
-                return None
-
-            if 'then' in data and 'else' in data:
-                if s.status() in PassingStatuses:
-                    result = data['then']
-                else:
-                    result = data['else']
-            elif ('then' in data and 'else' not in data) or ('then' not in data and 'else' in data):
-                raise TypeError(f'{path} in an if:, with one of then: or else:; expected both then: and else:')
-            elif s.status() in PassingStatuses:
-                # we support some "Optional" requirements that are department-audited
-                result = data.get("result", None)
-            else:
-                return None
-
         if result is not None:
             result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path, ctx=ctx)
-            if result is None:
-                return None
 
             all_child_names = set(data.get("requirements", {}).keys())
             used_child_names = set(result.get_requirement_names())
