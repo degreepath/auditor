@@ -5,9 +5,6 @@ import attr
 from ..base import Rule, BaseRequirementRule
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
-from ..rule.query import QueryRule
-from ..solve import find_best_solution
-from ..status import PassingStatuses
 from ..exception import BlockException
 
 from ..autop import autop
