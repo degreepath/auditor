@@ -329,7 +329,7 @@ def print_query(
             else:
                 yield f"{prefix}    !!!!! \"!!!!!\" ({clm['clbid']})"
 
-    yield f"{rank_prefix} There must be:"
+    yield f"{rank_prefix or prefix} There must be:"
     for a in rule['assertions']:
         yield from str_assertion_clause(a, transcript=transcript, indent=indent + 4, show_ranks=show_ranks, show_paths=show_paths, inserted=rule["inserted"])
 
