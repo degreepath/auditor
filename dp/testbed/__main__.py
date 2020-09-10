@@ -67,7 +67,7 @@ def main() -> None:
     parser_compare = subparsers.add_parser('compare', help='compare an audit run against the baseline')
     parser_compare.add_argument('run', help='the run to compare against the base run')
     parser_compare.add_argument('base', default='baseline', nargs='?', help='the base run to compare against')
-    parser_compare.add_argument('--mode', default='data', choices=['data', 'speed', 'all', 'ok', 'gpa'], help='the base run to compare against')
+    parser_compare.add_argument('--mode', default='data', choices=['data', 'ok', 'gpa'], help='the base run to compare against')
     parser_compare.set_defaults(func=compare)
 
     parser_print = subparsers.add_parser('print', help='show the baseline and branched audit results')

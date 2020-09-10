@@ -21,85 +21,67 @@ def compare(args: argparse.Namespace) -> None:
 
         assert record['count'] > 0, f'no records found for branch "{args.run}"'
 
-    def status_col(table: str) -> str:
-        return f"""
-            case {table}.status
-                when 'done' then 'done'
-                when 'failed-invariant' then 'fail'
-                when 'needs-more-items' then 'part'
-                else {table}.status
-            end AS ok_{table}
-        """
+    with sqlite_connect(args.db, readonly=False) as conn:
+        conn.execute('DROP VIEW IF EXISTS changes')
 
-    columns = [
-        'b.stnum',
-        'b.catalog',
-        'b.code',
-        'b.gpa AS gpa_b',
-        'r.gpa AS gpa_r',
-        'b.iterations AS it_b',
-        'r.iterations AS it_r',
-        'round(b.duration, 4) AS dur_b',
-        'round(r.duration, 4) AS dur_r',
-        status_col('b'),
-        status_col('r'),
-        'round(b.rank, 2) AS rank_b',
-        'round(r.rank, 2) AS rank_r',
-        'b.max_rank AS max_b',
-        'r.max_rank AS max_r',
-    ]
-
-    if args.mode == 'data':
-        query = '''
-            SELECT {}
+        conn.execute('''
+            CREATE VIEW changes AS
+            SELECT r.branch,
+                b.stnum,
+                b.catalog,
+                b.code,
+                b.gpa AS gpa,
+                r.gpa AS gpa_r,
+                b.iterations AS it,
+                r.iterations AS it_r,
+                round(b.duration, 4) AS dur,
+                round(r.duration, 4) AS dur_r,
+                CASE b.status
+                    WHEN 'failed-invariant' THEN 'fail'
+                    WHEN 'needs-more-items' THEN 'part'
+                    ELSE b.status
+                END AS stat,
+                CASE r.status
+                    WHEN 'failed-invariant' THEN 'fail'
+                    WHEN 'needs-more-items' THEN 'part'
+                    ELSE r.status
+                END AS stat_r,
+                round(b.rank, 2) AS rank,
+                round(r.rank, 2) AS rank_r,
+                b.max_rank AS max,
+                r.max_rank AS max_r
             FROM baseline b
                 LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
-            WHERE r.branch = ? AND (
-                b.ok != r.ok
+            WHERE b.ok != r.ok
                 OR b.gpa != r.gpa
                 OR b.rank != r.rank
                 OR b.max_rank != r.max_rank
-            )
-            ORDER BY b.stnum, b.catalog, b.code
-        '''.format(','.join(columns))
+            ORDER BY
+                b.stnum,
+                b.catalog,
+                b.code
+        ''')
+
+    if args.mode == 'data':
+        query = '''
+            SELECT *
+            FROM changes
+            WHERE branch = ?
+        '''
 
     elif args.mode == 'ok':
         query = '''
-            SELECT {}
-            FROM baseline b
-                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
-            WHERE r.branch = ?
-                AND b.ok != r.ok
-            ORDER BY b.stnum, b.catalog, b.code
-        '''.format(','.join(columns))
+            SELECT *
+            FROM changes
+            WHERE branch = ? AND ok != ok_r
+        '''
 
     elif args.mode == 'gpa':
         query = '''
-            SELECT {}
-            FROM baseline b
-                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
-            WHERE r.branch = ?
-                AND b.gpa != r.gpa
-            ORDER BY b.stnum, b.catalog, b.code
-        '''.format(','.join(columns))
-
-    elif args.mode == 'speed':
-        query = '''
-            SELECT {}
-            FROM baseline b
-                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
-            WHERE r.branch = ? AND b.iterations != r.iterations
-            ORDER BY b.stnum, b.catalog, b.code
-        '''.format(','.join(columns))
-
-    elif args.mode == 'all':
-        query = '''
-            SELECT {}
-            FROM baseline b
-                LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
-            WHERE r.branch = ?
-            ORDER BY b.stnum, b.catalog, b.code
-        '''.format(','.join(columns))
+            SELECT *
+            FROM changes
+            WHERE branch = ? AND gpa != gpa_r
+        '''
 
     else:
         assert False
@@ -107,7 +89,7 @@ def compare(args: argparse.Namespace) -> None:
     with sqlite_connect(args.db, readonly=True) as conn:
         results = [r for r in conn.execute(query, [args.run])]
 
-        fields = ['stnum', 'catalog', 'code', 'gpa_b', 'gpa_r', 'it_b', 'it_r', 'dur_b', 'dur_r', 'ok_b', 'ok_r', 'rank_b', 'rank_r', 'max_b', 'max_r']
+        fields = ['branch', 'stnum', 'catalog', 'code', 'gpa', 'gpa_r', 'it', 'it_r', 'dur', 'dur_r', 'stat', 'stat_r', 'rank', 'rank_r', 'max', 'max_r']
         writer = csv.DictWriter(sys.stdout, fieldnames=fields)
         writer.writeheader()
 
