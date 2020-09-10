@@ -1,5 +1,5 @@
 import attr
-from typing import Tuple, Dict, Any
+from typing import Tuple, Dict, List, Any
 import logging
 import enum
 from decimal import Decimal
@@ -85,9 +85,35 @@ class CourseSubjectOverride(CourseOverrideException):
         return {**super().to_dict(), "subject": self.subject}
 
 
-def load_exception(data: Dict[str, Any]) -> RuleException:
+@attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
+class Migration:
+    from_path: List[str]
+    to_path: List[str]
+    date: str
+    comment: str
+
+
+def load_migrations(migrations: List[Dict]) -> List[Migration]:
+    parsed_migrations: List[Migration] = []
+    for m in migrations:
+        parsed_migrations.append(Migration(
+            from_path=m['from-path'],
+            to_path=m['to-path'],
+            comment=m['comment'],
+            date=m['date'],
+        ))
+    return parsed_migrations
+
+
+def load_exception(data: Dict[str, Any], migrations: List[Migration]) -> RuleException:
     ex_type = ExceptionAction(data['type'])
-    ex_path = tuple(data['path'])
+
+    mutable_ex_path = list(data['path'])
+    for mig in migrations:
+        if mutable_ex_path[0:len(mig.from_path)] == mig.from_path:
+            mutable_ex_path[0:len(mig.from_path)] = mig.to_path
+            logger.critical('applying migration %r to %r: new path is %r', mig, data, mutable_ex_path)
+    ex_path = tuple(mutable_ex_path)
 
     if ex_type is ExceptionAction.Insert:
         return InsertionException(clbid=data['clbid'], path=ex_path, type=ex_type, forced=False)

@@ -132,7 +132,7 @@ class AreaOfStudy(Base):
             for course, paths in specification.get("multicountable", {}).items()
         }
 
-        allowed_keys = {'name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable', 'credit'}
+        allowed_keys = {'name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable', 'credit', 'exceptions-migrations'}
         given_keys = set(specification.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
