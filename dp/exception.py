@@ -1,5 +1,5 @@
 import attr
-from typing import Tuple, Dict, List, Any
+from typing import Tuple, Dict, List, Sequence, Any
 import logging
 import enum
 from decimal import Decimal
@@ -105,7 +105,7 @@ def load_migrations(migrations: List[Dict]) -> List[Migration]:
     return parsed_migrations
 
 
-def load_exception(data: Dict[str, Any], migrations: List[Migration]) -> RuleException:
+def load_exception(data: Dict[str, Any], migrations: Sequence[Migration] = tuple()) -> RuleException:
     ex_type = ExceptionAction(data['type'])
 
     mutable_ex_path = list(data['path'])
