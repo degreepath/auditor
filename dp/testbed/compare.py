@@ -36,16 +36,8 @@ def compare(args: argparse.Namespace) -> None:
                 r.iterations AS it_r,
                 round(b.duration, 4) AS dur,
                 round(r.duration, 4) AS dur_r,
-                CASE b.status
-                    WHEN 'failed-invariant' THEN 'fail'
-                    WHEN 'needs-more-items' THEN 'part'
-                    ELSE b.status
-                END AS stat,
-                CASE r.status
-                    WHEN 'failed-invariant' THEN 'fail'
-                    WHEN 'needs-more-items' THEN 'part'
-                    ELSE r.status
-                END AS stat_r,
+                b.status AS stat,
+                r.status AS stat_r,
                 round(b.rank, 2) AS rank,
                 round(r.rank, 2) AS rank_r,
                 b.max_rank AS max,
