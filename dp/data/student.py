@@ -143,13 +143,13 @@ class Student:
         )
 
     def constants(self) -> Constants:
+        terms_since_declaring_major: int = 0
+
         try:
             current_area = next(a for a in self.areas if a.code == self.current_area_code)
-            terms_since_declaring_major = current_area.terms_since_declaration
+            terms_since_declaring_major = current_area.terms_since_declaration or 0
         except StopIteration:
             terms_since_declaring_major = 0
-
-        terms_since_declaring_major = terms_since_declaring_major or 0
 
         return Constants(
             matriculation_year=self.matriculation,
