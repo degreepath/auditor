@@ -34,8 +34,8 @@ AnyAssertion = Union[SomeAssertion, 'DynamicConditionalAssertion']
 
 @enum.unique
 class ValueChangeMode(enum.Enum):
-    Add = "+"
-    Subtract = "-"
+    Add = "add"
+    Subtract = "subtract"
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, repr=False)
@@ -48,16 +48,19 @@ class ValueChange:
     def load(
         data: Mapping[str, str],
         *,
-        action: str,
+        action: Mapping[str, str],
         ctx: 'RequirementContext',
     ) -> 'ValueChange':
         predicate_key = load_predicate_expression(data, ctx=ctx)
         predicate_key = predicate_key.evaluate(ctx=ctx)
 
-        cond_action_mode, cond_action_inc = action.split(' ', maxsplit=1)
+        keys = list(action.keys())
+        assert len(keys) == 1, AssertionError('expected only one key')
+        cond_action_mode = keys[0]
         mode = ValueChangeMode(cond_action_mode)
+        amount = Decimal(action[cond_action_mode])
 
-        return ValueChange(mode=mode, expression=predicate_key, amount=Decimal(cond_action_inc))
+        return ValueChange(mode=mode, expression=predicate_key, amount=amount)
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
