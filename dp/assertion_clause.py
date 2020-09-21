@@ -445,22 +445,26 @@ class DynamicConditionalAssertion:
     def status(self) -> ResultStatus:
         if self.condition.result is True:
             return self.when_true.status()
-        else:
+        elif self.condition.result is False:
             return ResultStatus.Empty
+        else:
+            # default to .Done if condition hasn't been evaluated
+            return ResultStatus.Done
 
     def rank(self) -> Tuple[Decimal, Decimal]:
         if self.condition.result is True:
             return self.when_true.rank()
-        else:
+        elif self.condition.result is False:
             return (ZERO_POINT_OH, ONE_POINT_OH)
+        else:
+            # default to .Done variant if condition hasn't been evaluated
+            return (ONE_POINT_OH, ONE_POINT_OH)
 
     def max_expected(self) -> Decimal:
         return self.when_true.expected
 
     def input_size_range(self, *, maximum: int) -> Iterator[int]:
-        if self.condition.result is True:
-            return input_size_range(self.when_true, maximum)
-        return input_size_range(self.when_true, maximum)
+        return self.when_true.input_size_range(maximum=maximum)
 
     def is_simple_count_clause(self) -> bool:
         return self.when_true.is_simple_count_clause()
