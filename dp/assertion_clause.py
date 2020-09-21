@@ -664,6 +664,11 @@ def load_single_assertion(
 
     overridden = True if ctx.get_waive_exception(path) is not None else False
 
+    known_keys = {'where', 'message', 'label', 'assert', '$changes', 'at_most', *[o.value for o in Operator]}
+    found_keys = set(value.keys())
+    unknown_keys = found_keys.difference(known_keys)
+    assert len(unknown_keys) == 0, AssertionError(f'{unknown_keys}')
+
     return Assertion(
         path=path,
         state=ResultStatus.Empty if not overridden else ResultStatus.Waived,
