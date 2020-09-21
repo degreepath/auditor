@@ -38,7 +38,7 @@ class ValueChangeMode(enum.Enum):
     Subtract = "subtract"
 
 
-@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True, repr=False)
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class ValueChange:
     mode: ValueChangeMode
     expression: SomePredicateExpression
