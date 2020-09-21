@@ -83,7 +83,30 @@ class QuerySolution(Solution, BaseQueryRule):
         else:
             raise TypeError(f'invalid source type {self.source!r}')
 
-        assertions = tuple(a.audit_and_resolve(collected_result.claimed_items, ctx=ctx) for a in self.assertions)
+        # Skip checking any assertions if nothing has been claimed. This is
+        # not a performance optimization; instead, this ensures that
+        # less-than assertions don't turn green when there's nothing for them
+        # to assert against, for example:
+        #
+        # Requirement: Performance Studies [needs-more-items]
+        #     [needs-more-items] Given all 0 courses matching subject == MUSPF and credits == 1.0 and level ∈ [100, 200] and name == '' and institution == STOLAF
+        #         There must be:
+        #           - count(terms) ≥ 6 [empty]
+        #           - count(terms) where level == 100 ≤ 4 [done]
+        #
+        # when in fact we would expect
+        #
+        # Requirement: Performance Studies [needs-more-items]
+        #     [needs-more-items] Given all 0 courses matching subject == MUSPF and credits == 1.0 and level ∈ [100, 200] and name == '' and institution == STOLAF
+        #         There must be:
+        #           - count(terms) ≥ 6 [empty]
+        #           - count(terms) where level == 100 ≤ 4 [empty]
+        #
+        # since there were no courses matching the filter.
+        if self.source is QuerySource.Courses and len(collected_result.claimed_items) == 0 and any(a.is_lt_clause() for a in self.assertions):
+            assertions = self.assertions
+        else:
+            assertions = tuple(a.audit_and_resolve(collected_result.claimed_items, ctx=ctx) for a in self.assertions)
 
         logger.debug("done auditing data for %s", self.path)
 
