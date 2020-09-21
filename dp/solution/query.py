@@ -103,7 +103,8 @@ class QuerySolution(Solution, BaseQueryRule):
         #           - count(terms) where level == 100 ≤ 4 [empty]
         #
         # since there were no courses matching the filter.
-        if self.source is QuerySource.Courses and len(collected_result.claimed_items) == 0 and any(a.is_lt_clause() for a in self.assertions):
+        has_non_primary_lt_clause = any(a.is_lt_clause() for a in self.assertions) and not all(a.is_lt_clause() for a in self.assertions)
+        if self.source is QuerySource.Courses and len(collected_result.claimed_items) == 0 and has_non_primary_lt_clause:
             assertions = self.assertions
         else:
             assertions = tuple(a.audit_and_resolve(collected_result.claimed_items, ctx=ctx) for a in self.assertions)
