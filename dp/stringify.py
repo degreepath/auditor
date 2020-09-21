@@ -376,6 +376,8 @@ def print_conditional(
         yield from print_path(rule, indent)
 
     prefix = " " * indent
+    if show_ranks:
+        prefix += f"({float(rule['rank']):.4g}|{rule['max_rank']}|{'t' if rule['status'] in PassingStatusValues else 'f'}) "
     yield f"{prefix}If {str_expression(rule['condition'], nested=False)}:"
 
     yield f"{prefix}Then:"
