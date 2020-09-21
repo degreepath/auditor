@@ -36,7 +36,7 @@ def audit(
         student = data
         area_spec = area_spec
 
-    estimate_count = estimate((stnum, catalog, code), db=db, area_spec=area_spec)
+    estimate_count = estimate((stnum, catalog, code), data=student, db=db, area_spec=area_spec)
     assert estimate_count is not None
 
     db_keys = {'stnum': stnum, 'catalog': catalog, 'code': code, 'estimate': estimate_count, 'branch': run_id}
