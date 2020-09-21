@@ -156,6 +156,7 @@ class AreaOfStudy(Base):
                 degree=degree,
                 area_code=this_code,
                 ctx=ctx,
+                c=c,
             )),
         )
 
@@ -427,9 +428,8 @@ def prepare_common_rules(
     other_areas: Tuple[AreaPointer, ...] = tuple(),
     area_code: str,
     ctx: RequirementContext,
+    c: Constants,
 ) -> Iterator[Rule]:
-    c = Constants(matriculation_year=0)
-
     if degree == 'B.M.':
         is_bm_major = True
     else:
