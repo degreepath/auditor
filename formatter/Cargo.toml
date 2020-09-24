@@ -1,0 +1,24 @@
+[package]
+name = "formatter"
+version = "0.1.0"
+authors = ["Hawken Rives <rives@stolaf.edu>"]
+edition = "2018"
+
+[lib]
+name = "formatter"
+path = "src/lib.rs"
+
+[[bin]]
+name = "dp-report"
+path = "src/bin/report.rs"
+
+[[bin]]
+name = "dp-print"
+path = "src/bin/print.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1"
+clap = "3.0.0-beta.2"
+csv = "1.1"
+rusqlite = "0.24"
