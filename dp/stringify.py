@@ -466,7 +466,7 @@ def str_single_predicate(clause: Dict[str, Any], *, nested: bool = False, raw_on
 
 
 def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
-    if expr["type"] == "pred-expr":
+    if expr["type"] == "pred-expr" or expr["type"] == "pred-dyn-expr":
         headline = "??"
         if expr['result'] is True:
             headline = 't.'
@@ -482,22 +482,14 @@ def str_expression(expr: Dict[str, Any], *, nested: bool = False) -> str:
             headline = 'f!'
         return f"(NOT {str_expression(expr['expression'], nested=True)} => {headline})"
 
-    elif expr["type"] == "pred-dyn-expr":
-        headline = "??"
-        if expr['result'] is True:
-            headline = 't.'
-        elif expr['result'] is False:
-            headline = 'f!'
-        return f"({expr['function']} {expr['argument']!r} => {headline})"
-
-    elif expr["type"] == "pred-expr--or":
+    elif expr["type"] == "pred-expr--or" or expr["type"] == "pred-dyn-expr--or":
         text = " or ".join(str_expression(c, nested=True) for c in expr["expressions"])
         if not nested:
             return text
         else:
             return f'({text})'
 
-    elif expr["type"] == "pred-expr--and":
+    elif expr["type"] == "pred-expr--and" or expr["type"] == "pred-dyn-expr--and":
         text = " and ".join(str_expression(c, nested=True) for c in expr["expressions"])
         if not nested:
             return text

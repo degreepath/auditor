@@ -14,7 +14,8 @@ from .op import Operator, apply_operator
 from .predicate_clause import SomePredicate, load_predicate
 from .status import ResultStatus, PassingStatuses
 from .clause_helpers import stringify_expected
-from .conditional_expression import load_predicate_expression, SomePredicateExpression, DynamicPredicateExpression
+from .conditional_expression import load_predicate_expression, load_dynamic_predicate_expression, \
+    SomePredicateExpression, SomeDynamicPredicateExpression
 from .data.clausable import Clausable
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -393,7 +394,7 @@ class ConditionalAssertion:
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
 class DynamicConditionalAssertion:
     path: Tuple[str, ...]
-    condition: DynamicPredicateExpression
+    condition: SomeDynamicPredicateExpression
     when_true: Assertion
 
     @staticmethod
@@ -416,7 +417,7 @@ class DynamicConditionalAssertion:
         assert data_type is DataType.Course, TypeError(f'DynamicConditionalAssertion can only operate on courses, not {data_type}')
 
         return DynamicConditionalAssertion(
-            condition=DynamicPredicateExpression.load(data['$when']),
+            condition=load_dynamic_predicate_expression(data['$when'], ctx=ctx),
             when_true=load_single_assertion(data['$then'], c=c, ctx=ctx, forbid=forbid, path=[*path, '/t'], data_type=data_type),
             path=tuple(path),
         )

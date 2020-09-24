@@ -50,6 +50,12 @@ SomePredicateExpression = Union[
     'PredicateExpression',
 ]
 
+SomeDynamicPredicateExpression = Union[
+    'DynamicPredicateExpression',
+    'DynamicPredicateExpressionCompoundAnd',
+    'DynamicPredicateExpressionCompoundOr',
+]
+
 
 @enum.unique
 class PredicateExpressionFunction(enum.Enum):
@@ -64,6 +70,7 @@ class PredicateExpressionFunction(enum.Enum):
 @enum.unique
 class DynamicPredicateExpressionFunction(enum.Enum):
     QueryHasCourseWithAttribute = 'query-has-course-with-attribute'
+    QueryHasSingleCourseWithAttribute = 'query-has-single-course-with-attribute'
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -241,7 +248,7 @@ class DynamicPredicateExpression:
             return False
 
     @staticmethod
-    def load(data: Mapping) -> 'DynamicPredicateExpression':
+    def load(data: Mapping, *, ctx: 'RequirementContext') -> 'DynamicPredicateExpression':
         assert type(data) is dict, TypeError('predicate expressions must be dicts')
         assert len(data.keys()) == 1, ValueError("only one key allowed in predicate expressions")
 
@@ -269,6 +276,76 @@ class DynamicPredicateExpression:
     def evaluate_against_data(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpression':
         result = evaluate_dynamic_predicate_function(self.function, self.argument, data=data)
         return attr.evolve(self, result=result)
+
+
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+class DynamicPredicateExpressionCompoundAnd:
+    expressions: Tuple[SomeDynamicPredicateExpression, ...] = tuple()
+    result: Optional[bool] = None
+
+    @staticmethod
+    def can_load(data: Mapping) -> bool:
+        return '$and' in data
+
+    @staticmethod
+    def load(data: Mapping, *, ctx: 'RequirementContext') -> 'DynamicPredicateExpressionCompoundAnd':
+        # ensure that the data looks like {$and: []}, with no extra keys
+        assert len(data.keys()) == 1
+        assert type(data['$and']) == list
+        clauses = tuple(load_dynamic_predicate_expression(e, ctx=ctx) for e in data['$and'])
+        return DynamicPredicateExpressionCompoundAnd(expressions=clauses, result=None)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "type": "pred-dyn-expr--and",
+            "expressions": [c.to_dict() for c in self.expressions],
+            "result": self.result,
+        }
+
+    def validate(self, *, ctx: 'RequirementContext') -> None:
+        for c in self.expressions:
+            c.validate(ctx=ctx)
+
+    def evaluate_against_data(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpressionCompoundAnd':
+        if self.result is not None:
+            return self
+        evaluated = tuple(e.evaluate_against_data(data=data) for e in self.expressions)
+        return attr.evolve(self, expressions=evaluated, result=all(e.result for e in evaluated))
+
+
+@attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
+class DynamicPredicateExpressionCompoundOr:
+    expressions: Tuple[SomeDynamicPredicateExpression, ...] = tuple()
+    result: Optional[bool] = None
+
+    @staticmethod
+    def can_load(data: Mapping) -> bool:
+        return '$or' in data
+
+    @staticmethod
+    def load(data: Mapping, *, ctx: 'RequirementContext') -> 'DynamicPredicateExpressionCompoundOr':
+        # ensure that the data looks like {$or: []}, with no extra keys
+        assert len(data.keys()) == 1
+        assert type(data['$or']) == list
+        clauses = tuple(load_dynamic_predicate_expression(e, ctx=ctx) for e in data['$or'])
+        return DynamicPredicateExpressionCompoundOr(expressions=clauses, result=None)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "type": "pred-dyn-expr--or",
+            "expressions": [c.to_dict() for c in self.expressions],
+            "result": self.result,
+        }
+
+    def validate(self, *, ctx: 'RequirementContext') -> None:
+        for c in self.expressions:
+            c.validate(ctx=ctx)
+
+    def evaluate(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpressionCompoundOr':
+        if self.result is not None:
+            return self
+        evaluated = tuple(e.evaluate_against_data(data=data) for e in self.expressions)
+        return attr.evolve(self, expressions=evaluated, result=any(e.result for e in evaluated))
 
 
 def evaluate_predicate_function(function: PredicateExpressionFunction, argument: str, *, ctx: 'RequirementContext') -> bool:
@@ -305,6 +382,12 @@ def evaluate_dynamic_predicate_function(function: DynamicPredicateExpressionFunc
             return True
         return False
 
+    elif function is DynamicPredicateExpressionFunction.QueryHasSingleCourseWithAttribute:
+        match_count = len(list(filter(course_filter(attribute=argument), data)))
+        if match_count == 1:
+            return True
+        return False
+
     else:
         raise TypeError(f"unknown DynamicPredicateExpressionFunction {function}")
 
@@ -337,3 +420,30 @@ def load_predicate_expression(
 
     else:
         raise TypeError(f'unknown predicate expression {data!r}')
+
+
+def load_dynamic_predicate_expression(
+    data: Mapping[str, Any],
+    *,
+    ctx: 'RequirementContext',
+) -> SomeDynamicPredicateExpression:
+    """Processes a predicate expression dictionary into a DynamicCompoundPredicateExpression instance.
+
+    > {has-ip-course: AMCON 101}
+    > {$and: [{has-ip-course: AMCON 101}, {has-area-code: '130'}]}
+    > {$or: [{has-ip-course: AMCON 101}, {has-ip-course: 'AMCON 102'}]}
+    > {$not: {has-ip-course: AMCON 101}}
+    > {$not: {$or: [{has-ip-course: AMCON 101}, {has-ip-course: 'AMCON 102'}]}}
+    """
+
+    if DynamicPredicateExpressionCompoundAnd.can_load(data):
+        return DynamicPredicateExpressionCompoundAnd.load(data, ctx=ctx)
+
+    elif DynamicPredicateExpressionCompoundOr.can_load(data):
+        return DynamicPredicateExpressionCompoundOr.load(data, ctx=ctx)
+
+    elif DynamicPredicateExpression.can_load(data):
+        return DynamicPredicateExpression.load(data, ctx=ctx)
+
+    else:
+        raise TypeError(f'unknown dynamic predicate expression {data!r}')
