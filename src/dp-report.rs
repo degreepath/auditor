@@ -2,7 +2,7 @@ use clap::Clap;
 use formatter::area_of_study::AreaOfStudy;
 use formatter::student::Student;
 use formatter::to_csv::{CsvOptions, ToCsv};
-use rusqlite::{Connection, Error as RusqliteError, OpenFlags, Result};
+use rusqlite::{named_params, Connection, Error as RusqliteError, OpenFlags, Result};
 use std::path::Path;
 
 /// This doc string acts as a help message when the user runs '--help'
@@ -35,15 +35,23 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
 ) -> Result<(), RusqliteError> {
     let conn = Connection::open_with_flags(db_path, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
 
+    let branch = "cond-6";
+
     let mut stmt = conn.prepare("
         SELECT b.result, sd.input_data
         FROM branch b
             LEFT JOIN server_data sd on (b.stnum, b.catalog, b.code) = (sd.stnum, sd.catalog, sd.code)
-        WHERE b.branch = 'cond-6'
+        WHERE b.branch = :branch
             AND b.catalog = :catalog
             AND b.code = :code
         ORDER BY b.stnum, b.catalog, b.code
     ").unwrap();
+
+    let params = named_params! {
+        ":catalog": catalog,
+        ":code": area_code,
+        ":branch": branch,
+    };
 
     let mut wtr = csv::WriterBuilder::new()
         .has_headers(false)
@@ -51,36 +59,35 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
 
     let options = CsvOptions {};
 
-    let results =
-        stmt.query_map_named(&[(":catalog", &catalog), (":code", &area_code)], |row| {
-            let result: String = row.get(0).unwrap();
-            let student: String = row.get(1).unwrap();
+    let results = stmt.query_map_named(params, |row| {
+        let result: String = row.get(0).unwrap();
+        let student: String = row.get(1).unwrap();
 
-            let result: AreaOfStudy = match serde_json::from_str(&result) {
-                Err(err) => {
-                    eprintln!("result error");
-                    let value: serde_json::Value = serde_json::from_str(&result).unwrap();
-                    dbg!(value);
-                    dbg!(err);
+        let result: AreaOfStudy = match serde_json::from_str(&result) {
+            Err(err) => {
+                eprintln!("result error");
+                let value: serde_json::Value = serde_json::from_str(&result).unwrap();
+                dbg!(value);
+                dbg!(err);
 
-                    panic!();
-                }
-                Ok(r) => r,
-            };
-            let student: Student = match serde_json::from_str(&student) {
-                Err(err) => {
-                    eprintln!("student error");
+                panic!();
+            }
+            Ok(r) => r,
+        };
+        let student: Student = match serde_json::from_str(&student) {
+            Err(err) => {
+                eprintln!("student error");
 
-                    let value: serde_json::Value = serde_json::from_str(&student).unwrap();
-                    dbg!(value);
-                    dbg!(err);
-                    panic!();
-                }
-                Ok(r) => r,
-            };
+                let value: serde_json::Value = serde_json::from_str(&student).unwrap();
+                dbg!(value);
+                dbg!(err);
+                panic!();
+            }
+            Ok(r) => r,
+        };
 
-            Ok((student, result))
-        })?;
+        Ok((student, result))
+    })?;
 
     for (i, pair) in results.enumerate() {
         let (student, result) = pair.unwrap();

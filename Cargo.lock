@@ -96,6 +96,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "degreepath"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "csv",
+ "dp-formatter",
+ "rusqlite",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "dp-formatter"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "fallible-iterator"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -106,17 +127,6 @@ name = "fallible-streaming-iterator"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
-
-[[package]]
-name = "formatter"
-version = "0.1.0"
-dependencies = [
- "clap",
- "csv",
- "rusqlite",
- "serde",
- "serde_json",
-]
 
 [[package]]
 name = "hashbrown"
