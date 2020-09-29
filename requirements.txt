@@ -21,7 +21,7 @@ pyyaml==5.3.1 \
     --hash=sha256:cc8955cfbfc7a115fa81d85284ee61147059a753344bc51098f3ccd69b0d7e0c \
     --hash=sha256:d13155f591e6fcc1ec3b30685d50bf0711574e2c0dfffd7644babf8b5102ca1a \
     # via -r requirements.in
-tqdm==4.49.0 \
-    --hash=sha256:8f3c5815e3b5e20bc40463fa6b42a352178859692a68ffaa469706e6d38342a5 \
-    --hash=sha256:faf9c671bd3fad5ebaeee366949d969dca2b2be32c872a7092a1e1a9048d105b \
+tqdm==4.50.0 \
+    --hash=sha256:2dd75fdb764f673b8187643496fcfbeac38348015b665878e582b152f3391cdb \
+    --hash=sha256:93b7a6a9129fce904f6df4cf3ae7ff431d779be681a95c3344c26f3e6c09abfa \
     # via -r requirements.in
