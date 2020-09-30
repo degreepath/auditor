@@ -14,6 +14,14 @@ use std::fmt::Display;
 pub enum AssertionKey {
     #[serde(rename = "count(courses)")]
     CountCourses,
+    #[serde(rename = "count(terms)")]
+    CountTerms,
+    #[serde(rename = "count(performances)")]
+    CountPerformances,
+    #[serde(rename = "count(recitals)")]
+    CountRecitals,
+    #[serde(rename = "count(subjects)")]
+    CountSubjects,
     #[serde(rename = "sum(credits)")]
     SumCredits,
 }
@@ -22,6 +30,10 @@ impl Display for AssertionKey {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let output = match self {
             AssertionKey::CountCourses => "count/classes",
+            AssertionKey::CountTerms => "count/terms",
+            AssertionKey::CountPerformances => "count/performances",
+            AssertionKey::CountRecitals => "count/recitals",
+            AssertionKey::CountSubjects => "count/subjects",
             AssertionKey::SumCredits => "sum/credits",
         };
 
@@ -160,6 +172,10 @@ impl AssertionRule {
     pub fn get_size(&self) -> usize {
         match self.key {
             AssertionKey::CountCourses => self.expected.parse().unwrap(),
+            AssertionKey::CountTerms => self.expected.parse().unwrap(),
+            AssertionKey::CountPerformances => self.expected.parse().unwrap(),
+            AssertionKey::CountRecitals => self.expected.parse().unwrap(),
+            AssertionKey::CountSubjects => self.expected.parse().unwrap(),
             AssertionKey::SumCredits => {
                 let as_float: f64 = self.expected.parse().unwrap();
                 let as_int: usize = as_float.round() as usize;

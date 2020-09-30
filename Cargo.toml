@@ -18,6 +18,10 @@ path = "src/dp-major-report.rs"
 name = "dp-print"
 path = "src/dp-print.rs"
 
+[[bin]]
+name = "dp-db-print"
+path = "src/dp-db-print.rs"
+
 [dependencies]
 clap = "3.0.0-beta.2"
 csv = "1.1"

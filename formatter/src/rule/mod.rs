@@ -6,12 +6,14 @@ use serde::{Deserialize, Serialize};
 pub mod conditional;
 pub mod count;
 pub mod course;
+pub mod proficiency;
 pub mod query;
 pub mod requirement;
 
 use conditional::ConditionalRule;
 use count::CountRule;
 use course::CourseRule;
+use proficiency::ProficiencyRule;
 use query::QueryRule;
 use requirement::Requirement;
 
@@ -20,6 +22,8 @@ use requirement::Requirement;
 pub enum Rule {
     #[serde(rename = "count")]
     Count(CountRule),
+    #[serde(rename = "proficiency")]
+    Proficiency(ProficiencyRule),
     #[serde(rename = "course")]
     Course(CourseRule),
     #[serde(rename = "requirement")]
@@ -44,6 +48,7 @@ impl ToProse for Rule {
             Rule::Requirement(r) => r.to_prose(f, student, options, indent),
             Rule::Query(r) => r.to_prose(f, student, options, indent),
             Rule::Conditional(r) => r.to_prose(f, student, options, indent),
+            Rule::Proficiency(r) => r.to_prose(f, student, options, indent),
         }
     }
 }
@@ -61,6 +66,7 @@ impl ToCsv for Rule {
             Rule::Requirement(r) => r.get_record(student, options, is_waived),
             Rule::Query(r) => r.get_record(student, options, is_waived),
             Rule::Conditional(r) => r.get_record(student, options, is_waived),
+            Rule::Proficiency(r) => r.get_record(student, options, is_waived),
         }
     }
 }
@@ -73,6 +79,7 @@ impl Rule {
             Rule::Requirement(r) => &r.status,
             Rule::Query(r) => &r.status,
             Rule::Conditional(r) => &r.status,
+            Rule::Proficiency(r) => &r.status,
         }
     }
 }
@@ -93,16 +100,21 @@ pub enum RuleStatus {
     PendingApproval,
     #[serde(rename = "empty")]
     Empty,
+    #[serde(rename = "failed-invariant")]
+    FailedInvariant,
 }
 
 impl RuleStatus {
     pub fn is_passing(&self) -> bool {
         match self {
-            RuleStatus::Done | RuleStatus::Waived | RuleStatus::PendingCurrent => true,
+            RuleStatus::Done => true,
+            RuleStatus::Waived => true,
+            RuleStatus::PendingCurrent => true,
             RuleStatus::NeedsMoreItems => false,
             RuleStatus::PendingRegistered => false,
             RuleStatus::PendingApproval => false,
             RuleStatus::Empty => false,
+            RuleStatus::FailedInvariant => false,
         }
     }
 
@@ -115,6 +127,7 @@ impl RuleStatus {
             RuleStatus::PendingCurrent => false,
             RuleStatus::PendingApproval => false,
             RuleStatus::Empty => false,
+            RuleStatus::FailedInvariant => false,
         }
     }
 }

@@ -13,12 +13,20 @@ use std::collections::BTreeSet;
 pub enum QuerySource {
     #[serde(rename = "courses")]
     Courses,
+    #[serde(rename = "music performances")]
+    MusicPerformances,
+    #[serde(rename = "music recitals")]
+    MusicRecitals,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DataType {
     #[serde(rename = "course")]
     Course,
+    #[serde(rename = "music-performance")]
+    MusicPerformance,
+    #[serde(rename = "recital")]
+    Recital,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
