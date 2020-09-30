@@ -442,6 +442,8 @@ impl ToProse for DynamicConditionalAssertion {
     }
 }
 
+// TODO: serde rule to convert string|number to a string; use for "original" key
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AssertionRule {
     #[serde(rename = "data-type")]
@@ -454,7 +456,7 @@ pub struct AssertionRule {
     pub max_rank: String,
     pub message: Option<String>,
     pub operator: Operator,
-    pub original: Option<String>,
+    pub original: Option<serde_json::Value>,
     pub path: Path,
     pub rank: String,
     pub resolved: Option<String>,
