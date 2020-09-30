@@ -11,6 +11,10 @@ name = "dp-report"
 path = "src/dp-report.rs"
 
 [[bin]]
+name = "dp-major-report"
+path = "src/dp-major-report.rs"
+
+[[bin]]
 name = "dp-print"
 path = "src/dp-print.rs"
 
