@@ -45,11 +45,12 @@ impl crate::to_csv::ToCsv for Assertion {
         &self,
         student: &Student,
         options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
         match self {
-            Assertion::Rule(r) => r.get_record(student, options),
-            Assertion::Conditional(r) => r.get_record(student, options),
-            Assertion::DynamicConditional(r) => r.get_record(student, options),
+            Assertion::Rule(r) => r.get_record(student, options, is_waived),
+            Assertion::Conditional(r) => r.get_record(student, options, is_waived),
+            Assertion::DynamicConditional(r) => r.get_record(student, options, is_waived),
         }
     }
 }
@@ -108,7 +109,10 @@ impl crate::to_csv::ToCsv for AssertionRule {
         &self,
         student: &Student,
         _options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
+        let _is_waived = is_waived || self.status.is_waived();
+
         let header = match self.operator {
             Operator::EqualTo => format!("needs {}", self.expected),
             Operator::NotEqualTo => format!("not {}", self.expected),
@@ -122,10 +126,8 @@ impl crate::to_csv::ToCsv for AssertionRule {
 
         let sigil = if self.status.is_passing() {
             "✓"
-        } else if let Some(true) = self.evaluated {
-            "✗"
         } else {
-            "?"
+            "✗"
         };
         let resolved = self.resolved.clone().unwrap_or("0".into());
         let leader = format!(
@@ -140,11 +142,14 @@ impl crate::to_csv::ToCsv for AssertionRule {
             .get_clbids()
             .iter()
             .map(|clbid| student.get_class_by_clbid(&clbid).unwrap())
-            .map(|c| c.course_with_term())
-            .collect::<Vec<_>>()
-            .join("; ");
+            .map(|c| c.semi_verbose())
+            .collect::<Vec<_>>();
 
-        let body = format!("{} → {}", leader, courses);
+        let body = if courses.is_empty() {
+            leader
+        } else {
+            format!("{} → {}", leader, courses.join("; "))
+        };
 
         vec![(header, body)]
     }
@@ -182,10 +187,11 @@ impl crate::to_csv::ToCsv for ConditionalAssertion {
         &self,
         student: &Student,
         options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
-        let if_true = self.when_true.get_record(student, options);
+        let if_true = self.when_true.get_record(student, options, is_waived);
         let if_false = if let Some(b) = &self.when_false {
-            b.get_record(student, options)
+            b.get_record(student, options, is_waived)
         } else {
             vec![]
         };
@@ -224,8 +230,9 @@ impl crate::to_csv::ToCsv for DynamicConditionalAssertion {
         &self,
         student: &Student,
         options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
-        self.when_true.get_record(student, options)
+        self.when_true.get_record(student, options, is_waived)
     }
 }
 

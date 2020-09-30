@@ -49,13 +49,18 @@ impl ToProse for Rule {
 }
 
 impl ToCsv for Rule {
-    fn get_record(&self, student: &Student, options: &CsvOptions) -> Vec<(String, String)> {
+    fn get_record(
+        &self,
+        student: &Student,
+        options: &CsvOptions,
+        is_waived: bool,
+    ) -> Vec<(String, String)> {
         match self {
-            Rule::Count(r) => r.get_record(student, options),
-            Rule::Course(r) => r.get_record(student, options),
-            Rule::Requirement(r) => r.get_record(student, options),
-            Rule::Query(r) => r.get_record(student, options),
-            Rule::Conditional(r) => r.get_record(student, options),
+            Rule::Count(r) => r.get_record(student, options, is_waived),
+            Rule::Course(r) => r.get_record(student, options, is_waived),
+            Rule::Requirement(r) => r.get_record(student, options, is_waived),
+            Rule::Query(r) => r.get_record(student, options, is_waived),
+            Rule::Conditional(r) => r.get_record(student, options, is_waived),
         }
     }
 }
@@ -96,6 +101,18 @@ impl RuleStatus {
             RuleStatus::Done | RuleStatus::Waived | RuleStatus::PendingCurrent => true,
             RuleStatus::NeedsMoreItems => false,
             RuleStatus::PendingRegistered => false,
+            RuleStatus::PendingApproval => false,
+            RuleStatus::Empty => false,
+        }
+    }
+
+    pub fn is_waived(&self) -> bool {
+        match self {
+            RuleStatus::Waived => true,
+            RuleStatus::Done => false,
+            RuleStatus::NeedsMoreItems => false,
+            RuleStatus::PendingRegistered => false,
+            RuleStatus::PendingCurrent => false,
             RuleStatus::PendingApproval => false,
             RuleStatus::Empty => false,
         }

@@ -17,6 +17,15 @@ pub struct CountRule {
     pub status: RuleStatus,
 }
 
+impl CountRule {
+    pub fn all_items_are_requirements(&self) -> bool {
+        self.items.iter().all(|r| match r.as_ref() {
+            Rule::Requirement(_) => true,
+            _ => false,
+        })
+    }
+}
+
 impl ToProse for CountRule {
     fn to_prose(
         &self,
@@ -108,28 +117,41 @@ impl crate::to_csv::ToCsv for CountRule {
         &self,
         student: &Student,
         options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
         let mut record: Vec<(String, String)> = Vec::new();
 
+        let is_waived = is_waived || self.status.is_waived();
+
+        let show_prefix = !self.all_items_are_requirements();
+
         if self.count == 1 {
-            let text = format!("#1");
             let item = self.items.iter().find(|r| r.status().is_passing());
 
             match item {
                 Some(item) => {
-                    for (column, value) in item.get_record(student, options) {
-                        record.push((format!("{} > {}", text.clone(), column), value));
+                    for (_column, value) in item.get_record(student, options, is_waived) {
+                        record.push(("1 of these".into(), value));
                     }
                 }
+                _ if is_waived => {
+                    record.push(("one of these".into(), "<waived>".into()));
+                }
                 _ => {
-                    record.push((format!("{} > {}", text.clone(), ""), "".into()));
+                    record.push(("one of these".into(), "???:empty".into()));
                 }
             }
         } else {
             for (i, item) in self.items.iter().enumerate() {
                 let text = format!("#{}", i + 1);
-                for (column, value) in item.get_record(student, options) {
-                    record.push((format!("{} > {}", text.clone(), column), value));
+                for (column, value) in item.get_record(student, options, is_waived) {
+                    if show_prefix {
+                        record.push((format!("{}, {}", text.clone(), column), value));
+                    } else if value == "" {
+                        record.push((column, "empty::???".into()));
+                    } else {
+                        record.push((column, value));
+                    }
                 }
             }
         }

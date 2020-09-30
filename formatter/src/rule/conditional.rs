@@ -60,10 +60,13 @@ impl crate::to_csv::ToCsv for ConditionalRule {
         &self,
         student: &Student,
         options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
-        let if_true = self.when_true.get_record(student, options);
+        let is_waived = is_waived || self.status.is_waived();
+
+        let if_true = self.when_true.get_record(student, options, is_waived);
         let if_false = if let Some(b) = &self.when_false {
-            b.get_record(student, options)
+            b.get_record(student, options, is_waived)
         } else {
             vec![]
         };

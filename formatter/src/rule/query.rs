@@ -162,11 +162,18 @@ impl crate::to_csv::ToCsv for QueryRule {
         &self,
         student: &Student,
         options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
         let mut record: Vec<(String, String)> = Vec::new();
 
+        let is_waived = is_waived || self.status.is_waived();
+
         for assertion in &self.assertions {
-            record.extend(assertion.get_record(student, options).into_iter());
+            record.extend(
+                assertion
+                    .get_record(student, options, is_waived)
+                    .into_iter(),
+            );
         }
 
         record

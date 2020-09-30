@@ -92,7 +92,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
     for (i, pair) in results.enumerate() {
         let (student, result) = pair.unwrap();
 
-        let records = result.get_record(&student, &options);
+        let records = result.get_record(&student, &options, false);
 
         if i == 0 {
             let headers: Vec<_> = records.iter().map(|(a, _b)| a).collect();

@@ -65,16 +65,19 @@ impl crate::to_csv::ToCsv for Requirement {
         &self,
         student: &Student,
         options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
         if self.path == &["$", "%Common Requirements"] {
             return vec![];
         }
 
+        let is_waived = is_waived || self.status.is_waived();
+
         let mut record = vec![];
 
         if let Some(result) = &self.result {
-            for (column, value) in result.get_record(student, options) {
-                record.push((format!("{} > {}", self.name, column), value));
+            for (column, value) in result.get_record(student, options, is_waived) {
+                record.push((format!("{} → {}", self.name, column), value));
             }
         }
 

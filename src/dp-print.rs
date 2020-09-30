@@ -65,7 +65,7 @@ fn main() {
 
         let options = CsvOptions {};
 
-        let records = result.get_record(&student, &options);
+        let records = result.get_record(&student, &options, false);
 
         let headers: Vec<_> = records.iter().map(|(a, _b)| a).collect();
         let row: Vec<_> = records.iter().map(|(_a, b)| b).collect();

@@ -79,6 +79,7 @@ impl crate::to_csv::ToCsv for CourseRule {
         &self,
         student: &Student,
         _options: &crate::to_csv::CsvOptions,
+        is_waived: bool,
     ) -> Vec<(String, String)> {
         let course = if let Some(claim) = self.claims.get(0) {
             student.get_class_by_clbid(&claim.clbid)
@@ -86,10 +87,20 @@ impl crate::to_csv::ToCsv for CourseRule {
             None
         };
 
-        if let Some(course) = course {
-            vec![(self.course.clone(), course.course_with_term())]
+        let is_waived = is_waived || self.status.is_waived();
+
+        let header = self.course.clone();
+        let body = if let Some(course) = course {
+            // if there's a course, show it, even if it was "waived" (ie, it was inserted)
+            course.semi_verbose()
+        } else if is_waived {
+            String::from("<waived>")
+        } else if self.status == RuleStatus::Empty {
+            String::from(" ")
         } else {
-            vec![(self.course.clone(), "".into())]
-        }
+            format!("{:?}", self.status)
+        };
+
+        vec![(header, body)]
     }
 }

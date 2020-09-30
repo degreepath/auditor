@@ -143,22 +143,34 @@ impl Course {
         }
     }
 
+    pub fn semi_verbose(&self) -> String {
+        if self.institution_short == "STOLAF" {
+            format!("{}", self.course_with_term())
+        } else {
+            format!("[{}] {}", self.institution_short, self.course_with_term())
+        }
+    }
+
     pub fn course_with_term(&self) -> String {
-        let suffix = match self.sub_type.as_str() {
-            "lab" => ".L",
-            "flac" => ".F",
-            "discussion" => ".D",
-            _ => "",
+        let label = if self.number == "" {
+            format!("\"{}\"", self.name,)
+        } else {
+            let suffix = match self.sub_type.as_str() {
+                "lab" => ".L",
+                "flac" => ".F",
+                "discussion" => ".D",
+                _ => "",
+            };
+
+            format!(
+                "{}{}{}",
+                self.number,
+                self.section.clone().unwrap_or("".into()),
+                suffix
+            )
         };
 
-        format!(
-            "{} {}{}{} {}",
-            self.subject,
-            self.number,
-            self.section.clone().unwrap_or("".into()),
-            suffix,
-            self.year_term()
-        )
+        format!("{} {} {}", self.subject, label, self.year_term())
     }
 
     fn year_term(&self) -> String {
