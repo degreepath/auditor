@@ -29,6 +29,16 @@ pub enum DataType {
     Recital,
 }
 
+impl std::fmt::Display for DataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            DataType::Course => write!(f, "course"),
+            DataType::Recital => write!(f, "recital"),
+            DataType::MusicPerformance => write!(f, "performance"),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct QueryRule {
     pub allow_claimed: bool,
@@ -185,5 +195,9 @@ impl crate::to_csv::ToCsv for QueryRule {
         }
 
         record
+    }
+
+    fn get_requirements(&self) -> Vec<String> {
+        vec![]
     }
 }

@@ -158,4 +158,11 @@ impl crate::to_csv::ToCsv for CountRule {
 
         record
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        self.items
+            .iter()
+            .flat_map(|r| r.get_requirements())
+            .collect()
+    }
 }

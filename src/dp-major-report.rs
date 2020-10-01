@@ -1,8 +1,10 @@
 use clap::Clap;
 use formatter::area_of_study::AreaOfStudy;
 use formatter::student::Student;
+use formatter::student::{AreaOfStudy as AreaPointer, Emphasis};
 use formatter::to_csv::{CsvOptions, ToCsv};
 use rusqlite::{named_params, Connection, Error as RusqliteError, OpenFlags, Result};
+use std::collections::BTreeSet;
 use std::path::Path;
 
 /// This doc string acts as a help message when the user runs '--help'
@@ -55,45 +57,89 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
         let result: String = row.get(0).unwrap();
         let student: String = row.get(1).unwrap();
 
-        let result: AreaOfStudy = match serde_json::from_str(&result) {
-            Err(err) => {
-                eprintln!("result error");
-                let value: serde_json::Value = serde_json::from_str(&result).unwrap();
-                dbg!(value);
-                dbg!(err);
-
-                panic!();
-            }
-            Ok(r) => r,
-        };
-        let student: Student = match serde_json::from_str(&student) {
-            Err(err) => {
-                eprintln!("student error");
-
-                let value: serde_json::Value = serde_json::from_str(&student).unwrap();
-                dbg!(value);
-                dbg!(err);
-                panic!();
-            }
-            Ok(r) => r,
-        };
-
         Ok((student, result))
     })?;
+
+    let results: Vec<_> = results.map(|pair| pair.unwrap()).collect();
+
+    let results = results
+        .iter()
+        .map(|(student, result)| {
+            let student: Student = match serde_json::from_str(&student) {
+                Ok(r) => r,
+                Err(err) => {
+                    eprintln!("student error");
+
+                    let value: serde_json::Value = serde_json::from_str(&student).unwrap();
+                    dbg!(value);
+                    dbg!(err);
+                    panic!();
+                }
+            };
+
+            let result: AreaOfStudy = match serde_json::from_str(&result) {
+                Ok(r) => r,
+                Err(err) => {
+                    eprintln!("result error");
+                    let value: serde_json::Value = serde_json::from_str(&result).unwrap();
+                    dbg!(value);
+                    dbg!(err);
+                    dbg!(student.stnum);
+
+                    panic!();
+                }
+            };
+
+            (student, result)
+        })
+        .collect::<Vec<_>>();
+
+    let results = {
+        let mut r = results;
+
+        r.sort_by_cached_key(|(s, _a)| {
+            let emphases = s
+                .areas
+                .iter()
+                .filter_map(|a| match a {
+                    AreaPointer::Emphasis(Emphasis { name, .. }) => Some(name),
+                    _ => None,
+                })
+                .cloned()
+                .collect::<BTreeSet<_>>()
+                .into_iter()
+                .collect::<Vec<_>>();
+
+            return (s.catalog.clone(), emphases, s.stnum.clone());
+        });
+
+        r
+    };
 
     struct MappedResult {
         header: Vec<String>,
         data: Vec<String>,
         catalog: String,
+        requirements: Vec<String>,
+        emphases: Vec<String>,
     }
 
-    let results = results.map(|pair| {
-        let (student, result) = pair.unwrap();
-
+    let results = results.into_iter().map(|(student, result)| {
         // TODO: handle case where student's catalog != area's catalog
         let catalog = student.catalog.clone();
 
         let records = result.get_record(&student, &options, false);
+        let requirements = result.get_requirements();
+
+        // dbg!(&requirements);
+
+        let emphases = requirements
+            .iter()
+            .filter(|e| e.starts_with("Emphasis: "))
+            .map(|name| String::from(name.split(" → ").take(1).last().unwrap()))
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .collect::<Vec<_>>();
 
         let mut header: Vec<String> = Vec::new();
         let mut data: Vec<String> = Vec::new();
@@ -106,27 +152,59 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
         MappedResult {
             header,
             data,
+            requirements,
+            emphases,
             catalog,
         }
     });
 
-    let results = results.collect::<Vec<_>>();
+    let results: Vec<MappedResult> = results.collect();
 
-    let longest_header = results.iter().map(|r| r.header.len()).max().unwrap();
+    let longest_header = results
+        .iter()
+        .map(|r: &MappedResult| std::cmp::max(r.header.len(), r.data.len()))
+        .max()
+        .unwrap();
 
+    // let mut last_header: Vec<String> = Vec::new();
+    let mut last_requirements: Vec<String> = Vec::new();
     let mut last_catalog = String::from("");
 
-    for pair in results.into_iter() {
+    for (i, pair) in results.into_iter().enumerate() {
         let MappedResult {
             mut header,
             mut data,
+            requirements,
+            emphases,
             catalog,
         } = pair;
 
-        if last_catalog != catalog {
-            // make sure that we have enough columns
-            header.resize(longest_header, String::from(""));
+        // make sure that we have enough columns
+        header.resize(longest_header, String::from(""));
 
+        if last_requirements != requirements || catalog != last_catalog {
+            if i != 0 {
+                // write out a blank line, then a line with the new catalog year
+                let blank = vec![""; longest_header];
+                wtr.write_record(blank).unwrap();
+            }
+
+            // write out a blank line, then a line with the new catalog year
+            let title = {
+                let mut v = Vec::new();
+                v.push(format!("Catalog: {}", catalog));
+                v.push(emphases.join(" & "));
+                v.resize(longest_header, String::from(""));
+                v
+            };
+            wtr.write_record(title).unwrap();
+
+            last_requirements = requirements.clone();
+            last_catalog = catalog.clone();
+            wtr.write_record(header).unwrap();
+        }
+
+        /* if last_header != header {
             // write out a blank line, then a line with the new catalog year
             let blank = vec![""; longest_header];
             wtr.write_record(blank).unwrap();
@@ -140,9 +218,9 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
             };
             wtr.write_record(title).unwrap();
 
+            last_header = header.clone();
             wtr.write_record(header).unwrap();
-            last_catalog = catalog.clone();
-        }
+        } */
 
         data.resize(longest_header, String::from(""));
 

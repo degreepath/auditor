@@ -65,6 +65,10 @@ impl crate::to_csv::ToCsv for Assertion {
             Assertion::DynamicConditional(r) => r.get_record(student, options, is_waived),
         }
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        vec![]
+    }
 }
 
 impl Assertion {
@@ -125,16 +129,27 @@ impl crate::to_csv::ToCsv for AssertionRule {
     ) -> Vec<(String, String)> {
         let _is_waived = is_waived || self.status.is_waived();
 
+        let statement = match &self.key {
+            AssertionKey::CountCourses => "courses",
+            AssertionKey::CountPerformances => "performances",
+            AssertionKey::CountRecitals => "recitals",
+            AssertionKey::CountSubjects => "subjects",
+            AssertionKey::CountTerms => "terms",
+            AssertionKey::SumCredits => "credits",
+        };
+
         let header = match self.operator {
-            Operator::EqualTo => format!("needs {}", self.expected),
-            Operator::NotEqualTo => format!("not {}", self.expected),
+            Operator::EqualTo => format!("needs … {}", statement),
+            Operator::NotEqualTo => format!("not … {}", statement),
             Operator::In => unimplemented!(),
             Operator::NotIn => unimplemented!(),
-            Operator::LessThan => format!("fewer than {}", self.expected),
-            Operator::LessThanOrEqualTo => format!("at most {}", self.expected),
-            Operator::GreaterThan => format!("greater than {}", self.expected),
-            Operator::GreaterThanOrEqualTo => format!("at least {}", self.expected),
+            Operator::LessThan => format!("fewer than … {}", statement),
+            Operator::LessThanOrEqualTo => format!("at most … {}", statement),
+            Operator::GreaterThan => format!("more than … {}", statement),
+            Operator::GreaterThanOrEqualTo => format!("at least … {}", statement),
         };
+
+        // dbg!(&self);
 
         let sigil = if self.status.is_passing() {
             "✓"
@@ -164,6 +179,10 @@ impl crate::to_csv::ToCsv for AssertionRule {
         };
 
         vec![(header, body)]
+    }
+
+    fn get_requirements(&self) -> Vec<String> {
+        vec![]
     }
 }
 
@@ -214,6 +233,10 @@ impl crate::to_csv::ToCsv for ConditionalAssertion {
 
         vec![if_true, if_false].iter().flatten().cloned().collect()
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        vec![]
+    }
 }
 
 impl ConditionalAssertion {
@@ -249,6 +272,10 @@ impl crate::to_csv::ToCsv for DynamicConditionalAssertion {
         is_waived: bool,
     ) -> Vec<(String, String)> {
         self.when_true.get_record(student, options, is_waived)
+    }
+
+    fn get_requirements(&self) -> Vec<String> {
+        vec![]
     }
 }
 

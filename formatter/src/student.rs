@@ -215,7 +215,7 @@ pub enum Exception {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 #[serde(tag = "kind")]
 pub enum AreaOfStudy {
     #[serde(rename = "degree")]
@@ -228,7 +228,7 @@ pub enum AreaOfStudy {
     Emphasis(Emphasis),
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 pub struct Degree {
     pub code: String,
     pub degree: String,
@@ -237,7 +237,7 @@ pub struct Degree {
     pub status: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 pub struct Major {
     pub code: String,
     pub degree: String,
@@ -247,7 +247,7 @@ pub struct Major {
     // pub terms_since_declaration: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 pub struct Concentration {
     pub code: String,
     pub degree: String,
@@ -257,7 +257,7 @@ pub struct Concentration {
     // pub terms_since_declaration: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 pub struct Emphasis {
     pub code: String,
     pub degree: String,

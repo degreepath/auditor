@@ -79,4 +79,8 @@ impl crate::to_csv::ToCsv for ProficiencyRule {
 
         vec![(header, body)]
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        vec![]
+    }
 }

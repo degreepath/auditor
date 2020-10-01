@@ -69,6 +69,17 @@ impl ToCsv for Rule {
             Rule::Proficiency(r) => r.get_record(student, options, is_waived),
         }
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        match self {
+            Rule::Count(r) => r.get_requirements(),
+            Rule::Course(r) => r.get_requirements(),
+            Rule::Requirement(r) => r.get_requirements(),
+            Rule::Query(r) => r.get_requirements(),
+            Rule::Conditional(r) => r.get_requirements(),
+            Rule::Proficiency(r) => r.get_requirements(),
+        }
+    }
 }
 
 impl Rule {

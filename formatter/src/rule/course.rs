@@ -15,6 +15,9 @@ pub struct CourseRule {
     pub course: String,
     pub ap: Option<String>,
     pub institution: Option<String>,
+    pub clbid: Option<String>,
+    pub grade: Option<String>,
+    pub name: Option<String>,
 }
 
 impl ToProse for CourseRule {
@@ -102,5 +105,9 @@ impl crate::to_csv::ToCsv for CourseRule {
         };
 
         vec![(header, body)]
+    }
+
+    fn get_requirements(&self) -> Vec<String> {
+        vec![]
     }
 }

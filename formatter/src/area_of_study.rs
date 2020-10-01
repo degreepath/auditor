@@ -70,4 +70,8 @@ impl crate::to_csv::ToCsv for AreaOfStudy {
 
         row
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        self.result.get_requirements()
+    }
 }

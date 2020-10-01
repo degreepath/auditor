@@ -77,4 +77,16 @@ impl crate::to_csv::ToCsv for ConditionalRule {
             .cloned()
             .collect()
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        let mut true_reqs = self.when_true.get_requirements();
+        let false_reqs = match &self.when_false {
+            Some(r) => r.get_requirements(),
+            None => vec![],
+        };
+
+        true_reqs.extend(false_reqs.into_iter());
+
+        true_reqs
+    }
 }

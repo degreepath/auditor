@@ -83,4 +83,15 @@ impl crate::to_csv::ToCsv for Requirement {
 
         record
     }
+
+    fn get_requirements(&self) -> Vec<String> {
+        let mut initial = vec![self.name.clone()];
+        match &self.result {
+            Some(r) => {
+                initial.extend(r.get_requirements().into_iter());
+            }
+            None => {}
+        }
+        initial
+    }
 }
