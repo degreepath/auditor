@@ -14,6 +14,8 @@ use std::fmt::Display;
 pub enum AssertionKey {
     #[serde(rename = "count(courses)")]
     CountCourses,
+    #[serde(rename = "count(distinct_courses)")]
+    CountDistinctCourses,
     #[serde(rename = "count(terms)")]
     CountTerms,
     #[serde(rename = "count(performances)")]
@@ -22,19 +24,29 @@ pub enum AssertionKey {
     CountRecitals,
     #[serde(rename = "count(subjects)")]
     CountSubjects,
+    #[serde(rename = "count(areas)")]
+    CountAreas,
     #[serde(rename = "sum(credits)")]
     SumCredits,
+    #[serde(rename = "sum(credits_from_single_subject)")]
+    SumCreditsFromSingleSubject,
+    #[serde(rename = "average(grades)")]
+    AverageGrades,
 }
 
 impl Display for AssertionKey {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let output = match self {
+            AssertionKey::CountAreas => "count/areas",
             AssertionKey::CountCourses => "count/classes",
+            AssertionKey::CountDistinctCourses => "count/distinct-courses",
             AssertionKey::CountTerms => "count/terms",
             AssertionKey::CountPerformances => "count/performances",
             AssertionKey::CountRecitals => "count/recitals",
             AssertionKey::CountSubjects => "count/subjects",
             AssertionKey::SumCredits => "sum/credits",
+            AssertionKey::SumCreditsFromSingleSubject => "sum/credits-from-single-subject",
+            AssertionKey::AverageGrades => "average/grades",
         };
 
         f.write_str(output)
@@ -130,12 +142,16 @@ impl crate::to_csv::ToCsv for AssertionRule {
         let _is_waived = is_waived || self.status.is_waived();
 
         let statement = match &self.key {
+            AssertionKey::CountAreas => "areas",
             AssertionKey::CountCourses => "courses",
+            AssertionKey::CountDistinctCourses => "distinct courses",
             AssertionKey::CountPerformances => "performances",
             AssertionKey::CountRecitals => "recitals",
             AssertionKey::CountSubjects => "subjects",
             AssertionKey::CountTerms => "terms",
             AssertionKey::SumCredits => "credits",
+            AssertionKey::SumCreditsFromSingleSubject => "credits from a single subject",
+            AssertionKey::AverageGrades => "grade",
         };
 
         let header = match self.operator {
@@ -148,8 +164,6 @@ impl crate::to_csv::ToCsv for AssertionRule {
             Operator::GreaterThan => format!("more than … {}", statement),
             Operator::GreaterThanOrEqualTo => format!("at least … {}", statement),
         };
-
-        // dbg!(&self);
 
         let sigil = if self.status.is_passing() {
             "✓"
@@ -168,7 +182,16 @@ impl crate::to_csv::ToCsv for AssertionRule {
         let courses = self
             .get_clbids()
             .iter()
-            .map(|clbid| student.get_class_by_clbid(&clbid).unwrap())
+            .map(|clbid| {
+                student.get_class_by_clbid(&clbid).expect(
+                    format!(
+                        "expected stnum({}) to have clbid({})",
+                        &student.stnum,
+                        clbid.clbid(),
+                    )
+                    .as_str(),
+                )
+            })
             .map(|c| c.semi_verbose())
             .collect::<Vec<_>>();
 
@@ -190,12 +213,23 @@ impl crate::to_csv::ToCsv for AssertionRule {
 impl AssertionRule {
     pub fn get_size(&self) -> usize {
         match self.key {
+            AssertionKey::CountAreas => self.expected.parse().unwrap(),
             AssertionKey::CountCourses => self.expected.parse().unwrap(),
+            AssertionKey::CountDistinctCourses => self.expected.parse().unwrap(),
             AssertionKey::CountTerms => self.expected.parse().unwrap(),
             AssertionKey::CountPerformances => self.expected.parse().unwrap(),
             AssertionKey::CountRecitals => self.expected.parse().unwrap(),
             AssertionKey::CountSubjects => self.expected.parse().unwrap(),
-            AssertionKey::SumCredits => {
+            AssertionKey::SumCredits | AssertionKey::SumCreditsFromSingleSubject => {
+                let as_float: f64 = self.expected.parse().unwrap();
+                let as_int: usize = as_float.round() as usize;
+                if as_float > (as_int as f64) {
+                    as_int + 1
+                } else {
+                    as_int
+                }
+            }
+            AssertionKey::AverageGrades => {
                 let as_float: f64 = self.expected.parse().unwrap();
                 let as_int: usize = as_float.round() as usize;
                 if as_float > (as_int as f64) {

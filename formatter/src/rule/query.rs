@@ -13,6 +13,8 @@ use std::collections::BTreeSet;
 pub enum QuerySource {
     #[serde(rename = "courses")]
     Courses,
+    #[serde(rename = "areas")]
+    Areas,
     #[serde(rename = "music performances")]
     MusicPerformances,
     #[serde(rename = "music recitals")]
@@ -23,6 +25,8 @@ pub enum QuerySource {
 pub enum DataType {
     #[serde(rename = "course")]
     Course,
+    #[serde(rename = "area")]
+    Area,
     #[serde(rename = "music-performance")]
     MusicPerformance,
     #[serde(rename = "recital")]
@@ -33,6 +37,7 @@ impl std::fmt::Display for DataType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             DataType::Course => write!(f, "course"),
+            DataType::Area => write!(f, "area"),
             DataType::Recital => write!(f, "recital"),
             DataType::MusicPerformance => write!(f, "performance"),
         }

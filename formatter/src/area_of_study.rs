@@ -19,7 +19,7 @@ pub struct AreaOfStudy {
     pub limit: Vec<Limit>,
     pub kind: String,
     pub gpa: String,
-    pub degree: String,
+    pub degree: Option<String>,
     pub code: String,
 }
 

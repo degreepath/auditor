@@ -53,36 +53,52 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
 
     let options = CsvOptions {};
 
-    let results = stmt.query_map_named(params, |row| {
-        let result: String = row.get(0).unwrap();
-        let student: String = row.get(1).unwrap();
+    struct MappedResult {
+        header: Vec<String>,
+        data: Vec<String>,
+        catalog: String,
+        stnum: String,
+        requirements: Vec<String>,
+        emphases: Vec<String>,
+        emphasis_req_names: Vec<String>,
+    }
 
-        Ok((student, result))
-    })?;
+    let results = stmt
+        .query_map_named(params, |row| {
+            let result: String = row.get(0).unwrap();
+            let student: String = row.get(1).unwrap();
 
-    let results: Vec<_> = results.map(|pair| pair.unwrap()).collect();
+            Ok((student, result))
+        })?
+        .map(|pair| pair.unwrap())
+        .enumerate()
+        .map(|(i, (student, result))| {
+            eprintln!("{} of 3821", i);
 
-    let results = results
-        .iter()
-        .map(|(student, result)| {
+            let value: serde_json::Value = serde_json::from_str(&student).unwrap();
+            let student = serde_json::to_string_pretty(&value).unwrap();
+
             let student: Student = match serde_json::from_str(&student) {
                 Ok(r) => r,
                 Err(err) => {
                     eprintln!("student error");
 
-                    let value: serde_json::Value = serde_json::from_str(&student).unwrap();
-                    dbg!(value);
+                    eprintln!("{}", student);
                     dbg!(err);
+
                     panic!();
                 }
             };
+
+            let value: serde_json::Value = serde_json::from_str(&result).unwrap();
+            let result = serde_json::to_string_pretty(&value).unwrap();
 
             let result: AreaOfStudy = match serde_json::from_str(&result) {
                 Ok(r) => r,
                 Err(err) => {
                     eprintln!("result error");
-                    let value: serde_json::Value = serde_json::from_str(&result).unwrap();
-                    dbg!(value);
+
+                    eprintln!("{}", result);
                     dbg!(err);
                     dbg!(student.stnum);
 
@@ -90,15 +106,14 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
                 }
             };
 
-            (student, result)
-        })
-        .collect::<Vec<_>>();
+            // TODO: handle case where student's catalog != area's catalog
+            let catalog = student.catalog.clone();
+            let stnum = student.stnum.clone();
 
-    let results = {
-        let mut r = results;
+            let records = result.get_record(&student, &options, false);
+            let requirements = result.get_requirements();
 
-        r.sort_by_cached_key(|(s, _a)| {
-            let emphases = s
+            let emphases = student
                 .areas
                 .iter()
                 .filter_map(|a| match a {
@@ -110,55 +125,42 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
                 .into_iter()
                 .collect::<Vec<_>>();
 
-            return (s.catalog.clone(), emphases, s.stnum.clone());
+            let emphasis_req_names = requirements
+                .iter()
+                .filter(|e| e.starts_with("Emphasis: "))
+                .map(|name| String::from(name.split(" → ").take(1).last().unwrap()))
+                .collect::<BTreeSet<_>>()
+                .into_iter()
+                .collect::<Vec<_>>();
+
+            let mut header: Vec<String> = Vec::new();
+            let mut data: Vec<String> = Vec::new();
+
+            for (th, td) in records.into_iter() {
+                header.push(th);
+                data.push(td);
+            }
+
+            MappedResult {
+                header,
+                data,
+                requirements,
+                emphases,
+                emphasis_req_names,
+                catalog,
+                stnum,
+            }
+        });
+
+    let results: Vec<MappedResult> = {
+        let mut r = results.collect::<Vec<_>>();
+
+        r.sort_by_cached_key(|s| {
+            return (s.catalog.clone(), s.emphases.join(","), s.stnum.clone());
         });
 
         r
     };
-
-    struct MappedResult {
-        header: Vec<String>,
-        data: Vec<String>,
-        catalog: String,
-        requirements: Vec<String>,
-        emphases: Vec<String>,
-    }
-
-    let results = results.into_iter().map(|(student, result)| {
-        // TODO: handle case where student's catalog != area's catalog
-        let catalog = student.catalog.clone();
-
-        let records = result.get_record(&student, &options, false);
-        let requirements = result.get_requirements();
-
-        // dbg!(&requirements);
-
-        let emphases = requirements
-            .iter()
-            .filter(|e| e.starts_with("Emphasis: "))
-            .map(|name| String::from(name.split(" → ").take(1).last().unwrap()))
-            .collect::<BTreeSet<_>>()
-            .into_iter()
-            .collect::<Vec<_>>();
-
-        let mut header: Vec<String> = Vec::new();
-        let mut data: Vec<String> = Vec::new();
-
-        for (th, td) in records.into_iter() {
-            header.push(th);
-            data.push(td);
-        }
-
-        MappedResult {
-            header,
-            data,
-            requirements,
-            emphases,
-            catalog,
-        }
-    });
-
-    let results: Vec<MappedResult> = results.collect();
 
     let longest_header = results
         .iter()
@@ -175,8 +177,10 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
             mut header,
             mut data,
             requirements,
-            emphases,
+            emphases: _,
             catalog,
+            emphasis_req_names,
+            stnum: _,
         } = pair;
 
         // make sure that we have enough columns
@@ -193,7 +197,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
             let title = {
                 let mut v = Vec::new();
                 v.push(format!("Catalog: {}", catalog));
-                v.push(emphases.join(" & "));
+                v.push(emphasis_req_names.join(" & "));
                 v.resize(longest_header, String::from(""));
                 v
             };

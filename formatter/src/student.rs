@@ -9,7 +9,7 @@ pub struct Student {
     pub catalog: String,
     pub courses: Vec<Course>,
     pub covid: Option<bool>,
-    pub current_term: String,
+    pub current_term: Option<String>,
     pub curriculum: String,
     // pub exceptions: Vec<Exception>,
     pub matriculation: String,
@@ -24,7 +24,13 @@ pub struct Student {
 
 impl Student {
     pub fn get_class_by_clbid(&self, clbid: &ClassLabId) -> Option<&Course> {
-        self.courses.iter().find(|c| c.clbid == *clbid)
+        match self.courses.iter().find(|c| c.clbid == *clbid) {
+            Some(c) => Some(c),
+            None => match self.courses.iter().find(|c| c.unique_id() == *clbid) {
+                Some(c) => Some(c),
+                None => self.courses.iter().find(|c| c.unique_id_none() == *clbid),
+            },
+        }
     }
 }
 
@@ -82,6 +88,12 @@ pub struct StudentProficiencies {
 #[derive(Serialize, Deserialize, Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct ClassLabId(String);
 
+impl ClassLabId {
+    pub fn clbid(&self) -> String {
+        self.0.clone()
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CourseId(String);
 
@@ -109,7 +121,7 @@ pub struct Course {
     pub level: f64,
     pub name: String,
     pub number: String,
-    // pub schedid: String,
+    pub schedid: Option<String>,
     pub section: Option<String>,
     pub sub_type: String,
     pub subject: String,
@@ -120,6 +132,20 @@ pub struct Course {
 }
 
 impl Course {
+    pub fn unique_id(&self) -> ClassLabId {
+        match &self.schedid {
+            Some(schedid) => ClassLabId(format!("{}:{}", self.clbid.clbid(), schedid.clone())),
+            None => self.clbid.clone(),
+        }
+    }
+
+    pub fn unique_id_none(&self) -> ClassLabId {
+        match &self.schedid {
+            Some(schedid) => ClassLabId(format!("{}:{}", self.clbid.clbid(), schedid.clone())),
+            None => ClassLabId(format!("{}:None", self.clbid.clbid())),
+        }
+    }
+
     pub fn verbose(&self) -> String {
         if self.institution_short == "STOLAF" {
             format!(
@@ -231,7 +257,7 @@ pub enum AreaOfStudy {
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 pub struct Degree {
     pub code: String,
-    pub degree: String,
+    pub degree: Option<String>,
     pub gpa: String,
     pub name: String,
     pub status: String,
