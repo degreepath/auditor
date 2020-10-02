@@ -191,7 +191,13 @@ impl crate::to_csv::ToCsv for QueryRule {
 
         let is_waived = is_waived || self.status.is_waived();
 
-        for assertion in &self.assertions {
+        let course_and_credit_assertions = self
+            .assertions
+            .iter()
+            .filter(|a| a.is_course_or_credit())
+            .filter(|a| a.is_at_least());
+
+        for assertion in course_and_credit_assertions.take(1) {
             record.extend(
                 assertion
                     .get_record(student, options, is_waived)

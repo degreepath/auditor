@@ -138,7 +138,7 @@ impl crate::to_csv::ToCsv for CountRule {
                     record.push(("one of these".into(), "<waived>".into()));
                 }
                 _ => {
-                    record.push(("one of these".into(), "???:empty".into()));
+                    record.push(("one of these".into(), " ".into()));
                 }
             }
         } else {

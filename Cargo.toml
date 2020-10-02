@@ -29,3 +29,4 @@ dp-formatter = { path = "formatter" }
 rusqlite = "0.24"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
+serde_path_to_error = "0.1.3"

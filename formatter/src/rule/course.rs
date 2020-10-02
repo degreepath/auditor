@@ -12,7 +12,9 @@ pub struct CourseRule {
     pub path: Path,
     pub rank: String,
     pub max_rank: String,
-    pub course: String,
+    #[serde(deserialize_with = "crate::serde::empty_str_as_none")]
+    pub course: Option<String>,
+    #[serde(deserialize_with = "crate::serde::empty_str_as_none")]
     pub ap: Option<String>,
     pub institution: Option<String>,
     pub clbid: Option<String>,
@@ -45,29 +47,23 @@ impl ToProse for CourseRule {
         };
 
         write!(f, "{}", " ".repeat(indent * 4))?;
-        let course = if let Some(claim) = self.claims.get(0) {
+        let matched_course = if let Some(claim) = self.claims.get(0) {
             student.get_class_by_clbid(&claim.clbid)
         } else {
             None
         };
 
-        let status = course.map_or("", |c| c.calculate_symbol(&self.status));
+        let status = matched_course.map_or("", |c| c.calculate_symbol(&self.status));
 
         write!(f, "{} ", status)?;
 
-        if self.status == RuleStatus::Waived && course.is_some() {
-            let c = course.unwrap();
-            write!(f, "{} {}", c.course, c.name)?;
-        } else if self.status != RuleStatus::Waived
-            && course.is_some()
-            && course.clone().unwrap().course_type == "ap"
-        {
-            write!(f, "{}", course.clone().unwrap().name)?;
-        } else if self.course == "" && self.ap.is_some() && self.ap.clone().unwrap() != "" {
-            write!(f, "{}", self.ap.clone().unwrap())?;
-        } else {
-            write!(f, "{}", self.course)?;
-        }
+        match (&self.status, matched_course, &self.course, &self.ap) {
+            (RuleStatus::Waived, Some(m), _, _) => write!(f, "{} {}", m.course, m.name)?,
+            (_, Some(m), _, _) if &m.course_type == "ap" => write!(f, "{}", m.name)?,
+            (_, Some(m), None, Some(ap)) if ap != "" => write!(f, "{} {}", m.course, m.name)?,
+            (_, _, Some(c), _) => write!(f, "{}", c)?,
+            (_, _, _, _) => write!(f, "?????")?,
+        };
 
         if let Some(inst) = &self.institution {
             write!(f, " [{}]", inst)?;
@@ -92,7 +88,10 @@ impl crate::to_csv::ToCsv for CourseRule {
 
         let is_waived = is_waived || self.status.is_waived();
 
-        let header = self.course.clone();
+        let header = self
+            .course
+            .clone()
+            .unwrap_or_else(|| self.ap.clone().unwrap());
         let body = if let Some(course) = course {
             // if there's a course, show it, even if it was "waived" (ie, it was inserted)
             course.semi_verbose()

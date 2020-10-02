@@ -9,18 +9,18 @@ use serde::{Deserialize, Serialize};
 pub struct AreaOfStudy {
     #[serde(rename = "type")]
     pub _type: String,
-    pub status: RuleStatus,
-    pub result: Box<Rule>,
-    pub rank: String,
-    pub path: Path,
-    pub ok: bool,
-    pub name: String,
-    pub max_rank: String,
-    pub limit: Vec<Limit>,
-    pub kind: String,
-    pub gpa: String,
-    pub degree: Option<String>,
     pub code: String,
+    pub degree: Option<String>,
+    pub gpa: String,
+    pub kind: String,
+    pub limit: Vec<Limit>,
+    pub max_rank: String,
+    pub name: String,
+    pub ok: bool,
+    pub path: Path,
+    pub rank: String,
+    pub result: Box<Rule>,
+    pub status: RuleStatus,
 }
 
 impl ToProse for AreaOfStudy {

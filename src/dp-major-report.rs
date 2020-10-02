@@ -4,6 +4,7 @@ use formatter::student::Student;
 use formatter::student::{AreaOfStudy as AreaPointer, Emphasis};
 use formatter::to_csv::{CsvOptions, ToCsv};
 use rusqlite::{named_params, Connection, Error as RusqliteError, OpenFlags, Result};
+use serde_path_to_error;
 use std::collections::BTreeSet;
 use std::path::Path;
 
@@ -17,19 +18,23 @@ use std::path::Path;
 struct Opts {
     /// Sets the database path
     db_path: String,
-    /// Sets a custom config file.
+    /// Which area of study to look up
     area_code: String,
+    /// Enables header debugging
+    #[clap(long)]
+    debug: bool,
 }
 
 fn main() {
     let opts: Opts = Opts::parse();
 
-    report_for_area_by_catalog(opts.db_path, &opts.area_code).unwrap();
+    report_for_area_by_catalog(opts.db_path, &opts.area_code, opts.debug).unwrap();
 }
 
 pub fn report_for_area_by_catalog<P: AsRef<Path>>(
     db_path: P,
     area_code: &str,
+    debug: bool,
     // ) -> Result<Vec<(Student, AreaOfStudy)>, RusqliteError> {
 ) -> Result<(), RusqliteError> {
     let conn = Connection::open_with_flags(db_path, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
@@ -71,14 +76,12 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
             Ok((student, result))
         })?
         .map(|pair| pair.unwrap())
-        .enumerate()
-        .map(|(i, (student, result))| {
-            eprintln!("{} of 3821", i);
-
+        .map(|(student, result)| {
             let value: serde_json::Value = serde_json::from_str(&student).unwrap();
             let student = serde_json::to_string_pretty(&value).unwrap();
 
-            let student: Student = match serde_json::from_str(&student) {
+            let student_deserializer = &mut serde_json::Deserializer::from_str(student.as_str());
+            let student: Student = match serde_path_to_error::deserialize(student_deserializer) {
                 Ok(r) => r,
                 Err(err) => {
                     eprintln!("student error");
@@ -93,13 +96,15 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
             let value: serde_json::Value = serde_json::from_str(&result).unwrap();
             let result = serde_json::to_string_pretty(&value).unwrap();
 
-            let result: AreaOfStudy = match serde_json::from_str(&result) {
+            let result_deserializer = &mut serde_json::Deserializer::from_str(result.as_str());
+            let result: AreaOfStudy = match serde_path_to_error::deserialize(result_deserializer) {
                 Ok(r) => r,
                 Err(err) => {
                     eprintln!("result error");
 
                     eprintln!("{}", result);
-                    dbg!(err);
+                    eprintln!("{}", err);
+                    eprintln!("at {}", err.path());
                     dbg!(student.stnum);
 
                     panic!();
@@ -133,8 +138,8 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
                 .into_iter()
                 .collect::<Vec<_>>();
 
-            let mut header: Vec<String> = Vec::new();
-            let mut data: Vec<String> = Vec::new();
+            let mut header: Vec<String> = Vec::with_capacity(records.len());
+            let mut data: Vec<String> = Vec::with_capacity(records.len());
 
             for (th, td) in records.into_iter() {
                 header.push(th);
@@ -168,7 +173,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
         .max()
         .unwrap();
 
-    // let mut last_header: Vec<String> = Vec::new();
+    let mut last_header: Vec<String> = Vec::new();
     let mut last_requirements: Vec<String> = Vec::new();
     let mut last_catalog = String::from("");
 
@@ -177,16 +182,32 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
             mut header,
             mut data,
             requirements,
-            emphases: _,
             catalog,
             emphasis_req_names,
+            emphases: _,
             stnum: _,
         } = pair;
 
         // make sure that we have enough columns
         header.resize(longest_header, String::from(""));
 
-        if last_requirements != requirements || catalog != last_catalog {
+        if debug && last_header != header {
+            // write out a blank line, then a line with the new catalog year
+            let blank = vec![""; longest_header];
+            wtr.write_record(blank).unwrap();
+
+            // write out a blank line, then a line with the new catalog year
+            let title = {
+                let mut v = Vec::new();
+                v.push(format!("Catalog: {}", catalog));
+                v.resize(longest_header, String::from(""));
+                v
+            };
+            wtr.write_record(title).unwrap();
+
+            last_header = header.clone();
+            wtr.write_record(header).unwrap();
+        } else if last_requirements != requirements || catalog != last_catalog {
             if i != 0 {
                 // write out a blank line, then a line with the new catalog year
                 let blank = vec![""; longest_header];
@@ -207,24 +228,6 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
             last_catalog = catalog.clone();
             wtr.write_record(header).unwrap();
         }
-
-        /* if last_header != header {
-            // write out a blank line, then a line with the new catalog year
-            let blank = vec![""; longest_header];
-            wtr.write_record(blank).unwrap();
-
-            // write out a blank line, then a line with the new catalog year
-            let title = {
-                let mut v = Vec::new();
-                v.push(format!("Catalog: {}", catalog));
-                v.resize(longest_header, String::from(""));
-                v
-            };
-            wtr.write_record(title).unwrap();
-
-            last_header = header.clone();
-            wtr.write_record(header).unwrap();
-        } */
 
         data.resize(longest_header, String::from(""));
 

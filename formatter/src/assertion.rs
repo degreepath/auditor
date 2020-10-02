@@ -122,7 +122,22 @@ impl Assertion {
         }
     }
 
-    #[allow(dead_code)]
+    pub fn is_course_or_credit(&self) -> bool {
+        match self {
+            Assertion::Rule(r) => r.is_course_or_credit(),
+            Assertion::Conditional(r) => r.is_course_or_credit(),
+            Assertion::DynamicConditional(r) => r.is_course_or_credit(),
+        }
+    }
+
+    pub fn is_at_least(&self) -> bool {
+        match self {
+            Assertion::Rule(r) => r.is_at_least(),
+            Assertion::Conditional(r) => r.is_at_least(),
+            Assertion::DynamicConditional(r) => r.is_at_least(),
+        }
+    }
+
     pub fn get_size(&self) -> usize {
         match self {
             Assertion::Rule(r) => r.get_size(),
@@ -249,6 +264,34 @@ impl AssertionRule {
 
         set.iter().cloned().collect()
     }
+
+    pub fn is_course_or_credit(&self) -> bool {
+        match self.key {
+            AssertionKey::CountCourses => true,
+            AssertionKey::CountDistinctCourses => true,
+            AssertionKey::SumCredits => true,
+            AssertionKey::SumCreditsFromSingleSubject => false,
+            AssertionKey::CountTerms => false,
+            AssertionKey::CountPerformances => false,
+            AssertionKey::CountRecitals => false,
+            AssertionKey::CountSubjects => false,
+            AssertionKey::CountAreas => false,
+            AssertionKey::AverageGrades => false,
+        }
+    }
+
+    pub fn is_at_least(&self) -> bool {
+        match self.operator {
+            Operator::GreaterThanOrEqualTo => true,
+            Operator::EqualTo => true,
+            Operator::GreaterThan => true,
+            Operator::NotEqualTo => false,
+            Operator::In => false,
+            Operator::NotIn => false,
+            Operator::LessThan => false,
+            Operator::LessThanOrEqualTo => false,
+        }
+    }
 }
 
 impl crate::to_csv::ToCsv for ConditionalAssertion {
@@ -296,6 +339,26 @@ impl ConditionalAssertion {
             None => vec![],
         }
     }
+
+    pub fn is_course_or_credit(&self) -> bool {
+        if self.when_true.is_course_or_credit() {
+            return true;
+        }
+        match &self.when_false {
+            Some(when_false) => when_false.is_course_or_credit(),
+            None => false,
+        }
+    }
+
+    pub fn is_at_least(&self) -> bool {
+        if self.when_true.is_at_least() {
+            return true;
+        }
+        match &self.when_false {
+            Some(when_false) => when_false.is_at_least(),
+            None => false,
+        }
+    }
 }
 
 impl crate::to_csv::ToCsv for DynamicConditionalAssertion {
@@ -323,6 +386,14 @@ impl DynamicConditionalAssertion {
             Some(true) => self.when_true.get_clbids(),
             _ => vec![],
         }
+    }
+
+    pub fn is_course_or_credit(&self) -> bool {
+        self.when_true.is_course_or_credit()
+    }
+
+    pub fn is_at_least(&self) -> bool {
+        self.when_true.is_at_least()
     }
 }
 
