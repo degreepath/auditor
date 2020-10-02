@@ -23,20 +23,43 @@ struct Opts {
     /// Enables header debugging
     #[clap(long)]
     debug: bool,
+    /// Outputs the data as HTML tables
+    #[clap(long)]
+    as_html: bool,
+    /// Outputs the data as a single CSV document
+    #[clap(long)]
+    as_csv: bool,
 }
 
 fn main() {
     let opts: Opts = Opts::parse();
 
-    report_for_area_by_catalog(opts.db_path, &opts.area_code, opts.debug).unwrap();
+    let results = report_for_area_by_catalog(&opts.db_path, &opts.area_code).unwrap();
+
+    if opts.as_csv {
+        print_as_csv(&opts, results);
+    } else if opts.as_html {
+        // print_as_html(&opts, &results);
+        unimplemented!()
+    } else {
+        unimplemented!()
+    }
 }
 
-pub fn report_for_area_by_catalog<P: AsRef<Path>>(
+struct MappedResult {
+    header: Vec<String>,
+    data: Vec<String>,
+    catalog: String,
+    stnum: String,
+    requirements: Vec<String>,
+    emphases: Vec<String>,
+    emphasis_req_names: Vec<String>,
+}
+
+fn report_for_area_by_catalog<P: AsRef<Path>>(
     db_path: P,
     area_code: &str,
-    debug: bool,
-    // ) -> Result<Vec<(Student, AreaOfStudy)>, RusqliteError> {
-) -> Result<(), RusqliteError> {
+) -> Result<Vec<MappedResult>, RusqliteError> {
     let conn = Connection::open_with_flags(db_path, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
 
     let branch = "cond-6";
@@ -52,21 +75,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
 
     let params = named_params! {":code": area_code, ":branch": branch};
 
-    let mut wtr = csv::WriterBuilder::new()
-        .has_headers(false)
-        .from_writer(std::io::stdout());
-
     let options = CsvOptions {};
-
-    struct MappedResult {
-        header: Vec<String>,
-        data: Vec<String>,
-        catalog: String,
-        stnum: String,
-        requirements: Vec<String>,
-        emphases: Vec<String>,
-        emphasis_req_names: Vec<String>,
-    }
 
     let results = stmt
         .query_map_named(params, |row| {
@@ -167,6 +176,14 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
         r
     };
 
+    Ok(results)
+}
+
+fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
+    let mut wtr = csv::WriterBuilder::new()
+        .has_headers(false)
+        .from_writer(std::io::stdout());
+
     let longest_header = results
         .iter()
         .map(|r: &MappedResult| std::cmp::max(r.header.len(), r.data.len()))
@@ -175,7 +192,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
 
     let mut last_header: Vec<String> = Vec::new();
     let mut last_requirements: Vec<String> = Vec::new();
-    let mut last_catalog = String::from("");
+    let mut last_catalog: String = String::from("");
 
     for (i, pair) in results.into_iter().enumerate() {
         let MappedResult {
@@ -191,7 +208,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
         // make sure that we have enough columns
         header.resize(longest_header, String::from(""));
 
-        if debug && last_header != header {
+        if opts.debug && last_header != header {
             // write out a blank line, then a line with the new catalog year
             let blank = vec![""; longest_header];
             wtr.write_record(blank).unwrap();
@@ -207,7 +224,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
 
             last_header = header.clone();
             wtr.write_record(header).unwrap();
-        } else if last_requirements != requirements || catalog != last_catalog {
+        } else if last_requirements != requirements || last_catalog != catalog {
             if i != 0 {
                 // write out a blank line, then a line with the new catalog year
                 let blank = vec![""; longest_header];
@@ -235,6 +252,4 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
     }
 
     wtr.flush().unwrap();
-
-    Ok(())
 }
