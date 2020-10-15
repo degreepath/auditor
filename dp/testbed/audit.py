@@ -2,7 +2,7 @@ import json
 import time
 from typing import Optional, Tuple, Dict
 
-from .sqlite import sqlite_connect, sqlite_cursor
+from .sqlite import sqlite_connect
 
 from dp.run import run
 from dp.audit import ResultMsg, Arguments, EstimateMsg
