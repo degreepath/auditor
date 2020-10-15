@@ -1,11 +1,12 @@
 use clap::Clap;
 use formatter::area_of_study::AreaOfStudy;
-use formatter::student::{AreaOfStudy as AreaPointer, Emphasis, Student};
+use formatter::student::{AreaOfStudy as AreaPointer, Emphasis};
+use formatter::student::{Student, StudentClassification};
 use formatter::to_csv::{CsvOptions, ToCsv};
 use itertools::Itertools;
 use rusqlite::{named_params, Connection, Error as RusqliteError, OpenFlags, Result};
 use serde_path_to_error;
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 /// This doc string acts as a help message when the user runs '--help'
@@ -50,10 +51,11 @@ struct MappedResult {
     data: Vec<String>,
     catalog: String,
     stnum: String,
-    name: String,
     requirements: Vec<String>,
     emphases: Vec<String>,
     emphasis_req_names: Vec<String>,
+    name: String,
+    classification: StudentClassification,
 }
 
 fn report_for_area_by_catalog<P: AsRef<Path>>(
@@ -124,6 +126,7 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
             let catalog = student.catalog.clone();
             let stnum = student.stnum.clone();
             let name = student.name.clone();
+            let classification = student.classification.clone();
 
             let records = result.get_record(&student, &options, false);
             let requirements = result.get_requirements();
@@ -164,6 +167,7 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
                 emphasis_req_names,
                 catalog,
                 stnum,
+                classification,
                 name,
             }
         });
@@ -172,12 +176,7 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
         let mut r = results.collect::<Vec<_>>();
 
         r.sort_by_cached_key(|s| {
-            (
-                s.catalog.clone(),
-                s.emphases.join(","),
-                s.name.clone(),
-                s.stnum.clone(),
-            )
+            return (s.catalog.clone(), s.emphases.join(","), s.stnum.clone());
         });
 
         r
@@ -210,6 +209,7 @@ fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
             emphasis_req_names,
             emphases: _,
             stnum: _,
+            classification: _,
             name: _,
         } = pair;
 
@@ -263,34 +263,80 @@ fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
 }
 
 fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
-    #[derive(Default)]
+    #[derive(Default, Debug)]
     struct Table {
         caption: String,
         header: Vec<String>,
         rows: Vec<Vec<String>>,
     }
 
-    let grouped: HashMap<_, _> = results
+    #[derive(Default, Clone, Debug)]
+    struct StudentOk {
+        stnum: String,
+        name: String,
+        ok: bool,
+    }
+
+    #[derive(Default, Clone, Debug)]
+    struct TableCounter {
+        all: Vec<StudentOk>,
+        sr: Vec<StudentOk>,
+        jr: Vec<StudentOk>,
+        so: Vec<StudentOk>,
+        fy: Vec<StudentOk>,
+        nc: Vec<StudentOk>,
+    }
+
+    impl TableCounter {
+        fn insert_into_classification(
+            &mut self,
+            classification: &StudentClassification,
+            item: StudentOk,
+        ) -> () {
+            self.all.push(item.clone());
+            match classification {
+                StudentClassification::SR => self.sr.push(item),
+                StudentClassification::JR => self.jr.push(item),
+                StudentClassification::SO => self.so.push(item),
+                StudentClassification::FY => self.fy.push(item),
+                StudentClassification::NC => self.nc.push(item),
+            };
+        }
+
+        fn format_classification(&self, items: &[StudentOk]) -> String {
+            let all_ok = items.iter().filter(|ok| ok.ok).collect::<Vec<_>>().len();
+            let all_all = items.len();
+
+            format!("{} of {}", all_all - all_ok, all_all)
+        }
+    }
+
+    fn skip_non_required_columns(text: &str) -> bool {
+        !(text == "student")
+    }
+
+    let grouped = results
         .into_iter()
         .map(|res| {
-            (
-                (
-                    res.catalog.clone(),
-                    res.requirements.clone(),
-                    res.emphasis_req_names.clone(),
-                    res.header.clone(),
-                ),
-                res,
-            )
+            let catalog = res.catalog.clone();
+            let requirements = res.requirements.clone();
+            let emph = res.emphasis_req_names.clone();
+
+            let headers = res
+                .header
+                .iter()
+                .filter(|s| skip_non_required_columns(&s))
+                .cloned()
+                .collect::<Vec<_>>();
+
+            ((catalog, headers, requirements, emph), res)
         })
         .into_group_map();
 
-    let grouped: BTreeMap<_, _> = grouped.iter().collect();
-
-    let tables: Vec<Table> = grouped
+    let mut tables: Vec<Table> = grouped
         .into_iter()
         .map(
-            |((catalog, _requirements, emphasis_req_names, header), group)| {
+            |((catalog, group_header, _requirements, emphasis_req_names), group)| {
                 let mut current_table: Table = Table::default();
 
                 // write out a blank line, then a line with the new catalog year
@@ -304,29 +350,77 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
                     format!("Catalog: {}", catalog)
                 };
 
-                current_table.header = header.clone();
+                let top_headers = vec![
+                    "".into(),
+                    "Needed Overall".into(),
+                    "Needed by SR".into(),
+                    "Needed by JR".into(),
+                    "Needed by SO".into(),
+                    "Needed by FY".into(),
+                    "Needed by NC".into(),
+                ];
 
-                current_table.rows = group
+                current_table.header = top_headers.clone();
+
+                let mut counters: BTreeMap<(usize, &String), TableCounter> = BTreeMap::new();
+                for (i, cell) in group_header.iter().enumerate() {
+                    counters.insert((i, cell), TableCounter::default());
+                }
+
+                for result in group.iter() {
+                    let MappedResult {
+                        header: local_header,
+                        data: local_data,
+                        requirements: _,
+                        catalog: _,
+                        emphasis_req_names: _,
+                        stnum,
+                        classification,
+                        emphases: _,
+                        name,
+                    } = result;
+
+                    let cells = local_header
+                        .iter()
+                        .zip_eq(local_data)
+                        .filter(|(header, _)| skip_non_required_columns(header));
+
+                    for (i, (header, cell)) in cells.enumerate() {
+                        counters.entry((i, header)).and_modify(|c| {
+                            let is_ok = !cell.contains("✗") && !cell.trim().is_empty();
+                            let item = StudentOk {
+                                name: name.clone(),
+                                stnum: stnum.clone(),
+                                ok: is_ok,
+                            };
+                            c.insert_into_classification(classification, item)
+                        });
+                    }
+                }
+
+                let rows: Vec<Vec<String>> = counters
                     .iter()
-                    .map(|result| {
-                        let MappedResult { data, .. } = result;
-
-                        let data = if data.len() != current_table.header.len() {
-                            let mut d = data.clone();
-                            d.resize(current_table.header.len(), String::from(""));
-                            d
-                        } else {
-                            data.clone()
-                        };
-
-                        data
+                    .map(|((_i, key), value)| {
+                        vec![
+                            (*key).clone(),
+                            value.format_classification(&value.all),
+                            value.format_classification(&value.sr),
+                            value.format_classification(&value.jr),
+                            value.format_classification(&value.so),
+                            value.format_classification(&value.fy),
+                            value.format_classification(&value.nc),
+                        ]
                     })
                     .collect();
+
+                current_table.rows = rows;
 
                 current_table
             },
         )
         .collect();
+
+    tables.sort_by_cached_key(|t| t.caption.clone());
 
     println!(
         "{}",
@@ -377,8 +471,10 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
         println!("<tbody>");
         for tr in table.rows {
             println!("<tr>");
-            for td in tr {
-                let attrs = if !td.contains("✗") && !td.trim().is_empty() {
+            for (i, td) in tr.iter().enumerate() {
+                let attrs = if i == 0 {
+                    "class=\"\""
+                } else if td.starts_with("0") {
                     "class=\"passing\""
                 } else {
                     "class=\"not-passing\""
