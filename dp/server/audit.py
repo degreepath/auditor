@@ -92,7 +92,9 @@ def audit(
                             claimed_courses,
                             status,
                             is_active,
-                            revision
+                            revision,
+                            student_classification,
+                            student_class
                         )
                         VALUES (
                             %(student_id)s,
@@ -115,7 +117,9 @@ def audit(
                             %(claimed_courses)s::jsonb,
                             %(status)s,
                             true,
-                            coalesce((SELECT max(revision) FROM result WHERE student_id = %(student_id)s AND area_code = %(area_code)s), 0) + 1
+                            coalesce((SELECT max(revision) FROM result WHERE student_id = %(student_id)s AND area_code = %(area_code)s), 0) + 1,
+                            %(student_classification)s,
+                            %(student_class)s
                         )
                     """, {
                         "student_id": stnum,
@@ -135,6 +139,8 @@ def audit(
                         "gpa": result["gpa"],
                         "ok": result["ok"],
                         "status": result["status"],
+                        "student_classification": student["student_classification"],
+                        "student_class": student["student_class"],
                     })
 
                 else:
