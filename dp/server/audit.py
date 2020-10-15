@@ -139,7 +139,7 @@ def audit(
                         "ok": result["ok"],
                         "status": result["status"],
                         "student_classification": student["classification"],
-                        "student_class": student["class"],
+                        "student_class": student["class"] if student["class"] != "None" else None,
                     })
 
                 else:
