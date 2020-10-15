@@ -113,8 +113,8 @@ def fetch__print_summary(args: argparse.Namespace, curs: Any) -> None:
              , max((ts + duration) AT TIME ZONE 'America/Chicago') AS last
              , extract(EPOCH FROM max((ts + duration)) - min(ts)) AS duration
              , count(*) AS total
-             , sum(ok::integer) AS ok
-             , sum((NOT ok)::integer) AS "not-ok"
+             , sum(1) FILTER(WHERE ok) AS ok
+             , sum(1) FILTER(WHERE NOT ok) AS "not-ok"
              , ((SELECT count(*) FROM queue WHERE run = r.run)) as queued
         FROM result r
         WHERE run > 0
