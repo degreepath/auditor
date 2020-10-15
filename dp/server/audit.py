@@ -138,8 +138,8 @@ def audit(
                         "gpa": result["gpa"],
                         "ok": result["ok"],
                         "status": result["status"],
-                        "student_classification": student["student_classification"],
-                        "student_class": student["student_class"],
+                        "student_classification": student["classification"],
+                        "student_class": student["class"],
                     })
 
                 else:
