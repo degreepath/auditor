@@ -64,7 +64,7 @@ impl crate::to_csv::ToCsv for AreaOfStudy {
         options: &crate::to_csv::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
-        let mut row = vec![(String::from("student"), student.stnum.clone())];
+        let mut row = vec![(String::from("student"), format!("{} ({})", student.name.clone(), student.stnum.clone()))];
 
         row.append(&mut self.result.get_record(student, options, is_waived));
 

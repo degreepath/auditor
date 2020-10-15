@@ -47,7 +47,7 @@ fn main() {
 
     let conn = Connection::open_with_flags(opts.db_path, OpenFlags::SQLITE_OPEN_READ_ONLY).unwrap();
 
-    let branch = "cond-6";
+    let branch = "cond";
 
     let mut stmt = conn.prepare("
         SELECT b.result, sd.input_data

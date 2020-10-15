@@ -35,7 +35,7 @@ pub fn report_for_area_by_catalog<P: AsRef<Path>>(
 ) -> Result<(), RusqliteError> {
     let conn = Connection::open_with_flags(db_path, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
 
-    let branch = "cond-6";
+    let branch = "cond";
 
     let mut stmt = conn.prepare("
         SELECT b.result, sd.input_data

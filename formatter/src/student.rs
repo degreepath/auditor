@@ -13,6 +13,9 @@ pub struct Student {
     pub curriculum: String,
     // pub exceptions: Vec<Exception>,
     pub matriculation: String,
+    pub name: String,
+    pub classification: StudentClassification,
+    // pub class: Option<u32>,
     pub mediums: StudentPerformingMediums,
     pub organizations: Vec<StudentOrganization>,
     pub performance_attendances: Vec<Attendance>,
@@ -32,6 +35,15 @@ impl Student {
             },
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+pub enum StudentClassification {
+    SR,
+    JR,
+    SO,
+    FY,
+    NC,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

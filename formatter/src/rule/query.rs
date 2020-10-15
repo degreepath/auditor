@@ -13,6 +13,8 @@ use std::collections::BTreeSet;
 pub enum QuerySource {
     #[serde(rename = "courses")]
     Courses,
+    #[serde(rename = "claimed")]
+    ClaimedCourses,
     #[serde(rename = "areas")]
     Areas,
     #[serde(rename = "music performances")]

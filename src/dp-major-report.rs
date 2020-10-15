@@ -1,6 +1,6 @@
 use clap::Clap;
 use formatter::area_of_study::AreaOfStudy;
-use formatter::student::Student;
+use formatter::student::{Student, StudentClassification};
 use formatter::student::{AreaOfStudy as AreaPointer, Emphasis};
 use formatter::to_csv::{CsvOptions, ToCsv};
 use rusqlite::{named_params, Connection, Error as RusqliteError, OpenFlags, Result};
@@ -61,7 +61,7 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
 ) -> Result<Vec<MappedResult>, RusqliteError> {
     let conn = Connection::open_with_flags(db_path, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
 
-    let branch = "cond-6";
+    let branch = "cond";
 
     let mut stmt = conn.prepare("
         SELECT b.result, sd.input_data
