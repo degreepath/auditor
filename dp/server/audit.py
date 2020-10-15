@@ -1,14 +1,13 @@
 # mypy: warn_unreachable = False
 
-from typing import Dict, Optional, cast
+from typing import Dict, Optional
 import json
 import logging
 
 import psycopg2.extensions  # type: ignore
-from sentry_sdk import push_scope, capture_exception, start_transaction
+from sentry_sdk import push_scope, capture_exception
 
 from dp.run import run
-from dp.ms import pretty_ms
 from dp.audit import ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments, EstimateMsg
 
 logger = logging.getLogger(__name__)
