@@ -2,7 +2,7 @@ import json
 import time
 from typing import Optional, Tuple, Dict
 
-from .sqlite import sqlite_connect, sqlite_cursor
+from .sqlite import sqlite_connect
 
 from dp.run import run
 from dp.audit import ResultMsg, Arguments, EstimateMsg
@@ -40,20 +40,6 @@ def audit(
     assert estimate_count is not None
 
     db_keys = {'stnum': stnum, 'catalog': catalog, 'code': code, 'estimate': estimate_count, 'branch': run_id}
-
-    with sqlite_connect(db, readonly=False) as conn:
-        with sqlite_cursor(conn) as curs:
-            if run_id == '':
-                curs.execute('''
-                    INSERT INTO baseline_ip (stnum, catalog, code, estimate)
-                    VALUES (:stnum, :catalog, :code, :estimate)
-                ''', db_keys)
-            else:
-                curs.execute('''
-                    INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
-                    VALUES (:stnum, :catalog, :code, :estimate, :branch)
-                ''', db_keys)
-            conn.commit()
 
     start_time = time.perf_counter()
 

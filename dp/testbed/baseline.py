@@ -21,7 +21,6 @@ def baseline(args: argparse.Namespace) -> None:
     with sqlite_connect(args.db) as conn:
         print('clearing baseline data... ', end='', flush=True)
         conn.execute('DELETE FROM baseline')
-        conn.execute('DELETE FROM baseline_ip')
         conn.commit()
         print('cleared')
 
@@ -92,13 +91,6 @@ def baseline(args: argparse.Namespace) -> None:
                     db_args = future.result()
                 except TimeoutError as timeout:
                     print(timeout.args[0])
-                    curs.execute('''
-                        DELETE
-                        FROM baseline_ip
-                        WHERE stnum = :stnum
-                            AND catalog = :catalog
-                            AND code = :code
-                    ''', timeout.args[1])
                     conn.commit()
                     continue
                 except Exception as exc:
@@ -111,14 +103,6 @@ def baseline(args: argparse.Namespace) -> None:
                     curs.execute('''
                         INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
                         VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
-                    ''', db_args)
-
-                    curs.execute('''
-                        DELETE
-                        FROM baseline_ip
-                        WHERE stnum = :stnum
-                            AND catalog = :catalog
-                            AND code = :code
                     ''', db_args)
                 except sqlite3.Error as ex:
                     print(db_args)
