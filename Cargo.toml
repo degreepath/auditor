@@ -15,6 +15,14 @@ name = "dp-major-report"
 path = "src/dp-major-report.rs"
 
 [[bin]]
+name = "dp-major-summary"
+path = "src/dp-major-summary.rs"
+
+[[bin]]
+name = "dp-major-summary-required"
+path = "src/dp-major-summary-required.rs"
+
+[[bin]]
 name = "dp-print"
 path = "src/dp-print.rs"
 
@@ -31,3 +39,4 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 serde_path_to_error = "0.1.3"
 askama_escape = "0.10.1"
+itertools = "0.9.0"
