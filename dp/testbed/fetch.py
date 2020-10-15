@@ -65,6 +65,9 @@ def fetch(args: argparse.Namespace) -> None:
                  , input_data::text as input_data
                  , status
                  , run
+                 , student_classification as classification
+                 , student_class as class
+                 , student_name as name
             FROM result
             WHERE result IS NOT NULL
                 AND CASE
@@ -78,8 +81,8 @@ def fetch(args: argparse.Namespace) -> None:
                 try:
                     conn.execute('''
                         INSERT INTO server_data
-                                (run,  stnum,  catalog,  code,  iterations,  duration,  ok,  gpa,  rank,  max_rank,  status,       result,        input_data)
-                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :ok, :gpa, :rank, :max_rank, :status, json(:result), json(:input_data))
+                                (run,  stnum,  catalog,  code,  name,  class,  classification,  iterations,  duration,  ok,  gpa,  rank,  max_rank,  status,       result,        input_data)
+                        VALUES (:run, :stnum, :catalog, :code, :name, :class, :classification, :iterations, :duration, :ok, :gpa, :rank, :max_rank, :status, json(:result), json(:input_data))
                     ''', dict(row))
                 except Exception as e:
                     print(dict(row))
@@ -115,8 +118,8 @@ def fetch__print_summary(args: argparse.Namespace, curs: Any) -> None:
              , max((ts + duration) AT TIME ZONE 'America/Chicago') AS last
              , extract(EPOCH FROM max((ts + duration)) - min(ts)) AS duration
              , count(*) AS total
-             , sum(ok::integer) AS ok
-             , sum((NOT ok)::integer) AS "not-ok"
+             , coalesce(sum(1) FILTER(WHERE ok), 0) AS ok
+             , coalesce(sum(1) FILTER(WHERE NOT ok), 0) AS "not-ok"
              , ((SELECT count(*) FROM queue WHERE run = r.run)) as queued
         FROM result r
         WHERE run > 0

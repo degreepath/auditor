@@ -47,10 +47,6 @@ coverage==5.2.1 \
 iniconfig==1.0.0 \
     --hash=sha256:aa0b40f50a00e72323cb5d41302f9c6165728fd764ac8822aa3fff00a40d56b4 \
     # via pytest
-more-itertools==8.4.0 \
-    --hash=sha256:68c70cc7167bdf5c7c9d8f6954a7837089c6a36bf565383919bb595efb8a17e5 \
-    --hash=sha256:b78134b2063dd214000685165d81c154522c3ee0a1c0d4d113c80361c234c5a2 \
-    # via pytest
 packaging==20.4 \
     --hash=sha256:4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8 \
     --hash=sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181 \
@@ -82,9 +78,9 @@ pytest-tldr==0.2.2 \
     --hash=sha256:3f6ec72b8653a048024424ff0cd288d7b6bb520d111a5efb4675ad2f6ab43eaf \
     --hash=sha256:7bb9dfb7869d61f6c6f80da37178c308e084badbce5e00ab2aabe5b8fef2e9c2 \
     # via -r requirements-test.in
-pytest==6.0.1 \
-    --hash=sha256:85228d75db9f45e06e57ef9bf4429267f81ac7c0d742cc9ed63d09886a9fe6f4 \
-    --hash=sha256:8b6007800c53fdacd5a5c192203f4e531eb2a1540ad9c752e052ec0f7143dbad \
+pytest==6.1.1 \
+    --hash=sha256:7a8190790c17d79a11f847fba0b004ee9a8122582ebff4729a082c109e81a4c9 \
+    --hash=sha256:8f593023c1a0f916110285b6efd7f99db07d59546e3d8c36fc60e2ab05d3be92 \
     # via -r requirements-test.in, pytest-benchmark, pytest-cov, pytest-tldr
 six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
