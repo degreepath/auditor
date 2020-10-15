@@ -41,20 +41,6 @@ def audit(
 
     db_keys = {'stnum': stnum, 'catalog': catalog, 'code': code, 'estimate': estimate_count, 'branch': run_id}
 
-    with sqlite_connect(db, readonly=False) as conn:
-        with sqlite_cursor(conn) as curs:
-            if run_id == '':
-                curs.execute('''
-                    INSERT INTO baseline_ip (stnum, catalog, code, estimate)
-                    VALUES (:stnum, :catalog, :code, :estimate)
-                ''', db_keys)
-            else:
-                curs.execute('''
-                    INSERT INTO branch_ip (stnum, catalog, code, estimate, branch)
-                    VALUES (:stnum, :catalog, :code, :estimate, :branch)
-                ''', db_keys)
-            conn.commit()
-
     start_time = time.perf_counter()
 
     for message in run(args=Arguments(), student=student, area_spec=area_spec):
