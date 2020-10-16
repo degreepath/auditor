@@ -180,7 +180,7 @@ class RequirementContext:
 
         return None
 
-    def get_block_exceptions(self, path: Tuple[str, ...]) -> Optional[BlockException]:
+    def get_block_exceptions(self, path: Tuple[str, ...]) -> Iterator[BlockException]:
         if path not in self.exceptions:
             return None
 
