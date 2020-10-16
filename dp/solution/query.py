@@ -216,7 +216,7 @@ class QuerySolution(Solution, BaseQueryRule):
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             filtered_output.append(matched_course)
             inserted_clbids.append(matched_course.clbid)
-        
+
         for block in ctx.get_block_exceptions(assertion.path):
             if debug: logger.debug("excluded %s from %s", block.clbid, self.path)
             matched_course = ctx.forced_course_by_clbid(block.clbid, path=self.path)
