@@ -10,7 +10,7 @@ from .data.area_pointer import AreaPointer
 from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
 from .data.student import TemplateCourse, course_filter, SUB_TYPE_LOOKUP
 from .claim import Claim
-from .exception import RuleException, OverrideException, InsertionException, ValueException
+from .exception import RuleException, OverrideException, InsertionException, ValueException, BlockException
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
@@ -179,6 +179,14 @@ class RequirementContext:
                 return exception
 
         return None
+    
+    def get_block_exceptions(self, path: Tuple[str, ...]) -> Optional[BlockException]:
+        if path not in self.exceptions:
+            return None
+
+        for exception in self.exceptions.get(path, []):
+            if isinstance(exception, BlockException):
+                yield exception
 
     def get_value_exception(self, path: Tuple[str, ...]) -> Optional[ValueException]:
         if path not in self.exceptions:
