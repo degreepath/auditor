@@ -1,6 +1,5 @@
 from typing import List, Iterator, Any, Dict, Sequence, Set, Optional
 from .data.course import CourseInstance
-from .data.course_enums import CourseType
 from .op import str_operator
 from .ms import pretty_ms
 from .status import PassingStatusValues, WAIVED_AND_DONE
