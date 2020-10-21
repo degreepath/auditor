@@ -28,6 +28,8 @@ class CourseRule(Rule, BaseCourseRule):
             return True
         if "clbid" in data:
             return True
+        if "crsid" in data:
+            return True
         if "ap" in data:
             return True
         return False
@@ -41,6 +43,7 @@ class CourseRule(Rule, BaseCourseRule):
         min_grade = data.get('grade', None)
         grade_option = data.get('grade_option', None)
         clbid = data.get('clbid', None)
+        crsid = data.get('crsid', None)
         inserted = data.get('inserted', False)
         auto_waived = data.get('auto_waived', False)
         section: Optional[str] = data.get("section", None)
@@ -48,7 +51,7 @@ class CourseRule(Rule, BaseCourseRule):
         year: Optional[int] = data.get("year", None)
         term: Optional[int] = data.get("term", None)
 
-        path_name = f"*{course or ap or name or clbid}"
+        path_name = f"*{course or ap or name or clbid or 'crsid:' + crsid}"
         if section:
             path_name = f"{path_name}{section}"
         if sub_type:
@@ -74,7 +77,7 @@ class CourseRule(Rule, BaseCourseRule):
             'course', 'grade', 'allow_claimed', 'from_claimed',
             'hidden', 'ap', 'grade_option', 'institution',
             'name', 'clbid', 'inserted', 'waived', 'optional',
-            'year', 'term', 'section', 'sub_type',
+            'year', 'term', 'section', 'sub_type', 'crsid',
         }
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
@@ -91,6 +94,7 @@ class CourseRule(Rule, BaseCourseRule):
             name=name,
             ap=ap,
             clbid=clbid,
+            crsid=crsid,
             inserted=inserted,
             auto_waived=auto_waived,
             optional=optional,
@@ -101,7 +105,7 @@ class CourseRule(Rule, BaseCourseRule):
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
-        assert self.course or self.ap or (self.institution and self.name) or self.clbid
+        assert self.course or self.ap or (self.institution and self.name) or self.clbid or self.crsid
 
     def get_requirement_names(self) -> List[str]:
         return []

@@ -22,6 +22,7 @@ class CourseSolution(Solution, BaseCourseRule):
         return CourseSolution(
             course=rule.course,
             clbid=rule.clbid,
+            crsid=rule.crsid,
             hidden=rule.hidden,
             grade=rule.grade,
             allow_claimed=rule.allow_claimed,

@@ -101,6 +101,7 @@ class RequirementContext:
             term=rule.term,
             section=rule.section,
             sub_type=SUB_TYPE_LOOKUP.get(rule.sub_type or '', None),
+            crsid=rule.crsid,
         ), source)
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:

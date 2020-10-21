@@ -342,6 +342,7 @@ def load_transcript(
 class CourseFilterArgs:
     ap: Optional[str] = None
     course: Optional[str] = None
+    crsid: Optional[str] = None
     institution: Optional[str] = None
     name: Optional[str] = None
     year: Optional[int] = None
@@ -355,6 +356,7 @@ def course_filter(
     *,
     ap: Optional[str] = None,
     course: Optional[str] = None,
+    crsid: Optional[str] = None,
     institution: Optional[str] = None,
     name: Optional[str] = None,
     year: Optional[int] = None,
@@ -366,6 +368,7 @@ def course_filter(
     filter_args = CourseFilterArgs(
         ap=ap,
         course=course,
+        crsid=crsid,
         institution=institution,
         name=name,
         year=year,
@@ -381,6 +384,9 @@ def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
     # skip non-STOLAF courses if we're not given an institution
     # and aren't looking for an AP course
     if f.institution is None and f.ap is None and not c.is_stolaf:
+        return False
+
+    if f.crsid is not None and f.crsid != c.crsid:
         return False
 
     # compare course identity

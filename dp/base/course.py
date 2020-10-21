@@ -11,6 +11,7 @@ from ..status import ResultStatus
 class BaseCourseRule(Base):
     course: Optional[str] = None
     clbid: Optional[str] = None
+    crsid: Optional[str] = None
     ap: Optional[str] = None
     institution: Optional[str] = None
     name: Optional[str] = None
@@ -33,6 +34,7 @@ class BaseCourseRule(Base):
             **super().to_dict(),
             "course": self.course,
             "clbid": self.clbid,
+            "crsid": self.crsid,
             "hidden": self.hidden,
             "grade": str(self.grade) if self.grade is not None else None,
             "claims": [c.to_dict() for c in self.claims()],
