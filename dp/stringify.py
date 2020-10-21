@@ -194,10 +194,8 @@ def print_course(
     status = emojify_course(course, rule["status"])
 
     display_course = rule['course']
-    if rule["status"] == "waived" and course:
-        display_course = f"{course.course().strip()} {course.name}"
-    elif rule["status"] != "waived" and course and course.course_type is CourseType.AP:
-        display_course = course.name
+    if course:
+        display_course = f"{course.course().strip()} {course.name!r}"
     elif not rule["course"] and rule["ap"] != "":
         display_course = rule["ap"]
 
