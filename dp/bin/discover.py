@@ -84,7 +84,7 @@ def main() -> None:
 
 def find_courses_in_rule(rule: Rule) -> Iterator[str]:
     if isinstance(rule, CourseRule):
-        if not rule.course:
+        if not rule.course and not rule.crsid:
             return
 
         if rule.institution or rule.clbid or rule.ap or rule.name:
@@ -95,6 +95,7 @@ def find_courses_in_rule(rule: Rule) -> Iterator[str]:
 
         if rule.crsid:
             yield rule.crsid
+            return
 
         yield rule.course
 
