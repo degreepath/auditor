@@ -62,7 +62,7 @@ def main() -> None:
                 # must be a crsid
                 courses.add(CourseReference(code=code, course='', crsid=course))
             else:
-                courses.add(CourseReference(code=code, course=course))
+                courses.add(CourseReference(code=code, course=course, crsid=None))
 
         for limit in area.limit.limits:
             for bucket in find_buckets_in_clause(limit.where):
