@@ -137,19 +137,20 @@ def insert_course_refs(conn: Any, courses: Set[CourseReference]) -> None:
             ''', {'code': course_ref.code, 'course': course_ref.course, 'crsid': course_ref.crsid})
 
         curs.execute('''
-            SELECT area_code, course
+            SELECT area_code, course, crsid
             FROM map_constant_area
         ''')
 
-        for code, course in curs.fetchall():
-            ref = CourseReference(code=code, course=course)
+        for code, course, crsid in curs.fetchall():
+            ref = CourseReference(code=code, course=course, crsid=crsid)
             if ref not in courses:
                 print('deleting', ref)
                 curs.execute('''
                     DELETE FROM map_constant_area
                     WHERE area_code = %(code)s
                         AND course = %(course)s
-                ''', {'code': ref.code, 'course': ref.course})
+                        AND crsid = %(crsid)s
+                ''', {'code': ref.code, 'course': ref.course, 'crsid': ref.crsid})
 
         conn.commit()
 
