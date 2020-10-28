@@ -26,7 +26,7 @@ from dp.rule.requirement import RequirementRule
 
 load_dotenv()
 
-CourseReference = namedtuple('CourseReference', ['code', 'course'])
+CourseReference = namedtuple('CourseReference', ['code', 'course', 'crsid'])
 BucketReference = namedtuple('BucketReference', ['code', 'catalog', 'bucket'])
 
 
@@ -58,7 +58,11 @@ def main() -> None:
         area = AreaOfStudy.load(specification=area_spec, c=Constants(), all_emphases=True)
 
         for course in find_courses_in_rule(area.result):
-            courses.add(CourseReference(code=code, course=course))
+            if course.isdigit():
+                # must be a crsid
+                courses.add(CourseReference(code=code, course='', crsid=course))
+            else:
+                courses.add(CourseReference(code=code, course=course))
 
         for limit in area.limit.limits:
             for bucket in find_buckets_in_clause(limit.where):
@@ -88,6 +92,9 @@ def find_courses_in_rule(rule: Rule) -> Iterator[str]:
 
         if rule.hidden:
             return
+
+        if rule.crsid:
+            yield rule.crsid
 
         yield rule.course
 
@@ -124,10 +131,10 @@ def insert_course_refs(conn: Any, courses: Set[CourseReference]) -> None:
     with conn.cursor() as curs:
         for course_ref in courses:
             curs.execute('''
-                INSERT INTO map_constant_area(area_code, course)
-                VALUES (%(code)s, %(course)s)
+                INSERT INTO map_constant_area(area_code, course, crsid)
+                VALUES (%(code)s, %(course)s, %(crsid)s)
                 ON CONFLICT DO NOTHING
-            ''', {'code': course_ref.code, 'course': course_ref.course})
+            ''', {'code': course_ref.code, 'course': course_ref.course, 'crsid': course_ref.crsid})
 
         curs.execute('''
             SELECT area_code, course
