@@ -97,7 +97,11 @@ def find_courses_in_rule(rule: Rule) -> Iterator[str]:
             yield rule.crsid
             return
 
-        yield rule.course
+        if rule.course:
+            yield rule.course
+            return
+
+        raise TypeError('never get here')
 
     elif isinstance(rule, ProficiencyRule):
         if not rule.course:
