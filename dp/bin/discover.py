@@ -148,7 +148,7 @@ def insert_course_refs(conn: Any, courses: Set[CourseReference]) -> None:
 
         for code, course, crsid in curs.fetchall():
             ref = CourseReference(code=code, course=course, crsid=crsid)
-            
+
             if ref not in courses:
                 print('deleting', ref)
                 if ref.course is not None:
