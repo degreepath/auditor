@@ -249,8 +249,8 @@ def test_compute_single_clause_diff():
     from decimal import Decimal
     ctx = RequirementContext(areas=(AreaPointer.with_code('711'),))
 
-    assert compute_single_clause_diff({'has-area-code(711)': '+ 0.50'}, ctx=ctx) == Decimal(0.5)
-    assert compute_single_clause_diff({'has-area-code(711)': '+  .50'}, ctx=ctx) == Decimal(0.5)
+    assert compute_single_clause_diff({'has-area-code(711)': '+ 0.50'}, ctx=ctx) == ('adjust', Decimal(0.5))
+    assert compute_single_clause_diff({'has-area-code(711)': '+  .50'}, ctx=ctx) == ('adjust', Decimal(0.5))
 
     with pytest.raises(TypeError, match=r'unknown \$ifs key unknown-key'):
         assert compute_single_clause_diff({'unknown-key(711)': '+  .50'}, ctx=ctx) == Decimal(0)
@@ -260,15 +260,15 @@ def test_compute_single_clause_diff():
         music_proficiencies=MusicProficiencies(keyboard_3=MusicProficiencyStatus.Exam, keyboard_4=MusicProficiencyStatus.No),
     )
 
-    assert compute_single_clause_diff({'has-area-code(711) + passed-proficiency-exam(Keyboard Level III)': '+ 0.50'}, ctx=ctx) == Decimal(0.5)
-    assert compute_single_clause_diff({'has-area-code(711) + passed-proficiency-exam(Keyboard Level IV)': '+  .50'}, ctx=ctx) == Decimal(0)
+    assert compute_single_clause_diff({'has-area-code(711) + passed-proficiency-exam(Keyboard Level III)': '+ 0.50'}, ctx=ctx) == ('adjust', Decimal(0.5))
+    assert compute_single_clause_diff({'has-area-code(711) + passed-proficiency-exam(Keyboard Level IV)': '+  .50'}, ctx=ctx) == ('initial', Decimal(0))
 
     assert compute_single_clause_diff({
         'has-area-code(711)': '+ 0.50',
         'has-area-code(711) + passed-proficiency-exam(Keyboard Level III)': '+ 0.50',
-    }, ctx=ctx) == Decimal(1.0)
+    }, ctx=ctx) == ('adjust', Decimal(1.0))
 
     assert compute_single_clause_diff({
         'has-area-code(711)': '+ 0.50',
         'has-area-code(711) + passed-proficiency-exam(Keyboard Level IV)': '+ 0.50',
-    }, ctx=ctx) == Decimal(0.5)
+    }, ctx=ctx) == ('adjust', Decimal(0.5))

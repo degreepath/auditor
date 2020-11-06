@@ -18,6 +18,10 @@ KEY_LOOKUP = {
     "gereq": "gereqs",
 }
 
+MODE_INITIAL = 'initial'
+MODE_ADJUST = 'adjust'
+MODE_SET = 'set'
+
 
 def load_clause(
     data: Dict[str, Any],
@@ -158,9 +162,9 @@ def load_expected_value(*, key: str, value: Dict, op: str, ctx: Optional['Requir
         expected_value = Decimal(str(expected_value))
 
     expected_value_diff_mode, expected_value_diff = compute_single_clause_diff(value.get('$ifs', {}), ctx=ctx)
-    if expected_value_diff and expected_value_diff_mode == 'adjust':
+    if expected_value_diff and expected_value_diff_mode == MODE_ADJUST:
         expected_value += expected_value_diff
-    elif expected_value_diff_mode == 'set':
+    elif expected_value_diff_mode == MODE_SET:
         expected_value = expected_value_diff
 
     expected_verbatim = expected_value
@@ -183,7 +187,7 @@ def load_expected_value(*, key: str, value: Dict, op: str, ctx: Optional['Requir
 
 def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional['RequirementContext']) -> Tuple[str, Decimal]:
     diff_value = Decimal(0)
-    mode = ''
+    mode = MODE_INITIAL
 
     for cond, cond_action in conditionals.items():
         conditions = cond.split(' + ')
@@ -194,12 +198,12 @@ def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional
         cond_action_mode, cond_action_inc = cond_action.split(' ', maxsplit=1)
 
         if cond_action_mode == '+':
-            if mode != '' and mode != 'adjust':
+            if mode != MODE_INITIAL and mode != MODE_ADJUST:
                 raise TypeError('cannot mix diff modes')
             mode = 'adjust'
             diff_value += Decimal(cond_action_inc)
         elif cond_action_mode == '=':
-            if mode != '' and mode != 'set':
+            if mode != MODE_INITIAL and mode != MODE_SET:
                 raise TypeError('cannot mix diff modes')
             mode = 'set'
             diff_value = Decimal(cond_action_inc)
