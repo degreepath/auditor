@@ -206,14 +206,14 @@ class LimitSet:
 
         logger.debug("applying limits")
 
-        all_courses = set(courses)
+        all_courses: Set[CourseInstance] = set(courses)
 
         # step 0: figure out which courses have been force-inserted and will thus bypass the limit check
         forced_items = {c.clbid: c for c in all_courses if c.clbid in forced_clbids}
         logger.debug("limit: forced items: %r", forced_items)
 
         # step 1: find the number of extra iterations we will need for each limiting clause
-        matched_items: Dict = defaultdict(set)
+        matched_items: Dict[Limit, Set[CourseInstance]] = defaultdict(set)
         for limit in self.limits:
             logger.debug("limit/probe: checking against %s", limit)
             for c in courses:
@@ -224,8 +224,8 @@ class LimitSet:
                 if apply_clause(limit.where, c):
                     matched_items[limit].add(c)
 
-        all_matched_items = set(item for match_set in matched_items.values() for item in match_set)
-        unmatched_items = list(all_courses.difference(all_matched_items))
+        all_matched_items: Set[CourseInstance] = set(item for match_set in matched_items.values() for item in match_set)
+        unmatched_items: Collection[CourseInstance] = list(all_courses.difference(all_matched_items))
 
         logger.debug("limit: unmatched items: %r", unmatched_items)
 
@@ -237,7 +237,7 @@ class LimitSet:
 
         emitted_solutions: Set[FrozenSet[CourseInstance]] = set()
         for results in lazy_product(*clause_iterators):
-            these_items = frozenset(item for group in results for item in group)
+            these_items: FrozenSet[CourseInstance] = frozenset(item for group in results for item in group)
 
             if not self.check(these_items):
                 logger.debug("limit: invalid collection: %r", unmatched_items)
