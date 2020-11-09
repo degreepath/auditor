@@ -14,8 +14,8 @@ from .load_clause import load_clause
 from .constants import Constants
 from .ncr import ncr
 
-if TYPE_CHECKING:
-    from .data.course import CourseInstance  # noqa: F401
+from .data.course import CourseInstance
+
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,7 @@ class Limit:
 
         return Limit(at_most=at_most, at_most_what=at_most_what, where=clause, message=data.get('message', None))
 
-    def iterate(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate(self, courses: Collection[CourseInstance]) -> Iterator[Tuple[CourseInstance, ...]]:
         # Be sure to sort the input, so that the output from the iterator is
         # sorted the same way each time. We need this because our input may
         # be a set, in which case there is no inherent ordering.
@@ -87,14 +87,14 @@ class Limit:
         elif self.at_most_what is AtMostWhat.Credits:
             yield from self.iterate_credits(courses)
 
-    def iterate_courses(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate_courses(self, courses: Collection[CourseInstance]) -> Iterator[Tuple[CourseInstance, ...]]:
         for n in range(0, int(self.at_most) + 1):
             # logger.debug("limit/loop(%s..<%s): n=%s applying %s", 0, self.at_most + 1, n, self.where)
             for combo in itertools.combinations(courses, n):
                 # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                 yield combo
 
-    def iterate_credits(self, courses: Collection['CourseInstance']) -> Iterator[Tuple['CourseInstance', ...]]:
+    def iterate_credits(self, courses: Collection[CourseInstance]) -> Iterator[Tuple[CourseInstance, ...]]:
         if sum(c.credits for c in courses) <= self.at_most:
             yield tuple(courses)
             return
@@ -106,7 +106,7 @@ class Limit:
                     # logger.debug("limit/loop(%s..<%s)/combo: n=%s combo=%s", 0, self.at_most + 1, n, combo)
                     yield combo
 
-    def estimate(self, courses: Collection['CourseInstance']) -> int:
+    def estimate(self, courses: Collection[CourseInstance]) -> int:
         acc = 0
 
         if self.at_most_what is AtMostWhat.Courses:
@@ -136,7 +136,7 @@ class LimitSet:
             return LimitSet(limits=tuple())
         return LimitSet(limits=tuple(Limit.load(limit, c) for limit in data))
 
-    def apply_limits(self, courses: Collection['CourseInstance']) -> Iterator['CourseInstance']:
+    def apply_limits(self, courses: Collection[CourseInstance]) -> Iterator[CourseInstance]:
         clause_counters: Dict = defaultdict(int)
         # logger.debug("limit/before: %s", courses)
 
@@ -160,7 +160,7 @@ class LimitSet:
                 logger.debug("limit/allow: %r", c)
                 yield c
 
-    def check(self, courses: Collection['CourseInstance']) -> bool:
+    def check(self, courses: Collection[CourseInstance]) -> bool:
         clause_counters: Dict = defaultdict(decimal.Decimal)
 
         for c in courses:
@@ -181,10 +181,10 @@ class LimitSet:
 
     def limited_transcripts(
         self,
-        courses: Collection['CourseInstance'],
+        courses: Collection[CourseInstance],
         *,
         forced_clbids: Tuple[str, ...] = tuple(),
-    ) -> Iterator[Tuple['CourseInstance', ...]]:
+    ) -> Iterator[Tuple[CourseInstance, ...]]:
         """
         We need to iterate over each combination of limited courses.
 
@@ -235,7 +235,7 @@ class LimitSet:
             for limit, match_set in matched_items.items()
         ]
 
-        emitted_solutions: Set[FrozenSet['CourseInstance']] = set()
+        emitted_solutions: Set[FrozenSet[CourseInstance]] = set()
         for results in lazy_product(*clause_iterators):
             these_items = frozenset(item for group in results for item in group)
 
@@ -255,6 +255,6 @@ class LimitSet:
             logger.debug("limit: emitting: %r", this_combo)
             yield tuple(this_combo)
 
-    def estimate(self, courses: Collection['CourseInstance']) -> int:
+    def estimate(self, courses: Collection[CourseInstance]) -> int:
         # TODO: optimize this so that it doesn't need to actually build the results
         return sum(1 for _ in self.limited_transcripts(courses))
