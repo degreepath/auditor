@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Collection, Optional, Iterator, Any, List, Set, FrozenSet, TYPE_CHECKING
+from typing import Dict, Tuple, Collection, Optional, Iterator, Any, List, Set, FrozenSet
 from collections import defaultdict
 from functools import partial
 from operator import methodcaller
