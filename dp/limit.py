@@ -1,6 +1,7 @@
 from typing import Dict, Tuple, Collection, Optional, Iterator, Any, List, Set, FrozenSet, TYPE_CHECKING
 from collections import defaultdict
 from functools import partial
+from operator import methodcaller
 import itertools
 import logging
 import decimal
@@ -249,8 +250,8 @@ class LimitSet:
             else:
                 emitted_solutions.add(these_items)
 
-            this_combo = [*unmatched_items, *these_items]
-            this_combo.sort(key=lambda c: c.sort_order())
+            this_combo: List[CourseInstance] = [*unmatched_items, *these_items]
+            this_combo.sort(key=methodcaller('sort_order'))
 
             logger.debug("limit: emitting: %r", this_combo)
             yield tuple(this_combo)
