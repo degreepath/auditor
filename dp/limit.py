@@ -210,7 +210,7 @@ class LimitSet:
         all_courses: Set[CourseInstance] = set(courses)
 
         # step 0: figure out which courses have been force-inserted and will thus bypass the limit check
-        forced_items = {c.clbid: c for c in all_courses if c.clbid in forced_clbids}
+        forced_items: Collection[str] = {c.clbid for c in all_courses if c.clbid in forced_clbids}
         logger.debug("limit: forced items: %r", forced_items)
 
         # step 1: find the number of extra iterations we will need for each limiting clause
