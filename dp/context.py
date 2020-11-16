@@ -18,6 +18,10 @@ debug: Optional[bool] = None
 ExceptionsDict = Mapping[Tuple[str, ...], List[RuleException]]
 
 
+class MissingClassLabIdException(Exception):
+    pass
+
+
 def group_exceptions(exceptions: Sequence[RuleException]) -> ExceptionsDict:
     grouped: Dict[Tuple[str, ...], List[RuleException]] = defaultdict(list)
 
@@ -112,7 +116,7 @@ class RequirementContext:
         if not match:
             match = self.forced_clbid_lookup_map_.get(clbid, None)
         if not match:
-            raise Exception(f'attempted to use CLBID={clbid} at {list(path)}, but it was not found in the transcript')
+            raise MissingClassLabIdException(f'attempted to use CLBID={clbid} at {list(path)}, but it was not found in the transcript')
         return match
 
     def has_area_code(self, code: str) -> bool:
