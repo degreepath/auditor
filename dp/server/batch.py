@@ -124,7 +124,7 @@ def main() -> None:
                     VALUES (1, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), %(run)s)
                 """, {"stnum": stnum, "catalog": catalog, "code": code, "data": data, "run": run})
 
-    print(f"queued {count:,} audits in the database")
+    print(f"queued {count:,} audits")
 
     conn.close()
 
