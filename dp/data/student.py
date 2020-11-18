@@ -126,9 +126,14 @@ class Student:
         # exclude the None items from the parsing
         templates = tuple(sorted((key, parsed) for key, parsed in templates_set if parsed))
 
+        curriculum_s: str = data.get('curriculum', 'None')
+        if curriculum_s == 'None':
+            curriculum_s = '0'
+        curriculum = int(curriculum_s)
+
         return Student(
             stnum=data.get('stnum', '000000'),
-            curriculum=int(data.get('curriculum', 0)),
+            curriculum=curriculum,
             catalog=int(data.get('catalog', 0)),
             current_area_code=code,
             matriculation=matriculation,
