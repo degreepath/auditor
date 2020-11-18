@@ -22,8 +22,6 @@ if os.environ.get("SENTRY_DSN", None):
     sentry_sdk.init(dsn=os.environ.get("SENTRY_DSN"))
 
 http = urllib3.PoolManager()
-DISABLED: Set[Tuple[str, str]] = set()
-
 BATCH_URL = os.getenv("DP_BATCH_URL")
 SINGLE_URL = os.getenv("DP_SINGLE_URL")
 
@@ -95,6 +93,15 @@ def main() -> None:
             print(f"> {record['student_id']} : {record['area_code']} has been queued since {record['ts']} CT and will be skipped")
             queued_items.add((record['student_id'], record['area_code']))
 
+        print("fetching audits blocked from the queue")
+        curs.execute("""
+            SELECT student_id, area_code, added_by, added_at at time zone 'America/Winnipeg' as added_at
+            FROM queue_block
+        """)
+        blocked_items: Set[Tuple[str, str]] = set()
+        for record in curs:
+            print(f"> {record['student_id']} : {record['area_code']} has been blocked since {record['added_at']} CT by {record['added_by']} and will be skipped")
+            queued_items.add((record['student_id'], record['area_code']))
 
         for student, data in batch():
             for stnum, catalog, code in expand_student(student=student):
@@ -102,8 +109,8 @@ def main() -> None:
                 if (stnum, code) in queued_items:
                     continue
 
-                if (stnum, code) in DISABLED:
-                    print("skipping", stnum, code, "as it is blocked")
+                # skip audits that have been blocked
+                if (stnum, code) in blocked_items:
                     continue
 
                 # allow filtering batches of audits
