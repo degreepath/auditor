@@ -85,19 +85,21 @@ def main() -> None:
     count = 0
 
     with conn.cursor() as curs:
+        print("fetching queued audits")
         curs.execute("""
-            SELECT student_id, area_code
+            SELECT student_id, area_code, ts at time zone 'America/Winnipeg' as ts
             FROM queue
         """)
+        queued_items: Set[Tuple[str, str]] = set()
+        for record in curs:
+            print(f"> {record['student_id']} : {record['area_code']} has been queued since {record['ts']} CT and will be skipped")
+            queued_items.add((record['student_id'], record['area_code']))
 
-        queued_items = set()
-        for stnum, code in curs:
-            queued_items.add((stnum, code))
 
         for student, data in batch():
             for stnum, catalog, code in expand_student(student=student):
+                # skip already-queued items in this loop to avoid postgres deadlocks
                 if (stnum, code) in queued_items:
-                    print("skipping", stnum, code, "due to already being queued")
                     continue
 
                 if (stnum, code) in DISABLED:
