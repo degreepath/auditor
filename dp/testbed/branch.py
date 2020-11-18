@@ -61,45 +61,44 @@ def branch(args: argparse.Namespace) -> None:
 
     print(f'running {len(records):,} audits...')
 
-    with sqlite_connect(args.db) as conn:
-        with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            futures = {
-                executor.submit(
-                    audit,
-                    (stnum, catalog, code),
-                    db=args.db,
-                    area_spec=area_specs[f"{catalog}/{code}"],
-                    # timeout=float(minimum_duration.sec()),
-                    run_id=args.branch,
-                ): (stnum, catalog, code)
-                for (stnum, catalog, code) in records
-            }
+    with sqlite_connect(args.db) as conn, ProcessPoolExecutor(max_workers=args.workers) as executor:
+        futures = {
+            executor.submit(
+                audit,
+                (stnum, catalog, code),
+                db=args.db,
+                area_spec=area_specs[f"{catalog}/{code}"],
+                # timeout=float(minimum_duration.sec()),
+                run_id=args.branch,
+            ): (stnum, catalog, code)
+            for (stnum, catalog, code) in records
+        }
 
-            for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
-                stnum, catalog, code = futures[future]
+        for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
+            stnum, catalog, code = futures[future]
 
-                with sqlite_cursor(conn) as curs:
-                    try:
-                        db_args = future.result()
-                    except TimeoutError as timeout:
-                        print(timeout.args[0])
-                        conn.commit()
-                        continue
-                    except Exception as exc:
-                        print(f'{stnum} {catalog} {code} generated an exception: {exc}')
-                        continue
-
-                    assert db_args is not None, f"{stnum}, {catalog}, {code} returned None"
-
-                    try:
-                        curs.execute('''
-                            INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
-                            VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
-                        ''', db_args)
-                    except sqlite3.Error as ex:
-                        print(db_args)
-                        print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
-                        conn.rollback()
-                        continue
-
+            with sqlite_cursor(conn) as curs:
+                try:
+                    db_args = future.result()
+                except TimeoutError as timeout:
+                    print(timeout.args[0])
                     conn.commit()
+                    continue
+                except Exception as exc:
+                    print(f'{stnum} {catalog} {code} generated an exception: {exc}')
+                    continue
+
+                assert db_args is not None, f"{stnum}, {catalog}, {code} returned None"
+
+                try:
+                    curs.execute('''
+                        INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
+                        VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
+                    ''', db_args)
+                except sqlite3.Error as ex:
+                    print(db_args)
+                    print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
+                    conn.rollback()
+                    continue
+
+                conn.commit()
