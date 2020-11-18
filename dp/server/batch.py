@@ -2,7 +2,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Iterator, Set, Dict, Tuple, cast
 from pathlib import Path
 import argparse
-import math
 import json
 import os
 
