@@ -74,14 +74,14 @@ def main() -> None:
 
     run = args.run
     if args.run is None:
-        with conn, conn.cursor() as curs:
+        with conn.cursor() as curs:
             curs.execute("SELECT max(run) + 1 FROM result")
             row = curs.fetchone()
             run = row[0]
 
     count = 0
 
-    with conn, conn.cursor() as curs:
+    with conn.cursor() as curs:
         curs.execute("""
             SELECT student_id, area_code
             FROM queue
@@ -114,6 +114,8 @@ def main() -> None:
                 """, {"stnum": stnum, "catalog": catalog, "code": code, "data": data, "run": run})
 
     print(f"queued {count:,} audits in the database")
+
+    conn.close()
 
 
 if __name__ == "__main__":
