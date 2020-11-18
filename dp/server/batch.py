@@ -122,7 +122,6 @@ def main() -> None:
                 curs.execute("""
                     INSERT INTO queue (priority, student_id, area_catalog, area_code, input_data, run)
                     VALUES (1, %(stnum)s, %(catalog)s, %(code)s, cast(%(data)s as jsonb), %(run)s)
-                    ON CONFLICT DO NOTHING
                 """, {"stnum": stnum, "catalog": catalog, "code": code, "data": data, "run": run})
 
     print(f"queued {count:,} audits in the database")
