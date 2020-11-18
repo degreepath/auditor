@@ -34,18 +34,18 @@ def fetch(stnum: str) -> Tuple[Dict, str]:
 
 
 def batch() -> Iterator[Tuple[Dict, str]]:
-    print("fetching stnums to audit")
+    print("fetching student ids to audit")
     r = http.request("GET", BATCH_URL)
 
     student_ids = set(r.data.decode("utf-8").split())
     student_ids.add("122932")
 
-    print(f"fetched list of {len(student_ids):,} stnums to audit")
-
     try:
         worker_count = len(os.sched_getaffinity(0))
     except AttributeError:
         worker_count = cast(int, os.cpu_count())
+
+    print(f"fetching data for {len(student_ids):,} student ids with {worker_count} threads")
 
     with ThreadPoolExecutor(max_workers=worker_count) as pool:
         future_to_stnum = {pool.submit(fetch, stnum): stnum for stnum in student_ids}
