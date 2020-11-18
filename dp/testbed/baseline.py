@@ -56,6 +56,7 @@ def baseline(args: argparse.Namespace) -> None:
 
         records = [(stnum, catalog, code) for stnum, catalog, code in results]
 
+    remaining_records = list(records)
     print(f'running {len(records):,} audits...')
 
     with sqlite_connect(args.db) as conn, ProcessPoolExecutor(max_workers=args.workers) as executor:
@@ -71,22 +72,37 @@ def baseline(args: argparse.Namespace) -> None:
             if f"{catalog}/{code}" in area_specs
         }
 
-        for future in tqdm.tqdm(as_completed(futures), total=len(futures), disable=None):
+        pbar = tqdm.tqdm(total=len(futures), disable=None)
+
+        upcoming = [f"{stnum}:{code}" for stnum, _catalog, code in remaining_records[:args.workers]]
+        pbar.set_description(', '.join(upcoming))
+
+        for future in as_completed(futures):
             stnum, catalog, code = futures[future]
 
+            try:
+                remaining_records.remove((stnum, catalog, code))
+                upcoming = [f"{stnum}:{code}" for stnum, _catalog, code in remaining_records[:args.workers]]
+            except ValueError:
+                pass
+
+            pbar.update(n=1)
+            pbar.write(f"completed ({stnum}, {code})")
+            pbar.set_description(', '.join(upcoming))
+
+            try:
+                db_args = future.result()
+            except TimeoutError as timeout:
+                print(timeout.args[0])
+                conn.commit()
+                continue
+            except Exception as exc:
+                print(f'{stnum} {catalog} {code} generated an exception: {exc}')
+                continue
+
+            assert db_args is not None
+
             with sqlite_cursor(conn) as curs:
-                try:
-                    db_args = future.result()
-                except TimeoutError as timeout:
-                    print(timeout.args[0])
-                    conn.commit()
-                    continue
-                except Exception as exc:
-                    print(f'{stnum} {catalog} {code} generated an exception: {exc}')
-                    continue
-
-                assert db_args is not None
-
                 try:
                     curs.execute('''
                         INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
