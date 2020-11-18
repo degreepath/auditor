@@ -8,6 +8,7 @@ import os
 import tqdm  # type: ignore
 import urllib3  # type: ignore
 import psycopg2  # type: ignore
+import psycopg2.extras  # type: ignore
 import sentry_sdk  # type: ignore
 
 from dp.dotenv import load as load_dotenv
@@ -68,8 +69,11 @@ def main() -> None:
     assert SINGLE_URL
     assert BATCH_URL
 
-    # empty string means "use the environment variables"
-    conn = psycopg2.connect("", application_name="degreepath-batch")
+    conn = psycopg2.connect(
+        "",  # empty string means "use the environment variables"
+        application_name="degreepath-batch",
+        cursor_factory=psycopg2.extras.DictCursor,
+    )
 
     run = args.run
     if args.run is None:
