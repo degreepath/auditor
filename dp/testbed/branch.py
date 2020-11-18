@@ -1,6 +1,6 @@
 import argparse
 
-from .baseline import run_batch
+from .batch import run_batch
 
 
 def branch(args: argparse.Namespace) -> None:
