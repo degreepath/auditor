@@ -1,7 +1,6 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import argparse
 import sqlite3
-import logging
 
 import tqdm  # type: ignore
 
@@ -11,8 +10,6 @@ from .fetch import fetch_if_needed
 from .areas import load_areas
 
 from dp.ms import pretty_ms, parse_ms_str
-
-logger = logging.getLogger(__name__)
 
 
 def baseline(args: argparse.Namespace) -> None:
