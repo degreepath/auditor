@@ -25,7 +25,7 @@ class BaseCourseRule(Base):
     overridden: bool = False
     optional: bool = False
     year: Optional[int] = None
-    term: Optional[int] = None
+    term: Optional[str] = None
     section: Optional[str] = None
     sub_type: Optional[str] = None
 

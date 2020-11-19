@@ -49,7 +49,7 @@ class CourseRule(Rule, BaseCourseRule):
         section: Optional[str] = data.get("section", None)
         sub_type: Optional[str] = data.get("sub_type", None)
         year: Optional[int] = data.get("year", None)
-        term: Optional[int] = data.get("term", None)
+        term: Optional[str] = data.get("term", None)
 
         path_name = f"*{course or ap or name or clbid or 'crsid:' + crsid}"
         if section:
