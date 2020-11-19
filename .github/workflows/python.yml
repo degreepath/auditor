@@ -88,21 +88,15 @@ jobs:
         run: |
           echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u hawkrives --password-stdin
 
-      - name: Set tag
+      - name: Build and Publish
         run: |
-          echo ::set-env name=TAG::"$(date +%s)"
+          TAG="$(date +%s)"
 
-      - name: Build
-        run: |
           docker pull "$REPO:stable"
           docker build . --file Dockerfile --tag "$REPO:$TAG" --cache-from "$REPO:stable"
 
-      - name: Push (timestamp)
-        run: |
           docker push "$REPO:$TAG"
 
-      - name: Push (branch)
-        run: |
           BRANCH="${GITHUB_REF#refs/heads/}"
           docker tag "$REPO:$TAG" "$REPO:$BRANCH"
           docker push "$REPO:$BRANCH"
