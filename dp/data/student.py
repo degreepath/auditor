@@ -20,12 +20,12 @@ logger = logging.getLogger(__name__)
 class TemplateCourse:
     subject: str = ''
     num: str = ''
-    section: Optional[str] = None
-    sub_type: Optional[str] = None
-    year: Optional[int] = None
-    term: Optional[int] = None
+    section: str = ''
+    sub_type: str = ''
+    year: str = ''
+    term: str = ''
     institution: str = ''
-    name: Optional[str] = None
+    name: str = ''
     clbid: str = ''
 
     def to_course_rule_as_dict(self) -> Dict:
@@ -49,9 +49,9 @@ class TemplateCourse:
         if self.name:
             course['ap'] = self.name
 
-        if self.year is not None:
-            assert self.term is not None
-            course['year'] = self.year
+        if self.year != '':
+            assert self.term != ''
+            course['year'] = int(self.year)
             course['term'] = self.term
 
         return course
@@ -207,19 +207,21 @@ def parse_template_course_rule(course_label: str, *, transcript: Iterable[Course
 def parse_identified_course(course_label: str, *, match_groups: Dict, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
     logger.debug('%s: %s', course_label, match_groups)
 
-    subject = match_groups['subject']
-    num = match_groups['num']
-    section = match_groups['section']
-    sub_type = match_groups['sub_type']
-    term = int(match_groups['term']) if match_groups['term'] else None
-    year = int(match_groups['year']) if match_groups['year'] else None
+    subject: str = match_groups['subject']
+    num: str = match_groups['num']
+    section: str = match_groups.get('section', '') or ''
+    sub_type: str = match_groups.get('sub_type', '') or ''
+    year: str = match_groups.get('year', '') or ''
+    term: str = match_groups.get('term', '') or ''
     institution: str = match_groups.get('inst', '') or ''
 
     iterable = filter(course_filter(
         course=f"{subject} {num}" if subject else None,
-        section=section,
+        section=section or None,
         sub_type=SUB_TYPE_LOOKUP.get(sub_type, None),
-        institution=institution,
+        institution=institution or None,
+        year=int(year) if year else None,
+        term=term if term else None,
     ), transcript)
 
     for crs in iterable:
@@ -233,7 +235,6 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
             term=term,
             year=year,
             institution=institution,
-            name=None,
             clbid=crs.clbid,
         )
 
@@ -247,14 +248,13 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
         term=term,
         year=year,
         institution=institution,
-        name=None,
     )
 
 
 def parse_named_course(course_label: str, *, match_groups: Dict, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
     logger.debug('%s: %s', course_label, match_groups)
 
-    name = match_groups['name']
+    name: str = match_groups['name']
     institution: str = match_groups.get('inst', '') or ''
 
     for crs in transcript:
@@ -272,10 +272,6 @@ def parse_named_course(course_label: str, *, match_groups: Dict, transcript: Ite
             subject=crs.subject,
             num=crs.number,
             clbid=crs.clbid,
-            section=None,
-            sub_type=None,
-            term=None,
-            year=None,
         )
 
     logger.debug('did not find existing match for %s', course_label)
@@ -351,7 +347,7 @@ class CourseFilterArgs:
     institution: Optional[str] = None
     name: Optional[str] = None
     year: Optional[int] = None
-    term: Optional[int] = None
+    term: Optional[str] = None
     section: Optional[str] = None
     sub_type: Optional[SubType] = None
     in_progress: Optional[bool] = None
@@ -365,7 +361,7 @@ def course_filter(
     institution: Optional[str] = None,
     name: Optional[str] = None,
     year: Optional[int] = None,
-    term: Optional[int] = None,
+    term: Optional[str] = None,
     section: Optional[str] = None,
     sub_type: Optional[SubType] = None,
     in_progress: Optional[bool] = None,
