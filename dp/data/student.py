@@ -177,7 +177,7 @@ DEPTNUM_REGEX = re.compile(r"""
     (?P<num>[0-9]{3})                  # the course number
     (?P<section>[A-Z])?                # (optional) the section
     (.(?P<sub_type>[A-Z]))?            # (optional) the sub_type: .L for lab, .F for flac, etc
-    (\ (?P<year>\d{4})-(?P<term>\d))?  # (optional) the year-term
+    (\ (?P<year>\d{4})-(?P<term>.))?   # (optional) the year-term
     (\ \[(?P<inst>.+)\])?              # (optional) the [INSTITUTION] code
 """, re.VERBOSE)
 
