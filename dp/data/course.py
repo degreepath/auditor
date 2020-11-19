@@ -428,6 +428,9 @@ def load_course(  # noqa: C901
 def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
     number = s.split(' ')[1]
 
+    assert type(kwargs.get('term', '')) is str
+    assert type(kwargs.get('year', 0)) is int
+
     grade_code = kwargs.get('grade_code', 'B')
     grade_points = kwargs.get('grade_points', str_to_grade_points(grade_code))
 

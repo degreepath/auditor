@@ -29,9 +29,9 @@ def test_count_courses__all_same():
 
 def test_count_terms_from_most_common_course():
     result = funcs.count_terms_from_most_common_course([
-        course_from_str("MUSIC 111", crsid='1', year='2007', term='1'),
-        course_from_str("ECON 123", clbid='b', crsid='2', year='2009', term='1'),
-        course_from_str("ECON 123", clbid='c', crsid='2', year='2009', term='3'),
+        course_from_str("MUSIC 111", crsid='1', year=2007, term='1'),
+        course_from_str("ECON 123", clbid='b', crsid='2', year=2009, term='1'),
+        course_from_str("ECON 123", clbid='c', crsid='2', year=2009, term='3'),
     ])
 
     assert result.value == 2
@@ -49,8 +49,8 @@ def test_count_terms_from_most_common_course__empty():
 
 def test_count_terms_from_most_common_course__two_sections_same_term():
     result = funcs.count_terms_from_most_common_course([
-        course_from_str("ECON 123", section='A', clbid='123', crsid='1', year='2009', term='3'),
-        course_from_str("ECON 123", section='B', clbid='124', crsid='1', year='2009', term='3'),
+        course_from_str("ECON 123", section='A', clbid='123', crsid='1', year=2009, term='3'),
+        course_from_str("ECON 123", section='B', clbid='124', crsid='1', year=2009, term='3'),
     ])
 
     assert result.value == 1
@@ -106,10 +106,10 @@ def test_count_subjects__several_courses():
 
 def test_count_terms():
     result = funcs.count_terms([
-        course_from_str("MUSIC 111", crsid='1', year='2007', term='1'),
-        course_from_str("ECON 123", clbid='b', crsid='2', year='2009', term='1'),
-        course_from_str("ECON 123", clbid='c', crsid='2', year='2009', term='3'),
-        course_from_str("ECON 124", clbid='d', crsid='3', year='2009', term='3'),
+        course_from_str("MUSIC 111", crsid='1', year=2007, term='1'),
+        course_from_str("ECON 123", clbid='b', crsid='2', year=2009, term='1'),
+        course_from_str("ECON 123", clbid='c', crsid='2', year=2009, term='3'),
+        course_from_str("ECON 124", clbid='d', crsid='3', year=2009, term='3'),
     ])
 
     assert result.value == 3
@@ -119,10 +119,10 @@ def test_count_terms():
 
 def test_count_years():
     result = funcs.count_years([
-        course_from_str("MUSIC 111", crsid='1', year='2007', term='1'),
-        course_from_str("ECON 123", clbid='b', crsid='2', year='2009', term='1'),
-        course_from_str("ECON 123", clbid='c', crsid='2', year='2009', term='3'),
-        course_from_str("ECON 124", clbid='d', crsid='3', year='2009', term='3'),
+        course_from_str("MUSIC 111", crsid='1', year=2007, term='1'),
+        course_from_str("ECON 123", clbid='b', crsid='2', year=2009, term='1'),
+        course_from_str("ECON 123", clbid='c', crsid='2', year=2009, term='3'),
+        course_from_str("ECON 124", clbid='d', crsid='3', year=2009, term='3'),
     ])
 
     assert result.value == 2
