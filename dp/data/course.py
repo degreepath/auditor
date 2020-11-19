@@ -328,7 +328,7 @@ def load_course(  # noqa: C901
     if subject_override:
         subject = cast(CourseSubjectOverride, subject_override).subject
 
-    term = int(term)
+    year = int(year)
     credits = Decimal(credits)
     section = section or None
     level = int(level)
