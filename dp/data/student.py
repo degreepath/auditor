@@ -388,48 +388,60 @@ def course_filter(
 def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
     # skip non-STOLAF courses if we're not given an institution
     # and aren't looking for an AP course
+    # print(c, end=' ')
     if f.institution is None and f.ap is None and not c.is_stolaf:
+        # print('failed on institution')
         return False
 
     if f.crsid is not None and f.crsid != c.crsid:
+        # print('failed on crsid')
         return False
 
     # compare course identity
     if f.course is not None:
         if c.identity_ != f.course:
+            # print('failed on course identity')
             return False
 
         # compare sections (given by template majors)
         if f.section is not None and c.section != f.section:
+            # print('failed on course section')
             return False
 
         # compare years (given by template majors)
         if f.year is not None:
             assert f.term is not None
             if c.year != f.year or c.term != f.term:
+                # print('failed on year/term')
                 return False
 
         if f.sub_type is not None and c.sub_type != f.sub_type:
+            # print('failed on sub-type')
             return False
 
     # compare course names
     if f.name is not None and c.name != f.name:
+        # print('failed on name')
         return False
 
     # compare course institutions
     if f.institution is not None and c.institution != f.institution:
+        # print('failed on institution')
         return False
 
     # compare for AP courses
     if f.ap is not None:
         if c.course_type != CourseType.AP or c.name != f.ap:
+            # print('failed on ap name')
             return False
 
     if f.in_progress is not None:
         # if we've requested only IP or non-IP courses, and this course
         # doesn't match, then skip it
         if f.in_progress != c.is_in_progress:
+            # print('failed on in-progress status')
             return False
 
     # if all of the previous have matched, we pass the checks
+    # print('match!')
     return True
