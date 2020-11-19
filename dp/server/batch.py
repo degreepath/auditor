@@ -10,7 +10,7 @@ import urllib3  # type: ignore
 import psycopg2  # type: ignore
 import psycopg2.extras  # type: ignore
 import psycopg2.extensions  # type: ignore
-import sentry_sdk  # type: ignore
+import sentry_sdk
 
 from dp.dotenv import load as load_dotenv
 from dp.bin.expand import expand_student
