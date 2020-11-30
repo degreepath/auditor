@@ -1,6 +1,7 @@
 from typing import Dict, Sequence, Optional, Any, Mapping, Iterator, Union, Tuple, Callable, TYPE_CHECKING
 from collections.abc import Iterable
 from decimal import Decimal
+import logging
 
 from .clause import Clause, AndClause, OrClause, SingleClause
 from .constants import Constants
@@ -21,6 +22,8 @@ KEY_LOOKUP = {
 MODE_INITIAL = 'initial'
 MODE_ADJUST = 'adjust'
 MODE_SET = 'set'
+
+logger = logging.getLogger(__name__)
 
 
 def load_clause(
