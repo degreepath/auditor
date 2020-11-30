@@ -19,6 +19,12 @@ class Operator(enum.Enum):
     def __repr__(self) -> str:
         return str(self)
 
+    def to_symbol(self) -> str:
+        return str_operator(self.name)
+
+    def to_text(self) -> str:
+        return str_text_operator(self.name)
+
 
 @lru_cache(2048)
 def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:
