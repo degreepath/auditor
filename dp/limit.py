@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Collection, Optional, Iterator, Any, List, Set, FrozenSet
+from typing import Dict, Tuple, Collection, Optional, Iterator, Any, List, Set, FrozenSet, TYPE_CHECKING
 from collections import defaultdict
 from functools import partial
 from operator import methodcaller
@@ -17,6 +17,8 @@ from .ncr import ncr
 
 from .data.course import CourseInstance
 
+if TYPE_CHECKING:
+    from .context import RequirementContext
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +46,7 @@ class Limit:
         }
 
     @staticmethod
-    def load(data: Dict, c: Constants) -> 'Limit':
+    def load(data: Dict, *, c: Constants, ctx: 'RequirementContext') -> 'Limit':
         at_most = data.get("at most", data.get("at-most", data.get("at_most", None)))
 
         if at_most is None:
@@ -54,7 +56,7 @@ class Limit:
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty"
 
-        clause = load_clause(data["where"], c=c)
+        clause = load_clause(data["where"], c=c, ctx=ctx)
         assert clause, 'limits are not allowed to have conditional clauses'
 
         try:
@@ -132,10 +134,10 @@ class LimitSet:
         return [limit.to_dict() for limit in self.limits]
 
     @staticmethod
-    def load(data: Optional[Collection[Dict]], c: Constants) -> 'LimitSet':
+    def load(data: Optional[Collection[Dict]], *, c: Constants, ctx: 'RequirementContext') -> 'LimitSet':
         if data is None:
             return LimitSet(limits=tuple())
-        return LimitSet(limits=tuple(Limit.load(limit, c) for limit in data))
+        return LimitSet(limits=tuple(Limit.load(limit, c=c, ctx=ctx) for limit in data))
 
     def apply_limits(self, courses: Collection[CourseInstance]) -> Iterator[CourseInstance]:
         clause_counters: Dict = defaultdict(int)
