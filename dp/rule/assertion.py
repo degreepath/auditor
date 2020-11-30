@@ -31,8 +31,8 @@ class AssertionRule(Rule, BaseAssertionRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, ctx: Optional['RequirementContext'], path: Sequence[str]) -> 'AssertionRule':
-        path = [*path, ".assert"]
+    def load(data: Dict, *, c: Constants, ctx: 'RequirementContext', path: Sequence[str]) -> 'AssertionRule':
+        path = tuple([*path, ".assert"])
 
         where = data.get("where", None)
         if where is not None:
@@ -48,7 +48,7 @@ class AssertionRule(Rule, BaseAssertionRule):
 
         assert isinstance(assertion, SingleClause), "assertions may only be single clauses"
 
-        return AssertionRule(assertion=assertion, where=where, path=tuple(path), inserted=tuple(), message=message)
+        return AssertionRule(assertion=assertion, where=where, path=path, inserted=tuple(), message=message)
 
     @staticmethod
     def with_clause(clause: SingleClause) -> 'AssertionRule':

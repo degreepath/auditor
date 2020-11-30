@@ -38,14 +38,14 @@ class QueryRule(Rule, BaseQueryRule):
         return False
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, path: List[str], ctx: Optional['RequirementContext'] = None) -> 'QueryRule':
+    def load(data: Dict, *, c: Constants, path: List[str], ctx: 'RequirementContext') -> 'QueryRule':
         path = [*path, ".query"]
 
         where = data.get("where", None)
         if where is not None:
             where = load_clause(where, c=c, ctx=ctx)
 
-        limit = LimitSet.load(data=data.get("limit", None), c=c)
+        limit = LimitSet.load(data=data.get("limit", None), c=c, ctx=ctx)
 
         if 'limits' in data:
             raise ValueError(f'the key is "limit", not "limits": {data}')

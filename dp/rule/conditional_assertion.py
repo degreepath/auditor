@@ -24,7 +24,7 @@ class ConditionalAssertionRule(Rule):
     when_no: Optional[AssertionRule]
 
     @staticmethod
-    def load(data: Dict, *, c: Constants, ctx: Optional['RequirementContext'], path: Sequence[str]) -> Union['ConditionalAssertionRule', AssertionRule]:
+    def load(data: Dict, *, c: Constants, ctx: 'RequirementContext', path: Sequence[str]) -> Union['ConditionalAssertionRule', AssertionRule]:
         if 'if' not in data:
             return AssertionRule.load(data, c=c, path=path, ctx=ctx)
 
