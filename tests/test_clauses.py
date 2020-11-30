@@ -14,15 +14,17 @@ from typing import Any
 
 
 def load_clause_test(clause: Any, c: Any) -> AssertionRule:
-    return AssertionRule.with_clause(load_clause(clause, c=c))
+    ctx = RequirementContext()
+    return AssertionRule.with_clause(load_clause(clause, c=c, ctx=ctx))
 
 
 def test_clauses(caplog):
+    ctx = RequirementContext()
     caplog.set_level(logging.DEBUG)
 
     c = Constants(matriculation_year=2000)
 
-    x = load_clause({"attributes": {"$eq": "csci_elective"}}, c=c)
+    x = load_clause({"attributes": {"$eq": "csci_elective"}}, c=c, ctx=ctx)
     expected_single = SingleClause.from_args(key="attributes", expected="csci_elective", expected_verbatim="csci_elective", operator=Operator.EqualTo)
     assert x == expected_single
 
@@ -32,13 +34,14 @@ def test_clauses(caplog):
 
 
 def test_clauses_in(caplog):
+    ctx = RequirementContext()
     caplog.set_level(logging.DEBUG)
 
     c = Constants(matriculation_year=2000)
     course = course_from_str(s="CSCI 296")
 
     values = tuple([296, 298, 396, 398])
-    x = load_clause({"number": {"$in": values}}, c=c)
+    x = load_clause({"number": {"$in": values}}, c=c, ctx=ctx)
     expected_single = SingleClause.from_args(key="number", expected=values, expected_verbatim=values, operator=Operator.In)
     assert x == expected_single
 
@@ -142,8 +145,10 @@ def test_resolution(caplog):
     class IntThing(Clausable):
         def apply_single_clause(self):
             pass
+
         def to_dict(self):
             pass
+
         def sort_order(self):
             return (hash(self))
 

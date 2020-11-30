@@ -30,7 +30,7 @@ def load_clause(
     data: Dict[str, Any],
     *,
     c: Constants,
-    ctx: Optional['RequirementContext'] = None,
+    ctx: 'RequirementContext',
     allow_boolean: bool = True,
     forbid: Sequence[Operator] = tuple(),
     path: Optional[Tuple[str, ...]] = None,
@@ -104,7 +104,7 @@ def load_clauses(
     data: Sequence[Any],
     *,
     c: Constants,
-    ctx: Optional['RequirementContext'] = None,
+    ctx: 'RequirementContext',
     allow_boolean: bool = True,
     forbid: Sequence[Operator] = tuple(),
 ) -> Iterator[Clause]:
@@ -120,7 +120,7 @@ def load_single_clause(
     value: Dict,
     *,
     c: Constants,
-    ctx: Optional['RequirementContext'] = None,
+    ctx: 'RequirementContext',
     forbid: Sequence[Operator] = tuple(),
     path: Optional[Tuple[str, ...]] = None,
 ) -> 'SingleClause':
@@ -164,7 +164,7 @@ def load_single_clause(
     )
 
 
-def load_expected_value(*, key: str, value: Dict, op: str, ctx: Optional['RequirementContext'], c: Constants) -> Tuple[Any, Any]:
+def load_expected_value(*, key: str, value: Dict, op: str, ctx: 'RequirementContext', c: Constants) -> Tuple[Any, Any]:
     expected_value = value[op]
     if isinstance(expected_value, list):
         expected_value = tuple(expected_value)
@@ -195,7 +195,7 @@ def load_expected_value(*, key: str, value: Dict, op: str, ctx: Optional['Requir
     return expected_value, expected_verbatim
 
 
-def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional['RequirementContext']) -> Tuple[str, Decimal]:
+def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: 'RequirementContext') -> Tuple[str, Decimal]:
     diff_value = Decimal(0)
     mode = MODE_INITIAL
 
@@ -223,7 +223,7 @@ def compute_single_clause_diff(conditionals: Mapping[str, str], *, ctx: Optional
     return mode, diff_value
 
 
-def check_simple_clause(condition: str, *, ctx: Optional['RequirementContext']) -> bool:
+def check_simple_clause(condition: str, *, ctx: 'RequirementContext') -> bool:
     '''
     > has-area-code(716) + has-area-code(711)
     > has-area-code(711) + passed-proficiency-exam(Keyboard Level IV)
