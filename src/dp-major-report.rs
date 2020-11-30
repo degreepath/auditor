@@ -70,7 +70,7 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
             LEFT JOIN server_data sd on (b.stnum, b.catalog, b.code) = (sd.stnum, sd.catalog, sd.code)
         WHERE b.branch = :branch
             AND b.code = :code
-        ORDER BY b.catalog, b.code, b.stnum
+        ORDER BY b.code, b.stnum
     ").unwrap();
 
     let params = named_params! {":code": area_code, ":branch": branch};
@@ -173,7 +173,6 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
 
         r.sort_by_cached_key(|s| {
             (
-                s.catalog.clone(),
                 s.emphases.join(","),
                 s.name.clone(),
                 s.stnum.clone(),
@@ -199,7 +198,7 @@ fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
 
     let mut last_header: Vec<String> = Vec::new();
     let mut last_requirements: Vec<String> = Vec::new();
-    let mut last_catalog: String = String::from("");
+    // let mut last_catalog: String = String::from("");
 
     for (i, pair) in results.into_iter().enumerate() {
         let MappedResult {
@@ -232,7 +231,7 @@ fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
 
             last_header = header.clone();
             wtr.write_record(header).unwrap();
-        } else if last_requirements != requirements || last_catalog != catalog {
+        } else if last_requirements != requirements {
             if i != 0 {
                 // write out a blank line, then a line with the new catalog year
                 let blank = vec![""; longest_header];
@@ -250,7 +249,7 @@ fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
             wtr.write_record(title).unwrap();
 
             last_requirements = requirements.clone();
-            last_catalog = catalog.clone();
+            // last_catalog = catalog.clone();
             wtr.write_record(header).unwrap();
         }
 
@@ -275,7 +274,7 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
         .map(|res| {
             (
                 (
-                    res.catalog.clone(),
+                    // res.catalog.clone(),
                     res.requirements.clone(),
                     res.emphasis_req_names.clone(),
                     res.header.clone(),
@@ -290,8 +289,11 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
     let tables: Vec<Table> = grouped
         .into_iter()
         .map(
-            |((catalog, _requirements, emphasis_req_names, header), group)| {
+            |((_requirements, emphasis_req_names, header), group)| {
                 let mut current_table: Table = Table::default();
+
+                let catalogs = group.iter().map(|res| res.catalog.clone()).collect::<BTreeSet<_>>();
+                let catalog = catalogs.into_iter().collect::<Vec<_>>().join(", ");
 
                 // write out a blank line, then a line with the new catalog year
                 current_table.caption = if !emphasis_req_names.is_empty() {
@@ -328,38 +330,7 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
         )
         .collect();
 
-    println!(
-        "{}",
-        r#"
-        <style>
-            main th, td {
-                border: solid 1px hsl(0, 0%, 80%);
-            }
-            main th {
-                position: sticky;
-                top: 0;
-                padding: 0.25em 0.25em;
-                background-color: #e2af40;
-                border-top: 0;
-                min-width: 150px;
-            }
-            main td {
-                padding: 0.25em 0.25em;
-            }
-            main table {
-                margin-bottom: 2rem;
-                border-collapse: collapse;
-            }
-
-            .passing {
-                color: hsl(0, 0%, 60%);
-            }
-            .not-passing {
-                background-color: hsl(0, 80%, 80%);
-            }
-        </style>
-        "#
-    );
+    println!(r#"<meta charset="utf-8">"#);
 
     for table in tables {
         if !table.caption.is_empty() {

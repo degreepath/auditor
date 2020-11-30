@@ -9,6 +9,9 @@ use serde_path_to_error;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
+// TODO: build one dp-report binary that executes a subcommand for report, summary, and required
+
+
 /// This doc string acts as a help message when the user runs '--help'
 /// as do all doc strings on fields
 #[derive(Clap, Debug)]
@@ -318,9 +321,9 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
     let grouped = results
         .into_iter()
         .map(|res| {
-            let catalog = res.catalog.clone();
-            let requirements = res.requirements.clone();
-            let emph = res.emphasis_req_names.clone();
+            // let catalog = res.catalog.clone();
+            // let requirements = res.requirements.clone();
+            // let emph = res.emphasis_req_names.clone();
 
             let headers = res
                 .header
@@ -329,26 +332,30 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
                 .cloned()
                 .collect::<Vec<_>>();
 
-            ((catalog, headers, requirements, emph), res)
+            (headers, res)
         })
         .into_group_map();
 
     let mut tables: Vec<Table> = grouped
         .into_iter()
         .map(
-            |((catalog, group_header, _requirements, emphasis_req_names), group)| {
+            |(group_header, group)| {
                 let mut current_table: Table = Table::default();
 
                 // write out a blank line, then a line with the new catalog year
-                current_table.caption = if !emphasis_req_names.is_empty() {
-                    format!(
-                        "Catalog: {}; Emphases: {}",
-                        catalog,
-                        emphasis_req_names.join(" & ")
-                    )
-                } else {
-                    format!("Catalog: {}", catalog)
-                };
+                let catalogs = group.iter().map(|res| res.catalog.clone()).collect::<BTreeSet<_>>();
+                let catalog = catalogs.into_iter().collect::<Vec<_>>().join(", ");
+
+                current_table.caption = format!("Catalog: {}", catalog);
+                // current_table.caption = if !emphasis_req_names.is_empty() {
+                //     format!(
+                //         "Catalog: {}; Emphases: {}",
+                //         catalog,
+                //         emphasis_req_names.join(" & ")
+                //     )
+                // } else {
+                //     format!("Catalog: {}", catalog)
+                // };
 
                 let top_headers = vec![
                     "".into(),
@@ -357,7 +364,7 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
                     "Needed by JR".into(),
                     "Needed by SO".into(),
                     "Needed by FY".into(),
-                    "Needed by NC".into(),
+                    // "Needed by NC".into(),
                 ];
 
                 current_table.header = top_headers.clone();
@@ -408,7 +415,7 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
                             value.format_classification(&value.jr),
                             value.format_classification(&value.so),
                             value.format_classification(&value.fy),
-                            value.format_classification(&value.nc),
+                            // value.format_classification(&value.nc),
                         ]
                     })
                     .collect();
@@ -422,38 +429,7 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
 
     tables.sort_by_cached_key(|t| t.caption.clone());
 
-    println!(
-        "{}",
-        r#"
-        <style>
-            main th, td {
-                border: solid 1px hsl(0, 0%, 80%);
-            }
-            main th {
-                position: sticky;
-                top: 0;
-                padding: 0.25em 0.25em;
-                background-color: #e2af40;
-                border-top: 0;
-                min-width: 150px;
-            }
-            main td {
-                padding: 0.25em 0.25em;
-            }
-            main table {
-                margin-bottom: 2rem;
-                border-collapse: collapse;
-            }
-
-            .passing {
-                color: hsl(0, 0%, 60%);
-            }
-            .not-passing {
-                background-color: hsl(0, 80%, 80%);
-            }
-        </style>
-        "#
-    );
+    println!(r#"<meta charset="utf-8">"#);
 
     for table in tables {
         if !table.caption.is_empty() {
