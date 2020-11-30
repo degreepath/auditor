@@ -182,3 +182,24 @@ def str_operator(op: str) -> str:
         return '∉'
 
     raise TypeError(f'unknown operator {op}')
+
+
+def str_text_operator(op: str) -> str:
+    if op == 'LessThan':
+        return 'LT'
+    elif op == 'LessThanOrEqualTo':
+        return 'LTE'
+    elif op == 'GreaterThan':
+        return 'GT'
+    elif op == 'GreaterThanOrEqualTo':
+        return 'GTE'
+    elif op == 'EqualTo':
+        return 'EQ'
+    elif op == 'NotEqualTo':
+        return 'NEQ'
+    elif op == 'In':
+        return 'IN'
+    elif op == 'NotIn':
+        return 'NIN'
+
+    raise TypeError(f'unknown operator {op}')
