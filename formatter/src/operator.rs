@@ -20,7 +20,7 @@ impl Display for Operator {
             Operator::LessThanOrEqualTo => "≤",
             Operator::GreaterThan => ">",
             Operator::GreaterThanOrEqualTo => "≥",
-            Operator::EqualTo => "==",
+            Operator::EqualTo => "=",
             Operator::NotEqualTo => "!=",
             Operator::In => "∈",
             Operator::NotIn => "∉",
