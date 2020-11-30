@@ -38,7 +38,7 @@ class AssertionRule(Rule, BaseAssertionRule):
         if where is not None:
             where = load_clause(where, c=c, ctx=ctx)
 
-        assertion = load_clause(data["assert"], c=c, ctx=ctx, allow_boolean=False, forbid=[Operator.LessThan])
+        assertion = load_clause(data["assert"], c=c, ctx=ctx, allow_boolean=False, forbid=[Operator.LessThan], path=path)
 
         message = data.get("message", None)
 
