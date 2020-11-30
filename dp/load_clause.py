@@ -30,6 +30,7 @@ def load_clause(
     ctx: Optional['RequirementContext'] = None,
     allow_boolean: bool = True,
     forbid: Sequence[Operator] = tuple(),
+    path: Optional[Tuple[str, ...]] = None,
 ) -> Optional[Clause]:
     if not isinstance(data, Mapping):
         raise Exception(f'expected {data} to be a dictionary')
@@ -39,18 +40,21 @@ def load_clause(
 
     if "$and" in data:
         assert len(data.keys()) == 1
+        assert path is None, "exceptions are not supported in compound clauses"
         clauses = tuple(load_clauses(data['$and'], c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid))
         assert len(clauses) >= 1
         return AndClause(children=clauses)
 
     elif "$or" in data:
         assert len(data.keys()) == 1
+        assert path is None, "exceptions are not supported in compound clauses"
         clauses = tuple(load_clauses(data['$or'], c=c, ctx=ctx, allow_boolean=allow_boolean, forbid=forbid))
         assert len(clauses) >= 1
         return OrClause(children=clauses)
 
     elif "$if" in data:
         assert ctx, '$if clauses are not allowed here (no context provided)'
+        assert path is None, "exceptions are not supported in conditional clauses"
 
         if '$or' in data['$if']:
             rule_pass = any(check_simple_clause(condition, ctx=ctx) for condition in data['$if']['$or'])
@@ -83,10 +87,12 @@ def load_clause(
 
     assert len(data.keys()) == 1, "only one key allowed in single-clauses"
 
-    clauses = tuple(load_single_clause(key, value, c=c, forbid=forbid, ctx=ctx) for key, value in data.items())
+    clauses = tuple(load_single_clause(key, value, c=c, forbid=forbid, ctx=ctx, path=path) for key, value in data.items())
 
     if len(clauses) == 1:
         return clauses[0]
+
+    assert path is None, "exceptions are not supported in compound clauses"
 
     return AndClause(children=clauses)
 
@@ -113,6 +119,7 @@ def load_single_clause(
     c: Constants,
     ctx: Optional['RequirementContext'] = None,
     forbid: Sequence[Operator] = tuple(),
+    path: Optional[Tuple[str, ...]] = None,
 ) -> 'SingleClause':
     assert isinstance(value, Dict), TypeError(f'expected {value!r} to be a dictionary')
 
