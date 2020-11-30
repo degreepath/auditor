@@ -200,11 +200,6 @@ class QuerySolution(Solution, BaseQueryRule):
             if debug: logger.debug("forced override on %s", self.path)
             return assertion.override()
 
-        override_value = ctx.get_value_exception(assertion.path)
-        if override_value:
-            if debug: logger.debug("override: new value on %s", self.path)
-            assertion = assertion.set_expected_value(override_value.value)
-
         if assertion.where:
             filtered_output = [item for item in data if apply_clause(assertion.where, item)]
         else:

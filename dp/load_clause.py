@@ -142,6 +142,12 @@ def load_single_clause(
         expected_value_covid, _ = load_expected_value(key=key, value=value, op='$during_covid', ctx=ctx, c=c)
         assert expected_value_covid is not None
 
+    if path:
+        override_value = ctx.get_value_exception(path)
+        if override_value:
+            logger.debug("override: new value on %s", path)
+            expected_value = override_value.value
+
     # forbid all null values in tuples or single-value clauses
     if operator in (Operator.In, Operator.NotIn):
         assert all(v is not None for v in expected_value)
