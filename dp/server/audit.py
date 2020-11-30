@@ -94,7 +94,8 @@ def audit(
                             revision,
                             student_classification,
                             student_class,
-                            student_name
+                            student_name,
+                            student_name_sort
                         )
                         VALUES (
                             %(student_id)s,
@@ -120,7 +121,8 @@ def audit(
                             coalesce((SELECT max(revision) FROM result WHERE student_id = %(student_id)s AND area_code = %(area_code)s), 0) + 1,
                             %(student_classification)s,
                             %(student_class)s,
-                            nullif(%(student_name)s, '')
+                            nullif(%(student_name)s, ''),
+                            nullif(%(student_name_sort)s, '')
                         )
                     """, {
                         "student_id": stnum,
@@ -142,6 +144,7 @@ def audit(
                         "ok": result["ok"],
                         "status": result["status"],
                         "student_name": student["name"],
+                        "student_name_sort": student["name_sort"],
                         "student_classification": student["classification"],
                         "student_class": student["class"] if student["class"] != "None" else None,
                     })
