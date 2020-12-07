@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementSolution(Solution, BaseRequirementRule):
     result: Optional[Union[Rule, Solution]]
-    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseRequirementRule, solution: Optional[Union[Rule, Solution]], overridden: bool = False) -> 'RequirementSolution':

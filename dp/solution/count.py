@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountSolution(Solution, BaseCountRule):
     items: Tuple[Union[Rule, Solution, Result], ...]
-    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: 'CountRule', count: int, items: Tuple[Union[Rule, Solution, Result], ...], overridden: bool = False) -> 'CountSolution':

@@ -26,6 +26,7 @@ class RuleState(enum.Enum):
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Base(abc.ABC):
     path: Tuple[str, ...]
+    overridden: bool
 
     def to_dict(self) -> Dict[str, Any]:
         status = self.status()
@@ -33,10 +34,12 @@ class Base(abc.ABC):
 
         return {
             "path": list(self.path),
+            "state": self.state().value,
             "type": self.type(),
             "status": status.value,
             "rank": str(rank),
             "max_rank": str(max_rank),
+            "overridden": self.overridden,
         }
 
     @abc.abstractmethod
@@ -89,7 +92,7 @@ class Base(abc.ABC):
         return True
 
     def is_waived(self) -> bool:
-        return False
+        return self.overridden
 
     def is_always_disjoint(self) -> bool:
         return False

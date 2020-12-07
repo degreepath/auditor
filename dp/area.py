@@ -150,6 +150,7 @@ class AreaOfStudy(Base):
             path=('$',),
             code=this_code,
             excluded_clbids=excluded_clbids,
+            overridden=False,
             common_rules=tuple(prepare_common_rules(
                 other_areas=student.areas,
                 dept_code=dept,
@@ -273,6 +274,7 @@ class AreaSolution(AreaOfStudy):
             path=area.path,
             solution=solution,
             context=ctx,
+            overridden=area.overridden,
             common_rules=area.common_rules,
             excluded_clbids=area.excluded_clbids,
         )
@@ -364,6 +366,7 @@ class AreaResult(AreaOfStudy, Result):
             path=area.path,
             context=ctx,
             result=result,
+            overridden=area.overridden,
             common_rules=area.common_rules,
             excluded_clbids=area.excluded_clbids,
         )

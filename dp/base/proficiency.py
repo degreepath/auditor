@@ -16,8 +16,6 @@ class BaseProficiencyRule(Base):
     proficiency: str
     course: Optional[BaseCourseRule]
     proficiency_status: ResultStatus = ResultStatus.Empty
-    path: Tuple[str, ...] = tuple()
-    overridden: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {

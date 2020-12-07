@@ -8,7 +8,6 @@ from ..claim import Claim
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseResult(Result, BaseCourseRule):
     claim_attempt: Optional[Claim]
-    overridden: bool
 
     @staticmethod
     def from_solution(

@@ -12,7 +12,6 @@ if TYPE_CHECKING:  # pragma: no cover
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountResult(Result, BaseCountRule):
     items: Tuple[Union[Rule, Solution, Result], ...]
-    overridden: bool
 
     @staticmethod
     def from_solution(

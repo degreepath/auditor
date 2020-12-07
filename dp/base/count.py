@@ -21,12 +21,12 @@ class BaseCountRule(Base):
     items: Tuple[Base, ...]
     audit_clauses: Tuple[SomeAssertion, ...]
     at_most: bool
-    path: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "count": self.count,
+            "at_most": self.at_most,
             "items": [item.to_dict() for item in self.items],
             "audit": [c.to_dict() for c in self.audits()],
             "audit_status": self.audit_status().value,

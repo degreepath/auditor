@@ -71,6 +71,7 @@ class RequirementRule(Rule, BaseRequirementRule):
             in_gpa=data.get("in_gpa", True),
             is_audited=is_audited,
             path=tuple(path),
+            overridden=False,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
@@ -107,6 +108,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return attr.evolve(self, result=result)
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
+        # TODO: move waive exception loading to .load()
         if ctx.get_waive_exception(self.path):
             yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
             return

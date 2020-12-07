@@ -180,6 +180,7 @@ class CountRule(Rule, BaseCountRule):
             at_most=at_most,
             audit_clauses=audit_clauses,
             path=tuple(path),
+            overridden=False,
         )
 
         all_child_names = set(r for r, k in data.get("requirements", {}).items() if 'if' not in k)

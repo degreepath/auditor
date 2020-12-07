@@ -32,10 +32,8 @@ class BaseQueryRule(Base):
     allow_claimed: bool
     attempt_claims: bool
     record_claims: bool
-    path: Tuple[str, ...]
     inserted: Tuple[str, ...]
     force_inserted: Tuple[str, ...]
-    overridden: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {

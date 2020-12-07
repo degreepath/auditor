@@ -9,36 +9,48 @@ from ..status import ResultStatus
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCourseRule(Base):
+    # how to find the course
     course: Optional[str] = None
     clbid: Optional[str] = None
     ap: Optional[str] = None
     institution: Optional[str] = None
     name: Optional[str] = None
-    hidden: bool = False
+
+    # additional filtering on the course
     grade: Optional[Decimal] = None
     grade_option: Optional[GradeOption] = None
-    allow_claimed: bool = False
-    from_claimed: bool = False
-    path: Tuple[str, ...] = tuple()
-    inserted: bool = False
-    overridden: bool = False
-    optional: bool = False
     year: Optional[int] = None
-    term: Optional[int] = None
+    term: Optional[int] = None  # TODO: mark this as str
     section: Optional[str] = None
     sub_type: Optional[str] = None
+
+    # logical modifiers
+    hidden: bool = False
+    allow_claimed: bool = False
+    from_claimed: bool = False
+    optional: bool = False
+    inserted: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "course": self.course,
             "clbid": self.clbid,
-            "hidden": self.hidden,
-            "grade": str(self.grade) if self.grade is not None else None,
-            "claims": [c.to_dict() for c in self.claims()],
             "ap": self.ap,
             "institution": self.institution,
             "name": self.name,
+            "grade": str(self.grade) if self.grade is not None else None,
+            "grade_option": str(self.grade_option) if self.grade_option is not None else None,
+            "year": self.year,
+            "term": self.term,
+            "section": self.section,
+            "sub_type": self.sub_type,
+            "hidden": self.hidden,
+            "allow_claimed": self.allow_claimed,
+            "from_claimed": self.from_claimed,
+            "optional": self.optional,
+            "inserted": self.inserted,
+            "claims": [c.to_dict() for c in self.claims()],
         }
 
     def type(self) -> str:
