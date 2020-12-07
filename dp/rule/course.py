@@ -19,9 +19,6 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
-    auto_waived: bool = False
-    excluded_clbids: FrozenSet[str] = frozenset()
-
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:
@@ -98,6 +95,8 @@ class CourseRule(Rule, BaseCourseRule):
             term=term,
             section=section,
             sub_type=sub_type,
+            overridden=False,
+            excluded_clbids=frozenset(),
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:

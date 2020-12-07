@@ -39,6 +39,7 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
             proficiency=proficiency,
             course=CourseRule.load(data['course'], c=c, path=path) if 'course' in data else None,
             path=tuple(path),
+            overridden=False,
         )
 
     def validate(self, *, ctx: 'RequirementContext') -> None:
