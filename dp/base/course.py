@@ -1,5 +1,5 @@
 import attr
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Tuple, Dict, FrozenSet, Any
 from decimal import Decimal
 
 from .bases import Base
@@ -30,6 +30,8 @@ class BaseCourseRule(Base):
     from_claimed: bool = False
     optional: bool = False
     inserted: bool = False
+    auto_waived: bool = False
+    excluded_clbids: FrozenSet[str] = frozenset()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -50,6 +52,8 @@ class BaseCourseRule(Base):
             "from_claimed": self.from_claimed,
             "optional": self.optional,
             "inserted": self.inserted,
+            "auto_waived": self.auto_waived,
+            "excluded_clbids": sorted(self.excluded_clbids),
             "claims": [c.to_dict() for c in self.claims()],
         }
 
