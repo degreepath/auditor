@@ -52,7 +52,7 @@ def test_overlaps(caplog: Any) -> None:
 
     result = solutions[0].audit()
 
-    assert result.ok() is True
+    assert result.is_ok() is True
 
 
 def x_test_overlaps(caplog: Any) -> None:
@@ -121,4 +121,4 @@ def x_test_overlaps(caplog: Any) -> None:
 
     result = solutions[0].audit()
 
-    assert result.ok() is True
+    assert result.is_ok() is True

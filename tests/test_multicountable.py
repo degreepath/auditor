@@ -40,9 +40,9 @@ def test_mc__none(caplog):
     assert len(results) == 3
 
     result_a, result_b, result_c = results
-    assert result_a.ok() is True
-    assert result_b.ok() is True
-    assert result_c.ok() is True
+    assert result_a.is_ok() is True
+    assert result_b.is_ok() is True
+    assert result_c.is_ok() is True
 
     assert list(c.course.course() for c in result_c.claims() if c.failed is False) == [course.course()]
 
@@ -83,9 +83,9 @@ def test_mc__none_2(caplog):
     assert len(results) == 3
 
     result_a, result_b, result_c = results
-    assert result_a.ok() is True
-    assert result_b.ok() is True
-    assert result_c.ok() is True
+    assert result_a.is_ok() is True
+    assert result_b.is_ok() is True
+    assert result_c.is_ok() is True
 
     assert list(c.course.course() for c in result_c.claims() if c.failed is False) == [course.course()]
 
@@ -127,7 +127,7 @@ def test_mc__only_course_references(caplog):
     assert len(results) == 1
 
     result_a = results[0]
-    assert result_a.ok() is True
+    assert result_a.is_ok() is True
 
     assert list(c.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]
 
@@ -171,7 +171,7 @@ def test_mc__only_query_references(caplog):
     assert len(results) == 1
 
     result_a = results[0]
-    assert result_a.ok() is True
+    assert result_a.is_ok() is True
 
     assert list(c.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]
 
@@ -211,6 +211,6 @@ def x_test_mc__mixed_course_query_references(caplog):
     assert len(results) == 1
 
     result_a = results[0]
-    assert result_a.ok() is True
+    assert result_a.is_ok() is True
 
     assert list(c.course.course() for c in result_a.claims() if c.failed is False) == [course.course(), course.course()]

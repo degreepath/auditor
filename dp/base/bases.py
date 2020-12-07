@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..data.course import CourseInstance  # noqa: F401
     from ..data.clausable import Clausable  # noqa: F401
 
-# TODO: rename waived() to is_waived(), matched() to collect_matches(), ok() to is_ok()
+# TODO: rename matched() to collect_matches()
 
 
 @enum.unique
@@ -97,7 +97,7 @@ class Base(abc.ABC):
     def is_never_disjoint(self) -> bool:
         return False
 
-    def ok(self) -> bool:
+    def is_ok(self) -> bool:
         return self.status() in PassingStatuses
 
     def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
