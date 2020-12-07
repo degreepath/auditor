@@ -341,7 +341,7 @@ class DynamicPredicateExpressionCompoundOr:
         for c in self.expressions:
             c.validate(ctx=ctx)
 
-    def evaluate(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpressionCompoundOr':
+    def evaluate_against_data(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpressionCompoundOr':
         if self.result is not None:
             return self
         evaluated = tuple(e.evaluate_against_data(data=data) for e in self.expressions)
