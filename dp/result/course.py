@@ -44,7 +44,7 @@ class CourseResult(Result, BaseCourseRule):
         else:
             return []
 
-    def waived(self) -> bool:
+    def is_waived(self) -> bool:
         if self.claim_attempt is not None and self.claim_attempt.failed is True:
             return False
 

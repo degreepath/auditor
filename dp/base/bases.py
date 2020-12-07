@@ -47,7 +47,7 @@ class Base(abc.ABC):
         return RuleState.Rule
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         matched = self.matched()
@@ -68,7 +68,7 @@ class Base(abc.ABC):
         return ResultStatus.Empty
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         return Decimal(0), Decimal(1)
@@ -88,7 +88,7 @@ class Base(abc.ABC):
     def is_in_gpa(self) -> bool:
         return True
 
-    def waived(self) -> bool:
+    def is_waived(self) -> bool:
         return False
 
     def is_always_disjoint(self) -> bool:

@@ -60,11 +60,11 @@ class BaseQueryRule(Base):
     def type(self) -> str:
         return "query"
 
-    def waived(self) -> bool:
+    def is_waived(self) -> bool:
         return self.overridden
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         assertion_ranks = [a.rank() for a in self.all_assertions()]
@@ -75,7 +75,7 @@ class BaseQueryRule(Base):
         return rank, max_rank
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         statuses = set(a.status() for a in self.all_assertions())

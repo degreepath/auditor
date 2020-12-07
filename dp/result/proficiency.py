@@ -37,5 +37,5 @@ class ProficiencyResult(Result, BaseProficiencyRule):
     def claims(self) -> List[Claim]:
         return self.course.claims() if self.course else []
 
-    def waived(self) -> bool:
+    def is_waived(self) -> bool:
         return self.overridden

@@ -78,5 +78,5 @@ class BaseConditionalRule(Base):
         else:
             return []
 
-    def waived(self) -> bool:
+    def is_waived(self) -> bool:
         return self.overridden

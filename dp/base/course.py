@@ -62,7 +62,7 @@ class BaseCourseRule(Base):
         return Decimal(0), Decimal(1)
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         matched = self.matched()

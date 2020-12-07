@@ -45,7 +45,7 @@ class BaseCountRule(Base):
         return [claim for item in self.items for claim in item.claims_for_gpa()]
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         item_ranks = [r.rank() for r in self.items]
@@ -70,7 +70,7 @@ class BaseCountRule(Base):
         return item_rank + audit_rank, item_max_rank + audit_max_rank
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         all_child_statuses = [r.status() for r in self.items]
@@ -106,7 +106,7 @@ class BaseCountRule(Base):
         return ResultStatus.NeedsMoreItems
 
     def audit_status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         all_audit_statuses = set(a.status() for a in self.audits())

@@ -35,7 +35,7 @@ class BaseRequirementRule(Base):
         return "requirement"
 
     def status(self) -> ResultStatus:
-        is_waived = self.waived()
+        is_waived = self.is_waived()
 
         if is_waived and (self.is_audited or self.is_contract):
             return ResultStatus.Done
@@ -52,7 +52,7 @@ class BaseRequirementRule(Base):
         return self.result.status()
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         if self.is_audited:

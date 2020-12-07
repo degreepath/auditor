@@ -381,7 +381,7 @@ class AreaResult(AreaOfStudy, Result):
 
     def status(self) -> ResultStatus:
         logger.debug("computing status: start")
-        if self.waived():
+        if self.is_waived():
             logger.debug("computing status: end")
             return ResultStatus.Waived
 
@@ -417,8 +417,8 @@ class AreaResult(AreaOfStudy, Result):
     def claims_for_gpa(self) -> List[Claim]:
         return self.result.claims_for_gpa()
 
-    def waived(self) -> bool:
-        return self.result.waived()
+    def is_waived(self) -> bool:
+        return self.result.is_waived()
 
 
 def prepare_common_rules(

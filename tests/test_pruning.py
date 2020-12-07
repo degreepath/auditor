@@ -37,5 +37,5 @@ def test_pruning_on_count_rule(caplog):
 
     assert result.result.count == 1
     assert result.ok() is True
-    assert result.waived() is False
+    assert result.is_waived() is False
     assert result.claims()[0].course.clbid == course_a.clbid

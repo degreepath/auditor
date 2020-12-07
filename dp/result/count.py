@@ -34,5 +34,5 @@ class CountResult(Result, BaseCountRule):
     def audits(self) -> Sequence[SomeAssertion]:
         return self.audit_clauses
 
-    def waived(self) -> bool:
+    def is_waived(self) -> bool:
         return self.overridden
