@@ -8,7 +8,7 @@ cargo build --bin dp-major-summary --release
 summarize=./target/release/dp-major-summary
 report=./target/release/dp-major-report
 
-for code in 160 170 200 310 420 480 885; do
+for code in 160 170 200 310 420 480 490 530 885; do
     echo "running $code"
 
     $summarize ./testbed_db.db "$code" --as-html > "summary-${code}.html"
