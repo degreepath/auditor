@@ -8,9 +8,6 @@ from ..claim import Claim
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QueryResult(Result, BaseQueryRule):
-    successful_claims: Tuple[Claim, ...]
-    failed_claims: Tuple[Claim, ...]
-
     @staticmethod
     def from_solution(
         *,
@@ -35,6 +32,7 @@ class QueryResult(Result, BaseQueryRule):
             overridden=overridden,
             inserted=solution.inserted,
             force_inserted=solution.force_inserted,
+            output=solution.output,
         )
 
     def only_failed_claims(self) -> Sequence[Claim]:

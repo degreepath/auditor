@@ -1,10 +1,13 @@
 import attr
-from typing import Optional, Tuple, Dict, FrozenSet, Any
+from typing import Optional, Tuple, Dict, FrozenSet, Any, TYPE_CHECKING
 from decimal import Decimal
 
 from .bases import Base
 from ..data.course_enums import GradeOption
 from ..status import ResultStatus
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..data.course import CourseInstance  # noqa: F401
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
@@ -30,8 +33,12 @@ class BaseCourseRule(Base):
     from_claimed: bool = False
     optional: bool = False
     inserted: bool = False
+    forced: bool = False
     auto_waived: bool = False
     excluded_clbids: FrozenSet[str] = frozenset()
+
+    # state
+    matched_course: Optional['CourseInstance'] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -52,9 +59,11 @@ class BaseCourseRule(Base):
             "from_claimed": self.from_claimed,
             "optional": self.optional,
             "inserted": self.inserted,
+            "forced": self.forced,
             "auto_waived": self.auto_waived,
             "excluded_clbids": sorted(self.excluded_clbids),
             "claims": [c.to_dict() for c in self.claims()],
+            "matched_scedid": self.matched_course.schedid if self.matched_course else None,
         }
 
     def type(self) -> str:

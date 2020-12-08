@@ -25,8 +25,6 @@ class AuditResult:
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QuerySolution(Solution, BaseQueryRule):
-    output: Tuple[Clausable, ...]
-
     @staticmethod
     def from_rule(
         *,
@@ -49,14 +47,9 @@ class QuerySolution(Solution, BaseQueryRule):
             inserted=rule.inserted + inserted,
             force_inserted=rule.force_inserted + force_inserted,
             output=output,
+            successful_claims=tuple(),
+            failed_claims=tuple(),
         )
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            **super().to_dict(),
-            # TODO: put me back
-            # "output": [x.to_dict() for x in self.output],
-        }
 
     def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
         logger.debug("auditing data for %s", self.path)

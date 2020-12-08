@@ -28,7 +28,9 @@ class BaseRequirementRule(Base):
             "message": self.message,
             "result": self.result.to_dict() if self.result is not None else None,
             "is_audited": self.is_audited,
-            "contract": self.is_contract,
+            "is_contract": self.is_contract,
+            "is_disjoint": self.disjoint,
+            "in_gpa": self.in_gpa,
         }
 
     def type(self) -> str:

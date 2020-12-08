@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, FrozenSet, Iterator, Collection, Optional, TYPE_CHECKING
+from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
 import logging
 
 from ..base import Rule, BaseCourseRule
@@ -89,6 +89,7 @@ class CourseRule(Rule, BaseCourseRule):
             ap=ap,
             clbid=clbid,
             inserted=inserted,
+            forced=False,
             auto_waived=auto_waived,
             optional=optional,
             year=year,

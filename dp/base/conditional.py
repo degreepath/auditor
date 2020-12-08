@@ -24,7 +24,6 @@ class BaseConditionalRule(Base):
             "condition": self.condition.to_dict(),
             "when_true": self.when_true.to_dict(),
             "when_false": self.when_false.to_dict() if self.when_false else None,
-            "overridden": self.overridden,
         }
 
     def type(self) -> str:

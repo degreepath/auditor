@@ -4,7 +4,7 @@ import logging
 import decimal
 
 from .area_enums import AreaStatus, AreaType
-from .clausable import Clausable
+from .clausable import Clausable, ClausableIdentifier
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..predicate_clause import Predicate
@@ -24,6 +24,9 @@ class AreaPointer(Clausable):
     dept: Optional[str]
     gpa: Optional[decimal.Decimal]
     terms_since_declaration: Optional[int]
+
+    def to_identifier(self) -> ClausableIdentifier:
+        return ClausableIdentifier(type="area", key="code", value=self.code)
 
     @staticmethod
     def with_code(code: str) -> 'AreaPointer':

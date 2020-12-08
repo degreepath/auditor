@@ -3,7 +3,7 @@ import attr
 from decimal import Decimal, ROUND_DOWN
 import logging
 
-from .clausable import Clausable
+from .clausable import Clausable, ClausableIdentifier
 from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
 from ..lib import str_to_grade_points
 from ..exception import CourseOverrideException, ExceptionAction, CourseCreditOverride, CourseSubjectOverride
@@ -52,6 +52,9 @@ class CourseInstance(Clausable):
     identity_: str
     is_chbi_: Optional[int]
     hash_cache_: Optional[int] = None
+
+    def to_identifier(self) -> ClausableIdentifier:
+        return ClausableIdentifier(type="class", key="scedid", value=self.schedid)
 
     def __str__(self) -> str:
         return self.verbose()

@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, Any, Sequence, cast
+from typing import Optional, Tuple, Dict, Any, Sequence, Iterable, cast, TYPE_CHECKING
 from decimal import Decimal
 import enum
 
@@ -11,6 +11,9 @@ from ..limit import LimitSet
 from ..predicate_clause import SomePredicate
 from ..data_type import DataType
 from ..claim import Claim
+from ..data.clausable import Clausable
+
+from ..data.course import CourseInstance
 
 
 @enum.unique
@@ -34,6 +37,9 @@ class BaseQueryRule(Base):
     record_claims: bool
     inserted: Tuple[str, ...]
     force_inserted: Tuple[str, ...]
+    output: Tuple[Clausable, ...]
+    successful_claims: Tuple[Claim, ...]
+    failed_claims: Tuple[Claim, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -47,7 +53,12 @@ class BaseQueryRule(Base):
             "failures": [c.to_dict() for c in self.only_failed_claims()],
             "inserted": list(self.inserted),
             "allow_claimed": self.allow_claimed,
+            "output": list(self._output_to_dicts()),
         }
+
+    def _output_to_dicts(self) -> Iterable[Clausable]:
+        for item in self.output:
+            yield item.to_identifier().to_dict()
 
     def only_failed_claims(self) -> Sequence[Claim]:
         return []

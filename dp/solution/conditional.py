@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class ConditionalSolution(Solution, BaseConditionalRule):
+    # reason: type narrowing; TODO: check if needed
     when_true: Union[Rule, Solution]
     when_false: Optional[Union[Rule, Solution]]
 

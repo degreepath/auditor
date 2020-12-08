@@ -7,6 +7,8 @@ from ..claim import Claim
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseResult(Result, BaseCourseRule):
+    # we don't need to include this in the output, because
+    # it's returned automatically under the "claims" key
     claim_attempt: Optional[Claim]
 
     @staticmethod

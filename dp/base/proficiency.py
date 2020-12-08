@@ -22,6 +22,7 @@ class BaseProficiencyRule(Base):
             **super().to_dict(),
             "course": self.course.to_dict() if self.course else None,
             "proficiency": self.proficiency,
+            "proficiency_status": self.proficiency_status.value,
         }
 
     def type(self) -> str:

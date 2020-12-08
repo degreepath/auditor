@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementRule(Rule, BaseRequirementRule):
+    # reason: type narrowing
     result: Optional[Rule]
 
     @staticmethod

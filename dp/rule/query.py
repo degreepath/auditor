@@ -104,6 +104,9 @@ class QueryRule(Rule, BaseQueryRule):
             inserted=tuple(),
             force_inserted=tuple(),
             overridden=overridden,
+            output=tuple(),
+            successful_claims=tuple(),
+            failed_claims=tuple(),
         )
 
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'QueryRule':

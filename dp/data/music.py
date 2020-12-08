@@ -4,7 +4,7 @@ import logging
 import enum
 import abc
 
-from .clausable import Clausable
+from .clausable import Clausable, ClausableIdentifier
 from ..status import ResultStatus
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -19,6 +19,9 @@ class MusicSlip(Clausable):
     id: str
     term: int
     name: str
+
+    def to_identifier(self) -> ClausableIdentifier:
+        return ClausableIdentifier(type="class", key="id", value=self.id)
 
     def to_dict(self) -> Dict[str, Any]:
         return {

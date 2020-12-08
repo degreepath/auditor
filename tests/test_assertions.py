@@ -1,10 +1,30 @@
 from dp.assertion_clause import Assertion
 from dp.data_type import DataType
 from dp.context import RequirementContext
-from dp.data.clausable import Clausable
+from dp.data.clausable import Clausable, ClausableIdentifier
+from dp.predicate_clause import Predicate
 from dp.constants import Constants
 import logging
 import pytest
+
+
+class IntThing(Clausable):
+    id: str
+
+    def __init__(self):
+        self.id = id(self)
+
+    def to_identifier(self) -> ClausableIdentifier:
+        return ClausableIdentifier(type="test-item", key="id", value=self.id)
+
+    def apply_predicate(self, clause: Predicate):
+        pass
+
+    def to_dict(self):
+        pass
+
+    def sort_order(self):
+        return (hash(self))
 
 
 def test_resolution(caplog):
@@ -12,14 +32,6 @@ def test_resolution(caplog):
 
     c = Constants(matriculation_year=2000)
     ctx = RequirementContext()
-
-    class IntThing(Clausable):
-        def apply_predicate(self):
-            pass
-        def to_dict(self):
-            pass
-        def sort_order(self):
-            return (hash(self))
 
     x = Assertion.load({"assert": {"count(items)": {"$eq": 1}}}, c=c, ctx=ctx, data_type=DataType.Recital, path=['$'])
 

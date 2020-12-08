@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountSolution(Solution, BaseCountRule):
+    # reason: type narrowing
     items: Tuple[Union[Rule, Solution, Result], ...]
 
     @staticmethod

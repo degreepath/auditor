@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class ProficiencyRule(Rule, BaseProficiencyRule):
+    # reason: type narrowing
     course: Optional[CourseRule]
 
     @staticmethod
