@@ -132,7 +132,7 @@ def result_str(
     #     return to_csv(dict_result, transcript=msg.transcript)
 
     if as_json:
-        return json.dumps(dict_result, sort_keys=True)
+        return json.dumps(dict_result)
 
     if as_json_and_transcript:
         transcript = [c.to_dict() for c in msg.transcript]

@@ -2,7 +2,6 @@ import attr
 from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Any
 import logging
 import decimal
-import enum
 import os
 from collections import defaultdict
 
@@ -36,7 +35,7 @@ class AreaOfStudy(Base):
     code: str
 
     limit: LimitSet
-    result: Rule
+    result: Any  # Rule
     multicountable: Dict[str, List[Tuple[str, ...]]]
     path: Tuple[str, ...]
 
@@ -44,32 +43,17 @@ class AreaOfStudy(Base):
     excluded_clbids: FrozenSet[str] = frozenset()
 
     def to_dict(self) -> Dict[str, Any]:
-        def exclude_context(attr: attr.Attribute, value: Any) -> bool:
-            # print(attr)
-            return attr.name != 'context' and attr.name!='common_rules'
-            # ...
-
-        def enum_to_value(inst, field, value) -> bool:
-            if isinstance(value, enum.Enum):
-                return value.value
-            if isinstance(value, decimal.Decimal):
-                return str(value)
-            if isinstance(value, set):
-                return sorted(value)
-            return value
-
-        return attr.asdict(self, filter=exclude_context, value_serializer=enum_to_value)
-        # return {
-        #     **super().to_dict(),
-        #     "name": self.name,
-        #     "kind": self.kind,
-        #     "code": self.code,
-        #     "degree": self.degree,
-        #     "result": self.result.to_dict(),
-        #     "gpa": str(self.gpa()),
-        #     "limit": self.limit.to_dict(),
-        #     "ok": self.status() in WAIVED_AND_DONE,
-        # }
+        return {
+            **super().to_dict(),
+            "name": self.name,
+            "kind": self.kind,
+            "code": self.code,
+            "degree": self.degree,
+            "result": self.result.to_dict(),
+            "gpa": str(self.gpa()),
+            "limit": self.limit.to_dict(),
+            "ok": self.status() in WAIVED_AND_DONE,
+        }
 
     def type(self) -> str:
         return "area"
