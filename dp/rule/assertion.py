@@ -227,37 +227,39 @@ class AssertionRule(Rule, BaseAssertionRule):
     def input_size_range(self, *, maximum: int) -> Iterator[int]:
         assertion = self.assertion
 
-        if type(assertion.expected) is not int:
+        if int(assertion.expected) != assertion.expected:
             raise TypeError('cannot find a range of values for a non-integer clause: %s', type(assertion.expected))
 
+        expected = int(assertion.expected)
+
         if assertion.operator == Operator.EqualTo or (assertion.operator == Operator.GreaterThanOrEqualTo and assertion.at_most is True):
-            if maximum < assertion.expected:
+            if maximum < expected:
                 yield maximum
                 return
-            yield from range(assertion.expected, assertion.expected + 1)
+            yield from range(expected, expected + 1)
 
         elif assertion.operator == Operator.NotEqualTo:
             # from 0-maximum, skipping "expected"
-            yield from range(0, assertion.expected)
-            yield from range(assertion.expected + 1, max(assertion.expected + 1, maximum + 1))
+            yield from range(0, expected)
+            yield from range(expected + 1, max(expected + 1, maximum + 1))
 
         elif assertion.operator == Operator.GreaterThanOrEqualTo:
-            if maximum < assertion.expected:
+            if maximum < expected:
                 yield maximum
                 return
-            yield from range(assertion.expected, max(assertion.expected + 1, maximum + 1))
+            yield from range(expected, max(expected + 1, maximum + 1))
 
         elif assertion.operator == Operator.GreaterThan:
-            if maximum < assertion.expected:
+            if maximum < expected:
                 yield maximum
                 return
-            yield from range(assertion.expected + 1, max(assertion.expected + 2, maximum + 1))
+            yield from range(expected + 1, max(expected + 2, maximum + 1))
 
         elif assertion.operator == Operator.LessThan:
-            yield from range(0, assertion.expected)
+            yield from range(0, expected)
 
         elif assertion.operator == Operator.LessThanOrEqualTo:
-            yield from range(0, assertion.expected + 1)
+            yield from range(0, expected + 1)
 
         else:
             raise TypeError('unsupported operator for ranges %s', assertion.operator)

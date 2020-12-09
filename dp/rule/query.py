@@ -305,11 +305,11 @@ def find_largest_simple_count_assertion(assertions: Sequence[AssertionRule]) -> 
 
     largest_assertion = None
     largest_count = -1
-    for assertion in assertions:
-        if is_simple_count_clause(assertion.assertion):
-            if type(assertion.assertion.expected) == int and assertion.assertion.expected > largest_count:
-                largest_assertion = assertion
-                largest_count = assertion.assertion.expected
+    for asrt in assertions:
+        if is_simple_count_clause(asrt.assertion):
+            if asrt.assertion.expected == int(asrt.assertion.expected) and asrt.assertion.expected > largest_count:
+                largest_assertion = asrt
+                largest_count = asrt.assertion.expected
 
     return largest_assertion
 
