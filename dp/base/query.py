@@ -31,6 +31,7 @@ class BaseQueryRule(Base):
     allow_claimed: bool
     attempt_claims: bool
     record_claims: bool
+    include_failed: bool
     path: Tuple[str, ...]
     inserted: Tuple[str, ...]
     force_inserted: Tuple[str, ...]

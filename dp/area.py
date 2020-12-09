@@ -90,7 +90,7 @@ class AreaOfStudy(Base):
             exceptions=group_exceptions(exceptions),
             templates=student.templates_as_dict(),
             music_proficiencies=student.music_proficiencies,
-        ).with_transcript(student.courses)
+        ).with_transcript(student.courses, including_failed=student.courses_with_failed,)
 
         result = load_rule(
             data=specification["result"],

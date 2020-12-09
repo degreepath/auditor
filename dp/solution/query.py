@@ -54,6 +54,7 @@ class QuerySolution(Solution, BaseQueryRule):
             overridden=overridden,
             inserted=rule.inserted + inserted,
             force_inserted=rule.force_inserted + force_inserted,
+            include_failed=rule.include_failed,
         )
 
     def to_dict(self) -> Dict[str, Any]:

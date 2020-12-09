@@ -125,7 +125,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
             yield ResultMsg(
                 result=result,
                 best_i=best_i,
-                transcript=student.courses,
+                transcript=student.courses_with_failed,
                 iters=audit_count,
                 total_iters=total_count,
                 avg_iter_ms=elapsed_ms / audit_count,
@@ -147,7 +147,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
     yield ResultMsg(
         result=best_sol,
         best_i=best_i,
-        transcript=student.courses,
+        transcript=student.courses_with_failed,
         iters=audit_count,
         total_iters=total_count,
         avg_iter_ms=elapsed_ms / audit_count,

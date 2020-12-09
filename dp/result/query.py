@@ -41,6 +41,7 @@ class QueryResult(Result, BaseQueryRule):
             overridden=overridden,
             inserted=solution.inserted,
             force_inserted=solution.force_inserted,
+            include_failed=solution.include_failed,
         )
 
     def only_failed_claims(self) -> Sequence[Claim]:
