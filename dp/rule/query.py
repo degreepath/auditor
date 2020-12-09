@@ -284,11 +284,16 @@ def check_assertion(assertion: Optional[AssertionRule], key: Callable[[SingleCla
 
 
 def is_simple_count_clause(clause: SingleClause) -> bool:
-    return clause.key in ('count(courses)', 'count(terms)')
+    return clause.key in (
+        'count(courses)',
+        'count(terms)',
+    )
 
 
 def is_simple_sum_clause(clause: SingleClause) -> bool:
-    return clause.key in ('sum(credits)',)
+    return clause.key in (
+        'sum(credits)',
+    )
 
 
 def is_lt_clause(clause: SingleClause) -> bool:
