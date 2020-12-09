@@ -155,6 +155,8 @@ class AreaOfStudy(Base):
                 dept_code=dept,
                 degree=degree,
                 area_code=this_code,
+                ctx=ctx,
+                c=c,
             )),
         )
 
@@ -425,9 +427,9 @@ def prepare_common_rules(
     dept_code: Optional[str],
     other_areas: Tuple[AreaPointer, ...] = tuple(),
     area_code: str,
+    ctx: RequirementContext,
+    c: Constants,
 ) -> Iterator[Rule]:
-    c = Constants(matriculation_year=0)
-
     if degree == 'B.M.':
         is_bm_major = True
     else:
@@ -459,7 +461,7 @@ def prepare_common_rules(
         },
         path=['$', '%Common Requirements', '.count', '[0]'],
         c=c,
-        ctx=RequirementContext(),
+        ctx=ctx,
     )
 
     assert c_or_better is not None, TypeError('expected c_or_better to not be None')
@@ -499,7 +501,7 @@ def prepare_common_rules(
         children={"Credits taken S/U": s_u_detail},
         path=['$', '%Common Requirements', '.count', '[1]'],
         c=c,
-        ctx=RequirementContext(),
+        ctx=ctx,
     )
 
     assert s_u_credits is not None, TypeError('expected s_u_credits to not be None')
@@ -585,7 +587,7 @@ def prepare_common_rules(
             children={"Credits outside the major": outside_rule},
             path=['$', '%Common Requirements', '.count', '[2]'],
             c=c,
-            ctx=RequirementContext(),
+            ctx=ctx,
         )
         assert outside_the_major is not None, TypeError('expected outside_the_major to not be None')
 
