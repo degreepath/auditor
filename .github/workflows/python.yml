@@ -73,10 +73,22 @@ jobs:
           python3 -m dp --help
           python3 -m dp.bin.validate --help
           python3 -m dp.bin.discover --help
+  
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: cpython-test
+    env:
+      REPO: ghcr.io/degreepath/degreepath
+    steps:
+      - name: docker build
+        run: |
+          docker pull "$REPO:stable"
+          docker build . --file Dockerfile --tag "temp" --cache-from "$REPO:stable"
+          docker run -t temp python3 -m dp --help
 
   github-registry:
     runs-on: ubuntu-latest
-    needs: cpython-test
+    needs: [cpython-test, docker-build]
     if: github.ref == 'refs/heads/stable'
 
     env:
