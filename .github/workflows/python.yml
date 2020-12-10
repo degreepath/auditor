@@ -97,7 +97,7 @@ jobs:
           docker pull "$REPO:stable"
           docker build . --file Dockerfile --tag "$REPO:$TAG" --cache-from "$REPO:stable"
           
-          docker run -t temp python3 -m dp --help
+          docker run -t "$REPO:$TAG" python3 -m dp --help
 
           docker push "$REPO:$TAG"
 
