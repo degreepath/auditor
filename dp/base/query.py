@@ -13,8 +13,6 @@ from ..data_type import DataType
 from ..claim import Claim
 from ..data.clausable import Clausable
 
-from ..data.course import CourseInstance
-
 
 @enum.unique
 class QuerySource(enum.Enum):
