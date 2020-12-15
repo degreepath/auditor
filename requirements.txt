@@ -7,10 +7,6 @@
 attrs==20.3.0 \
     --hash=sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6 \
     --hash=sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700 \
-    # via -r requirements.in, cattrs
-cattrs==1.1.2 \
-    --hash=sha256:967ce8f99b79f112a500fc03d02c4da669966055ea190b0c59a023af0ae33e5f \
-    --hash=sha256:a5873cd4745a74388557730247b4bb005d762f8aba0ab7aa55bcbd190bdf3322 \
     # via -r requirements.in
 pyyaml==5.3.1 \
     --hash=sha256:06a0d7ba600ce0b2d2fe2e78453a470b5a6e000a985dd4a4e54e436cc36b0e97 \
