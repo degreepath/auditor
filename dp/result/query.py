@@ -23,6 +23,7 @@ class QueryResult(Result, BaseQueryRule):
             assertions=assertions,
             limit=solution.limit,
             where=solution.where,
+            include_failed=solution.include_failed,
             allow_claimed=solution.allow_claimed,
             attempt_claims=solution.attempt_claims,
             record_claims=solution.record_claims,

@@ -10,12 +10,16 @@ from .data.area_pointer import AreaPointer
 from .data.music import MusicPerformance, MusicAttendance, MusicProficiencies
 from .data.student import TemplateCourse, course_filter, SUB_TYPE_LOOKUP
 from .claim import Claim
-from .exception import RuleException, OverrideException, InsertionException, ValueException
+from .exception import RuleException, OverrideException, InsertionException, ValueException, BlockException
 
 logger = logging.getLogger(__name__)
 debug: Optional[bool] = None
 
 ExceptionsDict = Mapping[Tuple[str, ...], List[RuleException]]
+
+
+class MissingClassLabIdException(Exception):
+    pass
 
 
 def group_exceptions(exceptions: Sequence[RuleException]) -> ExceptionsDict:
@@ -98,6 +102,7 @@ class RequirementContext:
             term=rule.term,
             section=rule.section,
             sub_type=SUB_TYPE_LOOKUP.get(rule.sub_type or '', None),
+            crsid=rule.crsid,
         ), source)
 
     def find_course_by_clbid(self, clbid: str) -> Optional[CourseInstance]:
@@ -108,7 +113,7 @@ class RequirementContext:
         if not match:
             match = self.forced_clbid_lookup_map_.get(clbid, None)
         if not match:
-            raise Exception(f'attempted to use CLBID={clbid} at {list(path)}, but it was not found in the transcript')
+            raise MissingClassLabIdException(f'attempted to use CLBID={clbid} at {list(path)}, but it was not found in the transcript')
         return match
 
     def has_declared_area_code(self, code: str) -> bool:
@@ -176,6 +181,14 @@ class RequirementContext:
                 return exception
 
         return None
+
+    def get_block_exceptions(self, path: Tuple[str, ...]) -> Iterator[BlockException]:
+        if path not in self.exceptions:
+            return None
+
+        for exception in self.exceptions.get(path, []):
+            if isinstance(exception, BlockException):
+                yield exception
 
     def get_value_exception(self, path: Tuple[str, ...]) -> Optional[ValueException]:
         if path not in self.exceptions:

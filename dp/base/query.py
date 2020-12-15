@@ -35,6 +35,7 @@ class BaseQueryRule(Base):
     allow_claimed: bool
     attempt_claims: bool
     record_claims: bool
+    include_failed: bool
     inserted: Tuple[str, ...]
     force_inserted: Tuple[str, ...]
     output: Tuple[Clausable, ...]
@@ -52,6 +53,7 @@ class BaseQueryRule(Base):
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.only_failed_claims()],
             "inserted": list(self.inserted),
+            "include_failed": self.include_failed,
             "allow_claimed": self.allow_claimed,
             "output": list(self._output_to_dicts()),
         }

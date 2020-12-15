@@ -21,6 +21,7 @@ class CourseResult(Result, BaseCourseRule):
         return CourseResult(
             course=solution.course,
             clbid=solution.clbid,
+            crsid=solution.crsid,
             hidden=solution.hidden,
             grade=solution.grade,
             grade_option=solution.grade_option,

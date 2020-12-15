@@ -20,12 +20,12 @@ logger = logging.getLogger(__name__)
 class TemplateCourse:
     subject: str = ''
     num: str = ''
-    section: Optional[str] = None
-    sub_type: Optional[str] = None
-    year: Optional[int] = None
-    term: Optional[int] = None
+    section: str = ''
+    sub_type: str = ''
+    year: str = ''
+    term: str = ''
     institution: str = ''
-    name: Optional[str] = None
+    name: str = ''
     clbid: str = ''
 
     def to_course_rule_as_dict(self) -> Dict:
@@ -49,9 +49,9 @@ class TemplateCourse:
         if self.name:
             course['ap'] = self.name
 
-        if self.year is not None:
-            assert self.term is not None
-            course['year'] = self.year
+        if self.year != '':
+            assert self.term != ''
+            course['year'] = int(self.year)
             course['term'] = self.term
 
         return course
@@ -126,9 +126,14 @@ class Student:
         # exclude the None items from the parsing
         templates = tuple(sorted((key, parsed) for key, parsed in templates_set if parsed))
 
+        curriculum_s: str = data.get('curriculum', 'None')
+        if curriculum_s == 'None':
+            curriculum_s = '0'
+        curriculum = int(curriculum_s)
+
         return Student(
             stnum=data.get('stnum', '000000'),
-            curriculum=int(data.get('curriculum', 0)),
+            curriculum=curriculum,
             catalog=int(data.get('catalog', 0)),
             current_area_code=code,
             matriculation=matriculation,
@@ -172,7 +177,7 @@ DEPTNUM_REGEX = re.compile(r"""
     (?P<num>[0-9]{3})                  # the course number
     (?P<section>[A-Z])?                # (optional) the section
     (.(?P<sub_type>[A-Z]))?            # (optional) the sub_type: .L for lab, .F for flac, etc
-    (\ (?P<year>\d{4})-(?P<term>\d))?  # (optional) the year-term
+    (\ (?P<year>\d{4})-(?P<term>.))?   # (optional) the year-term
     (\ \[(?P<inst>.+)\])?              # (optional) the [INSTITUTION] code
 """, re.VERBOSE)
 
@@ -202,19 +207,21 @@ def parse_template_course_rule(course_label: str, *, transcript: Iterable[Course
 def parse_identified_course(course_label: str, *, match_groups: Dict, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
     logger.debug('%s: %s', course_label, match_groups)
 
-    subject = match_groups['subject']
-    num = match_groups['num']
-    section = match_groups['section']
-    sub_type = match_groups['sub_type']
-    term = int(match_groups['term']) if match_groups['term'] else None
-    year = int(match_groups['year']) if match_groups['year'] else None
+    subject: str = match_groups['subject']
+    num: str = match_groups['num']
+    section: str = match_groups.get('section', '') or ''
+    sub_type: str = match_groups.get('sub_type', '') or ''
+    year: str = match_groups.get('year', '') or ''
+    term: str = match_groups.get('term', '') or ''
     institution: str = match_groups.get('inst', '') or ''
 
     iterable = filter(course_filter(
         course=f"{subject} {num}" if subject else None,
-        section=section,
+        section=section or None,
         sub_type=SUB_TYPE_LOOKUP.get(sub_type, None),
-        institution=institution,
+        institution=institution or None,
+        year=int(year) if year else None,
+        term=term if term else None,
     ), transcript)
 
     for crs in iterable:
@@ -228,7 +235,6 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
             term=term,
             year=year,
             institution=institution,
-            name=None,
             clbid=crs.clbid,
         )
 
@@ -242,14 +248,13 @@ def parse_identified_course(course_label: str, *, match_groups: Dict, transcript
         term=term,
         year=year,
         institution=institution,
-        name=None,
     )
 
 
 def parse_named_course(course_label: str, *, match_groups: Dict, transcript: Iterable[CourseInstance]) -> Optional[TemplateCourse]:
     logger.debug('%s: %s', course_label, match_groups)
 
-    name = match_groups['name']
+    name: str = match_groups['name']
     institution: str = match_groups.get('inst', '') or ''
 
     for crs in transcript:
@@ -267,10 +272,6 @@ def parse_named_course(course_label: str, *, match_groups: Dict, transcript: Ite
             subject=crs.subject,
             num=crs.number,
             clbid=crs.clbid,
-            section=None,
-            sub_type=None,
-            term=None,
-            year=None,
         )
 
     logger.debug('did not find existing match for %s', course_label)
@@ -342,10 +343,11 @@ def load_transcript(
 class CourseFilterArgs:
     ap: Optional[str] = None
     course: Optional[str] = None
+    crsid: Optional[str] = None
     institution: Optional[str] = None
     name: Optional[str] = None
     year: Optional[int] = None
-    term: Optional[int] = None
+    term: Optional[str] = None
     section: Optional[str] = None
     sub_type: Optional[SubType] = None
     in_progress: Optional[bool] = None
@@ -356,10 +358,11 @@ def course_filter(
     *,
     ap: Optional[str] = None,
     course: Optional[str] = None,
+    crsid: Optional[str] = None,
     institution: Optional[str] = None,
     name: Optional[str] = None,
     year: Optional[int] = None,
-    term: Optional[int] = None,
+    term: Optional[str] = None,
     section: Optional[str] = None,
     sub_type: Optional[SubType] = None,
     in_progress: Optional[bool] = None,
@@ -368,6 +371,7 @@ def course_filter(
     filter_args = CourseFilterArgs(
         ap=ap,
         course=course,
+        crsid=crsid,
         institution=institution,
         name=name,
         year=year,
@@ -383,25 +387,35 @@ def course_filter(
 def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
     # skip non-STOLAF courses if we're not given an institution
     # and aren't looking for an AP course
+    # print(c, end=' ')
     if f.institution is None and f.ap is None and not c.is_stolaf:
+        # print('failed on institution')
+        return False
+
+    if f.crsid is not None and f.crsid != c.crsid:
+        # print('failed on crsid')
         return False
 
     # compare course identity
     if f.course is not None:
         if c.identity_ != f.course:
+            # print('failed on course identity')
             return False
 
         # compare sections (given by template majors)
         if f.section is not None and c.section != f.section:
+            # print('failed on course section')
             return False
 
         # compare years (given by template majors)
         if f.year is not None:
             assert f.term is not None
             if c.year != f.year or c.term != f.term:
+                # print('failed on year/term')
                 return False
 
         if f.sub_type is not None and c.sub_type != f.sub_type:
+            # print('failed on sub-type')
             return False
 
     # compare course attributes
@@ -410,22 +424,27 @@ def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
 
     # compare course names
     if f.name is not None and c.name != f.name:
+        # print('failed on name')
         return False
 
     # compare course institutions
     if f.institution is not None and c.institution != f.institution:
+        # print('failed on institution')
         return False
 
     # compare for AP courses
     if f.ap is not None:
         if c.course_type != CourseType.AP or c.name != f.ap:
+            # print('failed on ap name')
             return False
 
     if f.in_progress is not None:
         # if we've requested only IP or non-IP courses, and this course
         # doesn't match, then skip it
         if f.in_progress != c.is_in_progress:
+            # print('failed on in-progress status')
             return False
 
     # if all of the previous have matched, we pass the checks
+    # print('match!')
     return True

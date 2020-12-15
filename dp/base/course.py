@@ -15,6 +15,7 @@ class BaseCourseRule(Base):
     # how to find the course
     course: Optional[str] = None
     clbid: Optional[str] = None
+    crsid: Optional[str] = None
     ap: Optional[str] = None
     institution: Optional[str] = None
     name: Optional[str] = None
@@ -23,7 +24,7 @@ class BaseCourseRule(Base):
     grade: Optional[Decimal] = None
     grade_option: Optional[GradeOption] = None
     year: Optional[int] = None
-    term: Optional[int] = None  # TODO: mark this as str
+    term: Optional[str] = None
     section: Optional[str] = None
     sub_type: Optional[str] = None
 
@@ -45,6 +46,7 @@ class BaseCourseRule(Base):
             **super().to_dict(),
             "course": self.course,
             "clbid": self.clbid,
+            "crsid": self.crsid,
             "ap": self.ap,
             "institution": self.institution,
             "name": self.name,

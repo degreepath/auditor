@@ -77,7 +77,7 @@ class QueryRule(Rule, BaseQueryRule):
         if 'assert' in data and 'all' in data:
             raise ValueError(f'you cannot have both assert: and all: keys; {data}')
 
-        allowed_keys = {'where', 'limit', 'claim', 'assert', 'all', 'allow_claimed', 'from', 'load_potentials'}
+        allowed_keys = {'where', 'limit', 'claim', 'assert', 'all', 'allow_claimed', 'from', 'load_potentials', 'include_failed'}
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
@@ -107,6 +107,7 @@ class QueryRule(Rule, BaseQueryRule):
             output=tuple(),
             successful_claims=tuple(),
             failed_claims=tuple(),
+            include_failed=data.get('include_failed', False),
         )
 
     def exclude_required_courses(self, to_exclude: Collection['CourseInstance']) -> 'QueryRule':
@@ -134,6 +135,9 @@ class QueryRule(Rule, BaseQueryRule):
     def get_data(self, *, ctx: 'RequirementContext') -> Iterable[Clausable]:
         if self.source is QuerySource.Courses:
             all_courses = ctx.transcript()
+            if self.include_failed:
+                all_courses = ctx.transcript_with_failed_
+
             if self.excluded_clbids:
                 return (c for c in all_courses if c.clbid not in self.excluded_clbids)
             else:

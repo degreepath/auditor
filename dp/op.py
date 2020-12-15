@@ -27,6 +27,12 @@ class Operator(enum.Enum):
         except ValueError:
             return False
 
+    def to_symbol(self) -> str:
+        return str_operator(self.name)
+
+    def to_text(self) -> str:
+        return str_text_operator(self.name)
+
 
 @lru_cache(2048)
 def apply_operator(*, op: Operator, lhs: Any, rhs: Any) -> bool:
@@ -188,5 +194,26 @@ def str_operator(op: str) -> str:
         return '∈'
     elif op == 'NotIn':
         return '∉'
+
+    raise TypeError(f'unknown operator {op}')
+
+
+def str_text_operator(op: str) -> str:
+    if op == 'LessThan':
+        return 'LT'
+    elif op == 'LessThanOrEqualTo':
+        return 'LTE'
+    elif op == 'GreaterThan':
+        return 'GT'
+    elif op == 'GreaterThanOrEqualTo':
+        return 'GTE'
+    elif op == 'EqualTo':
+        return 'EQ'
+    elif op == 'NotEqualTo':
+        return 'NEQ'
+    elif op == 'In':
+        return 'IN'
+    elif op == 'NotIn':
+        return 'NIN'
 
     raise TypeError(f'unknown operator {op}')

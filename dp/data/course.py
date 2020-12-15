@@ -332,7 +332,7 @@ def load_course(  # noqa: C901
     if subject_override:
         subject = cast(CourseSubjectOverride, subject_override).subject
 
-    term = term
+    year = int(year)
     credits = Decimal(credits)
     section = section or None
     level = int(level)
@@ -431,6 +431,9 @@ def load_course(  # noqa: C901
 
 def course_from_str(s: str, *, in_progress: bool = False, **kwargs: Any) -> CourseInstance:
     number = s.split(' ')[1]
+
+    assert type(kwargs.get('term', '')) is str
+    assert type(kwargs.get('year', 0)) is int
 
     if in_progress:
         flag_in_progress = True

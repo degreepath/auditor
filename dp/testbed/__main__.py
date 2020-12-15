@@ -54,6 +54,7 @@ def main() -> None:
     parser_baseline = subparsers.add_parser('baseline', help='runs a baseline audit benchmark')
     parser_baseline.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
     parser_baseline.add_argument('--copy', default=False, action='store_true', help='just copy the server results into baseline, instead of verifying them')
+    parser_baseline.add_argument('--code', dest='filter', default=None, nargs='?', help='an area code to filter to')
     # parser_baseline.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
     parser_baseline.set_defaults(func=baseline)
 
