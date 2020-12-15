@@ -37,6 +37,7 @@ AnyAssertion = Union[SomeAssertion, 'DynamicConditionalAssertion']
 class ValueChangeMode(enum.Enum):
     Add = "add"
     Subtract = "subtract"
+    Set = "set"
 
 
 @attr.s(frozen=True, cache_hash=True, auto_attribs=True, slots=True)
@@ -648,7 +649,18 @@ def load_single_assertion(
 
     expected, original = load_expected_value(value=value, key=op, c=c)
 
-    expected += compute_change_diff(changes)
+    for change in changes:
+        if not change.expression.result:
+            continue
+
+        if change.mode is ValueChangeMode.Add:
+            expected += change.amount
+        elif change.mode is ValueChangeMode.Subtract:
+            expected -= change.amount
+        elif change.mode is ValueChangeMode.Set:
+            expected = change.amount
+        else:
+            raise TypeError(f'unsupported compute_change_diff mode {change.mode}')
 
     override_value = ctx.get_value_exception(path)
     if override_value:
@@ -710,23 +722,6 @@ def load_expected_value(*, value: Dict, key: str, c: Constants) -> Tuple[Decimal
     expected = Decimal(expected)
 
     return expected, original
-
-
-def compute_change_diff(changes: Sequence[ValueChange]) -> Decimal:
-    diff_value = Decimal(0)
-
-    for change in changes:
-        if not change.expression.result:
-            continue
-
-        if change.mode is ValueChangeMode.Add:
-            diff_value += change.amount
-        elif change.mode is ValueChangeMode.Subtract:
-            diff_value -= change.amount
-        else:
-            raise TypeError(f'unsupported compute_change_diff mode {change.mode}')
-
-    return diff_value
 
 
 def input_size_range(assertion: Assertion, maximum: int) -> Iterator[int]:
