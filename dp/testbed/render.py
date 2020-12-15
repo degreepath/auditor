@@ -6,7 +6,7 @@ import difflib
 from .sqlite import sqlite_connect
 
 from dp.data.student import Student
-from dp.stringify import print_result
+from dp.stringify_v3 import print_result
 
 
 def render(args: argparse.Namespace) -> None:

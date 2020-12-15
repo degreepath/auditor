@@ -8,7 +8,7 @@ import os
 
 from dp.ms import pretty_ms
 from dp.run import run, load_student, load_area
-from dp.stringify import summarize
+from dp.stringify_v3 import summarize
 from dp.audit import ResultMsg, EstimateMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
 

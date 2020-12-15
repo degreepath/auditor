@@ -4,7 +4,7 @@ from typing import Iterator, Any, Dict, Tuple, Callable
 # import json
 # import textwrap
 
-from .stringify import str_predicate
+from .stringify_v3 import str_predicate
 from .data.course import CourseInstance
 from .status import PassingStatusValues, ResultStatus
 

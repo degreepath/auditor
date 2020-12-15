@@ -11,7 +11,7 @@ import os
 from .dotenv import load as load_dotenv
 from .run import run, load_student, load_area
 from .ms import pretty_ms
-from .stringify import summarize
+from .stringify_v3 import summarize
 # from .stringify_csv import to_csv
 from .audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
