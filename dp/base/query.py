@@ -56,7 +56,7 @@ class BaseQueryRule(Base):
             "output": list(self._output_to_dicts()),
         }
 
-    def _output_to_dicts(self) -> Iterable[Clausable]:
+    def _output_to_dicts(self) -> Iterable[Dict]:
         for item in self.output:
             yield item.to_identifier().to_dict()
 
