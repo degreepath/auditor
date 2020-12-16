@@ -208,6 +208,14 @@ class Assertion:
             filtered_output.append(matched_course)
             inserted_clbids.append(matched_course.clbid)
 
+        for block in ctx.get_block_exceptions(self.path):
+            logger.debug("excluded %s from %s", block.clbid, self.path)
+            matched_course = ctx.forced_course_by_clbid(block.clbid, path=self.path)
+            try:
+                filtered_output.remove(matched_course)
+            except ValueError:
+                pass
+
         result_status, calculated_result = self.evaluate(filtered_output)
 
         return attr.evolve(
