@@ -729,33 +729,33 @@ def input_size_range(assertion: Assertion, maximum: int) -> Iterator[int]:
     if assertion.expected != expected:
         raise TypeError(f'cannot find a range of values for a non-integer clause: {type(assertion.expected)}')
 
-    if operator == Operator.EqualTo or (operator == Operator.GreaterThanOrEqualTo and at_most is True):
+    if operator is Operator.EqualTo or (operator is Operator.GreaterThanOrEqualTo and at_most is True):
         if maximum < expected:
             yield maximum
             return
         yield from range(expected, expected + 1)
 
-    elif operator == Operator.NotEqualTo:
+    elif operator is Operator.NotEqualTo:
         # from 0-maximum, skipping "expected"
         yield from range(0, expected)
         yield from range(expected + 1, max(expected + 1, maximum + 1))
 
-    elif operator == Operator.GreaterThanOrEqualTo:
+    elif operator is Operator.GreaterThanOrEqualTo:
         if maximum < expected:
             yield maximum
             return
         yield from range(expected, max(expected + 1, maximum + 1))
 
-    elif operator == Operator.GreaterThan:
+    elif operator is Operator.GreaterThan:
         if maximum < expected:
             yield maximum
             return
         yield from range(expected + 1, max(expected + 2, maximum + 1))
 
-    elif operator == Operator.LessThan:
+    elif operator is Operator.LessThan:
         yield from range(0, expected)
 
-    elif operator == Operator.LessThanOrEqualTo:
+    elif operator is Operator.LessThanOrEqualTo:
         yield from range(0, expected + 1)
 
     else:
