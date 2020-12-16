@@ -24,3 +24,17 @@ def sqlite_cursor(conn: sqlite3.Connection) -> Iterator[sqlite3.Cursor]:
         yield curs
     finally:
         curs.close()
+
+
+@contextlib.contextmanager
+def sqlite_transaction(conn):
+    # We must issue a "BEGIN" explicitly when running in auto-commit mode.
+    conn.execute('BEGIN')
+    try:
+        # Yield control back to the caller.
+        yield
+    except:
+        conn.rollback()  # Roll back all changes if an exception occurs.
+        raise
+    else:
+        conn.commit()
