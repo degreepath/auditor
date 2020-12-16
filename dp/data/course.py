@@ -39,7 +39,7 @@ class CourseInstance(Clausable):
     level: int
     name: str
     number: str
-    schedid: Optional[str]
+    schedid: str
     section: Optional[str]
     sub_type: SubType
     subject: str
