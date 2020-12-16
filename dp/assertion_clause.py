@@ -723,37 +723,40 @@ def load_expected_value(*, value: Dict, key: str, c: Constants) -> Tuple[Decimal
 
 def input_size_range(assertion: Assertion, maximum: int) -> Iterator[int]:
     expected = int(assertion.expected)
+    operator = assertion.operator
+    at_most = assertion.at_most
+
     if assertion.expected != expected:
         raise TypeError(f'cannot find a range of values for a non-integer clause: {type(assertion.expected)}')
 
-    if assertion.operator == Operator.EqualTo or (assertion.operator == Operator.GreaterThanOrEqualTo and assertion.at_most is True):
-        if maximum < assertion.expected:
+    if operator == Operator.EqualTo or (operator == Operator.GreaterThanOrEqualTo and at_most is True):
+        if maximum < expected:
             yield maximum
             return
         yield from range(expected, expected + 1)
 
-    elif assertion.operator == Operator.NotEqualTo:
+    elif operator == Operator.NotEqualTo:
         # from 0-maximum, skipping "expected"
         yield from range(0, expected)
         yield from range(expected + 1, max(expected + 1, maximum + 1))
 
-    elif assertion.operator == Operator.GreaterThanOrEqualTo:
+    elif operator == Operator.GreaterThanOrEqualTo:
         if maximum < expected:
             yield maximum
             return
         yield from range(expected, max(expected + 1, maximum + 1))
 
-    elif assertion.operator == Operator.GreaterThan:
+    elif operator == Operator.GreaterThan:
         if maximum < expected:
             yield maximum
             return
         yield from range(expected + 1, max(expected + 2, maximum + 1))
 
-    elif assertion.operator == Operator.LessThan:
+    elif operator == Operator.LessThan:
         yield from range(0, expected)
 
-    elif assertion.operator == Operator.LessThanOrEqualTo:
+    elif operator == Operator.LessThanOrEqualTo:
         yield from range(0, expected + 1)
 
     else:
-        raise TypeError('unsupported operator for ranges %s', assertion.operator)
+        raise TypeError(f'unsupported operator for ranges {operator}')
