@@ -228,9 +228,6 @@ class Predicate:
 
         return as_dict
 
-    def override_expected(self, value: Decimal) -> 'Predicate':
-        return attr.evolve(self, expected=value, original=str(value))
-
     def validate(self, *, ctx: 'RequirementContext') -> None:
         pass
 
