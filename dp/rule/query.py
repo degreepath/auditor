@@ -2,7 +2,6 @@ import attr
 from typing import Dict, List, Optional, Sequence, Iterator, Iterable, Collection, FrozenSet, Tuple, cast, TYPE_CHECKING
 import itertools
 import logging
-import decimal
 
 from ..base import Rule, BaseQueryRule
 from ..base.query import QuerySource

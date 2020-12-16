@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, Any, Sequence, Iterable, cast, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Any, Sequence, Iterable, cast
 from decimal import Decimal
 import enum
 

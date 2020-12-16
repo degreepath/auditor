@@ -1,5 +1,5 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, Optional, cast, TYPE_CHECKING
+from typing import List, Sequence, Tuple, Optional, cast, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseQueryRule
