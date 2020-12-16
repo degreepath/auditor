@@ -93,6 +93,7 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
                 db=args.db,
                 area_spec=area_specs[r.area_key],
                 timeout=timeout,
+                run_id=getattr(args, 'branch', 'None'),
             ): r
             for r in records
             if r.area_key in area_specs
