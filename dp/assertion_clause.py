@@ -233,9 +233,6 @@ class Assertion:
         else:
             raise TypeError(f'unexpected key {self.key!r}')
 
-    def override_expected(self, *, value: Decimal) -> 'Assertion':
-        return attr.evolve(self, expected=value, original=str(value))
-
     def status(self) -> ResultStatus:
         return self.state
 
