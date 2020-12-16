@@ -1,5 +1,5 @@
 import argparse
-from .sqlite import sqlite_connect, sqlite_cursor, Connection
+from .sqlite import sqlite_connect
 
 
 def init_local_db(args: argparse.Namespace) -> None:

@@ -1,12 +1,11 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Optional
 import argparse
-import sqlite3
 
 import attr
 import tqdm  # type: ignore
 
-from .sqlite import sqlite_connect, sqlite_cursor, sqlite_transaction
+from .sqlite import sqlite_connect, sqlite_transaction
 from .audit import audit
 from .fetch import fetch_if_needed
 from .areas import load_areas

@@ -33,7 +33,7 @@ def sqlite_transaction(conn):
     try:
         # Yield control back to the caller.
         yield
-    except:
+    except Exception:
         conn.rollback()  # Roll back all changes if an exception occurs.
         raise
     else:
