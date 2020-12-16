@@ -1,5 +1,5 @@
 import contextlib
-from typing import Iterator
+from typing import Iterator, Generator
 from sqlite3 import PARSE_DECLTYPES, Connection, Row, Cursor, connect
 
 
@@ -27,7 +27,7 @@ def sqlite_cursor(conn: Connection) -> Iterator[Cursor]:
 
 
 @contextlib.contextmanager
-def sqlite_transaction(conn):
+def sqlite_transaction(conn: Connection) -> Generator:
     # We must issue a "BEGIN" explicitly when running in auto-commit mode.
     conn.execute('BEGIN')
     try:
