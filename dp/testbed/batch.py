@@ -129,12 +129,12 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
             assert db_args is not None, f"{record.stnum}, {record.catalog}, {record.code} returned None"
 
             if baseline:
-                curs.execute('''
+                conn.execute('''
                     INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
                     VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
                 ''', db_args)
             else:
-                curs.execute('''
+                conn.execute('''
                     INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
                     VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
                 ''', db_args)
