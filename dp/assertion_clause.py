@@ -244,6 +244,9 @@ class Assertion:
     def status(self) -> ResultStatus:
         return self.state
 
+    def is_waived(self) -> bool:
+        return self.overridden
+
     def ok(self) -> bool:
         return self.status() in PassingStatuses
 
