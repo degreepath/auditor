@@ -384,7 +384,7 @@ def course_filter(
     return lambda c: _course_filter(c, filter_args)
 
 
-def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
+def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:  # noqa: C901
     # skip non-STOLAF courses if we're not given an institution
     # and aren't looking for an AP course
     # print(c, end=' ')
