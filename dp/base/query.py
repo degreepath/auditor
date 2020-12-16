@@ -69,9 +69,6 @@ class BaseQueryRule(Base):
     def type(self) -> str:
         return "query"
 
-    def is_waived(self) -> bool:
-        return self.overridden
-
     def rank(self) -> Tuple[Decimal, Decimal]:
         if self.is_waived():
             return Decimal(1), Decimal(1)

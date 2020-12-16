@@ -27,6 +27,3 @@ class RequirementResult(Result, BaseRequirementRule):
             result=result,
             overridden=overridden,
         )
-
-    def is_waived(self) -> bool:
-        return self.overridden

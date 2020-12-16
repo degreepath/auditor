@@ -76,6 +76,3 @@ class BaseConditionalRule(Base):
             return self.when_false.all_courses(ctx=ctx)
         else:
             return []
-
-    def is_waived(self) -> bool:
-        return self.overridden
