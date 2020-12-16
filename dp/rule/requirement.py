@@ -63,6 +63,11 @@ class RequirementRule(Rule, BaseRequirementRule):
         if message:
             message = autop(message)
 
+        assert name.strip() != ""
+
+        if message is not None:
+            assert message.strip() != ""
+
         return RequirementRule(
             name=name,
             message=message,
@@ -74,17 +79,6 @@ class RequirementRule(Rule, BaseRequirementRule):
             path=tuple(path),
             overridden=False,
         )
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        assert isinstance(self.name, str)
-        assert self.name.strip() != ""
-
-        if self.message is not None:
-            assert isinstance(self.message, str)
-            assert self.message.strip() != ""
-
-        if self.result is not None:
-            self.result.validate(ctx=ctx)
 
     def get_requirement_names(self) -> List[str]:
         return [self.name]

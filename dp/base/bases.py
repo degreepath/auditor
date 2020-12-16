@@ -132,10 +132,6 @@ class Rule(Base):
         return RuleState.Rule
 
     @abc.abstractmethod
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        raise NotImplementedError('must define a validate() method')
-
-    @abc.abstractmethod
     def get_requirement_names(self) -> List[str]:
         raise NotImplementedError('must define a get_requirement_names() method')
 

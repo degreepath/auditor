@@ -91,10 +91,6 @@ class Assertion:
     resolved_clbids: Optional[Tuple[str, ...]] = None
     inserted_clbids: Optional[Tuple[str, ...]] = None
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        if self.where:
-            self.where.validate(ctx=ctx)
-
     @staticmethod
     def load(
         data: Dict[str, Any],
@@ -330,12 +326,6 @@ class ConditionalAssertion:
             "when_false": self.when_false.to_dict() if self.when_false else None,
         }
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        self.condition.validate(ctx=ctx)
-        self.when_true.validate(ctx=ctx)
-        if self.when_false:
-            self.when_false.validate(ctx=ctx)
-
     def audit_and_resolve(self, data: Sequence['Clausable'] = tuple(), *, ctx: 'RequirementContext') -> 'SomeAssertion':
         evaluated_condition = self.condition.evaluate(ctx=ctx)
 
@@ -438,10 +428,6 @@ class DynamicConditionalAssertion:
             "condition": self.condition.to_dict(),
             "when_true": self.when_true.to_dict(),
         }
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        self.condition.validate(ctx=ctx)
-        self.when_true.validate(ctx=ctx)
 
     def audit_and_resolve(self, data: Sequence['Clausable'] = tuple(), *, ctx: 'RequirementContext') -> 'DynamicConditionalAssertion':
         evaluated_condition = self.condition.evaluate_against_data(data=cast(Sequence['CourseInstance'], data))

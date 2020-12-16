@@ -97,10 +97,6 @@ class PredicateExpressionCompoundAnd:
             "result": self.result,
         }
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        for c in self.expressions:
-            c.validate(ctx=ctx)
-
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpressionCompoundAnd':
         if self.result is not None:
             return self
@@ -132,10 +128,6 @@ class PredicateExpressionCompoundOr:
             "result": self.result,
         }
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        for c in self.expressions:
-            c.validate(ctx=ctx)
-
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpressionCompoundOr':
         if self.result is not None:
             return self
@@ -165,9 +157,6 @@ class PredicateExpressionNot:
             "expression": self.expression.to_dict(),
             "result": self.result,
         }
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        self.expression.validate(ctx=ctx)
 
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpressionNot':
         if self.result is not None:
@@ -219,9 +208,6 @@ class PredicateExpression:
             "result": self.result,
         }
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        pass
-
     def evaluate(self, *, ctx: 'RequirementContext') -> 'PredicateExpression':
         if self.result is not None:
             return self
@@ -270,9 +256,6 @@ class DynamicPredicateExpression:
             "result": self.result,
         }
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        pass
-
     def evaluate_against_data(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpression':
         result = evaluate_dynamic_predicate_function(self.function, self.argument, data=data)
         return attr.evolve(self, result=result)
@@ -301,10 +284,6 @@ class DynamicPredicateExpressionCompoundAnd:
             "expressions": [c.to_dict() for c in self.expressions],
             "result": self.result,
         }
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        for c in self.expressions:
-            c.validate(ctx=ctx)
 
     def evaluate_against_data(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpressionCompoundAnd':
         if self.result is not None:
@@ -336,10 +315,6 @@ class DynamicPredicateExpressionCompoundOr:
             "expressions": [c.to_dict() for c in self.expressions],
             "result": self.result,
         }
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        for c in self.expressions:
-            c.validate(ctx=ctx)
 
     def evaluate_against_data(self, *, data: Sequence['CourseInstance']) -> 'DynamicPredicateExpressionCompoundOr':
         if self.result is not None:

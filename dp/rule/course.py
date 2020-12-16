@@ -79,6 +79,8 @@ class CourseRule(Rule, BaseCourseRule):
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
+        assert course or ap or (institution and name) or clbid or crsid
+
         return CourseRule(
             course=course,
             hidden=data.get("hidden", False),
@@ -103,9 +105,6 @@ class CourseRule(Rule, BaseCourseRule):
             overridden=False,
             excluded_clbids=frozenset(),
         )
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        assert self.course or self.ap or (self.institution and self.name) or self.clbid or self.crsid
 
     def get_requirement_names(self) -> List[str]:
         return []

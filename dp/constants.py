@@ -51,15 +51,3 @@ class Constants:
         else:
             logger.critical(f"TODO: support constant value `{v}`")
             return 0
-
-    @staticmethod
-    def validate(v: Any) -> bool:
-        if type(v) != str:
-            return True
-
-        if not v.startswith('$'):
-            return True
-
-        assert KnownConstants(v)
-
-        return True

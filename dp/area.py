@@ -80,8 +80,7 @@ class AreaOfStudy(Base):
         # this block just does validity checking on the emphases; we don't
         # actually use the result of loading these here.
         for e in emphases.values():
-            r = AreaOfStudy.load(specification=e, c=c, student=student, emphasis_validity_check=True)
-            r.validate()
+            AreaOfStudy.load(specification=e, c=c, student=student, emphasis_validity_check=True)
 
         declared_emphasis_codes = set(str(a.code) for a in student.areas if a.kind is AreaType.Emphasis)
 
@@ -160,11 +159,6 @@ class AreaOfStudy(Base):
                 c=c,
             )),
         )
-
-    def validate(self) -> None:
-        ctx = RequirementContext()
-
-        self.result.validate(ctx=ctx)
 
     def solutions(self, *, student: Student, exceptions: List[RuleException]) -> Iterator['AreaSolution']:
         logger.debug("evaluating area.result")

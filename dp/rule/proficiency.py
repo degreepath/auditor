@@ -43,9 +43,6 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
             overridden=False,
         )
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        pass
-
     def get_requirement_names(self) -> List[str]:
         return []
 

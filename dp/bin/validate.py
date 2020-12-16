@@ -1,6 +1,6 @@
 """validate
 
-Given area files on sys.argv, creates the AreaOfStudy object and calls .validate() on each one.
+Given area files on sys.argv, creates the AreaOfStudy object
 """
 
 import traceback
@@ -33,8 +33,7 @@ def main() -> int:
                 area_def = yaml.load(stream=infile, Loader=yaml.SafeLoader)
 
             c = Constants(matriculation_year=200)
-            area = AreaOfStudy.load(specification=area_def, c=c)
-            area.validate()
+            AreaOfStudy.load(specification=area_def, c=c)
 
         except Exception:
             print('', file=sys.stderr)

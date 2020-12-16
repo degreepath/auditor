@@ -60,12 +60,6 @@ class ConditionalRule(Rule, BaseConditionalRule):
             overridden=overridden,
         )
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        self.condition.validate(ctx=ctx)
-        self.when_true.validate(ctx=ctx)
-        if self.when_false:
-            self.when_false.validate(ctx=ctx)
-
     def get_requirement_names(self) -> List[str]:
         if self.condition.result is True:
             return self.when_true.get_requirement_names()

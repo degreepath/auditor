@@ -122,10 +122,6 @@ class QueryRule(Rule, BaseQueryRule):
         logger.debug('%s excluding blocked clbid %s', self.path, to_block.clbid)
         return attr.evolve(self, excluded_clbids=frozenset([*self.excluded_clbids, to_block.clbid]))
 
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        for a in self.assertions:
-            a.validate(ctx=ctx)
-
     def get_requirement_names(self) -> List[str]:
         return []
 

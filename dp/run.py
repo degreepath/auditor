@@ -49,7 +49,6 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
         student=loaded,
         exceptions=exceptions,
     )
-    area.validate()
 
     yield from audit(
         area=area,
