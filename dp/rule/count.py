@@ -57,7 +57,7 @@ class CountRule(Rule, BaseCountRule):
     ) -> 'CountRule':  # noqa: C901
         from ..load_rule import load_rule, expand_template
 
-        path = tuple([*path, ".count"])
+        path = [*path, ".count"]
 
         if "all" in data:
             items = data["all"]
@@ -108,7 +108,7 @@ class CountRule(Rule, BaseCountRule):
                 items.append({"requirement": emphasis_key, "__emphasis": emph['name']})
 
         did_insert = False
-        for insert in ctx.get_insert_exceptions(path):
+        for insert in ctx.get_insert_exceptions(tuple(path)):
             logger.debug("%s inserting new choice: %s", path, insert)
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=path)
             items.append({
@@ -179,7 +179,7 @@ class CountRule(Rule, BaseCountRule):
             items=tuple(loaded_items),
             at_most=at_most,
             audit_clauses=audit_clauses,
-            path=path,
+            path=tuple(path),
             overridden=False,
         )
 
