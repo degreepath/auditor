@@ -79,8 +79,6 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
     remaining_records = list(records)
     print(f'running {len(records):,} audits...')
 
-    return
-
     timeout: Optional[float] = None
     if baseline:
         timeout = float(minimum_duration.sec()) * 2.5
