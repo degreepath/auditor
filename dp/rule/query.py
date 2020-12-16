@@ -284,23 +284,13 @@ class QueryRule(Rule, BaseQueryRule):
 
 
 def find_largest_simple_count_assertion(assertions: Sequence[SomeAssertion]) -> Optional[SomeAssertion]:
-    def _expected(a: Optional[SomeAssertion]) -> decimal.Decimal:
-        if not a:
-            return decimal.Decimal(0)
-        return a.max_expected()
-
     simple_clauses = (a for a in assertions if a.is_simple_count_clause())
-    return max(simple_clauses, key=_expected, default=None)
+    return max(simple_clauses, key=lambda a: a.max_expected(), default=None)
 
 
 def find_largest_simple_sum_assertion(assertions: Sequence[SomeAssertion]) -> Optional[SomeAssertion]:
-    def _expected(a: Optional[SomeAssertion]) -> decimal.Decimal:
-        if not a:
-            return decimal.Decimal(0)
-        return a.max_expected()
-
     simple_clauses = (a for a in assertions if a.is_simple_sum_clause())
-    return max(simple_clauses, key=_expected, default=None)
+    return max(simple_clauses, key=lambda a: a.max_expected(), default=None)
 
 
 def flatten_assertions(it: Iterable[AnyAssertion]) -> Iterator[Assertion]:
