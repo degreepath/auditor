@@ -3,7 +3,7 @@ import argparse
 
 import tqdm  # type: ignore
 
-from .sqlite import sqlite_connect, sqlite_cursor
+from .sqlite import sqlite_connect, sqlite_cursor, sqlite_transaction
 from dp.ms import pretty_ms
 
 
@@ -38,12 +38,11 @@ def fetch(args: argparse.Namespace) -> None:
         print(f"Fetching run #{selected_run} with {total_items:,} audits into {args.db!r}")
 
     if args.clear:
-        with sqlite_connect(args.db) as conn:
+        with sqlite_connect(args.db) as conn, sqlite_transaction(conn):
             print('clearing cached data... ', end='', flush=True)
             # noinspection SqlWithoutWhere
             # language=SQLite
             conn.execute('DELETE FROM server_data')
-            conn.commit()
             print('cleared')
 
     # named cursors only allow one execute() call, so this must be its own block
@@ -76,7 +75,7 @@ def fetch(args: argparse.Namespace) -> None:
                 END
         ''', dict(run=selected_run))
 
-        with sqlite_connect(args.db) as conn:
+        with sqlite_connect(args.db) as conn, sqlite_transaction(conn):
             for row in tqdm.tqdm(curs, total=total_items, unit_scale=True):
                 try:
                     conn.execute('''
@@ -87,8 +86,6 @@ def fetch(args: argparse.Namespace) -> None:
                 except Exception as e:
                     print(dict(row))
                     raise e
-
-            conn.commit()
 
 
 def fetch__select_run(args: argparse.Namespace, conn: Any) -> int:
