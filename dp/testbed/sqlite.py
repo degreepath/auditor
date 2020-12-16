@@ -10,6 +10,7 @@ def sqlite_connect(filename: str, readonly: bool = False) -> Iterator[Connection
         uri = f'file:{filename}?mode=ro'
 
     conn = connect(uri, uri=True, detect_types=PARSE_DECLTYPES, isolation_level=None)
+    conn.execute('pragma journal_mode=wal')
     conn.row_factory = Row
     try:
         yield conn
