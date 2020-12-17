@@ -131,11 +131,11 @@ class Student:
             curriculum_s = '0'
         curriculum = int(curriculum_s)
 
-        catalog = data.get('catalog', None)
+        catalog = data.get('catalog', 0)
         try:
             catalog = int(catalog)
         except ValueError:
-            catalog = None
+            catalog = 0
 
         return Student(
             stnum=data.get('stnum', '000000'),
