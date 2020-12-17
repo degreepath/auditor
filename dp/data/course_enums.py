@@ -19,7 +19,7 @@ class TranscriptCode(enum.Enum):
     WasIncomplete = "*"
     IndividualMajor = "+"
     RepeatedLater = "R"
-    RepeatInProgress = "Z"
+    RepeatInProgress = "~"
 
 
 @enum.unique
