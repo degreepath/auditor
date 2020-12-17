@@ -117,10 +117,13 @@ class CourseInstance(Clausable):
         return self.identity_
 
     def verbose(self) -> str:
+        attrs = ''
+        if self.attributes:
+            attrs = ' ' + ' '.join('#' + a for a in sorted(self.attributes))
         if self.institution == 'STOLAF':
-            return f'{self.course_with_term()} "{self.name}" {self.credits} {self.grade_code.value} #{self.clbid}'
+            return f'{self.course_with_term()} "{self.name}" {self.credits} {self.grade_code.value} id={self.clbid}{attrs}'
         else:
-            return f'{self.course_with_term()} "{self.name}" [{self.institution}] {self.credits} {self.grade_code.value} #{self.clbid}'
+            return f'{self.course_with_term()} "{self.name}" [{self.institution}] {self.credits} {self.grade_code.value} #{self.clbid}{attrs}'
 
     def course_with_term(self) -> str:
         if self.sub_type is SubType.Lab:
