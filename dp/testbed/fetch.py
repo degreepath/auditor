@@ -67,6 +67,7 @@ def fetch(args: argparse.Namespace) -> None:
                  , student_classification as classification
                  , student_class as class
                  , student_name as name
+                 , result_version as version
             FROM result
             WHERE result IS NOT NULL
                 AND CASE
@@ -80,8 +81,8 @@ def fetch(args: argparse.Namespace) -> None:
                 try:
                     conn.execute('''
                         INSERT INTO server_data
-                                (run,  stnum,  catalog,  code,  name,  class,  classification,  iterations,  duration,  ok,  gpa,  rank,  max_rank,  status,       result,        input_data)
-                        VALUES (:run, :stnum, :catalog, :code, :name, :class, :classification, :iterations, :duration, :ok, :gpa, :rank, :max_rank, :status, json(:result), json(:input_data))
+                                (run,  stnum,  catalog,  code,  name,  class,  classification,  iterations,  duration,  ok,  gpa,  rank,  max_rank,  status,       result,        input_data,  version)
+                        VALUES (:run, :stnum, :catalog, :code, :name, :class, :classification, :iterations, :duration, :ok, :gpa, :rank, :max_rank, :status, json(:result), json(:input_data), :version)
                     ''', dict(row))
                 except Exception as e:
                     print(dict(row))

@@ -21,7 +21,8 @@ def init_local_db(args: argparse.Namespace) -> None:
                 input_data json not null,
                 classification text,
                 class text,
-                name text
+                name text,
+                version int not null
             )
         ''')
         conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS server_data_key_idx ON server_data (stnum, catalog, code)')
@@ -46,7 +47,8 @@ def init_local_db(args: argparse.Namespace) -> None:
                 result json not null,
                 classification text,
                 class text,
-                name text
+                name text,
+                version int not null
             )
         ''')
         conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS baseline_key_idx ON baseline (stnum, catalog, code)')
@@ -71,7 +73,8 @@ def init_local_db(args: argparse.Namespace) -> None:
                 result json not null,
                 classification text,
                 class text,
-                name text
+                name text,
+                version int not null
             )
         ''')
         conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS branch_key_idx ON branch (branch, stnum, catalog, code)')

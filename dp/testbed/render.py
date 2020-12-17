@@ -6,7 +6,8 @@ import difflib
 from .sqlite import sqlite_connect
 
 from dp.data.student import Student
-from dp.stringify_v3 import print_result
+from dp.stringify_v2 import print_result as print_result_v2
+from dp.stringify_v3 import print_result as print_result_v3
 
 
 def render(args: argparse.Namespace) -> None:
@@ -119,6 +120,13 @@ def render(args: argparse.Namespace) -> None:
 
 
 def render_result(student: Student, result: Dict) -> str:
-    transcript = {c.clbid: c for c in student.courses}
+    result_version = result['version']
 
-    return "\n".join(print_result(result, transcript=transcript, show_paths=False))
+    if result_version == 2:
+        transcript = {c.clbid: c for c in student.courses}
+        return "\n".join(print_result_v2(result, transcript=transcript))
+    elif result_version == 3:
+        transcript = {c.clbid: c for c in student.courses}
+        return "\n".join(print_result_v3(result, transcript=transcript))
+    else:
+        raise ValueError(f'unknown audit format {result_version!r}')

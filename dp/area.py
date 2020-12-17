@@ -42,6 +42,9 @@ class AreaOfStudy(Base):
     common_rules: Tuple[Rule, ...]
     excluded_clbids: FrozenSet[str] = frozenset()
 
+    # the version of this file format
+    version: int = 3
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
@@ -53,6 +56,7 @@ class AreaOfStudy(Base):
             "gpa": str(self.gpa()),
             "limit": self.limit.to_dict(),
             "ok": self.status() in WAIVED_AND_DONE,
+            "version": self.version,
         }
 
     def type(self) -> str:

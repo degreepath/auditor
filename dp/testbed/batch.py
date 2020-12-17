@@ -130,11 +130,11 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
 
             if baseline:
                 conn.execute('''
-                    INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
-                    VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
+                    INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result, version)
+                    VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result), :version)
                 ''', db_args)
             else:
                 conn.execute('''
-                    INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
-                    VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
+                    INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result, version)
+                    VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result), :version)
                 ''', db_args)
