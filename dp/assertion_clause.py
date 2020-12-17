@@ -201,8 +201,17 @@ class Assertion:
         for insert in ctx.get_insert_exceptions(self.path):
             matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
             logger.debug("inserted %r into assertion (at %s)", matched_course, self.path)
-            filtered_output.append(matched_course)
-            inserted_clbids.append(matched_course.clbid)
+
+            if insert.forced:
+                matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
+                filtered_output.append(matched_course)
+                inserted_clbids.append(matched_course.clbid)
+            else:
+                maybe_matched_course = ctx.find_course_by_clbid(insert.clbid)
+                if maybe_matched_course is not None:
+                    filtered_output.append(maybe_matched_course)
+                    inserted_clbids.append(maybe_matched_course.clbid)
+
 
         for block in ctx.get_block_exceptions(self.path):
             logger.debug("excluded %s from %s", block.clbid, self.path)
