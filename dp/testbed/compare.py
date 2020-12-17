@@ -41,7 +41,9 @@ def compare(args: argparse.Namespace) -> None:
                 round(b.rank, 2) AS rank,
                 round(r.rank, 2) AS rank_r,
                 b.max_rank AS max,
-                r.max_rank AS max_r
+                r.max_rank AS max_r,
+                b.ok AS ok,
+                r.ok AS ok_r
             FROM baseline b
                 LEFT JOIN branch r ON (b.stnum, b.catalog, b.code) = (r.stnum, r.catalog, r.code)
             WHERE b.ok != r.ok
@@ -81,7 +83,7 @@ def compare(args: argparse.Namespace) -> None:
     with sqlite_connect(args.db, readonly=True) as conn:
         results = [r for r in conn.execute(query, [args.run])]
 
-        fields = ['branch', 'stnum', 'catalog', 'code', 'gpa', 'gpa_r', 'it', 'it_r', 'dur', 'dur_r', 'stat', 'stat_r', 'rank', 'rank_r', 'max', 'max_r']
+        fields = ['branch', 'stnum', 'catalog', 'code', 'gpa', 'gpa_r', 'it', 'it_r', 'dur', 'dur_r', 'stat', 'stat_r', 'rank', 'rank_r', 'max', 'max_r', 'ok', 'ok_r']
         writer = csv.DictWriter(sys.stdout, fieldnames=fields)
         writer.writeheader()
 
