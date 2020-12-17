@@ -12,7 +12,7 @@ def compare(args: argparse.Namespace) -> None:
     # check to see if the branch has any results
     with sqlite_connect(args.db, readonly=True) as conn:
         count_results = conn.execute('''
-            SELECT count(*) count
+            SELECT count(*) AS count
             FROM branch
             WHERE branch = ?
         ''', [args.run])
