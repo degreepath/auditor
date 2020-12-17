@@ -63,8 +63,15 @@ class CountSolution(Solution, BaseCountRule):
         inserted_clbids = []
         for insert in ctx.get_insert_exceptions(assertion.path):
             logger.debug("inserted %s into %s", insert.clbid, self.path)
-            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-            matched_items.append(matched_course)
-            inserted_clbids.append(matched_course.clbid)
+
+            if insert.forced:
+                matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
+                matched_items.append(matched_course)
+                inserted_clbids.append(matched_course.clbid)
+            else:
+                maybe_matched_course = ctx.find_course_by_clbid(insert.clbid)
+                if maybe_matched_course is not None:
+                    matched_items.append(maybe_matched_course)
+                    inserted_clbids.append(maybe_matched_course.clbid)
 
         return assertion.resolve(tuple(matched_items), overridden=False, inserted=tuple(inserted_clbids))
