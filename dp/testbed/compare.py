@@ -81,14 +81,12 @@ def compare(args: argparse.Namespace) -> None:
         assert False
 
     with sqlite_connect(args.db, readonly=True) as conn:
-        results = [r for r in conn.execute(query, [args.run])]
-
         fields = ['branch', 'stnum', 'catalog', 'code', 'gpa', 'gpa_r', 'it', 'it_r', 'dur', 'dur_r', 'stat', 'stat_r', 'rank', 'rank_r', 'max', 'max_r', 'ok', 'ok_r']
         writer = csv.DictWriter(sys.stdout, fieldnames=fields)
         writer.writeheader()
 
         counter: Dict[str, decimal.Decimal] = defaultdict(decimal.Decimal)
-        for row in results:
+        for row in conn.execute(query, [args.run]):
             record = dict(row)
 
             for fieldkey, value in record.items():
