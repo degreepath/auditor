@@ -29,7 +29,7 @@ Examples
 )
 """
 
-from typing import Dict, Optional, Any, Mapping, Sequence, Union, Tuple, TYPE_CHECKING
+from typing import Dict, Optional, Any, Mapping, Sequence, Iterable, Union, Tuple, TYPE_CHECKING
 import logging
 import enum
 
@@ -358,13 +358,16 @@ def evaluate_dynamic_predicate_function(function: DynamicPredicateExpressionFunc
         return False
 
     elif function is DynamicPredicateExpressionFunction.QueryHasSingleCourseWithAttribute:
-        match_count = len(list(filter(course_filter(attribute=argument), data)))
-        if match_count == 1:
+        if count(filter(course_filter(attribute=argument), data)) == 1:
             return True
         return False
 
     else:
         raise TypeError(f"unknown DynamicPredicateExpressionFunction {function}")
+
+
+def count(it: Iterable[Any]) -> int:
+    return sum(1 for _ in it)
 
 
 def load_predicate_expression(
