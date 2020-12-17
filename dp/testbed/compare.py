@@ -17,9 +17,9 @@ def compare(args: argparse.Namespace) -> None:
             WHERE branch = ?
         ''', [args.run])
 
-        record = count_results.fetchone()
+        count = count_results.fetchone()[0]
 
-        assert record['count'] > 0, f'no records found for branch "{args.run}"'
+        assert count > 0, f'no records found for branch "{args.run}"'
 
     with sqlite_connect(args.db, readonly=False) as conn:
         conn.execute('DROP VIEW IF EXISTS changes')
@@ -100,5 +100,5 @@ def compare(args: argparse.Namespace) -> None:
 
         counter = {k: v.quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN) for k, v in counter.items()}
         writer.writerow({**counter, 'stnum': 'sum', 'catalog': '=======', 'code': '===='})
-        averages = {k: (v / len(results)).quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN) for k, v in counter.items()}
+        averages = {k: (v / count).quantize(decimal.Decimal("1.000"), rounding=decimal.ROUND_DOWN) for k, v in counter.items()}
         writer.writerow({**averages, 'stnum': 'avg', 'catalog': '=======', 'code': '===='})
