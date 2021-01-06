@@ -170,8 +170,7 @@ class QueryRule(Rule, BaseQueryRule):
                 inserted_clbids = (*inserted_clbids, insert.clbid)
                 if insert.forced:
                     force_inserted_clbids = (*force_inserted_clbids, insert.clbid)
-                    matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-                    data.append(matched_course)
+                    data.append(ctx.forced_course_by_clbid(insert.clbid, path=self.path))
                 else:
                     matched_course = ctx.find_course_by_clbid(insert.clbid)
                     if matched_course is not None:
