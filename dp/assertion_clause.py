@@ -212,7 +212,6 @@ class Assertion:
                     filtered_output.append(maybe_matched_course)
                     inserted_clbids.append(maybe_matched_course.clbid)
 
-
         for block in ctx.get_block_exceptions(self.path):
             logger.debug("excluded %s from %s", block.clbid, self.path)
             matched_course = ctx.forced_course_by_clbid(block.clbid, path=self.path)
