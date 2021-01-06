@@ -155,6 +155,8 @@ def audit(
         except Exception as ex:
             capture_exception(ex)
 
+            logger.error(ex)
+
             curs.execute("""
                 INSERT INTO result (
                     student_id,
