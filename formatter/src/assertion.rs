@@ -28,6 +28,12 @@ pub enum AssertionKey {
     CountSubjects,
     #[serde(rename = "count(areas)")]
     CountAreas,
+    #[serde(rename = "count(religion_traditions)")]
+    CountReligionTraditions,
+    #[serde(rename = "count(intlr_regions)")]
+    CountInternationalRelationsRegions,
+    #[serde(rename = "count(math_perspectives)")]
+    CountMathPerspectives,
     #[serde(rename = "sum(credits)")]
     SumCredits,
     #[serde(rename = "sum(credits_from_single_subject)")]
@@ -49,6 +55,9 @@ impl Display for AssertionKey {
             AssertionKey::CountPerformances => "count/performances",
             AssertionKey::CountRecitals => "count/recitals",
             AssertionKey::CountSubjects => "count/subjects",
+            AssertionKey::CountInternationalRelationsRegions => "count/regions",
+            AssertionKey::CountMathPerspectives => "count/perspectives",
+            AssertionKey::CountReligionTraditions => "count/religions-traditions",
             AssertionKey::SumCredits => "sum/credits",
             AssertionKey::SumCreditsFromSingleSubject => "sum/credits-from-single-subject",
             AssertionKey::AverageGrades => "average/grades",
@@ -175,6 +184,9 @@ impl crate::to_csv::ToCsv for AssertionRule {
             AssertionKey::SumCredits => "credits",
             AssertionKey::SumCreditsFromSingleSubject => "credits from a single subject",
             AssertionKey::AverageGrades => "grade",
+            AssertionKey::CountReligionTraditions => "religious traditions",
+            AssertionKey::CountInternationalRelationsRegions => "regions",
+            AssertionKey::CountMathPerspectives => "perspectives",
         };
 
         let header = match self.operator {
@@ -244,6 +256,9 @@ impl AssertionRule {
             AssertionKey::CountPerformances => self.expected.parse().unwrap(),
             AssertionKey::CountRecitals => self.expected.parse().unwrap(),
             AssertionKey::CountSubjects => self.expected.parse().unwrap(),
+            AssertionKey::CountReligionTraditions => self.expected.parse().unwrap(),
+            AssertionKey::CountInternationalRelationsRegions => self.expected.parse().unwrap(),
+            AssertionKey::CountMathPerspectives => self.expected.parse().unwrap(),
             AssertionKey::SumCredits | AssertionKey::SumCreditsFromSingleSubject => {
                 let as_float: f64 = self.expected.parse().unwrap();
                 let as_int: usize = as_float.round() as usize;
@@ -287,6 +302,9 @@ impl AssertionRule {
             AssertionKey::CountSubjects => false,
             AssertionKey::CountAreas => false,
             AssertionKey::AverageGrades => false,
+            AssertionKey::CountReligionTraditions => false,
+            AssertionKey::CountInternationalRelationsRegions => false,
+            AssertionKey::CountMathPerspectives => false,
         }
     }
 

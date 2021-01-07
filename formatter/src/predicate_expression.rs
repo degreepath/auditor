@@ -66,15 +66,16 @@ where
     }
 }
 
-pub trait PredicateConditionFunction: Display {}
+pub trait PredicateConditionFunction: Display + std::fmt::Debug {}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PredicateExpression<Func>
 where
     Func: PredicateConditionFunction,
 {
-    pub function: Func,
-    pub argument: String,
+    // not really optional... but something in 590's spec crashes here otherwise
+    pub function: Option<Func>,
+    pub argument: Option<String>,
     pub result: Option<bool>,
 }
 
@@ -91,7 +92,7 @@ where
 
         write!(
             f,
-            "({} \"{}\" => {})",
+            "({:?} \"{:?}\" => {})",
             self.function, self.argument, headline
         )
     }
