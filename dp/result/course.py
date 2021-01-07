@@ -7,8 +7,9 @@ from ..claim import Claim
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseResult(Result, BaseCourseRule):
+    # we don't need to include this in the output, because
+    # it's returned automatically under the "claims" key
     claim_attempt: Optional[Claim]
-    overridden: bool
 
     @staticmethod
     def from_solution(
@@ -45,7 +46,7 @@ class CourseResult(Result, BaseCourseRule):
         else:
             return []
 
-    def waived(self) -> bool:
+    def is_waived(self) -> bool:
         if self.claim_attempt is not None and self.claim_attempt.failed is True:
             return False
 

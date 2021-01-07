@@ -3,7 +3,7 @@ import argparse
 
 import tqdm  # type: ignore
 
-from .sqlite import sqlite_connect, sqlite_cursor
+from .sqlite import sqlite_connect, sqlite_cursor, sqlite_transaction
 from dp.ms import pretty_ms
 
 
@@ -15,34 +15,39 @@ def fetch(args: argparse.Namespace) -> None:
     pg_conn = psycopg2.connect('', application_name='degreepath-testbed', cursor_factory=psycopg2.extras.DictCursor)
     pg_conn.set_session(readonly=True)
 
-    selected_run = fetch__select_run(args, pg_conn)
+    selected_run = None
+    if not args.latest:
+        selected_run = fetch__select_run(args, pg_conn)
 
     with pg_conn.cursor() as curs:
         # language=PostgreSQL
         curs.execute('''
             SELECT count(*) total_count
             FROM result
-            WHERE run = %s
-        ''', [selected_run])
+            WHERE CASE
+                WHEN %(run)s IS NOT NULL THEN run = %(run)s
+                ELSE is_active = true
+            END
+        ''', dict(run=selected_run))
 
         total_items = curs.fetchone()['total_count']
 
-    print(f"Fetching run #{selected_run} with {total_items:,} audits into '{args.db}'")
+    if args.latest:
+        print(f"Fetching all {total_items:,} audits into {args.db!r}")
+    else:
+        print(f"Fetching run #{selected_run} with {total_items:,} audits into {args.db!r}")
 
     if args.clear:
-        with sqlite_connect(args.db) as conn:
+        with sqlite_connect(args.db) as conn, sqlite_transaction(conn):
             print('clearing cached data... ', end='', flush=True)
             # noinspection SqlWithoutWhere
             # language=SQLite
             conn.execute('DELETE FROM server_data')
-            conn.commit()
             print('cleared')
 
     # named cursors only allow one execute() call, so this must be its own block
     with pg_conn.cursor(name="degreepath_testbed") as curs:
-        curs.itersize = 50
-
-        latest = args.latest
+        curs.itersize = 75
 
         # language=PostgreSQL
         curs.execute('''
@@ -62,28 +67,26 @@ def fetch(args: argparse.Namespace) -> None:
                  , student_classification as classification
                  , student_class as class
                  , student_name as name
+                 , result_version as version
             FROM result
             WHERE result IS NOT NULL
                 AND CASE
                     WHEN %(run)s IS NOT NULL THEN run = %(run)s
-                    WHEN %(latest)s IS NOT NULL THEN is_active = true
-                    ELSE run = (select max(run) from result)
+                    ELSE is_active = true
                 END
-        ''', dict(run=selected_run, latest=latest))
+        ''', dict(run=selected_run))
 
-        with sqlite_connect(args.db) as conn:
+        with sqlite_connect(args.db) as conn, sqlite_transaction(conn):
             for row in tqdm.tqdm(curs, total=total_items, unit_scale=True):
                 try:
                     conn.execute('''
                         INSERT INTO server_data
-                                (run,  stnum,  catalog,  code,  name,  class,  classification,  iterations,  duration,  ok,  gpa,  rank,  max_rank,  status,       result,        input_data)
-                        VALUES (:run, :stnum, :catalog, :code, :name, :class, :classification, :iterations, :duration, :ok, :gpa, :rank, :max_rank, :status, json(:result), json(:input_data))
+                                (run,  stnum,  catalog,  code,  name,  class,  classification,  iterations,  duration,  ok,  gpa,  rank,  max_rank,  status,       result,        input_data,  version)
+                        VALUES (:run, :stnum, :catalog, :code, :name, :class, :classification, :iterations, :duration, :ok, :gpa, :rank, :max_rank, :status, json(:result), json(:input_data), :version)
                     ''', dict(row))
                 except Exception as e:
                     print(dict(row))
                     raise e
-
-            conn.commit()
 
 
 def fetch__select_run(args: argparse.Namespace, conn: Any) -> int:

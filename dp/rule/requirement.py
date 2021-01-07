@@ -5,9 +5,6 @@ import attr
 from ..base import Rule, BaseRequirementRule
 from ..constants import Constants
 from ..solution.requirement import RequirementSolution
-from ..rule.query import QueryRule
-from ..solve import find_best_solution
-from ..status import PassingStatuses
 from ..exception import BlockException
 
 from ..autop import autop
@@ -22,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementRule(Rule, BaseRequirementRule):
+    # reason: type narrowing
     result: Optional[Rule]
 
     @staticmethod
@@ -29,14 +27,14 @@ class RequirementRule(Rule, BaseRequirementRule):
         return "requirement" in data or "name" in data
 
     @staticmethod
-    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: 'RequirementContext') -> Optional['RequirementRule']:
+    def load(data: Mapping[str, Any], *, name: str, c: Constants, path: List[str], ctx: 'RequirementContext') -> 'RequirementRule':
         from ..load_rule import load_rule
 
         path = [*path, f"%{name}"]
 
         # "name" is allowed due to emphasis requirements
         allowed_keys = {
-            'if', 'in_gpa', 'name', 'else', 'then', 'result', 'disjoint',
+            'in_gpa', 'name', 'result', 'disjoint',
             'message', 'contract', 'requirements',
             'department_audited', 'department-audited',
         }
@@ -45,35 +43,8 @@ class RequirementRule(Rule, BaseRequirementRule):
 
         result = data.get("result", None)
 
-        # be able to exclude requirements if they shouldn't exist
-        if 'if' in data:
-            assert ctx, TypeError('conditional requirements are only supported at the top-level')
-
-            rule = QueryRule.load(data['if'], c=c, path=[*path, '#if'], ctx=ctx)
-
-            with ctx.fresh_claims():
-                s = find_best_solution(rule=rule, ctx=ctx)
-
-            if not s:
-                return None
-
-            if 'then' in data and 'else' in data:
-                if s.status() in PassingStatuses:
-                    result = data['then']
-                else:
-                    result = data['else']
-            elif ('then' in data and 'else' not in data) or ('then' not in data and 'else' in data):
-                raise TypeError(f'{path} in an if:, with one of then: or else:; expected both then: and else:')
-            elif s.status() in PassingStatuses:
-                # we support some "Optional" requirements that are department-audited
-                result = data.get("result", None)
-            else:
-                return None
-
         if result is not None:
             result = load_rule(data=result, c=c, children=data.get("requirements", {}), path=path, ctx=ctx)
-            if result is None:
-                return None
 
             all_child_names = set(data.get("requirements", {}).keys())
             used_child_names = set(result.get_requirement_names())
@@ -92,6 +63,11 @@ class RequirementRule(Rule, BaseRequirementRule):
         if message:
             message = autop(message)
 
+        assert name.strip() != ""
+
+        if message is not None:
+            assert message.strip() != ""
+
         return RequirementRule(
             name=name,
             message=message,
@@ -101,18 +77,8 @@ class RequirementRule(Rule, BaseRequirementRule):
             in_gpa=data.get("in_gpa", True),
             is_audited=is_audited,
             path=tuple(path),
+            overridden=False,
         )
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        assert isinstance(self.name, str)
-        assert self.name.strip() != ""
-
-        if self.message is not None:
-            assert isinstance(self.message, str)
-            assert self.message.strip() != ""
-
-        if self.result is not None:
-            self.result.validate(ctx=ctx)
 
     def get_requirement_names(self) -> List[str]:
         return [self.name]
@@ -137,6 +103,7 @@ class RequirementRule(Rule, BaseRequirementRule):
         return attr.evolve(self, result=result)
 
     def solutions(self, *, ctx: 'RequirementContext', depth: Optional[int] = None) -> Iterator[RequirementSolution]:
+        # TODO: move waive exception loading to .load()
         if ctx.get_waive_exception(self.path):
             yield RequirementSolution.from_rule(rule=self, solution=self.result, overridden=True)
             return

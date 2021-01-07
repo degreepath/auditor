@@ -6,7 +6,7 @@ Given an input JSON student and the output of `dp --json` as argv, prints the ou
 import json
 import argparse
 
-from dp.stringify import print_result
+from dp.stringify_v3 import print_result
 from dp import load_course
 
 

@@ -5,5 +5,5 @@ from .course import BaseCourseRule
 from .count import BaseCountRule
 from .query import BaseQueryRule
 from .requirement import BaseRequirementRule
-from .assertion import BaseAssertionRule
 from .proficiency import BaseProficiencyRule
+from .conditional import BaseConditionalRule

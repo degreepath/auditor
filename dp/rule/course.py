@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, FrozenSet, Iterator, Collection, Optional, TYPE_CHECKING
+from typing import Dict, List, Iterator, Collection, Optional, TYPE_CHECKING
 import logging
 
 from ..base import Rule, BaseCourseRule
@@ -19,9 +19,6 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseRule(Rule, BaseCourseRule):
-    auto_waived: bool = False
-    excluded_clbids: FrozenSet[str] = frozenset()
-
     @staticmethod
     def can_load(data: Dict) -> bool:
         if "course" in data:
@@ -82,6 +79,8 @@ class CourseRule(Rule, BaseCourseRule):
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at {path})"
 
+        assert course or ap or (institution and name) or clbid or crsid
+
         return CourseRule(
             course=course,
             hidden=data.get("hidden", False),
@@ -96,16 +95,16 @@ class CourseRule(Rule, BaseCourseRule):
             clbid=clbid,
             crsid=crsid,
             inserted=inserted,
+            forced=False,
             auto_waived=auto_waived,
             optional=optional,
             year=year,
             term=term,
             section=section,
             sub_type=sub_type,
+            overridden=False,
+            excluded_clbids=frozenset(),
         )
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        assert self.course or self.ap or (self.institution and self.name) or self.clbid or self.crsid
 
     def get_requirement_names(self) -> List[str]:
         return []

@@ -1,4 +1,4 @@
-from typing import Dict, Sequence, Iterable, Iterator, List, Optional, TYPE_CHECKING
+from typing import Dict, Mapping, Sequence, Iterable, Iterator, List, Optional, TYPE_CHECKING
 from .constants import Constants
 
 from .base import Rule
@@ -7,6 +7,7 @@ from .rule.course import CourseRule
 from .rule.query import QueryRule
 from .rule.requirement import RequirementRule
 from .rule.proficiency import ProficiencyRule
+from .rule.conditional import ConditionalRule
 from .data.student import TemplateCourse
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -37,6 +38,9 @@ def load_rule(
     elif QueryRule.can_load(data):
         return QueryRule.load(data, c=c, path=path, ctx=ctx)
 
+    elif ConditionalRule.can_load(data):
+        return ConditionalRule.load(data, c=c, children=children, path=path, ctx=ctx)
+
     elif CountRule.can_load(data):
         return CountRule.load(data, c=c, children=children, path=path, emphases=emphases, ctx=ctx)
 
@@ -47,10 +51,10 @@ def load_rule(
             req_name = data["requirement"]
             return RequirementRule.load(children[req_name], name=req_name, c=c, path=path, ctx=ctx)
 
-    raise ValueError(f"expected Course, Query, Count, or Reference; found none of those (in {data}, {type(data)})")
+    raise ValueError(f"expected Proficiency, Course, Query, Conditional, Count, or Requirement; found none of those (in {data}, {type(data)})")
 
 
-def expand_template(items: Iterable[Dict], *, ctx: 'RequirementContext') -> Iterator[Dict]:
+def expand_template(items: Iterable[Mapping], *, ctx: 'RequirementContext') -> Iterator[Mapping]:
     for item in items:
         if 'template' in item:
             yield from expand_template_item(key=item['template'], ctx=ctx)
@@ -58,7 +62,7 @@ def expand_template(items: Iterable[Dict], *, ctx: 'RequirementContext') -> Iter
             yield item
 
 
-def expand_template_item(*, key: str, ctx: 'RequirementContext') -> Iterator[Dict]:
+def expand_template_item(*, key: str, ctx: 'RequirementContext') -> Iterator[Mapping]:
     template_courses: Iterable[TemplateCourse] = ctx.templates.get(key, [])
 
     for template in template_courses:

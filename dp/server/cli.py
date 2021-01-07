@@ -53,9 +53,9 @@ def main() -> None:
                 expires_at=None,
             )
             curs.execute('COMMIT;')
-        except Exception:
+        except Exception as ex:
             curs.execute('ROLLBACK;')
-            raise
+            raise ex
 
 
 if __name__ == "__main__":

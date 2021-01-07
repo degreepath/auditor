@@ -154,13 +154,13 @@ class Student:
         )
 
     def constants(self) -> Constants:
+        terms_since_declaring_major: int = 0
+
         try:
             current_area = next(a for a in self.areas if a.code == self.current_area_code)
-            terms_since_declaring_major = current_area.terms_since_declaration
+            terms_since_declaring_major = current_area.terms_since_declaration or 0
         except StopIteration:
             terms_since_declaring_major = 0
-
-        terms_since_declaring_major = terms_since_declaring_major or 0
 
         return Constants(
             matriculation_year=self.matriculation,
@@ -357,6 +357,7 @@ class CourseFilterArgs:
     section: Optional[str] = None
     sub_type: Optional[SubType] = None
     in_progress: Optional[bool] = None
+    attribute: Optional[str] = None
 
 
 def course_filter(
@@ -371,6 +372,7 @@ def course_filter(
     section: Optional[str] = None,
     sub_type: Optional[SubType] = None,
     in_progress: Optional[bool] = None,
+    attribute: Optional[str] = None,
 ) -> Callable[[CourseInstance], bool]:
     filter_args = CourseFilterArgs(
         ap=ap,
@@ -383,11 +385,12 @@ def course_filter(
         section=section,
         sub_type=sub_type,
         in_progress=in_progress,
+        attribute=attribute,
     )
     return lambda c: _course_filter(c, filter_args)
 
 
-def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
+def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:  # noqa: C901
     # skip non-STOLAF courses if we're not given an institution
     # and aren't looking for an AP course
     # print(c, end=' ')
@@ -420,6 +423,10 @@ def _course_filter(c: CourseInstance, f: CourseFilterArgs) -> bool:
         if f.sub_type is not None and c.sub_type != f.sub_type:
             # print('failed on sub-type')
             return False
+
+    # compare course attributes
+    if f.attribute is not None and f.attribute not in c.attributes:
+        return False
 
     # compare course names
     if f.name is not None and c.name != f.name:

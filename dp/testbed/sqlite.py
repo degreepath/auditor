@@ -1,16 +1,17 @@
 import contextlib
-from typing import Iterator
-import sqlite3
+from typing import Iterator, Generator
+from sqlite3 import PARSE_DECLTYPES, Connection, Row, Cursor, connect
 
 
 @contextlib.contextmanager
-def sqlite_connect(filename: str, readonly: bool = False) -> Iterator[sqlite3.Connection]:
+def sqlite_connect(filename: str, readonly: bool = False) -> Iterator[Connection]:
     uri = f'file:{filename}'
     if readonly:
         uri = f'file:{filename}?mode=ro'
 
-    conn = sqlite3.connect(uri, uri=True, detect_types=sqlite3.PARSE_DECLTYPES)
-    conn.row_factory = sqlite3.Row
+    conn = connect(uri, uri=True, detect_types=PARSE_DECLTYPES, isolation_level=None)
+    conn.execute('pragma journal_mode=wal')
+    conn.row_factory = Row
     try:
         yield conn
     finally:
@@ -18,9 +19,23 @@ def sqlite_connect(filename: str, readonly: bool = False) -> Iterator[sqlite3.Co
 
 
 @contextlib.contextmanager
-def sqlite_cursor(conn: sqlite3.Connection) -> Iterator[sqlite3.Cursor]:
+def sqlite_cursor(conn: Connection) -> Iterator[Cursor]:
     curs = conn.cursor()
     try:
         yield curs
     finally:
         curs.close()
+
+
+@contextlib.contextmanager
+def sqlite_transaction(conn: Connection) -> Generator:
+    # We must issue a "BEGIN" explicitly when running in auto-commit mode.
+    conn.execute('BEGIN')
+    try:
+        # Yield control back to the caller.
+        yield
+    except Exception:
+        conn.rollback()  # Roll back all changes if an exception occurs.
+        raise
+    else:
+        conn.commit()

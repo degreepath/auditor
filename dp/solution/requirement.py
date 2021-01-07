@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementSolution(Solution, BaseRequirementRule):
+    # reason: type narrowing
     result: Optional[Union[Rule, Solution]]
-    overridden: bool
 
     @staticmethod
     def from_rule(*, rule: BaseRequirementRule, solution: Optional[Union[Rule, Solution]], overridden: bool = False) -> 'RequirementSolution':
@@ -50,7 +50,7 @@ class RequirementSolution(Solution, BaseRequirementRule):
             return RequirementResult.from_solution(solution=self, result=None)
 
         if isinstance(self.result, Rule):
-            # TODO determine when this happens
+            # TODO: determine when this happens
             return RequirementResult.from_solution(solution=self, result=self.result)
 
         return RequirementResult.from_solution(solution=self, result=self.result.audit(ctx=ctx))

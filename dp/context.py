@@ -1,5 +1,5 @@
 import attr
-from typing import List, Optional, Mapping, Tuple, Dict, Set, Sequence, Iterable, Iterator
+from typing import List, Optional, Mapping, Tuple, Dict, Sequence, Iterable, Iterator
 from collections import defaultdict
 from contextlib import contextmanager
 import logging
@@ -35,7 +35,6 @@ def group_exceptions(exceptions: Sequence[RuleException]) -> ExceptionsDict:
 class RequirementContext:
     transcript_: List[CourseInstance] = attr.ib(factory=list)
     transcript_with_excluded_: List[CourseInstance] = attr.ib(factory=list)
-    course_set_: Set[str] = attr.ib(factory=set)
     clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
     forced_clbid_lookup_map_: Dict[str, CourseInstance] = attr.ib(factory=dict)
     transcript_with_failed_: List[CourseInstance] = attr.ib(factory=list)
@@ -62,7 +61,6 @@ class RequirementContext:
         including_failed: Iterable[CourseInstance] = tuple(),
     ) -> 'RequirementContext':
         transcript = list(transcript)
-        course_set = set(c.course() for c in transcript)
         clbid_lookup_map = {c.clbid: c for c in transcript}
 
         return attr.evolve(
@@ -70,7 +68,6 @@ class RequirementContext:
             transcript_=transcript,
             transcript_with_failed_=list(including_failed),
             transcript_with_excluded_=list(full),
-            course_set_=course_set,
             clbid_lookup_map_=clbid_lookup_map,
             forced_clbid_lookup_map_=forced or {},
         )
@@ -119,22 +116,22 @@ class RequirementContext:
             raise MissingClassLabIdException(f'attempted to use CLBID={clbid} at {list(path)}, but it was not found in the transcript')
         return match
 
-    def has_area_code(self, code: str) -> bool:
+    def has_declared_area_code(self, code: str) -> bool:
         return any(code == c.code for c in self.areas)
 
     def has_course(self, c: str) -> bool:
-        return c in self.course_set_
+        for _ in filter(course_filter(course=c), self.transcript_):
+            return True
+        return False
 
     def has_ip_course(self, c: str) -> bool:
-        for _ in filter(course_filter(course=c, in_progress=True), self.transcript()):
+        for _ in filter(course_filter(course=c, in_progress=True), self.transcript_):
             return True
-
         return False
 
     def has_completed_course(self, c: str) -> bool:
-        for _ in filter(course_filter(course=c, in_progress=False), self.transcript()):
+        for _ in filter(course_filter(course=c, in_progress=False), self.transcript_):
             return True
-
         return False
 
     def has_exception_beneath(self, path: Tuple[str, ...]) -> bool:

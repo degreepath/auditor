@@ -1,33 +1,45 @@
 import attr
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Tuple, Dict, FrozenSet, Any, TYPE_CHECKING
 from decimal import Decimal
 
 from .bases import Base
 from ..data.course_enums import GradeOption
 from ..status import ResultStatus
 
+if TYPE_CHECKING:  # pragma: no cover
+    from ..data.course import CourseInstance  # noqa: F401
+
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseCourseRule(Base):
+    # how to find the course
     course: Optional[str] = None
     clbid: Optional[str] = None
     crsid: Optional[str] = None
     ap: Optional[str] = None
     institution: Optional[str] = None
     name: Optional[str] = None
-    hidden: bool = False
+
+    # additional filtering on the course
     grade: Optional[Decimal] = None
     grade_option: Optional[GradeOption] = None
-    allow_claimed: bool = False
-    from_claimed: bool = False
-    path: Tuple[str, ...] = tuple()
-    inserted: bool = False
-    overridden: bool = False
-    optional: bool = False
     year: Optional[int] = None
     term: Optional[str] = None
     section: Optional[str] = None
     sub_type: Optional[str] = None
+
+    # logical modifiers
+    hidden: bool = False
+    allow_claimed: bool = False
+    from_claimed: bool = False
+    optional: bool = False
+    inserted: bool = False
+    forced: bool = False
+    auto_waived: bool = False
+    excluded_clbids: FrozenSet[str] = frozenset()
+
+    # state
+    matched_course: Optional['CourseInstance'] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -35,12 +47,25 @@ class BaseCourseRule(Base):
             "course": self.course,
             "clbid": self.clbid,
             "crsid": self.crsid,
-            "hidden": self.hidden,
-            "grade": str(self.grade) if self.grade is not None else None,
-            "claims": [c.to_dict() for c in self.claims()],
             "ap": self.ap,
             "institution": self.institution,
             "name": self.name,
+            "grade": str(self.grade) if self.grade is not None else None,
+            "grade_option": str(self.grade_option) if self.grade_option is not None else None,
+            "year": self.year,
+            "term": self.term,
+            "section": self.section,
+            "sub_type": self.sub_type,
+            "hidden": self.hidden,
+            "allow_claimed": self.allow_claimed,
+            "from_claimed": self.from_claimed,
+            "optional": self.optional,
+            "inserted": self.inserted,
+            "forced": self.forced,
+            "auto_waived": self.auto_waived,
+            "excluded_clbids": sorted(self.excluded_clbids),
+            "claims": [c.to_dict() for c in self.claims()],
+            "matched_scedid": self.matched_course.schedid if self.matched_course else None,
         }
 
     def type(self) -> str:
@@ -64,7 +89,7 @@ class BaseCourseRule(Base):
         return Decimal(0), Decimal(1)
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         matched = self.matched()

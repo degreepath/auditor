@@ -1,16 +1,17 @@
-import attr
-from typing import Optional, Tuple, Dict, Any, Sequence, Union, cast
-import enum
+from typing import Optional, Tuple, Dict, Any, Sequence, Iterable, cast
 from decimal import Decimal
+import enum
+
+import attr
 
 from .bases import Base
+from ..assertion_clause import AnyAssertion
 from ..status import ResultStatus, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, WAIVED_DONE_CURRENT_PENDING_INCOMPLETE
 from ..limit import LimitSet
-from ..clause import Clause
+from ..predicate_clause import SomePredicate
+from ..data_type import DataType
 from ..claim import Claim
-from ..rule.assertion import AssertionRule
-from ..rule.conditional_assertion import ConditionalAssertionRule
-from ..result.assertion import AssertionResult
+from ..data.clausable import Clausable
 
 
 @enum.unique
@@ -25,41 +26,51 @@ class QuerySource(enum.Enum):
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class BaseQueryRule(Base):
     source: QuerySource
-    assertions: Tuple[Union[AssertionRule, ConditionalAssertionRule], ...]
+    data_type: DataType
+    assertions: Tuple[AnyAssertion, ...]
     limit: LimitSet
-    where: Optional[Clause]
+    where: Optional[SomePredicate]
     allow_claimed: bool
     attempt_claims: bool
     record_claims: bool
     include_failed: bool
-    path: Tuple[str, ...]
     inserted: Tuple[str, ...]
     force_inserted: Tuple[str, ...]
+    output: Tuple[Clausable, ...]
+    successful_claims: Tuple[Claim, ...]
+    failed_claims: Tuple[Claim, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "source": self.source.value,
+            "data-type": self.data_type.value,
             "limit": self.limit.to_dict(),
             "assertions": [a.to_dict() for a in self.all_assertions()],
             "where": self.where.to_dict() if self.where else None,
             "claims": [c.to_dict() for c in self.claims()],
             "failures": [c.to_dict() for c in self.only_failed_claims()],
             "inserted": list(self.inserted),
+            "include_failed": self.include_failed,
             "allow_claimed": self.allow_claimed,
+            "output": list(self._output_to_dicts()),
         }
+
+    def _output_to_dicts(self) -> Iterable[Dict]:
+        for item in self.output:
+            yield item.to_identifier().to_dict()
 
     def only_failed_claims(self) -> Sequence[Claim]:
         return []
 
-    def all_assertions(self) -> Sequence[Union[AssertionRule, ConditionalAssertionRule, AssertionResult]]:
+    def all_assertions(self) -> Sequence[AnyAssertion]:
         return self.assertions
 
     def type(self) -> str:
         return "query"
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         assertion_ranks = [a.rank() for a in self.all_assertions()]
@@ -70,7 +81,7 @@ class BaseQueryRule(Base):
         return rank, max_rank
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         statuses = set(a.status() for a in self.all_assertions())

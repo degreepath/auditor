@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class ProficiencyRule(Rule, BaseProficiencyRule):
+    # reason: type narrowing
     course: Optional[CourseRule]
 
     @staticmethod
@@ -39,10 +40,8 @@ class ProficiencyRule(Rule, BaseProficiencyRule):
             proficiency=proficiency,
             course=CourseRule.load(data['course'], c=c, path=path) if 'course' in data else None,
             path=tuple(path),
+            overridden=False,
         )
-
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        pass
 
     def get_requirement_names(self) -> List[str]:
         return []

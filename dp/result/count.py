@@ -1,10 +1,9 @@
 import attr
 from typing import Tuple, Union, Sequence, TYPE_CHECKING
 
-from .assertion import AssertionResult
+from ..assertion_clause import SomeAssertion
 from ..base.bases import Result, Rule, Solution
 from ..base.count import BaseCountRule
-from ..rule.assertion import AssertionRule
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..solution.count import CountSolution
@@ -12,16 +11,15 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CountResult(Result, BaseCountRule):
+    # reason: type narrowing
     items: Tuple[Union[Rule, Solution, Result], ...]
-    audit_clauses: Tuple[Union[AssertionResult, AssertionRule], ...]
-    overridden: bool
 
     @staticmethod
     def from_solution(
         *,
         solution: 'CountSolution',
         items: Tuple[Union[Rule, Solution, Result], ...],
-        audit_results: Tuple[Union[AssertionResult, AssertionRule], ...],
+        audit_results: Tuple[SomeAssertion, ...],
         overridden: bool = False,
     ) -> 'CountResult':
         return CountResult(
@@ -33,8 +31,5 @@ class CountResult(Result, BaseCountRule):
             overridden=overridden,
         )
 
-    def audits(self) -> Sequence[Union[AssertionResult, AssertionRule]]:
+    def audits(self) -> Sequence[SomeAssertion]:
         return self.audit_clauses
-
-    def waived(self) -> bool:
-        return self.overridden

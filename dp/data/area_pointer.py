@@ -4,12 +4,14 @@ import logging
 import decimal
 
 from .area_enums import AreaStatus, AreaType
-from .clausable import Clausable
+from .clausable import Clausable, ClausableIdentifier
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
+    from ..predicate_clause import Predicate
 
 logger = logging.getLogger(__name__)
+
+ALLOWED_KEYS = {'code', 'status', 'kind', 'type', 'name', 'degree', 'gpa'}
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True, eq=False, order=False, hash=True)
@@ -22,6 +24,9 @@ class AreaPointer(Clausable):
     dept: Optional[str]
     gpa: Optional[decimal.Decimal]
     terms_since_declaration: Optional[int]
+
+    def to_identifier(self) -> ClausableIdentifier:
+        return ClausableIdentifier(type="area", key="code", value=self.code)
 
     @staticmethod
     def with_code(code: str) -> 'AreaPointer':
@@ -63,7 +68,7 @@ class AreaPointer(Clausable):
             terms_since_declaration=data.get('terms_since_declaration', None),
         )
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+    def apply_predicate(self, clause: 'Predicate') -> bool:
         if clause.key == 'code':
             return clause.compare(self.code)
 

@@ -4,7 +4,7 @@ import logging
 from decimal import Decimal
 
 from .bases import Base
-from .assertion import BaseAssertionRule
+from ..assertion_clause import SomeAssertion
 from ..claim import Claim
 from ..status import ResultStatus, PassingStatuses, WAIVED_ONLY, WAIVED_AND_DONE, WAIVED_DONE_CURRENT, WAIVED_DONE_CURRENT_PENDING, EMPTY_AND_DEPARTMENTAL
 
@@ -19,20 +19,20 @@ logger = logging.getLogger(__name__)
 class BaseCountRule(Base):
     count: int
     items: Tuple[Base, ...]
-    audit_clauses: Tuple[BaseAssertionRule, ...]
+    audit_clauses: Tuple[SomeAssertion, ...]
     at_most: bool
-    path: Tuple[str, ...]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "count": self.count,
+            "at_most": self.at_most,
             "items": [item.to_dict() for item in self.items],
             "audit": [c.to_dict() for c in self.audits()],
             "audit_status": self.audit_status().value,
         }
 
-    def audits(self) -> Sequence[BaseAssertionRule]:
+    def audits(self) -> Sequence[SomeAssertion]:
         return self.audit_clauses
 
     def type(self) -> str:
@@ -45,7 +45,7 @@ class BaseCountRule(Base):
         return [claim for item in self.items for claim in item.claims_for_gpa()]
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         item_ranks = [r.rank() for r in self.items]
@@ -70,7 +70,7 @@ class BaseCountRule(Base):
         return item_rank + audit_rank, item_max_rank + audit_max_rank
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         all_child_statuses = [r.status() for r in self.items]
@@ -106,7 +106,7 @@ class BaseCountRule(Base):
         return ResultStatus.NeedsMoreItems
 
     def audit_status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         all_audit_statuses = set(a.status() for a in self.audits())

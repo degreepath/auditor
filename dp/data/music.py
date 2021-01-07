@@ -4,11 +4,11 @@ import logging
 import enum
 import abc
 
-from .clausable import Clausable
+from .clausable import Clausable, ClausableIdentifier
 from ..status import ResultStatus
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
+    from ..predicate_clause import Predicate
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +19,9 @@ class MusicSlip(Clausable):
     id: str
     term: int
     name: str
+
+    def to_identifier(self) -> ClausableIdentifier:
+        return ClausableIdentifier(type="class", key="id", value=self.id)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -32,7 +35,7 @@ class MusicSlip(Clausable):
     def type(self) -> str:
         raise NotImplementedError('not implemented')
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+    def apply_predicate(self, clause: 'Predicate') -> bool:
         if clause.key == 'name':
             return clause.compare(self.name)
 
@@ -88,7 +91,7 @@ class MusicPerformance(MusicSlip):
             status=muspf_status_lookup[data.get('status', '')],
         )
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+    def apply_predicate(self, clause: 'Predicate') -> bool:
         if clause.key == 'status':
             if not self.status:
                 return False
@@ -99,7 +102,7 @@ class MusicPerformance(MusicSlip):
                 return False
             return clause.compare(self.role)
 
-        return super().apply_single_clause(clause)
+        return super().apply_predicate(clause)
 
     def type(self) -> str:
         return 'music performance'
@@ -179,6 +182,12 @@ class MusicProficiencies:
         logger.debug('comparing %r to %r: %r %r', of, compare_against, result, self)
 
         return result
+
+    def passed_exam(self, *, of: str) -> bool:
+        # note: this is for BM Performance; they actually want to check for
+        # proficiency _exams_ and make you take extra credits if you tested
+        # out of the course versions.
+        return self.status(of=of, exam_only=True) is ResultStatus.Done
 
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)

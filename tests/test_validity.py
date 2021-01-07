@@ -35,8 +35,7 @@ def test_load():
     """
     )
 
-    area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
-    area.validate()
+    AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
 
 
 def test_invalid():
@@ -63,5 +62,4 @@ def test_invalid():
         """
         )
 
-        area = AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)
-        area.validate()
+        AreaOfStudy.load(specification=yaml.load(stream=test_data, Loader=yaml.SafeLoader), c=c)

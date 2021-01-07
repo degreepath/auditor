@@ -51,7 +51,7 @@ def test_audit__double_history_and_studio():
     messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
-    assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 18
+    assert result.result.items[-1].result.items[-1].result.assertions[0].expected == 18
 
 
 def test_audit__single_studio_art():
@@ -89,7 +89,7 @@ def test_audit__single_studio_art():
     messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
-    assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
+    assert result.result.items[-1].result.items[-1].result.assertions[0].expected == 21
 
 
 def test_audit__single_art_history():
@@ -127,7 +127,7 @@ def test_audit__single_art_history():
     messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
-    assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
+    assert result.result.items[-1].result.items[-1].result.assertions[0].expected == 21
 
 
 def test_audit__double_art_history_and_other():
@@ -175,7 +175,7 @@ def test_audit__double_art_history_and_other():
     messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
-    assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
+    assert result.result.items[-1].result.items[-1].result.assertions[0].expected == 21
 
 
 def test_audit__triple_arts_and_other():
@@ -233,7 +233,7 @@ def test_audit__triple_arts_and_other():
     messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
-    assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 21
+    assert result.result.items[-1].result.items[-1].result.assertions[0].expected == 21
 
     area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Art History',
@@ -249,7 +249,7 @@ def test_audit__triple_arts_and_other():
     messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
-    assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 18
+    assert result.result.items[-1].result.items[-1].result.assertions[0].expected == 18
 
     area = AreaOfStudy.load(c=c, student=Student.load(dict(areas=student['areas'], courses=student['courses'])), specification={
         'name': 'Studio Art',
@@ -265,4 +265,4 @@ def test_audit__triple_arts_and_other():
     messages = list(audit(area=area, student=Student.load(dict(areas=student['areas'], courses=student['courses']))))
     result = messages[-1].result
 
-    assert result.result.items[-1].result.items[-1].result.assertions[0].assertion.expected == 18
+    assert result.result.items[-1].result.items[-1].result.assertions[0].expected == 18

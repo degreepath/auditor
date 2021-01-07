@@ -14,9 +14,6 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class CourseSolution(Solution, BaseCourseRule):
-    matched_course: Optional['CourseInstance'] = None
-    was_forced: bool = False
-
     @staticmethod
     def from_rule(*, rule: BaseCourseRule, course: Optional['CourseInstance'], was_inserted: bool = False, was_forced: bool = False, overridden: bool = False) -> 'CourseSolution':
         return CourseSolution(
@@ -32,13 +29,13 @@ class CourseSolution(Solution, BaseCourseRule):
             institution=rule.institution,
             name=rule.name,
             inserted=rule.inserted or was_inserted,
+            forced=was_forced,
             grade_option=rule.grade_option,
             optional=rule.optional,
             year=rule.year,
             term=rule.term,
             section=rule.section,
             sub_type=rule.sub_type,
-            was_forced=was_forced,
             matched_course=course,
         )
 
@@ -55,7 +52,7 @@ class CourseSolution(Solution, BaseCourseRule):
             logger.debug('no pre-claimed courses matching %r [at %s]', self.identifier(), self.path)
             return CourseResult.from_solution(solution=self, claim_attempt=None, overridden=False)
 
-        claim = ctx.make_claim(course=self.matched_course, path=self.path, allow_claimed=self.was_forced or self.allow_claimed)
+        claim = ctx.make_claim(course=self.matched_course, path=self.path, allow_claimed=self.forced or self.allow_claimed)
 
         if self.from_claimed:
             assert claim.failed is False

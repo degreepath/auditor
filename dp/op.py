@@ -19,6 +19,14 @@ class Operator(enum.Enum):
     def __repr__(self) -> str:
         return str(self)
 
+    @staticmethod
+    def is_operator(s: str) -> bool:
+        try:
+            Operator(s)
+            return True
+        except ValueError:
+            return False
+
     def to_symbol(self) -> str:
         return str_operator(self.name)
 

@@ -28,14 +28,16 @@ class BaseRequirementRule(Base):
             "message": self.message,
             "result": self.result.to_dict() if self.result is not None else None,
             "is_audited": self.is_audited,
-            "contract": self.is_contract,
+            "is_contract": self.is_contract,
+            "is_disjoint": self.disjoint,
+            "in_gpa": self.in_gpa,
         }
 
     def type(self) -> str:
         return "requirement"
 
     def status(self) -> ResultStatus:
-        is_waived = self.waived()
+        is_waived = self.is_waived()
 
         if is_waived and (self.is_audited or self.is_contract):
             return ResultStatus.Done
@@ -52,7 +54,7 @@ class BaseRequirementRule(Base):
         return self.result.status()
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         if self.is_audited:

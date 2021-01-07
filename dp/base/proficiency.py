@@ -16,14 +16,13 @@ class BaseProficiencyRule(Base):
     proficiency: str
     course: Optional[BaseCourseRule]
     proficiency_status: ResultStatus = ResultStatus.Empty
-    path: Tuple[str, ...] = tuple()
-    overridden: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
             "course": self.course.to_dict() if self.course else None,
             "proficiency": self.proficiency,
+            "proficiency_status": self.proficiency_status.value,
         }
 
     def type(self) -> str:
@@ -44,7 +43,7 @@ class BaseProficiencyRule(Base):
         return Decimal(0), Decimal(1)
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         if self.proficiency_status in WAIVED_AND_DONE:

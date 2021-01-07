@@ -13,6 +13,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..data.course import CourseInstance  # noqa: F401
     from ..data.clausable import Clausable  # noqa: F401
 
+# TODO: rename matched() to collect_matches()
+
 
 @enum.unique
 class RuleState(enum.Enum):
@@ -24,6 +26,7 @@ class RuleState(enum.Enum):
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class Base(abc.ABC):
     path: Tuple[str, ...]
+    overridden: bool
 
     def to_dict(self) -> Dict[str, Any]:
         status = self.status()
@@ -31,10 +34,12 @@ class Base(abc.ABC):
 
         return {
             "path": list(self.path),
+            "state": self.state().value,
             "type": self.type(),
             "status": status.value,
             "rank": str(rank),
             "max_rank": str(max_rank),
+            "overridden": self.overridden,
         }
 
     @abc.abstractmethod
@@ -45,7 +50,7 @@ class Base(abc.ABC):
         return RuleState.Rule
 
     def status(self) -> ResultStatus:
-        if self.waived():
+        if self.is_waived():
             return ResultStatus.Waived
 
         matched = self.matched()
@@ -66,7 +71,7 @@ class Base(abc.ABC):
         return ResultStatus.Empty
 
     def rank(self) -> Tuple[Decimal, Decimal]:
-        if self.waived():
+        if self.is_waived():
             return Decimal(1), Decimal(1)
 
         return Decimal(0), Decimal(1)
@@ -86,8 +91,8 @@ class Base(abc.ABC):
     def is_in_gpa(self) -> bool:
         return True
 
-    def waived(self) -> bool:
-        return False
+    def is_waived(self) -> bool:
+        return self.overridden
 
     def is_always_disjoint(self) -> bool:
         return False
@@ -95,7 +100,7 @@ class Base(abc.ABC):
     def is_never_disjoint(self) -> bool:
         return False
 
-    def ok(self) -> bool:
+    def is_ok(self) -> bool:
         return self.status() in PassingStatuses
 
     def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
@@ -125,10 +130,6 @@ class Rule(Base):
 
     def state(self) -> RuleState:
         return RuleState.Rule
-
-    @abc.abstractmethod
-    def validate(self, *, ctx: 'RequirementContext') -> None:
-        raise NotImplementedError('must define a validate() method')
 
     @abc.abstractmethod
     def get_requirement_names(self) -> List[str]:

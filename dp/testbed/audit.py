@@ -36,7 +36,7 @@ def audit(
         student = data
         area_spec = area_spec
 
-    estimate_count = estimate((stnum, catalog, code), db=db, area_spec=area_spec)
+    estimate_count = estimate((stnum, catalog, code), data=student, db=db, area_spec=area_spec)
     assert estimate_count is not None
 
     db_keys = {'stnum': stnum, 'catalog': catalog, 'code': code, 'estimate': estimate_count, 'branch': run_id}
@@ -59,6 +59,7 @@ def audit(
                 "max_rank": result["max_rank"],
                 "result": json.dumps(result, sort_keys=True),
                 "status": result["status"],
+                "version": message.version,
             }
         else:
             if timeout and time.perf_counter() - start_time >= timeout:

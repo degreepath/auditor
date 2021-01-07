@@ -9,8 +9,6 @@ logger = logging.getLogger(__name__)
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class RequirementResult(Result, BaseRequirementRule):
-    overridden: bool
-
     @staticmethod
     def from_solution(
         *,
@@ -29,6 +27,3 @@ class RequirementResult(Result, BaseRequirementRule):
             result=result,
             overridden=overridden,
         )
-
-    def waived(self) -> bool:
-        return self.overridden

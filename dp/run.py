@@ -7,7 +7,7 @@ import sys
 import yaml
 
 from .area import AreaOfStudy
-from .exception import load_exception, CourseOverrideException
+from .exception import load_exception, CourseOverrideException, load_migrations
 from .lib import grade_point_average_items, grade_point_average
 from .data.student import Student
 from .audit import audit, Message, Arguments
@@ -18,8 +18,10 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
 
     credit_assignments = area_spec.get('credit', {})
 
+    exceptions_migrations = load_migrations(area_spec.get('exceptions-migrations', []))
+
     exceptions = [
-        load_exception(e)
+        load_exception(e, exceptions_migrations)
         for e in student.get("exceptions", [])
         if e['area_code'] == area_code
     ]
@@ -47,7 +49,6 @@ def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]
         student=loaded,
         exceptions=exceptions,
     )
-    area.validate()
 
     yield from audit(
         area=area,

@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Iterable, Any
+from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Sequence, Iterator, Any
 import logging
 import decimal
 import os
@@ -42,6 +42,9 @@ class AreaOfStudy(Base):
     common_rules: Tuple[Rule, ...]
     excluded_clbids: FrozenSet[str] = frozenset()
 
+    # the version of this file format
+    version: int = 3
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             **super().to_dict(),
@@ -53,6 +56,7 @@ class AreaOfStudy(Base):
             "gpa": str(self.gpa()),
             "limit": self.limit.to_dict(),
             "ok": self.status() in WAIVED_AND_DONE,
+            "version": self.version,
         }
 
     def type(self) -> str:
@@ -80,8 +84,7 @@ class AreaOfStudy(Base):
         # this block just does validity checking on the emphases; we don't
         # actually use the result of loading these here.
         for e in emphases.values():
-            r = AreaOfStudy.load(specification=e, c=c, student=student, emphasis_validity_check=True)
-            r.validate()
+            AreaOfStudy.load(specification=e, c=c, student=student, emphasis_validity_check=True)
 
         declared_emphasis_codes = set(str(a.code) for a in student.areas if a.kind is AreaType.Emphasis)
 
@@ -132,7 +135,7 @@ class AreaOfStudy(Base):
             for course, paths in specification.get("multicountable", {}).items()
         }
 
-        allowed_keys = {'name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable', 'credit'}
+        allowed_keys = {'name', 'type', 'major', 'degree', 'code', 'emphases', 'result', 'requirements', 'limit', 'multicountable', 'credit', 'exceptions-migrations'}
         given_keys = set(specification.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty (at ['$'])"
 
@@ -150,6 +153,7 @@ class AreaOfStudy(Base):
             path=('$',),
             code=this_code,
             excluded_clbids=excluded_clbids,
+            overridden=False,
             common_rules=tuple(prepare_common_rules(
                 other_areas=student.areas,
                 dept_code=dept,
@@ -160,12 +164,7 @@ class AreaOfStudy(Base):
             )),
         )
 
-    def validate(self) -> None:
-        ctx = RequirementContext()
-
-        self.result.validate(ctx=ctx)
-
-    def solutions(self, *, student: Student, exceptions: List[RuleException]) -> Iterable['AreaSolution']:
+    def solutions(self, *, student: Student, exceptions: List[RuleException]) -> Iterator['AreaSolution']:
         logger.debug("evaluating area.result")
 
         forced_clbids = set(e.clbid for e in exceptions if isinstance(e, InsertionException) and e.forced is True)
@@ -273,6 +272,7 @@ class AreaSolution(AreaOfStudy):
             path=area.path,
             solution=solution,
             context=ctx,
+            overridden=area.overridden,
             common_rules=area.common_rules,
             excluded_clbids=area.excluded_clbids,
         )
@@ -364,6 +364,7 @@ class AreaResult(AreaOfStudy, Result):
             path=area.path,
             context=ctx,
             result=result,
+            overridden=area.overridden,
             common_rules=area.common_rules,
             excluded_clbids=area.excluded_clbids,
         )
@@ -381,7 +382,7 @@ class AreaResult(AreaOfStudy, Result):
 
     def status(self) -> ResultStatus:
         logger.debug("computing status: start")
-        if self.waived():
+        if self.is_waived():
             logger.debug("computing status: end")
             return ResultStatus.Waived
 
@@ -417,8 +418,8 @@ class AreaResult(AreaOfStudy, Result):
     def claims_for_gpa(self) -> List[Claim]:
         return self.result.claims_for_gpa()
 
-    def waived(self) -> bool:
-        return self.result.waived()
+    def is_waived(self) -> bool:
+        return self.result.is_waived()
 
 
 def prepare_common_rules(

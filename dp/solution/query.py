@@ -1,15 +1,11 @@
 import attr
-from typing import List, Sequence, Any, Tuple, Dict, Union, Optional, Iterator, cast, TYPE_CHECKING
+from typing import List, Sequence, Tuple, Optional, cast, TYPE_CHECKING
 import logging
 
 from ..base import Solution, BaseQueryRule
 from ..base.query import QuerySource
 from ..result.query import QueryResult
-from ..rule.assertion import AssertionRule
-from ..rule.conditional_assertion import ConditionalAssertionRule
-from ..result.assertion import AssertionResult
 from ..data.clausable import Clausable
-from ..clause import apply_clause
 from ..claim import Claim
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -29,77 +25,97 @@ class AuditResult:
 
 @attr.s(cache_hash=True, slots=True, kw_only=True, frozen=True, auto_attribs=True)
 class QuerySolution(Solution, BaseQueryRule):
-    output: Tuple[Clausable, ...]
-    overridden: bool
-
     @staticmethod
     def from_rule(
         *,
         rule: BaseQueryRule,
         output: Tuple[Clausable, ...],
-        overridden: bool = False,
         inserted: Tuple[str, ...] = tuple(),
         force_inserted: Tuple[str, ...] = tuple(),
     ) -> 'QuerySolution':
         return QuerySolution(
             source=rule.source,
+            data_type=rule.data_type,
             assertions=rule.assertions,
             limit=rule.limit,
             where=rule.where,
             allow_claimed=rule.allow_claimed,
             attempt_claims=rule.attempt_claims,
             record_claims=rule.record_claims,
-            output=output,
             path=rule.path,
-            overridden=overridden,
+            overridden=rule.overridden,
             inserted=rule.inserted + inserted,
             force_inserted=rule.force_inserted + force_inserted,
+            output=output,
+            successful_claims=tuple(),
+            failed_claims=tuple(),
             include_failed=rule.include_failed,
         )
 
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            **super().to_dict(),
-            "output": [x.to_dict() for x in self.output],
-        }
-
     def audit(self, *, ctx: 'RequirementContext') -> QueryResult:
-        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
-        if debug: logger.debug("auditing data for %s", self.path)
+        logger.debug("auditing data for %s", self.path)
 
         if self.overridden:
             return QueryResult.from_solution(
                 solution=self,
-                resolved_assertions=tuple(),
                 successful_claims=tuple(),
                 failed_claims=tuple(),
                 overridden=self.overridden,
+                assertions=self.assertions,
             )
 
         if self.source is QuerySource.Courses:
-            audit_result = self.audit_courses(ctx)
+            collected_result = self.collect_courses(ctx)
         elif self.source is QuerySource.Claimed:
-            audit_result = self.audit_claimed_courses(ctx)
+            collected_result = self.collect_claimed_courses(ctx)
         elif self.source is QuerySource.Areas:
-            audit_result = self.audit_areas(ctx)
+            collected_result = self.collect_areas()
         elif self.source is QuerySource.MusicPerformances:
-            audit_result = self.audit_music_performances(ctx)
+            collected_result = self.collect_music_performances()
         elif self.source is QuerySource.MusicAttendances:
-            audit_result = self.audit_music_attendances(ctx)
+            collected_result = self.collect_music_attendances()
+        else:
+            raise TypeError(f'invalid source type {self.source!r}')
 
-        resolved_assertions = tuple(self.apply_assertions(audit_result.claimed_items, ctx=ctx))
+        # Skip checking any assertions if nothing has been claimed. This is
+        # not a performance optimization; instead, this ensures that
+        # less-than assertions don't turn green when there's nothing for them
+        # to assert against, for example:
+        #
+        # Requirement: Performance Studies [needs-more-items]
+        #     [needs-more-items] Given all 0 courses matching subject == MUSPF and credits == 1.0 and level ∈ [100, 200] and name == '' and institution == STOLAF
+        #         There must be:
+        #           - count(terms) ≥ 6 [empty]
+        #           - count(terms) where level == 100 ≤ 4 [done]
+        #
+        # when in fact we would expect
+        #
+        # Requirement: Performance Studies [needs-more-items]
+        #     [needs-more-items] Given all 0 courses matching subject == MUSPF and credits == 1.0 and level ∈ [100, 200] and name == '' and institution == STOLAF
+        #         There must be:
+        #           - count(terms) ≥ 6 [empty]
+        #           - count(terms) where level == 100 ≤ 4 [empty]
+        #
+        # since there were no courses matching the filter.
+        has_non_primary_lt_clause = any(a.is_lt_clause() for a in self.assertions) and not all(a.is_lt_clause() for a in self.assertions)
+        if self.source is QuerySource.Courses and len(collected_result.claimed_items) == 0 and has_non_primary_lt_clause:
+            assertions = self.assertions
+        else:
+            assertions = tuple(a.audit_and_resolve(collected_result.claimed_items, ctx=ctx) for a in self.assertions)
 
         logger.debug("done auditing data for %s", self.path)
 
         return QueryResult.from_solution(
             solution=self,
-            resolved_assertions=resolved_assertions,
-            successful_claims=audit_result.successful_claims,
-            failed_claims=audit_result.failed_claims,
+            assertions=assertions,
+            successful_claims=collected_result.successful_claims,
+            failed_claims=collected_result.failed_claims,
         )
 
-    def audit_courses(self, ctx: 'RequirementContext') -> AuditResult:
-        debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
+    def collect_courses(self, ctx: 'RequirementContext') -> AuditResult:
+        global debug
+        if debug is None:
+            debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
 
         claimed_items: List[Clausable] = []
         successful_claims: List[Claim] = []
@@ -142,13 +158,13 @@ class QuerySolution(Solution, BaseQueryRule):
             failed_claims=tuple(failed_claims),
         )
 
-    def audit_claimed_courses(self, ctx: 'RequirementContext') -> AuditResult:
+    def collect_claimed_courses(self, ctx: 'RequirementContext') -> AuditResult:
         claimed_items: List[Clausable] = []
         successful_claims: List[Claim] = []
 
         output: List['CourseInstance'] = ctx.all_claimed()
         if self.where:
-            output = [item for item in output if apply_clause(self.where, item)]
+            output = [item for item in output if self.where.apply(item)]
 
         for clbid in self.inserted:
             matched_course = ctx.forced_course_by_clbid(clbid, path=self.path)
@@ -170,61 +186,17 @@ class QuerySolution(Solution, BaseQueryRule):
             failed_claims=tuple(),
         )
 
-    def audit_areas(self, ctx: 'RequirementContext') -> AuditResult:
+    def collect_areas(self) -> AuditResult:
         return AuditResult(claimed_items=tuple(self.output))
 
-    def audit_music_performances(self, ctx: 'RequirementContext') -> AuditResult:
+    def collect_music_performances(self) -> AuditResult:
         return AuditResult(claimed_items=tuple(self.output))
 
-    def audit_music_attendances(self, ctx: 'RequirementContext') -> AuditResult:
+    def collect_music_attendances(self) -> AuditResult:
         return AuditResult(claimed_items=tuple(self.output))
-
-    def apply_assertions(self, data: Sequence[Clausable], *, ctx: 'RequirementContext') -> Iterator[AssertionResult]:
-        for a in self.assertions:
-            assertion_result = self.apply_assertion(a, ctx=ctx, data=data)
-            if assertion_result:
-                yield assertion_result
-
-    def apply_assertion(self, maybe_asrt: Union[AssertionRule, ConditionalAssertionRule], *, ctx: 'RequirementContext', data: Sequence[Clausable] = tuple()) -> Optional[AssertionResult]:
-        global debug
-        if debug is None:
-            debug = __debug__ and logger.isEnabledFor(logging.DEBUG)
-
-        assertion = maybe_asrt.resolve_conditional(data) if isinstance(maybe_asrt, ConditionalAssertionRule) else maybe_asrt
-        if assertion is None:
-            return None
-
-        assert isinstance(assertion, AssertionRule), TypeError(f"expected a query assertion; found {assertion} ({type(assertion)})")
-
-        waive = ctx.get_waive_exception(assertion.path)
-        if waive:
-            if debug: logger.debug("forced override on %s", self.path)
-            return assertion.override()
-
-        if assertion.where:
-            filtered_output = [item for item in data if apply_clause(assertion.where, item)]
-        else:
-            filtered_output = list(data)
-
-        inserted_clbids = []
-        for insert in ctx.get_insert_exceptions(assertion.path):
-            if debug: logger.debug("inserted %s into %s", insert.clbid, self.path)
-            matched_course = ctx.forced_course_by_clbid(insert.clbid, path=self.path)
-            filtered_output.append(matched_course)
-            inserted_clbids.append(matched_course.clbid)
-
-        for block in ctx.get_block_exceptions(assertion.path):
-            if debug: logger.debug("excluded %s from %s", block.clbid, self.path)
-            matched_course = ctx.forced_course_by_clbid(block.clbid, path=self.path)
-            try:
-                filtered_output.remove(matched_course)
-            except ValueError:
-                pass
-
-        return assertion.resolve(tuple(filtered_output), overridden=False, inserted=tuple(inserted_clbids))
 
     def all_courses(self, ctx: 'RequirementContext') -> List['CourseInstance']:
         if self.source in (QuerySource.Courses, QuerySource.Claimed):
-            return cast(List['CourseInstance'], [c for c in self.output])
+            return cast(List['CourseInstance'], list(self.output))
         else:
             return []

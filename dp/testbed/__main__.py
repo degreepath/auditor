@@ -53,6 +53,7 @@ def main() -> None:
 
     parser_baseline = subparsers.add_parser('baseline', help='runs a baseline audit benchmark')
     parser_baseline.add_argument('--min', dest='minimum_duration', default='30s', nargs='?', help='the minimum duration of audits to benchmark against')
+    parser_baseline.add_argument('--copy', default=False, action='store_true', help='just copy the server results into baseline, instead of verifying them')
     parser_baseline.add_argument('--code', dest='filter', default=None, nargs='?', help='an area code to filter to')
     # parser_baseline.add_argument('--clear', action='store_true', default=False, help='clear the cached results table')
     parser_baseline.set_defaults(func=baseline)
@@ -67,7 +68,7 @@ def main() -> None:
     parser_compare = subparsers.add_parser('compare', help='compare an audit run against the baseline')
     parser_compare.add_argument('run', help='the run to compare against the base run')
     parser_compare.add_argument('base', default='baseline', nargs='?', help='the base run to compare against')
-    parser_compare.add_argument('--mode', default='data', choices=['data', 'speed', 'all', 'ok', 'gpa'], help='the base run to compare against')
+    parser_compare.add_argument('--mode', default='data', choices=['data', 'ok', 'gpa'], help='the base run to compare against')
     parser_compare.set_defaults(func=compare)
 
     parser_print = subparsers.add_parser('print', help='show the baseline and branched audit results')

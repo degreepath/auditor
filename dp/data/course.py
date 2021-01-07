@@ -3,13 +3,13 @@ import attr
 from decimal import Decimal, ROUND_DOWN
 import logging
 
-from .clausable import Clausable
+from .clausable import Clausable, ClausableIdentifier
 from .course_enums import GradeCode, GradeOption, SubType, CourseType, TranscriptCode, CourseTypeSortOrder
 from ..lib import str_to_grade_points
 from ..exception import CourseOverrideException, ExceptionAction, CourseCreditOverride, CourseSubjectOverride
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..clause import SingleClause
+    from ..predicate_clause import Predicate
 
 logger = logging.getLogger(__name__)
 
@@ -39,19 +39,22 @@ class CourseInstance(Clausable):
     level: int
     name: str
     number: str
-    schedid: Optional[str]
+    schedid: str
     section: Optional[str]
     sub_type: SubType
     subject: str
     su_grade_code: Optional[GradeCode]
     term: str
     transcript_code: TranscriptCode
-    year: int
+    year: str
     yearterm: str
 
     identity_: str
     is_chbi_: Optional[int]
     hash_cache_: Optional[int] = None
+
+    def to_identifier(self) -> ClausableIdentifier:
+        return ClausableIdentifier(type="class", key="scedid", value=self.schedid)
 
     def __str__(self) -> str:
         return self.verbose()
@@ -64,7 +67,7 @@ class CourseInstance(Clausable):
             object.__setattr__(self, 'hash_cache_', hash(self.clbid))
         return cast(int, self.hash_cache_)
 
-    def sort_order(self) -> Tuple[int, int, str, str]:
+    def sort_order(self) -> Tuple[int, str, str, str]:
         key = CourseTypeSortOrder[self.course_type]
         return (key, self.year, self.term, self.clbid)
 
@@ -99,7 +102,7 @@ class CourseInstance(Clausable):
             "type": "course",
         }
 
-    def attach_attrs(self, attributes: Iterable['str'] = tuple()) -> 'CourseInstance':
+    def attach_attrs(self, attributes: Iterable[str] = tuple()) -> 'CourseInstance':
         attributes = tuple(attributes)
 
         if not attributes:
@@ -114,10 +117,13 @@ class CourseInstance(Clausable):
         return self.identity_
 
     def verbose(self) -> str:
+        attrs = ''
+        if self.attributes:
+            attrs = ' ' + ' '.join('#' + a for a in sorted(self.attributes))
         if self.institution == 'STOLAF':
-            return f'{self.course_with_term()} "{self.name}" {self.credits} {self.grade_code.value} #{self.clbid}'
+            return f'{self.course_with_term()} "{self.name}" {self.credits} {self.grade_code.value} id={self.clbid}{attrs}'
         else:
-            return f'{self.course_with_term()} "{self.name}" [{self.institution}] {self.credits} {self.grade_code.value} #{self.clbid}'
+            return f'{self.course_with_term()} "{self.name}" [{self.institution}] {self.credits} {self.grade_code.value} #{self.clbid}{attrs}'
 
     def course_with_term(self) -> str:
         if self.sub_type is SubType.Lab:
@@ -134,38 +140,38 @@ class CourseInstance(Clausable):
     def year_term(self) -> str:
         return f"{self.year}-{self.term}"
 
-    def apply_single_clause(self, clause: 'SingleClause') -> bool:
+    def apply_predicate(self, clause: 'Predicate') -> bool:
         # logger.debug("clause/compare/key=%s", clause.key)
         applicator = clause_application_lookup.get(clause.key, None)
         assert applicator is not None, TypeError(f'{clause.key} is not a known clause key')
         return applicator(self, clause)
 
 
-def apply_single_clause__attributes(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__attributes(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.attributes)
 
 
-def apply_single_clause__gereqs(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__gereqs(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.gereqs)
 
 
-def apply_single_clause__ap(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__ap(course: CourseInstance, clause: 'Predicate') -> bool:
     return course.course_type is CourseType.AP and clause.compare(course.name)
 
 
-def apply_single_clause__number(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__number(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.number)
 
 
-def apply_single_clause__institution(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__institution(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.institution)
 
 
-def apply_single_clause__course(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__course(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.identity_)
 
 
-def apply_single_clause__subject(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__subject(course: CourseInstance, clause: 'Predicate') -> bool:
     # CH/BI 125 and 126 are "CHEM" courses, while 127/227 are "BIO".
     # So we pretend that that is the case, but only when checking subject codes.
     if course.is_chbi_ is not None:
@@ -177,7 +183,7 @@ def apply_single_clause__subject(course: CourseInstance, clause: 'SingleClause')
         return clause.compare(course.subject)
 
 
-def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__grade(course: CourseInstance, clause: 'Predicate') -> bool:
     value = course.grade_code
 
     if course.is_during_covid:
@@ -190,85 +196,86 @@ def apply_single_clause__grade(course: CourseInstance, clause: 'SingleClause') -
         return clause.compare(value)
 
 
-def apply_single_clause__credits(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__credits(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.credits)
 
 
-def apply_single_clause__level(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__level(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.level)
 
 
-def apply_single_clause__semester(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__semester(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.term)
 
 
-def apply_single_clause__type(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__type(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.sub_type.name)
 
 
-def apply_single_clause__course_type(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__course_type(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.course_type.name)
 
 
-def apply_single_clause__lab(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__lab(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.is_lab)
 
 
-def apply_single_clause__grade_option(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__grade_option(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.grade_option)
 
 
-def apply_single_clause__is_stolaf(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__is_stolaf(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.is_stolaf)
 
 
-def apply_single_clause__is_in_gpa(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__is_in_gpa(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.is_in_gpa)
 
 
-def apply_single_clause__is_in_progress(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__is_in_progress(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.is_in_progress)
 
 
-def apply_single_clause__year(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__year(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.year)
 
 
-def apply_single_clause__clbid(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__clbid(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.clbid)
 
 
-def apply_single_clause__crsid(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__crsid(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.crsid)
 
 
-def apply_single_clause__name(course: CourseInstance, clause: 'SingleClause') -> bool:
+def apply_predicate__name(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.name)
 
 
-clause_application_lookup: Dict[str, Callable[[CourseInstance, 'SingleClause'], bool]] = {
-    'ap': apply_single_clause__ap,
-    'attributes': apply_single_clause__attributes,
-    'clbid': apply_single_clause__clbid,
-    'course': apply_single_clause__course,
-    'course_type': apply_single_clause__course_type,
-    'credits': apply_single_clause__credits,
-    'crsid': apply_single_clause__crsid,
-    'gereqs': apply_single_clause__gereqs,
-    'grade': apply_single_clause__grade,
-    'grade_option': apply_single_clause__grade_option,
-    'institution': apply_single_clause__institution,
-    'is_in_gpa': apply_single_clause__is_in_gpa,
-    'is_in_progress': apply_single_clause__is_in_progress,
-    'is_stolaf': apply_single_clause__is_stolaf,
-    'lab': apply_single_clause__lab,
-    'level': apply_single_clause__level,
-    'name': apply_single_clause__name,
-    'number': apply_single_clause__number,
-    'semester': apply_single_clause__semester,
-    'subject': apply_single_clause__subject,
-    'type': apply_single_clause__type,
-    'year': apply_single_clause__year,
+clause_application_lookup: Dict[str, Callable[[CourseInstance, 'Predicate'], bool]] = {
+    'ap': apply_predicate__ap,
+    'attributes': apply_predicate__attributes,
+    'attribute': apply_predicate__attributes,
+    'clbid': apply_predicate__clbid,
+    'course': apply_predicate__course,
+    'course_type': apply_predicate__course_type,
+    'credits': apply_predicate__credits,
+    'crsid': apply_predicate__crsid,
+    'gereqs': apply_predicate__gereqs,
+    'grade': apply_predicate__grade,
+    'grade_option': apply_predicate__grade_option,
+    'institution': apply_predicate__institution,
+    'is_in_gpa': apply_predicate__is_in_gpa,
+    'is_in_progress': apply_predicate__is_in_progress,
+    'is_stolaf': apply_predicate__is_stolaf,
+    'lab': apply_predicate__lab,
+    'level': apply_predicate__level,
+    'name': apply_predicate__name,
+    'number': apply_predicate__number,
+    'semester': apply_predicate__semester,
+    'subject': apply_predicate__subject,
+    'type': apply_predicate__type,
+    'year': apply_predicate__year,
 }
 
 
@@ -425,24 +432,30 @@ def load_course(  # noqa: C901
     )
 
 
-def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
+def course_from_str(s: str, *, in_progress: bool = False, **kwargs: Any) -> CourseInstance:
     number = s.split(' ')[1]
 
     assert type(kwargs.get('term', '')) is str
     assert type(kwargs.get('year', 0)) is int
 
-    grade_code = kwargs.get('grade_code', 'B')
+    if in_progress:
+        flag_in_progress = True
+        grade_code = 'IP'
+    else:
+        flag_in_progress = False
+        grade_code = kwargs.get('grade_code', 'B')
+
     grade_points = kwargs.get('grade_points', str_to_grade_points(grade_code))
 
     return load_course({
         "attributes": tuple(),
-        "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('term', 'na'))}>",
+        "clbid": f"<clbid={str(hash(s))} term={str(kwargs.get('year', 'na'))}/{str(kwargs.get('term', 'na'))}>",
         "course": s,
         "course_type": "SE",
         "credits": '1.00',
         "crsid": f"<crsid={str(hash(s))}>",
         "flag_gpa": True,
-        "flag_in_progress": False,
+        "flag_in_progress": flag_in_progress,
         "flag_incomplete": False,
         "flag_repeat": False,
         "flag_stolaf": True,
@@ -457,7 +470,7 @@ def course_from_str(s: str, **kwargs: Any) -> CourseInstance:
         "subject": s.split(' ')[0],
         "term": "1",
         "transcript_code": "",
-        "year": 2000,
+        "year": "2000",
         **kwargs,
         "grade_code": grade_code,
         "grade_points": grade_points,

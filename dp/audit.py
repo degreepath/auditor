@@ -32,6 +32,7 @@ class ResultMsg:
     total_iters: int
     avg_iter_ms: float
     elapsed_ms: float
+    version: int
 
 
 @attr.s(slots=True, kw_only=True, auto_attribs=True)
@@ -130,6 +131,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
                 total_iters=total_count,
                 avg_iter_ms=elapsed_ms / audit_count,
                 elapsed_ms=elapsed_ms,
+                version=best_sol.version,
             )
 
         if args.stop_after is not None and audit_count >= args.stop_after:
@@ -152,6 +154,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         total_iters=total_count,
         avg_iter_ms=elapsed_ms / audit_count,
         elapsed_ms=elapsed_ms,
+        version=best_sol.version,
     )
 
 

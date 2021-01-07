@@ -72,6 +72,7 @@ def test_solution_count_exact(caplog):
         next(solutions)
 
 
+@pytest.mark.skip()
 def test_solution_count_lessthan(caplog):
     caplog.set_level(logging.DEBUG, logger='dp.rule.given.rule')
 

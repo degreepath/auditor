@@ -1,12 +1,11 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Optional
 import argparse
-import sqlite3
 
 import attr
 import tqdm  # type: ignore
 
-from .sqlite import sqlite_connect, sqlite_cursor
+from .sqlite import sqlite_connect, sqlite_transaction
 from .audit import audit
 from .fetch import fetch_if_needed
 from .areas import load_areas
@@ -26,14 +25,13 @@ class Record:
 def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
     fetch_if_needed(args)
 
-    with sqlite_connect(args.db) as conn:
+    with sqlite_connect(args.db) as conn, sqlite_transaction(conn):
         if baseline:
             print('clearing baseline data... ', end='', flush=True)
             conn.execute('DELETE FROM baseline')
         else:
             print(f'clearing data for "{args.branch}"... ', end='', flush=True)
             conn.execute('DELETE FROM branch WHERE branch = ?', [args.branch])
-        conn.commit()
         print('cleared')
 
     minimum_duration = parse_ms_str(args.minimum_duration)
@@ -64,6 +62,16 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
     pretty_min = pretty_ms(minimum_duration.ms())
     print(f'{len(records):,} audits under {pretty_min} each: ~{pretty_dur} with {args.workers:,} workers')
 
+    if baseline and args.copy:
+        with sqlite_transaction(conn):
+            conn.execute('''
+                INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
+                SELECT stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result
+                FROM server_data
+                WHERE duration < :min
+            ''', {'min': minimum_duration.sec()})
+        return
+
     area_codes = set((r.catalog, r.code) for r in records)
     area_specs = load_areas(args, [{"catalog": catalog, "code": code} for catalog, code in area_codes])
 
@@ -74,7 +82,10 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
     if baseline:
         timeout = float(minimum_duration.sec()) * 2.5
 
-    with sqlite_connect(args.db) as conn, ProcessPoolExecutor(max_workers=args.workers) as executor:
+    with \
+            sqlite_connect(args.db) as conn, \
+            sqlite_transaction(conn), \
+            ProcessPoolExecutor(max_workers=args.workers) as executor:
         futures = {
             executor.submit(
                 audit,
@@ -82,6 +93,7 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
                 db=args.db,
                 area_spec=area_specs[r.area_key],
                 timeout=timeout,
+                run_id=getattr(args, 'branch', 'None'),
             ): r
             for r in records
             if r.area_key in area_specs
@@ -109,7 +121,6 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
                 db_args = future.result()
             except TimeoutError as err:
                 print(err.args[0])
-                conn.commit()
                 continue
             except Exception as exc:
                 print(f'{record.stnum} {record.catalog} {record.code} generated an exception: {exc}')
@@ -117,22 +128,13 @@ def run_batch(args: argparse.Namespace, *, baseline: bool) -> None:
 
             assert db_args is not None, f"{record.stnum}, {record.catalog}, {record.code} returned None"
 
-            with sqlite_cursor(conn) as curs:
-                try:
-                    if baseline:
-                        curs.execute('''
-                            INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
-                            VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
-                        ''', db_args)
-                    else:
-                        curs.execute('''
-                            INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result)
-                            VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result))
-                        ''', db_args)
-                except sqlite3.Error as ex:
-                    print(db_args)
-                    print(db_args['stnum'], db_args['catalog'], db_args['code'], 'generated an exception', ex)
-                    conn.rollback()
-                    continue
-
-                conn.commit()
+            if baseline:
+                conn.execute('''
+                    INSERT INTO baseline (stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result, version)
+                    VALUES (:stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result), :version)
+                ''', db_args)
+            else:
+                conn.execute('''
+                    INSERT INTO branch (branch, stnum, catalog, code, iterations, duration, gpa, ok, rank, max_rank, status, result, version)
+                    VALUES (:run, :stnum, :catalog, :code, :iterations, :duration, :gpa, :ok, :rank, :max_rank, :status, json(:result), :version)
+                ''', db_args)

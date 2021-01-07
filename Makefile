@@ -47,3 +47,14 @@ requirements-excel.txt: requirements-excel.in
 	pip-compile --generate-hashes $<
 
 .PHONY: requirements nuitka profile validate push watch test mypy lint flake check all
+
+###
+
+report-%.html:
+	cargo run --release --bin dp-major-report -- ./testbed_db.db "$(*F)" --as-html > "${@}"
+
+summary-%.html:
+	cargo run --release --bin dp-major-summary -- ./testbed_db.db "$(*F)" --as-html > "${@}"
+
+upload-reports:
+	scp summary-*.html report-*.html "ola:/home/www/sis/dp-report/"

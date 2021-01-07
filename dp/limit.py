@@ -9,9 +9,9 @@ import enum
 
 import attr
 
-from .clause import Clause, apply_clause
+from .predicate_clause import SomePredicate, load_predicate
+from .data_type import DataType
 from .lazy_product import lazy_product
-from .load_clause import load_clause
 from .constants import Constants
 from .ncr import ncr
 
@@ -33,7 +33,7 @@ class AtMostWhat(enum.Enum):
 class Limit:
     at_most: decimal.Decimal
     at_most_what: AtMostWhat = AtMostWhat.Courses
-    where: Clause
+    where: SomePredicate
     message: Optional[str]
 
     def to_dict(self) -> Dict[str, Any]:
@@ -56,7 +56,7 @@ class Limit:
         given_keys = set(data.keys())
         assert given_keys.difference(allowed_keys) == set(), f"expected set {given_keys.difference(allowed_keys)} to be empty"
 
-        clause = load_clause(data["where"], c=c, ctx=ctx)
+        clause = load_predicate(data["where"], c=c, ctx=ctx, mode=DataType.Course)
         assert clause, 'limits are not allowed to have conditional clauses'
 
         try:
@@ -148,7 +148,7 @@ class LimitSet:
 
             for limit in self.limits:
                 logger.debug("limit/check: checking %r against %s (counter: %s)", c, limit, clause_counters[limit])
-                if apply_clause(limit.where, c):
+                if limit.where.apply(c):
                     if clause_counters[limit] >= limit.at_most:
                         logger.debug("limit/maximum: %r matched %s (counter: %s)", c, limit, clause_counters[limit])
                         may_yield = False
@@ -168,7 +168,7 @@ class LimitSet:
 
         for c in courses:
             for limit in self.limits:
-                if not apply_clause(limit.where, c):
+                if not limit.where.apply(c):
                     continue
 
                 if clause_counters[limit] >= limit.at_most:
@@ -224,7 +224,7 @@ class LimitSet:
                     logger.debug("limit/probe: skipping check of %r as it has been forced", c)
                     continue
                 logger.debug("limit/probe: checking %r")
-                if apply_clause(limit.where, c):
+                if limit.where.apply(c):
                     matched_items[limit].add(c)
 
         all_matched_items: Set[CourseInstance] = set(item for match_set in matched_items.values() for item in match_set)

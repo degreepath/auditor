@@ -154,3 +154,39 @@ def audit(
 
         except Exception as ex:
             capture_exception(ex)
+
+            logger.error(ex)
+
+            curs.execute("""
+                INSERT INTO result (
+                    student_id,
+                    area_code,
+                    catalog,
+                    run,
+                    input_data,
+                    expires_at,
+                    link_only,
+                    result_version,
+                    error
+                )
+                VALUES (
+                    %(student_id)s,
+                    %(area_code)s,
+                    %(catalog)s,
+                    %(run)s,
+                    %(input_data)s,
+                    %(expires_at)s,
+                    %(link_only)s,
+                    2,
+                    %(error)s
+                )
+            """, {
+                "student_id": stnum,
+                "area_code": area_code,
+                "catalog": area_catalog,
+                "run": run_id,
+                "input_data": json.dumps(student),
+                "expires_at": expires_at,
+                "link_only": link_only,
+                "error": json.dumps({"error": str(ex)})
+            })

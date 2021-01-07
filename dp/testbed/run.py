@@ -16,10 +16,10 @@ def run_one(args: argparse.Namespace) -> None:
 
     with sqlite_connect(args.db, readonly=True) as conn:
         results = conn.execute('''
-            SELECT d.input_data
-            FROM server_data d
-            WHERE (d.stnum) = (:stnum)
-        ''', {'stnum': stnum})
+            SELECT input_data
+            FROM server_data
+            WHERE (stnum, catalog, code) = (:stnum, :catalog, :code)
+        ''', {'stnum': stnum, 'catalog': catalog, 'code': code})
 
         record = results.fetchone()
         input_data: dict = json.loads(record['input_data'])
