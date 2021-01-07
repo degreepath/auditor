@@ -105,7 +105,7 @@ def audit(
                             %(input_data)s,
                             %(expires_at)s,
                             %(link_only)s,
-                            2,
+                            %(result_version)s,
                             %(total_count)s,
                             interval %(elapsed)s,
                             interval %(avg_iter_time)s,
@@ -147,6 +147,7 @@ def audit(
                         "student_name_sort": student["name_sort"],
                         "student_classification": student["classification"],
                         "student_class": student["class"] if student["class"] != "None" else None,
+                        "result_version": result["version"],
                     })
 
                 else:
@@ -177,7 +178,7 @@ def audit(
                     %(input_data)s,
                     %(expires_at)s,
                     %(link_only)s,
-                    2,
+                    %(result_version)s,
                     %(error)s
                 )
             """, {
@@ -188,5 +189,6 @@ def audit(
                 "input_data": json.dumps(student),
                 "expires_at": expires_at,
                 "link_only": link_only,
-                "error": json.dumps({"error": str(ex)})
+                "error": json.dumps({"error": str(ex)}),
+                "result_version": 2,
             })
