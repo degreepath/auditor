@@ -20,6 +20,7 @@ pub struct CourseRule {
     pub clbid: Option<String>,
     pub grade: Option<String>,
     pub name: Option<String>,
+    pub crsid: Option<String>,
 }
 
 impl ToProse for CourseRule {
@@ -88,10 +89,11 @@ impl crate::to_csv::ToCsv for CourseRule {
 
         let is_waived = is_waived || self.status.is_waived();
 
-        let header = self
-            .course
-            .clone()
-            .unwrap_or_else(|| self.ap.clone().unwrap());
+        let header = self.course.clone().unwrap_or_else(|| {
+            self.ap
+                .clone()
+                .unwrap_or_else(|| self.crsid.clone().unwrap())
+        });
         let body = if let Some(course) = course {
             // if there's a course, show it, even if it was "waived" (ie, it was inserted)
             course.semi_verbose()
