@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Requirement {
-    pub contract: bool,
+    // pub contract: bool,
     pub is_audited: bool,
     pub max_rank: String,
     pub message: Option<String>,

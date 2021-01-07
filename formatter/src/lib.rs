@@ -2,6 +2,7 @@ pub mod area_of_study;
 pub mod assertion;
 pub mod audit;
 pub mod claim;
+pub mod database;
 pub mod filter_predicate;
 pub mod limit;
 pub mod operator;

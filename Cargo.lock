@@ -181,12 +181,9 @@ dependencies = [
  "askama_escape",
  "clap",
  "csv",
- "dotenv",
  "dp-formatter",
  "itertools",
- "openssl",
  "postgres",
- "postgres-openssl",
  "rusqlite",
  "serde",
  "serde_json",
@@ -212,7 +209,12 @@ checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 name = "dp-formatter"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "csv",
+ "dotenv",
+ "openssl",
+ "postgres",
+ "postgres-openssl",
  "serde",
  "serde_json",
 ]

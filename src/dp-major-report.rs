@@ -1,12 +1,11 @@
 use clap::Clap;
 use formatter::area_of_study::AreaOfStudy;
+use formatter::database;
 use formatter::student::{AreaOfStudy as AreaPointer, Emphasis, Student};
 use formatter::to_csv::{CsvOptions, ToCsv};
 use itertools::Itertools;
-use rusqlite::{named_params, Connection, Error as RusqliteError, OpenFlags, Result};
 use serde_path_to_error;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
-use std::path::Path;
 
 /// This doc string acts as a help message when the user runs '--help'
 /// as do all doc strings on fields
@@ -16,8 +15,6 @@ use std::path::Path;
     author = "Hawken MacKay Rives <degreepath@hawkrives.fastmail.fm>"
 )]
 struct Opts {
-    /// Sets the database path
-    db_path: String,
     /// Which area of study to look up
     area_code: String,
     /// Enables header debugging
@@ -29,20 +26,42 @@ struct Opts {
     /// Outputs the data as a single CSV document
     #[clap(long)]
     as_csv: bool,
+    /// Stores the data into Postgres
+    #[clap(long)]
+    to_database: bool,
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let opts: Opts = Opts::parse();
 
-    let results = report_for_area_by_catalog(&opts.db_path, &opts.area_code).unwrap();
+    let mut client = database::connect()?;
+    let results = report_for_area_by_catalog(&mut client, &opts.area_code).unwrap();
 
     if opts.as_csv {
         print_as_csv(&opts, results);
     } else if opts.as_html {
-        print_as_html(&opts, results);
+        use std::io::Cursor;
+
+        let mut buff = Cursor::new(Vec::new());
+        print_as_html(&opts, &mut buff, results)?;
+
+        let inner_buff = buff.into_inner();
+        let as_html = std::str::from_utf8(&inner_buff)?;
+        if opts.to_database {
+            database::record_report(
+                &mut client,
+                database::ReportType::Report,
+                &opts.area_code,
+                as_html,
+            )?;
+        } else {
+            print!("{}", as_html);
+        };
     } else {
-        unimplemented!()
-    }
+        unimplemented!("either --as-csv or --as-html must be given");
+    };
+
+    Ok(())
 }
 
 struct MappedResult {
@@ -56,38 +75,30 @@ struct MappedResult {
     emphasis_req_names: Vec<String>,
 }
 
-fn report_for_area_by_catalog<P: AsRef<Path>>(
-    db_path: P,
+fn report_for_area_by_catalog(
+    client: &mut postgres::Client,
     area_code: &str,
-) -> Result<Vec<MappedResult>, RusqliteError> {
-    let conn = Connection::open_with_flags(db_path, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
+) -> anyhow::Result<Vec<MappedResult>> {
+    let mut tx = client.transaction()?;
 
-    let branch = "cond";
-
-    let mut stmt = conn.prepare("
-        SELECT b.result, sd.input_data
-        FROM branch b
-            LEFT JOIN server_data sd on (b.stnum, b.catalog, b.code) = (sd.stnum, sd.catalog, sd.code)
-        WHERE b.branch = :branch
-            AND b.code = :code
-        ORDER BY b.code, b.stnum
-    ").unwrap();
-
-    let params = named_params! {":code": area_code, ":branch": branch};
+    let stmt = tx.prepare(
+        "
+        SELECT cast(result as text) as result
+             , cast(input_data as text) as input_data
+        FROM result
+        WHERE area_code = $1 AND is_active = true AND result_version = 3
+        ORDER BY area_code, student_id
+    ",
+    )?;
 
     let options = CsvOptions {};
 
-    let results = stmt
-        .query_map_named(params, |row| {
-            let result: String = row.get(0).unwrap();
-            let student: String = row.get(1).unwrap();
-
-            Ok((student, result))
-        })?
-        .map(|pair| pair.unwrap())
-        .map(|(student, result)| {
-            // let value: serde_json::Value = serde_json::from_str(&student).unwrap();
-            // let student = serde_json::to_string_pretty(&value).unwrap();
+    let results = tx
+        .query(&stmt, &[&area_code])?
+        .into_iter()
+        .map(|row| {
+            let result: String = row.get(0);
+            let student: String = row.get(1);
 
             let student_deserializer = &mut serde_json::Deserializer::from_str(student.as_str());
             let student: Student = match serde_path_to_error::deserialize(student_deserializer) {
@@ -101,9 +112,6 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
                     panic!();
                 }
             };
-
-            // let value: serde_json::Value = serde_json::from_str(&result).unwrap();
-            // let result = serde_json::to_string_pretty(&value).unwrap();
 
             let result_deserializer = &mut serde_json::Deserializer::from_str(result.as_str());
             let result: AreaOfStudy = match serde_path_to_error::deserialize(result_deserializer) {
@@ -120,6 +128,9 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
                 }
             };
 
+            (student, result)
+        })
+        .map(|(student, result)| {
             // TODO: handle case where student's catalog != area's catalog
             let catalog = student.catalog.clone();
             let stnum = student.stnum.clone();
@@ -171,13 +182,7 @@ fn report_for_area_by_catalog<P: AsRef<Path>>(
     let results: Vec<MappedResult> = {
         let mut r = results.collect::<Vec<_>>();
 
-        r.sort_by_cached_key(|s| {
-            (
-                s.emphases.join(","),
-                s.name.clone(),
-                s.stnum.clone(),
-            )
-        });
+        r.sort_by_cached_key(|s| (s.emphases.join(","), s.name.clone(), s.stnum.clone()));
 
         r
     };
@@ -261,7 +266,11 @@ fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
     wtr.flush().unwrap();
 }
 
-fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
+fn print_as_html<W: std::io::Write>(
+    _opts: &Opts,
+    mut writer: &mut W,
+    results: Vec<MappedResult>,
+) -> anyhow::Result<()> {
     #[derive(Default)]
     struct Table {
         caption: String,
@@ -288,81 +297,85 @@ fn print_as_html(_opts: &Opts, results: Vec<MappedResult>) -> () {
 
     let tables: Vec<Table> = grouped
         .into_iter()
-        .map(
-            |((_requirements, emphasis_req_names, header), group)| {
-                let mut current_table: Table = Table::default();
+        .map(|((_requirements, emphasis_req_names, header), group)| {
+            let mut current_table: Table = Table::default();
 
-                let catalogs = group.iter().map(|res| res.catalog.clone()).collect::<BTreeSet<_>>();
-                let catalog = catalogs.into_iter().collect::<Vec<_>>().join(", ");
+            let catalogs = group
+                .iter()
+                .map(|res| res.catalog.clone())
+                .collect::<BTreeSet<_>>();
+            let catalog = catalogs.into_iter().collect::<Vec<_>>().join(", ");
 
-                // write out a blank line, then a line with the new catalog year
-                current_table.caption = if !emphasis_req_names.is_empty() {
-                    format!(
-                        "Catalog: {}; Emphases: {}",
-                        catalog,
-                        emphasis_req_names.join(" & ")
-                    )
-                } else {
-                    format!("Catalog: {}", catalog)
-                };
+            // write out a blank line, then a line with the new catalog year
+            current_table.caption = if !emphasis_req_names.is_empty() {
+                format!(
+                    "Catalog: {}; Emphases: {}",
+                    catalog,
+                    emphasis_req_names.join(" & ")
+                )
+            } else {
+                format!("Catalog: {}", catalog)
+            };
 
-                current_table.header = header.clone();
+            current_table.header = header.clone();
 
-                current_table.rows = group
-                    .iter()
-                    .map(|result| {
-                        let MappedResult { data, .. } = result;
+            current_table.rows = group
+                .iter()
+                .map(|result| {
+                    let MappedResult { data, .. } = result;
 
-                        let data = if data.len() != current_table.header.len() {
-                            let mut d = data.clone();
-                            d.resize(current_table.header.len(), String::from(""));
-                            d
-                        } else {
-                            data.clone()
-                        };
+                    let data = if data.len() != current_table.header.len() {
+                        let mut d = data.clone();
+                        d.resize(current_table.header.len(), String::from(""));
+                        d
+                    } else {
+                        data.clone()
+                    };
 
-                        data
-                    })
-                    .collect();
+                    data
+                })
+                .collect();
 
-                current_table
-            },
-        )
+            current_table
+        })
         .collect();
 
-    println!(r#"<meta charset="utf-8">"#);
+    write!(&mut writer, r#"<meta charset="utf-8">"#)?;
 
     for table in tables {
         if !table.caption.is_empty() {
-            println!("<h2>{}</h2>", table.caption);
+            write!(&mut writer, "<h2>{}</h2>", table.caption)?;
         }
-        println!("<table>");
-        println!("<thead>");
-        println!("<tr>");
+        write!(&mut writer, "<table>")?;
+        write!(&mut writer, "<thead>")?;
+        write!(&mut writer, "<tr>")?;
         for th in table.header {
-            println!("<th>{}</th>", th);
+            write!(&mut writer, "<th>{}</th>", th)?;
         }
-        println!("</tr>");
-        println!("</thead>");
+        write!(&mut writer, "</tr>")?;
+        write!(&mut writer, "</thead>")?;
 
-        println!("<tbody>");
+        write!(&mut writer, "<tbody>")?;
         for tr in table.rows {
-            println!("<tr>");
+            write!(&mut writer, "<tr>")?;
             for td in tr {
                 let attrs = if !td.contains("✗") && !td.trim().is_empty() {
                     "class=\"passing\""
                 } else {
                     "class=\"not-passing\""
                 };
-                println!(
+                write!(
+                    &mut writer,
                     "<td {}>{}</td>",
                     attrs,
                     askama_escape::escape(&td, askama_escape::Html)
-                );
+                )?;
             }
-            println!("</tr>");
+            write!(&mut writer, "</tr>")?;
         }
-        println!("</tbody>");
-        println!("</table>")
+        write!(&mut writer, "</tbody>")?;
+        write!(&mut writer, "</table>")?;
     }
+
+    Ok(())
 }
