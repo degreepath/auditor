@@ -340,41 +340,41 @@ fn print_as_html<W: std::io::Write>(
         })
         .collect();
 
-    write!(&mut writer, r#"<meta charset="utf-8">"#)?;
+    writeln!(&mut writer, r#"<meta charset="utf-8">"#)?;
 
     for table in tables {
         if !table.caption.is_empty() {
-            write!(&mut writer, "<h2>{}</h2>", table.caption)?;
+            writeln!(&mut writer, "<h2>{}</h2>", table.caption)?;
         }
-        write!(&mut writer, "<table>")?;
-        write!(&mut writer, "<thead>")?;
-        write!(&mut writer, "<tr>")?;
+        writeln!(&mut writer, "<table>")?;
+        writeln!(&mut writer, "<thead>")?;
+        writeln!(&mut writer, "<tr>")?;
         for th in table.header {
-            write!(&mut writer, "<th>{}</th>", th)?;
+            writeln!(&mut writer, "<th>{}</th>", th)?;
         }
-        write!(&mut writer, "</tr>")?;
-        write!(&mut writer, "</thead>")?;
+        writeln!(&mut writer, "</tr>")?;
+        writeln!(&mut writer, "</thead>")?;
 
-        write!(&mut writer, "<tbody>")?;
+        writeln!(&mut writer, "<tbody>")?;
         for tr in table.rows {
-            write!(&mut writer, "<tr>")?;
+            writeln!(&mut writer, "<tr>")?;
             for td in tr {
                 let attrs = if !td.contains("✗") && !td.trim().is_empty() {
                     "class=\"passing\""
                 } else {
                     "class=\"not-passing\""
                 };
-                write!(
+                writeln!(
                     &mut writer,
                     "<td {}>{}</td>",
                     attrs,
                     askama_escape::escape(&td, askama_escape::Html)
                 )?;
             }
-            write!(&mut writer, "</tr>")?;
+            writeln!(&mut writer, "</tr>")?;
         }
-        write!(&mut writer, "</tbody>")?;
-        write!(&mut writer, "</table>")?;
+        writeln!(&mut writer, "</tbody>")?;
+        writeln!(&mut writer, "</table>")?;
     }
 
     Ok(())
