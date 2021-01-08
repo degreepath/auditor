@@ -73,5 +73,11 @@ pub fn collect_area_codes(client: &mut Client) -> anyhow::Result<Vec<String>> {
 
     tx.commit()?;
 
+    let results = {
+        let mut results = results;
+        results.sort();
+        results
+    };
+
     Ok(results)
 }
