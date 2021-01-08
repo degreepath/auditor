@@ -64,8 +64,8 @@ fn main() -> anyhow::Result<()> {
             };
         }
         SubCommand::Batch(sopts) => {
-            use std::time::{Instant};
             use std::io::Write;
+            use std::time::Instant;
 
             let area_codes = collect_area_codes(&mut client)?;
 
