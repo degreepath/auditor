@@ -11,10 +11,7 @@ pub enum ReportType {
     Summary,
 }
 
-pub fn run_report(
-    records: &[MappedResult],
-    report_type: &ReportType,
-) -> anyhow::Result<String> {
+pub fn run_report(records: &[MappedResult], report_type: &ReportType) -> anyhow::Result<String> {
     let print_as_html = match report_type {
         ReportType::Report => major_report::print_as_html,
         ReportType::Summary => major_summary::print_as_html,

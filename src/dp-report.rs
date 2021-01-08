@@ -1,7 +1,7 @@
 use clap::Clap;
 use reports::database::{collect_area_codes, connect, record_report};
-use reports::{run_report, ReportType};
 use reports::students::fetch_records;
+use reports::{run_report, ReportType};
 
 const AUTHOR: &'static str = "Hawken MacKay Rives <degreepath@hawkrives.fastmail.fm>";
 /// This doc string acts as a help message when the user runs '--help'
