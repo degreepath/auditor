@@ -84,7 +84,7 @@ fn main() -> anyhow::Result<()> {
                         record_report(&mut client, &report_type, &area_code, &report)?;
                     }
 
-                    print!("done in {:?}; ", start.elapsed().as_millis());
+                    print!("done in {:?}; ", start.elapsed());
                     std::io::stdout().flush()?;
                 }
                 println!();
