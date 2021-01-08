@@ -1,6 +1,6 @@
 use formatter::student::StudentClassification;
 
-pub(crate) struct MappedResult {
+pub struct MappedResult {
     pub(crate) header: Vec<String>,
     pub(crate) data: Vec<String>,
     pub(crate) catalog: String,

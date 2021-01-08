@@ -1,87 +1,11 @@
 use crate::structs::MappedResult;
-use crate::students::fetch_students;
-use formatter::student::{AreaOfStudy as AreaPointer, Emphasis, StudentClassification};
-use formatter::to_csv::{CsvOptions, ToCsv};
+use formatter::student::StudentClassification;
 use itertools::Itertools;
 use std::collections::{BTreeMap, BTreeSet};
 
-pub(crate) fn report_for_area_by_catalog(
-    client: &mut postgres::Client,
-    area_code: &str,
-) -> anyhow::Result<Vec<MappedResult>> {
-    let mut tx = client.transaction()?;
-
-    let options = CsvOptions {};
-
-    let results = fetch_students(&mut tx, &area_code)?
-        .into_iter()
-        .map(|(student, result)| {
-            // TODO: handle case where student's catalog != area's catalog
-            let catalog = student.catalog.clone();
-            let stnum = student.stnum.clone();
-            let name = student.name.clone();
-            let classification = student.classification.clone();
-
-            let records = result.get_record(&student, &options, false);
-            let requirements = result.get_requirements();
-
-            let emphases = student
-                .areas
-                .iter()
-                .filter_map(|a| match a {
-                    AreaPointer::Emphasis(Emphasis { name, .. }) => Some(name),
-                    _ => None,
-                })
-                .cloned()
-                .collect::<BTreeSet<_>>()
-                .into_iter()
-                .collect::<Vec<_>>();
-
-            let emphasis_req_names = requirements
-                .iter()
-                .filter(|e| e.starts_with("Emphasis: "))
-                .map(|name| String::from(name.split(" → ").take(1).last().unwrap()))
-                .collect::<BTreeSet<_>>()
-                .into_iter()
-                .collect::<Vec<_>>();
-
-            let mut header: Vec<String> = Vec::with_capacity(records.len());
-            let mut data: Vec<String> = Vec::with_capacity(records.len());
-
-            for (th, td) in records.into_iter() {
-                header.push(th);
-                data.push(td);
-            }
-
-            MappedResult {
-                header,
-                data,
-                requirements,
-                emphases,
-                emphasis_req_names,
-                catalog,
-                stnum,
-                classification,
-                name,
-            }
-        });
-
-    let results: Vec<MappedResult> = {
-        let mut r = results.collect::<Vec<_>>();
-
-        r.sort_by_cached_key(|s| {
-            return (s.catalog.clone(), s.emphases.join(","), s.stnum.clone());
-        });
-
-        r
-    };
-
-    Ok(results)
-}
-
 pub(crate) fn print_as_html<W: std::io::Write>(
     mut writer: &mut W,
-    results: Vec<MappedResult>,
+    results: &[MappedResult],
 ) -> anyhow::Result<()> {
     #[derive(Default, Debug)]
     struct Table {

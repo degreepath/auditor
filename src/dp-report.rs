@@ -1,6 +1,7 @@
 use clap::Clap;
 use reports::database::{collect_area_codes, connect, record_report};
 use reports::{run_report, ReportType};
+use reports::students::fetch_records;
 
 const AUTHOR: &'static str = "Hawken MacKay Rives <degreepath@hawkrives.fastmail.fm>";
 /// This doc string acts as a help message when the user runs '--help'
@@ -45,7 +46,8 @@ fn main() -> anyhow::Result<()> {
     match opts.action {
         SubCommand::Report(sopts) => {
             let report_type = ReportType::Report;
-            let report = run_report(&mut client, &report_type, &sopts.area_code)?;
+            let records = fetch_records(&mut client, &sopts.area_code)?;
+            let report = run_report(&records, &report_type)?;
 
             if sopts.to_database {
                 record_report(&mut client, &report_type, &sopts.area_code, &report)?;
@@ -55,7 +57,8 @@ fn main() -> anyhow::Result<()> {
         }
         SubCommand::Summarize(sopts) => {
             let report_type = ReportType::Summary;
-            let report = run_report(&mut client, &report_type, &sopts.area_code)?;
+            let records = fetch_records(&mut client, &sopts.area_code)?;
+            let report = run_report(&records, &report_type)?;
 
             if sopts.to_database {
                 record_report(&mut client, &report_type, &sopts.area_code, &report)?;
@@ -72,6 +75,10 @@ fn main() -> anyhow::Result<()> {
             for area_code in area_codes {
                 print!("{} | ", area_code);
                 std::io::stdout().flush()?;
+                let start = Instant::now();
+                let records = fetch_records(&mut client, &area_code)?;
+                print!("loaded {} in {:?}; ", records.len(), start.elapsed());
+
                 for report_type in &[ReportType::Report, ReportType::Summary] {
                     let start = Instant::now();
 
@@ -79,7 +86,7 @@ fn main() -> anyhow::Result<()> {
                         ReportType::Report => print!("report: "),
                         ReportType::Summary => print!("summary: "),
                     };
-                    let report = run_report(&mut client, &report_type, &area_code)?;
+                    let report = run_report(&records, &report_type)?;
                     if sopts.to_database {
                         record_report(&mut client, &report_type, &area_code, &report)?;
                     }

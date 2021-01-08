@@ -2,9 +2,8 @@ use crate::structs::MappedResult;
 use formatter::area_of_study::AreaOfStudy;
 use formatter::student::{AreaOfStudy as AreaPointer, Emphasis, Student};
 use formatter::to_csv::{CsvOptions, ToCsv};
-use itertools::Itertools;
 use serde_path_to_error;
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::BTreeSet;
 
 pub(crate) fn fetch_students(
     tx: &mut postgres::Transaction,
@@ -61,4 +60,83 @@ fn parse_record(result: &str, student: &str) -> (Student, AreaOfStudy) {
     };
 
     (student, result)
+}
+
+pub fn fetch_records(
+    client: &mut postgres::Client,
+    area_code: &str,
+) -> anyhow::Result<Vec<MappedResult>> {
+    let mut tx = client.transaction()?;
+
+    let options = CsvOptions {};
+
+    let results = fetch_students(&mut tx, &area_code)?
+        .into_iter()
+        .map(|(student, result)| {
+            // TODO: handle case where student's catalog != area's catalog
+            let catalog = student.catalog.clone();
+            let stnum = student.stnum.clone();
+            let name = student.name.clone();
+            let classification = student.classification.clone();
+
+            let records = result.get_record(&student, &options, false);
+            let requirements = result.get_requirements();
+
+            let emphases = student
+                .areas
+                .iter()
+                .filter_map(|a| match a {
+                    AreaPointer::Emphasis(Emphasis { name, .. }) => Some(name),
+                    _ => None,
+                })
+                .cloned()
+                .collect::<BTreeSet<_>>()
+                .into_iter()
+                .collect::<Vec<_>>();
+
+            let emphasis_req_names = requirements
+                .iter()
+                .filter(|e| e.starts_with("Emphasis: "))
+                .map(|name| String::from(name.split(" → ").take(1).last().unwrap()))
+                .collect::<BTreeSet<_>>()
+                .into_iter()
+                .collect::<Vec<_>>();
+
+            let mut header: Vec<String> = Vec::with_capacity(records.len());
+            let mut data: Vec<String> = Vec::with_capacity(records.len());
+
+            for (th, td) in records.into_iter() {
+                header.push(th);
+                data.push(td);
+            }
+
+            MappedResult {
+                header,
+                data,
+                requirements,
+                emphases,
+                emphasis_req_names,
+                catalog,
+                stnum,
+                classification,
+                name,
+            }
+        });
+
+    let results: Vec<MappedResult> = {
+        let mut r = results.collect::<Vec<_>>();
+
+        r.sort_by_cached_key(|s| {
+            (
+                s.catalog.clone(),
+                s.emphases.join(","),
+                s.name.clone(),
+                s.stnum.clone(),
+            )
+        });
+
+        r
+    };
+
+    Ok(results)
 }
