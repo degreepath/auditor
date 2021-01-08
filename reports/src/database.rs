@@ -1,3 +1,4 @@
+use crate::ReportType;
 use anyhow;
 use dotenv::dotenv;
 use openssl::ssl::{SslConnector, SslMethod, SslVerifyMode};
@@ -24,14 +25,9 @@ pub fn connect() -> anyhow::Result<Client> {
     Ok(client)
 }
 
-pub enum ReportType {
-    Report,
-    Summary,
-}
-
 pub fn record_report(
     client: &mut Client,
-    report_type: ReportType,
+    report_type: &crate::ReportType,
     area_code: &str,
     content: &str,
 ) -> anyhow::Result<()> {
@@ -56,4 +52,26 @@ pub fn record_report(
     tx.commit()?;
 
     Ok(())
+}
+
+pub fn collect_area_codes(client: &mut Client) -> anyhow::Result<Vec<String>> {
+    let mut tx = client.transaction()?;
+
+    let results = tx.query(
+        "
+        SELECT DISTINCT area_code
+        FROM result
+        WHERE is_active = true
+    ",
+        &[],
+    )?;
+
+    let results = results
+        .iter()
+        .map(|record| record.get(0))
+        .collect::<Vec<String>>();
+
+    tx.commit()?;
+
+    Ok(results)
 }

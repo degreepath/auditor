@@ -1,6 +1,5 @@
-use clap::Clap;
+use crate::structs::MappedResult;
 use formatter::area_of_study::AreaOfStudy;
-use formatter::database;
 use formatter::student::{AreaOfStudy as AreaPointer, Emphasis};
 use formatter::student::{Student, StudentClassification};
 use formatter::to_csv::{CsvOptions, ToCsv};
@@ -8,78 +7,7 @@ use itertools::Itertools;
 use serde_path_to_error;
 use std::collections::{BTreeMap, BTreeSet};
 
-// TODO: build one dp-report binary that executes a subcommand for report, summary, and required
-
-/// This doc string acts as a help message when the user runs '--help'
-/// as do all doc strings on fields
-#[derive(Clap, Debug)]
-#[clap(
-    version = "1.0",
-    author = "Hawken MacKay Rives <degreepath@hawkrives.fastmail.fm>"
-)]
-struct Opts {
-    /// Which area of study to look up
-    area_code: String,
-    /// Enables header debugging
-    #[clap(long)]
-    debug: bool,
-    /// Outputs the data as HTML tables
-    #[clap(long)]
-    as_html: bool,
-    /// Outputs the data as a single CSV document
-    #[clap(long)]
-    as_csv: bool,
-    /// Stores the data into Postgres
-    #[clap(long)]
-    to_database: bool,
-}
-
-fn main() -> anyhow::Result<()> {
-    let opts: Opts = Opts::parse();
-
-    let mut client = database::connect()?;
-    let results = report_for_area_by_catalog(&mut client, &opts.area_code).unwrap();
-
-    if opts.as_csv {
-        print_as_csv(&opts, results);
-    } else if opts.as_html {
-        use std::io::Cursor;
-
-        let mut buff = Cursor::new(Vec::new());
-        print_as_html(&opts, &mut buff, results)?;
-
-        let inner_buff = buff.into_inner();
-        let as_html = std::str::from_utf8(&inner_buff)?;
-        if opts.to_database {
-            database::record_report(
-                &mut client,
-                database::ReportType::Summary,
-                &opts.area_code,
-                as_html,
-            )?;
-        } else {
-            print!("{}", as_html);
-        };
-    } else {
-        unimplemented!("either --as-csv or --as-html must be given");
-    };
-
-    Ok(())
-}
-
-struct MappedResult {
-    header: Vec<String>,
-    data: Vec<String>,
-    catalog: String,
-    stnum: String,
-    requirements: Vec<String>,
-    emphases: Vec<String>,
-    emphasis_req_names: Vec<String>,
-    name: String,
-    classification: StudentClassification,
-}
-
-fn report_for_area_by_catalog(
+pub(crate) fn report_for_area_by_catalog(
     client: &mut postgres::Client,
     area_code: &str,
 ) -> anyhow::Result<Vec<MappedResult>> {
@@ -201,85 +129,7 @@ fn report_for_area_by_catalog(
     Ok(results)
 }
 
-fn print_as_csv(opts: &Opts, results: Vec<MappedResult>) -> () {
-    let mut wtr = csv::WriterBuilder::new()
-        .has_headers(false)
-        .from_writer(std::io::stdout());
-
-    let longest_header = results
-        .iter()
-        .map(|r: &MappedResult| std::cmp::max(r.header.len(), r.data.len()))
-        .max()
-        .unwrap();
-
-    let mut last_header: Vec<String> = Vec::new();
-    let mut last_requirements: Vec<String> = Vec::new();
-    let mut last_catalog: String = String::from("");
-
-    for (i, pair) in results.into_iter().enumerate() {
-        let MappedResult {
-            mut header,
-            mut data,
-            requirements,
-            catalog,
-            emphasis_req_names,
-            emphases: _,
-            stnum: _,
-            classification: _,
-            name: _,
-        } = pair;
-
-        // make sure that we have enough columns
-        header.resize(longest_header, String::from(""));
-
-        if opts.debug && last_header != header {
-            // write out a blank line, then a line with the new catalog year
-            let blank = vec![""; longest_header];
-            wtr.write_record(blank).unwrap();
-
-            // write out a blank line, then a line with the new catalog year
-            let title = {
-                let mut v = Vec::new();
-                v.push(format!("Catalog: {}", catalog));
-                v.resize(longest_header, String::from(""));
-                v
-            };
-            wtr.write_record(title).unwrap();
-
-            last_header = header.clone();
-            wtr.write_record(header).unwrap();
-        } else if last_requirements != requirements || last_catalog != catalog {
-            if i != 0 {
-                // write out a blank line, then a line with the new catalog year
-                let blank = vec![""; longest_header];
-                wtr.write_record(blank).unwrap();
-            }
-
-            // write out a blank line, then a line with the new catalog year
-            let title = {
-                let mut v = Vec::new();
-                v.push(format!("Catalog: {}", catalog));
-                v.push(emphasis_req_names.join(" & "));
-                v.resize(longest_header, String::from(""));
-                v
-            };
-            wtr.write_record(title).unwrap();
-
-            last_requirements = requirements.clone();
-            last_catalog = catalog.clone();
-            wtr.write_record(header).unwrap();
-        }
-
-        data.resize(longest_header, String::from(""));
-
-        wtr.write_record(data).unwrap();
-    }
-
-    wtr.flush().unwrap();
-}
-
-fn print_as_html<W: std::io::Write>(
-    _opts: &Opts,
+pub(crate) fn print_as_html<W: std::io::Write>(
     mut writer: &mut W,
     results: Vec<MappedResult>,
 ) -> anyhow::Result<()> {
