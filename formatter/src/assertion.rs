@@ -20,6 +20,8 @@ pub enum AssertionKey {
     CountTerms,
     #[serde(rename = "count(terms_from_most_common_course_by_name)")]
     CountTermsFromMostCommonCourseByName,
+    #[serde(rename = "count(terms_from_most_common_course)")]
+    CountTermsFromMostCommonCourse,
     #[serde(rename = "count(performances)")]
     CountPerformances,
     #[serde(rename = "count(recitals)")]
@@ -49,6 +51,9 @@ impl Display for AssertionKey {
             AssertionKey::CountCourses => "count/classes",
             AssertionKey::CountDistinctCourses => "count/distinct-courses",
             AssertionKey::CountTerms => "count/terms",
+            AssertionKey::CountTermsFromMostCommonCourse => {
+                "count/terms-from-most-common-course"
+            }
             AssertionKey::CountTermsFromMostCommonCourseByName => {
                 "count/terms-from-most-common-course-by-name"
             }
@@ -178,6 +183,9 @@ impl crate::to_csv::ToCsv for AssertionRule {
             AssertionKey::CountRecitals => "recitals",
             AssertionKey::CountSubjects => "subjects",
             AssertionKey::CountTerms => "terms",
+            AssertionKey::CountTermsFromMostCommonCourse => {
+                "terms from the most common course"
+            }
             AssertionKey::CountTermsFromMostCommonCourseByName => {
                 "terms from the most common course, by name"
             }
@@ -252,6 +260,7 @@ impl AssertionRule {
             AssertionKey::CountCourses => self.expected.parse().unwrap(),
             AssertionKey::CountDistinctCourses => self.expected.parse().unwrap(),
             AssertionKey::CountTerms => self.expected.parse().unwrap(),
+            AssertionKey::CountTermsFromMostCommonCourse => self.expected.parse().unwrap(),
             AssertionKey::CountTermsFromMostCommonCourseByName => self.expected.parse().unwrap(),
             AssertionKey::CountPerformances => self.expected.parse().unwrap(),
             AssertionKey::CountRecitals => self.expected.parse().unwrap(),
@@ -296,6 +305,7 @@ impl AssertionRule {
             AssertionKey::SumCredits => true,
             AssertionKey::SumCreditsFromSingleSubject => false,
             AssertionKey::CountTerms => false,
+            AssertionKey::CountTermsFromMostCommonCourse => false,
             AssertionKey::CountTermsFromMostCommonCourseByName => false,
             AssertionKey::CountPerformances => false,
             AssertionKey::CountRecitals => false,
