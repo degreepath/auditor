@@ -4,6 +4,7 @@ use crate::path::Path;
 use crate::predicate_expression::{DynamicPredicateExpression, StaticPredicateExpression};
 use crate::rule::query::DataType;
 use crate::rule::RuleStatus;
+use crate::student::Course;
 use crate::student::{ClassLabId, Student};
 use crate::to_prose::{ProseOptions, ToProse};
 use serde::{Deserialize, Serialize};
@@ -210,13 +211,26 @@ impl crate::to_csv::ToCsv for AssertionRule {
             "✗"
         };
         let resolved = self.resolved.clone().unwrap_or("0".into());
-        let leader = format!(
-            "{s} {r} {o} {e}",
-            s = sigil,
-            r = resolved,
-            o = self.operator,
-            e = self.expected
-        );
+        let remaining_v = match self.operator {
+            Operator::GreaterThanOrEqualTo => {
+                let remain =
+                    self.expected.parse::<i32>().unwrap() - resolved.parse::<i32>().unwrap();
+                format!("{} remaining", remain)
+            }
+            Operator::NotEqualTo
+            | Operator::EqualTo
+            | Operator::In
+            | Operator::NotIn
+            | Operator::GreaterThan
+            | Operator::LessThanOrEqualTo
+            | Operator::LessThan => format!(
+                "{r} {o} {e}",
+                r = resolved,
+                o = self.operator,
+                e = self.expected
+            ),
+        };
+        let leader = format!("{s} {r}", s = sigil, r = remaining_v,);
 
         let courses = self
             .get_clbids()
@@ -231,16 +245,30 @@ impl crate::to_csv::ToCsv for AssertionRule {
                     .as_str(),
                 )
             })
-            .map(|c| c.semi_verbose())
             .collect::<Vec<_>>();
 
-        let body = if courses.is_empty() {
-            leader
+        if courses.is_empty() {
+            vec![(header, leader)]
         } else {
-            format!("{} → {}", leader, courses.join("; "))
-        };
+            let (ip_courses, done_courses): (Vec<&Course>, Vec<&Course>) =
+                courses.iter().partition(|c| c.is_in_progress());
 
-        vec![(header, body)]
+            let str_done_courses = done_courses
+                .iter()
+                .map(|c| c.semi_verbose())
+                .collect::<Vec<_>>();
+
+            let str_ip_courses = ip_courses
+                .iter()
+                .map(|c| c.semi_verbose())
+                .collect::<Vec<_>>();
+
+            vec![
+                (header.clone(), leader),
+                (format!("{} - completed", header), if str_done_courses.is_empty() {"no completed courses".into()} else {str_done_courses.join("; ")}),
+                (format!("{} - in-progress", header), if str_ip_courses.is_empty() {"no in-progress courses".into()} else {str_ip_courses.join("; ")}),
+            ]
+        }
     }
 
     fn get_requirements(&self) -> Vec<String> {

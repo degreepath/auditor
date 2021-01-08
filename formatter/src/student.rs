@@ -215,6 +215,10 @@ impl Course {
         format!("{}-{}", self.year, self.term)
     }
 
+    pub fn is_in_progress(&self) -> bool {
+        self.flag_in_progress
+    }
+
     pub fn calculate_symbol(&self, status: &RuleStatus) -> &'static str {
         if *status == RuleStatus::Waived {
             "[ovr]"
