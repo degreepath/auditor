@@ -147,6 +147,8 @@ impl crate::to_csv::ToCsv for CountRule {
                 for (column, value) in item.get_record(student, options, is_waived) {
                     if show_prefix {
                         record.push((format!("{}, {}", text.clone(), column), value));
+                    } else if item.status().is_waived() {
+                        record.push((column, "<waived>".into()));
                     } else if value == "" {
                         record.push((column, "empty::???".into()));
                     } else {
