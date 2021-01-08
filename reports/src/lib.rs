@@ -2,6 +2,7 @@ pub mod database;
 mod major_report;
 mod major_summary;
 mod structs;
+mod students;
 
 pub enum ReportType {
     Report,

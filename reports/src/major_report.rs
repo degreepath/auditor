@@ -1,9 +1,8 @@
 use crate::structs::MappedResult;
-use formatter::area_of_study::AreaOfStudy;
-use formatter::student::{AreaOfStudy as AreaPointer, Emphasis, Student};
+use crate::students::fetch_students;
+use formatter::student::{AreaOfStudy as AreaPointer, Emphasis};
 use formatter::to_csv::{CsvOptions, ToCsv};
 use itertools::Itertools;
-use serde_path_to_error;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 pub(crate) fn report_for_area_by_catalog(
@@ -12,55 +11,10 @@ pub(crate) fn report_for_area_by_catalog(
 ) -> anyhow::Result<Vec<MappedResult>> {
     let mut tx = client.transaction()?;
 
-    let stmt = tx.prepare(
-        "
-        SELECT cast(result as text) as result
-             , cast(input_data as text) as input_data
-        FROM result
-        WHERE area_code = $1 AND is_active = true AND result_version = 3
-        ORDER BY area_code, student_id
-    ",
-    )?;
-
     let options = CsvOptions {};
 
-    let results = tx
-        .query(&stmt, &[&area_code])?
+    let results = fetch_students(&mut tx, &area_code)?
         .into_iter()
-        .map(|row| {
-            let result: String = row.get(0);
-            let student: String = row.get(1);
-
-            let student_deserializer = &mut serde_json::Deserializer::from_str(student.as_str());
-            let student: Student = match serde_path_to_error::deserialize(student_deserializer) {
-                Ok(r) => r,
-                Err(err) => {
-                    eprintln!("student error");
-
-                    eprintln!("{}", student);
-                    dbg!(err);
-
-                    panic!();
-                }
-            };
-
-            let result_deserializer = &mut serde_json::Deserializer::from_str(result.as_str());
-            let result: AreaOfStudy = match serde_path_to_error::deserialize(result_deserializer) {
-                Ok(r) => r,
-                Err(err) => {
-                    eprintln!("result error");
-
-                    eprintln!("{}", result);
-                    eprintln!("{}", err);
-                    eprintln!("at {}", err.path());
-                    dbg!(student.stnum);
-
-                    panic!();
-                }
-            };
-
-            (student, result)
-        })
         .map(|(student, result)| {
             // TODO: handle case where student's catalog != area's catalog
             let catalog = student.catalog.clone();

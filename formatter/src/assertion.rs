@@ -51,9 +51,7 @@ impl Display for AssertionKey {
             AssertionKey::CountCourses => "count/classes",
             AssertionKey::CountDistinctCourses => "count/distinct-courses",
             AssertionKey::CountTerms => "count/terms",
-            AssertionKey::CountTermsFromMostCommonCourse => {
-                "count/terms-from-most-common-course"
-            }
+            AssertionKey::CountTermsFromMostCommonCourse => "count/terms-from-most-common-course",
             AssertionKey::CountTermsFromMostCommonCourseByName => {
                 "count/terms-from-most-common-course-by-name"
             }
@@ -183,9 +181,7 @@ impl crate::to_csv::ToCsv for AssertionRule {
             AssertionKey::CountRecitals => "recitals",
             AssertionKey::CountSubjects => "subjects",
             AssertionKey::CountTerms => "terms",
-            AssertionKey::CountTermsFromMostCommonCourse => {
-                "terms from the most common course"
-            }
+            AssertionKey::CountTermsFromMostCommonCourse => "terms from the most common course",
             AssertionKey::CountTermsFromMostCommonCourseByName => {
                 "terms from the most common course, by name"
             }
