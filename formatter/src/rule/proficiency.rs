@@ -53,11 +53,11 @@ impl ToProse for ProficiencyRule {
     }
 }
 
-impl crate::to_csv::ToCsv for ProficiencyRule {
+impl crate::to_cell::ToCell for ProficiencyRule {
     fn get_record(
         &self,
         student: &Student,
-        options: &crate::to_csv::CsvOptions,
+        options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         let is_waived = is_waived || self.status.is_waived();

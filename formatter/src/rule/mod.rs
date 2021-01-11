@@ -1,5 +1,5 @@
 use crate::student::Student;
-use crate::to_csv::{CsvOptions, ToCsv};
+use crate::to_cell::{CsvOptions, ToCell};
 use crate::to_prose::{ProseOptions, ToProse};
 use serde::{Deserialize, Serialize};
 
@@ -53,7 +53,7 @@ impl ToProse for Rule {
     }
 }
 
-impl ToCsv for Rule {
+impl ToCell for Rule {
     fn get_record(
         &self,
         student: &Student,

@@ -182,11 +182,11 @@ impl ToProse for QueryRule {
     }
 }
 
-impl crate::to_csv::ToCsv for QueryRule {
+impl crate::to_cell::ToCell for QueryRule {
     fn get_record(
         &self,
         student: &Student,
-        options: &crate::to_csv::CsvOptions,
+        options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         let mut record: Vec<(String, String)> = Vec::new();

@@ -1,6 +1,6 @@
 use crate::student::Student;
 
-pub trait ToCsv {
+pub trait ToCell {
     fn get_record(
         &self,
         student: &Student,

@@ -82,11 +82,11 @@ pub enum Assertion {
     DynamicConditional(DynamicConditionalAssertion),
 }
 
-impl crate::to_csv::ToCsv for Assertion {
+impl crate::to_cell::ToCell for Assertion {
     fn get_record(
         &self,
         student: &Student,
-        options: &crate::to_csv::CsvOptions,
+        options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         match self {
@@ -165,11 +165,11 @@ impl Assertion {
     }
 }
 
-impl crate::to_csv::ToCsv for AssertionRule {
+impl crate::to_cell::ToCell for AssertionRule {
     fn get_record(
         &self,
         student: &Student,
-        _options: &crate::to_csv::CsvOptions,
+        _options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         let _is_waived = is_waived || self.status.is_waived();
@@ -356,11 +356,11 @@ impl AssertionRule {
     }
 }
 
-impl crate::to_csv::ToCsv for ConditionalAssertion {
+impl crate::to_cell::ToCell for ConditionalAssertion {
     fn get_record(
         &self,
         student: &Student,
-        options: &crate::to_csv::CsvOptions,
+        options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         let if_true = self.when_true.get_record(student, options, is_waived);
@@ -423,11 +423,11 @@ impl ConditionalAssertion {
     }
 }
 
-impl crate::to_csv::ToCsv for DynamicConditionalAssertion {
+impl crate::to_cell::ToCell for DynamicConditionalAssertion {
     fn get_record(
         &self,
         student: &Student,
-        options: &crate::to_csv::CsvOptions,
+        options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         self.when_true.get_record(student, options, is_waived)

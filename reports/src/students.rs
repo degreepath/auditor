@@ -1,7 +1,7 @@
 use crate::structs::MappedResult;
 use formatter::area_of_study::AreaOfStudy;
 use formatter::student::{AreaOfStudy as AreaPointer, Emphasis, Student};
-use formatter::to_csv::{CsvOptions, ToCsv};
+use formatter::to_cell::{CsvOptions, ToCell};
 use serde_path_to_error;
 use std::collections::BTreeSet;
 

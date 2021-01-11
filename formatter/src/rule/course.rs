@@ -74,11 +74,11 @@ impl ToProse for CourseRule {
     }
 }
 
-impl crate::to_csv::ToCsv for CourseRule {
+impl crate::to_cell::ToCell for CourseRule {
     fn get_record(
         &self,
         student: &Student,
-        _options: &crate::to_csv::CsvOptions,
+        _options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         let course = if let Some(claim) = self.claims.get(0) {

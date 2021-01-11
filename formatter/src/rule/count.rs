@@ -112,11 +112,11 @@ impl ToProse for CountRule {
     }
 }
 
-impl crate::to_csv::ToCsv for CountRule {
+impl crate::to_cell::ToCell for CountRule {
     fn get_record(
         &self,
         student: &Student,
-        options: &crate::to_csv::CsvOptions,
+        options: &crate::to_cell::CsvOptions,
         is_waived: bool,
     ) -> Vec<(String, String)> {
         let mut record: Vec<(String, String)> = Vec::new();
