@@ -112,14 +112,10 @@ impl ToProse for CountRule {
     }
 }
 
-impl crate::to_cell::ToCell for CountRule {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
-        let mut record: Vec<(String, String)> = Vec::new();
+use crate::to_record::{Record, RecordOptions, RecordStatus, ToRecord};
+impl ToRecord for CountRule {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
+        let mut row: Vec<Record> = Vec::new();
 
         let is_waived = is_waived || self.status.is_waived();
 
@@ -130,35 +126,70 @@ impl crate::to_cell::ToCell for CountRule {
 
             match item {
                 Some(item) => {
-                    for (_column, value) in item.get_record(student, options, is_waived) {
-                        record.push(("1 of these".into(), value));
+                    for sub_record in item.get_row(student, options, is_waived) {
+                        row.push(Record {
+                            title: "1 of these".to_string(),
+                            subtitle: None,
+                            status: RecordStatus::Waived,
+                            content: sub_record.content,
+                        });
                     }
                 }
                 _ if is_waived => {
-                    record.push(("1 of these".into(), "<waived>".into()));
+                    row.push(Record {
+                        title: "1 of these".to_string(),
+                        subtitle: None,
+                        status: RecordStatus::Waived,
+                        content: vec![],
+                    });
                 }
                 _ => {
-                    record.push(("1 of these".into(), " ".into()));
+                    row.push(Record {
+                        title: "1 of these".to_string(),
+                        subtitle: None,
+                        status: RecordStatus::Empty,
+                        content: vec![],
+                    });
                 }
             }
         } else {
             for (i, item) in self.items.iter().enumerate() {
                 let text = format!("#{}", i + 1);
-                for (column, value) in item.get_record(student, options, is_waived) {
+                for sub_record in item.get_row(student, options, is_waived) {
                     if show_prefix {
-                        record.push((format!("{}, {}", text.clone(), column), value));
+                        row.push(Record {
+                            title: format!("{} -> {}", text, sub_record.title),
+                            subtitle: sub_record.subtitle,
+                            status: *item.status(),
+                            content: sub_record.content,
+                        });
                     } else if item.status().is_waived() {
-                        record.push((column, "<waived>".into()));
-                    } else if value == "" {
-                        record.push((column, "empty::???".into()));
+                        row.push(Record {
+                            title: sub_record.title,
+                            subtitle: sub_record.subtitle,
+                            status: RecordStatus::Waived,
+                            content: vec![],
+                        });
+                    } else if sub_record.content.is_empty() {
+                        row.push(Record {
+                            title: sub_record.title,
+                            subtitle: sub_record.subtitle,
+                            status: RecordStatus::Empty,
+                            content: vec![],
+                        });
                     } else {
-                        record.push((column, value));
+                        row.push(Record {
+                            title: sub_record.title,
+                            subtitle: sub_record.subtitle,
+                            status: *item.status(),
+                            content: sub_record.content,
+                        });
                     }
                 }
             }
         }
 
-        record
+        row
     }
 
     fn get_requirements(&self) -> Vec<String> {

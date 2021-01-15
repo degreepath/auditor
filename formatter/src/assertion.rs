@@ -7,6 +7,7 @@ use crate::rule::RuleStatus;
 use crate::student::Course;
 use crate::student::{ClassLabId, Student};
 use crate::to_prose::{ProseOptions, ToProse};
+use crate::to_record::{Cell, Record, RecordOptions, RecordStatus, ToRecord};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use std::fmt::Display;
@@ -82,17 +83,12 @@ pub enum Assertion {
     DynamicConditional(DynamicConditionalAssertion),
 }
 
-impl crate::to_cell::ToCell for Assertion {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
+impl ToRecord for Assertion {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
         match self {
-            Assertion::Rule(r) => r.get_record(student, options, is_waived),
-            Assertion::Conditional(r) => r.get_record(student, options, is_waived),
-            Assertion::DynamicConditional(r) => r.get_record(student, options, is_waived),
+            Assertion::Rule(r) => r.get_row(student, options, is_waived),
+            Assertion::Conditional(r) => r.get_row(student, options, is_waived),
+            Assertion::DynamicConditional(r) => r.get_row(student, options, is_waived),
         }
     }
 
@@ -165,13 +161,10 @@ impl Assertion {
     }
 }
 
-impl crate::to_cell::ToCell for AssertionRule {
-    fn get_record(
-        &self,
-        student: &Student,
-        _options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
+impl ToRecord for AssertionRule {
+    fn get_row(&self, student: &Student, _options: &RecordOptions, is_waived: bool) -> Vec<Record> {
+        let mut row: Vec<Record> = vec![];
+
         let _is_waived = is_waived || self.status.is_waived();
 
         let statement = match &self.key {
@@ -230,7 +223,7 @@ impl crate::to_cell::ToCell for AssertionRule {
                 e = self.expected
             ),
         };
-        let leader = format!("{s} {r}", s = sigil, r = remaining_v,);
+        let leader = format!("{s} {r}", s = sigil, r = remaining_v);
 
         let courses = self
             .get_clbids()
@@ -248,27 +241,51 @@ impl crate::to_cell::ToCell for AssertionRule {
             .collect::<Vec<_>>();
 
         if courses.is_empty() {
-            vec![(header, leader)]
+            row.push(Record {
+                title: header,
+                subtitle: None,
+                status: RecordStatus::Empty,
+                content: vec![Cell::Text(leader)],
+            });
         } else {
             let (ip_courses, done_courses): (Vec<&Course>, Vec<&Course>) =
                 courses.iter().partition(|c| c.is_in_progress());
 
-            let str_done_courses = done_courses
-                .iter()
-                .map(|c| c.semi_verbose())
-                .collect::<Vec<_>>();
+            row.push(Record {
+                title: header.clone(),
+                subtitle: Some("status".to_string()),
+                status: self.status,
+                content: vec![Cell::Text(leader)],
+            });
 
-            let str_ip_courses = ip_courses
-                .iter()
-                .map(|c| c.semi_verbose())
-                .collect::<Vec<_>>();
+            row.push(Record {
+                title: header.clone(),
+                subtitle: Some("completed".to_string()),
+                status: self.status,
+                content: if done_courses.is_empty() {
+                    vec![]
+                } else {
+                    vec![Cell::DoneCourses(
+                        done_courses.into_iter().cloned().collect(),
+                    )]
+                },
+            });
 
-            vec![
-                (header.clone(), leader),
-                (format!("{} - completed", header), if str_done_courses.is_empty() {"no completed courses".into()} else {str_done_courses.join("; ")}),
-                (format!("{} - in-progress", header), if str_ip_courses.is_empty() {"no in-progress courses".into()} else {str_ip_courses.join("; ")}),
-            ]
-        }
+            row.push(Record {
+                title: header.clone(),
+                subtitle: Some("in-progress".to_string()),
+                status: self.status,
+                content: if ip_courses.is_empty() {
+                    vec![]
+                } else {
+                    vec![Cell::InProgressCourses(
+                        ip_courses.into_iter().cloned().collect(),
+                    )]
+                },
+            });
+        };
+
+        row
     }
 
     fn get_requirements(&self) -> Vec<String> {
@@ -356,16 +373,11 @@ impl AssertionRule {
     }
 }
 
-impl crate::to_cell::ToCell for ConditionalAssertion {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
-        let if_true = self.when_true.get_record(student, options, is_waived);
+impl ToRecord for ConditionalAssertion {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
+        let if_true = self.when_true.get_row(student, options, is_waived);
         let if_false = if let Some(b) = &self.when_false {
-            b.get_record(student, options, is_waived)
+            b.get_row(student, options, is_waived)
         } else {
             vec![]
         };
@@ -423,14 +435,9 @@ impl ConditionalAssertion {
     }
 }
 
-impl crate::to_cell::ToCell for DynamicConditionalAssertion {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
-        self.when_true.get_record(student, options, is_waived)
+impl ToRecord for DynamicConditionalAssertion {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
+        self.when_true.get_row(student, options, is_waived)
     }
 
     fn get_requirements(&self) -> Vec<String> {

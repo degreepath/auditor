@@ -53,31 +53,42 @@ impl ToProse for ProficiencyRule {
     }
 }
 
-impl crate::to_cell::ToCell for ProficiencyRule {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
+use crate::to_record::{Record, RecordOptions, RecordStatus, ToRecord};
+impl ToRecord for ProficiencyRule {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
         let is_waived = is_waived || self.status.is_waived();
 
         let header = self.proficiency.clone();
 
         if let Some(course_rule) = &self.course {
-            let record = course_rule.get_record(student, options, is_waived);
-            return vec![(header, record[0].1.clone())];
+            let mut row = course_rule.get_row(student, options, is_waived);
+            if row.len() != 1 {
+                panic!("proficiency rule got more than one course record");
+            }
+            row[0].title = header;
+            return row;
         }
 
-        let body = if is_waived {
-            String::from("<waived>")
+        let (body, status) = if is_waived {
+            (None, RecordStatus::Waived)
         } else if self.status == RuleStatus::Empty {
-            String::from(" ")
+            (None, RecordStatus::Empty)
         } else {
-            format!("{:?}", self.status)
+            (None, self.status)
         };
 
-        vec![(header, body)]
+        let body = if let Some(body) = body {
+            vec![body]
+        } else {
+            vec![]
+        };
+
+        vec![Record {
+            title: header,
+            subtitle: None,
+            status: status,
+            content: body,
+        }]
     }
 
     fn get_requirements(&self) -> Vec<String> {

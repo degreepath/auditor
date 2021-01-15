@@ -74,13 +74,9 @@ impl ToProse for CourseRule {
     }
 }
 
-impl crate::to_cell::ToCell for CourseRule {
-    fn get_record(
-        &self,
-        student: &Student,
-        _options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
+use crate::to_record::{Cell, Record, RecordOptions, RecordStatus, ToRecord};
+impl ToRecord for CourseRule {
+    fn get_row(&self, student: &Student, _options: &RecordOptions, is_waived: bool) -> Vec<Record> {
         let course = if let Some(claim) = self.claims.get(0) {
             student.get_class_by_clbid(&claim.clbid)
         } else {
@@ -94,18 +90,37 @@ impl crate::to_cell::ToCell for CourseRule {
                 .clone()
                 .unwrap_or_else(|| self.crsid.clone().unwrap())
         });
-        let body = if let Some(course) = course {
+
+        let (body, status) = if let Some(course) = course {
             // if there's a course, show it, even if it was "waived" (ie, it was inserted)
-            course.semi_verbose()
+            if is_waived {
+                (
+                    Some(Cell::SingleCourse(course.clone())),
+                    RecordStatus::Waived,
+                )
+            } else {
+                (Some(Cell::SingleCourse(course.clone())), RecordStatus::Done)
+            }
         } else if is_waived {
-            String::from("<waived>")
+            (None, RecordStatus::Waived)
         } else if self.status == RuleStatus::Empty {
-            String::from(" ")
+            (None, RecordStatus::Empty)
         } else {
-            format!("{:?}", self.status)
+            (None, self.status)
         };
 
-        vec![(header, body)]
+        let body = if let Some(body) = body {
+            vec![body]
+        } else {
+            vec![]
+        };
+
+        vec![Record {
+            title: header,
+            subtitle: None,
+            status: status,
+            content: body,
+        }]
     }
 
     fn get_requirements(&self) -> Vec<String> {
