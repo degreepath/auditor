@@ -194,6 +194,7 @@ class QueryRule(Rule, BaseQueryRule):
 
         elif self.source is QuerySource.Courses:
             courses = cast(Tuple[CourseInstance, ...], data)
+
             for item_set in self.limit.limited_transcripts(courses, forced_clbids=force_inserted_clbids):
                 if self.attempt_claims is False:
                     did_iter = True
@@ -201,11 +202,20 @@ class QueryRule(Rule, BaseQueryRule):
                     continue
 
                 for combo in iterate_item_set(item_set, rule=self):
+                    for inserted_clbid in set(inserted_clbids).union(set(force_inserted_clbids)):
+                        inserted_course = [c for c in item_set if c.clbid == inserted_clbid]
+                        if inserted_course:
+                            combo = tuple([*combo, inserted_course[0]])
+
                     did_iter = True
                     yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
         else:
             for combo in iterate_item_set(data, rule=self):
+                for inserted_clbid in set(inserted_clbids).union(set(force_inserted_clbids)):
+                    inserted_course = next(c for c in courses if c.clbid == inserted_clbid)
+                    combo = tuple([*combo, inserted_course])
+
                 did_iter = True
                 yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
