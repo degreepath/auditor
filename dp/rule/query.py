@@ -202,7 +202,7 @@ class QueryRule(Rule, BaseQueryRule):
                     continue
 
                 for combo in iterate_item_set(item_set, rule=self):
-                    for inserted_clbid in set(inserted_clbids).union(set(force_inserted_clbids)):
+                    for inserted_clbid in set(inserted_clbids).union(set(force_inserted_clbids)) and not any(inserted_clbid == c.clbid for c in combo):
                         inserted_course = [c for c in item_set if c.clbid == inserted_clbid]
                         if inserted_course:
                             combo = tuple([*combo, inserted_course[0]])
