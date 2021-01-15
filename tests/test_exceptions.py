@@ -127,7 +127,8 @@ def test_multi_insertion_on_query_rule(caplog):
     assert result.is_ok() is True
     assert result.is_waived() is False
     assert result.claims()[0].course.clbid == course_a.clbid
-    assert len(result.claims()) == 1
+    assert result.claims()[1].course.clbid == course_b.clbid
+    assert len(result.claims()) == 2
 
 
 def test_insertion_on_count_rule__any(caplog):

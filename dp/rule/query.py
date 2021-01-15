@@ -212,10 +212,6 @@ class QueryRule(Rule, BaseQueryRule):
 
         else:
             for combo in iterate_item_set(data, rule=self):
-                for inserted_clbid in set(inserted_clbids).union(set(force_inserted_clbids)):
-                    inserted_course = next(c for c in courses if c.clbid == inserted_clbid)
-                    combo = tuple([*combo, inserted_course])
-
                 did_iter = True
                 yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
