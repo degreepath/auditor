@@ -131,6 +131,42 @@ def test_multi_insertion_on_query_rule(caplog):
     assert len(result.claims()) == 2
 
 
+def test_multi_insertion_on_query_rule__with_duplicate_clbids(caplog):
+    caplog.set_level(logging.DEBUG)
+
+    exception = load_exception({
+        "type": "insert",
+        "path": ["$", ".query"],
+        "clbid": "0",
+    })
+    exception2 = load_exception({
+        "type": "insert",
+        "path": ["$", ".query"],
+        "clbid": "0",
+    })
+
+    course_a = course_from_str("OTHER 123", clbid="0")
+    course_b = course_from_str("OTHER 111", clbid="1")
+    transcript = [course_a, course_b]
+
+    area = AreaOfStudy.load(specification={
+        "result": {
+            "from": "courses",
+            "where": {"subject": {"$eq": "ABC"}},
+            "assert": {"count(courses)": {"$gte": 1}},
+        },
+    }, c=c, student=Student.load(dict(courses=transcript)), exceptions=[exception, exception2])
+    solutions = list(area.solutions(student=Student.load(dict(courses=transcript)), exceptions=[exception, exception2]))
+    assert len(solutions) == 3
+
+    result = solutions[0].audit()
+
+    assert result.is_ok() is True
+    assert result.is_waived() is False
+    assert result.claims()[0].course.clbid == course_a.clbid
+    assert len(result.claims()) == 1
+
+
 def test_insertion_on_count_rule__any(caplog):
     caplog.set_level(logging.DEBUG)
 

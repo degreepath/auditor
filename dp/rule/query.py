@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Iterable, Collection, FrozenSet, Tuple, cast, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Iterable, Collection, FrozenSet, Set, Tuple, cast, TYPE_CHECKING
 import itertools
 import logging
 import decimal
@@ -193,7 +193,15 @@ class QueryRule(Rule, BaseQueryRule):
             return
 
         elif self.source is QuerySource.Courses:
-            courses = cast(Tuple[CourseInstance, ...], data)
+            courses: Tuple[CourseInstance, ...] = cast(Tuple[CourseInstance, ...], data)
+
+            # insert any "insert" or "force-insert" courses after the minimal selection process of
+            # iterate_item_set has completed, so that we can tweak in-major GPA for students at their
+            # request.
+
+            # first, collect all of the unique clbids for insertion, to avoid adding the same course twice.
+            all_unique_inserted_clbids: Set[str] = set(inserted_clbids).union(set(force_inserted_clbids))
+            has_inserted_clbids = bool(all_unique_inserted_clbids)
 
             for item_set in self.limit.limited_transcripts(courses, forced_clbids=force_inserted_clbids):
                 if self.attempt_claims is False:
@@ -201,19 +209,26 @@ class QueryRule(Rule, BaseQueryRule):
                     yield QuerySolution.from_rule(rule=self, output=item_set, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
                     continue
 
-                for combo in iterate_item_set(item_set, rule=self):
-                    for inserted_clbid in set(inserted_clbids).union(set(force_inserted_clbids)) and not any(inserted_clbid == c.clbid for c in combo):
-                        inserted_course = [c for c in item_set if c.clbid == inserted_clbid]
-                        if inserted_course:
-                            combo = tuple([*combo, inserted_course[0]])
+                for item_combo in iterate_item_set(item_set, rule=self):
+                    course_combo: Tuple[CourseInstance, ...] = cast(Tuple[CourseInstance, ...], item_combo)
+                    if has_inserted_clbids:
+                        # second, remove all already-selected clbids, to avoid adding the same course twice
+                        # if it was chosen by iterate_item_set. Also, sort the set into a list to ensure
+                        # a deterministic audit result.
+                        these_unique_inserted_clbids = sorted(all_unique_inserted_clbids.difference(course.clbid for course in course_combo))
+
+                        # third, look up the courses to be inserted
+                        courses_for_insertion = [course for course in item_set if course.clbid in these_unique_inserted_clbids]
+                        # and finally, add them to the selected combination
+                        course_combo = tuple([*course_combo, *courses_for_insertion])
 
                     did_iter = True
-                    yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+                    yield QuerySolution.from_rule(rule=self, output=course_combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
         else:
-            for combo in iterate_item_set(data, rule=self):
+            for item_combo in iterate_item_set(data, rule=self):
                 did_iter = True
-                yield QuerySolution.from_rule(rule=self, output=combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
+                yield QuerySolution.from_rule(rule=self, output=item_combo, inserted=inserted_clbids, force_inserted=force_inserted_clbids)
 
         if not did_iter:
             # be sure we always yield something
