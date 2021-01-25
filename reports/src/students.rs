@@ -1,8 +1,8 @@
 use formatter::student::Student;
 use formatter::to_record::{RecordOptions, ToRecord};
 use formatter::{area_of_study::AreaOfStudy, to_record::Record};
-use serde_path_to_error;
 use itertools::Itertools;
+use serde_path_to_error;
 
 pub(crate) fn fetch_students(
     tx: &mut postgres::Transaction,
@@ -77,6 +77,12 @@ impl StudentRecord {
             .iter()
             .find(|cell| cell.title == key.title && cell.subtitle == key.subtitle)
     }
+
+    pub fn get_first_cell_with_key_title(&self, key: &TableKey) -> Option<&Record> {
+        self.cells
+            .iter()
+            .find(|cell| cell.title == key.title)
+    }
 }
 
 #[derive(Debug, PartialEq, Hash, Eq, PartialOrd, Ord)]
@@ -94,7 +100,12 @@ impl TableGroup {
     pub fn titles_only(&self) -> TableGroup {
         TableGroup {
             catalog: self.catalog.clone(),
-            titles: self.titles.iter().map(|key| key.title_only()).unique().collect(),
+            titles: self
+                .titles
+                .iter()
+                .map(|key| key.title_only())
+                .unique()
+                .collect(),
         }
     }
 
