@@ -79,9 +79,7 @@ impl StudentRecord {
     }
 
     pub fn get_first_cell_with_key_title(&self, key: &TableKey) -> Option<&Record> {
-        self.cells
-            .iter()
-            .find(|cell| cell.title == key.title)
+        self.cells.iter().find(|cell| cell.title == key.title)
     }
 }
 
