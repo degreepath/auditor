@@ -168,6 +168,9 @@ class QuerySolution(Solution, BaseQueryRule):
         if self.where:
             output = [item for item in output if self.where.apply(item)]
 
+        if self.excluded_clbids:
+            output = [c for c in output if c.clbid not in self.excluded_clbids]
+
         for clbid in self.inserted:
             matched_course = ctx.forced_course_by_clbid(clbid, path=self.path)
             output.append(matched_course)
