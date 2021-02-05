@@ -4,6 +4,7 @@ from pathlib import Path
 import multiprocessing
 import argparse
 import logging
+import logging.handlers
 import select
 import math
 import json
@@ -36,6 +37,18 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 ch.setFormatter(logging.Formatter(logformat))
 logger.addHandler(ch)
+
+if os.getenv('DP_SMTP_HOST'):
+    smtp_mailhost: str = os.environ['DP_SMTP_HOST']
+    smtp_fromaddr: str = os.environ['DP_SMTP_FROM']
+    smtp_toaddrs: str = os.environ['DP_SMTP_TO']
+    smtp_subject: str = os.environ['DP_SMTP_SUBJECT']
+    smtp = logging.handlers.SMTPHandler(mailhost=smtp_mailhost, fromaddr=smtp_fromaddr, toaddrs=smtp_toaddrs.split(','), subject=smtp_subject)
+    smtp.setLevel(logging.INFO)
+    smtp.setFormatter(logging.Formatter(logformat))
+    logger.addHandler(smtp)
+else:
+    logger.info('DP_SMTP_HOST not set; not enabling SMTP logger')
 
 
 def wrapper(*, area_root: str) -> None:
