@@ -44,7 +44,7 @@ if os.getenv('DP_SMTP_HOST'):
     smtp_toaddrs: str = os.environ['DP_SMTP_TO']
     smtp_subject: str = os.environ['DP_SMTP_SUBJECT']
     smtp = logging.handlers.SMTPHandler(mailhost=smtp_mailhost, fromaddr=smtp_fromaddr, toaddrs=smtp_toaddrs.split(','), subject=smtp_subject)
-    smtp.setLevel(logging.INFO)
+    smtp.setLevel(logging.WARNING)
     smtp.setFormatter(logging.Formatter(logformat))
     logger.addHandler(smtp)
 else:
