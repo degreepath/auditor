@@ -64,7 +64,7 @@ Message = Union[
 ]
 
 
-def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = None, exceptions: Optional[List[RuleException]] = None) -> Iterator[Message]:
+def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = None, exceptions: Optional[List[RuleException]] = None) -> Iterator[Message]:  # noqa: C901
     if not args:
         args = Arguments()
 
