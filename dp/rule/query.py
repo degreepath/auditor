@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, List, Optional, Sequence, Iterator, Iterable, Collection, FrozenSet, Set, Tuple, cast, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, Iterator, Iterable, Collection, Set, Tuple, cast, TYPE_CHECKING
 import itertools
 import logging
 import decimal
