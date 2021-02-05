@@ -50,6 +50,8 @@ class QuerySolution(Solution, BaseQueryRule):
             successful_claims=tuple(),
             failed_claims=tuple(),
             include_failed=rule.include_failed,
+            excluded_clbids=rule.excluded_clbids,
+            load_potentials=rule.load_potentials,
         )
 
     def audit(self, *, ctx: 'RequirementContext') -> QueryResult:

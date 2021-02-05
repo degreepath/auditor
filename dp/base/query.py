@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, Any, Sequence, Iterable, cast
+from typing import Optional, Tuple, Dict, Any, Sequence, Iterable, FrozenSet, cast
 from decimal import Decimal
 import enum
 
@@ -39,6 +39,8 @@ class BaseQueryRule(Base):
     output: Tuple[Clausable, ...]
     successful_claims: Tuple[Claim, ...]
     failed_claims: Tuple[Claim, ...]
+    load_potentials: bool
+    excluded_clbids: FrozenSet[str] = frozenset()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
