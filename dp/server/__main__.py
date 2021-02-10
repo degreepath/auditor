@@ -12,7 +12,6 @@ import os
 
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
-import sentry_sdk
 
 from dp.dotenv import load as load_dotenv
 from dp.run import load_area
@@ -22,11 +21,6 @@ dotenv_path = Path(__file__).parent.parent.parent / '.env'
 load_dotenv(filepath=dotenv_path)
 
 logger = logging.getLogger(__name__)
-
-if os.environ.get('SENTRY_DSN', None):
-    sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'), traces_sample_rate=0.5)
-else:
-    logger.warning('SENTRY_DSN not set; skipping')
 
 # we need to import this after dotenv and sentry have loaded
 from .audit import audit  # noqa: E402
@@ -153,9 +147,6 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
         except Exception as exc:
             # commit the deletion, just so it doesn't endlessly re-run itself
             curs.execute('COMMIT;')
-
-            # record the exception in Sentry for debugging
-            sentry_sdk.capture_exception(exc)
 
             # log the exception
             logger.error(f'[q={queue_id}] error  {student_id}::{area_id}')
