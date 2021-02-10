@@ -118,6 +118,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
             queue_id, run_id, student_id, area_catalog, area_code, input_data, expires_at, link_only = row
         except Exception:
             curs.execute('COMMIT;')
+            logger.exception('unexpected exception: wrong number of items in tuple from queue table')
             break
 
         area_id = area_catalog + '/' + area_code
