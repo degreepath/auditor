@@ -18,7 +18,6 @@ from .audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Ar
 load_dotenv()
 
 logger = logging.getLogger(__name__)
-logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 
 def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
@@ -48,6 +47,7 @@ def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
     cli_args = parser.parse_args(sys_args)
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
+    logformat = "%(asctime)s %(name)s %(levelname)s %(message)s"
     logging.basicConfig(level=loglevel, format=logformat)
 
     if cli_args.estimate:
