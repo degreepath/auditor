@@ -150,7 +150,7 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
             curs.execute('COMMIT;')
 
             # log the exception
-            logger.error(f'[q={queue_id}] error  {student_id}::{area_id}')
+            logger.error(f'[q={queue_id}] error  {student_id}::{area_id}; %s', exc)
 
     logger.info('queue is empty')
 
