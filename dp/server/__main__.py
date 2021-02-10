@@ -4,45 +4,29 @@ from pathlib import Path
 import multiprocessing
 import argparse
 import logging
-import logging.handlers
+import logging.config
 import select
 import math
 import json
 import os
 
+import yaml
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 
 from dp.dotenv import load as load_dotenv
 from dp.run import load_area
+from .audit import audit
+
+logger = logging.getLogger(__name__)
 
 # always resolve to the local .env file
 dotenv_path = Path(__file__).parent.parent.parent / '.env'
 load_dotenv(filepath=dotenv_path)
 
-logger = logging.getLogger(__name__)
-
-# we need to import this after dotenv and sentry have loaded
-from .audit import audit  # noqa: E402
-
-logformat = "%(asctime)s %(name)s [pid=%(process)d] %(processName)s [%(levelname)s] %(message)s"
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-ch.setFormatter(logging.Formatter(logformat))
-logger.addHandler(ch)
-
-if os.getenv('DP_SMTP_HOST'):
-    smtp_mailhost: str = os.environ['DP_SMTP_HOST']
-    smtp_fromaddr: str = os.environ['DP_SMTP_FROM']
-    smtp_toaddrs: str = os.environ['DP_SMTP_TO']
-    smtp_subject: str = os.environ['DP_SMTP_SUBJECT']
-    smtp = logging.handlers.SMTPHandler(mailhost=smtp_mailhost, fromaddr=smtp_fromaddr, toaddrs=smtp_toaddrs.split(','), subject=smtp_subject)
-    smtp.setLevel(logging.WARNING)
-    smtp.setFormatter(logging.Formatter(logformat))
-    logger.addHandler(smtp)
-else:
-    logger.info('DP_SMTP_HOST not set; not enabling SMTP logger')
+with open(os.getenv('DP_LOGGING_CONFIG_FILE')) as infile:
+    logging_config = yaml.safe_load(infile)
+    logging.config.dictConfig(logging_config)
 
 
 def wrapper(*, area_root: str) -> None:

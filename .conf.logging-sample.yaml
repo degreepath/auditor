@@ -1,0 +1,31 @@
+%YAML 1.2
+---
+version: 1
+disable_existing_loggers: true
+
+root:
+  level: INFO
+  handlers:
+    - mail_admins
+    - stream
+
+handlers:
+  mail_admins:
+    class: logging.handlers.SMTPHandler
+    formatter: verbose
+    mailhost: smtp.example.com
+    fromaddr: DegreePath Server <degreepath-server@example.com>
+    toaddrs:
+      - DegreePath Admins <degreepath@example.com>
+    subject: '[WARNING] DegreePath Alert'
+
+  stream:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: verbose
+
+formatters:
+  verbose:
+    format: '%(asctime)s %(name)s [pid=%(process)d] %(processName)s [%(levelname)s] %(message)s'
+  simple:
+    format: '%(levelname)s %(message)s'
