@@ -22,7 +22,7 @@ def audit(
     expires_at: Optional[str],
     link_only: bool,
     curs: psycopg2.extensions.cursor,
-) -> None:
+) -> Optional[int]:
     args = Arguments()
 
     stnum = student['stnum']
@@ -43,24 +43,25 @@ def audit(
                 result = msg.result.to_dict()
                 result_str = json.dumps(result)
 
-                # delete any old copies of this exact result
-                curs.execute("""
-                    DELETE FROM result
-                    WHERE student_id = %(student_id)s
-                        AND catalog = %(area_catalog)s
-                        AND area_code = %(area_code)s
-                        AND result = %(result)s::jsonb
-                """, {"student_id": stnum, "area_catalog": area_catalog, "area_code": area_code, "result": result_str})
+                if not link_only:
+                    # delete any old copies of this exact result
+                    curs.execute("""
+                        DELETE FROM result
+                        WHERE student_id = %(student_id)s
+                            AND catalog = %(area_catalog)s
+                            AND area_code = %(area_code)s
+                            AND result = %(result)s::jsonb
+                    """, {"student_id": stnum, "area_catalog": area_catalog, "area_code": area_code, "result": result_str})
 
-                # deactivate all existing records
-                curs.execute("""
-                    UPDATE result
-                    SET is_active = false
-                    WHERE
-                        student_id = %(student_id)s
-                        AND area_code = %(area_code)s
-                        AND is_active = true
-                """, {"student_id": stnum, "area_code": area_code})
+                    # deactivate all existing records
+                    curs.execute("""
+                        UPDATE result
+                        SET is_active = false
+                        WHERE
+                            student_id = %(student_id)s
+                            AND area_code = %(area_code)s
+                            AND is_active = true
+                    """, {"student_id": stnum, "area_code": area_code})
 
                 # we use clock_timestamp() instead of now() here, because
                 # now() is the start time of the transaction, and we instead
@@ -121,6 +122,7 @@ def audit(
                         nullif(%(student_name)s, ''),
                         nullif(%(student_name_sort)s, '')
                     )
+                    RETURNING id
                 """, {
                     "student_id": stnum,
                     "area_code": area_code,
@@ -147,8 +149,14 @@ def audit(
                     "result_version": result["version"],
                 })
 
+                result_id: int = curs.fetchone()[0]
+
+                return result_id
+
             else:
                 logger.critical('unknown message %s', msg)
 
     except Exception as ex:
         logger.error("error with student #%s, catalog %s, area %s: %s", stnum, area_catalog, area_code, ex)
+
+    return None

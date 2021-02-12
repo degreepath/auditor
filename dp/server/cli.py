@@ -5,7 +5,6 @@ import os
 
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
-import sentry_sdk
 
 from dp.run import load_area, load_student
 from .audit import audit
@@ -16,9 +15,6 @@ dotenv_path = pathlib.Path(__file__).parent.parent.parent / '.env'
 load_dotenv(filepath=dotenv_path)
 
 logger = logging.getLogger(__name__)
-
-if os.environ.get('SENTRY_DSN', None):
-    sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'))
 
 
 def main() -> None:
@@ -42,7 +38,7 @@ def main() -> None:
     with conn.cursor() as curs:
         curs.execute('BEGIN;')
         try:
-            audit(
+            result_id = audit(
                 curs=curs,
                 area_spec=area_spec,
                 area_catalog=area_catalog,
@@ -53,6 +49,7 @@ def main() -> None:
                 expires_at=None,
             )
             curs.execute('COMMIT;')
+            print(f'stored with id {result_id}')
         except Exception as ex:
             curs.execute('ROLLBACK;')
             raise ex
