@@ -1,7 +1,6 @@
 import argparse
 import pathlib
 import logging
-import os
 
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore

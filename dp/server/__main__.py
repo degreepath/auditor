@@ -55,7 +55,9 @@ if __name__ == '__main__':
     dotenv_path = Path(__file__).parent.parent.parent / '.env'
     load_dotenv(filepath=dotenv_path)
 
-    with open(os.getenv('DP_LOGGING_CONFIG_FILE')) as infile:
+    log_conf_path = os.getenv('DP_LOGGING_CONFIG_FILE')
+    assert log_conf_path
+    with open(log_conf_path) as infile:
         logging_config = yaml.safe_load(infile)
         logging.config.dictConfig(logging_config)
 
