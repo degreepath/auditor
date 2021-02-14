@@ -1,6 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional, Set, Dict, Tuple, cast
-from pathlib import Path
 import argparse
 import json
 import os
@@ -10,17 +9,9 @@ import urllib3  # type: ignore
 import psycopg2  # type: ignore
 import psycopg2.extras  # type: ignore
 import psycopg2.extensions  # type: ignore
-import sentry_sdk
 
 from dp.dotenv import load as load_dotenv
 from dp.bin.expand import expand_student
-
-# always resolve to the local .env file
-dotenv_path = Path(__file__).parent.parent.parent / ".env"
-load_dotenv(filepath=dotenv_path)
-
-if os.environ.get("SENTRY_DSN", None):
-    sentry_sdk.init(dsn=os.environ.get("SENTRY_DSN"))
 
 http = urllib3.PoolManager()
 BATCH_URL = os.getenv("DP_BATCH_URL")
@@ -201,6 +192,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    load_dotenv()
+
     try:
         main()
     except KeyboardInterrupt:

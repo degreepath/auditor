@@ -15,8 +15,6 @@ from .stringify_v3 import summarize
 # from .stringify_csv import to_csv
 from .audit import EstimateMsg, ResultMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
-load_dotenv()
-
 logger = logging.getLogger(__name__)
 
 
@@ -156,6 +154,8 @@ def result_str(
 
 
 if __name__ == "__main__":
+    load_dotenv()
+
     try:
         sys.exit(main())
     except KeyboardInterrupt:

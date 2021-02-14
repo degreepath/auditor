@@ -1,6 +1,5 @@
 # mypy: warn_unreachable = False
 
-from pathlib import Path
 import multiprocessing
 import argparse
 import logging
@@ -42,8 +41,6 @@ def main() -> None:
         processes.append(p)
         p.start()
 
-    logger.error('test error')
-
     for p in processes:
         p.join()
 
@@ -52,8 +49,7 @@ if __name__ == '__main__':
     import logging.config
 
     # always resolve to the local .env file
-    dotenv_path = Path(__file__).parent.parent.parent / '.env'
-    load_dotenv(filepath=dotenv_path)
+    load_dotenv()
 
     log_conf_path = os.getenv('DP_LOGGING_CONFIG_FILE')
     assert log_conf_path
