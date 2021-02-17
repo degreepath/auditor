@@ -19,7 +19,12 @@ RUN pip install --no-cache-dir \
 
 COPY dp ./dp
 
+COPY docker-install-packages.sh ./docker-install-packages.sh
+RUN ./docker-install-packages.sh
+
+COPY docker-healthcheck.sh ./docker-healthcheck.sh
+
 HEALTHCHECK --start-period=5s \
-	CMD test $(ps aux | grep -F 'python -m dp.server' | grep -v grep | wc -l) -lt 1
+	CMD bash ./docker-healthcheck.sh
 
 CMD ["python", "-m", "dp.server"]
