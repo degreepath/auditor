@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir \
 COPY dp ./dp
 
 COPY docker-install-packages.sh ./docker-install-packages.sh
-RUN ./docker-install-packages.sh
+RUN bash ./docker-install-packages.sh
 
 COPY docker-healthcheck.sh ./docker-healthcheck.sh
 
