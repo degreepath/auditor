@@ -42,6 +42,7 @@ def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
     parser.add_argument("--no-paths", dest='show_paths', action='store_const', const=False)
     parser.add_argument("--ranks", dest='show_ranks', action='store_const', const=True, default=True)
     parser.add_argument("--no-ranks", dest='show_ranks', action='store_const', const=False)
+    parser.add_argument("--claimed", dest='claimed', action='store_true')
     cli_args = parser.parse_args(sys_args)
 
     loglevel = getattr(logging, cli_args.loglevel.upper())
@@ -101,6 +102,7 @@ def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
                     show_paths=cli_args.show_paths,
                     show_ranks=cli_args.show_ranks,
                     print_path=cli_args.print_path,
+                    claimed=cli_args.claimed,
                 ))
 
         else:
@@ -119,10 +121,15 @@ def result_str(
     gpa_only: bool,
     show_paths: bool,
     show_ranks: bool,
+    claimed: bool,
     print_path: Optional[List[str]] = None,
 ) -> str:
     if gpa_only:
         return f"GPA: {msg.result.gpa()}"
+
+    if claimed:
+        claimed_courses = sorted((c.course for c in msg.result.claims()), key=lambda c: [c.subject, c.number, c.year, c.term, c.section])
+        return ','.join(course.pretty() for course in claimed_courses)
 
     dict_result = msg.result.to_dict()
 

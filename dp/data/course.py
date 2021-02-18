@@ -125,6 +125,12 @@ class CourseInstance(Clausable):
         else:
             return f'{self.course_with_term()} "{self.name}" [{self.institution}] {self.credits} {self.grade_code.value} #{self.clbid}{attrs}'
 
+    def pretty(self) -> str:
+        if self.institution == 'STOLAF':
+            return f'{self.course_with_term()} "{self.name}"'
+        else:
+            return f'[{self.institution}] {self.course_with_term()} "{self.name}"'
+
     def course_with_term(self) -> str:
         if self.sub_type is SubType.Lab:
             suffix = ".L"
