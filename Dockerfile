@@ -1,4 +1,16 @@
-FROM python:3.9-slim
+FROM rust:1.50-buster AS builder
+
+WORKDIR /usr/src/reports
+
+COPY ./Cargo.toml ./
+COPY ./Cargo.lock ./
+COPY ./reports ./reports
+COPY ./src ./src
+COPY ./formatter ./formatter
+
+RUN cargo build --release --bin dp-report
+
+FROM python:3.9-slim-buster
 
 WORKDIR /usr/src/app
 
@@ -23,6 +35,8 @@ COPY docker-install-packages.sh ./docker-install-packages.sh
 RUN bash ./docker-install-packages.sh
 
 COPY docker-healthcheck.sh ./docker-healthcheck.sh
+
+COPY --from=builder /usr/src/reports/target/release/dp-report ./dp-report
 
 HEALTHCHECK --start-period=5s \
 	CMD bash ./docker-healthcheck.sh
