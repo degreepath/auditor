@@ -14,18 +14,12 @@ pub(crate) fn print_as_html<'a, W: std::io::Write>(
     mut writer: &mut W,
     results: &[StudentRecord],
 ) -> anyhow::Result<()> {
-    let mut tables: Vec<Table> = results
+    let grouped = results
         .iter()
-        .map(|record| {
-            (
-                (
-                    record.group.clone(),
-                    record.emphasis_requirement_names.clone(),
-                ),
-                record,
-            )
-        })
-        .into_group_map()
+        .map(|record| ((record.group.clone(), record.emphasis_requirement_names.clone()), record))
+        .into_group_map();
+
+    let mut tables: Vec<Table> = grouped
         .iter()
         .map(|((group_header, emphasis_names), group)| {
             to_table(&group_header, &emphasis_names, &group)
@@ -127,9 +121,15 @@ fn render_tables<W: std::io::Write>(mut writer: &mut W, tables: &[Table]) -> any
 
                 for cell in cells {
                     let class_list = vec![
-                        if cell.is_ok() {"passing"} else {"not-passing"},
+                        if cell.is_ok() {
+                            "passing"
+                        } else {
+                            "not-passing"
+                        },
                         cell.status_class(),
-                    ].iter().join(" ");
+                    ]
+                    .iter()
+                    .join(" ");
 
                     let content = cell.content.iter().map(|c| c.render()).join("<br>");
 

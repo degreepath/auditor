@@ -66,18 +66,28 @@ impl ToRecord for AreaOfStudy {
             title: "student id".to_string(),
             subtitle: None,
             status: self.status,
-            content: vec![Cell::Text(
-                student.stnum.clone()
-            )],
+            content: vec![Cell::Text(student.stnum.clone())],
         });
 
         row.push(Record {
             title: "name".to_string(),
             subtitle: None,
             status: self.status,
-            content: vec![Cell::Text(
-                student.name_sort.clone(),
-            )],
+            content: vec![Cell::Text(student.name_sort.clone())],
+        });
+
+        row.push(Record {
+            title: "classification".to_string(),
+            subtitle: None,
+            status: self.status,
+            content: vec![Cell::Text(student.classification.to_string())],
+        });
+
+        row.push(Record {
+            title: "class year".to_string(),
+            subtitle: None,
+            status: self.status,
+            content: vec![Cell::Text(student.class.clone())],
         });
 
         row.append(&mut self.result.get_row(student, options, is_waived));

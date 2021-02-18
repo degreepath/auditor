@@ -16,6 +16,7 @@ pub struct Student {
     pub name: String,
     pub name_sort: String,
     pub classification: StudentClassification,
+    pub class: String,
     // pub class: Option<u32>,
     pub mediums: StudentPerformingMediums,
     pub organizations: Vec<StudentOrganization>,
@@ -58,6 +59,18 @@ pub enum StudentClassification {
     SO,
     FY,
     NC,
+}
+
+impl ToString for StudentClassification {
+    fn to_string(&self) -> String {
+        match &self {
+            StudentClassification::SR => String::from("SR"),
+            StudentClassification::JR => String::from("JR"),
+            StudentClassification::SO => String::from("SO"),
+            StudentClassification::FY => String::from("FY"),
+            StudentClassification::NC => String::from("NC"),
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -7,9 +7,9 @@ use crate::rule::RuleStatus;
 use crate::student::Course;
 use crate::student::{ClassLabId, Student};
 use crate::to_prose::{ProseOptions, ToProse};
-use crate::to_record::{Cell, Record, RecordOptions, RecordStatus, ToRecord};
+use crate::to_record::{Cell, Record, RecordOptions, ToRecord};
 use serde::{Deserialize, Serialize};
-use std::{cmp::max};
+use std::cmp::max;
 use std::collections::BTreeSet;
 use std::fmt::Display;
 
@@ -210,7 +210,10 @@ impl ToRecord for AssertionRule {
                 let expected = self.expected.parse::<i32>().unwrap();
                 let resolved = resolved.parse::<i32>().unwrap();
                 let remain = max(0, expected - resolved);
-                format!("{} remaining<br/>(needs {}, has {})", remain, expected, resolved)
+                format!(
+                    "{} remaining<br/>(needs {}, has {})",
+                    remain, expected, resolved
+                )
             }
             Operator::NotEqualTo
             | Operator::EqualTo

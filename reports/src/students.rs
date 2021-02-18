@@ -79,7 +79,15 @@ impl StudentRecord {
     }
 
     pub fn get_all_cells(&self) -> Vec<(String, String)> {
-        self.cells.iter().map(|cell| (cell.title.clone(), cell.subtitle.clone().unwrap_or(String::from("")))).collect()
+        self.cells
+            .iter()
+            .map(|cell| {
+                (
+                    cell.title.clone(),
+                    cell.subtitle.clone().unwrap_or(String::from("")),
+                )
+            })
+            .collect()
     }
 
     pub fn get_first_cell_with_key_title(&self, key: &TableKey) -> Option<&Record> {
@@ -129,6 +137,13 @@ impl TableKey {
             title: self.title.clone(),
             subtitle: None,
         }
+    }
+
+    pub fn is_meta(&self) -> bool {
+        self.title == "student id"
+            || self.title == "name"
+            || self.title == "classification"
+            || self.title == "class year"
     }
 }
 
