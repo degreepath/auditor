@@ -1,12 +1,12 @@
 import logging
+import pathlib
 import select
 import json
-import os
 
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 
-from dp.run import load_area
+from dp.run import find_area
 from dp.server.audit import audit
 
 logger = logging.getLogger(__name__)
@@ -89,11 +89,12 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
             break
 
         area_id = area_catalog + '/' + area_code
-        area_path = os.path.join(area_root, area_catalog, area_code + '.yaml')
         try:
             logger.info(f'[q={queue_id}] begin  {student_id}::{area_id}')
 
-            area_spec = load_area(area_path)
+            catalog_int = int(area_catalog.split('-')[0])
+
+            area_spec = find_area(root=pathlib.Path(area_root), area_catalog=catalog_int, area_code=area_code)
 
             # run the audit
             audit(

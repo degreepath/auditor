@@ -1,5 +1,6 @@
 # mypy: warn_unreachable = False
 
+import pathlib
 import argparse
 import glob
 import json
@@ -7,7 +8,7 @@ import sys
 import os
 
 from dp.ms import pretty_ms
-from dp.run import run, load_student, load_area
+from dp.run import run, load_student, find_area
 from dp.stringify_v3 import summarize
 from dp.audit import ResultMsg, EstimateMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
@@ -52,7 +53,7 @@ def main() -> int:  # noqa: C901
             continue
 
         student = load_student(student_file)
-        area_spec = load_area(area_file)
+        area_spec = find_area(root=pathlib.Path(cli_args.areas_dir), area_catalog=int(catalog.split('-')[0]), area_code=area_code)
 
         if not cli_args.quiet and not cli_args.table:
             print(f"auditing #{student['stnum']} against {area_file}", file=sys.stderr)

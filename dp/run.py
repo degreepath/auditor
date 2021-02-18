@@ -63,6 +63,33 @@ def load_student(filename: str) -> Dict:
         return cast(Dict, json.load(infile))
 
 
+def find_area(root: pathlib.Path, area_catalog: int, area_code: str) -> Dict:
+    while True:
+        try:
+            catalog_folder = root / f"{area_catalog}-{area_catalog+1}"
+            if not catalog_folder.is_dir():
+                break
+            filepath = root / f"{area_catalog}-{area_catalog+1}" / f"{area_code}.yaml"
+            with filepath.open("r", encoding="utf-8") as infile:
+                return cast(Dict, yaml.load(stream=infile, Loader=yaml.SafeLoader))
+        except FileNotFoundError:
+            area_catalog = area_catalog - 1
+
+    return {
+        'name': area_code,
+        'type': 'error',
+        'code': area_code,
+
+        'result': {
+            'all': [{
+                'name': 'Error',
+                'message': f'The {area_code} area specification has not yet been transcribed.',
+                'department_audited': True,
+            }],
+        },
+    }
+
+
 def load_area(filename: Union[str, pathlib.Path]) -> Dict:
     try:
         with open(filename, "r", encoding="utf-8") as infile:
