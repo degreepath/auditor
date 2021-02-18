@@ -14,6 +14,7 @@ pub struct Student {
     // pub exceptions: Vec<Exception>,
     pub matriculation: String,
     pub name: String,
+    pub name_sort: String,
     pub classification: StudentClassification,
     // pub class: Option<u32>,
     pub mediums: StudentPerformingMediums,
@@ -34,6 +35,19 @@ impl Student {
                 None => self.courses.iter().find(|c| c.unique_id_none() == *clbid),
             },
         }
+    }
+
+    pub fn emphases(&self) -> Vec<String> {
+        self.areas
+            .iter()
+            .filter_map(|a| match a {
+                AreaOfStudy::Emphasis(Emphasis { name, .. }) => Some(name),
+                _ => None,
+            })
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .cloned()
+            .collect()
     }
 }
 
@@ -109,7 +123,7 @@ impl ClassLabId {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CourseId(String);
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Course {
     pub attributes: BTreeSet<String>,
     pub clbid: ClassLabId,
@@ -141,6 +155,12 @@ pub struct Course {
     pub transcript_code: String,
     pub transcript_code_long: String,
     pub year: String,
+}
+
+impl std::fmt::Debug for Course {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Course {{ {} }}", self.verbose())
+    }
 }
 
 impl Course {

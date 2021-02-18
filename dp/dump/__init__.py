@@ -1,0 +1,1 @@
+targets = ['json', 'pretty-text']

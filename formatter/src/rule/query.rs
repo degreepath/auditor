@@ -182,14 +182,10 @@ impl ToProse for QueryRule {
     }
 }
 
-impl crate::to_cell::ToCell for QueryRule {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
-        let mut record: Vec<(String, String)> = Vec::new();
+use crate::to_record::{Record, RecordOptions, ToRecord};
+impl ToRecord for QueryRule {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
+        let mut row: Vec<Record> = vec![];
 
         let is_waived = is_waived || self.status.is_waived();
 
@@ -200,14 +196,10 @@ impl crate::to_cell::ToCell for QueryRule {
             .filter(|a| a.is_at_least());
 
         for assertion in course_and_credit_assertions.take(1) {
-            record.extend(
-                assertion
-                    .get_record(student, options, is_waived)
-                    .into_iter(),
-            );
+            row.extend(assertion.get_row(student, options, is_waived).into_iter());
         }
 
-        record
+        row
     }
 
     fn get_requirements(&self) -> Vec<String> {

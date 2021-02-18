@@ -57,19 +57,23 @@ impl ToProse for AreaOfStudy {
     }
 }
 
-impl crate::to_cell::ToCell for AreaOfStudy {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
-        let mut row = vec![(
-            String::from("student"),
-            format!("{} ({})", student.name.clone(), student.stnum.clone()),
-        )];
+use crate::to_record::{Cell, Record, RecordOptions, ToRecord};
+impl ToRecord for AreaOfStudy {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
+        let mut row: Vec<Record> = vec![];
 
-        row.append(&mut self.result.get_record(student, options, is_waived));
+        row.push(Record {
+            title: "student".to_string(),
+            subtitle: None,
+            status: self.status,
+            content: vec![Cell::Text(format!(
+                "{} ({})",
+                student.name.clone(),
+                student.stnum.clone()
+            ))],
+        });
+
+        row.append(&mut self.result.get_row(student, options, is_waived));
 
         row
     }

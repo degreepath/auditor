@@ -18,6 +18,7 @@ class Arguments:
     gpa_only: bool = False
 
     print_all: bool = False
+    print_only: List[int] = attr.field(factory=list)
     stop_after: Optional[int] = None
     progress_every: int = 1_000
     audit_each: int = 1
@@ -74,6 +75,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
     best_sol: Optional[AreaResult] = None
     best_rank: Decimal = Decimal(0)
     best_i: Optional[int] = None
+    printed_some_from_only: bool = False
 
     estimate = area.estimate(student=student, exceptions=exceptions or [])
     yield EstimateMsg(estimate=estimate)
@@ -87,6 +89,9 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
             start = time.perf_counter()
 
         total_count += 1
+
+        if args.print_only and total_count not in args.print_only:
+            continue
 
         if total_count % args.audit_each != 0:
             continue
@@ -121,7 +126,10 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
                 elapsed_ms=elapsed_ms,
             )
 
-        if args.print_all:
+        if total_count in args.print_only:
+            printed_some_from_only = True
+
+        if args.print_all or total_count in args.print_only:
             elapsed_ms = ms_since(start)
             yield ResultMsg(
                 result=result,
@@ -141,7 +149,7 @@ def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = No
         yield NoAuditsCompletedMsg()
         return
 
-    if args.print_all:
+    if args.print_all or printed_some_from_only:
         # avoid printing the "best" solution twice
         return
 

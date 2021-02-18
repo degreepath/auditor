@@ -30,6 +30,7 @@ def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
     parser.add_argument("--json-with-transcript", action='store_true', help="output results as json, including the course transcript")
     # parser.add_argument("--csv", action='store_true')
     parser.add_argument("--print-all", action='store_true', help="print every result, not just the best one")
+    parser.add_argument("--print-only", action='store', nargs='?', type=str, help="print result for the specified iterations")
     parser.add_argument("--stop-after", action='store', type=int, metavar="N", help="stop checking results after N results have been checked")
     parser.add_argument("--progress-every", action='store', type=int, metavar="N", default=1_000, help="print a status message every N checks")
     parser.add_argument("--audit-each", action='store', type=int, default=1, metavar="N", help="only check every Nth result")
@@ -59,6 +60,7 @@ def main(sys_args: Optional[List[str]] = None) -> int:  # noqa: C901
     args = Arguments(
         gpa_only=cli_args.gpa,
         print_all=cli_args.print_all,
+        print_only=[int(x) for x in cli_args.print_only.split(',')] if cli_args.print_only else [],
         progress_every=cli_args.progress_every,
         stop_after=cli_args.stop_after,
         audit_each=cli_args.audit_each,

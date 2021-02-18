@@ -3,6 +3,7 @@ use crate::predicate_expression::StaticPredicateExpression;
 use crate::rule::{Rule, RuleStatus};
 use crate::student::Student;
 use crate::to_prose::{ProseOptions, ToProse};
+use crate::to_record::{Record, RecordOptions, RecordStatus, ToRecord};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -55,27 +56,41 @@ impl ToProse for ConditionalRule {
     }
 }
 
-impl crate::to_cell::ToCell for ConditionalRule {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
+impl ToRecord for ConditionalRule {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
         let is_waived = is_waived || self.status.is_waived();
 
-        let if_true = self.when_true.get_record(student, options, is_waived);
+        let conditional_string = format!("{}", self.condition);
+        let if_true = self.when_true.get_row(student, options, is_waived);
         let if_false = if let Some(b) = &self.when_false {
-            b.get_record(student, options, is_waived)
+            b.get_row(student, options, is_waived)
         } else {
             vec![]
         };
 
-        vec![vec![("cond".into(), "?".into())], if_true, if_false]
-            .iter()
-            .flatten()
-            .cloned()
-            .collect()
+        let mut row = vec![];
+
+        let header = format!("Conditional: {}", conditional_string);
+
+        row.extend(if_true.into_iter().map(|sub_record| Record {
+            title: header.clone(),
+            subtitle: Some(format!("If yes: {}", sub_record.title)),
+            status: *self.when_true.status(),
+            content: sub_record.content,
+        }));
+
+        row.extend(if_false.into_iter().map(|sub_record| Record {
+            title: header.clone(),
+            subtitle: Some(format!("Otherwise: {}", sub_record.title)),
+            status: if let Some(when_false) = self.when_false.clone() {
+                *when_false.status()
+            } else {
+                RecordStatus::Empty
+            },
+            content: sub_record.content,
+        }));
+
+        row
     }
 
     fn get_requirements(&self) -> Vec<String> {

@@ -1,6 +1,6 @@
 use crate::student::Student;
-use crate::to_cell::{CsvOptions, ToCell};
 use crate::to_prose::{ProseOptions, ToProse};
+use crate::to_record::{Record, RecordOptions, ToRecord};
 use serde::{Deserialize, Serialize};
 
 pub mod conditional;
@@ -53,20 +53,15 @@ impl ToProse for Rule {
     }
 }
 
-impl ToCell for Rule {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
+impl ToRecord for Rule {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
         match self {
-            Rule::Count(r) => r.get_record(student, options, is_waived),
-            Rule::Course(r) => r.get_record(student, options, is_waived),
-            Rule::Requirement(r) => r.get_record(student, options, is_waived),
-            Rule::Query(r) => r.get_record(student, options, is_waived),
-            Rule::Conditional(r) => r.get_record(student, options, is_waived),
-            Rule::Proficiency(r) => r.get_record(student, options, is_waived),
+            Rule::Count(r) => r.get_row(student, options, is_waived),
+            Rule::Course(r) => r.get_row(student, options, is_waived),
+            Rule::Requirement(r) => r.get_row(student, options, is_waived),
+            Rule::Query(r) => r.get_row(student, options, is_waived),
+            Rule::Conditional(r) => r.get_row(student, options, is_waived),
+            Rule::Proficiency(r) => r.get_row(student, options, is_waived),
         }
     }
 
@@ -95,7 +90,7 @@ impl Rule {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Copy)]
 pub enum RuleStatus {
     #[serde(rename = "done")]
     Done,

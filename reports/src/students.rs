@@ -1,9 +1,8 @@
-use crate::structs::MappedResult;
-use formatter::area_of_study::AreaOfStudy;
-use formatter::student::{AreaOfStudy as AreaPointer, Emphasis, Student};
-use formatter::to_cell::{CsvOptions, ToCell};
+use formatter::student::Student;
+use formatter::to_record::{RecordOptions, ToRecord};
+use formatter::{area_of_study::AreaOfStudy, to_record::Record};
+use itertools::Itertools;
 use serde_path_to_error;
-use std::collections::BTreeSet;
 
 pub(crate) fn fetch_students(
     tx: &mut postgres::Transaction,
@@ -62,81 +61,144 @@ fn parse_record(result: &str, student: &str) -> (Student, AreaOfStudy) {
     (student, result)
 }
 
-pub fn fetch_records(
-    client: &mut postgres::Client,
+#[derive(Debug)]
+pub struct StudentRecord {
+    pub student: Student,
+    pub result: AreaOfStudy,
+    pub cells: Vec<formatter::to_record::Record>,
+    pub requirement_names: Vec<String>,
+    pub emphasis_requirement_names: Vec<String>,
+    pub group: TableGroup,
+}
+
+impl StudentRecord {
+    pub fn get_cell_by_key(&self, key: &TableKey) -> Option<&Record> {
+        self.cells
+            .iter()
+            .find(|cell| cell.title == key.title && cell.subtitle == key.subtitle)
+    }
+
+    pub fn get_first_cell_with_key_title(&self, key: &TableKey) -> Option<&Record> {
+        self.cells.iter().find(|cell| cell.title == key.title)
+    }
+}
+
+#[derive(Debug, PartialEq, Hash, Eq, PartialOrd, Ord)]
+struct SingleTableGroup {
+    pub key: TableKey,
+}
+
+#[derive(Debug, PartialEq, Hash, Eq, PartialOrd, Ord, Clone)]
+pub struct TableGroup {
+    pub catalog: String,
+    pub titles: Vec<TableKey>,
+}
+
+impl TableGroup {
+    pub fn titles_only(&self) -> TableGroup {
+        TableGroup {
+            catalog: self.catalog.clone(),
+            titles: self
+                .titles
+                .iter()
+                .map(|key| key.title_only())
+                .unique()
+                .collect(),
+        }
+    }
+
+    pub fn by_titles(&self) -> (Vec<TableKey>, String) {
+        let titles_only = self.titles_only();
+        (titles_only.titles.clone(), titles_only.catalog.clone())
+    }
+}
+
+#[derive(Debug, PartialEq, Hash, Eq, PartialOrd, Ord, Clone, Default)]
+pub struct TableKey {
+    pub title: String,
+    pub subtitle: Option<String>,
+}
+
+impl TableKey {
+    pub fn title_only(&self) -> TableKey {
+        TableKey {
+            title: self.title.clone(),
+            subtitle: None,
+        }
+    }
+}
+
+pub fn fetch_records<'a>(
+    client: &'a mut postgres::Client,
     area_code: &str,
-) -> anyhow::Result<Vec<MappedResult>> {
+) -> anyhow::Result<Vec<StudentRecord>> {
     let mut tx = client.transaction()?;
 
-    let options = CsvOptions {};
+    let options = RecordOptions {};
 
-    let results = fetch_students(&mut tx, &area_code)?
-        .into_iter()
-        .map(|(student, result)| {
-            // TODO: handle case where student's catalog != area's catalog
-            let catalog = student.catalog.clone();
-            let stnum = student.stnum.clone();
-            let name = student.name.clone();
-            let classification = student.classification.clone();
+    // we need to know what columns each student has, so that we can generate a large-enough table.
+    // 1. take the (title, subtitle) tuple from each student.
+    // 2. … ignoring any requirements from emphases (/^Emphasis:/), we need to group catalog years with the same requirements together
+    // 2-1. the resulting multi-catalog table should have the union of all emphasis columns.
+    // 3. turn the student's row into a Mapping[(title, subtitle), CellContents].
 
-            let records = result.get_record(&student, &options, false);
-            let requirements = result.get_requirements();
+    /*
+        for column in table_headings {
+            for student in all_students {
+                if student in column {
+                    for cell for student[column] {
+                        output cell;
+                    }
+                }
+            }
+        }
+    */
 
-            let emphases = student
-                .areas
+    let students = fetch_students(&mut tx, &area_code)?;
+
+    tx.commit()?;
+
+    let records = students.into_iter().map(|(student, result)| {
+        let cells = result.get_row(&student, &options, false);
+        let requirement_names = result.get_requirements();
+        let emphasis_requirement_names = result.emphasis_requirement_names();
+
+        let group = {
+            let titles = cells
                 .iter()
-                .filter_map(|a| match a {
-                    AreaPointer::Emphasis(Emphasis { name, .. }) => Some(name),
-                    _ => None,
+                // ignore any emphasis columns
+                .filter(|record| !record.title.starts_with("Emphasis:"))
+                .map(|record| TableKey {
+                    title: record.title.clone(),
+                    subtitle: record.subtitle.clone(),
                 })
-                .cloned()
-                .collect::<BTreeSet<_>>()
-                .into_iter()
                 .collect::<Vec<_>>();
 
-            let emphasis_req_names = requirements
-                .iter()
-                .filter(|e| e.starts_with("Emphasis: "))
-                .map(|name| String::from(name.split(" → ").take(1).last().unwrap()))
-                .collect::<BTreeSet<_>>()
-                .into_iter()
-                .collect::<Vec<_>>();
-
-            let mut header: Vec<String> = Vec::with_capacity(records.len());
-            let mut data: Vec<String> = Vec::with_capacity(records.len());
-
-            for (th, td) in records.into_iter() {
-                header.push(th);
-                data.push(td);
+            TableGroup {
+                catalog: student.catalog.clone(),
+                titles,
             }
+        };
 
-            MappedResult {
-                header,
-                data,
-                requirements,
-                emphases,
-                emphasis_req_names,
-                catalog,
-                stnum,
-                classification,
-                name,
-            }
-        });
+        StudentRecord {
+            student,
+            result,
+            cells,
+            requirement_names,
+            emphasis_requirement_names,
+            group,
+        }
+    });
 
-    let results: Vec<MappedResult> = {
-        let mut r = results.collect::<Vec<_>>();
+    let mut records = records.collect::<Vec<_>>();
+    records.sort_by_cached_key(|s| {
+        (
+            s.group.clone(),
+            s.student.name_sort.clone(),
+            s.student.stnum.clone(),
+        )
+    });
+    let records = records;
 
-        r.sort_by_cached_key(|s| {
-            (
-                s.catalog.clone(),
-                s.emphases.join(","),
-                s.name.clone(),
-                s.stnum.clone(),
-            )
-        });
-
-        r
-    };
-
-    Ok(results)
+    Ok(records)
 }

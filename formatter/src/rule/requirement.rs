@@ -60,28 +60,27 @@ impl ToProse for Requirement {
     }
 }
 
-impl crate::to_cell::ToCell for Requirement {
-    fn get_record(
-        &self,
-        student: &Student,
-        options: &crate::to_cell::CsvOptions,
-        is_waived: bool,
-    ) -> Vec<(String, String)> {
+use crate::to_record::{Record, RecordOptions, ToRecord};
+impl ToRecord for Requirement {
+    fn get_row(&self, student: &Student, options: &RecordOptions, is_waived: bool) -> Vec<Record> {
         if self.path == &["$", "%Common Requirements"] {
             return vec![];
         }
 
         let is_waived = is_waived || self.status.is_waived();
 
-        let mut record = vec![];
+        let mut row = vec![];
 
         if let Some(result) = &self.result {
-            for (column, value) in result.get_record(student, options, is_waived) {
-                record.push((format!("{} → {}", self.name, column), value));
-            }
+            row.extend(
+                result
+                    .get_row(student, options, is_waived)
+                    .iter()
+                    .map(|record| record.with_title(&format!("{} → {}", self.name, &record.title))),
+            );
         }
 
-        record
+        row
     }
 
     fn get_requirements(&self) -> Vec<String> {
