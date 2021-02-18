@@ -71,13 +71,20 @@ fn to_table<'a>(
 
         for result in group {
             let mut row: BTreeMap<TableKey, Vec<Record>> = BTreeMap::new();
+
             for column in headers.titles.clone() {
                 if let Some(record) = result.get_cell_by_key(&column) {
-                    row.entry(column).and_modify(|entry| {
-                        entry.push(record.clone());
-                    });
+                    let entry = row.entry(column).or_default();
+                    entry.push(record.clone());
+                } else {
+                    println!("did not find cell for {:?}", &column);
+                    println!("known cells:");
+                    for cell in result.get_all_cells() {
+                        println!("- {} ({})", cell.0, cell.1);
+                    }
                 }
             }
+
             rows.push(row);
         }
 
@@ -94,7 +101,7 @@ fn render_tables<W: std::io::Write>(mut writer: &mut W, tables: &[Table]) -> any
         if !table.caption.is_empty() {
             writeln!(&mut writer, "<h2>{}</h2>", table.caption)?;
         }
-        writeln!(&mut writer, "<table>")?;
+        writeln!(&mut writer, r#"<table class="dp-report">"#)?;
         writeln!(&mut writer, "<thead>")?;
         writeln!(&mut writer, "<tr>")?;
         for th in table.header.iter() {
@@ -115,18 +122,21 @@ fn render_tables<W: std::io::Write>(mut writer: &mut W, tables: &[Table]) -> any
         writeln!(&mut writer, "<tbody>")?;
         for tr in table.rows.iter() {
             writeln!(&mut writer, "<tr>")?;
-            for cells in tr.values() {
+            for th in table.header.iter() {
+                let cells = tr.get(th).unwrap();
+
                 for cell in cells {
-                    let attrs = if cell.is_ok() {
-                        "class=\"passing\""
-                    } else {
-                        "class=\"not-passing\""
-                    };
+                    let class_list = vec![
+                        if cell.is_ok() {"passing"} else {"not-passing"},
+                        cell.status_class(),
+                    ].iter().join(" ");
+
                     let content = cell.content.iter().map(|c| c.render()).join("<br>");
+
                     writeln!(
                         &mut writer,
-                        "<td {}>{}</td>",
-                        attrs,
+                        r#"<td class="{}">{}</td>"#,
+                        class_list,
                         &content,
                         // askama_escape::escape(&td, askama_escape::Html)
                     )?;

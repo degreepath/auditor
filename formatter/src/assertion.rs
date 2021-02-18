@@ -9,6 +9,7 @@ use crate::student::{ClassLabId, Student};
 use crate::to_prose::{ProseOptions, ToProse};
 use crate::to_record::{Cell, Record, RecordOptions, RecordStatus, ToRecord};
 use serde::{Deserialize, Serialize};
+use std::{cmp::max};
 use std::collections::BTreeSet;
 use std::fmt::Display;
 
@@ -206,9 +207,10 @@ impl ToRecord for AssertionRule {
         let resolved = self.resolved.clone().unwrap_or("0".into());
         let remaining_v = match self.operator {
             Operator::GreaterThanOrEqualTo => {
-                let remain =
-                    self.expected.parse::<i32>().unwrap() - resolved.parse::<i32>().unwrap();
-                format!("{} remaining", remain)
+                let expected = self.expected.parse::<i32>().unwrap();
+                let resolved = resolved.parse::<i32>().unwrap();
+                let remain = max(0, expected - resolved);
+                format!("{} remaining<br/>(needs {}, has {})", remain, expected, resolved)
             }
             Operator::NotEqualTo
             | Operator::EqualTo
@@ -241,11 +243,31 @@ impl ToRecord for AssertionRule {
             .collect::<Vec<_>>();
 
         if courses.is_empty() {
+            // row.push(Record {
+            //     title: header,
+            //     subtitle: None,
+            //     status: RecordStatus::Empty,
+            //     content: vec![Cell::Text(leader)],
+            // });
             row.push(Record {
-                title: header,
-                subtitle: None,
-                status: RecordStatus::Empty,
+                title: header.clone(),
+                subtitle: Some("status".to_string()),
+                status: self.status,
                 content: vec![Cell::Text(leader)],
+            });
+
+            row.push(Record {
+                title: header.clone(),
+                subtitle: Some("completed".to_string()),
+                status: self.status,
+                content: vec![],
+            });
+
+            row.push(Record {
+                title: header.clone(),
+                subtitle: Some("in-progress".to_string()),
+                status: self.status,
+                content: vec![],
             });
         } else {
             let (ip_courses, done_courses): (Vec<&Course>, Vec<&Course>) =

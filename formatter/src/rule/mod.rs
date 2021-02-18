@@ -124,6 +124,19 @@ impl RuleStatus {
         }
     }
 
+    pub fn as_classname(&self) -> &str {
+        match self {
+            RuleStatus::Done => "status--done",
+            RuleStatus::Waived => "status--waived",
+            RuleStatus::PendingCurrent => "status--pending-current",
+            RuleStatus::NeedsMoreItems => "status--needs-more-items",
+            RuleStatus::PendingRegistered => "status--pending-registered",
+            RuleStatus::PendingApproval => "status--pending-approval",
+            RuleStatus::Empty => "status--empty",
+            RuleStatus::FailedInvariant => "status--failed-invariant",
+        }
+    }
+
     pub fn is_waived(&self) -> bool {
         match self {
             RuleStatus::Waived => true,

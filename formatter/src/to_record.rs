@@ -28,6 +28,10 @@ impl Record {
     pub fn is_ok(&self) -> bool {
         self.status.is_passing()
     }
+
+    pub fn status_class(&self) -> &str {
+        self.status.as_classname()
+    }
 }
 
 pub type RecordStatus = crate::rule::RuleStatus;

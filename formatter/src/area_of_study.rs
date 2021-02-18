@@ -63,14 +63,21 @@ impl ToRecord for AreaOfStudy {
         let mut row: Vec<Record> = vec![];
 
         row.push(Record {
-            title: "student".to_string(),
+            title: "student id".to_string(),
             subtitle: None,
             status: self.status,
-            content: vec![Cell::Text(format!(
-                "{} ({})",
-                student.name.clone(),
+            content: vec![Cell::Text(
                 student.stnum.clone()
-            ))],
+            )],
+        });
+
+        row.push(Record {
+            title: "name".to_string(),
+            subtitle: None,
+            status: self.status,
+            content: vec![Cell::Text(
+                student.name_sort.clone(),
+            )],
         });
 
         row.append(&mut self.result.get_row(student, options, is_waived));

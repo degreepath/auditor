@@ -153,7 +153,7 @@ fn to_table<'a>(headers: &TableGroup, group: &[&StudentRecord], keys: &TableKeys
         let mut counters: IndexMap<&TableKey, TableCounter> = headers
             .titles
             .iter()
-            .filter(|title| title.title != "student")
+            .filter(|title| title.title != "student id" && title.title != "name")
             .map(|title| (title, TableCounter::default()))
             .collect();
 

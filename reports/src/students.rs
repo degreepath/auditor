@@ -78,6 +78,10 @@ impl StudentRecord {
             .find(|cell| cell.title == key.title && cell.subtitle == key.subtitle)
     }
 
+    pub fn get_all_cells(&self) -> Vec<(String, String)> {
+        self.cells.iter().map(|cell| (cell.title.clone(), cell.subtitle.clone().unwrap_or(String::from("")))).collect()
+    }
+
     pub fn get_first_cell_with_key_title(&self, key: &TableKey) -> Option<&Record> {
         self.cells.iter().find(|cell| cell.title == key.title)
     }
