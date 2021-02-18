@@ -18,7 +18,7 @@ class Arguments:
     gpa_only: bool = False
 
     print_all: bool = False
-    print_only: List[int] = attr.field(factory=list)
+    print_only: List[int] = attr.ib(factory=list)
     stop_after: Optional[int] = None
     progress_every: int = 1_000
     audit_each: int = 1
@@ -64,7 +64,7 @@ Message = Union[
 ]
 
 
-def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = None, exceptions: Optional[List[RuleException]] = None) -> Iterator[Message]:
+def audit(*, area: AreaOfStudy, student: Student, args: Optional[Arguments] = None, exceptions: Optional[List[RuleException]] = None) -> Iterator[Message]:  # noqa: C901
     if not args:
         args = Arguments()
 
