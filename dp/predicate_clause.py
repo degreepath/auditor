@@ -155,6 +155,7 @@ class ConditionalPredicate:
     condition: SomePredicateExpression
     when_true: 'SomePredicate'
     when_false: Optional['SomePredicate']
+    hide_branching: bool
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -162,6 +163,7 @@ class ConditionalPredicate:
             "condition": self.condition.to_dict(),
             "when_true": self.when_true.to_dict(),
             "when_false": self.when_false.to_dict() if self.when_false else None,
+            "hide_branching": self.hide_branching,
         }
 
     @lru_cache(CACHE_SIZE)
@@ -278,8 +280,9 @@ def load_predicate(
         when_false = None
         if data.get('$else', None) is not None:
             when_false = load_predicate(data['$else'], c=c, ctx=ctx, mode=mode)
+        hide_branching = data.get('$args', {}).get('hide_branching', False)
 
-        return ConditionalPredicate(condition=condition, when_true=when_true, when_false=when_false)
+        return ConditionalPredicate(condition=condition, when_true=when_true, when_false=when_false, hide_branching=hide_branching)
 
     else:
         # assert len(data.keys()) == 1, "only one key allowed in single-clauses"
