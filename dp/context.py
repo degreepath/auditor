@@ -4,6 +4,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 import logging
 
+from .status import ResultStatus
 from .base.course import BaseCourseRule
 from .data.course import CourseInstance
 from .data.area_pointer import AreaPointer
@@ -181,6 +182,16 @@ class RequirementContext:
                 return exception
 
         return None
+
+    def has_waive_exception_for_conditional_expression(self, key: str) -> bool:
+        if tuple([key]) not in self.exceptions:
+            return False
+
+        for exception in self.exceptions.get(tuple([key]), []):
+            if isinstance(exception, OverrideException):
+                return exception.status is ResultStatus.Done
+
+        return False
 
     def get_block_exceptions(self, path: Tuple[str, ...]) -> Iterator[BlockException]:
         if path not in self.exceptions:

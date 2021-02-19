@@ -65,6 +65,7 @@ class PredicateExpressionFunction(enum.Enum):
     PassedProficiencyExam = 'passed-proficiency-exam'
     HasDeclaredAreaCode = 'has-declared-area-code'
     StudentHasCourseWithAttribute = 'student-has-course-with-attribute'
+    HasOverrideException = 'has-override-exception'
 
 
 @enum.unique
@@ -344,6 +345,9 @@ def evaluate_predicate_function(function: PredicateExpressionFunction, argument:
 
     elif function is PredicateExpressionFunction.PassedProficiencyExam:
         return ctx.music_proficiencies.passed_exam(of=argument)
+
+    elif function is PredicateExpressionFunction.HasOverrideException:
+        return ctx.has_waive_exception_for_conditional_expression(key=argument)
 
     else:
         raise TypeError(f"unknown static PredicateExpressionFunction {function}")
