@@ -73,7 +73,7 @@ def find_area(root: pathlib.Path, area_catalog: int, area_code: str) -> Optional
     matching_files = [
         file
         for file in root.glob(f'*-*/{area_code}.yaml')
-        if file.parent.name < max_folder
+        if file.parent.name <= max_folder
     ]
 
     logger.debug('matching area files: %s', matching_files)
