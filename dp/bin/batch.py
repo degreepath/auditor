@@ -2,19 +2,18 @@
 
 import pathlib
 import argparse
-import glob
 import json
 import sys
 import os
 
 from dp.ms import pretty_ms
-from dp.run import run, load_student, find_area
+from dp.run import run, load_student, find_area, load_area
 from dp.stringify_v3 import summarize
 from dp.audit import ResultMsg, EstimateMsg, NoAuditsCompletedMsg, ProgressMsg, Arguments
 
 
 def main() -> int:  # noqa: C901
-    DEFAULT_DIR = os.getenv('DP_STUDENT_DIR', default=max(glob.iglob(os.path.expanduser('~/2019-*'))))
+    DEFAULT_DIR = os.getenv('DP_STUDENT_DIR')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-w', '--workers', help="the number of worker processes to spawn", default=os.cpu_count())
@@ -44,16 +43,20 @@ def main() -> int:  # noqa: C901
 
     for stnum, catalog, area_code in data:
         student_file = os.path.join(cli_args.dir, f"{stnum}.json")
-        area_file = os.path.join(cli_args.areas_dir, catalog, f"{area_code}.yaml")
 
         args = Arguments(print_all=False, transcript_only=cli_args.transcript)
+        area_file = find_area(root=pathlib.Path(cli_args.areas_dir), area_catalog=int(catalog.split('-')[0]), area_code=area_code)
+
+        if not area_file:
+            print('could not find area spec for %s at or below catalog %s, under %s', area_code, catalog, cli_args.areas_dir)
+            return 1
 
         if cli_args.invocation:
             print(f"python3 dp.py --student '{student_file}' --area '{area_file}'")
             continue
 
         student = load_student(student_file)
-        area_spec = find_area(root=pathlib.Path(cli_args.areas_dir), area_catalog=int(catalog.split('-')[0]), area_code=area_code)
+        area_spec = load_area(area_file)
 
         if not cli_args.quiet and not cli_args.table:
             print(f"auditing #{student['stnum']} against {area_file}", file=sys.stderr)

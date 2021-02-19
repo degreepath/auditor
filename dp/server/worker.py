@@ -6,7 +6,7 @@ import json
 import psycopg2  # type: ignore
 import psycopg2.extensions  # type: ignore
 
-from dp.run import find_area
+from dp.run import find_area, load_area
 from dp.server.audit import audit
 
 logger = logging.getLogger(__name__)
@@ -14,12 +14,12 @@ logger = logging.getLogger(__name__)
 
 def wrapper(*, area_root: str) -> None:
     try:
-        worker(area_root=area_root)
+        worker(area_root=pathlib.Path(area_root))
     except KeyboardInterrupt:
         pass
 
 
-def worker(*, area_root: str) -> None:
+def worker(*, area_root: pathlib.Path) -> None:
     logger.info('connect')
 
     # empty string means "use the environment variables"
@@ -54,7 +54,7 @@ def worker(*, area_root: str) -> None:
                 process_queue(curs=curs, area_root=area_root)
 
 
-def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
+def process_queue(*, curs: psycopg2.extensions.cursor, area_root: pathlib.Path) -> None:
     # loop until the queue is empty
     while True:
         curs.execute('BEGIN;')
@@ -94,7 +94,12 @@ def process_queue(*, curs: psycopg2.extensions.cursor, area_root: str) -> None:
 
             catalog_int = int(area_catalog.split('-')[0])
 
-            area_spec = find_area(root=pathlib.Path(area_root), area_catalog=catalog_int, area_code=area_code)
+            area_file = find_area(root=area_root, area_catalog=catalog_int, area_code=area_code)
+            if not area_file:
+                logger.error('could not find area spec for %s at or below catalog %s, under %s', area_code, area_catalog, area_root)
+                continue
+
+            area_spec = load_area(area_file)
 
             # run the audit
             audit(

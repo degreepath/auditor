@@ -1,5 +1,6 @@
-from typing import Iterator, Dict, Union, cast
+from typing import Iterator, Dict, Union, Optional, cast
 import pathlib
+import logging
 import json
 import csv
 import sys
@@ -11,6 +12,8 @@ from .exception import load_exception, CourseOverrideException, load_migrations
 from .lib import grade_point_average_items, grade_point_average
 from .data.student import Student
 from .audit import audit, Message, Arguments
+
+logger = logging.getLogger(__name__)
 
 
 def run(args: Arguments, *, student: Dict, area_spec: Dict) -> Iterator[Message]:
@@ -63,31 +66,22 @@ def load_student(filename: str) -> Dict:
         return cast(Dict, json.load(infile))
 
 
-def find_area(root: pathlib.Path, area_catalog: int, area_code: str) -> Dict:
-    while True:
-        try:
-            catalog_folder = root / f"{area_catalog}-{area_catalog+1}"
-            if not catalog_folder.is_dir():
-                break
-            filepath = root / f"{area_catalog}-{area_catalog+1}" / f"{area_code}.yaml"
-            with filepath.open("r", encoding="utf-8") as infile:
-                return cast(Dict, yaml.load(stream=infile, Loader=yaml.SafeLoader))
-        except FileNotFoundError:
-            area_catalog = area_catalog - 1
+def find_area(root: pathlib.Path, area_catalog: int, area_code: str) -> Optional[pathlib.Path]:
+    max_folder = f"{area_catalog}-{str(area_catalog+1)[2:]}"
+    logger.debug('looking for files beneath %s that are older than %s', root, max_folder)
 
-    return {
-        'name': area_code,
-        'type': 'error',
-        'code': area_code,
+    matching_files = [
+        file
+        for file in root.glob(f'*-*/{area_code}.yaml')
+        if file.parent.name < max_folder
+    ]
 
-        'result': {
-            'all': [{
-                'name': 'Error',
-                'message': f'The {area_code} area specification has not yet been transcribed.',
-                'department_audited': True,
-            }],
-        },
-    }
+    logger.debug('matching area files: %s', matching_files)
+
+    if matching_files:
+        return max(matching_files)
+
+    return None
 
 
 def load_area(filename: Union[str, pathlib.Path]) -> Dict:
