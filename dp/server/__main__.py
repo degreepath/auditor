@@ -2,6 +2,7 @@
 
 import multiprocessing
 import argparse
+import pathlib
 import logging
 import math
 import os
@@ -10,6 +11,7 @@ import yaml
 
 from dp.dotenv import load as load_dotenv
 from dp.server.worker import wrapper
+from dp.server.reports_worker import reports_wrapper
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +42,17 @@ def main() -> None:
         p = multiprocessing.Process(target=wrapper, kwargs=dict(area_root=area_root))
         processes.append(p)
         p.start()
+
+    DP_REPORT_BIN = os.getenv('DP_REPORT_BIN')
+    if DP_REPORT_BIN:
+        try:
+            reports_binary_path = pathlib.Path(DP_REPORT_BIN)
+            p = multiprocessing.Process(target=reports_wrapper, kwargs=dict(binary_path=reports_binary_path))
+            processes.append(p)
+            p.start()
+        except Exception as exc:
+            # log the exception
+            logger.error('error running reports: %s', exc)
 
     for p in processes:
         p.join()

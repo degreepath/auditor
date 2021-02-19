@@ -36,7 +36,8 @@ RUN bash ./docker-install-packages.sh
 
 COPY docker-healthcheck.sh ./docker-healthcheck.sh
 
-COPY --from=builder /usr/src/reports/target/release/dp-report ./dp-report
+ENV DP_REPORT_BIN /opt/dp-report
+COPY --from=builder /usr/src/reports/target/release/dp-report /opt/dp-report
 
 HEALTHCHECK --start-period=5s \
 	CMD bash ./docker-healthcheck.sh
