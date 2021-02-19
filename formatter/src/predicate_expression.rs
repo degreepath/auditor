@@ -182,6 +182,8 @@ pub enum StaticPredicateConditionFunction {
     HasDeclaredAreaCode,
     #[serde(rename = "student-has-course-with-attribute")]
     StudentHasCourseWithAttribute,
+    #[serde(rename = "has-override-exception")]
+    HasOverrideException,
 }
 
 impl Display for StaticPredicateConditionFunction {
@@ -194,6 +196,7 @@ impl Display for StaticPredicateConditionFunction {
             F::PassedProficiencyExam => "passed-proficiency-exam",
             F::HasDeclaredAreaCode => "has-declared-area-code",
             F::StudentHasCourseWithAttribute => "student-has-course-with-attribute",
+            F::HasOverrideException => "has-override-exception",
         };
         f.write_str(output)
     }
