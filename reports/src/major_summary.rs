@@ -107,7 +107,7 @@ pub(crate) fn print_as_html<'a, W: std::io::Write>(
         let mut tables: Vec<Table> = vec![];
 
         for (key_group, catalogs) in catalog_groups {
-            println!("catalog group: {:?}", &catalogs);
+            // println!("catalog group: {:?}", &catalogs);
 
             let matching: Vec<&StudentRecord> = results
                 .iter()
