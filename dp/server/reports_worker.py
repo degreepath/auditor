@@ -5,6 +5,7 @@ import time
 
 logger = logging.getLogger(__name__)
 ONE_HOUR = 3600
+ONE_DAY = 86400
 
 
 def reports_wrapper(*, binary_path: pathlib.Path) -> None:
@@ -23,4 +24,4 @@ def worker(*, binary_path: pathlib.Path) -> None:
             # log the exception
             logger.error('error running reports: %s', exc)
 
-        time.sleep(ONE_HOUR)
+        time.sleep(ONE_DAY)
