@@ -69,10 +69,16 @@ def process_queue(*, curs: psycopg2.extensions.cursor, binary_path: pathlib.Path
             )
         ''')
 
-        # fetch the next available queued item
-        try:
-            subprocess.run([binary_path, 'batch', '--to-database'], check=True)
+        if curs.fetchone() is not None:
+            # fetch the next available queued item
+            try:
+                subprocess.run([binary_path, 'batch', '--to-database'], check=True)
+                curs.execute('COMMIT;')
 
-        except Exception as exc:
-            # log the exception
-            logger.error('error running reports: %s', exc)
+            except Exception as exc:
+                # log the exception
+                logger.error('error running reports: %s', exc)
+                curs.execute('ROLLBACK;')
+
+        else:
+            curs.execute('COMMIT;')
