@@ -8,6 +8,7 @@ use crate::student::Course;
 use crate::student::{ClassLabId, Student};
 use crate::to_prose::{ProseOptions, ToProse};
 use crate::to_record::{Cell, Record, RecordOptions, ToRecord};
+use rust_decimal;
 use serde::{Deserialize, Serialize};
 use std::cmp::max;
 use std::collections::BTreeSet;
@@ -207,9 +208,9 @@ impl ToRecord for AssertionRule {
         let resolved = self.resolved.clone().unwrap_or("0".into());
         let remaining_v = match self.operator {
             Operator::GreaterThanOrEqualTo => {
-                let expected = self.expected.parse::<i32>().unwrap();
-                let resolved = resolved.parse::<i32>().unwrap();
-                let remain = max(0, expected - resolved);
+                let expected = self.expected.parse::<rust_decimal::Decimal>().unwrap();
+                let resolved = resolved.parse::<rust_decimal::Decimal>().unwrap();
+                let remain = max(rust_decimal::Decimal::new(0, 0), expected - resolved);
                 format!(
                     "{} remaining<br/>(needs {}, has {})",
                     remain, expected, resolved
