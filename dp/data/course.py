@@ -257,9 +257,6 @@ def apply_predicate__crsid(course: CourseInstance, clause: 'Predicate') -> bool:
 def apply_predicate__name(course: CourseInstance, clause: 'Predicate') -> bool:
     return clause.compare(course.name)
 
-def apply_predicate__sub_type(course: CourseInstance, clause: 'Predicate') -> bool:
-    return clause.compare(course.sub_type)    
-
 
 clause_application_lookup: Dict[str, Callable[[CourseInstance, 'Predicate'], bool]] = {
     'ap': apply_predicate__ap,
@@ -283,7 +280,6 @@ clause_application_lookup: Dict[str, Callable[[CourseInstance, 'Predicate'], boo
     'number': apply_predicate__number,
     'semester': apply_predicate__semester,
     'subject': apply_predicate__subject,
-    'sub_type': apply_predicate__sub_type,
     'type': apply_predicate__type,
     'year': apply_predicate__year,
 }
