@@ -515,8 +515,8 @@ def prepare_common_rules(
         studio_art_code = '140'
         art_history_code = '135'
         is_history_and_studio = \
-            (area_code == studio_art_code and art_history_code in other_area_codes)\
-            or (area_code == art_history_code and studio_art_code in other_area_codes)
+            ((area_code == studio_art_code and art_history_code in other_area_codes)\
+            or (area_code == art_history_code and studio_art_code in other_area_codes))
 
         ba_music_code = '450'
         is_ba_music = area_code == ba_music_code
@@ -530,12 +530,14 @@ def prepare_common_rules(
 
         elif is_history_and_studio:
             outside_rule = {
-                "message": "Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART' subject code.",
+                "message": "Students who double-major in studio art and art history are required to complete at least 18 full-course credits outside the SIS 'ART,' 'ARTS,' and 'ARTH' subject code.",
                 "result": {
                     "from": "courses",
                     "where": {
                         "$and": [
                             {"subject": {"$neq": "ART"}},
+                            {"subject": {"$neq": "ARTS"}},
+                            {"subject": {"$neq": "ARTH"}},
                             {"subject": {"$neq": "REG"}},
                             {"subject": {"$neq": "OFFC"}},
                             {"credits": {"$eq": 1}},
